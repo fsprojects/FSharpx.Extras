@@ -1,11 +1,11 @@
 ﻿namespace FSharp.Monad
+open System
+open System.Collections.Generic
+
 /// The monoid.
 /// <remarks>
 /// The monoid implementation comes from Matthew Podwysocki's <see href="http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx"/>.
 /// </remarks>
-open System
-open System.Collections.Generic
-
 type IMonoid<'a> =
   abstract member mempty  : unit -> 'a
   abstract member mappend : 'a * 'a -> 'a

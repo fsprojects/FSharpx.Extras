@@ -1,5 +1,5 @@
 ﻿module StateTests
-open FSharp.Monad.State
+open FSharp.Monad
 open NaturalSpec
 
 // Simple example

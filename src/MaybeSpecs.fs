@@ -1,5 +1,5 @@
 ﻿module MaybeTests
-open FSharp.Monad.Maybe
+open FSharp.Monad
 open NaturalSpec
 
 let divide x y =
@@ -17,7 +17,7 @@ let totalResistance r1 r2 r3 =
 
 let ``calculating``(r1, r2, r3) =
   printMethod ""
-  runMaybe 0.0 (totalResistance r1 r2 r3)
+  defaultArg (totalResistance r1 r2 r3) 0.0
 
 [<Scenario>]
 let ``When calculating, it should calculate 0.009581881533``() =

@@ -37,9 +37,7 @@
     <Reference Include="NaturalSpec">
       <HintPath>..\tools\NaturalSpec\NaturalSpec.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>..\tools\NaturalSpec\nunit.framework.dll</HintPath>
-    </Reference>
+    
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -48,15 +46,15 @@
   <ItemGroup>
     <Compile Include="IMonoid.fs" />
     <Compile Include="Maybe.fs" />
-    <Compile Include="MaybeSpecs.fs" />
+    
     <Compile Include="State.fs" />
-    <Compile Include="StateSpecs.fs" />
+    
     <Compile Include="Reader.fs" />
-    <Compile Include="ReaderSpecs.fs" />
+    
     <Compile Include="Writer.fs" />
-    <Compile Include="WriterSpecs.fs" />
+    
     <Compile Include="Continuation.fs" />
-    <Compile Include="ContinuationSpecs.fs" />
+    
     <Compile Include="FEnumerator.fs" />
     <Compile Include="FEnumerable.fs" />
     <Compile Include="FObservable.fs" />

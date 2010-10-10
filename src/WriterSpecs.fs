@@ -1,5 +1,5 @@
 ﻿module WriterTests
-open FSharp.Monad.Writer
+open FSharp.Monad
 open NaturalSpec
 
 let logMsg (message:string) = tell [message]

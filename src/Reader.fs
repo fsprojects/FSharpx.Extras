@@ -3,10 +3,11 @@
 /// <remarks>
 /// This monad comes from Matthew Podwysocki's <see href="http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/07/much-ado-about-monads-reader-edition.aspx"/>.
 /// </remarks>
+type Reader<'r, 'a> = Reader of ('r -> 'a)
+
+[<AutoOpen>]
 module Reader =
   open System
-  
-  type Reader<'r, 'a> = Reader of ('r -> 'a)
   
   let runReader (Reader r) env = r env
   type ReaderBuilder() =
@@ -34,8 +35,8 @@ module Reader =
     member this.Delay(f) = this.Bind(this.Return (), f)
 
     member this.While(guard, m) =
-      if guard() then this.Bind(m, (fun () -> this.While(guard, m)))
-      else this.Return ()
+      if not(guard()) then this.Zero() else
+        this.Bind(m, (fun () -> this.While(guard, m)))
 
     member this.For(sequence:seq<_>, body) =
       this.Using(sequence.GetEnumerator(),

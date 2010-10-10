@@ -1,7 +1,7 @@
 ﻿module ReaderTests
 open System
 open System.Threading
-open FSharp.Monad.Reader
+open FSharp.Monad
 open NaturalSpec
 
 // Basic monadic builder tests.

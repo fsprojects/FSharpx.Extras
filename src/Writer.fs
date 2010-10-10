@@ -3,11 +3,12 @@
 /// <remarks>
 /// This monad comes from Matthew Podwysocki's <see href="http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx"/>.
 /// </remarks>
+type Writer<'w, 'a> = Writer of (unit -> 'a * 'w)
+
+[<AutoOpen>]
 module Writer =
   open System
   open Monoid
-  
-  type Writer<'w, 'a> = Writer of (unit -> 'a * 'w)
   
   let runWriter (Writer w) : ('a * 'w) = w()
   type WriterBuilder() =
@@ -41,7 +42,7 @@ module Writer =
     member this.While(guard, m) =
       match guard() with
       | true -> this.Bind(m, (fun () -> this.While(guard, m))) 
-      | _    -> this.Return ()
+      | _    -> this.Zero()
    
     member this.For(sequence:seq<'a>, body:'a -> Writer<'w,unit>) =
       this.Using(sequence.GetEnumerator(), 
