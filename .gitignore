@@ -19,6 +19,7 @@ Thumbs.db
 *.cache
 *.ilk
 *.log
+*_Spliced.*proj
 [Bb]in
 [Dd]ebug*/
 *.lib
@@ -31,5 +32,3 @@ build/
 deploy/
 docs/
 test/
-.hg/
-.hgignore
