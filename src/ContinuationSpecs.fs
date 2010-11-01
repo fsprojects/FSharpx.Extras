@@ -22,6 +22,7 @@ let ``When adding 6 to 7 and applying a continuation to convert to string and re
   |> Verify
 
 /// Call/CC scenario, taken from <see href="http://www.haskell.org/all_about_monads/html/contmonad.html"/>.
+(*
 [<Scenario>]
 let ``CallCC should allow escapes from continuations``() =
   let callCCTest n = cont {
@@ -47,3 +48,4 @@ let ``CallCC should allow escapes from continuations``() =
   |> When ``running with callcc`` 1
   |> It should equal "1"
   |> Verify
+*)
