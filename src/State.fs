@@ -15,6 +15,7 @@ module State =
   let putState s = State (fun _ -> ((),s))
   let eval m s = runState m s |> fst
   let exec m s = runState m s |> snd
+  let empty = State(fun s -> ((), s))
 
   type StateBuilder() =
     member this.Return a = State (fun s -> (a,s))
