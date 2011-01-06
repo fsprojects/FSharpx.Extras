@@ -16,7 +16,7 @@ module Continuation =
 
     member this.ReturnFrom(m: Cont<_,_>) = m
 
-    member this.Bind(m, k) = Cont (fun c -> runCont m (fun x -> runCont (k x) c))
+    member this.Bind(m, f) = Cont (fun k -> runCont m (fun x -> runCont (f x) k))
 
     member this.Zero() = this.Return()
 
@@ -42,6 +42,10 @@ module Continuation =
     member this.For(sequence:seq<_>, body) =
       this.Using(sequence.GetEnumerator(),
                  (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current))))
+
+    member this.Yield(x) = Cont (fun c -> c x)
+
+    member this.YieldFrom(m: Cont<_,_>) = m
 
   let cont = ContinuationBuilder()
 

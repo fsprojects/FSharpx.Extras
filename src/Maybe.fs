@@ -18,7 +18,7 @@ module Maybe =
       | Some(x) -> f(x)
       | _ -> None
 
-    member this.Zero() = this.Return()
+    member this.Zero() = None
 
     member this.Combine(comp1, comp2) = this.Bind(comp1, fun () -> comp2)
 
@@ -40,5 +40,9 @@ module Maybe =
     member this.For(sequence:seq<_>, body) =
       this.Using(sequence.GetEnumerator(),
                  (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current))))
+
+    member this.Yield(x) = Some(x)
+
+    member this.YieldFrom(m: 'a option) = m
 
   let maybe = MaybeBuilder()

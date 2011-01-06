@@ -21,6 +21,32 @@ let ``When adding 6 to 7 and applying a continuation to convert to string and re
   |> It should equal "a3"
   |> Verify
 
+let ``sum list`` l =
+  printMethod ""
+  let rec sum l = cont {
+    let! result = callCC (fun exit1 -> cont {
+      match l with
+      | [] -> return 0
+      | h::t when h = 2 -> return! exit1 42
+      | h::t -> let! r = sum t
+                return h + r })
+    return result }
+  runCont (sum l) (id)
+
+[<Scenario>]
+let ``When summing a list without a 2 via callCC, it should return 10``() =
+  Given [1;1;3;3]
+  |> When (``sum list``)
+  |> It should equal 10
+  |> Verify
+
+[<Scenario>]
+let ``When summing a list containing 2 via callCC, it should return 42``() =
+  Given [1;2;3]
+  |> When (``sum list``)
+  |> It should equal 42
+  |> Verify
+
 /// Call/CC scenario, taken from <see href="http://www.haskell.org/all_about_monads/html/contmonad.html"/>.
 (*
 [<Scenario>]
