@@ -34,17 +34,17 @@ let ``sum list`` l =
   runCont (sum l) (id)
 
 [<Scenario>]
-let ``When summing a list without a 2 via callCC, it should return 10``() =
+let ``When summing a list without a 2 via callCC it should return 8``() =
   Given [1;1;3;3]
   |> When (``sum list``)
-  |> It should equal 10
+  |> It should equal 8
   |> Verify
 
 [<Scenario>]
-let ``When summing a list containing 2 via callCC, it should return 42``() =
+let ``When summing a list containing 2 via callCC it should return 43``() =
   Given [1;2;3]
   |> When (``sum list``)
-  |> It should equal 42
+  |> It should equal 43
   |> Verify
 
 /// Call/CC scenario, taken from <see href="http://www.haskell.org/all_about_monads/html/contmonad.html"/>.
