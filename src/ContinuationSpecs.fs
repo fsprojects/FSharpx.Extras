@@ -36,14 +36,14 @@ let ``sum list`` l =
 [<Scenario>]
 let ``When summing a list without a 2 via callCC it should return 8``() =
   Given [1;1;3;3]
-  |> When (``sum list``)
+  |> When ``sum list``
   |> It should equal 8
   |> Verify
 
 [<Scenario>]
 let ``When summing a list containing 2 via callCC it should return 43``() =
   Given [1;2;3]
-  |> When (``sum list``)
+  |> When ``sum list``
   |> It should equal 43
   |> Verify
 

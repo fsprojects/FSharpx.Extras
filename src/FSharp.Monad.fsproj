@@ -46,6 +46,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseSpecs.fs" />
     <Compile Include="IMonoid.fs" />
     <Compile Include="Maybe.fs" />
     <Compile Include="MaybeSpecs.fs" />
@@ -57,6 +58,8 @@
     <Compile Include="WriterSpecs.fs" />
     <Compile Include="Continuation.fs" />
     <Compile Include="ContinuationSpecs.fs" />
+    <Compile Include="Parser.fs" />
+    <Compile Include="ParserSpecs.fs" />
     <Compile Include="FEnumerator.fs" />
     <Compile Include="FEnumerable.fs" />
     <Compile Include="FObservable.fs" />

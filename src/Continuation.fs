@@ -1,9 +1,7 @@
 ﻿namespace FSharp.Monad
 /// The continuation monad.
-/// <remarks>
-/// The algorithm is from Wes Dyer <see href="http://blogs.msdn.com/b/wesdyer/archive/2008/01/11/the-marvels-of-monads.aspx"/>.
-/// The builder approach is from Matthew Podwysocki's excellent Creating Extended Builders series <see href="http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/18/much-ado-about-monads-creating-extended-builders.aspx"/>.
-/// </remarks>
+/// The algorithm is from Wes Dyer http://blogs.msdn.com/b/wesdyer/archive/2008/01/11/the-marvels-of-monads.aspx.
+/// The builder approach is from Matthew Podwysocki's excellent Creating Extended Builders series http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/18/much-ado-about-monads-creating-extended-builders.aspx.
 type Cont<'a, 'r> = Cont of (('a -> 'r) -> 'r)
 
 [<AutoOpen>]
