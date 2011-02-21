@@ -5,7 +5,7 @@ open Fake.MSBuild
 
 (* properties *)
 let projectName = "FSharp.Monad"
-let version = "0.7"  
+let version = "1.0.0.0"  
 
 (* Directories *)
 let buildDir = "./build/"

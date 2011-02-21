@@ -1,9 +1,5 @@
 # What is "FAKE - F# Make"?
 
-## Mailing list
-
-The "FAKE - F# Make" mailing list can be found at [http://groups.google.com/group/fsharpMake](http://groups.google.com/group/fsharpMake).
-
 ## Introduction
 
 Modern build automation systems are not limited to simply recompile programs if source code has changed. 
@@ -25,7 +21,25 @@ including the extensive class library, powerful debuggers and integrated develop
 like Visual Studio 2008 or SharpDevelop, which provide syntax highlighting and code completion. 
 
 The new language was designed to be succinct, typed, declarative, extensible and easy to use. 
-For instance custom build tasks can be added simply by referencing .NET assemblies and using the corresponding classes. 
+For instance custom build tasks can be added simply by referencing .NET assemblies and using the corresponding classes.
+
+## Lastest builds
+
+You can download the latest builds from http://teamcity.codebetter.com. You don't need to register, a guest login is ok.
+
+* [Latest stable build](http://teamcity.codebetter.com/viewLog.html?buildId=lastSuccessful&buildTypeId=bt114&tab=artifacts)
+* [Latest development build](http://teamcity.codebetter.com/viewLog.html?buildId=lastSuccessful&buildTypeId=bt166&tab=artifacts)
+
+## How to contribute code
+
+* Login in github (you need an account)
+* Fork the main repository from [Github](https://github.com/forki/FAKE)
+* Push your changes to your fork
+* Send me a pull request
+
+## Mailing list
+
+The "FAKE - F# Make" mailing list can be found at [http://groups.google.com/group/fsharpMake](http://groups.google.com/group/fsharpMake).
 
 ## Articles
 
@@ -36,6 +50,7 @@ For instance custom build tasks can be added simply by referencing .NET assembli
 * [Writing custom tasks for "FAKE - F# Make"](http://www.navision-blog.de/2009/04/14/writing-custom-tasks-for-fake-f-make)
 * [Integrating a "FAKE - F# Make" build script into TeamCity](http://www.navision-blog.de/2009/04/15/integrate-a-fake-f-make-build-script-into-teamcity)
 * [Integrating a "FAKE - F# Make" build script into CruiseControl.NET](http://www.navision-blog.de/2009/10/14/integrating-a-fake-f-make-build-script-into-cruisecontrol-net)
+* [Running specific targets in "FAKE – F# Make"](http://www.navision-blog.de/2010/11/03/running-specific-targets-in-fake-f-make/)
 
 ## Main Features
 
@@ -54,6 +69,7 @@ For instance custom build tasks can be added simply by referencing .NET assembli
 * Clean task
 * [NUnit](http://www.nunit.org) support
 * [xUnit.net](http://www.codeplex.com/xunit) support
+* [MSpec](https://github.com/machine/machine.specifications) support
 * NCover support
 * FxCop support
 * ExecProcess task (To run tools via the command line)
@@ -64,19 +80,20 @@ For instance custom build tasks can be added simply by referencing .NET assembli
 * Zip task
 * [git](http://git-scm.com/) tasks
 * AssemblyInfo task
+* ...
 
 # Using FAKE
 
 ## Targets
 
 Targets are the main unit of work in a "FAKE - F# Make" script. 
-Targets have a name (usually given as a symbol or a string) and a action (given as a code block).
+Targets have a name and an action (given as a code block).
 
 	// The clean target cleans the build and deploy folders
-	Target? Clean <- 
-		fun _ -> 
+	Target "Clean" (fun _ -> 
 			CleanDir "./build/"
 			CleanDir "./deploy/"
+	)
 
 ### Dependencies
 
@@ -86,20 +103,12 @@ You can define prerequisites for tasks:
 	// "FAKE - F# Make" will run these targets before Default
 	"Default"  <== ["Clean"; "BuildApp"]
 
-There is also an alternative syntax for dependencies:
-
-	// Target Default is dependent from target Clean and BuildApp
-	// "FAKE - F# Make" will run these targets before Default
-	For? Default <-
-		Dependency? Clean
-		  |> And? BuildApp
-
 ### Running targets
 
 You can execute targets with the "run"-command:
 
 	// Executes Default target
-	Run? Default
+	Run "Default"
 
 ### Final targets
 
@@ -107,13 +116,12 @@ Final target can be used for TearDown functionality.
 These targets will be executed even if the build fails but have to be activated via ActivateFinalTarget().
 
 	// FinalTarget will be excuted even if build fails
-	FinalTarget? CloseSomePrograms <-
-		fun _ ->
+	FinalTarget "CloseSomePrograms" (fun _ ->
 			// close stuff and release resources
-
+	)
 
 	// Activate FinalTarget somewhere during build
-	ActivateFinalTarget? CloseSomePrograms
+	ActivateFinalTarget "CloseSomePrograms"
 
 ## FileSets
 
@@ -165,27 +173,37 @@ and memoizes it.
 	// define test dlls
 	let testDlls = !+ (testDir + @"/Test.*.dll") |> Scan
 	 
-	Target? NUnitTest <-
-		fun _ -> 
+	Target "NUnitTest" (fun _ ->
 			testDlls
 			  |> NUnit (fun p -> 
 						  {p with 
 							 ToolPath = nunitPath; 
 							 DisableShadowCopy = true; 
-							 OutputFile = testDir + "TestResults.xml"})   
+							 OutputFile = testDir + "TestResults.xml"}))
+							 
+### MSpec
+	// define test dlls
+	let testDlls = !+ (testDir + @"/Test.*.dll") |> Scan
+	 
+	Target "MSpecTest" (fun _ ->
+			testDlls
+			  |> MSpec (fun p -> 
+						  {p with 
+							 ExcludeTags = ["LongRunning"]
+							 HtmlOutputDir = testOutputDir						  
+							 ToolPath = ".\toools\MSpec\mspec.exe"}))
 
 ### xUnit.net
 
 	// define test dlls
 	let testDlls = !+ (testDir + @"/Test.*.dll") |> Scan
 
-	Target? xUnitTest <-
-		fun _ -> 
+	Target "xUnitTest" (fun _ ->
 			testDlls
 			  |> xUnit (fun p ->
 						  {p with
 							  ShadowCopy = false;
-							  HtmlPrefix = testDir})
+							  HtmlPrefix = testDir}))
 
 ## Sample script
 
@@ -201,71 +219,117 @@ This sample script
   
 You can read [Getting started with FAKE](http://www.navision-blog.de/2009/04/01/getting-started-with-fake-a-f-sharp-make-tool) to build such a script.
 
-	// Include FAKE libraries
-	#I @"tools\FAKE"
-	#r "FakeLib.dll"
-	open Fake 
-
-	// properties 
-	let projectName = "MyProject"
-	let version     = "0.1" 
-	let buildDir    = "./build/"
-	let deployDir   = "./deploy/"
-	let nunitPath   = "./tools/NUnit/bin"
-	let nunitOutput = buildDir + "TestResults.xml"
-	let zipFileName = deployDir + sprintf "%s-%s.zip" projectName version
-
-	// files
-	let appReferences  = !+ "src/app/**/*.csproj"  |> Scan
-	let testReferences = !+ "src/test/**/*.csproj" |> Scan
-	let testDlls = !+ (buildDir + "*.Test.dll") |> Scan
-	let filesToZip = 
-		!+ (buildDir + "/**/*.*") 
-		  -- "*.zip"
-		  |> Scan
-
-	// Targets
-
-	Target? Clean <- 
-		fun _ -> 
-		  CleanDir buildDir
-		  CleanDir deployDir
-
-	Target? BuildApp <-
-		fun _ ->          
-			appReferences
-			  |> MSBuildRelease buildDir "Build"
-			  |> Log "AppBuild-Output: "
-
-	Target? BuildTest <-
-		fun _ -> 
-			testReferences
-			  |> MSBuildDebug buildDir "Build"
-			  |> Log "TestBuild-Output: "
-
-	Target? Test <-
-		fun _ ->  
-			testDlls
-			  |> NUnit (fun p -> 
-						  {p with 
-							 ToolPath = nunitPath; 
-							 DisableShadowCopy = true; 
-							 OutputFile = nunitOutput})
-
-	Target? BuildZip <-
-		fun _ -> Zip buildDir zipFileName filesToZip
-
-	Target? Default <- DoNothing
-
-	// Dependencies
-	For? BuildApp <- Dependency? Clean
-
-	For? Test <-
-		Dependency? BuildApp
-		  |> And? BuildTest
-		  
-	For? BuildZip <- Dependency? Test
-	For? Default <- Dependency? BuildZip
-
-	// start build
-	Run? Default
+    // include Fake libs
+    #I "tools\FAKE"
+    #r "FakeLib.dll"
+    
+    open Fake
+    
+    // Directories
+    let buildDir  = @".\build\"
+    let testDir   = @".\test\"
+    let deployDir = @".\deploy\"
+    
+    // tools
+    let nunitPath = @".\Tools\NUnit"
+    let fxCopRoot = @".\Tools\FxCop\FxCopCmd.exe"
+    
+    // Filesets
+    let appReferences  = 
+        !+ @"src\app\**\*.csproj" 
+          ++ @"src\app\**\*.fsproj" 
+            |> Scan
+    
+    let testReferences = 
+        !+ @"src\test\**\*.csproj" 
+          |> Scan
+    
+    // version info
+    let version = "0.2"  // or retrieve from CI server
+    
+    // Targets
+    Target "Clean" (fun _ -> 
+        CleanDirs [buildDir; testDir; deployDir]
+    )
+    
+    Target "BuildApp" (fun _ ->
+        AssemblyInfo 
+            (fun p -> 
+            {p with
+                CodeLanguage = CSharp;
+                AssemblyVersion = version;
+                AssemblyTitle = "Calculator Command line tool";
+                AssemblyDescription = "Sample project for FAKE - F# MAKE";
+                Guid = "A539B42C-CB9F-4a23-8E57-AF4E7CEE5BAA";
+                OutputFileName = @".\src\app\Calculator\Properties\AssemblyInfo.cs"})
+                  
+        AssemblyInfo 
+            (fun p -> 
+            {p with
+                CodeLanguage = CSharp;
+                AssemblyVersion = version;
+                AssemblyTitle = "Calculator library";
+                AssemblyDescription = "Sample project for FAKE - F# MAKE";
+                Guid = "EE5621DB-B86B-44eb-987F-9C94BCC98441";
+                OutputFileName = @".\src\app\CalculatorLib\Properties\AssemblyInfo.cs"})          
+          
+        // compile all projects below src\app\
+        MSBuildRelease buildDir "Build" appReferences
+            |> Log "AppBuild-Output: "
+    )
+    
+    Target "BuildTest" (fun _ ->
+        MSBuildDebug testDir "Build" testReferences
+            |> Log "TestBuild-Output: "
+    )
+    
+    Target "NUnitTest" (fun _ ->  
+        !+ (testDir + @"\NUnit.Test.*.dll") 
+            |> Scan
+            |> NUnit (fun p -> 
+                {p with 
+                    ToolPath = nunitPath; 
+                    DisableShadowCopy = true; 
+                    OutputFile = testDir + @"TestResults.xml"})
+    )
+    
+    Target "xUnitTest" (fun _ ->  
+        !+ (testDir + @"\xUnit.Test.*.dll") 
+            |> Scan
+            |> xUnit (fun p -> 
+                {p with 
+                    ShadowCopy = false;
+                    HtmlOutput = true;
+                    XmlOutput = true;
+                    OutputDir = testDir })
+    )
+    
+    Target "FxCop" (fun _ ->
+        !+ (buildDir + @"\**\*.dll") 
+            ++ (buildDir + @"\**\*.exe") 
+            |> Scan  
+            |> FxCop (fun p -> 
+                {p with                     
+                    ReportFileName = testDir + "FXCopResults.xml";
+                    ToolPath = fxCopRoot})
+    )
+    
+    Target "Deploy" (fun _ ->
+        !+ (buildDir + "\**\*.*") 
+            -- "*.zip" 
+            |> Scan
+            |> Zip buildDir (deployDir + "Calculator." + version + ".zip")
+    )
+    
+    Target "Test" DoNothing
+    
+    // Dependencies
+    "BuildApp" <== ["Clean"]
+    "BuildTest" <== ["Clean"]
+    "NUnitTest" <== ["BuildApp"; "BuildTest"; "FxCop"]
+    "xUnitTest" <== ["BuildApp"; "BuildTest"; "FxCop"]
+    "Test" <== ["xUnitTest"; "NUnitTest"]
+    "Deploy" <== ["Test"]
+     
+    // start build
+    Run "Deploy

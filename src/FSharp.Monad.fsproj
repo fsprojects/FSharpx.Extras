@@ -29,22 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="FSharp.Core">
-      <HintPath>..\lib\FSharp\FSharp.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="mscorlib" />
-    <Reference Include="NaturalSpec">
-      <HintPath>..\tools\NaturalSpec\NaturalSpec.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>..\tools\NaturalSpec\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-  </ItemGroup>
+  <Import Project="..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
     <Compile Include="BaseSpecs.fs" />
     <Compile Include="IMonoid.fs" />
@@ -58,13 +43,33 @@
     <Compile Include="WriterSpecs.fs" />
     <Compile Include="Continuation.fs" />
     <Compile Include="ContinuationSpecs.fs" />
-    <Compile Include="Parser.fs" />
-    <Compile Include="ParserSpecs.fs" />
     <Compile Include="FEnumerator.fs" />
     <Compile Include="FEnumerable.fs" />
     <Compile Include="FObservable.fs" />
+    <None Include="packages.config" />
   </ItemGroup>
-  <Import Project="..\lib\FSharp\Microsoft.FSharp.Targets" />
+  <ItemGroup>
+    <Reference Include="FSharp.Core">
+      <HintPath>..\lib\FSharp\FSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.5.9.10348\lib\nunit.framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="nunit.mocks">
+      <HintPath>..\packages\NUnit.2.5.9.10348\lib\nunit.mocks.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="pnunit.framework">
+      <HintPath>..\packages\NUnit.2.5.9.10348\lib\pnunit.framework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
 	     Other similar extension points exist, see Microsoft.Common.targets.
 	<Target Name="BeforeBuild">

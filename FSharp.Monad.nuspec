@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>FSharp.Monad</id>
+    <version>1.0.0.0</version>
+    <authors>
+      <author>Ryan Riley</author> 
+    </authors>
+    <description>A collection of monads for use in F#.</description>
+    <language>en-US</language>
+  </metadata>
+  <files src="build\*.dll" target="lib" />
+  <files src="build\*.xml" target="lib" />
+</package>
+
