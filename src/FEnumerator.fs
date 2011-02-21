@@ -1,12 +1,11 @@
 ﻿namespace FSharp.Monad.MinLinq
-
-/// The Imperative monad, taken from <see href="http://tomasp.net/articles/imperative-i-return.aspx"/>.
-/// <remarks>This can also pass as the FEnumerator monad.</remarks>
-type Imperative<'a> = unit -> 'a option
-
-[<AutoOpen>]
 module Imperative =
   open System.Collections.Generic
+
+  /// The Imperative monad, taken from <see href="http://tomasp.net/articles/imperative-i-return.aspx"/>.
+  /// <remarks>This can also pass as the FEnumerator monad.</remarks>
+  type Imperative<'a> = unit -> 'a option
+
   type ImperativeBuilder() =
     // Create computation that returns the given value  
     member x.Return(v) : Imperative<_> = fun () -> Some(v)

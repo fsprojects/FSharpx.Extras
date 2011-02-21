@@ -1,11 +1,9 @@
 ﻿namespace FSharp.Monad.MinLinq
-
-/// The Iterator monad
-type FEnumerable<'a> = unit -> (unit -> 'a option)
-
-[<AutoOpen>]
 module FEnumerable =
   open System
+
+  /// The Iterator monad
+  type FEnumerable<'a> = unit -> (unit -> 'a option)
 
   let empty = fun () -> (fun () -> None)
 

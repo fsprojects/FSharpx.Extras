@@ -1,6 +1,7 @@
 ﻿module WriterTests
-open FSharp.Monad
-open NaturalSpec
+open FSharp.Monad.Writer
+open NUnit.Framework
+open BaseSpecs
 
 let logMsg (message:string) = tell [message]
 let processFile file = printfn "%s" file
@@ -16,21 +17,11 @@ let processFiles files = writer {
   with e ->
     do! logMsg (sprintf "An exception occurred %s" (e.ToString())) }
 
-[<Scenario>]
+[<Test>]
 let ``When processing files, it should log messages``() =
-  let ``processing the files through the writer`` files =
-    printMethod ""
-    processFiles files |> runWriter 
-
-  let files = seq { yield "C:\Test1.txt"
-                    yield "C:\Test2.txt" }
-
-  let expected = ((),
-                  ["Begin processing files"
-                   "Processing C:\Test1.txt"
-                   "Processing C:\Test2.txt"
-                   "End processing files"])
-  Given files
-  |> When ``processing the files through the writer``
-  |> It should equal expected
-  |> Verify
+  let processing files = processFiles files |> runWriter 
+  let files = [ "C:\Test1.txt"; "C:\Test2.txt" ]
+  processing files == ((), ["Begin processing files"
+                            "Processing C:\Test1.txt"
+                            "Processing C:\Test2.txt"
+                            "End processing files"])

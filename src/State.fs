@@ -4,11 +4,10 @@
 /// The algorithm is adjusted from my original work off of Brian Beckman's <see href="http://channel9.msdn.com/shows/Going+Deep/Brian-Beckman-The-Zen-of-Expressing-State-The-State-Monad/"/>.
 /// The approach was adjusted from Matthew Podwysocki's <see href="http://codebetter.com/blogs/matthew.podwysocki/archive/2009/12/30/much-ado-about-monads-state-edition.aspx"/> and mirrors his final result.
 /// </remarks>
-type State<'a, 's> = State of ('s -> 'a * 's)
-
-[<AutoOpen>]
 module State =
   open System
+
+  type State<'a, 's> = State of ('s -> 'a * 's)
 
   let runState (State s) initialState = s initialState
   let getState = State (fun s -> (s,s))

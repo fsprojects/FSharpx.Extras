@@ -1,11 +1,9 @@
 ﻿namespace FSharp.Monad.MinLinq
-
-/// The Observable monad
-type FObservable<'a> = ('a option -> unit) -> unit
-
-[<AutoOpen>]
 module FObservable =
   open System
+
+  /// The Observable monad
+  type FObservable<'a> = ('a option -> unit) -> unit
 
   let empty = fun o -> o(None)
 

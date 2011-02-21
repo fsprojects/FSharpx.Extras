@@ -4,7 +4,6 @@
 /// This monad is my own and uses an 'a option. Others generally make their own Maybe<'a> type from Option<'a>.
 /// The builder approach is from Matthew Podwysocki's excellent Creating Extended Builders series <see href="http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/18/much-ado-about-monads-creating-extended-builders.aspx"/>.
 /// </remarks>
-[<AutoOpen>]
 module Maybe =
   open System
 

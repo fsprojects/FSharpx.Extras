@@ -2,11 +2,10 @@
 /// The continuation monad.
 /// The algorithm is from Wes Dyer http://blogs.msdn.com/b/wesdyer/archive/2008/01/11/the-marvels-of-monads.aspx.
 /// The builder approach is from Matthew Podwysocki's excellent Creating Extended Builders series http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/18/much-ado-about-monads-creating-extended-builders.aspx.
-type Cont<'a, 'r> = Cont of (('a -> 'r) -> 'r)
-
-[<AutoOpen>]
 module Continuation =
   open System
+
+  type Cont<'a, 'r> = Cont of (('a -> 'r) -> 'r)
 
   let runCont (Cont c) f = c f
   type ContinuationBuilder() =

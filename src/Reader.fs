@@ -3,12 +3,12 @@
 /// <remarks>
 /// This monad comes from Matthew Podwysocki's <see href="http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/07/much-ado-about-monads-reader-edition.aspx"/>.
 /// </remarks>
-type Reader<'r, 'a> = Reader of ('r -> 'a)
-
 [<AutoOpen>]
 module Reader =
   open System
-  
+
+  type Reader<'r, 'a> = Reader of ('r -> 'a)
+ 
   let runReader (Reader r) env = r env
   type ReaderBuilder() =
     member this.Return(a) = Reader (fun _ -> a)

@@ -1,7 +1,7 @@
 ﻿module ReaderSpecs
 open System
 open System.Threading
-open FSharp.Monad
+open FSharp.Monad.Reader
 open NUnit.Framework
 open BaseSpecs
 
