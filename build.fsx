@@ -6,12 +6,18 @@ open Fake.MSBuild
 (* properties *)
 let projectName = "FSharp.Monad"
 let version = "1.0.0"  
+let projectSummary = "A monad library for F# projects."
+let projectDescription = "A monad library for F# projects, including Maybe, State, Reader, Writer, Continuation, and MinLinq."
+let authors = ["Ryan Riley"]
+let mail = "ryan.riley@panesofglass.org"
+let homepage = "https://github.com/panesofglass/FSharp.Monad"
 
 (* Directories *)
 let buildDir = "./build/"
 let docsDir = "./docs/" 
 let deployDir = "./deploy/"
 let testDir = "./test/"
+let nugetDir = "./nuget/" 
 
 (* Tools *)
 let nunitPath = "./tools/Nunit"
@@ -78,6 +84,10 @@ Target? GenerateDocumentation <-
                TemplatesPath = "./tools/FAKE/templates"
                OutputPath = docsDir })
 
+Target? CopyLicense <-
+    fun _ ->
+        [ "LICENSE.txt" ] |> CopyTo buildDir
+
 Target? BuildZip <-
     fun _ -> Zip buildDir zipFileName filesToZip
 
@@ -89,6 +99,21 @@ Target? ZipDocumentation <-
         let zipFileName = deployDir + sprintf "Documentation-%s.zip" version
         Zip docsDir zipFileName docFiles
 
+Target? CreateNuGet <-
+    fun _ ->
+        let nugetDocsDir = nugetDir @@ "docs/"
+        let nugetToolsDir = nugetDir @@ "tools/"
+        
+        XCopy docsDir nugetDocsDir
+        XCopy buildDir nugetToolsDir
+        
+        NuGet (fun p ->
+            {p with
+                Authors = authors
+                Project = projectName
+                Description = projectDescription
+                OutputPath = nugetDir }) "FSharp.Monad.nuspec"
+
 Target? Default <- DoNothing
 Target? Deploy <- DoNothing
 
@@ -97,8 +122,9 @@ For? BuildApp <- Dependency? Clean
 For? Test <- Dependency? BuildApp |> And? BuildTest
 For? GenerateDocumentation <- Dependency? BuildApp
 For? ZipDocumentation <- Dependency? GenerateDocumentation
-For? BuildZip <- Dependency? Test
-For? Deploy <- Dependency? ZipDocumentation |> And? BuildZip
+For? BuildZip <- Dependency? BuildApp |> And? CopyLicense
+For? CreateNuGet <- Dependency? BuildZip |> And? ZipDocumentation //|> And? Test
+For? Deploy <- Dependency? CreateNuGet
 For? Default <- Dependency? Deploy
 
 // start build
