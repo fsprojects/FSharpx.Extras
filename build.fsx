@@ -48,8 +48,8 @@ Target? BuildApp <-
               {p with
                  CodeLanguage = FSharp;
                  AssemblyVersion = buildVersion;
-                 AssemblyTitle = "FSharp.Monad";
-                 AssemblyDescription = "A monad library for F#.";
+                 AssemblyTitle = projectName;
+                 AssemblyDescription = projectDescription;
                  Guid = "1e95a279-c2a9-498b-bc72-6e7a0d6854ce";
                  OutputFileName = "./src/AssemblyInfo.fs"})
 
@@ -123,8 +123,8 @@ For? Test <- Dependency? BuildApp |> And? BuildTest
 For? GenerateDocumentation <- Dependency? BuildApp
 For? ZipDocumentation <- Dependency? GenerateDocumentation
 For? BuildZip <- Dependency? BuildApp |> And? CopyLicense
-For? CreateNuGet <- Dependency? BuildZip |> And? ZipDocumentation //|> And? Test
-For? Deploy <- Dependency? CreateNuGet
+For? CreateNuGet <- Dependency? Test |> And? BuildZip |> And? ZipDocumentation
+For? Deploy <- Dependency? Test |> And? BuildZip |> And? ZipDocumentation
 For? Default <- Dependency? Deploy
 
 // start build
