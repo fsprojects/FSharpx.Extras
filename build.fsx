@@ -1,4 +1,4 @@
-#I "tools/FAKE"
+#I "./packages/FAKE.1.52.1.0/tools"
 #r "FakeLib.dll"
 open Fake 
 open Fake.MSBuild
@@ -20,7 +20,8 @@ let testDir = "./test/"
 let nugetDir = "./nuget/" 
 
 (* Tools *)
-let nunitPath = "./tools/Nunit"
+let fakePath = "./packages/FAKE.1.52.1.0/tools"
+let nunitPath = "./packages/NUnit.2.5.9.10348/Tools"
 let nunitOutput = testDir + "TestResults.xml"
 let zipFileName = deployDir + sprintf "%s-%s.zip" projectName version
 
@@ -54,7 +55,6 @@ Target? BuildApp <-
                  OutputFileName = "./src/AssemblyInfo.fs"})
 
         appReferences
-          |> Seq.map (RemoveTestsFromProject AllNUnitReferences AllSpecAndTestDataFiles)
           |> MSBuildRelease buildDir "Build"
           |> Log "AppBuild-Output: "
 
@@ -80,8 +80,8 @@ Target? GenerateDocumentation <-
         |> Scan
         |> Docu (fun p ->
             {p with
-               ToolPath = "./tools/FAKE/docu.exe"
-               TemplatesPath = "./tools/FAKE/templates"
+               ToolPath = fakePath + "/docu.exe"
+               TemplatesPath = fakePath + "/templates"
                OutputPath = docsDir })
 
 Target? CopyLicense <-
