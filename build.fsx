@@ -1,131 +1,105 @@
 #I "./packages/FAKE.1.52.1.0/tools"
 #r "FakeLib.dll"
-open Fake 
-open Fake.MSBuild
 
-(* properties *)
+open Fake 
+
+// properties
 let projectName = "FSharp.Monad"
-let version = "1.0.0"  
+let version = "1.0.1"  
 let projectSummary = "A monad library for F# projects."
 let projectDescription = "A monad library for F# projects, including Maybe, State, Reader, Writer, Continuation, and MinLinq."
 let authors = ["Ryan Riley"]
 let mail = "ryan.riley@panesofglass.org"
-let homepage = "https://github.com/panesofglass/FSharp.Monad"
+let homepage = "http://github.com/panesofglass/FSharp.Monad"
 
-(* Directories *)
+// directories
 let buildDir = "./build/"
-let docsDir = "./docs/" 
-let deployDir = "./deploy/"
 let testDir = "./test/"
-let nugetDir = "./nuget/" 
+let deployDir = "./deploy/"
+let docsDir = "./docs/"
 
-(* Tools *)
+// tools
 let fakePath = "./packages/FAKE.1.52.1.0/tools"
 let nunitPath = "./packages/NUnit.2.5.9.10348/Tools"
-let nunitOutput = testDir + "TestResults.xml"
-let zipFileName = deployDir + sprintf "%s-%s.zip" projectName version
 
-(* files *)
+// files
 let appReferences =
-    !+ @"src\**\*.csproj" 
-      ++ @"src\**\*.fsproj"
-      -- "**\*_Spliced*" 
+    !+ "./src/**/FSharp.Monad.fsproj"
         |> Scan
 
+let testReferences =
+    !+ "./src/**/FSharp.Monad.Tests.fsproj"
+      |> Scan
+
 let filesToZip =
-  !+ (buildDir + "/**/*.*")     
-      -- "*.zip"
-      |> Scan      
+    !+ (buildDir + "/**/*.*")
+        -- "*.zip"
+        |> Scan
 
-(* Targets *)
-Target? Clean <-
-    fun _ -> CleanDirs [buildDir; testDir; deployDir; docsDir]
+// targets
+Target "Clean" (fun _ ->
+    CleanDirs [buildDir; testDir; deployDir]
+)
 
-Target? BuildApp <-
-    fun _ -> 
-        if not isLocalBuild then
-          AssemblyInfo 
-           (fun p -> 
-              {p with
-                 CodeLanguage = FSharp;
-                 AssemblyVersion = buildVersion;
-                 AssemblyTitle = projectName;
-                 AssemblyDescription = projectDescription;
-                 Guid = "1e95a279-c2a9-498b-bc72-6e7a0d6854ce";
-                 OutputFileName = "./src/AssemblyInfo.fs"})
+Target "BuildApp" (fun _ ->
+    AssemblyInfo (fun p ->
+        {p with 
+            CodeLanguage = FSharp
+            AssemblyVersion = version
+            AssemblyTitle = projectSummary
+            AssemblyDescription = projectDescription
+            Guid = "1e95a279-c2a9-498b-bc72-6e7a0d6854ce"
+            OutputFileName = "./src/FSharp.Monad/AssemblyInfo.fs" })
 
-        appReferences
-          |> MSBuildRelease buildDir "Build"
-          |> Log "AppBuild-Output: "
+    MSBuildRelease buildDir "Build" appReferences
+        |> Log "AppBuild-Output: "
+)
 
-Target? BuildTest <-
-    fun _ -> 
-        appReferences
-          |> MSBuildDebug testDir "Build"
-          |> Log "TestBuild-Output: "
+Target "BuildTest" (fun _ ->
+    printfn "%A" testReferences
+    MSBuildDebug testDir "Build" testReferences
+        |> Log "TestBuild-Output: "
+)
 
-Target? Test <-
-    fun _ ->
-        !+ (testDir + "/*.dll")
-          |> Scan
-          |> NUnit (fun p -> 
-                      {p with 
-                         ToolPath = nunitPath; 
-                         DisableShadowCopy = true; 
-                         OutputFile = nunitOutput}) 
+Target "Test" (fun _ ->
+    !+ (testDir + "/*.Tests.dll")
+        |> Scan
+        |> NUnit (fun p ->
+            {p with
+                ToolPath = nunitPath
+                DisableShadowCopy = true
+                OutputFile = testDir + "TestResults.xml" })
+)
 
-Target? GenerateDocumentation <-
-    fun _ ->
-      !+ (buildDir + "FSharp.Monad.dll")      
+Target "GenerateDocumentation" (fun _ ->
+    !+ (buildDir + "*.dll")
         |> Scan
         |> Docu (fun p ->
             {p with
-               ToolPath = fakePath + "/docu.exe"
-               TemplatesPath = fakePath + "/templates"
-               OutputPath = docsDir })
+                ToolPath = fakePath + "/docu.exe"
+                TemplatesPath = fakePath + "/templates"
+                OutputPath = docsDir })
+)
 
-Target? CopyLicense <-
-    fun _ ->
-        [ "LICENSE.txt" ] |> CopyTo buildDir
+Target "ZipDocumentation" (fun _ ->
+    !+ (docsDir + "/**/*.*")
+        |> Scan
+        |> Zip docsDir (deployDir + sprintf "Documentation-%s.zip" version)
+)
 
-Target? BuildZip <-
-    fun _ -> Zip buildDir zipFileName filesToZip
+Target "Deploy" (fun _ ->
+    !+ (buildDir + "/**/*.*")
+        -- "*.zip"
+        |> Scan
+        |> Zip buildDir (deployDir + sprintf "%s-%s.zip" projectName version)
+)
 
-Target? ZipDocumentation <-
-    fun _ ->    
-        let docFiles = 
-          !+ (docsDir + "/**/*.*")
-            |> Scan
-        let zipFileName = deployDir + sprintf "Documentation-%s.zip" version
-        Zip docsDir zipFileName docFiles
+// Build order
+"Clean"
+  ==> "BuildApp" <=> "BuildTest"
+  ==> "Test" <=> "GenerateDocumentation"
+  ==> "ZipDocumentation"
+  ==> "Deploy"
 
-Target? CreateNuGet <-
-    fun _ ->
-        let nugetDocsDir = nugetDir @@ "docs/"
-        let nugetToolsDir = nugetDir @@ "tools/"
-        
-        XCopy docsDir nugetDocsDir
-        XCopy buildDir nugetToolsDir
-        
-        NuGet (fun p ->
-            {p with
-                Authors = authors
-                Project = projectName
-                Description = projectDescription
-                OutputPath = nugetDir }) "FSharp.Monad.nuspec"
-
-Target? Default <- DoNothing
-Target? Deploy <- DoNothing
-
-// Dependencies
-For? BuildApp <- Dependency? Clean
-For? Test <- Dependency? BuildApp |> And? BuildTest
-For? GenerateDocumentation <- Dependency? BuildApp
-For? ZipDocumentation <- Dependency? GenerateDocumentation
-For? BuildZip <- Dependency? BuildApp |> And? CopyLicense
-For? CreateNuGet <- Dependency? Test |> And? BuildZip |> And? ZipDocumentation
-For? Deploy <- Dependency? Test |> And? BuildZip |> And? ZipDocumentation
-For? Default <- Dependency? Deploy
-
-// start build
-Run? Default
+// Start build
+Run "Deploy"
