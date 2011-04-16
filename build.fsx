@@ -17,6 +17,10 @@ let buildDir = "./build/"
 let testDir = "./test/"
 let deployDir = "./deploy/"
 let docsDir = "./docs/"
+let nugetDir = "./nuget/"
+
+// params
+let target = getBuildParamOrDefault "target" "All"
 
 // tools
 let fakePath = "./packages/FAKE.1.52.1.0/tools"
@@ -77,7 +81,6 @@ Target "GenerateDocumentation" (fun _ ->
         |> Docu (fun p ->
             {p with
                 ToolPath = fakePath + "/docu.exe"
-                TemplatesPath = fakePath + "/templates"
                 OutputPath = docsDir })
 )
 
@@ -94,6 +97,8 @@ Target "Deploy" (fun _ ->
         |> Zip buildDir (deployDir + sprintf "%s-%s.zip" projectName version)
 )
 
+Target "All" DoNothing
+
 // Build order
 "Clean"
   ==> "BuildApp" <=> "BuildTest"
@@ -101,5 +106,8 @@ Target "Deploy" (fun _ ->
   ==> "ZipDocumentation"
   ==> "Deploy"
 
+"All" <== ["Deploy"]
+
 // Start build
-Run "Deploy"
+Run target
+
