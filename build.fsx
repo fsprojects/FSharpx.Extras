@@ -1,4 +1,4 @@
-#I "./packages/FAKE.1.52.1.0/tools"
+#I "./packages/FAKE.1.54.1.0/tools"
 #r "FakeLib.dll"
 
 open Fake 
@@ -23,7 +23,7 @@ let nugetDir = "./nuget/"
 let target = getBuildParamOrDefault "target" "All"
 
 // tools
-let fakePath = "./packages/FAKE.1.52.1.0/tools"
+let fakePath = "./packages/FAKE.1.54.1.0/tools"
 let nunitPath = "./packages/NUnit.2.5.9.10348/Tools"
 
 // files

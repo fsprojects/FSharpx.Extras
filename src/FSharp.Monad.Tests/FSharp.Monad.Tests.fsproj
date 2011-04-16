@@ -11,8 +11,7 @@
     <AssemblyName>FSharp.Monad.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <Name>FSharp.Monad.Tests</Name>
-    <FscToolPath>..\..\lib\FSharp</FscToolPath>
-    <TargetFrameworkProfile />
+    <FscToolPath>..\..\lib\FSharp\</FscToolPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
