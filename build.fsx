@@ -81,7 +81,12 @@ Target "GenerateDocumentation" (fun _ ->
         |> Docu (fun p ->
             {p with
                 ToolPath = fakePath + "/docu.exe"
+                TemplatesPath = fakePath + "/templates"
                 OutputPath = docsDir })
+)
+
+Target "CopyLicense" (fun _ ->
+    [ "LICENSE.txt" ] |> CopyTo buildDir
 )
 
 Target "ZipDocumentation" (fun _ ->
@@ -101,7 +106,7 @@ Target "All" DoNothing
 
 // Build order
 "Clean"
-  ==> "BuildApp" <=> "BuildTest"
+  ==> "BuildApp" <=> "BuildTest" <=> "CopyLicense"
   ==> "Test" <=> "GenerateDocumentation"
   ==> "ZipDocumentation"
   ==> "Deploy"
