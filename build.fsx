@@ -2,6 +2,7 @@
 #r "FakeLib.dll"
 
 open Fake 
+open System.IO
 
 // properties
 let projectName = "FSharp.Monad"
@@ -11,13 +12,17 @@ let projectDescription = "A monad library for F# projects, including Maybe, Stat
 let authors = ["Ryan Riley"]
 let mail = "ryan.riley@panesofglass.org"
 let homepage = "http://github.com/panesofglass/FSharp.Monad"
+let nugetKey = if System.IO.File.Exists "./key.txt" then ReadFileAsString "./key.txt" else ""
 
 // directories
 let buildDir = "./build/"
+let packagesDir = "./packages/"
 let testDir = "./test/"
 let deployDir = "./deploy/"
 let docsDir = "./docs/"
 let nugetDir = "./nuget/"
+let targetPlatformDir = getTargetPlatformDir "4.0.30319"
+let nugetLibDir = nugetDir + "lib/"
 
 // params
 let target = getBuildParamOrDefault "target" "All"
@@ -95,6 +100,27 @@ Target "ZipDocumentation" (fun _ ->
         |> Zip docsDir (deployDir + sprintf "Documentation-%s.zip" version)
 )
 
+Target "BuildNuGet" (fun _ ->
+    CleanDirs [nugetDir; nugetLibDir]
+
+    XCopy docsDir 
+    [buildDir + "FSharp.Monad.dll"]
+        |> CopyTo nugetLibDir
+
+    NuGet (fun p -> 
+        {p with               
+            Authors = authors
+            Project = projectName
+            Version = version
+            OutputPath = nugetDir
+            AccessKey = nugetKey
+            Publish = nugetKey <> "" })
+        "fsharp.monad.nuspec"
+
+    [nugetDir + sprintf "FSharp.Monad.%s.nupkg" version]
+        |> CopyTo deployDir
+)
+
 Target "Deploy" (fun _ ->
     !+ (buildDir + "/**/*.*")
         -- "*.zip"
@@ -109,6 +135,7 @@ Target "All" DoNothing
   ==> "BuildApp" <=> "BuildTest" <=> "CopyLicense"
   ==> "Test" <=> "GenerateDocumentation"
   ==> "ZipDocumentation"
+//  ==> "BuildNuGet"
   ==> "Deploy"
 
 "All" <== ["Deploy"]
