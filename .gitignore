@@ -31,5 +31,6 @@ _ReSharper*/
 build/
 deploy/
 docs/
+nuget/
 test/
 !lib/NuGet/*.*
