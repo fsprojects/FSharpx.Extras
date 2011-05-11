@@ -26,6 +26,11 @@ module Monoid =
   let mempty<'a> = MonoidAssociations.Get<'a>().mempty
   let mappend<'a> a b = MonoidAssociations.Get<'a>().mappend(a, b)
 
+  let inline mreturn builder x =
+    (^a: (member Return: 'b -> 'c) (builder, x))
+
+  let inline bind builder m f =
+    (^a: (member Bind: 'd * ('e -> 'c) -> 'c) (builder, m, f))
+
   let inline lift builder f m =
-    let inline ret x = (^a: (member Return: 'b -> 'c) (builder, f x))
-    (^a: (member Bind: 'd * ('e -> 'c) -> 'c) (builder, m, ret))
+    bind builder m (mreturn builder)

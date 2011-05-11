@@ -16,34 +16,33 @@ module State =
 
   type StateBuilder() =
     member this.Return a = State (fun s -> (a,s))
-
     member this.ReturnFrom(m:State<'a,'s>) = m
-
     member this.Bind(m, k) = State (fun s -> let (a, s') = runState m s in runState (k a) s')
-
     member this.Zero() = this.Return ()
-
     member this.Combine(r1, r2) = this.Bind(r1, fun () -> r2)
-
     member this.TryWith(m, h) =
       State (fun env -> try runState m env
                          with e -> runState (h e) env)
-
     member this.TryFinally(m, compensation) =
       State (fun env -> try runState m env
                          finally compensation())
-
     member this.Using(res:#IDisposable, body) =
       this.TryFinally(body res, (fun () -> match res with null -> () | disp -> disp.Dispose()))
-
     member this.Delay(f) = this.Bind(this.Return (), f)
-
     member this.While(guard, m) =
       if not(guard()) then this.Zero() else
         this.Bind(m, (fun () -> this.While(guard, m)))
-
     member this.For(sequence:seq<_>, body) =
       this.Using(sequence.GetEnumerator(),
                  (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current))))
-
   let state = new StateBuilder()
+
+  module Operators =
+    let inline mreturn x = state.Return x
+    let inline (>>=) m f = state.Bind(m, f)
+    let inline (<*>) f m = f >>= fun f' -> m >>= fun m' -> mreturn (f' m')
+    let inline lift f m = mreturn f <*> m
+    let inline (<!>) f m = lift f m
+    let inline lift2 f a b = mreturn f <*> a <*> b
+    let inline ( *>) x y = lift2 (fun _ z -> z) x y
+    let inline ( <*) x y = lift2 (fun z _ -> z) x y
