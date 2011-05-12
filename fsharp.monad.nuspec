@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <description>@description@</description>
+    <id>@project@</id>
+    <version>@build.number@</version>
+    <authors>@authors@</authors>
+    <owners>@authors@</owners>
+    <language>en-US</language>
+    <summary>@summary@</summary>
+    <projectUrl>http://github.com/panesofglass/FSharp.Monad</projectUrl>
+    <licenseUrl>http://github.com/panesofglass/FSharp.Monad/raw/dev/License.txt</licenseUrl>
+    <tags>monad fsharp</tags>
+    @dependencies@
+  </metadata>  
+</package>

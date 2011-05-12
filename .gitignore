@@ -3,7 +3,6 @@
 Thumbs.db
 #Ignore files build by Visual Studio
 *.obj
-*.exe
 *.pdb
 *.user
 *.aps
@@ -31,4 +30,5 @@ _ReSharper*/
 build/
 deploy/
 docs/
+nuget/
 test/
