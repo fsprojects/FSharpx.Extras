@@ -1,4 +1,4 @@
-#I "./packages/FAKE.1.54.1.0/tools"
+#I "./packages/FAKE.1.56.6/tools"
 #r "FakeLib.dll"
 
 open Fake 
@@ -22,13 +22,15 @@ let deployDir = "./deploy/"
 let docsDir = "./docs/"
 let nugetDir = "./nuget/"
 let targetPlatformDir = getTargetPlatformDir "4.0.30319"
-let nugetLibDir = nugetDir + "lib/"
+let nugetLibDir = nugetDir @@ "lib"
+let nugetDocsDir = nugetDir @@ "docs"
 
 // params
 let target = getBuildParamOrDefault "target" "All"
 
 // tools
-let fakePath = "./packages/FAKE.1.54.1.0/tools"
+let fakePath = "./packages/FAKE.1.56.6/tools"
+let nugetPath = "./lib/Nuget/nuget.exe"
 let nunitPath = "./packages/NUnit.2.5.9.10348/Tools"
 
 // files
@@ -86,7 +88,7 @@ Target "GenerateDocumentation" (fun _ ->
         |> Docu (fun p ->
             {p with
                 ToolPath = fakePath + "/docu.exe"
-                TemplatesPath = fakePath + "/templates"
+                TemplatesPath = @".\lib\templates"
                 OutputPath = docsDir })
 )
 
@@ -101,9 +103,9 @@ Target "ZipDocumentation" (fun _ ->
 )
 
 Target "BuildNuGet" (fun _ ->
-    CleanDirs [nugetDir; nugetLibDir]
+    CleanDirs [nugetDir; nugetLibDir; nugetDocsDir]
 
-    XCopy docsDir 
+    XCopy (docsDir |> FullName) nugetDocsDir
     [buildDir + "FSharp.Monad.dll"]
         |> CopyTo nugetLibDir
 
@@ -111,9 +113,11 @@ Target "BuildNuGet" (fun _ ->
         {p with               
             Authors = authors
             Project = projectName
+            Description = projectDescription
             Version = version
             OutputPath = nugetDir
             AccessKey = nugetKey
+            ToolPath = nugetPath
             Publish = nugetKey <> "" })
         "fsharp.monad.nuspec"
 
@@ -135,7 +139,7 @@ Target "All" DoNothing
   ==> "BuildApp" <=> "BuildTest" <=> "CopyLicense"
   ==> "Test" <=> "GenerateDocumentation"
   ==> "ZipDocumentation"
-//  ==> "BuildNuGet"
+  ==> "BuildNuGet"
   ==> "Deploy"
 
 "All" <== ["Deploy"]
