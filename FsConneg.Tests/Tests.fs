@@ -40,7 +40,7 @@ let ``Best content type, none found``() =
 [<Fact>]
 let ``Content type matching``() =
     let accept = "text/html; q=0.8; level=2, text/html; q=0.2; level=1, image/png, image/jpeg;q=0.8"
-    let images = parseAccept accept |> List.filter (fun t -> t.StartsWith "image/")
+    let images = accept |> filterMediaTypes "image"
     match images with
     | "image/jpeg"::_ -> failwith "should have been image/png"
     | "image/png"::_ -> ()

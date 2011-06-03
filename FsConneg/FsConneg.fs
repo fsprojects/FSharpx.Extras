@@ -43,10 +43,19 @@ let parseAccept l =
     |> Seq.map fst
     |> Seq.toList
 
+let parseMediaTypes l =
+    parseAccept l
+    |> Seq.map (fun a -> a, split '/' a)
+    |> Seq.map (fun (a,p) -> a,(p.[0],p.[1]))
+    |> Seq.toList
+
 let bestMediaType media all =
-    let all = 
-        parseAccept all 
-        |> Seq.map (fun a -> a, split '/' a)
-        |> Seq.map (fun (a,p) -> a,(p.[0],p.[1]))
-        |> Seq.toList
-    all |> List.tryFind (fun (v,(typ,subtype)) -> typ = media) |> Option.map fst
+    parseMediaTypes all 
+    |> List.tryFind (fun (v,(typ,subtype)) -> typ = media) 
+    |> Option.map fst
+
+let filterMediaTypes media all =
+    parseMediaTypes all 
+    |> Seq.filter (fun (v,(typ,subtype)) -> typ = media) 
+    |> Seq.map fst
+    |> Seq.toList
