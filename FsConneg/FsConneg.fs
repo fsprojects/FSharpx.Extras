@@ -16,7 +16,7 @@ let inline internal lower (s: string) = s.Trim().ToLowerInvariant()
 
 let inline internal startsWith (substr: string) (s: string) = s.StartsWith substr
 
-let internal parseQ (s: string[]) =
+let parseQ (s: string[]) =
     let e = 0.0001
     let s = Array.map lower s
     let qi = Array.tryFindIndex (startsWith "q=") s
