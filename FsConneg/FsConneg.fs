@@ -40,3 +40,10 @@ let parseAccept l =
     |> Seq.map fst
     |> Seq.toList
 
+let bestContent content all =
+    let all = 
+        parseAccept all 
+        |> Seq.map (fun a -> a, split '/' a)
+        |> Seq.map (fun (a,p) -> a,(p.[0],p.[1]))
+        |> Seq.toList
+    all |> List.tryFind (fun (v,(typ,subtype)) -> typ = content) |> Option.map fst
