@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsConneg", "FsConneg\FsConneg.fsproj", "{60F3BB81-5449-45DD-A217-B6045327680C}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsConneg.Tests", "FsConneg.Tests\FsConneg.Tests.fsproj", "{3D1FCA4C-757E-4AD0-9E4B-4101C8AFCCA4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{60F3BB81-5449-45DD-A217-B6045327680C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60F3BB81-5449-45DD-A217-B6045327680C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60F3BB81-5449-45DD-A217-B6045327680C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60F3BB81-5449-45DD-A217-B6045327680C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D1FCA4C-757E-4AD0-9E4B-4101C8AFCCA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D1FCA4C-757E-4AD0-9E4B-4101C8AFCCA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D1FCA4C-757E-4AD0-9E4B-4101C8AFCCA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D1FCA4C-757E-4AD0-9E4B-4101C8AFCCA4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
