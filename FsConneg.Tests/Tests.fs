@@ -28,14 +28,14 @@ let ``Parse Accept with implicit precedence``() =
 [<Fact>]
 let ``Best content type``() =
     let accept = "text/html; q=0.8; level=2, text/html; q=0.2; level=1, text/plain, image/jpeg"
-    match bestContent "text" accept with
+    match bestMediaType "text" accept with
     | None -> failwith "no suitable content type found"
     | Some contentType -> Assert.Equal("text/plain", contentType)
 
 [<Fact>]
 let ``Best content type, none found``() =
     let accept = "text/html; q=0.8; level=2, text/html; q=0.2; level=1, text/plain, image/jpeg"
-    Assert.Equal(None, bestContent "application" accept)
+    Assert.Equal(None, bestMediaType "application" accept)
 
 [<Fact>]
 let ``Content type matching``() =
