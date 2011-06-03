@@ -35,7 +35,8 @@ let parseLang langs =
                     | [|x|] -> lower x, 1.
                     | [|x; Q q|] -> lower x, q
                     | _ -> failwith "%A" s)
-    |> Seq.sortBy (snd >> ((*)-1.))
+    |> Seq.filter (snd >> (<) 0.)
+    |> Seq.sortBy (snd >> (*) -1.)
     |> Seq.map fst
     |> Seq.toList
 
