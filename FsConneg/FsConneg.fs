@@ -27,8 +27,8 @@ let internal (|Q|_|) x =
                 then None
                 else x |> split '=' |> nth 1 |> Double.tryParse
 
-let parseLang langs =
-    split ',' langs
+let parseAccept l =
+    split ',' l
     |> Seq.map (split ';')
     |> Seq.map (fun s ->
                     match s with
