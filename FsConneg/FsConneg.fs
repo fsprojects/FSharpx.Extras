@@ -49,16 +49,16 @@ let parseMediaTypes l =
     |> Seq.map (fun (a,p) -> a,(p.[0],p.[1]))
     |> Seq.toList
 
-let bestMediaType media all =
-    parseMediaTypes all 
-    |> List.tryFind (fun (v,(typ,subtype)) -> typ = media) 
-    |> Option.map fst
-
 let filterMediaTypes media all =
     parseMediaTypes all 
     |> Seq.filter (fun (v,(typ,subtype)) -> typ = media) 
     |> Seq.map fst
     |> Seq.toList
+
+let bestMediaType media all =
+    match filterMediaTypes media all with
+    | x::_ -> Some x
+    | _ -> None
 
 let (|Accepts|_|) media all =
     List.tryFind (fun t -> t = media) all
