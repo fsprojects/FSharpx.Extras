@@ -59,3 +59,7 @@ let filterMediaTypes media all =
     |> Seq.filter (fun (v,(typ,subtype)) -> typ = media) 
     |> Seq.map fst
     |> Seq.toList
+
+let (|Accepts|_|) media all =
+    List.tryFind (fun t -> t = media) all
+    |> Option.map ignore

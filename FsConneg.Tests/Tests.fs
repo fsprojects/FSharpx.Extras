@@ -45,3 +45,13 @@ let ``Content type matching``() =
     | "image/jpeg"::_ -> failwith "should have been image/png"
     | "image/png"::_ -> ()
     | x -> failwithf "can't handle any of these content types: %A, failing with 406" x
+
+[<Fact>]
+let ``Content type active pattern``() =
+    let accept = "text/html; q=0.8; level=2, text/html; q=0.2; level=1, image/png, image/jpeg;q=0.8"
+    let images = accept |> filterMediaTypes "image"
+    match images with
+    | Accepts "image/png" -> ()
+    | Accepts "image/jpeg" -> ()
+    | Accepts "image/*" -> ()
+    | x -> failwithf "can't handle any of these content types: %A, failing with 406" x
