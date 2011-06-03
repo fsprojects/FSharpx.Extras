@@ -26,8 +26,8 @@ let internal parseQ (s: string[]) =
         | Some i -> s |> nth i |> split '=' |> nth 1 |> Double.parse
     let wildcards = Seq.filter ((=) '*') s.[0] |> Seq.length
     let q = q - e * float wildcards
-    let nonQs = Seq.filter (startsWith "q=" >> not) s |> Seq.length
-    let q = q + e * float (nonQs - 1)
+    let otherParameters = Seq.filter (startsWith "q=" >> not) s |> Seq.length
+    let q = q + e * float (otherParameters - 1)
     let values = 
         match qi with
         | None -> s
