@@ -3,8 +3,6 @@
 open System
 open System.Globalization
 
-type Either<'a,'b> = Left of 'a | Right of 'b
-
 let inline internal split (sep: char) (s: string) =
     s.Split [|sep|]
 
