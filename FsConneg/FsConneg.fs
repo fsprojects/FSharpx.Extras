@@ -17,12 +17,17 @@ let inline internal lower (s: string) = s.Trim().ToLowerInvariant()
 let inline internal startsWith (substr: string) (s: string) = s.StartsWith substr
 
 let internal parseQ (s: string[]) =
+    let e = 0.0001
     let s = Array.map lower s
     let qi = Array.tryFindIndex (startsWith "q=") s
     let q = 
         match qi with
         | None -> 1.
         | Some i -> s |> nth i |> split '=' |> nth 1 |> Double.parse
+    let wildcards = Seq.filter ((=) '*') s.[0] |> Seq.length
+    let q = q - e * float wildcards
+    let nonQs = Seq.filter (startsWith "q=" >> not) s |> Seq.length
+    let q = q + e * float (nonQs - 1)
     let values = 
         match qi with
         | None -> s
