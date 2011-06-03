@@ -16,11 +16,13 @@ type Double with
 
 let inline internal nth i arr = Array.get arr i
 
-let internal (|Q|_|) (x: string) =
+let inline internal lower (s: string) = s.Trim().ToLowerInvariant()
+
+let internal (|Q|_|) x =
     if x = null 
         then None
         else
-            let x = x.Trim().ToLowerInvariant()
+            let x = lower x
             if not (x.StartsWith "q=") 
                 then None
                 else x |> split '=' |> nth 1 |> Double.tryParse
@@ -30,8 +32,8 @@ let parseLang langs =
     |> Seq.map (split ';')
     |> Seq.map (fun s ->
                     match s with
-                    | [|x|] -> x.Trim().ToLowerInvariant(), 1.
-                    | [|x; Q q|] -> x.Trim().ToLowerInvariant(), q
+                    | [|x|] -> lower x, 1.
+                    | [|x; Q q|] -> lower x, q
                     | _ -> failwith "%A" s)
     |> Seq.sortBy (snd >> ((*)-1.))
     |> Seq.map fst
