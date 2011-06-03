@@ -11,3 +11,10 @@ let ``Parse AcceptLanguage``() =
     | x -> failwithf "wrong parsing: %A" x
     ()
 
+[<Fact>]
+let ``Parse Accept``() =
+    let acceptLang = "text/html; q=0.8; level=2, text/html; q=0.2; level=1"
+    match parseAccept acceptLang with
+    | ["text/html;level=2"; "text/html;level=1"] -> ()
+    | x -> failwithf "wrong parsing: %A" x
+    ()
