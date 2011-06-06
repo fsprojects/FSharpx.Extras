@@ -16,7 +16,7 @@ let inline internal lower (s: string) = s.Trim().ToLowerInvariant()
 
 let inline internal startsWith (substr: string) (s: string) = s.StartsWith substr
 
-let parseQ (s: string[]) =
+let parseQ s =
     let e = 0.0001
     let s = Array.map lower s
     let qi = Array.tryFindIndex (startsWith "q=") s
@@ -43,10 +43,12 @@ let parseAccept l =
     |> Seq.map fst
     |> Seq.toList
 
+let splitMediaTypeSubtype m =
+    split '/' m |> fun p -> p.[0],p.[1]
+
 let parseMediaTypes l =
     parseAccept l
-    |> Seq.map (fun a -> a, split '/' a)
-    |> Seq.map (fun (a,p) -> a,(p.[0],p.[1]))
+    |> Seq.map (fun a -> a, splitMediaTypeSubtype a)
     |> Seq.toList
 
 let filterMediaTypes media all =
@@ -59,6 +61,23 @@ let bestMediaType media all =
     match filterMediaTypes media all with
     | x::_ -> Some x
     | _ -> None
+
+let matchMedia serves accepts =
+    let tserves,sserves = splitMediaTypeSubtype serves
+    let taccepts,saccepts = splitMediaTypeSubtype accepts
+    match tserves,sserves,taccepts,saccepts with
+    | "*","*",_,_ -> Some accepts
+    | _,_,"*","*" -> Some serves
+    | a,"*",c,_ when a = c -> Some accepts
+    | a,_,c,"*" when a = c -> Some serves
+    | a,b,c,d when a = c && b = d -> Some accepts
+    | _ -> None
+
+let filterSortMedia media all =
+    let all = parseAccept all 
+    let inline (>>=) a f = Seq.collect f a
+    let r = all >>= fun a -> media >>= fun m -> matchMedia m a |> Seq.singleton
+    Seq.choose id r |> Seq.distinct |> Seq.toList
 
 let (|Accepts|_|) media all =
     List.tryFind (fun t -> t = media) all

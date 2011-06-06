@@ -55,3 +55,37 @@ let ``Content type active pattern``() =
     | Accepts "image/jpeg" -> ()
     | Accepts "image/*" -> ()
     | x -> failwithf "can't handle any of these content types: %A, failing with 406" x
+
+[<Fact>]
+let ``matchMedia match wildcard in server``() =
+    Assert.Equal(Some "text/plain", matchMedia "text/*" "text/plain")
+
+[<Fact>]
+let ``matchMedia match wildcard in client``() =
+    Assert.Equal(Some "text/plain", matchMedia "text/plain" "text/*")
+
+[<Fact>]
+let ``matchMedia match exact``() =
+    Assert.Equal(Some "text/plain", matchMedia "text/plain" "text/plain")
+
+[<Fact>]
+let ``matchMedia match any in server``() =
+    Assert.Equal(Some "text/plain", matchMedia "*/*" "text/plain")
+
+[<Fact>]
+let ``matchMedia match any in client``() =
+    Assert.Equal(Some "text/plain", matchMedia "text/plain" "*/*")
+
+[<Fact>]
+let ``Filter and sort media``() =
+    let accept = "application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5" // actual Chrome Accepts header
+    let serves = ["application/xml"; "text/xml"; "text/html"; "application/json"]
+    let sorted = filterSortMedia serves accept
+    Assert.Equal(["application/xml"; "text/html"; "text/xml"; "application/json"], sorted)
+
+[<Fact>]
+let ``Filter and sort media 2``() =
+    let accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" // actual Firefox Accepts header
+    let serves = ["text/html"; "application/json"; "application/xml"; "text/xml"]
+    let sorted = filterSortMedia serves accept
+    Assert.Equal(["text/html"; "application/xml"; "application/json"; "text/xml"], sorted)
