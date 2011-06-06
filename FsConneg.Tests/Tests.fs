@@ -57,6 +57,11 @@ let ``Content type active pattern``() =
     | x -> failwithf "can't handle any of these content types: %A, failing with 406" x
 
 [<Fact>]
+let ``Active pattern with wildcard``() =
+    let r = (|Accepts|_|) "text/plain" ["text/*"]
+    Assert.Equal(Some (), r)
+
+[<Fact>]
 let ``matchMedia match wildcard in server``() =
     Assert.Equal(Some "text/plain", matchMedia "text/*" "text/plain")
 

@@ -80,5 +80,6 @@ let filterSortMedia media all =
     Seq.choose id r |> Seq.distinct |> Seq.toList
 
 let (|Accepts|_|) media all =
-    List.tryFind (fun t -> t = media) all
+    let isMatch = matchMedia media >> Option.isSome
+    List.tryFind isMatch all
     |> Option.map ignore
