@@ -80,6 +80,11 @@ let filterSortMedia media all =
     let r = all >>= fun a -> media >>= fun m -> matchMedia m a |> Seq.singleton
     Seq.choose id r |> Seq.distinct |> Seq.toList
 
+let bestMedia media all =
+    match filterSortMedia media all with
+    | a::_ -> Some a
+    | _ -> None
+
 let (|Accepts|_|) media all =
     let isMatch = matchMedia media >> Option.isSome
     List.tryFind isMatch all
