@@ -44,7 +44,8 @@ let parseAccept l =
     |> Seq.toList
 
 let splitMediaTypeSubtype m =
-    split '/' m |> fun p -> p.[0],p.[1]
+    let p = split '/' m 
+    p.[0],p.[1]
 
 let parseMediaTypes l =
     parseAccept l
