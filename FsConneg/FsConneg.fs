@@ -34,6 +34,10 @@ let parseQ s =
         | Some i -> Array.append s.[..i-1] s.[i+1..s.Length-1]
     String.Join(";", values), q
 
+/// <summary>
+/// Parses any Accept-* header
+/// </summary>
+/// <param name="l"></param>
 let parseAccept l =
     split ',' l
     |> Seq.map (split ';')
@@ -43,26 +47,53 @@ let parseAccept l =
     |> Seq.map fst
     |> Seq.toList
 
+/// <summary>
+/// Splits media type and subtype, e.g. "text/html" -> "text","html"
+/// </summary>
+/// <param name="m"></param>
 let splitMediaTypeSubtype m =
     let p = split '/' m 
     p.[0],p.[1]
 
+/// <summary>
+/// Parses an Accept header into a list of media,(media type, media subtype)
+/// E.g. "text/html",("text","html")
+/// </summary>
+/// <param name="l"></param>
 let parseMediaTypes l =
     parseAccept l
     |> Seq.map (fun a -> a, splitMediaTypeSubtype a)
     |> Seq.toList
 
-let filterMediaTypes media all =
-    parseMediaTypes all 
-    |> Seq.filter (fun (v,(typ,subtype)) -> typ = media) 
+/// <summary>
+/// Filters an Accept header by type.
+/// E.g. <c>filterMediaTypes "image" "image/png,text/html"</c> -> <c>["image/png"]</c>
+/// </summary>
+/// <param name="mediaType"></param>
+/// <param name="accepts"></param>
+let filterMediaTypes mediaType accepts =
+    parseMediaTypes accepts 
+    |> Seq.filter (fun (v,(typ,subtype)) -> typ = mediaType) 
     |> Seq.map fst
     |> Seq.toList
 
-let bestMediaType media all =
-    match filterMediaTypes media all with
+/// <summary>
+/// Picks the best media for a defined media type
+/// </summary>
+/// <param name="mediaType">Desired media type (e.g. "image")</param>
+/// <param name="accepts">Accept header</param>
+let bestMediaType mediaType accepts =
+    match filterMediaTypes mediaType accepts with
     | x::_ -> Some x
     | _ -> None
 
+/// <summary>
+/// Finds a match between two media, handling wildcards.
+/// Returns <c>None</c> if no match, otherwise <c>Some media</c>
+/// Example: <c>matchMedia "text/*" "text/plain"</c> -> <c>"text/plain"</c>
+/// </summary>
+/// <param name="serves"></param>
+/// <param name="accepts"></param>
 let matchMedia serves accepts =
     let tserves,sserves = splitMediaTypeSubtype serves
     let taccepts,saccepts = splitMediaTypeSubtype accepts
@@ -74,18 +105,35 @@ let matchMedia serves accepts =
     | a,b,c,d when a = c && b = d -> Some accepts
     | _ -> None
 
-let filterSortMedia media all =
-    let all = parseAccept all 
+/// <summary>
+/// Intersects accepted and served media. 
+/// Returns a list of viable media, sorted by client preference in descending order
+/// </summary>
+/// <param name="serves">Served media</param>
+/// <param name="accepts">Accept header</param>
+let filterSortMedia serves accepts =
+    let accepts = parseAccept accepts
     let inline (>>=) a f = Seq.collect f a
-    let r = all >>= fun a -> media >>= fun m -> matchMedia m a |> Seq.singleton
+    let r = accepts >>= fun a -> serves >>= fun m -> matchMedia m a |> Seq.singleton
     Seq.choose id r |> Seq.distinct |> Seq.toList
 
-let bestMedia media all =
-    match filterSortMedia media all with
+/// <summary>
+/// Intersects accepted and served media.
+/// Returns the preferred viable media, or <c>None</c>.
+/// </summary>
+/// <param name="serves"></param>
+/// <param name="accepts"></param>
+let bestMedia serves accepts =
+    match filterSortMedia serves accepts with
     | a::_ -> Some a
     | _ -> None
 
-let (|Accepts|_|) media all =
-    let isMatch = matchMedia media >> Option.isSome
-    List.tryFind isMatch all
+/// <summary>
+/// Matches if the media parameter can be handled by the accept list
+/// </summary>
+/// <param name="serves"></param>
+/// <param name="accepts"></param>
+let (|AcceptsMedia|_|) serves accepts =
+    let isMatch = matchMedia serves >> Option.isSome
+    List.tryFind isMatch accepts
     |> Option.map ignore
