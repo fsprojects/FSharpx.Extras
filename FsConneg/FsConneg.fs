@@ -105,17 +105,22 @@ let matchMedia serves accepts =
     | a,b,c,d when a = c && b = d -> Some accepts
     | _ -> None
 
+let filterSort matcher serves accepts =
+    let accepts = parseAccept accepts
+    let inline (>>=) a f = Seq.collect f a
+    let r = accepts >>= fun a -> serves >>= fun m -> matcher m a |> Seq.singleton
+    Seq.choose id r |> Seq.distinct |> Seq.toList
+
 /// <summary>
 /// Intersects accepted and served media. 
 /// Returns a list of viable media, sorted by client preference in descending order
 /// </summary>
 /// <param name="serves">Served media</param>
 /// <param name="accepts">Accept header</param>
-let filterSortMedia serves accepts =
-    let accepts = parseAccept accepts
-    let inline (>>=) a f = Seq.collect f a
-    let r = accepts >>= fun a -> serves >>= fun m -> matchMedia m a |> Seq.singleton
-    Seq.choose id r |> Seq.distinct |> Seq.toList
+let filterSortMedia x = filterSort matchMedia x
+
+let bestOf filterSort serves accepts =
+    filterSort serves accepts |> List.tryFind (fun _ -> true)
 
 /// <summary>
 /// Intersects accepted and served media.
@@ -123,10 +128,7 @@ let filterSortMedia serves accepts =
 /// </summary>
 /// <param name="serves"></param>
 /// <param name="accepts"></param>
-let bestMedia serves accepts =
-    match filterSortMedia serves accepts with
-    | a::_ -> Some a
-    | _ -> None
+let bestMedia x = bestOf filterSortMedia x
 
 /// <summary>
 /// Matches if the media parameter can be handled by the accept list
@@ -137,3 +139,18 @@ let (|AcceptsMedia|_|) serves accepts =
     let isMatch = matchMedia serves >> Option.isSome
     List.tryFind isMatch accepts
     |> Option.map ignore
+
+let matchLanguage serves accepts =
+    match serves,accepts with
+    | "*",a -> Some a
+    | s,"*" -> Some s
+    | _ ->
+        let pserves = split '-' serves
+        let paccepts = split '-' accepts
+        let matches = Seq.zip pserves paccepts |> Seq.takeWhile (fun (s,a) -> s = a) |> Seq.length
+        if matches < paccepts.Length 
+            then None
+            else Some serves
+
+let filterSortLanguage x = filterSort matchLanguage x
+let bestLanguage x = bestOf filterSortLanguage x

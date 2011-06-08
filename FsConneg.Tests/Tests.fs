@@ -94,3 +94,40 @@ let ``Filter and sort media 2``() =
     let serves = ["text/html"; "application/json"; "application/xml"; "text/xml"]
     let sorted = filterSortMedia serves accept
     Assert.Equal(["text/html"; "application/xml"; "application/json"; "text/xml"], sorted)
+
+[<Fact>]
+let ``match language with server wildcard``() =
+    Assert.Equal(Some "en-gb", matchLanguage "*" "en-gb")
+
+[<Fact>]
+let ``match language with client wildcard``() =
+    Assert.Equal(Some "en-gb", matchLanguage "en-gb" "*")
+
+[<Fact>]
+let ``match language exact``() =
+    Assert.Equal(Some "en-gb", matchLanguage "en-gb" "en-gb")
+
+[<Fact>]
+let ``no language match``() =
+    Assert.Equal(None, matchLanguage "en-ca" "en-gb")
+
+[<Fact>]
+let ``match server more specific than client``() =
+    Assert.Equal(Some "en-ca", matchLanguage "en-ca" "en")
+
+[<Fact>]
+let ``match server more specific than client2``() =
+    Assert.Equal(Some "x-pig-latin", matchLanguage "x-pig-latin" "x-pig")
+
+[<Fact>]
+let ``no match client more specific than server``() =
+    Assert.Equal(None, matchLanguage "en" "en-ca")
+
+[<Fact>]
+let ``filter and sort languages``() =
+    let accept = "da, en-gb;q=0.8, en;q=0.7"
+    let serves = ["en-us"]
+    let sorted = filterSortLanguage serves accept
+    Assert.Equal(serves, sorted)
+    ()
+
