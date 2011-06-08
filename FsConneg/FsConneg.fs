@@ -105,11 +105,13 @@ let matchMedia serves accepts =
     | a,b,c,d when a = c && b = d -> Some accepts
     | _ -> None
 
-let filterSort matcher serves accepts =
-    let accepts = parseAccept accepts
+let filterSortList matcher serves accepts =
     let inline (>>=) a f = Seq.collect f a
     let r = accepts >>= fun a -> serves >>= fun m -> matcher m a |> Seq.singleton
     Seq.choose id r |> Seq.distinct |> Seq.toList
+
+let filterSort matcher serves accepts =
+    filterSortList matcher serves (parseAccept accepts)
 
 /// <summary>
 /// Intersects accepted and served media. 
@@ -154,3 +156,20 @@ let matchLanguage serves accepts =
 
 let filterSortLanguage x = filterSort matchLanguage x
 let bestLanguage x = bestOf filterSortLanguage x
+
+let matchCharset serves accepts =
+    match serves,accepts with
+    | "*",a -> Some a
+    | s,"*" -> Some s
+    | s,a when s = a -> Some s
+    | _ -> None
+
+let filterSortCharset serves accepts = 
+    let iso88591 = "iso-8859-1"
+    let accepts = parseAccept accepts
+    let sorted = filterSortList matchCharset serves accepts
+    let has x = List.exists ((=) x) accepts
+    if (not (has "*")) && (not (has iso88591))
+        then iso88591::sorted
+        else sorted
+

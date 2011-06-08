@@ -129,5 +129,37 @@ let ``filter and sort languages``() =
     let serves = ["en-us"]
     let sorted = filterSortLanguage serves accept
     Assert.Equal(serves, sorted)
-    ()
 
+[<Fact>]
+let ``filter and sort charset with implicit iso-8859-1``() =
+    let accept = "iso-8859-5, unicode-1-1;q=0.8"
+    let serves = ["iso-8859-1"]
+    let sorted = filterSortCharset serves accept
+    Assert.Equal(serves, sorted)
+
+[<Fact>]
+let ``filter and sort charset with implicit iso-8859-1 in wildcard with q``() =
+    let accept = "iso-8859-5, unicode-1-1;q=0.8, *;q=0.7"
+    let serves = ["iso-8859-1"; "unicode-1-1"]
+    let sorted = filterSortCharset serves accept
+    Assert.Equal(["unicode-1-1"; "iso-8859-1"], sorted)
+
+[<Fact>]
+let ``filter and sort charset with implicit iso-8859-1 in wildcard with q=0``() =
+    let accept = "iso-8859-5, unicode-1-1;q=0.8, *;q=0"
+    let serves = ["iso-8859-1"; "unicode-1-1"]
+    let sorted = filterSortCharset serves accept
+    Assert.Equal(["unicode-1-1"], sorted)
+
+[<Fact>]
+let ``filter and sort charset with explicit iso-8859-1 and wildcard with q``() =
+    let accept = "iso-8859-5, iso-8859-1;q=0.9, unicode-1-1;q=0.8, *;q=0.7"
+    let serves = ["iso-8859-1"; "unicode-1-1"]
+    let sorted = filterSortCharset serves accept
+    Assert.Equal(serves, sorted)
+
+let ``filter and sort charset with empty accept``() =
+    let accept: string = null
+    let serves = ["iso-8859-1"; "unicode-1-1"]
+    let sorted = filterSortCharset serves accept
+    Assert.Equal(serves, sorted)
