@@ -38,7 +38,7 @@ let parseQ s =
 /// Parses any Accept-* header
 /// </summary>
 /// <param name="l"></param>
-let parseAccept l =
+let parseFilterSortAccept l =
     split ',' l
     |> Seq.map (split ';')
     |> Seq.map parseQ
@@ -61,7 +61,7 @@ let splitMediaTypeSubtype m =
 /// </summary>
 /// <param name="l"></param>
 let parseMediaTypes l =
-    parseAccept l
+    parseFilterSortAccept l
     |> Seq.map (fun a -> a, splitMediaTypeSubtype a)
     |> Seq.toList
 
@@ -111,7 +111,7 @@ let filterSortList matcher serves accepts =
     Seq.choose id r |> Seq.distinct |> Seq.toList
 
 let filterSort matcher serves accepts =
-    filterSortList matcher serves (parseAccept accepts)
+    filterSortList matcher serves (parseFilterSortAccept accepts)
 
 /// <summary>
 /// Intersects accepted and served media. 
@@ -166,7 +166,7 @@ let matchCharset serves accepts =
 
 let filterSortCharset serves accepts = 
     let iso88591 = "iso-8859-1"
-    let accepts = parseAccept accepts
+    let accepts = parseFilterSortAccept accepts
     let sorted = filterSortList matchCharset serves accepts
     let has x = List.exists ((=) x) accepts
     if (not (has "*")) && (not (has iso88591))

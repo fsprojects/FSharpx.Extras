@@ -6,14 +6,14 @@ open FsConneg
 [<Fact>]
 let ``Parse AcceptLanguage``() =
     let acceptLang = "en-US; q=0.6, de-de;q=0.4,de;q=0.2,en-ca,en;q=0.8, pepe;q=0"
-    match parseAccept acceptLang with
+    match parseFilterSortAccept acceptLang with
     | ["en-ca"; "en"; "en-us"; "de-de"; "de"] -> ()
     | x -> failwithf "wrong parsing: %A" x
 
 [<Fact>]
 let ``Parse Accept``() =
     let accept = "text/html; q=0.8; level=2, text/html; q=0.2; level=1"
-    match parseAccept accept with
+    match parseFilterSortAccept accept with
     | ["text/html;level=2"; "text/html;level=1"] -> ()
     | x -> failwithf "wrong parsing: %A" x
 
@@ -21,7 +21,7 @@ let ``Parse Accept``() =
 let ``Parse Accept with implicit precedence``() =
     // http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1
     let accept = "text/*, text/html, text/html;level=1, */*"
-    match parseAccept accept with
+    match parseFilterSortAccept accept with
     | ["text/html;level=1"; "text/html"; "text/*"; "*/*"] -> ()
     | x -> failwithf "wrong parsing: %A" x
 
