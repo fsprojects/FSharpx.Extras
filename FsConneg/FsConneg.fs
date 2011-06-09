@@ -34,14 +34,24 @@ let parseQ s =
         | Some i -> Array.append s.[..i-1] s.[i+1..s.Length-1]
     String.Join(";", values), q
 
+let parseAccept l =
+    split ',' l
+    |> Seq.map (split ';')
+    |> Seq.map parseQ
+
 /// <summary>
 /// Parses any Accept-* header
 /// </summary>
 /// <param name="l"></param>
 let parseFilterSortAccept l =
-    split ',' l
-    |> Seq.map (split ';')
-    |> Seq.map parseQ
+    parseAccept l
+    |> Seq.filter (snd >> (<) 0.)
+    |> Seq.sortBy (snd >> (*) -1.)
+    |> Seq.map fst
+    |> Seq.toList
+
+let filterSortAccept x =
+    x 
     |> Seq.filter (snd >> (<) 0.)
     |> Seq.sortBy (snd >> (*) -1.)
     |> Seq.map fst
@@ -166,10 +176,14 @@ let matchCharset serves accepts =
 
 let filterSortCharset serves accepts = 
     let iso88591 = "iso-8859-1"
-    let accepts = parseFilterSortAccept accepts
-    let sorted = filterSortList matchCharset serves accepts
-    let has x = List.exists ((=) x) accepts
-    if (not (has "*")) && (not (has iso88591))
-        then iso88591::sorted
-        else sorted
+    let accepts = parseAccept accepts |> Seq.toList
+    let has x = accepts |> List.exists (fun (a,_) -> a = x)
+    let accepts =
+        if not (has iso88591) && not (has "*")
+            then (iso88591, 1.)::accepts
+            else accepts
+    let filteredAccepts = filterSortAccept accepts 
+    filterSortList matchCharset serves filteredAccepts
+
+let bestCharset x = bestOf filterSortCharset x
 
