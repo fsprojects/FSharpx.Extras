@@ -201,7 +201,7 @@ let negotiateCharset serves accepts =
             let iso88591 = "iso-8859-1"
             let accepts = if accepts = null then "" else accepts
             let accepts = parseAccept accepts |> Seq.toList
-            let has x = accepts |> List.exists (fun (a,_) -> a = x)
+            let has x = List.exists (fst >> (=)x) accepts
             let accepts =
                 if not (has iso88591) && not (has "*")
                     then (iso88591, 1.)::accepts
