@@ -130,6 +130,12 @@ let negotiateList matcher serves accepts =
     let r = accepts >>= fun a -> serves >>= fun m -> matcher m a |> Seq.singleton
     Seq.choose id r |> Seq.distinct |> Seq.toList
 
+/// <summary>
+/// Filters and maps a list of served items and a Accept-* header of acceptable items using a matcher function
+/// </summary>
+/// <param name="matcher"></param>
+/// <param name="serves"></param>
+/// <param name="accepts"></param>
 let negotiate matcher serves accepts =
     negotiateList matcher serves (parseFilterSortAccept accepts)
 
@@ -141,6 +147,12 @@ let negotiate matcher serves accepts =
 /// <param name="accepts">Accept header</param>
 let negotiateMediaType x = negotiate matchMediaType x
 
+/// <summary>
+/// Gets the first item from a list of negotiated items
+/// </summary>
+/// <param name="negotiate"></param>
+/// <param name="serves"></param>
+/// <param name="accepts"></param>
 let bestOf negotiate serves accepts =
     negotiate serves accepts |> List.tryFind (fun _ -> true)
 
@@ -162,6 +174,11 @@ let (|AcceptsMedia|_|) serves accepts =
     List.tryFind isMatch accepts
     |> Option.map ignore
 
+/// <summary>
+/// Matches two language tags
+/// </summary>
+/// <param name="serves"></param>
+/// <param name="accepts"></param>
 let matchLanguage serves accepts =
     match serves,accepts with
     | "*",a -> Some a
@@ -174,9 +191,25 @@ let matchLanguage serves accepts =
             then None
             else Some serves
 
+/// <summary>
+/// Intersects accepted and served languages. 
+/// Returns a list of viable languages, sorted by client preference in descending order
+/// </summary>
+/// <param name="x"></param>
 let negotiateLanguage x = negotiate matchLanguage x
+
+/// <summary>
+/// Intersects accepted and served media.
+/// Returns the preferred viable language, or <c>None</c>.
+/// </summary>
+/// <param name="x"></param>
 let bestLanguage x = bestOf negotiateLanguage x
 
+/// <summary>
+/// Matches two charset tags
+/// </summary>
+/// <param name="serves"></param>
+/// <param name="accepts"></param>
 let matchCharset serves accepts =
     match serves,accepts with
     | "*",a -> Some a
@@ -184,6 +217,12 @@ let matchCharset serves accepts =
     | s,a when s = a -> Some s
     | _ -> None
 
+/// <summary>
+/// Intersects accepted and served charsets. 
+/// Returns a list of viable charsets, sorted by client preference in descending order
+/// </summary>
+/// <param name="serves"></param>
+/// <param name="accepts"></param>
 let negotiateCharset serves accepts = 
     if String.IsNullOrEmpty accepts
         then serves
@@ -199,5 +238,10 @@ let negotiateCharset serves accepts =
             let filteredAccepts = filterSortAccept accepts 
             negotiateList matchCharset serves filteredAccepts
 
+/// <summary>
+/// Intersects accepted and served charsets.
+/// Returns the preferred viable charset, or <c>None</c>.
+/// </summary>
+/// <param name="x"></param>
 let bestCharset x = bestOf negotiateCharset x
 
