@@ -16,6 +16,11 @@ let inline internal lower (s: string) = s.Trim().ToLowerInvariant()
 
 let inline internal startsWith (substr: string) (s: string) = s.StartsWith substr
 
+/// <summary>
+/// Parses a single Accept-* header item. 
+/// Returns item with associated q
+/// </summary>
+/// <param name="s">Heaer item split by ';'</param>
 let parseQ s =
     let e = 0.0001
     let s = Array.map lower s
@@ -34,28 +39,36 @@ let parseQ s =
         | Some i -> Array.append s.[..i-1] s.[i+1..s.Length-1]
     String.Join(";", values), q
 
+/// <summary>
+/// Parses any Accept-* header, returns a seq of items with associated q (quality/preference)
+/// </summary>
+/// <param name="l"></param>
 let parseAccept l =
     split ',' l
     |> Seq.map (split ';')
     |> Seq.map parseQ
 
 /// <summary>
-/// Parses any Accept-* header
+/// Takes a list of items with associated numeric quality (preference), and:
+/// removes all items with q=0 (i.e. not acceptable by client);
+/// sorts by q descending (client preference)
 /// </summary>
-/// <param name="l"></param>
-let parseFilterSortAccept l =
-    parseAccept l
-    |> Seq.filter (snd >> (<) 0.)
-    |> Seq.sortBy (snd >> (*) -1.)
-    |> Seq.map fst
-    |> Seq.toList
-
+/// <param name="x"></param>
 let filterSortAccept x =
     x 
     |> Seq.filter (snd >> (<) 0.)
     |> Seq.sortBy (snd >> (*) -1.)
     |> Seq.map fst
     |> Seq.toList
+
+/// <summary>
+/// Parses any Accept-* header. 
+/// Removes all items with q=0 (i.e. not acceptable by client).
+/// Sorts by q descending (client preference)
+/// </summary>
+/// <param name="l"></param>
+let parseFilterSortAccept l =
+    parseAccept l |> filterSortAccept
 
 /// <summary>
 /// Splits media type and subtype, e.g. "text/html" -> "text","html"
@@ -115,7 +128,14 @@ let matchMediaType serves accepts =
     | a,b,c,d when a = c && b = d -> Some accepts
     | _ -> None
 
+/// <summary>
+/// Filters and maps two sequences of items using a matcher function.
+/// </summary>
+/// <param name="matcher"></param>
+/// <param name="serves"></param>
+/// <param name="accepts"></param>
 let filterSortList matcher serves accepts =
+    // TODO probably very inefficient, rewrite
     let inline (>>=) a f = Seq.collect f a
     let r = accepts >>= fun a -> serves >>= fun m -> matcher m a |> Seq.singleton
     Seq.choose id r |> Seq.distinct |> Seq.toList
