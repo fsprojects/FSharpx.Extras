@@ -101,16 +101,6 @@ let filterMediaTypes mediaType accepts =
     |> Seq.toList
 
 /// <summary>
-/// Picks the best media for a defined media type
-/// </summary>
-/// <param name="mediaType">Desired media type (e.g. "image")</param>
-/// <param name="accepts">Accept header</param>
-let bestMediaType mediaType accepts =
-    match filterMediaTypes mediaType accepts with
-    | x::_ -> Some x
-    | _ -> None
-
-/// <summary>
 /// Finds a match between two media types, handling wildcards.
 /// Returns <c>None</c> if no match, otherwise <c>Some media</c>
 /// Example: <c>matchMediaType "text/*" "text/plain"</c> -> <c>"text/plain"</c>
@@ -160,7 +150,7 @@ let bestOf negotiate serves accepts =
 /// </summary>
 /// <param name="serves"></param>
 /// <param name="accepts"></param>
-let bestMedia x = bestOf negotiateMediaType x
+let bestMediaType x = bestOf negotiateMediaType x
 
 /// <summary>
 /// Matches if the media parameter can be handled by the accept list
