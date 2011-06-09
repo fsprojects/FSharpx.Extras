@@ -175,15 +175,19 @@ let matchCharset serves accepts =
     | _ -> None
 
 let negotiateCharset serves accepts = 
-    let iso88591 = "iso-8859-1"
-    let accepts = parseAccept accepts |> Seq.toList
-    let has x = accepts |> List.exists (fun (a,_) -> a = x)
-    let accepts =
-        if not (has iso88591) && not (has "*")
-            then (iso88591, 1.)::accepts
-            else accepts
-    let filteredAccepts = filterSortAccept accepts 
-    filterSortList matchCharset serves filteredAccepts
+    if String.IsNullOrEmpty accepts
+        then serves
+        else
+            let iso88591 = "iso-8859-1"
+            let accepts = if accepts = null then "" else accepts
+            let accepts = parseAccept accepts |> Seq.toList
+            let has x = accepts |> List.exists (fun (a,_) -> a = x)
+            let accepts =
+                if not (has iso88591) && not (has "*")
+                    then (iso88591, 1.)::accepts
+                    else accepts
+            let filteredAccepts = filterSortAccept accepts 
+            filterSortList matchCharset serves filteredAccepts
 
 let bestCharset x = bestOf negotiateCharset x
 

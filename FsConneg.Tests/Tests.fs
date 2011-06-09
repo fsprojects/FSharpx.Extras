@@ -158,6 +158,7 @@ let ``filter and sort charset with explicit iso-8859-1 and wildcard with q``() =
     let sorted = negotiateCharset serves accept
     Assert.Equal(serves, sorted)
 
+[<Fact>]
 let ``filter and sort charset with empty accept``() =
     let accept: string = null
     let serves = ["iso-8859-1"; "unicode-1-1"]
