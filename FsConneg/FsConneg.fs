@@ -98,13 +98,13 @@ let bestMediaType mediaType accepts =
     | _ -> None
 
 /// <summary>
-/// Finds a match between two media, handling wildcards.
+/// Finds a match between two media types, handling wildcards.
 /// Returns <c>None</c> if no match, otherwise <c>Some media</c>
-/// Example: <c>matchMedia "text/*" "text/plain"</c> -> <c>"text/plain"</c>
+/// Example: <c>matchMediaType "text/*" "text/plain"</c> -> <c>"text/plain"</c>
 /// </summary>
 /// <param name="serves"></param>
 /// <param name="accepts"></param>
-let matchMedia serves accepts =
+let matchMediaType serves accepts =
     let tserves,sserves = splitMediaTypeSubtype serves
     let taccepts,saccepts = splitMediaTypeSubtype accepts
     match tserves,sserves,taccepts,saccepts with
@@ -129,7 +129,7 @@ let filterSort matcher serves accepts =
 /// </summary>
 /// <param name="serves">Served media</param>
 /// <param name="accepts">Accept header</param>
-let filterSortMedia x = filterSort matchMedia x
+let negotiateMediaType x = filterSort matchMediaType x
 
 let bestOf filterSort serves accepts =
     filterSort serves accepts |> List.tryFind (fun _ -> true)
@@ -140,7 +140,7 @@ let bestOf filterSort serves accepts =
 /// </summary>
 /// <param name="serves"></param>
 /// <param name="accepts"></param>
-let bestMedia x = bestOf filterSortMedia x
+let bestMedia x = bestOf negotiateMediaType x
 
 /// <summary>
 /// Matches if the media parameter can be handled by the accept list
@@ -148,7 +148,7 @@ let bestMedia x = bestOf filterSortMedia x
 /// <param name="serves"></param>
 /// <param name="accepts"></param>
 let (|AcceptsMedia|_|) serves accepts =
-    let isMatch = matchMedia serves >> Option.isSome
+    let isMatch = matchMediaType serves >> Option.isSome
     List.tryFind isMatch accepts
     |> Option.map ignore
 
@@ -174,7 +174,7 @@ let matchCharset serves accepts =
     | s,a when s = a -> Some s
     | _ -> None
 
-let filterSortCharset serves accepts = 
+let negotiateCharset serves accepts = 
     let iso88591 = "iso-8859-1"
     let accepts = parseAccept accepts |> Seq.toList
     let has x = accepts |> List.exists (fun (a,_) -> a = x)
@@ -185,5 +185,5 @@ let filterSortCharset serves accepts =
     let filteredAccepts = filterSortAccept accepts 
     filterSortList matchCharset serves filteredAccepts
 
-let bestCharset x = bestOf filterSortCharset x
+let bestCharset x = bestOf negotiateCharset x
 

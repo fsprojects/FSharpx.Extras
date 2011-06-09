@@ -62,37 +62,37 @@ let ``Active pattern with wildcard``() =
     Assert.Equal(Some (), r)
 
 [<Fact>]
-let ``matchMedia match wildcard in server``() =
-    Assert.Equal(Some "text/plain", matchMedia "text/*" "text/plain")
+let ``matchMediaType match wildcard in server``() =
+    Assert.Equal(Some "text/plain", matchMediaType "text/*" "text/plain")
 
 [<Fact>]
-let ``matchMedia match wildcard in client``() =
-    Assert.Equal(Some "text/plain", matchMedia "text/plain" "text/*")
+let ``matchMediaType match wildcard in client``() =
+    Assert.Equal(Some "text/plain", matchMediaType "text/plain" "text/*")
 
 [<Fact>]
-let ``matchMedia match exact``() =
-    Assert.Equal(Some "text/plain", matchMedia "text/plain" "text/plain")
+let ``matchMediaType match exact``() =
+    Assert.Equal(Some "text/plain", matchMediaType "text/plain" "text/plain")
 
 [<Fact>]
-let ``matchMedia match any in server``() =
-    Assert.Equal(Some "text/plain", matchMedia "*/*" "text/plain")
+let ``matchMediaType match any in server``() =
+    Assert.Equal(Some "text/plain", matchMediaType "*/*" "text/plain")
 
 [<Fact>]
-let ``matchMedia match any in client``() =
-    Assert.Equal(Some "text/plain", matchMedia "text/plain" "*/*")
+let ``matchMediaType match any in client``() =
+    Assert.Equal(Some "text/plain", matchMediaType "text/plain" "*/*")
 
 [<Fact>]
 let ``Filter and sort media``() =
     let accept = "application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5" // actual Chrome Accepts header
     let serves = ["application/xml"; "text/xml"; "text/html"; "application/json"]
-    let sorted = filterSortMedia serves accept
+    let sorted = negotiateMediaType serves accept
     Assert.Equal(["application/xml"; "text/html"; "text/xml"; "application/json"], sorted)
 
 [<Fact>]
 let ``Filter and sort media 2``() =
     let accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" // actual Firefox Accepts header
     let serves = ["text/html"; "application/json"; "application/xml"; "text/xml"]
-    let sorted = filterSortMedia serves accept
+    let sorted = negotiateMediaType serves accept
     Assert.Equal(["text/html"; "application/xml"; "application/json"; "text/xml"], sorted)
 
 [<Fact>]
@@ -134,32 +134,32 @@ let ``filter and sort languages``() =
 let ``filter and sort charset with implicit iso-8859-1``() =
     let accept = "iso-8859-5, unicode-1-1;q=0.8"
     let serves = ["iso-8859-1"]
-    let sorted = filterSortCharset serves accept
+    let sorted = negotiateCharset serves accept
     Assert.Equal(serves, sorted)
 
 [<Fact>]
 let ``filter and sort charset with implicit iso-8859-1 in wildcard with q``() =
     let accept = "iso-8859-5, unicode-1-1;q=0.8, *;q=0.7"
     let serves = ["iso-8859-1"; "unicode-1-1"]
-    let sorted = filterSortCharset serves accept
+    let sorted = negotiateCharset serves accept
     Assert.Equal(["unicode-1-1"; "iso-8859-1"], sorted)
 
 [<Fact>]
 let ``filter and sort charset with implicit iso-8859-1 in wildcard with q=0``() =
     let accept = "iso-8859-5, unicode-1-1;q=0.8, *;q=0"
     let serves = ["iso-8859-1"; "unicode-1-1"]
-    let sorted = filterSortCharset serves accept
+    let sorted = negotiateCharset serves accept
     Assert.Equal(["unicode-1-1"], sorted)
 
 [<Fact>]
 let ``filter and sort charset with explicit iso-8859-1 and wildcard with q``() =
     let accept = "iso-8859-5, iso-8859-1;q=0.9, unicode-1-1;q=0.8, *;q=0.7"
     let serves = ["iso-8859-1"; "unicode-1-1"]
-    let sorted = filterSortCharset serves accept
+    let sorted = negotiateCharset serves accept
     Assert.Equal(serves, sorted)
 
 let ``filter and sort charset with empty accept``() =
     let accept: string = null
     let serves = ["iso-8859-1"; "unicode-1-1"]
-    let sorted = filterSortCharset serves accept
+    let sorted = negotiateCharset serves accept
     Assert.Equal(serves, sorted)
