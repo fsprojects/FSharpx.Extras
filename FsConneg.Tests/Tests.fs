@@ -127,7 +127,7 @@ let ``no match client more specific than server``() =
 let ``filter and sort languages``() =
     let accept = "da, en-gb;q=0.8, en;q=0.7"
     let serves = ["en-us"]
-    let sorted = filterSortLanguage serves accept
+    let sorted = negotiateLanguage serves accept
     Assert.Equal(serves, sorted)
 
 [<Fact>]

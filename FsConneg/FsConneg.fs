@@ -134,14 +134,14 @@ let matchMediaType serves accepts =
 /// <param name="matcher"></param>
 /// <param name="serves"></param>
 /// <param name="accepts"></param>
-let filterSortList matcher serves accepts =
+let negotiateList matcher serves accepts =
     // TODO probably very inefficient, rewrite
     let inline (>>=) a f = Seq.collect f a
     let r = accepts >>= fun a -> serves >>= fun m -> matcher m a |> Seq.singleton
     Seq.choose id r |> Seq.distinct |> Seq.toList
 
-let filterSort matcher serves accepts =
-    filterSortList matcher serves (parseFilterSortAccept accepts)
+let negotiate matcher serves accepts =
+    negotiateList matcher serves (parseFilterSortAccept accepts)
 
 /// <summary>
 /// Intersects accepted and served media. 
@@ -149,10 +149,10 @@ let filterSort matcher serves accepts =
 /// </summary>
 /// <param name="serves">Served media</param>
 /// <param name="accepts">Accept header</param>
-let negotiateMediaType x = filterSort matchMediaType x
+let negotiateMediaType x = negotiate matchMediaType x
 
-let bestOf filterSort serves accepts =
-    filterSort serves accepts |> List.tryFind (fun _ -> true)
+let bestOf negotiate serves accepts =
+    negotiate serves accepts |> List.tryFind (fun _ -> true)
 
 /// <summary>
 /// Intersects accepted and served media.
@@ -184,8 +184,8 @@ let matchLanguage serves accepts =
             then None
             else Some serves
 
-let filterSortLanguage x = filterSort matchLanguage x
-let bestLanguage x = bestOf filterSortLanguage x
+let negotiateLanguage x = negotiate matchLanguage x
+let bestLanguage x = bestOf negotiateLanguage x
 
 let matchCharset serves accepts =
     match serves,accepts with
@@ -207,7 +207,7 @@ let negotiateCharset serves accepts =
                     then (iso88591, 1.)::accepts
                     else accepts
             let filteredAccepts = filterSortAccept accepts 
-            filterSortList matchCharset serves filteredAccepts
+            negotiateList matchCharset serves filteredAccepts
 
 let bestCharset x = bestOf negotiateCharset x
 
