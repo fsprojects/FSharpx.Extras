@@ -58,7 +58,7 @@ let filterSortAccept x =
     x 
     |> Seq.filter (snd >> (<) 0.)
     |> Seq.sortBy (snd >> (*) -1.)
-    |> Seq.map fst
+    //|> Seq.map fst
     |> Seq.toList
 
 /// <summary>
@@ -79,13 +79,13 @@ let splitMediaTypeSubtype m =
     p.[0],p.[1]
 
 /// <summary>
-/// Parses an Accept header into a list of media,(media type, media subtype)
-/// E.g. "text/html",("text","html")
+/// Parses an Accept header into a list of media,(media type, media subtype),q
+/// E.g. "text/html",("text","html"),0.8
 /// </summary>
 /// <param name="l"></param>
 let parseMediaTypes l =
     parseFilterSortAccept l
-    |> Seq.map (fun a -> a, splitMediaTypeSubtype a)
+    |> Seq.map (fun (a,q) -> a, splitMediaTypeSubtype a, q)
     |> Seq.toList
 
 /// <summary>
@@ -96,8 +96,8 @@ let parseMediaTypes l =
 /// <param name="accepts"></param>
 let filterMediaTypes mediaType accepts =
     parseMediaTypes accepts 
-    |> Seq.filter (fun (v,(typ,subtype)) -> typ = mediaType) 
-    |> Seq.map fst
+    |> Seq.filter (fun (_,(typ,subtype),_) -> typ = mediaType) 
+    |> Seq.map (fun (m,_,q) -> m,q)
     |> Seq.toList
 
 /// <summary>
@@ -128,7 +128,7 @@ let negotiateList matcher serves accepts =
     // TODO probably very inefficient, rewrite
     let inline (>>=) a f = Seq.collect f a
     let r = accepts >>= fun a -> serves >>= fun m -> matcher m a |> Seq.singleton
-    Seq.choose id r |> Seq.distinct |> Seq.toList
+    Seq.choose id r |> Seq.distinctBy fst |> Seq.toList
 
 /// <summary>
 /// Filters and maps a list of served items and a Accept-* header of acceptable items using a matcher function
@@ -137,6 +137,7 @@ let negotiateList matcher serves accepts =
 /// <param name="serves"></param>
 /// <param name="accepts"></param>
 let negotiate matcher serves accepts =
+    let matcher a (b,q) = matcher a b |> Option.map (fun r -> r,q)
     negotiateList matcher serves (parseFilterSortAccept accepts)
 
 /// <summary>
@@ -225,7 +226,7 @@ let matchCharset serves accepts =
 /// <param name="accepts"></param>
 let negotiateCharset serves accepts = 
     if String.IsNullOrEmpty accepts
-        then serves
+        then serves |> List.map (fun a -> a,1.)
         else
             let iso88591 = "iso-8859-1"
             let accepts = if accepts = null then "" else accepts
@@ -236,6 +237,7 @@ let negotiateCharset serves accepts =
                     then (iso88591, 1.)::accepts
                     else accepts
             let filteredAccepts = filterSortAccept accepts 
+            let matchCharset a (b,q) = matchCharset a b |> Option.map (fun r -> r,q)
             negotiateList matchCharset serves filteredAccepts
 
 /// <summary>
