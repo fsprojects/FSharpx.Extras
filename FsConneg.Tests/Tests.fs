@@ -158,3 +158,24 @@ let ``Negotiate charset with empty accept``() =
     let serves = ["iso-8859-1"; "unicode-1-1"]
     let sorted = negotiateCharset serves accept
     Assert.Equal(["iso-8859-1",1.; "unicode-1-1",1.], sorted)
+
+[<Fact>]
+let ``match encoding empty``() =
+    let accept: string = null
+    let serves = ["compress"; "gzip"]
+    let neg = negotiateEncoding serves accept
+    Assert.Equal(["compress",1.; "gzip",1.], neg)
+
+[<Fact>]
+let ``match encoding implicit identity``() =
+    let accept: string = "gzip, compress;q=0.8"
+    let serves = ["compress"; "identity"]
+    let neg = negotiateEncoding serves accept
+    Assert.Equal(["compress",0.8; "identity",0.001], neg)
+
+[<Fact>]
+let ``match encoding identity 0``() =
+    let accept: string = "gzip, compress;q=0.8, identity;q=0"
+    let serves = ["compress"; "identity"]
+    let neg = negotiateEncoding serves accept
+    Assert.Equal(["compress",0.8], neg)

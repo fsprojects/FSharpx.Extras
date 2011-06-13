@@ -218,27 +218,28 @@ let matchCharset serves accepts =
     | s,a when s = a -> Some s
     | _ -> None
 
+let internal negotiateWithImplicit implicitValue implicitQ matcher serves accepts =
+    if String.IsNullOrEmpty accepts
+        then serves |> List.map (fun a -> a,1.)
+        else
+            let accepts = if accepts = null then "" else accepts
+            let accepts = parseAccept accepts |> Seq.toList
+            let has x = List.exists (fst >> (=)x) accepts
+            let accepts =
+                if not (has implicitValue) && not (has "*")
+                    then (implicitValue, implicitQ)::accepts
+                    else accepts
+            let filteredAccepts = filterSortAccept accepts 
+            let matchCharset a (b,q) = matcher a b |> Option.map (fun r -> r,q)
+            negotiateList matchCharset serves filteredAccepts
+
 /// <summary>
 /// Intersects accepted and served charsets. 
 /// Returns a list of viable charsets, sorted by client preference in descending order
 /// </summary>
 /// <param name="serves"></param>
 /// <param name="accepts"></param>
-let negotiateCharset serves accepts = 
-    if String.IsNullOrEmpty accepts
-        then serves |> List.map (fun a -> a,1.)
-        else
-            let iso88591 = "iso-8859-1"
-            let accepts = if accepts = null then "" else accepts
-            let accepts = parseAccept accepts |> Seq.toList
-            let has x = List.exists (fst >> (=)x) accepts
-            let accepts =
-                if not (has iso88591) && not (has "*")
-                    then (iso88591, 1.)::accepts
-                    else accepts
-            let filteredAccepts = filterSortAccept accepts 
-            let matchCharset a (b,q) = matchCharset a b |> Option.map (fun r -> r,q)
-            negotiateList matchCharset serves filteredAccepts
+let negotiateCharset x = negotiateWithImplicit "iso-8859-1" 1. matchCharset x
 
 /// <summary>
 /// Intersects accepted and served charsets.
@@ -247,3 +248,6 @@ let negotiateCharset serves accepts =
 /// <param name="x"></param>
 let bestCharset x = bestOf negotiateCharset x
 
+let negotiateEncoding x = negotiateWithImplicit "identity" 0.001 matchCharset x
+
+let bestEncoding x = bestOf negotiateEncoding x
