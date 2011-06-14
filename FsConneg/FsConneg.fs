@@ -126,9 +126,12 @@ let matchMediaType serves accepts =
 /// <param name="serves"></param>
 /// <param name="accepts"></param>
 let negotiateList matcher serves accepts =
-    // TODO probably very inefficient, rewrite
-    let inline (>>=) a f = Seq.collect f a
-    let r = accepts >>= fun a -> serves >>= fun m -> matcher m a |> Seq.singleton
+    let r = 
+        seq {
+            for a in accepts do
+                for m in serves do
+                    yield matcher m a
+        }
     Seq.choose id r |> Seq.distinctBy fst |> Seq.toList
 
 /// <summary>
