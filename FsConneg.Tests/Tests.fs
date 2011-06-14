@@ -14,7 +14,7 @@ let ``Parse AcceptLanguage``() =
 let ``Parse Accept``() =
     let accept = "text/html; q=0.8; level=2, text/html; q=0.2; level=1"
     match parseFilterSortAccept accept with
-    | ["text/html;level=2",0.8001; "text/html;level=1",0.2001] -> () // 0.001 added for having an additional parameter
+    | ["text/html;level=2",0.8; "text/html;level=1",0.2] -> () // 0.001 added for having an additional parameter
     | x -> failwithf "wrong parsing: %A" x
 
 [<Fact>]
@@ -74,20 +74,14 @@ let ``Negotiate media type``() =
     let accept = "application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5" // actual Chrome Accepts header
     let serves = ["application/xml"; "text/xml"; "text/html"; "application/json"]
     let sorted = negotiateMediaType serves accept
-    Assert.Equal(["application/xml",1.; "text/html",0.9; "text/xml",0.4998; "application/json",0.4998], sorted)
+    Assert.Equal(["application/xml",1.; "text/html",0.9; "text/xml",0.5; "application/json",0.5], sorted)
 
 [<Fact>]
 let ``Negotiate media type 2``() =
     let accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" // actual Firefox Accepts header
     let serves = ["text/html"; "application/json"; "application/xml"; "text/xml"]
     let sorted = negotiateMediaType serves accept
-    Assert.Equal(4, sorted.Length)
-    Assert.Equal(("text/html",1.0), sorted.[0])
-    Assert.Equal(("application/xml",0.9), sorted.[1])
-    Assert.Equal("application/json", fst sorted.[2])
-    Assert.InRange(snd sorted.[2], 0.7997, 0.7999) // must test it this way due to IEEE precision
-    Assert.Equal("text/xml", fst sorted.[3])
-    Assert.InRange(snd sorted.[3], 0.7997, 0.7999)
+    Assert.Equal(["text/html",1.; "application/xml",0.9; "application/json",0.8; "text/xml",0.8], sorted)
 
 [<Fact>]
 let ``match language with server wildcard``() =
@@ -136,7 +130,7 @@ let ``Negotiate charset with implicit iso-8859-1 in wildcard with q``() =
     let accept = "iso-8859-5, unicode-1-1;q=0.8, *;q=0.7"
     let serves = ["iso-8859-1"; "unicode-1-1"]
     let sorted = negotiateCharset serves accept
-    Assert.Equal(["unicode-1-1",0.8; "iso-8859-1",0.6999], sorted)
+    Assert.Equal(["unicode-1-1",0.8; "iso-8859-1",0.7], sorted)
 
 [<Fact>]
 let ``Negotiate charset with implicit iso-8859-1 in wildcard with q=0``() =

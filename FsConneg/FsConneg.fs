@@ -16,6 +16,10 @@ let inline internal lower (s: string) = s.Trim().ToLowerInvariant()
 
 let inline internal startsWith (substr: string) (s: string) = s.StartsWith substr
 
+let inline internal fst3 (a,_,_) = a
+let inline internal snd3 (_,a,_) = a
+let inline internal thr3 (_,_,a) = a
+
 /// <summary>
 /// Parses a single Accept-* header item. 
 /// Returns item with associated q
@@ -31,14 +35,14 @@ let parseQ s =
         | None -> 1.
         | Some i -> s |> nth i |> split '=' |> nth 1 |> Double.parse
     let wildcards = Seq.filter ((=) '*') s.[0] |> Seq.length
-    let q = q - e * float wildcards
+    let qc = q - e * float wildcards
     let otherParameters = Seq.filter (not << isQ) s |> Seq.length
-    let q = q + e * float (otherParameters - 1)
+    let qc = qc + e * float (otherParameters - 1)
     let values = 
         match qi with
         | None -> s
         | Some i -> Array.append s.[..i-1] s.[i+1..s.Length-1]
-    String.Join(";", values), q
+    String.Join(";", values), q, qc
 
 /// <summary>
 /// Parses any Accept-* header, returns a seq of items with associated q (quality/preference)
@@ -57,9 +61,9 @@ let parseAccept l =
 /// <param name="x"></param>
 let filterSortAccept x =
     x 
-    |> Seq.filter (snd >> (<) 0.)
-    |> Seq.sortBy (snd >> (*) -1.)
-    //|> Seq.map fst
+    |> Seq.filter (thr3 >> (<) 0.)
+    |> Seq.sortBy (thr3 >> (*) -1.)
+    |> Seq.map (fun (a,b,_) -> a,b)
     |> Seq.toList
 
 /// <summary>
@@ -228,10 +232,10 @@ let internal negotiateWithImplicit implicitValue implicitQ matcher serves accept
         else
             let accepts = if accepts = null then "" else accepts
             let accepts = parseAccept accepts |> Seq.toList
-            let has x = List.exists (fst >> (=)x) accepts
+            let has x = List.exists (fst3 >> (=)x) accepts
             let accepts =
                 if not (has implicitValue) && not (has "*")
-                    then (implicitValue, implicitQ)::accepts
+                    then (implicitValue, implicitQ, implicitQ)::accepts
                     else accepts
             let filteredAccepts = filterSortAccept accepts 
             let matchCharset a (b,q) = matcher a b |> Option.map (fun r -> r,q)
