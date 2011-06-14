@@ -20,18 +20,19 @@ let inline internal startsWith (substr: string) (s: string) = s.StartsWith subst
 /// Parses a single Accept-* header item. 
 /// Returns item with associated q
 /// </summary>
-/// <param name="s">Heaer item split by ';'</param>
+/// <param name="s">Header item split by ';'</param>
 let parseQ s =
     let e = 0.0001
+    let isQ = startsWith "q="
     let s = Array.map lower s
-    let qi = Array.tryFindIndex (startsWith "q=") s
+    let qi = Array.tryFindIndex isQ s
     let q = 
         match qi with
         | None -> 1.
         | Some i -> s |> nth i |> split '=' |> nth 1 |> Double.parse
     let wildcards = Seq.filter ((=) '*') s.[0] |> Seq.length
     let q = q - e * float wildcards
-    let otherParameters = Seq.filter (startsWith "q=" >> not) s |> Seq.length
+    let otherParameters = Seq.filter (not << isQ) s |> Seq.length
     let q = q + e * float (otherParameters - 1)
     let values = 
         match qi with
