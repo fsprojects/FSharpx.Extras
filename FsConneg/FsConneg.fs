@@ -4,7 +4,9 @@ open System
 open System.Globalization
 
 let inline internal split (sep: char) (s: string) =
-    s.Split [|sep|]
+    if s = null
+        then [||]
+        else s.Split [|sep|]
 
 type Double with
     static member internal parse a =
@@ -14,7 +16,10 @@ let inline internal nth i arr = Array.get arr i
 
 let inline internal lower (s: string) = s.Trim().ToLowerInvariant()
 
-let inline internal startsWith (substr: string) (s: string) = s.StartsWith substr
+let inline internal startsWith (substr: string) (s: string) = 
+    if s = null
+        then false
+        else s.StartsWith substr
 
 let inline internal fst3 (a,_,_) = a
 let inline internal snd3 (_,a,_) = a
