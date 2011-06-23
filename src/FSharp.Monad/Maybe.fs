@@ -35,3 +35,4 @@ module Maybe =
     let inline lift2 f a b = mreturn f <*> a <*> b
     let inline ( *>) x y = lift2 (fun _ z -> z) x y
     let inline ( <*) x y = lift2 (fun z _ -> z) x y
+    let inline (>>.) m f = maybe.Bind(m, fun _ -> f)
