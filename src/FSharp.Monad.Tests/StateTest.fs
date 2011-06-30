@@ -1,4 +1,5 @@
-﻿module StateTests
+﻿module FSharp.Monad.Tests.StateTest
+
 open FSharp.Monad.State
 open NUnit.Framework
 open FsUnit
@@ -11,7 +12,7 @@ let tick = state {
 
 [<Test>]
 let ``When starting a ticker at 0, it should have a state of 0``() =
-  let actual = runState tick 0
+  let actual = tick 0
   fst actual |> should equal 0
 
 [<Test>]
@@ -24,8 +25,8 @@ let ``When starting a ticker at 0 and ticking twice, it should have a state of 2
   actual |> should equal 2
 
 // Stack example
-let enqueue a = State (fun s -> ((), s @ a::[]))
-let dequeue = State (fun (hd::tl) -> (hd, tl))
+let enqueue a = fun s -> ((), s @ a::[])
+let dequeue = fun (hd::tl) -> (hd, tl)
 
 let workflow = state {
   let! queue = getState

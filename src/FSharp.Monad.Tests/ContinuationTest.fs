@@ -1,4 +1,5 @@
-﻿module ContinuationSpecs
+﻿module FSharp.Monad.Tests.ContinuationTest
+
 open System
 open FSharp.Monad.Continuation
 open NUnit.Framework
@@ -13,7 +14,7 @@ let addSomeNumbers = cont {
 [<Test>]
 let ``When adding 6 to 7 and applying a continuation to convert to string and replace 1 with a, it should return a3``() =
   let run f m = m f 
-  runCont addSomeNumbers (fun x -> x.ToString().Replace('1', 'a')) |> should equal "a3"
+  addSomeNumbers (fun x -> x.ToString().Replace('1', 'a')) |> should equal "a3"
 
 (* Test callCC *)
 let sum l =
@@ -25,7 +26,7 @@ let sum l =
       | h::t -> let! r = sum t
                 return h + r })
     return result }
-  runCont (sum l) (id)
+  (sum l) (id)
 
 [<Test>]
 let ``When summing a list without a 2 via callCC it should return 8``() =

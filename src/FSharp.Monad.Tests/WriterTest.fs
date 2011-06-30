@@ -1,4 +1,5 @@
-﻿module WriterTests
+﻿module FSharp.Monad.Tests.WriterTest
+
 open FSharp.Monad.Writer
 open NUnit.Framework
 open FsUnit
@@ -19,7 +20,7 @@ let processFiles files = writer {
 
 [<Test>]
 let ``When processing files, it should log messages``() =
-  let processing files = processFiles files |> runWriter 
+  let processing files = processFiles files ()
   let files = [ "C:\Test1.txt"; "C:\Test2.txt" ]
   processing files |> should equal ((), ["Begin processing files"
                                          "Processing C:\Test1.txt"

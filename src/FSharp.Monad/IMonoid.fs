@@ -1,4 +1,5 @@
-﻿namespace FSharp.Monad
+﻿module FSharp.Monad.Monoid
+
 open System
 open System.Collections.Generic
 
@@ -21,16 +22,15 @@ type MonoidAssociations private() =
     | true, assoc -> assoc :?> IMonoid<'a>
     | false, _    -> failwithf "No IMonoid defined for %O" <| typeof<'a>
 
-module Monoid =
-  MonoidAssociations.Add(new ListMonoid<string>())
-  let mempty<'a> = MonoidAssociations.Get<'a>().mempty
-  let mappend<'a> a b = MonoidAssociations.Get<'a>().mappend(a, b)
+MonoidAssociations.Add(new ListMonoid<string>())
+let mempty<'a> = MonoidAssociations.Get<'a>().mempty
+let mappend<'a> a b = MonoidAssociations.Get<'a>().mappend(a, b)
 
-  let inline mreturn builder x =
-    (^a: (member Return: 'b -> 'c) (builder, x))
+let inline mreturn builder x =
+  (^a: (member Return: 'b -> 'c) (builder, x))
 
-  let inline bind builder m f =
-    (^a: (member Bind: 'd * ('e -> 'c) -> 'c) (builder, m, f))
+let inline bind builder m f =
+  (^a: (member Bind: 'd * ('e -> 'c) -> 'c) (builder, m, f))
 
-  let inline lift builder f m =
-    bind builder m (mreturn builder)
+let inline lift builder f m =
+  bind builder m (mreturn builder)
