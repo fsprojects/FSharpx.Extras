@@ -49,7 +49,7 @@ let filesToZip =
 
 // targets
 Target "Clean" (fun _ ->
-    CleanDirs [buildDir; testDir; deployDir]
+    CleanDirs [buildDir; testDir; deployDir; docsDir]
 )
 
 Target "BuildApp" (fun _ ->
@@ -67,7 +67,6 @@ Target "BuildApp" (fun _ ->
 )
 
 Target "BuildTest" (fun _ ->
-    printfn "%A" testReferences
     MSBuildDebug testDir "Build" testReferences
         |> Log "TestBuild-Output: "
 )
