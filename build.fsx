@@ -6,7 +6,7 @@ open System.IO
 
 // properties
 let projectName = "FSharp.Monad"
-let version = "1.0.1"  
+let version = "1.1.0.1"
 let projectSummary = "A monad library for F# projects."
 let projectDescription = "A monad library for F# projects, including Maybe, State, Reader, Writer, Continuation, and MinLinq."
 let authors = ["Ryan Riley"]
@@ -105,7 +105,7 @@ Target "BuildNuGet" (fun _ ->
     CleanDirs [nugetDir; nugetLibDir; nugetDocsDir]
 
     XCopy (docsDir |> FullName) nugetDocsDir
-    [buildDir + "FSharp.Monad.dll"]
+    [buildDir + "FSharp.Monad.dll"; buildDir + "FSharp.Monad.pdb"]
         |> CopyTo nugetLibDir
 
     NuGet (fun p -> 

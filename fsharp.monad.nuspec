@@ -9,8 +9,11 @@
     <language>en-US</language>
     <summary>@summary@</summary>
     <projectUrl>http://github.com/panesofglass/FSharp.Monad</projectUrl>
-    <licenseUrl>http://github.com/panesofglass/FSharp.Monad/raw/dev/License.txt</licenseUrl>
+    <licenseUrl>http://github.com/panesofglass/FSharp.Monad/raw/master/License.txt</licenseUrl>
     <tags>monad fsharp</tags>
     @dependencies@
   </metadata>  
+  <files>
+    <file src="..\src\FSharp.Monad\**\*.fs" target="src" />
+  </files>
 </package>
