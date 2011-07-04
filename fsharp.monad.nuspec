@@ -7,11 +7,10 @@
     <authors>@authors@</authors>
     <owners>@authors@</owners>
     <language>en-US</language>
-    <summary>@summary@</summary>
+    <summary>@description@</summary>
     <projectUrl>http://github.com/panesofglass/FSharp.Monad</projectUrl>
     <licenseUrl>http://github.com/panesofglass/FSharp.Monad/raw/master/License.txt</licenseUrl>
     <tags>monad fsharp</tags>
-    @dependencies@
   </metadata>  
   <files>
     <file src="..\src\FSharp.Monad\**\*.fs" target="src" />
