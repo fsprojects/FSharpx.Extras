@@ -38,12 +38,14 @@ type StateBuilder() =
 let state = new StateBuilder()
 
 module Operators =
-  let inline mreturn x = state.Return x
-  let inline (>>=) m f = state.Bind(m, f)
-  let inline (<*>) f m = f >>= fun f' -> m >>= fun m' -> mreturn (f' m')
-  let inline lift f m = mreturn f <*> m
+  open FSharp.Monad.Operators
+
+  let inline returnM x = returnM state x
+  let inline (>>=) m f = bindM state m f
+  let inline (<*>) f m = applyM state state f m
+  let inline lift f m = liftM state f m
   let inline (<!>) f m = lift f m
-  let inline lift2 f a b = mreturn f <*> a <*> b
+  let inline lift2 f a b = returnM f <*> a <*> b
   let inline ( *>) x y = lift2 (fun _ z -> z) x y
   let inline ( <*) x y = lift2 (fun z _ -> z) x y
-  let inline (>>.) m f = state.Bind(m, fun _ -> f)
+  let inline (>>.) m f = bindM state m (fun _ -> f)

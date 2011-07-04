@@ -34,12 +34,14 @@ let cont = ContinuationBuilder()
 let callCC f = fun k -> (f (fun a -> (fun _ -> k a))) k
 
 module Operators =
-  let inline mreturn x = cont.Return x
-  let inline (>>=) m f = cont.Bind(m, f)
-  let inline (<*>) f m = f >>= fun f' -> m >>= fun m' -> mreturn (f' m')
-  let inline lift f m = mreturn f <*> m
+  open FSharp.Monad.Operators
+
+  let inline returnM x = returnM cont x
+  let inline (>>=) m f = bindM cont m f
+  let inline (<*>) f m = applyM cont cont f m
+  let inline lift f m = liftM cont f m
   let inline (<!>) f m = lift f m
-  let inline lift2 f a b = mreturn f <*> a <*> b
+  let inline lift2 f a b = returnM f <*> a <*> b
   let inline ( *>) x y = lift2 (fun _ z -> z) x y
   let inline ( <*) x y = lift2 (fun z _ -> z) x y
-  let inline (>>.) m f = cont.Bind(m, fun _ -> f)
+  let inline (>>.) m f = bindM cont m (fun _ -> f)

@@ -34,6 +34,7 @@
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
     <Compile Include="IMonoid.fs" />
+    <Compile Include="Operators.fs" />
     <Compile Include="Maybe.fs" />
     <Compile Include="State.fs" />
     <Compile Include="Reader.fs" />

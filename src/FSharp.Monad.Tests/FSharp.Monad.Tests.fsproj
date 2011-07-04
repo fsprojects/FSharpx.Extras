@@ -40,6 +40,7 @@
     <Compile Include="ReaderTest.fs" />
     <Compile Include="WriterTest.fs" />
     <Compile Include="ContinuationTest.fs" />
+    <Compile Include="OperatorsTest.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">

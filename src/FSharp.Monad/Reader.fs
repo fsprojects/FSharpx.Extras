@@ -37,12 +37,14 @@ let asks f = reader {
 let local (f:'r1 -> 'r2) (m:Reader<'r2,'a>) : Reader<'r1, 'a> = f >> m
 
 module Operators =
-  let inline mreturn x = reader.Return x
-  let inline (>>=) m f = reader.Bind(m, f)
-  let inline (<*>) f m = f >>= fun f' -> m >>= fun m' -> mreturn (f' m')
-  let inline lift f m = mreturn f <*> m
+  open FSharp.Monad.Operators
+
+  let inline returnM x = returnM reader x
+  let inline (>>=) m f = bindM reader m f
+  let inline (<*>) f m = applyM reader reader f m
+  let inline lift f m = liftM reader f m
   let inline (<!>) f m = lift f m
-  let inline lift2 f a b = mreturn f <*> a <*> b
+  let inline lift2 f a b = returnM f <*> a <*> b
   let inline ( *>) x y = lift2 (fun _ z -> z) x y
   let inline ( <*) x y = lift2 (fun z _ -> z) x y
-  let inline (>>.) m f = reader.Bind(m, fun _ -> f)
+  let inline (>>.) m f = bindM reader m (fun _ -> f)
