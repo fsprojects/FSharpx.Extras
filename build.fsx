@@ -5,8 +5,9 @@ open Fake
 open System.IO
 
 // properties
+let currentDate = System.DateTime.UtcNow
 let projectName = "FSharp.Monad"
-let version = "1.1.0.1"
+let version = "1.1.2." + currentDate.ToString("yyyyMMdd")
 let projectSummary = "A monad library for F# projects."
 let projectDescription = "A monad library for F# projects, including Maybe, State, Reader, Writer, Continuation, and MinLinq."
 let authors = ["Ryan Riley"]
@@ -87,7 +88,7 @@ Target "GenerateDocumentation" (fun _ ->
         |> Docu (fun p ->
             {p with
                 ToolPath = fakePath + "/docu.exe"
-                TemplatesPath = @".\lib\templates"
+                TemplatesPath = "./lib/templates"
                 OutputPath = docsDir })
 )
 
