@@ -41,6 +41,7 @@
     <Compile Include="ReaderTest.fs" />
     <Compile Include="WriterTest.fs" />
     <Compile Include="ContinuationTest.fs" />
+    <Compile Include="IterateeTest.fs" />
     <Compile Include="OperatorsTest.fs" />
   </ItemGroup>
   <ItemGroup>

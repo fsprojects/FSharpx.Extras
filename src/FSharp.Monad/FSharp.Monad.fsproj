@@ -41,6 +41,7 @@
     <Compile Include="Reader.fs" />
     <Compile Include="Writer.fs" />
     <Compile Include="Continuation.fs" />
+    <Compile Include="Iteratee.fs" />
     <Compile Include="FEnumerator.fs" />
     <Compile Include="FEnumerable.fs" />
     <Compile Include="FObservable.fs" />
