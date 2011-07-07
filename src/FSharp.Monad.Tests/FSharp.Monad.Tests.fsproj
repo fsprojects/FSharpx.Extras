@@ -35,6 +35,7 @@
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
     <None Include="packages.config" />
+    <Compile Include="AsyncOperatorsTest.fs" />
     <Compile Include="MaybeTest.fs" />
     <Compile Include="StateTest.fs" />
     <Compile Include="ReaderTest.fs" />
