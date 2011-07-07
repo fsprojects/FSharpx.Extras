@@ -12,7 +12,4 @@
     <licenseUrl>http://github.com/panesofglass/FSharp.Monad/raw/master/License.txt</licenseUrl>
     <tags>monad fsharp</tags>
   </metadata>  
-  <files>
-    <file src="..\src\FSharp.Monad\**\*.fs" target="src" />
-  </files>
 </package>
