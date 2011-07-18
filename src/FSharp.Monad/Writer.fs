@@ -3,6 +3,13 @@
 open System
 open Monoid
 
+type ListMonoid<'a>() =
+  interface IMonoid<'a list> with
+    member this.mempty() = []
+    member this.mappend(a,b) = a @ b
+
+MonoidAssociations.Add(new ListMonoid<string>())
+
 type Writer<'w, 'a> = unit -> 'a * 'w
 
 /// The writer monad.

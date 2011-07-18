@@ -9,11 +9,6 @@ type IMonoid<'a> =
   abstract member mempty  : unit -> 'a
   abstract member mappend : 'a * 'a -> 'a
 
-type ListMonoid<'a>() =
-  interface IMonoid<'a list> with
-    member this.mempty() = []
-    member this.mappend(a,b) = a @ b
-
 type MonoidAssociations private() =
   static let associations = new Dictionary<Type, obj>()
   static member Add<'a>(monoid : IMonoid<'a>) = associations.Add(typeof<'a>, monoid)
@@ -22,6 +17,5 @@ type MonoidAssociations private() =
     | true, assoc -> assoc :?> IMonoid<'a>
     | false, _    -> failwithf "No IMonoid defined for %O" <| typeof<'a>
 
-MonoidAssociations.Add(new ListMonoid<string>())
 let mempty<'a> = MonoidAssociations.Get<'a>().mempty
 let mappend<'a> a b = MonoidAssociations.Get<'a>().mappend(a, b)

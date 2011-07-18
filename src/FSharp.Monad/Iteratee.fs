@@ -1,48 +1,54 @@
 ﻿module FSharp.Monad.Iteratee
 
 open System.IO
+open Monoid
 
-type Stream<'el> =
-  | Chunk of 'el
-  | Empty
+type Stream<'a> =
+  | Chunk of 'a list
   | EOF
 
+type ChunkMonoid<'a>() =
+  interface IMonoid<Stream<'a>> with
+    member this.mempty() = Chunk []
+    member this.mappend(a,b) = 
+      match a with
+      | Chunk []
+      | EOF -> match b with EOF -> EOF | _ -> b
+      | Chunk xs ->
+          match b with
+          | Chunk []
+          | EOF -> a
+          | Chunk ys -> Chunk (xs @ ys)
+
+MonoidAssociations.Add(new ChunkMonoid<_>())
+
 type Iteratee<'el,'acc> =
-  | Continue of exn option * (Stream<'el> -> Iteratee<'el,'acc> * Stream<'el>)
-  | Yield of 'acc
+  | Continue of (Stream<'el> -> Iteratee<'el,'acc>)
+  | Yield of 'acc * Stream<'el>
+  | Error of exn
 
 type Enumerator<'el,'acc> = Iteratee<'el,'acc> -> Iteratee<'el,'acc>
 
-type Enumeratee<'elo,'eli,'acc> = Iteratee<'eli,'acc> -> Iteratee<'elo,Iteratee<'eli,'acc>>
-
-let runIteratee m =
-  match m with
-  | Yield x -> x
-  | Continue (Some e, _) -> raise e
-  | Continue (_, k) ->
-      match fst (k EOF) with
-      | Yield xx   -> xx
-      | Continue _ -> failwith "Diverging iteratee"
+type Enumeratee<'elo,'eli,'acc> = Iteratee<'eli,'acc> -> Iteratee<'elo, Iteratee<'eli,'acc>>
 
 let rec bind m f =
   match m with
-  | Yield x -> f x
-  | Continue (e, k) ->
-      Continue(e, fun s ->
-        match k s with
-        | Yield x, s' ->
-            match f x with
-            | Continue (None, k) -> k s'
-            | i                  -> i,s'
-        | m', s'        -> bind m' f, s')
+  | Continue k -> Continue(fun s -> bind (k s) f)
+  | Error e -> Error e
+  | Yield(x, Chunk []) -> f x
+  | Yield(x, extra) ->
+      match f x with
+      | Continue k -> k extra
+      | Error e -> Error e
+      | Yield(acc',_) -> Yield(acc', extra)
 
 type IterateeBuilder() =
-  member this.Return(x) = Yield x
+  member this.Return(x) = Yield(x, mempty())
   member this.ReturnFrom(m:Iteratee<_,_>) = m
   member this.Bind(m, k) = bind m k
-  member this.Zero() = Yield ()
+  member this.Zero() = Yield((), mempty())
   member this.Combine(comp1, comp2) = bind comp1 (fun () -> comp2)
-  member this.Delay(f) = bind (Yield()) f
+  member this.Delay(f) = bind (Yield((), mempty())) f
 let iteratee = IterateeBuilder()
 
 module Operators =
@@ -57,3 +63,54 @@ module Operators =
   let inline ( *>) x y = lift2 (fun _ z -> z) x y
   let inline ( <*) x y = lift2 (fun z _ -> z) x y
   let inline (>>.) m f = bindM iteratee m (fun _ -> f)
+
+let rec enumEOF = function
+  | Yield(x,_) -> Yield(x,EOF)
+  | Error e -> Error e
+  | Continue k ->
+      match k EOF with
+      | Continue _ -> failwith "enumEOF: divergent iteratee"
+      | i -> enumEOF i
+
+let run i =
+  match enumEOF i with
+  | Error e -> Choice1Of2 e
+  | Yield(x,_) -> Choice2Of2 x
+  | Continue _ -> failwith "run: divergent iteratee"
+
+let run_ i =
+  match run i with
+  | Choice1Of2 e -> raise e
+  | Choice2Of2 x -> x
+
+//val enumerate :: 'a list -> Enumerator<'a,'b,'c>
+let rec enumerate input i =
+  match input, i with
+  | []     , Continue k -> Continue k
+  | (x::xs), Continue k -> enumerate xs (k (Chunk [x]))
+  | _ , i -> i
+
+// val enumeratePure1Chunk :: 'a -> Enumerator<'a,'b,'c>
+let enumeratePure1Chunk str i =
+  match str, i with
+  | str, Continue k -> k (Chunk str)
+  | _  , i -> i
+
+// val enumeratePureNChunk :: 'a list -> int -> Enumerator<'a,'b,'c>
+let rec enumeratePureNChunk str n i =
+  match str, n, i with
+  | str, n, Continue k ->
+      let (s1, s2) = (Seq.take n str |> List.ofSeq, Seq.skip n str |> List.ofSeq)
+      enumeratePureNChunk s2 n (k (Chunk s1))
+  | _  , _, i -> i
+
+//let enumStream (stream:Stream) bufferSize iter =
+//  let buffer = Array.zeroCreate<byte> bufferSize
+//  let rec loop iter =
+//    match iter with
+//    | Continue(None, k) -> read k
+//    | _ -> fun p -> Yield k
+//  and read k p = iteratee {
+//    let! n =  }      
+//  loop iter
+
