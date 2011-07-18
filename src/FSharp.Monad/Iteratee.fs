@@ -104,13 +104,19 @@ let rec enumeratePureNChunk str n i =
       enumeratePureNChunk s2 n (k (Chunk s1))
   | _  , _, i -> i
 
-//let enumStream (stream:Stream) bufferSize iter =
-//  let buffer = Array.zeroCreate<byte> bufferSize
-//  let rec loop iter =
-//    match iter with
-//    | Continue(None, k) -> read k
-//    | _ -> fun p -> Yield k
-//  and read k p = iteratee {
-//    let! n =  }      
-//  loop iter
+let enumStream bufferSize (stream:Stream) i =
+  let buffer = Array.zeroCreate<byte> bufferSize
+  let rec loop i =
+    match i with
+    | Continue k -> read k
+    | x -> x
+  and read k =
+    let result =
+      try Choice2Of2(stream.Read(buffer, 0, bufferSize))
+      with e -> Choice1Of2 e
+    match result with
+    | Choice1Of2 e  -> Error e
+    | Choice2Of2 0  -> Continue k
+    | Choice2Of2 n' -> loop (k (Chunk (buffer |> List.ofArray))) // Not happy about this. Need to investigate switching to Seq.
+  loop i
 
