@@ -81,7 +81,7 @@ let run i =
 let run_ i =
   match run i with
   | Choice1Of2 e -> raise e
-  | Choice2Of2 x -> x
+  | x -> x
 
 //val enumerate :: 'a list -> Enumerator<'a,'b,'c>
 let rec enumerate input i =

@@ -14,6 +14,11 @@ module List =
     | Some x -> (Seq.take x l |> List.ofSeq, Seq.skip x l |> List.ofSeq)
     | _ -> (l,[])
 
+let runTest i =
+  match run i with
+  | Choice1Of2 e -> raise e
+  | Choice2Of2 x -> x
+
 let counter<'a> : Iteratee<'a,int> =
   let rec step n = function
     | Chunk [] as s -> Continue (step n)
@@ -24,7 +29,7 @@ let counter<'a> : Iteratee<'a,int> =
 [<Test>]
 let ``test counter should calculate the length of the list without modification``() =
   let actual = enumerate [1;2;3] counter
-  run_ actual |> should equal 3
+  runTest actual |> should equal 3
 
 let rec peek =
   let rec step = function
@@ -42,30 +47,25 @@ let testPeek = [|
 [<TestCaseSource("testPeek")>]
 let ``test peek should return the value without removing it from the stream``(input:char list, expected:char option) =
   let actual = enumerate input peek
-  run_ actual |> should equal expected
+  runTest actual |> should equal expected
 
 let rec head =
   let rec step = function
     | Chunk []     as s -> head
-    | Chunk(x::xs) as s -> Yield(x, (Chunk xs))
-    | EOF               -> Error(Exception "EOF")
+    | Chunk(x::xs) as s -> Yield(Some x, (Chunk xs))
+    | EOF               -> Yield(None, EOF)
   Continue step
 
 let testHead = [|
-  [| box ['c']; box 'c' |]
-  [| box ['c';'h';'a';'r']; box 'c' |]
+  [| box ([]:char list); box None |]
+  [| box ['c']; box (Some 'c') |]
+  [| box ['c';'h';'a';'r']; box (Some 'c') |]
 |]
 [<Test>]
 [<TestCaseSource("testHead")>]
-let ``test head should return the value and remove it from the stream``(input:char list, expected:char) =
+let ``test head should return the value and remove it from the stream``(input:char list, expected:char option) =
   let actual = enumerate input head
-  run_ actual |> should equal expected
-
-[<Ignore("This test passes by failing appropriately; however, FsUnit doesn't catch the exception appropriately.")>]
-[<Test>]
-let ``test head should fail for an empty list``() =
-  let actual = enumeratePure1Chunk [] head
-  run_ actual |> should throw typeof<System.Exception>
+  runTest actual |> should equal expected
 
 let rec drop n =
   let rec step = function
@@ -88,7 +88,7 @@ let split (pred:char -> bool) =
 [<Test>]
 let ``test split should correctly split the input``() =
   let actual = enumeratePure1Chunk (List.ofSeq "abcde") (split ((=) 'c'))
-  run_ actual |> should equal ['a';'b']
+  runTest actual |> should equal ['a';'b']
 
 let heads str =
   let rec loop count str =
@@ -108,7 +108,7 @@ let heads str =
 [<Test>]
 let ``test heads should count the number of characters in a set of headers``() =
   let actual = enumeratePure1Chunk (List.ofSeq "abd") (heads (List.ofSeq "abc"))
-  run_ actual |> should equal 2
+  runTest actual |> should equal 2
 
 let readLines =
   let toString chars = String(Array.ofList chars)
