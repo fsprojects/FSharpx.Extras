@@ -7,12 +7,17 @@ open FSharp.Monad.Iteratee.Operators
 open NUnit.Framework
 open FsUnit
 
-module List =
-  let split p l =
-    let n = List.tryFindIndex p l
-    match n with
-    | Some x -> (Seq.take x l |> List.ofSeq, Seq.skip x l |> List.ofSeq)
-    | _ -> (l,[])
+[<Test>]
+let ``test List_split correctly breaks the list on the specified predicate``() =
+  let str = List.ofSeq "Howdy! Want to play?"
+  let expected = (List.ofSeq "Howdy!", List.ofSeq " Want to play?")
+  List.split (fun c -> c = ' ') str |> should equal expected
+
+[<Test>]
+let ``test List_splitAt correctly breaks the list on the specified index``() =
+  let str = List.ofSeq "Howdy! Want to play?"
+  let expected = (List.ofSeq "Howdy!", List.ofSeq " Want to play?")
+  List.splitAt 6 str |> should equal expected
 
 let runTest i =
   match run i with
@@ -28,8 +33,8 @@ let counter<'a> : Iteratee<'a,int> =
 
 [<Test>]
 let ``test counter should calculate the length of the list without modification``() =
-  let actual = enumerate [1;2;3] counter
-  runTest actual |> should equal 3
+  let actual = enumerate [1;2;3] counter |> runTest 
+  actual |> should equal 3
 
 let rec peek =
   let rec step = function
@@ -46,8 +51,8 @@ let testPeek = [|
 [<Test>]
 [<TestCaseSource("testPeek")>]
 let ``test peek should return the value without removing it from the stream``(input:char list, expected:char option) =
-  let actual = enumerate input peek
-  runTest actual |> should equal expected
+  let actual = enumerate input peek |> runTest 
+  actual |> should equal expected
 
 let rec head =
   let rec step = function
@@ -64,8 +69,8 @@ let testHead = [|
 [<Test>]
 [<TestCaseSource("testHead")>]
 let ``test head should return the value and remove it from the stream``(input:char list, expected:char option) =
-  let actual = enumerate input head
-  runTest actual |> should equal expected
+  let actual = enumerate input head |> runTest
+  actual |> should equal expected
 
 let rec drop n =
   let rec step = function
@@ -75,20 +80,19 @@ let rec drop n =
   if n = 0 then Yield((), Chunk []) else Continue step
 
 let split (pred:char -> bool) =
-  let ieContM k = Continue k
   let rec step before = function
-    | Chunk [] -> ieContM (step before)
+    | Chunk [] -> Continue (step before)
     | Chunk str ->
         match List.split pred str with
-        | (_,[]) -> ieContM (step (before @ str))
+        | (_,[]) -> Continue (step (before @ str))
         | (str,tail) -> Yield((before @ str), Chunk tail)
-    | s     -> Yield(before, s)
+    | s -> Yield(before, s)
   Continue (step [])
 
 [<Test>]
 let ``test split should correctly split the input``() =
-  let actual = enumeratePure1Chunk (List.ofSeq "abcde") (split ((=) 'c'))
-  runTest actual |> should equal ['a';'b']
+  let actual = enumeratePure1Chunk (List.ofSeq "abcde") (split ((=) 'c')) |> runTest
+  actual |> should equal ['a';'b']
 
 let heads str =
   let rec loop count str =
@@ -107,8 +111,8 @@ let heads str =
 
 [<Test>]
 let ``test heads should count the number of characters in a set of headers``() =
-  let actual = enumeratePure1Chunk (List.ofSeq "abd") (heads (List.ofSeq "abc"))
-  runTest actual |> should equal 2
+  let actual = enumeratePure1Chunk (List.ofSeq "abd") (heads (List.ofSeq "abc")) |> runTest
+  actual |> should equal 2
 
 let readLines =
   let toString chars = String(Array.ofList chars)
@@ -117,8 +121,31 @@ let readLines =
     split (fun c -> c = '\r' || c = '\n') >>= fun l -> terminators >>= check acc l
   and check acc l count =
     match acc, l, count with
-    | acc,  l, 0 -> Yield (Choice1Of2 (List.rev acc |> List.map toString), Chunk l)
     | acc, [], _ -> Yield (Choice2Of2 (List.rev acc |> List.map toString), EOF)
+    | acc,  l, 0 -> Yield (Choice1Of2 (List.rev acc |> List.map toString), Chunk l)
     | acc,  l, _ -> lines (l::acc)
   lines []
-  
+
+let readLinesTests = [|
+  [| box ""; box (Choice2Of2 []:Choice<String list, String list>) |]
+  [| box "line1"; box (Choice1Of2 []:Choice<String list, String list>) |]
+  [| box "line1\n"; box (Choice2Of2 ["line1"]:Choice<String list, String list>) |]
+  [| box "line1\r"; box (Choice2Of2 ["line1"]:Choice<String list, String list>) |]
+  [| box "line1\r\n"; box (Choice2Of2 ["line1"]:Choice<String list, String list>) |]
+  [| box "line1\r\nline2"; box (Choice1Of2 ["line1"]:Choice<String list, String list>) |]
+  [| box "line1\r\nline2\r\n"; box (Choice2Of2 ["line1";"line2"]:Choice<String list, String list>) |]
+  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5"; box (Choice1Of2 ["line1";"line2";"line3";"line4"]:Choice<String list, String list>) |]
+  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5\r\n"; box (Choice2Of2 ["line1";"line2";"line3";"line4";"line5"]:Choice<String list, String list>) |]
+|]
+[<Test>]
+[<TestCaseSource("readLinesTests")>]
+let ``test readLines should return the lines from the input``(input, expected:Choice<String list, String list>) =
+  let actual = enumeratePure1Chunk (List.ofSeq input) readLines |> runTest
+  actual |> should equal expected
+
+[<Test>]
+[<TestCaseSource("readLinesTests")>]
+let ``test readLines should return the lines from the input when chunked``(input, expected:Choice<String list, String list>) =
+  // TODO: Get enumeratePureNChunk to correctly parse \r and \n as newline markers on their own.
+  let actual = enumeratePureNChunk (List.ofSeq input) 5 readLines |> runTest
+  actual |> should equal expected

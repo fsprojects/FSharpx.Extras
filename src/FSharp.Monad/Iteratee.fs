@@ -3,6 +3,29 @@
 open System.IO
 open Monoid
 
+/// Extensions to list for splitting on break predicates.
+module List =
+  let split pred l =
+    let rec loop l cont =
+      match l with
+      | [] -> ([],[])
+      | x::[] when not (pred x) -> (cont l, [])
+      | x::xs when pred x -> (cont [], l)
+      | x::xs when not (pred x) -> loop xs (fun rest -> cont (x::rest))
+      | _ -> failwith "List.split: Unrecognized pattern"
+    loop l id
+
+  let splitAt n l =
+    let pred i = i >= n
+    let rec loop i l cont =
+      match l with
+      | [] -> ([],[])
+      | x::[] when not (pred i) -> (cont l, [])
+      | x::xs when pred i -> (cont [], l)
+      | x::xs when not (pred i) -> loop (i+1) xs (fun rest -> cont (x::rest))
+      | _ -> failwith "List.split: Unrecognized pattern"
+    loop 0 l id
+
 type Stream<'a> =
   | Chunk of 'a list
   | EOF
@@ -42,12 +65,16 @@ let rec bind m f =
       | Error e -> Error e
       | Yield(acc',_) -> Yield(acc', extra)
 
+let combine comp1 comp2 =
+  let binder () = comp2
+  bind comp1 binder
+
 type IterateeBuilder() =
   member this.Return(x) = Yield(x, mempty())
   member this.ReturnFrom(m:Iteratee<_,_>) = m
   member this.Bind(m, k) = bind m k
   member this.Zero() = Yield((), mempty())
-  member this.Combine(comp1, comp2) = bind comp1 (fun () -> comp2)
+  member this.Combine(comp1, comp2) = combine comp1 comp2
   member this.Delay(f) = bind (Yield((), mempty())) f
 let iteratee = IterateeBuilder()
 
@@ -99,8 +126,8 @@ let enumeratePure1Chunk str i =
 // val enumeratePureNChunk :: 'a list -> int -> Enumerator<'a,'b,'c>
 let rec enumeratePureNChunk str n i =
   match str, n, i with
-  | str, n, Continue k ->
-      let (s1, s2) = (Seq.take n str |> List.ofSeq, Seq.skip n str |> List.ofSeq)
+  | _::_, n, Continue k ->
+      let (s1, s2) = List.splitAt n str
       enumeratePureNChunk s2 n (k (Chunk s1))
   | _  , _, i -> i
 
