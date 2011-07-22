@@ -1,9 +1,7 @@
 ﻿module FSharp.Monad.Iteratee
 
 open System.IO
-open Monoid
 
-/// Extensions to list for splitting on break predicates.
 module List =
   let split pred l =
     let rec loop l cont =
@@ -23,27 +21,79 @@ module List =
       | x::[] when not (pred i) -> (cont l, [])
       | x::xs when pred i -> (cont [], l)
       | x::xs when not (pred i) -> loop (i+1) xs (fun rest -> cont (x::rest))
-      | _ -> failwith "List.split: Unrecognized pattern"
+      | _ -> failwith "List.splitAt: Unrecognized pattern"
     loop 0 l id
 
+module ByteString =
+  open System
+  open System.Diagnostics
+
+  // Consider switching to ArraySegment, which is mutable.
+  type ByteString = BS of byte array * int * int
+    with
+    static member op_Equality (BS(x,o,l), BS(x',o',l')) =
+      if not (l = l') then false
+      else (l = 0 && l' = 0) || (x = x' && o = o') // TODO: Add byte by byte comparison
+
+    static member op_Nil = BS(Array.empty,0,0)
+
+    static member op_Cons (hd, BS(x,o,l)) =
+      let buffer = Array.zeroCreate<byte> (l + 1)
+      Buffer.SetByte(buffer,0,hd)
+      Buffer.BlockCopy(x,o,buffer,1,l)
+      BS(buffer,0,l+1)
+
+    static member op_Append (BS(x,o,l), BS(x',o',l')) =
+      let buffer = Array.zeroCreate<byte> (l + l')
+      Buffer.BlockCopy(x,o,buffer,0,l)
+      Buffer.BlockCopy(x',o',buffer,l,l')
+      BS(buffer,0,l+l')
+
+    interface System.Collections.Generic.IEnumerable<byte> with
+      member x.GetEnumerator() =
+        let (BS(a,o,l)) = x
+        let inner = seq { for i in o..l do yield a.[i] }
+        inner.GetEnumerator()
+      member x.GetEnumerator() =
+        let (BS(a,o,l)) = x
+        let inner = seq { for i in o..l do yield a.[i] }
+        inner.GetEnumerator() :> System.Collections.IEnumerator
+  
+  let empty = ByteString.op_Nil
+  let singleton c = BS(Array.create 1 c, 0, 1)
+  let ofList l = BS(Array.ofList l, 0, l.Length)
+  let toList (BS(x,o,l)) = [ for i in o..l -> x.[i] ]
+  let isEmpty (BS(_,_,l)) = Debug.Assert(l >= 0); l <= 0
+  let length (BS(_,_,l)) = Debug.Assert(l >= 0); l
+  let head (BS(x,o,l)) = if l <= 0 then failwith "" else x.[o]
+  let tail (BS(x,o,l)) = BS(x,o+1,l-1)
+  let cons hd tl = ByteString.op_Cons(hd, tl)
+  let append a b = ByteString.op_Append(a, b)
+  
+  let split pred l =
+    let rec loop l cont =
+      if isEmpty l then (empty, empty)
+      elif isEmpty (tail l) && not (pred (head l)) then (cont l, empty)
+      elif pred (head l) then (cont empty, l)
+      elif not (pred (head l)) then loop (tail l) (fun rest -> cont (cons (head l) rest))
+      else failwith "ByteString.split: Unrecognized pattern"
+    loop l id
+  
+  let splitAt n l =
+    let pred i = i >= n
+    let rec loop i l cont =
+      if isEmpty l then (empty, empty)
+      elif isEmpty (tail l) && not (pred i) then (cont l, empty)
+      elif pred i then (cont empty, l)
+      elif not (pred i) then loop (i+1) (tail l) (fun rest -> cont (cons (head l) rest))
+      else failwith "ByteString.splitAt: Unrecognized pattern"
+    loop 0 l id
+open ByteString
+
 type Stream<'a> =
-  | Chunk of 'a list
+  | Chunk of 'a
+  | Empty
   | EOF
-
-type ChunkMonoid<'a>() =
-  interface IMonoid<Stream<'a>> with
-    member this.mempty() = Chunk []
-    member this.mappend(a,b) = 
-      match a with
-      | Chunk []
-      | EOF -> match b with EOF -> EOF | _ -> b
-      | Chunk xs ->
-          match b with
-          | Chunk []
-          | EOF -> a
-          | Chunk ys -> Chunk (xs @ ys)
-
-MonoidAssociations.Add(new ChunkMonoid<_>())
 
 type Iteratee<'el,'acc> =
   | Continue of (Stream<'el> -> Iteratee<'el,'acc>)
@@ -58,7 +108,7 @@ let rec bind m f =
   match m with
   | Continue k -> Continue(fun s -> bind (k s) f)
   | Error e -> Error e
-  | Yield(x, Chunk []) -> f x
+  | Yield(x, Empty) -> f x
   | Yield(x, extra) ->
       match f x with
       | Continue k -> k extra
@@ -70,12 +120,12 @@ let combine comp1 comp2 =
   bind comp1 binder
 
 type IterateeBuilder() =
-  member this.Return(x) = Yield(x, mempty())
+  member this.Return(x) = Yield(x, Empty)
   member this.ReturnFrom(m:Iteratee<_,_>) = m
   member this.Bind(m, k) = bind m k
-  member this.Zero() = Yield((), mempty())
+  member this.Zero() = Yield((), Empty)
   member this.Combine(comp1, comp2) = combine comp1 comp2
-  member this.Delay(f) = bind (Yield((), mempty())) f
+  member this.Delay(f) = bind (Yield((), Empty)) f
 let iteratee = IterateeBuilder()
 
 module Operators =
@@ -144,6 +194,5 @@ let enumStream bufferSize (stream:Stream) i =
     match result with
     | Choice1Of2 e  -> Error e
     | Choice2Of2 0  -> Continue k
-    | Choice2Of2 n' -> loop (k (Chunk (buffer |> List.ofArray))) // Not happy about this. Need to investigate switching to Seq.
+    | Choice2Of2 n' -> loop (k (Chunk (BS(buffer,0,buffer.Length))))
   loop i
-
