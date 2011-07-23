@@ -8,6 +8,7 @@ open System.IO
 let currentDate = System.DateTime.UtcNow
 let projectName = "FSharp.Monad"
 let version = "1.1.4." + currentDate.ToString("yMMdd")
+let coreSummary = "Library containing standard operators for building computation expressions (monads)."
 let projectSummary = "A monad library for F# projects."
 let projectDescription = "A monad library for F# projects, including Maybe, State, Reader, Writer, Continuation, and MinLinq."
 let authors = ["Ryan Riley"]
@@ -58,8 +59,17 @@ Target "BuildApp" (fun _ ->
         {p with 
             CodeLanguage = FSharp
             AssemblyVersion = version
-            AssemblyTitle = projectSummary
-            AssemblyDescription = projectDescription
+            AssemblyTitle = projectName + ".Core"
+            AssemblyDescription = coreSummary
+            Guid = "1653436C-D15F-4E79-920A-FA7BC94306BB"
+            OutputFileName = "./src/FSharp.Monad.Core/AssemblyInfo.fs" })
+
+    AssemblyInfo (fun p ->
+        {p with 
+            CodeLanguage = FSharp
+            AssemblyVersion = version
+            AssemblyTitle = projectName
+            AssemblyDescription = projectSummary
             Guid = "1e95a279-c2a9-498b-bc72-6e7a0d6854ce"
             OutputFileName = "./src/FSharp.Monad/AssemblyInfo.fs" })
 
@@ -106,7 +116,10 @@ Target "BuildNuGet" (fun _ ->
     CleanDirs [nugetDir; nugetLibDir; nugetDocsDir]
 
     XCopy (docsDir |> FullName) nugetDocsDir
-    [ buildDir + "FSharp.Monad.dll"
+    [ buildDir + "FSharp.Monad.Core.dll"
+      buildDir + "FSharp.Monad.Core.pdb"
+      buildDir + "FSharp.Monad.Core.xml"
+      buildDir + "FSharp.Monad.dll"
       buildDir + "FSharp.Monad.pdb"
       buildDir + "FSharp.Monad.xml" ]
         |> CopyTo nugetLibDir

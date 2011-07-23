@@ -21,7 +21,6 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Debug\FSharp.Monad.Tests.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,26 +29,23 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\FSharp.Monad.Tests.XML</DocumentationFile>
   </PropertyGroup>
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
-    <None Include="packages.config" />
-    <Compile Include="AsyncOperatorsTest.fs" />
     <Compile Include="MaybeTest.fs" />
     <Compile Include="StateTest.fs" />
     <Compile Include="ReaderTest.fs" />
     <Compile Include="WriterTest.fs" />
     <Compile Include="ContinuationTest.fs" />
     <Compile Include="IterateeTest.fs" />
-    <Compile Include="OperatorsTest.fs" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
       <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="FsUnit.NUnit-0.9.0">
-      <HintPath>..\..\packages\FsUnit.0.9.0\Lib\FsUnit.NUnit-0.9.0.dll</HintPath>
+      <HintPath>..\..\packages\FsUnit.0.9.1\Lib\FsUnit.NUnit-0.9.0.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
@@ -69,6 +65,11 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\FSharp.Monad.Core\FSharp.Monad.Core.fsproj">
+      <Name>FSharp.Monad.Core</Name>
+      <Project>{1653436c-d15f-4e79-920a-fa7bc94306bb}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\FSharp.Monad\FSharp.Monad.fsproj">
       <Name>FSharp.Monad</Name>
       <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
