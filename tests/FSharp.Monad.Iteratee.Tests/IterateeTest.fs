@@ -71,6 +71,15 @@ let rec drop n =
     | EOF         as s -> Yield((), s)
   if n = 0 then Yield((), Chunk []) else Continue step
 
+[<Test>]
+[<Sequential>]
+let ``test drop should drop the first n items``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
+  let drop2Head = iteratee {
+    do! drop x
+    return! head }
+  let actual = enumerate [0..9] drop2Head |> runTest
+  actual |> should equal (Some x)
+
 let split (pred:char -> bool) =
   let rec step before = function
     | Empty | Chunk [] -> Continue (step before)

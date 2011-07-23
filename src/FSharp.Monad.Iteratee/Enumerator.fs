@@ -7,7 +7,7 @@ type Enumerator<'el,'acc> = Iteratee<'el,'acc> -> Iteratee<'el,'acc>
 
 // TODO: EnumeratorBuilder
 
-let rec enumEOF = function
+let rec enumEOF : Enumerator<'el,'acc> = function
   | Yield(x,_) -> Yield(x,EOF)
   | Error e -> Error e
   | Continue k ->
