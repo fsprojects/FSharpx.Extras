@@ -5,14 +5,12 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</ProjectGuid>
+    <ProjectGuid>{258d97e2-004c-4f9a-913b-a08b3e281544}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>FSharp.Monad</RootNamespace>
-    <AssemblyName>FSharp.Monad</AssemblyName>
+    <RootNamespace>FSharp.Monad.MinLinq</RootNamespace>
+    <AssemblyName>FSharp.Monad.MinLinq</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <Name>FSharp.Monad</Name>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
-    <FscToolPath>..\..\lib\FSharp\</FscToolPath>
+    <Name>FSharp.Monad.MinLinq</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,6 +20,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
+    <DocumentationFile>bin\Debug\FSharp.Monad.MinLinq.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,17 +29,9 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\FSharp.Monad.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\FSharp.Monad.MinLinq.XML</DocumentationFile>
   </PropertyGroup>
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
-  <ItemGroup>
-    <Compile Include="Maybe.fs" />
-    <Compile Include="State.fs" />
-    <Compile Include="Reader.fs" />
-    <Compile Include="Writer.fs" />
-    <Compile Include="Continuation.fs" />
-    <Compile Include="Iteratee.fs" />
-  </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
       <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
@@ -48,6 +39,11 @@
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FEnumerator.fs" />
+    <Compile Include="FEnumerable.fs" />
+    <Compile Include="FObservable.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FSharp.Monad.Core\FSharp.Monad.Core.fsproj">

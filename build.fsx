@@ -10,7 +10,7 @@ let projectName = "FSharp.Monad"
 let version = "1.1.4." + currentDate.ToString("yMMdd")
 let coreSummary = "Library containing standard operators for building computation expressions (monads)."
 let projectSummary = "A monad library for F# projects."
-let projectDescription = "A monad library for F# projects, including Maybe, State, Reader, Writer, Continuation, and MinLinq."
+let projectDescription = "A monad library for F# projects."
 let authors = ["Ryan Riley"]
 let mail = "ryan.riley@panesofglass.org"
 let homepage = "http://github.com/panesofglass/FSharp.Monad"
@@ -72,6 +72,15 @@ Target "BuildApp" (fun _ ->
             AssemblyDescription = projectSummary
             Guid = "1e95a279-c2a9-498b-bc72-6e7a0d6854ce"
             OutputFileName = "./src/FSharp.Monad/AssemblyInfo.fs" })
+
+    AssemblyInfo (fun p ->
+        {p with 
+            CodeLanguage = FSharp
+            AssemblyVersion = version
+            AssemblyTitle = projectName + ".MinLinq"
+            AssemblyDescription = projectSummary
+            Guid = "258D97E2-004C-4F9A-913B-A08B3E281544"
+            OutputFileName = "./src/FSharp.Monad.MinLinq/AssemblyInfo.fs" })
 
     MSBuildRelease buildDir "Build" appReferences
         |> Log "AppBuild-Output: "

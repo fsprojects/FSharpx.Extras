@@ -17,6 +17,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E0E025B0
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharp.Monad.Core.Tests", "tests\FSharp.Monad.Core.Tests\FSharp.Monad.Core.Tests.fsproj", "{8E9C9772-D95C-494C-A548-3BB2A009D5A9}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharp.Monad.MinLinq", "src\FSharp.Monad.MinLinq\FSharp.Monad.MinLinq.fsproj", "{258D97E2-004C-4F9A-913B-A08B3E281544}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{8E9C9772-D95C-494C-A548-3BB2A009D5A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E9C9772-D95C-494C-A548-3BB2A009D5A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E9C9772-D95C-494C-A548-3BB2A009D5A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{258D97E2-004C-4F9A-913B-A08B3E281544}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{258D97E2-004C-4F9A-913B-A08B3E281544}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{258D97E2-004C-4F9A-913B-A08B3E281544}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{258D97E2-004C-4F9A-913B-A08B3E281544}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
