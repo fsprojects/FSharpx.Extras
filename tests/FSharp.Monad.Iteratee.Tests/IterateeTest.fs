@@ -2,22 +2,14 @@
 
 open System
 open System.Linq
+open FSharp.Monad
 open FSharp.Monad.Iteratee
 open FSharp.Monad.Iteratee.Operators
+open FSharp.Monad.Enumerator
+open FSharp.Monad.Enumerator.List
+open FSharp.Monad.Enumerator.IO
 open NUnit.Framework
 open FsUnit
-
-[<Test>]
-let ``test List_split correctly breaks the list on the specified predicate``() =
-  let str = List.ofSeq "Howdy! Want to play?"
-  let expected = (List.ofSeq "Howdy!", List.ofSeq " Want to play?")
-  List.split (fun c -> c = ' ') str |> should equal expected
-
-[<Test>]
-let ``test List_splitAt correctly breaks the list on the specified index``() =
-  let str = List.ofSeq "Howdy! Want to play?"
-  let expected = (List.ofSeq "Howdy!", List.ofSeq " Want to play?")
-  List.splitAt 6 str |> should equal expected
 
 let runTest i =
   match run i with

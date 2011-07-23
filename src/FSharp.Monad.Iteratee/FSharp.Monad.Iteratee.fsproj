@@ -5,12 +5,13 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{26d9d3ee-e882-43e6-a79e-5d1d89e92c4f}</ProjectGuid>
+    <ProjectGuid>{2211c000-4a7f-4254-9f3a-76a0e060c96a}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>FSharp.Monad.Tests</RootNamespace>
-    <AssemblyName>FSharp.Monad.Tests</AssemblyName>
+    <RootNamespace>FSharp.Monad.Iteratee</RootNamespace>
+    <AssemblyName>FSharp.Monad.Iteratee</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <Name>FSharp.Monad.Tests</Name>
+    <Name>FSharp.Monad.Iteratee</Name>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FscToolPath>..\..\lib\FSharp\</FscToolPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -29,49 +30,28 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
+    <DocumentationFile>bin\Release\FSharp.Monad.Iteratee.XML</DocumentationFile>
   </PropertyGroup>
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
-  <ItemGroup>
-    <None Include="packages.config" />
-    <Compile Include="MaybeTest.fs" />
-    <Compile Include="StateTest.fs" />
-    <Compile Include="ReaderTest.fs" />
-    <Compile Include="WriterTest.fs" />
-    <Compile Include="ContinuationTest.fs" />
-  </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
       <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
     </Reference>
-    <Reference Include="FsUnit.NUnit-0.9.0">
-      <HintPath>..\..\packages\FsUnit.0.9.1\Lib\FsUnit.NUnit-0.9.0.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="mscorlib" />
-    <Reference Include="nunit.framework">
-      <HintPath>..\..\packages\NUnit.2.5.9.10348\lib\nunit.framework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="nunit.mocks">
-      <HintPath>..\..\packages\NUnit.2.5.9.10348\lib\nunit.mocks.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="pnunit.framework">
-      <HintPath>..\..\packages\NUnit.2.5.9.10348\lib\pnunit.framework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\FSharp.Monad.Core\FSharp.Monad.Core.fsproj">
+    <Compile Include="List.fs" />
+    <Compile Include="ByteString.fs" />
+    <Compile Include="Iteratee.fs" />
+    <Compile Include="Enumerator.fs" />
+    <Compile Include="Enumeratee.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FSharp.Monad.Core\FSharp.Monad.Core.fsproj">
       <Name>FSharp.Monad.Core</Name>
       <Project>{1653436c-d15f-4e79-920a-fa7bc94306bb}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\FSharp.Monad\FSharp.Monad.fsproj">
-      <Name>FSharp.Monad</Name>
-      <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

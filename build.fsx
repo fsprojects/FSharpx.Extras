@@ -130,7 +130,10 @@ Target "BuildNuGet" (fun _ ->
       buildDir + "FSharp.Monad.Core.xml"
       buildDir + "FSharp.Monad.dll"
       buildDir + "FSharp.Monad.pdb"
-      buildDir + "FSharp.Monad.xml" ]
+      buildDir + "FSharp.Monad.xml"
+      buildDir + "FSharp.Monad.Iteratee.dll"
+      buildDir + "FSharp.Monad.Iteratee.pdb"
+      buildDir + "FSharp.Monad.Iteratee.xml" ]
         |> CopyTo nugetLibDir
 
     NuGet (fun p -> 

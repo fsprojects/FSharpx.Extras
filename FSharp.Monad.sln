@@ -22,6 +22,10 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharp.Monad.Core.Tests", "
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharp.Monad.MinLinq", "src\FSharp.Monad.MinLinq\FSharp.Monad.MinLinq.fsproj", "{258D97E2-004C-4F9A-913B-A08B3E281544}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharp.Monad.Iteratee", "src\FSharp.Monad.Iteratee\FSharp.Monad.Iteratee.fsproj", "{2211C000-4A7F-4254-9F3A-76A0E060C96A}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharp.Monad.Iteratee.Tests", "tests\FSharp.Monad.Iteratee.Tests\FSharp.Monad.Iteratee.Tests.fsproj", "{B821F9EC-2678-45A2-A6A8-EB9860CE1FFC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +52,14 @@ Global
 		{258D97E2-004C-4F9A-913B-A08B3E281544}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{258D97E2-004C-4F9A-913B-A08B3E281544}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{258D97E2-004C-4F9A-913B-A08B3E281544}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2211C000-4A7F-4254-9F3A-76A0E060C96A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2211C000-4A7F-4254-9F3A-76A0E060C96A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2211C000-4A7F-4254-9F3A-76A0E060C96A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2211C000-4A7F-4254-9F3A-76A0E060C96A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B821F9EC-2678-45A2-A6A8-EB9860CE1FFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B821F9EC-2678-45A2-A6A8-EB9860CE1FFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B821F9EC-2678-45A2-A6A8-EB9860CE1FFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B821F9EC-2678-45A2-A6A8-EB9860CE1FFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,5 +67,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{26D9D3EE-E882-43E6-A79E-5D1D89E92C4F} = {E0E025B0-76D1-4665-A915-CDD3565C3B37}
 		{8E9C9772-D95C-494C-A548-3BB2A009D5A9} = {E0E025B0-76D1-4665-A915-CDD3565C3B37}
+		{B821F9EC-2678-45A2-A6A8-EB9860CE1FFC} = {E0E025B0-76D1-4665-A915-CDD3565C3B37}
 	EndGlobalSection
 EndGlobal

@@ -39,7 +39,6 @@
     <Compile Include="Reader.fs" />
     <Compile Include="Writer.fs" />
     <Compile Include="Continuation.fs" />
-    <Compile Include="Iteratee.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
