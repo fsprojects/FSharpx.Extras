@@ -36,11 +36,11 @@ let nunitPath = "./packages/NUnit.2.5.9.10348/Tools"
 
 // files
 let appReferences =
-    !+ "./src/**/FSharp.Monad.fsproj"
+    !+ "./src/**/*.*proj"
         |> Scan
 
 let testReferences =
-    !+ "./src/**/FSharp.Monad.Tests.fsproj"
+    !+ "./tests/**/*.*proj"
       |> Scan
 
 let filesToZip =
@@ -106,7 +106,9 @@ Target "BuildNuGet" (fun _ ->
     CleanDirs [nugetDir; nugetLibDir; nugetDocsDir]
 
     XCopy (docsDir |> FullName) nugetDocsDir
-    [buildDir + "FSharp.Monad.dll"; buildDir + "FSharp.Monad.pdb"]
+    [ buildDir + "FSharp.Monad.dll"
+      buildDir + "FSharp.Monad.pdb"
+      buildDir + "FSharp.Monad.xml" ]
         |> CopyTo nugetLibDir
 
     NuGet (fun p -> 
