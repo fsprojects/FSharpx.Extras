@@ -37,6 +37,10 @@ type FSharpOptionExtensions =
         | Some a,Some b -> mapper.Invoke(a,b) |> Some
         | _ -> None
 
+    [<Extension>]
+    static member Aggregate (o, state, f: Func<'a,'b,'a>) =
+        Option.fold (fun s x -> f.Invoke(s,x)) state o
+
 type FSharpOption =
     static member Some a = Option.Some a
     static member SomeUnit = Some()

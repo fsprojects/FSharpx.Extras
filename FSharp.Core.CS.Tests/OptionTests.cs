@@ -76,6 +76,20 @@ namespace FSharp.Core.CS.Tests {
         }
 
         [Test]
+        public void LINQ_Aggregate() {
+            var a = 5.Some();
+            var c = a.Aggregate(10, (s, x) => s + x);
+            Assert.AreEqual(15, c);
+        }
+
+        [Test]
+        public void LINQ_Aggregate_None() {
+            var a = FSharpOption<int>.None;
+            var c = a.Aggregate(10, (s, x) => s + x);
+            Assert.AreEqual(10, c);
+        }
+
+        [Test]
         public void Match_Some() {
             var a = 5.Some();
             var b = a.Match(x => x + 2, () => 99);
