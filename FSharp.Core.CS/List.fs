@@ -11,6 +11,10 @@ type ListExtensions =
         | [] -> empty.Invoke()
         | x::xs -> nonempty.Invoke(x,xs)
 
+    [<Extension>]
+    static member Choose (l, chooser: Func<_,_>) =
+        List.choose chooser.Invoke l
+
 
 type FSharpList =
     static member New([<ParamArray>] values: 'a array) =

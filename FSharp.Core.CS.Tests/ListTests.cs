@@ -1,4 +1,5 @@
 ﻿using Microsoft.FSharp.Collections;
+using Microsoft.FSharp.Core;
 using NUnit.Framework;
 
 namespace FSharp.Core.CS.Tests {
@@ -23,6 +24,13 @@ namespace FSharp.Core.CS.Tests {
         public void NewList() {
             var a = FSharpList.New(1, 2, 3);
             Assert.AreEqual(3, a.Length);
+        }
+
+        [Test]
+        public void Choose() {
+            var a = FSharpList.New(1.Some(), FSharpOption<int>.None, 3.Some());
+            var b = a.Choose(x => x);
+            Assert.AreEqual(2, b.Length);
         }
     }
 }
