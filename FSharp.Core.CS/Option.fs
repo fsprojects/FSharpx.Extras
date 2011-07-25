@@ -33,3 +33,4 @@ type FSharpOptionExtensions =
 
 type FSharpOption =
     static member Some a = Option.Some a
+    static member SomeUnit = Some()
