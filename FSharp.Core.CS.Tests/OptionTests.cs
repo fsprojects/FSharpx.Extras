@@ -53,5 +53,13 @@ namespace FSharp.Core.CS.Tests {
             var a = from i in 5.Some() where i > 2 select i;
             Assert.AreEqual(5, a.Value);
         }
+
+        [Test]
+        public void LINQ_SelectMany() {
+            var a = 5.Some();
+            var b = 6.Some();
+            var c = a.SelectMany(x => b.SelectMany(y => (x+y).Some()));
+            Assert.AreEqual(11, c.Value);
+        }
     }
 }
