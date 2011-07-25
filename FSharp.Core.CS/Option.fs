@@ -13,3 +13,6 @@ module FSharpOptionExtensions =
         if n.HasValue
             then Some n.Value
             else None
+
+type FSharpOption =
+    static member Some a = Option.Some a

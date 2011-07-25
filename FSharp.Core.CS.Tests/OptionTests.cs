@@ -20,7 +20,7 @@ namespace FSharp.Core.CS.Tests {
         public void FromNullable_WithValue() {
             int? a = 99;
             var o = a.ToOption();
-            Assert.True(o.HasValue());
+            Assert.AreEqual(99, o.Value);
         }
 
         [Test]
@@ -28,6 +28,12 @@ namespace FSharp.Core.CS.Tests {
             int? a = null;
             var o = a.ToOption();
             Assert.False(o.HasValue());
+        }
+
+        [Test]
+        public void Some() {
+            var a = FSharpOption.Some(5);
+            Assert.AreEqual(5, a.Value);
         }
     }
 }
