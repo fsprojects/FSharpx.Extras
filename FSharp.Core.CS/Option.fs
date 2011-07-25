@@ -17,5 +17,12 @@ module FSharpOptionExtensions =
     [<Extension>]
     let Some a = Option.Some a
 
+    // LINQ
+    [<Extension>]
+    let Select (o: 'a option, f: Func<'a, 'b>) =
+        match o with
+        | Some x -> f.Invoke x |> Some
+        | _ -> None
+
 type FSharpOption =
     static member Some a = Option.Some a

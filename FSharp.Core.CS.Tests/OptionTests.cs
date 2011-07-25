@@ -41,5 +41,11 @@ namespace FSharp.Core.CS.Tests {
             var a = 5.Some();
             Assert.AreEqual(5, a.Value);
         }
+
+        [Test]
+        public void LINQ_Select() {
+            var a = from i in 5.Some() select i;
+            Assert.AreEqual(5, a.Value);
+        }
     }
 }
