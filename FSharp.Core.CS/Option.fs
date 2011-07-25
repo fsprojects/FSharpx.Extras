@@ -9,7 +9,7 @@ type FSharpOptionExtensions =
     static member HasValue o = Option.isSome o
 
     [<Extension>]
-    static member ToOption (n: Nullable<'a>) =
+    static member ToOption (n: Nullable<_>) =
         if n.HasValue
             then Some n.Value
             else None
@@ -18,27 +18,27 @@ type FSharpOptionExtensions =
     static member Some a = Option.Some a
 
     [<Extension>]
-    static member Match (o: 'a option, ifSome: Func<'a, 'b>, ifNone: Func<'b>) =
+    static member Match (o, ifSome: Func<_,_>, ifNone: Func<_>) =
         match o with
         | Some x -> ifSome.Invoke x
         | _ -> ifNone.Invoke()
 
     // LINQ
     [<Extension>]
-    static member Select (o: 'a option, f: Func<'a, 'b>) = Option.map f.Invoke o
+    static member Select (o, f: Func<_,_>) = Option.map f.Invoke o
 
     [<Extension>]
-    static member SelectMany (o: 'a option, f: Func<'a, 'b option>) = Option.bind f.Invoke o
+    static member SelectMany (o, f: Func<_,_>) = Option.bind f.Invoke o
 
     [<Extension>]
-    static member SelectMany (o: 'a option, f: Func<'a, 'b option>, mapper: Func<'a,'b,'c>) =
+    static member SelectMany (o, f: Func<_,_>, mapper: Func<_,_,_>) =
         let c = Option.bind f.Invoke o
         match o,c with
         | Some a,Some b -> mapper.Invoke(a,b) |> Some
         | _ -> None
 
     [<Extension>]
-    static member Aggregate (o, state, f: Func<'a,'b,'a>) =
+    static member Aggregate (o, state, f: Func<_,_,_>) =
         Option.fold (fun s x -> f.Invoke(s,x)) state o
 
 type FSharpOption =
