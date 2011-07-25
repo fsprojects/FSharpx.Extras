@@ -49,17 +49,30 @@ namespace FSharp.Core.CS.Tests {
         }
 
         [Test]
-        public void LINQ_Where() {
-            var a = from i in 5.Some() where i > 2 select i;
-            Assert.AreEqual(5, a.Value);
-        }
-
-        [Test]
         public void LINQ_SelectMany() {
             var a = 5.Some();
             var b = 6.Some();
             var c = a.SelectMany(x => b.SelectMany(y => (x+y).Some()));
             Assert.AreEqual(11, c.Value);
+        }
+
+        [Test]
+        public void LINQ_SelectMany2() {
+            var a = 5.Some();
+            var b = 6.Some();
+            var c = from x in a
+                    from y in b
+                    select x + y;
+            Assert.AreEqual(11, c.Value);
+        }
+
+        [Test]
+        public void LINQ_SelectMany2_with_none() {
+            var a = 5.Some();
+            var c = from x in a
+                    from y in FSharpOption<int>.None
+                    select x + y;
+            Assert.IsFalse(c.HasValue());
         }
     }
 }
