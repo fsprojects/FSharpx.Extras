@@ -17,6 +17,12 @@ type FSharpOptionExtensions =
     [<Extension>]
     static member Some a = Option.Some a
 
+    [<Extension>]
+    static member Match (o: 'a option, ifSome: Func<'a, 'b>, ifNone: Func<'b>) =
+        match o with
+        | Some x -> ifSome.Invoke x
+        | _ -> ifNone.Invoke()
+
     // LINQ
     [<Extension>]
     static member Select (o: 'a option, f: Func<'a, 'b>) = Option.map f.Invoke o

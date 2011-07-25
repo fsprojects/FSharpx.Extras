@@ -74,5 +74,19 @@ namespace FSharp.Core.CS.Tests {
                     select x + y;
             Assert.IsFalse(c.HasValue());
         }
+
+        [Test]
+        public void Match_Some() {
+            var a = 5.Some();
+            var b = a.Match(x => x + 2, () => 99);
+            Assert.AreEqual(7, b);
+        }
+
+        [Test]
+        public void Match_None() {
+            var a = FSharpOption<int>.None;
+            var b = a.Match(x => x + 2, () => 99);
+            Assert.AreEqual(99, b);
+        }
     }
 }
