@@ -14,5 +14,8 @@ module FSharpOptionExtensions =
             then Some n.Value
             else None
 
+    [<Extension>]
+    let Some a = Option.Some a
+
 type FSharpOption =
     static member Some a = Option.Some a

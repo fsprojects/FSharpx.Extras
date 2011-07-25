@@ -35,5 +35,11 @@ namespace FSharp.Core.CS.Tests {
             var a = FSharpOption.Some(5);
             Assert.AreEqual(5, a.Value);
         }
+
+        [Test]
+        public void SomeExtensionMethod() {
+            var a = 5.Some();
+            Assert.AreEqual(5, a.Value);
+        }
     }
 }
