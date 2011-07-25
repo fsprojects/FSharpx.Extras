@@ -15,5 +15,19 @@ namespace FSharp.Core.CS.Tests {
             var a = FSharpOption<int>.None;
             Assert.IsFalse(a.HasValue());
         }
+
+        [Test]
+        public void FromNullable_WithValue() {
+            int? a = 99;
+            var o = a.ToOption();
+            Assert.True(o.HasValue());
+        }
+
+        [Test]
+        public void FromNullable_WithoutValue() {
+            int? a = null;
+            var o = a.ToOption();
+            Assert.False(o.HasValue());
+        }
     }
 }
