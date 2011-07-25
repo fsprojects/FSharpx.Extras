@@ -18,5 +18,11 @@ namespace FSharp.Core.CS.Tests {
                 (x, xs) => "head is " + x + ", tail is " + (xs.IsEmpty ? "empty" : "non-empty"));
             Assert.AreEqual("head is 5, tail is empty", s);
         }
+
+        [Test]
+        public void NewList() {
+            var a = FSharpList.New(1, 2, 3);
+            Assert.AreEqual(3, a.Length);
+        }
     }
 }

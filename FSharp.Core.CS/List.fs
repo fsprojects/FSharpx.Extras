@@ -10,3 +10,8 @@ type ListExtensions =
         match l with
         | [] -> empty.Invoke()
         | x::xs -> nonempty.Invoke(x,xs)
+
+
+type FSharpList =
+    static member New([<ParamArray>] values: 'a array) =
+        Seq.toList values
