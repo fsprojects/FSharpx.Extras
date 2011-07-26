@@ -42,11 +42,10 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Iteratee.fs" />
     <Compile Include="List.fs" />
     <Compile Include="ByteString.fs" />
-    <Compile Include="Iteratee.fs" />
-    <Compile Include="Enumerator.fs" />
-    <Compile Include="Enumeratee.fs" />
+    <Compile Include="Binary.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FSharp.Monad.Core\FSharp.Monad.Core.fsproj">

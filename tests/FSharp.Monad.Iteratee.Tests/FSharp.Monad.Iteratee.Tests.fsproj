@@ -33,7 +33,8 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Compile Include="ListTest.fs" />
-    <Compile Include="IterateeTest.fs" />
+    <Compile Include="ByteStringTest.fs" />
+    <Compile Include="BinaryTest.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FsUnit.NUnit-0.9.0">
