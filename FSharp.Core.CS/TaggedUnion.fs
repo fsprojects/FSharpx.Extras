@@ -18,7 +18,7 @@ type TaggedUnionExtensions =
         | Choice2Of3 x -> f2.Invoke x
         | Choice3Of3 x -> f3.Invoke x
 
-type FSharpChoice =
+type Choice =
     static member New1Of2<'a,'b> (a: 'a) : Choice<'a,'b> = Choice1Of2 a
     static member New2Of2<'a,'b> (b: 'b) : Choice<'a,'b> = Choice2Of2 b
 
