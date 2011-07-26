@@ -41,5 +41,12 @@ namespace FSharp.Core.CS.Tests {
             Assert.AreEqual(FSharpList.New(0, 1, 2, 3), b);
             Assert.AreEqual(FSharpList.New(0, 1, 2, 3), c);
         }
+
+        [Test]
+        public void ToFsList() {
+            var a = new[] { 1, 2, 3 };
+            var b = a.ToFsList();
+            Assert.AreEqual(FSharpList.New(1, 2, 3), b);
+        }
     }
 }

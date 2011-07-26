@@ -20,3 +20,6 @@ type FSharpList =
 
     static member New([<ParamArray>] values: 'a array) =
         Seq.toList values
+
+    [<Extension>]
+    static member ToFsList s = Seq.toList s
