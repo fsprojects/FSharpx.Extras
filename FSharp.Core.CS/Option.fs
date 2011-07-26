@@ -120,3 +120,21 @@ type Option =
         | true,v -> Some v
         | _ -> None
         
+    static member TryParseDateTime s =
+        match DateTime.TryParse s with
+        | true,v -> Some v
+        | _ -> None
+    static member TryParseDateTime (s, style, provider) =
+        match DateTime.TryParse(s, style, provider) with
+        | true,v -> Some v
+        | _ -> None
+        
+    static member TryParseDateTimeOffset s =
+        match DateTimeOffset.TryParse s with
+        | true,v -> Some v
+        | _ -> None
+    static member TryParseDateTimeOffset (s, style, provider) =
+        match DateTimeOffset.TryParse(s, style, provider) with
+        | true,v -> Some v
+        | _ -> None
+        
