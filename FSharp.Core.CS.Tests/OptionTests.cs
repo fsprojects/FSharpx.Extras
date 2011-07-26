@@ -34,7 +34,7 @@ namespace FSharp.Core.CS.Tests {
 
         [Test]
         public void Some() {
-            var a = Option.Some(5);
+            var a = Opt.Some(5);
             Assert.AreEqual(5, a.Value);
         }
 
@@ -113,25 +113,25 @@ namespace FSharp.Core.CS.Tests {
 
         [Test]
         public void TryParseInt() {
-            var a = Option.TryParseInt("123");
+            var a = Opt.TryParseInt("123");
             Assert.AreEqual(123, a.Value);
         }
 
         [Test]
         public void TryParseDec() {
-            var a = Option.TryParseDec("123.44", NumberStyles.Any, CultureInfo.InvariantCulture);
+            var a = Opt.TryParseDec("123.44", NumberStyles.Any, CultureInfo.InvariantCulture);
             Assert.AreEqual(123.44m, a.Value);
         }
 
         [Test]
         public void TryParseDouble() {
-            FSharpOption<double> a = Option.TryParseDouble("123E12");
+            FSharpOption<double> a = Opt.TryParseDouble("123E12");
             Assert.AreEqual(123E12, a.Value);
         }
 
         [Test]
         public void TryParseFloat() {
-            FSharpOption<float> a = Option.TryParseFloat("12");
+            FSharpOption<float> a = Opt.TryParseFloat("12");
             Assert.AreEqual(12, a.Value);
         }
 

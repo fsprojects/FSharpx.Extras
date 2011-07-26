@@ -41,8 +41,8 @@ namespace FSharp.Core.CS.Tests {
             const string textboxContent = "999";
 
             var somethingOrError = 
-                from userID in Option.TryParseInt(nvc["user_id"]).ToChoice("Invalid User ID")
-                from id in Option.TryParseInt(textboxContent).ToChoice("Invalid ID")
+                from userID in Opt.TryParseInt(nvc["user_id"]).ToChoice("Invalid User ID")
+                from id in Opt.TryParseInt(textboxContent).ToChoice("Invalid ID")
                 select doSomething(userID, id);
 
             somethingOrError.Match(Console.WriteLine, setError);
