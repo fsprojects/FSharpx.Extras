@@ -67,23 +67,42 @@ type ByteString = BS of byte array * int * int
   static member take n (BS(x,o,l)) = Debug.Assert(l >= n); BS(x,o,n)
   
   static member split pred bs =
-    let rec loop l acc =
-      if ByteString.isEmpty l then (ByteString.take acc bs, ByteString.empty)
+    // List-style
+//    let rec loop l acc =
+//      if ByteString.isEmpty l then (ByteString.take acc bs, ByteString.empty)
+//      else
+//        let hd, tl = ByteString.head l, ByteString.tail l
+//        if ByteString.isEmpty tl && not (pred hd) then (ByteString.take acc bs, ByteString.empty)
+//        elif pred hd then (ByteString.take acc bs, l)
+//        else loop tl (acc+1)
+//    loop bs 0
+    let (BS(x,o,l)) = bs
+    let rec loop acc =
+      if l-acc = 0 then (BS(x,o,acc), ByteString.empty)
       else
-        let hd, tl = ByteString.head l, ByteString.tail l
-        if ByteString.isEmpty tl && not (pred hd) then (ByteString.take acc bs, ByteString.empty)
-        elif pred hd then (ByteString.take acc bs, l)
-        else loop tl (acc+1)
-    loop bs 0
+        if l-(acc+1) = 0 && not (pred x.[o+acc]) then (BS(x,o,acc), ByteString.empty)
+        elif pred x.[o+acc] then (BS(x,o,acc), BS(x,o+acc,l-acc))
+        else loop (acc+1)
+    loop 0
+ 
 
   static member splitAt n bs =
     let pred i = i >= n
-    let rec loop l acc =
-      if ByteString.isEmpty l then (ByteString.take acc bs, ByteString.empty)
+    // List-style
+//    let rec loop l acc =
+//      if ByteString.isEmpty l then (ByteString.take acc bs, ByteString.empty)
+//      else
+//        let hd, tl = ByteString.head l, ByteString.tail l
+//        if ByteString.isEmpty tl && not (pred acc) then (ByteString.take acc bs, ByteString.empty)
+//        elif pred acc then (ByteString.take acc bs, l)
+//        else loop tl (acc+1)
+//    loop bs 0
+    let (BS(x,o,l)) = bs
+    let rec loop acc =
+      if l-acc = 0 then (BS(x,o,acc), ByteString.empty)
       else
-        let hd, tl = ByteString.head l, ByteString.tail l
-        if ByteString.isEmpty tl && not (pred acc) then (ByteString.take acc bs, ByteString.empty)
-        elif pred acc then (ByteString.take acc bs, l)
-        else loop tl (acc+1)
-    loop bs 0
+        if l-(acc+1) = 0 && not (pred acc) then (BS(x,o,acc), ByteString.empty)
+        elif pred acc then (BS(x,o,acc), BS(x,o+acc,l-acc))
+        else loop (acc+1)
+    loop 0
   
