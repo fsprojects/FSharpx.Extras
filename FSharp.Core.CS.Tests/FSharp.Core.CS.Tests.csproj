@@ -46,6 +46,7 @@
     <Compile Include="ListTests.cs" />
     <Compile Include="OptionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TaggedUnionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
