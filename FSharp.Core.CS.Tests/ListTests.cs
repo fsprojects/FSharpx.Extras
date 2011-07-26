@@ -37,7 +37,7 @@ namespace FSharp.Core.CS.Tests {
         public void Cons() {
             var a = FSharpList.New(1, 2, 3);
             var b = a.Cons(0);
-            var c = FSharpList.Cons(0, a);
+            var c = FSharpList.Cons(a, 0);
             Assert.AreEqual(FSharpList.New(0, 1, 2, 3), b);
             Assert.AreEqual(FSharpList.New(0, 1, 2, 3), c);
         }

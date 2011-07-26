@@ -4,7 +4,7 @@ open System
 open System.Runtime.CompilerServices
 
 [<Extension>]
-type ListExtensions =
+type FSharpList =
     [<Extension>]
     static member Match (l, empty: Func<_>, nonempty: Func<_,_,_>) =
         match l with
@@ -17,9 +17,6 @@ type ListExtensions =
 
     [<Extension>]
     static member Cons (l, e) = e::l
-        
-type FSharpList =
+
     static member New([<ParamArray>] values: 'a array) =
         Seq.toList values
-
-    static member Cons(a, l) = a::l
