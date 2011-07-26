@@ -44,3 +44,67 @@ type FSharpOptionExtensions =
 type FSharpOption =
     static member Some a = Option.Some a
     static member SomeUnit = Some()
+
+    static member TryParseInt s =
+        match Int32.TryParse s with
+        | true,v -> Some v
+        | _ -> None
+    static member TryParseInt (s, style, provider) =
+        match Int32.TryParse(s, style, provider) with
+        | true,v -> Some v
+        | _ -> None
+
+    static member TryParseDec s =
+        match Decimal.TryParse s with
+        | true,v -> Some v
+        | _ -> None
+    static member TryParseDec (s, style, provider) =
+        match Decimal.TryParse(s, style, provider) with
+        | true,v -> Some v
+        | _ -> None
+
+    static member TryParseDouble s =
+        match Double.TryParse s with
+        | true,v -> Some v
+        | _ -> None
+    static member TryParseDouble (s, style, provider) =
+        match Double.TryParse(s, style, provider) with
+        | true,v -> Some v
+        | _ -> None
+        
+    static member TryParseFloat s =
+        match Single.TryParse s with
+        | true,v -> Some v
+        | _ -> None
+    static member TryParseFloat (s, style, provider) =
+        match Single.TryParse(s, style, provider) with
+        | true,v -> Some v
+        | _ -> None
+        
+    static member TryParseInt16 s =
+        match Int16.TryParse s with
+        | true,v -> Some v
+        | _ -> None
+    static member TryParseInt16 (s, style, provider) =
+        match Int16.TryParse(s, style, provider) with
+        | true,v -> Some v
+        | _ -> None
+
+    static member TryParseInt64 s =
+        match Int64.TryParse s with
+        | true,v -> Some v
+        | _ -> None
+    static member TryParseInt64 (s, style, provider) =
+        match Int64.TryParse(s, style, provider) with
+        | true,v -> Some v
+        | _ -> None
+        
+    static member TryParseByte s =
+        match Byte.TryParse s with
+        | true,v -> Some v
+        | _ -> None
+    static member TryParseByte (s, style, provider) =
+        match Byte.TryParse(s, style, provider) with
+        | true,v -> Some v
+        | _ -> None
+        

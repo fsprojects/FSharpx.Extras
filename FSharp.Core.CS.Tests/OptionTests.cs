@@ -1,4 +1,6 @@
-﻿using Microsoft.FSharp.Core;
+﻿using System;
+using System.Globalization;
+using Microsoft.FSharp.Core;
 using NUnit.Framework;
 
 namespace FSharp.Core.CS.Tests {
@@ -102,5 +104,30 @@ namespace FSharp.Core.CS.Tests {
             var b = a.Match(x => x + 2, () => 99);
             Assert.AreEqual(99, b);
         }
+
+        [Test]
+        public void TryParseInt() {
+            var a = FSharpOption.TryParseInt("123");
+            Assert.AreEqual(123, a.Value);
+        }
+
+        [Test]
+        public void TryParseDec() {
+            var a = FSharpOption.TryParseDec("123.44", NumberStyles.Any, CultureInfo.InvariantCulture);
+            Assert.AreEqual(123.44m, a.Value);
+        }
+
+        [Test]
+        public void TryParseDouble() {
+            FSharpOption<double> a = FSharpOption.TryParseDouble("123E12");
+            Assert.AreEqual(123E12, a.Value);
+        }
+
+        [Test]
+        public void TryParseFloat() {
+            FSharpOption<float> a = FSharpOption.TryParseFloat("12");
+            Assert.AreEqual(12, a.Value);
+        }
+
     }
 }
