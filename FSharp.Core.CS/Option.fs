@@ -29,6 +29,12 @@ type FSharpOptionExtensions =
         | Some x -> ifSome.Invoke x
         | _ -> ifNone.Invoke()
 
+    [<Extension>]
+    static member ToChoice (o, other) =
+        match o with
+        | Some v -> Choice1Of2 v
+        | _ -> Choice2Of2 other
+
     // LINQ
     [<Extension>]
     static member Select (o, f: Func<_,_>) = Option.map f.Invoke o
