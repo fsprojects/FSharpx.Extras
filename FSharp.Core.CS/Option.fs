@@ -41,8 +41,8 @@ type FSharpOptionExtensions =
     static member Aggregate (o, state, f: Func<_,_,_>) =
         Option.fold (fun s x -> f.Invoke(s,x)) state o
 
-type FSharpOption =
-    static member Some a = Option.Some a
+type Option =
+    static member Some a = Microsoft.FSharp.Core.Option.Some a
     static member SomeUnit = Some()
 
     static member TryParseInt s =
