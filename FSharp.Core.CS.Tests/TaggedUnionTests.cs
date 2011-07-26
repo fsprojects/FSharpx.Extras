@@ -1,4 +1,5 @@
-﻿using Microsoft.FSharp.Core;
+﻿using System;
+using Microsoft.FSharp.Core;
 using NUnit.Framework;
 
 namespace FSharp.Core.CS.Tests {
@@ -9,6 +10,12 @@ namespace FSharp.Core.CS.Tests {
             var a = FSharpChoice<int, string>.NewChoice1Of2(1);
             var c = a.Match(i => 0, _ => 1);
             Assert.AreEqual(0, c);
+        }
+
+        [Test]
+        public void MatchAction() {
+            var a = FSharpChoice<int, string>.NewChoice1Of2(1);
+            a.Match(Console.WriteLine, _ => Assert.Fail("is string"));
         }
 
         [Test]

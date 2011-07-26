@@ -12,7 +12,20 @@ type TaggedUnionExtensions =
         | Choice2Of2 y -> f2.Invoke y
 
     [<Extension>]
+    static member Match (c, f1: Action<_>, f2: Action<_>) =
+        match c with
+        | Choice1Of2 x -> f1.Invoke x
+        | Choice2Of2 y -> f2.Invoke y
+
+    [<Extension>]
     static member Match (c, f1: Func<_,_>, f2: Func<_,_>, f3: Func<_,_>) =
+        match c with
+        | Choice1Of3 x -> f1.Invoke x
+        | Choice2Of3 x -> f2.Invoke x
+        | Choice3Of3 x -> f3.Invoke x
+
+    [<Extension>]
+    static member Match (c, f1: Action<_>, f2: Action<_>, f3: Action<_>) =
         match c with
         | Choice1Of3 x -> f1.Invoke x
         | Choice2Of3 x -> f2.Invoke x
