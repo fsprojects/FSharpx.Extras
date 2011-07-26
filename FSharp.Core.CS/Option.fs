@@ -9,6 +9,12 @@ type Opt =
     static member HasValue o = Option.isSome o
 
     [<Extension>]
+    static member ToNullable o =
+        match o with
+        | Some x -> Nullable x
+        | _ -> Nullable()
+
+    [<Extension>]
     static member ToOption (n: Nullable<_>) =
         if n.HasValue
             then Some n.Value
