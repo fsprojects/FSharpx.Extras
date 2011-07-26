@@ -106,6 +106,12 @@ namespace FSharp.Core.CS.Tests {
         }
 
         [Test]
+        public void Match_Action() {
+            var a = 5.Some();
+            a.Match(Console.WriteLine, Assert.Fail);
+        }
+
+        [Test]
         public void TryParseInt() {
             var a = Option.TryParseInt("123");
             Assert.AreEqual(123, a.Value);
