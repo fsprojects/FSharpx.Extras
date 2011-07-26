@@ -4,7 +4,7 @@ open System
 open System.Runtime.CompilerServices
 
 [<Extension>]
-type TaggedUnionExtensions =
+type Choice =
     [<Extension>]
     static member Match (c, f1: Func<_,_>, f2: Func<_,_>) =
         match c with
@@ -39,7 +39,7 @@ type TaggedUnionExtensions =
 
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>, mapper: Func<_,_,_>) =
-        let r = TaggedUnionExtensions.SelectMany(o, f)
+        let r = Choice.SelectMany(o, f)
         match o,r with
         | Choice1Of2 x, Choice1Of2 y -> mapper.Invoke(x,y) |> Choice1Of2
         | Choice2Of2 x, _ -> Choice2Of2 x
@@ -50,7 +50,6 @@ type TaggedUnionExtensions =
         | Choice1Of2 x -> f.Invoke x |> Choice1Of2
         | Choice2Of2 x -> Choice2Of2 x
 
-type Choice =
     static member New1Of2<'a,'b> (a: 'a) : Choice<'a,'b> = Choice1Of2 a
     static member New2Of2<'a,'b> (b: 'b) : Choice<'a,'b> = Choice2Of2 b
 

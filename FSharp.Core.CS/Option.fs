@@ -4,7 +4,7 @@ open System
 open System.Runtime.CompilerServices
 
 [<Extension>]
-type FSharpOptionExtensions =
+type Opt =
     [<Extension>]
     static member HasValue o = Option.isSome o
 
@@ -53,8 +53,6 @@ type FSharpOptionExtensions =
     static member Aggregate (o, state, f: Func<_,_,_>) =
         Option.fold (fun s x -> f.Invoke(s,x)) state o
 
-type Opt =
-    static member Some a = Microsoft.FSharp.Core.Option.Some a
     static member SomeUnit = Some()
 
     static member TryParseInt s =
