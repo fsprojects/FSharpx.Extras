@@ -10,5 +10,16 @@ namespace FSharp.Core.CS.Tests {
             var c = a.Match(i => 0, _ => 1);
             Assert.AreEqual(0, c);
         }
+
+        [Test]
+        public void New() {
+            var a = FSharpChoice.New1Of2<int, string>(1);
+            var b = FSharpChoice<int, string>.NewChoice1Of2(1);
+            Assert.AreEqual(a, b);
+
+            var c = FSharpChoice.New2Of2<int, string>("a");
+            var d = FSharpChoice<int, string>.NewChoice2Of2("a");
+            Assert.AreEqual(c, d);
+        }
     }
 }
