@@ -32,5 +32,14 @@ namespace FSharp.Core.CS.Tests {
             var b = a.Choose(x => x);
             Assert.AreEqual(2, b.Length);
         }
+
+        [Test]
+        public void Cons() {
+            var a = FSharpList.New(1, 2, 3);
+            var b = a.Cons(0);
+            var c = FSharpList.Cons(0, a);
+            Assert.AreEqual(FSharpList.New(0, 1, 2, 3), b);
+            Assert.AreEqual(FSharpList.New(0, 1, 2, 3), c);
+        }
     }
 }

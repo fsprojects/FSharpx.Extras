@@ -15,7 +15,11 @@ type ListExtensions =
     static member Choose (l, chooser: Func<_,_>) =
         List.choose chooser.Invoke l
 
-
+    [<Extension>]
+    static member Cons (l, e) = e::l
+        
 type FSharpList =
     static member New([<ParamArray>] values: 'a array) =
         Seq.toList values
+
+    static member Cons(a, l) = a::l
