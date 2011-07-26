@@ -3,6 +3,10 @@
 open System
 open System.Runtime.CompilerServices
 
+[<AutoOpen>]
+module internal Op =
+    let (==) a b = LanguagePrimitives.PhysicalEquality a b
+
 [<Extension>]
 type Opt =
     [<Extension>]
@@ -19,6 +23,9 @@ type Opt =
         if n.HasValue
             then Some n.Value
             else None
+
+    [<Extension>]
+    static member ToOption v = if v == null then None else Some v
 
     [<Extension>]
     static member Some a = Option.Some a
