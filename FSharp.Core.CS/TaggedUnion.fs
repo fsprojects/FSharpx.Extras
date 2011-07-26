@@ -31,6 +31,25 @@ type TaggedUnionExtensions =
         | Choice2Of3 x -> f2.Invoke x
         | Choice3Of3 x -> f3.Invoke x
 
+    [<Extension>]
+    static member SelectMany (o, f: Func<_,_>) =
+        match o with
+        | Choice1Of2 x -> f.Invoke x
+        | Choice2Of2 x -> Choice2Of2 x // error
+
+    [<Extension>]
+    static member SelectMany (o, f: Func<_,_>, mapper: Func<_,_,_>) =
+        let r = TaggedUnionExtensions.SelectMany(o, f)
+        match o,r with
+        | Choice1Of2 x, Choice1Of2 y -> mapper.Invoke(x,y) |> Choice1Of2
+        | Choice2Of2 x, _ -> Choice2Of2 x
+
+    [<Extension>]
+    static member Select (o, f: Func<_,_>) =
+        match o with
+        | Choice1Of2 x -> f.Invoke x |> Choice1Of2
+        | Choice2Of2 x -> Choice2Of2 x
+
 type Choice =
     static member New1Of2<'a,'b> (a: 'a) : Choice<'a,'b> = Choice1Of2 a
     static member New2Of2<'a,'b> (b: 'b) : Choice<'a,'b> = Choice2Of2 b
