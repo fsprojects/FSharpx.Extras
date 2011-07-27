@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using Microsoft.FSharp.Core;
 using NUnit.Framework;
 
 namespace FSharp.Core.CS.Tests {
