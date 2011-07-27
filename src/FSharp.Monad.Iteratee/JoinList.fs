@@ -56,10 +56,10 @@ module JoinList =
   let tail (l:JoinList<'a>) : JoinList<'a> =
     let rec step (xs:JoinList<'a>) (acc:JoinList<'a>) : JoinList<'a> =
       match xs with
-      | Empty -> Empty
+      | Empty -> acc
       | Unit _ -> acc
       | Join(x,y,_) -> step x (append y acc)
-    step l Empty
+    if isEmpty l then Empty else step l Empty
         
 type JoinList<'a> with
   static member op_Equality(left, right) = JoinList.equal left right
