@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Iteratee.fs" />
     <Compile Include="List.fs" />
+    <Compile Include="JoinList.fs" />
     <Compile Include="ByteString.fs" />
     <Compile Include="Binary.fs" />
   </ItemGroup>

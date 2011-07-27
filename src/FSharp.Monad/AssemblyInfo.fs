@@ -24,9 +24,9 @@ exception ReturnNoneException183c26a427ae489c8fd92ec21a0c9a59
 
 [<assembly: AssemblyProduct ("FSharp.Monad")>]
 
-[<assembly: AssemblyVersion ("1.1.4.110723")>]
+[<assembly: AssemblyVersion ("1.1.4.110727")>]
 
-[<assembly: AssemblyFileVersion ("1.1.4.110723")>]
+[<assembly: AssemblyFileVersion ("1.1.4.110727")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 

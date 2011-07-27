@@ -1,11 +1,11 @@
 ﻿module FSharp.Collections.ByteString
 
 open System
-open System.Diagnostics
+open System.Diagnostics.Contracts
 
 /// ByteString is a functional ArraySegment<byte> that also implements IEnumerable<byte>.
 /// NOTE: This type should really be moved into a set of extension types missing from F#.
-type ByteString = BS of byte array * int * int
+type ByteString = BS of byte array * int * int // TODO: Switch to the JoinList for more efficient cons and append.
   with
   interface System.Collections.Generic.IEnumerable<byte> with
     member this.GetEnumerator() =
@@ -58,13 +58,13 @@ type ByteString = BS of byte array * int * int
   static member ofString (s:string) = s.ToCharArray() |> Array.map byte |> ByteString.create
   static member toList (BS(x,o,l)) = let len = l-1 in [ for i in o..len -> x.[i] ]
   static member toString (BS(x,o,l)) = let len = l-1 in System.Text.Encoding.ASCII.GetString(x,o,l)
-  static member isEmpty (BS(_,_,l)) = Debug.Assert(l >= 0); l <= 0
-  static member length (BS(_,_,l)) = Debug.Assert(l >= 0); l
+  static member isEmpty (BS(_,_,l)) = Contract.Requires(l >= 0); l <= 0
+  static member length (BS(_,_,l)) = Contract.Requires(l >= 0); l
   static member head (BS(x,o,l)) = if l <= 0 then failwith "" else x.[o]
   static member tail (BS(x,o,l)) = BS(x,o+1,l-1)
   static member cons hd tl = ByteString.op_Cons(hd, tl)
   static member append a b = ByteString.op_Append(a, b)
-  static member take n (BS(x,o,l)) = Debug.Assert(l >= n); BS(x,o,n)
+  static member take n (BS(x,o,l)) = Contract.Requires(l >= n); BS(x,o,n)
   
   static member split pred bs =
     // List-style
