@@ -1,4 +1,4 @@
-﻿namespace Microsoft.FSharp.Core
+﻿namespace Microsoft.FSharp.Collections
 
 open System
 open System.Runtime.CompilerServices

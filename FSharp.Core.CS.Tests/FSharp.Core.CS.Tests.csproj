@@ -46,6 +46,7 @@
     <Compile Include="FuncTests.cs" />
     <Compile Include="IntegrationTests.cs" />
     <Compile Include="ListTests.cs" />
+    <Compile Include="MapTests.cs" />
     <Compile Include="OptionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetTests.cs" />
