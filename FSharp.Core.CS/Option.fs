@@ -43,6 +43,12 @@ type Opt =
         | _ -> ifNone.Invoke()
 
     [<Extension>]
+    static member Do (o, f: Action<_>) =
+        match o with
+        | Some v -> f.Invoke v
+        | _ -> ()
+
+    [<Extension>]
     static member ToChoice (o, other) =
         match o with
         | Some v -> Choice1Of2 v

@@ -112,6 +112,18 @@ namespace FSharp.Core.CS.Tests {
         }
 
         [Test]
+        public void Do() {
+            var a = 5.Some();
+            a.Do(v => Assert.AreEqual(5, v));
+        }
+
+        [Test]
+        public void Dont() {
+            var a = FSharpOption<int>.None;
+            a.Do(_ => Assert.Fail());
+        }
+
+        [Test]
         public void TryParseInt() {
             var a = Opt.TryParseInt("123");
             Assert.AreEqual(123, a.Value);
