@@ -22,4 +22,4 @@ type FSharpList =
         Seq.toList values
 
     [<Extension>]
-    static member ToFsList s = Seq.toList s
+    static member ToFSharpList s = Seq.toList s

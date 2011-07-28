@@ -43,9 +43,9 @@ namespace FSharp.Core.CS.Tests {
         }
 
         [Test]
-        public void ToFsList() {
+        public void ToFSharpList() {
             var a = new[] { 1, 2, 3 };
-            var b = a.ToFsList();
+            var b = a.ToFSharpList();
             Assert.AreEqual(FSharpList.New(1, 2, 3), b);
         }
     }
