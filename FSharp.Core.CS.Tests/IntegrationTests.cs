@@ -1,31 +1,30 @@
 ﻿using System;
-using System.Collections.Specialized;
 using Microsoft.FSharp.Core;
 using NUnit.Framework;
 
 namespace FSharp.Core.CS.Tests {
     [TestFixture]
     public class IntegrationTests {
-        private int doSomething(int userID, int id) {
+        int doSomething(int userID, int id) {
+            // fetch some other entity, do "stuff"
             return userID + id;
         }
 
-        private void setError(string e) {}
+        void setError(string e) {}
+
+        const string req_userID = "123";
+        const string req_otherID = "999";
 
         [Test]
         public void Test1_Imperative() {
-            // query string
-            var nvc = new NameValueCollection { { "user_id", "123" } };
-            // web forms textbox
-            const string textboxContent = "999";
 
             int userID;
-            var userID_ok = int.TryParse(nvc["user_id"], out userID);
+            var userID_ok = int.TryParse(req_userID, out userID);
             if (!userID_ok) {
                 setError("Invalid User ID");
             } else {
                 int id;
-                var id_ok = int.TryParse(textboxContent, out id);
+                var id_ok = int.TryParse(req_otherID, out id);
                 if (!id_ok) {
                     setError("Invalid ID");
                 } else {
@@ -36,14 +35,10 @@ namespace FSharp.Core.CS.Tests {
 
         [Test]
         public void Test1_Functional() {
-            // query string
-            var nvc = new NameValueCollection { { "user_id", "123" } };
-            // web forms textbox
-            const string textboxContent = "999";
 
             var somethingOrError = 
-                from userID in Opt.TryParseInt(nvc["user_id"]).ToChoice("Invalid User ID")
-                from id in Opt.TryParseInt(textboxContent).ToChoice("Invalid ID")
+                from userID in Opt.TryParseInt(req_userID).ToChoice("Invalid User ID")
+                from id in Opt.TryParseInt(req_otherID).ToChoice("Invalid ID")
                 select doSomething(userID, id);
 
             somethingOrError.Match(Console.WriteLine, setError);
