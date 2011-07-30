@@ -38,10 +38,10 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Functions.fs" />
     <Compile Include="Option.fs" />
     <Compile Include="List.fs" />
     <Compile Include="Choice.fs" />
-    <Compile Include="Functions.fs" />
     <Compile Include="Set.fs" />
     <Compile Include="Map.fs" />
     <Compile Include="Dictionary.fs" />
