@@ -34,17 +34,11 @@ namespace FSharp.Core.CS.Tests {
         }
 
         [Test]
-        public void Test1_option_only() {
-            var userID = Opt.TryParseInt(req_userID);
-
-        }
-
-        [Test]
         public void Test1_either() {
 
-            var somethingOrError = 
-                from userID in Opt.TryParseInt(req_userID).ToFSharpChoice("Invalid User ID")
-                from id in Opt.TryParseInt(req_otherID).ToFSharpChoice("Invalid ID")
+            var somethingOrError =
+                from userID in FSharpOption.TryParseInt(req_userID).ToFSharpChoice("Invalid User ID")
+                from id in FSharpOption.TryParseInt(req_otherID).ToFSharpChoice("Invalid ID")
                 select doSomething(userID, id);
 
             somethingOrError.Match(Console.WriteLine, setError);

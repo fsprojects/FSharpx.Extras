@@ -8,7 +8,7 @@ module internal Op =
     let (==) a b = LanguagePrimitives.PhysicalEquality a b
 
 [<Extension>]
-type Opt =
+type FSharpOption =
     [<Extension>]
     static member HasValue o = Option.isSome o
 
