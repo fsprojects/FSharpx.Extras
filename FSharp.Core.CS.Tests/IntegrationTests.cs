@@ -43,8 +43,8 @@ namespace FSharp.Core.CS.Tests {
         public void Test1_either() {
 
             var somethingOrError = 
-                from userID in Opt.TryParseInt(req_userID).ToChoice("Invalid User ID")
-                from id in Opt.TryParseInt(req_otherID).ToChoice("Invalid ID")
+                from userID in Opt.TryParseInt(req_userID).ToFSharpChoice("Invalid User ID")
+                from id in Opt.TryParseInt(req_otherID).ToFSharpChoice("Invalid ID")
                 select doSomething(userID, id);
 
             somethingOrError.Match(Console.WriteLine, setError);

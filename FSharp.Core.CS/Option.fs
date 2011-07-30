@@ -19,13 +19,13 @@ type Opt =
         | _ -> Nullable()
 
     [<Extension>]
-    static member ToOption (n: Nullable<_>) =
+    static member ToFSharpOption (n: Nullable<_>) =
         if n.HasValue
             then Some n.Value
             else None
 
     [<Extension>]
-    static member ToOption v = if v == null then None else Some v
+    static member ToFSharpOption v = if v == null then None else Some v
 
     [<Extension>]
     static member Some a = Option.Some a
@@ -49,7 +49,7 @@ type Opt =
         | _ -> ()
 
     [<Extension>]
-    static member ToChoice (o, other) =
+    static member ToFSharpChoice (o, other) =
         match o with
         | Some v -> Choice1Of2 v
         | _ -> Choice2Of2 other

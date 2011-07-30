@@ -21,14 +21,14 @@ namespace FSharp.Core.CS.Tests {
         [Test]
         public void FromNullable_WithValue() {
             int? a = 99;
-            var o = a.ToOption();
+            var o = a.ToFSharpOption();
             Assert.AreEqual(99, o.Value);
         }
 
         [Test]
         public void FromNullable_WithoutValue() {
             int? a = null;
-            var o = a.ToOption();
+            var o = a.ToFSharpOption();
             Assert.False(o.HasValue());
         }
 
