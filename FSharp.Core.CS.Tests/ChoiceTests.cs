@@ -20,11 +20,11 @@ namespace FSharp.Core.CS.Tests {
 
         [Test]
         public void New() {
-            var a = Choice.New1Of2<int, string>(1);
+            var a = FSharpChoice.New1Of2<int, string>(1);
             var b = FSharpChoice<int, string>.NewChoice1Of2(1);
             Assert.AreEqual(a, b);
 
-            var c = Choice.New2Of2<int, string>("a");
+            var c = FSharpChoice.New2Of2<int, string>("a");
             var d = FSharpChoice<int, string>.NewChoice2Of2("a");
             Assert.AreEqual(c, d);
         }

@@ -34,7 +34,13 @@ namespace FSharp.Core.CS.Tests {
         }
 
         [Test]
-        public void Test1_Functional() {
+        public void Test1_option_only() {
+            var userID = Opt.TryParseInt(req_userID);
+
+        }
+
+        [Test]
+        public void Test1_either() {
 
             var somethingOrError = 
                 from userID in Opt.TryParseInt(req_userID).ToChoice("Invalid User ID")

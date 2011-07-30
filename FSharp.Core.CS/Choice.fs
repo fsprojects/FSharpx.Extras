@@ -4,7 +4,7 @@ open System
 open System.Runtime.CompilerServices
 
 [<Extension>]
-type Choice =
+type FSharpChoice =
     [<Extension>]
     static member Match (c, f1: Func<_,_>, f2: Func<_,_>) =
         match c with
@@ -39,7 +39,7 @@ type Choice =
 
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>, mapper: Func<_,_,_>) =
-        let r = Choice.SelectMany(o, f)
+        let r = FSharpChoice.SelectMany(o, f)
         match o,r with
         | Choice1Of2 x, Choice1Of2 y -> mapper.Invoke(x,y) |> Choice1Of2
         | Choice2Of2 x, _ -> Choice2Of2 x
