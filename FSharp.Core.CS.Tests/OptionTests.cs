@@ -131,7 +131,7 @@ namespace FSharp.Core.CS.Tests {
 
         [Test]
         public void TryParseDec() {
-            var a = FSharpOption.TryParseDec("123.44", NumberStyles.Any, CultureInfo.InvariantCulture);
+            var a = FSharpOption.TryParseDecimal("123.44", NumberStyles.Any, CultureInfo.InvariantCulture);
             Assert.AreEqual(123.44m, a.Value);
         }
 

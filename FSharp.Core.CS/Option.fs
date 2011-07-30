@@ -83,11 +83,11 @@ type FSharpOption =
         | true,v -> Some v
         | _ -> None
 
-    static member TryParseDec s =
+    static member TryParseDecimal s =
         match Decimal.TryParse s with
         | true,v -> Some v
         | _ -> None
-    static member TryParseDec (s, style, provider) =
+    static member TryParseDecimal (s, style, provider) =
         match Decimal.TryParse(s, style, provider) with
         | true,v -> Some v
         | _ -> None
