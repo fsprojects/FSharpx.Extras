@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace FSharp.Core.CS.Tests {
     [TestFixture]
-    public class TaggedUnionTests {
+    public class ChoiceTests {
         [Test]
         public void Match() {
             var a = FSharpChoice<int, string>.NewChoice1Of2(1);
