@@ -34,6 +34,22 @@ namespace FSharp.Core.CS.Tests {
         }
 
         [Test]
+        public void Test1_option() {
+            var userID = FSharpOption.TryParseInt(req_userID);
+            if (!userID.HasValue()) {
+                setError("Invalid User ID");
+            } else {
+                var otherID = FSharpOption.TryParseInt(req_otherID);
+                if (!otherID.HasValue()) {
+                    setError("Invalid ID");
+                } else {
+                    Console.WriteLine(doSomething(userID.Value, otherID.Value));
+                }
+            }
+        }
+
+
+        [Test]
         public void Test1_either() {
 
             var somethingOrError =
