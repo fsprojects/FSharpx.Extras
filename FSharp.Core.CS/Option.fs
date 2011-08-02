@@ -53,6 +53,24 @@ type FSharpOption =
         | _ -> ()
 
     [<Extension>]
+    static member OrElse (o, other) =
+        match o with
+        | Some x -> Some x
+        | _ -> other
+
+    [<Extension>]
+    static member GetOrElse (o, other) =
+        match o with
+        | Some x -> x
+        | _ -> other
+
+    [<Extension>]
+    static member GetOrElse (o, other: _ Func) =
+        match o with
+        | Some x -> x
+        | _ -> other.Invoke()
+
+    [<Extension>]
     static member ToFSharpChoice (o, other) =
         match o with
         | Some v -> Choice1Of2 v

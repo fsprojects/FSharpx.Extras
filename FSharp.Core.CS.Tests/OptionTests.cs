@@ -188,5 +188,33 @@ namespace FSharp.Core.CS.Tests {
             Assert.IsFalse(n.ToFSharpOption().HasValue());
         }
 
+        [Test]
+        public void OrElse() {
+            var a = 5.Some();
+            var b = a.OrElse(9.Some());
+            Assert.AreEqual(5, b.Value);
+        }
+
+        [Test]
+        public void OrElse_None() {
+            var a = FSharpOption<int>.None;
+            var b = a.OrElse(9.Some());
+            Assert.AreEqual(9, b.Value);
+        }
+
+        [Test]
+        public void GetOrElse() {
+            var a = FSharpOption<int>.None;
+            var b = a.GetOrElse(9);
+            Assert.AreEqual(9, b);
+        }
+
+        [Test]
+        public void GetOrElse_function() {
+            var a = FSharpOption<int>.None;
+            var b = a.GetOrElse(() => 9);
+            Assert.AreEqual(9, b);
+        }
+
     }
 }
