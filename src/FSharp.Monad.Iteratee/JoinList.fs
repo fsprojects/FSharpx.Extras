@@ -1,4 +1,4 @@
-﻿module FSharp.Collections.JoinList
+module FSharp.Collections.JoinList
 
 open System.Collections
 open System.Collections.Generic
@@ -32,9 +32,17 @@ type JoinList<'a> =
 module JoinList =
   let empty<'a> : JoinList<'a> = Empty
   let isEmpty l = match l with Empty -> true | _ -> false
-  let length l = match l with Empty -> 0 | Unit _ -> 1 | Join(_,_,l) -> l
+  let length l =
+    match l with
+    | Empty -> 0 
+    | Unit _ -> 1
+    | Join(_,_,l) -> l
   let singleton x = Unit x
-  let ofSeq s = Seq.fold (fun xs x -> match xs with Join(_,_,l) -> Join(xs, Unit x, l+1) | _ -> Join(Unit x, Empty, 1)) Empty s
+  let ofSeq s = Seq.fold (fun xs x ->
+    match xs with 
+    | Empty -> Unit x
+    | Unit _ -> Join(xs, Unit x, 2)
+    | Join(_,_,l) -> Join(xs, Unit x, l+1)) Empty s
   let toSeq (l:JoinList<_>) = l :> seq<_>
   let toList (l:JoinList<_>) = List.ofSeq l   // NOTE: There is likely a better conversion to the List type.
   let toArray (l:JoinList<_>) = Array.ofSeq l // NOTE: There is likely a better conversion to the Array type.
@@ -46,8 +54,16 @@ module JoinList =
       match right with
       | Join(x',y',l') -> l = l' && equal x x' && equal y y' // TODO: || iterate each and compare the values.
       | _ -> false 
-  let cons hd tl = Join(Unit hd, tl, length tl + 1)
-  let append left right = Join(left, right, length left + length right)
+  let cons hd tl =
+    match tl with
+    | Empty -> Unit hd
+    | _ -> Join(Unit hd, tl, length tl + 1)
+  let append left right =
+    match left with
+    | Empty -> right
+    | _ -> match right with
+           | Empty -> left
+           | _ -> Join(left, right, length left + length right)
   let rec head l =
     match l with
     | Unit x -> x

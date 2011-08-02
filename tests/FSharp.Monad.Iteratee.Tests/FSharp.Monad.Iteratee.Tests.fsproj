@@ -33,6 +33,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Compile Include="ListTest.fs" />
+    <Compile Include="JoinListTest.fs" />
     <Compile Include="ByteStringTest.fs" />
     <Compile Include="BinaryTest.fs" />
   </ItemGroup>
