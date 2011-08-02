@@ -155,3 +155,7 @@ type FSharpOption =
         | true,v -> Some v
         | _ -> None
         
+    static member TryCastInt (o: obj) = 
+        match o with
+        | :? int as i -> Some i
+        | _ -> None
