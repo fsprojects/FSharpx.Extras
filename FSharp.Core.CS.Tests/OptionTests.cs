@@ -92,6 +92,27 @@ namespace FSharp.Core.CS.Tests {
         }
 
         [Test]
+        public void LINQ_Where() {
+            var a = 5.Some();
+            var c = from i in a where i > 7 select i;
+            Assert.IsFalse(c.HasValue());
+        }
+
+        [Test]
+        public void LINQ_Where2() {
+            var a = 5.Some();
+            var c = from i in a where i > 3 select i;
+            Assert.AreEqual(5, c.Value);
+        }
+
+        [Test]
+        public void LINQ_Where3() {
+            var a = FSharpOption<int>.None;
+            var c = from i in a where i > 3 select i;
+            Assert.IsFalse(c.HasValue());
+        }
+
+        [Test]
         public void Match_Some() {
             var a = 5.Some();
             var b = a.Match(x => x + 2, () => 99);
