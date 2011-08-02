@@ -1,4 +1,4 @@
-﻿module FSharp.Monad.Iteratee.JoinList
+﻿module FSharp.Collections.JoinList
 
 open System.Collections
 open System.Collections.Generic
