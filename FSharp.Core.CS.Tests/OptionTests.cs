@@ -182,5 +182,11 @@ namespace FSharp.Core.CS.Tests {
             Assert.IsFalse(a.HasValue());
         }
 
+        [Test]
+        public void DBNull_is_None() {
+            var n = DBNull.Value;
+            Assert.IsFalse(n.ToFSharpOption().HasValue());
+        }
+
     }
 }

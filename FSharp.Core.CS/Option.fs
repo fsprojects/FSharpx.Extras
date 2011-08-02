@@ -25,7 +25,11 @@ type FSharpOption =
             else None
 
     [<Extension>]
-    static member ToFSharpOption v = if v == null then None else Some v
+    static member ToFSharpOption v = 
+        match box v with
+        | null -> None
+        | :? DBNull -> None
+        | _ -> Some v
 
     [<Extension>]
     static member Some a = Option.Some a
