@@ -151,6 +151,14 @@ namespace FSharp.Core.CS.Tests {
         public void TryCastInt() {
             object o = 22;
             FSharpOption<int> a = FSharpOption.TryCastInt(o);
+            Assert.AreEqual(22, a.Value);
+        }
+
+        [Test]
+        public void TryCastInt_null() {
+            object o = null;
+            FSharpOption<int> a = FSharpOption.TryCastInt(o);
+            Assert.IsFalse(a.HasValue());
         }
 
     }
