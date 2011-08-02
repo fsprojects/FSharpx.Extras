@@ -41,6 +41,12 @@ type FSharpOption =
         | _ -> ifNone.Invoke()
 
     [<Extension>]
+    static member Match (o, ifSome: Func<_,_>, ifNone) =
+        match o with
+        | Some x -> ifSome.Invoke x
+        | _ -> ifNone
+
+    [<Extension>]
     static member Match (o, ifSome: Action<_>, ifNone: Action) =
         match o with
         | Some x -> ifSome.Invoke x

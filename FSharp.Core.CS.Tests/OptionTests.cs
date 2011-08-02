@@ -127,6 +127,13 @@ namespace FSharp.Core.CS.Tests {
         }
 
         [Test]
+        public void Match_Value() {
+            var a = FSharpOption<int>.None;
+            var b = a.Match(x => x + 2, 99);
+            Assert.AreEqual(99, b);
+        }
+
+        [Test]
         public void Match_Action() {
             var a = 5.Some();
             a.Match(Console.WriteLine, Assert.Fail);
