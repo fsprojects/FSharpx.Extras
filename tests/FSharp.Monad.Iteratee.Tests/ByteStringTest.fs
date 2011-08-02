@@ -1,4 +1,4 @@
-﻿module FSharp.Monad.Tests.ByteStringTest
+﻿module FSharp.Collections.Tests.ByteStringTest
 
 open System
 open FSharp.Collections.ByteString
