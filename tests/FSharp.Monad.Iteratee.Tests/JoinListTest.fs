@@ -1,14 +1,14 @@
 ﻿module FSharp.Collections.Tests.JoinListTest
 
 open System
+open FSharp.Collections
 open FSharp.Collections.JoinList
-open FSharp.Collections.JoinList.JoinList
 open NUnit.Framework
 open FsUnit
 
 [<Test>]
-let ``test should verify empty is Empty``() =
-  empty<_> |> should equal JoinList.Empty
+let ``test should verify empty is EmptyJoinList``() =
+  empty<_> |> should equal EmptyJoinList
 
 let expected = Join(Unit 0, Join(Unit 1, Join(Unit 2, Join(Unit 3, Unit 4, 2), 3), 4), 5)
 
@@ -40,7 +40,7 @@ let ``test singleton should return a Unit containing the solo value``() =
   singleton 1 |> should equal (Unit 1)
 
 [<Test>]
-let ``test cons should return a Unit when the tail is Empty``() =
+let ``test cons should return a Unit when the tail is EmptyJoinList``() =
   cons 1 JoinList.empty |> should equal (Unit 1)
 
 [<Test>]

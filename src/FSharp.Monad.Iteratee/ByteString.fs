@@ -1,4 +1,4 @@
-﻿module FSharp.Collections.ByteString
+﻿namespace FSharp.Collections
 
 open System
 open System.Diagnostics.Contracts

@@ -1,7 +1,7 @@
 ﻿module FSharp.Collections.Tests.ByteStringTest
 
 open System
-open FSharp.Collections.ByteString
+open FSharp.Collections
 open NUnit.Framework
 open FsUnit
 

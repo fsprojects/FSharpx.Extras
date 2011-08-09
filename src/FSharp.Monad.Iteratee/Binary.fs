@@ -2,7 +2,7 @@
 #nowarn "40"
 
 open System
-open FSharp.Collections.ByteString
+open FSharp.Collections
 open Operators
 
 (* ========= Iteratees ========= *)
@@ -113,3 +113,4 @@ let enumStream bufferSize (stream:#System.IO.Stream) i =
     | Choice2Of2 0 -> Continue k
     | Choice2Of2 n -> step (k (Chunk (BS(buffer,0,buffer.Length))))
   step i
+

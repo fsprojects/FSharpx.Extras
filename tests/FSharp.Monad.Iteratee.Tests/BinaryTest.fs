@@ -1,7 +1,7 @@
 ﻿module FSharp.Monad.Tests.BinaryTest
 
 open System
-open FSharp.Collections.ByteString
+open FSharp.Collections
 open FSharp.Monad.Iteratee
 open FSharp.Monad.Iteratee.Binary
 open NUnit.Framework

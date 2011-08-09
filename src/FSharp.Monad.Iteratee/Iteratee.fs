@@ -68,7 +68,7 @@ module Operators =
   let inline lift2 f a b = returnM f <*> a <*> b
   let inline ( *>) x y = lift2 (fun _ z -> z) x y
   let inline ( <*) x y = lift2 (fun z _ -> z) x y
-  let inline (>>.) m f = bindM iteratee m (fun _ -> f)
+  let inline (>>.) m f = m >>= (fun _ -> f)
 
 let rec enumEOF = function
   | Yield(x,_) -> Yield(x,EOF)
