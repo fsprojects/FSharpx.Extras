@@ -33,16 +33,19 @@ type Enumerator<'el,'acc> = Iteratee<'el,'acc> -> Iteratee<'el,'acc>
 type Enumeratee<'elo,'eli,'acc> = Iteratee<'eli,'acc> -> Iteratee<'elo, Iteratee<'eli,'acc>>
 
 // TODO: Make calls to bind tail recursive.
-let rec bind m f =
-  match m with
-  | Continue k -> Continue(fun s -> bind (k s) f)
-  | Error e -> Error e
-  | Yield(x, Empty) -> f x
-  | Yield(x, extra) ->
-      match f x with
-      | Continue k -> k extra
-      | Error e -> Error e
-      | Yield(acc',_) -> Yield(acc', extra)
+// TODO: Fix bind; it is not currently applying correctly.
+let bind m f =
+  let rec innerBind m =
+    match m with
+    | Continue k -> Continue(innerBind << k)
+    | Error e -> Error e
+    | Yield(x, Empty) -> f x
+    | Yield(x, extra) ->
+        match f x with
+        | Continue k -> k extra
+        | Error e -> Error e
+        | Yield(acc',_) -> Yield(acc', extra)
+  innerBind m
 
 let combine comp1 comp2 =
   let binder () = comp2

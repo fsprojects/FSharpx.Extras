@@ -72,8 +72,8 @@ let readLines =
   let terminators = heads crlf >>= fun n -> if n = 0 then heads lf else Yield(n, Empty)
   let rec lines acc = split isNewline >>= fun bs -> terminators >>= check acc bs
   and check acc bs count =
-    if ByteString.isEmpty bs then Yield (Choice2Of2 (List.rev acc |> List.map (ByteString.toString)), EOF)
-    elif count = 0 then Yield (Choice1Of2 (List.rev acc |> List.map (ByteString.toString)), Chunk bs)
+    if count = 0 then Yield (Choice1Of2 (List.rev acc |> List.map (ByteString.toString)), Chunk bs)
+    elif ByteString.isEmpty bs then Yield (Choice2Of2 (List.rev acc |> List.map (ByteString.toString)), EOF)
     else lines (bs::acc)
   lines []
 

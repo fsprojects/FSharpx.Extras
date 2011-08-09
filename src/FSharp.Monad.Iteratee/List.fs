@@ -74,7 +74,6 @@ let heads str =
     | (count, []) -> Yield(count, EOF)
     | (count, str) -> Continue (step count str)
   and step count str s =
-    let str = List.ofSeq str
     match str, s with
     | str, Empty -> loop count str
     | str, (Chunk []) -> loop count str
@@ -93,8 +92,8 @@ let readLines =
   let rec lines acc = split isNewline >>= fun l -> terminators >>= check acc l
   and check acc l count =
     match l, count with
+    | _, 0 -> Yield (Choice1Of2 (List.rev acc |> List.map toString), Chunk l)
     | [], _ -> Yield (Choice2Of2 (List.rev acc |> List.map toString), EOF)
-    | l, 0 -> Yield (Choice1Of2 (List.rev acc |> List.map toString), Chunk l)
     | l, _ -> lines (l::acc)
   lines []
 
