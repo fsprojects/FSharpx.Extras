@@ -62,7 +62,7 @@ namespace FSharp.Core.CS.Tests {
             public string Name { get; private set; }
             public int Age { get; private set; }
 
-            public static readonly Func<string, int, Person> New = (name, age) => new Person(name, age);
+            private static readonly Func<string, int, Person> New = (name, age) => new Person(name, age);
 
             public static FSharpChoice<Person, Errors> TryNew(string name, int age) {
                 return New.Curry().PureValidate()
@@ -70,7 +70,7 @@ namespace FSharp.Core.CS.Tests {
                         .ApV(Positive(age));
             }
 
-            public Person(string name, int age) {
+            private Person(string name, int age) {
                 Name = name;
                 Age = age;
             }
