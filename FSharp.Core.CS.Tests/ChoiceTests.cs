@@ -59,8 +59,21 @@ namespace FSharp.Core.CS.Tests {
         }
 
         private class Person {
-            public string Name { get; private set; }
-            public int Age { get; private set; }
+            private readonly string name;
+            private readonly int age;
+
+            public string Name {
+                get { return name; }
+            }
+
+            public int Age {
+                get { return age; }
+            }
+
+            private Person(string name, int age) {
+                this.name = name;
+                this.age = age;
+            }
 
             private static readonly Func<string, int, Person> New = (name, age) => new Person(name, age);
 
@@ -69,17 +82,16 @@ namespace FSharp.Core.CS.Tests {
                         .ApV(Mandatory(name))
                         .ApV(Positive(age));
             }
-
-            private Person(string name, int age) {
-                Name = name;
-                Age = age;
-            }
         }
 
         [Test]
         public void Validation_Errors() {
             Person.TryNew("", -5)
-                .Match(_ => Assert.Fail("should not have been ok"), err => Assert.AreEqual(2, err.Length));
+                .Match(_ => Assert.Fail("should not have been ok"), 
+                       err => {
+                           Assert.AreEqual(2, err.Length);
+                           Console.WriteLine(err);
+                       });
         }
 
         [Test]
@@ -88,7 +100,8 @@ namespace FSharp.Core.CS.Tests {
                 .Match(p => {
                     Assert.AreEqual("Pepe", p.Name);
                     Assert.AreEqual(40, p.Age);
-                }, _ => Assert.Fail("should not have failed"));
+                }, 
+                _ => Assert.Fail("should not have failed"));
         }
 
     }
