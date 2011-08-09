@@ -43,6 +43,7 @@ type FSharpChoice =
         match o,r with
         | Choice1Of2 x, Choice1Of2 y -> mapper.Invoke(x,y) |> Choice1Of2
         | Choice2Of2 x, _ -> Choice2Of2 x
+        | _, Choice2Of2 x -> Choice2Of2 x
 
     [<Extension>]
     static member Select (o, f: Func<_,_>) =
