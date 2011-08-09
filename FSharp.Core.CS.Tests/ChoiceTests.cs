@@ -64,27 +64,27 @@ namespace FSharp.Core.CS.Tests {
 
             public static readonly Func<string, int, Person> New = (name, age) => new Person(name, age);
 
+            public static FSharpChoice<Person, Errors> TryNew(string name, int age) {
+                return New.Curry().PureValidate()
+                        .ApV(Mandatory(name))
+                        .ApV(Positive(age));
+            }
+
             public Person(string name, int age) {
                 Name = name;
                 Age = age;
             }
         }
 
-        private FSharpChoice<Person, Errors> ValidatePerson(string name, int age) {
-            return Person.New.Curry().PureValidate()
-                        .ApV(Mandatory(name))
-                        .ApV(Positive(age));
-        }
-
         [Test]
         public void Validation_Errors() {
-            ValidatePerson("", -5)
+            Person.TryNew("", -5)
                 .Match(_ => Assert.Fail("should not have been ok"), err => Assert.AreEqual(2, err.Length));
         }
 
         [Test]
         public void Validation_OK() {
-            ValidatePerson("Pepe", 40)
+            Person.TryNew("Pepe", 40)
                 .Match(p => {
                     Assert.AreEqual("Pepe", p.Name);
                     Assert.AreEqual(40, p.Age);
