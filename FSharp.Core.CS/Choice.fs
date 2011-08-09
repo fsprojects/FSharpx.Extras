@@ -57,6 +57,19 @@ type FSharpChoice =
         | Choice2Of2 e, _            -> Choice2Of2 e
         | _           , Choice2Of2 e -> Choice2Of2 e
 
+
+    // validation
+
+    static member Error (x: string) = Choice2Of2 [x]
+    static member Ok x : Choice<_, string list> = Choice1Of2 x
+
+    static member Validator (p: _ Predicate, errorMsg: string) =
+        let v x = 
+            if p.Invoke x
+                then FSharpChoice.Ok x
+                else FSharpChoice.Error errorMsg
+        Func<_,_>(v)
+
     [<Extension>]
     static member ApVG (f: Choice<Func<_,_>, _>, x, mappend) =
         match f,x with
@@ -72,8 +85,7 @@ type FSharpChoice =
     [<Extension>]
     static member PureValidate x : Choice<_, string list> = Choice1Of2 x
 
-    static member Error (x: string) = Choice2Of2 [x]
-    static member Ok x : Choice<_, string list> = Choice1Of2 x
+    // constructors
 
     static member New1Of2<'a,'b> (a: 'a) : Choice<'a,'b> = Choice1Of2 a
     static member New2Of2<'a,'b> (b: 'b) : Choice<'a,'b> = Choice2Of2 b

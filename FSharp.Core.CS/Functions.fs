@@ -32,4 +32,4 @@ type FSharpFunc =
 
     [<Extension>]
     static member Curry (f: Func<_,_,_>) =
-        new Func<_,Func<_,_>>(fun a -> new Func<_,_>(fun b -> f.Invoke(a,b)))
+        Func<_,Func<_,_>>(fun a -> Func<_,_>(fun b -> f.Invoke(a,b)))

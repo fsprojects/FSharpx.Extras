@@ -47,9 +47,10 @@ namespace FSharp.Core.CS.Tests {
         }
 
         private static FSharpChoice<string, Errors> Mandatory(string s) {
-            if (string.IsNullOrEmpty(s))
-                return FSharpChoice.Error<string>("Mandatory field");
-            return FSharpChoice.Ok(s);
+            return FSharpChoice.Validator<string>(x => !string.IsNullOrEmpty(x), "Mandatory field")(s);
+            //if (string.IsNullOrEmpty(s))
+            //    return FSharpChoice.Error<string>("Mandatory field");
+            //return FSharpChoice.Ok(s);
         }
 
         private static FSharpChoice<int, Errors> Positive(int a) {
