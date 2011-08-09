@@ -29,3 +29,7 @@ type FSharpFunc =
 
     static member FromFunc (f: Func<_,_,_>) =
         fun x y -> f.Invoke(x,y)
+
+    [<Extension>]
+    static member Curry (f: Func<_,_,_>) =
+        new Func<_,Func<_,_>>(fun a -> new Func<_,_>(fun b -> f.Invoke(a,b)))
