@@ -1,0 +1,4 @@
+*.dll
+*.pdb
+FSharp.ASyncExtensions.xml
+bin/release

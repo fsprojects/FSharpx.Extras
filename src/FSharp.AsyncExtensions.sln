@@ -1,0 +1,47 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharp.AsyncExtensions", "FSharp.AsyncExtensions.fsproj", "{EDE1812B-5A62-410A-9553-02499CF29317}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{8406B0C7-14A3-42F1-AC7A-EE26C0A9F15E}"
+	ProjectSection(SolutionItems) = preProject
+		..\License.markdown = ..\License.markdown
+		..\README.markdown = ..\README.markdown
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{DD79E523-7072-4A67-89A0-257ECEF766D1}"
+	ProjectSection(SolutionItems) = preProject
+		..\samples\AsyncSeqObservable.fsx = ..\samples\AsyncSeqObservable.fsx
+		..\samples\AutoCancel.fsx = ..\samples\AutoCancel.fsx
+		..\samples\BatchProcessing.fsx = ..\samples\BatchProcessing.fsx
+		..\samples\BlockingQueue.fsx = ..\samples\BlockingQueue.fsx
+		..\samples\Caching.fsx = ..\samples\Caching.fsx
+		..\samples\Crawler.fsx = ..\samples\Crawler.fsx
+		..\samples\WebProxy.fsx = ..\samples\WebProxy.fsx
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EDE1812B-5A62-410A-9553-02499CF29317}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDE1812B-5A62-410A-9553-02499CF29317}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDE1812B-5A62-410A-9553-02499CF29317}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{EDE1812B-5A62-410A-9553-02499CF29317}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{EDE1812B-5A62-410A-9553-02499CF29317}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EDE1812B-5A62-410A-9553-02499CF29317}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDE1812B-5A62-410A-9553-02499CF29317}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDE1812B-5A62-410A-9553-02499CF29317}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{EDE1812B-5A62-410A-9553-02499CF29317}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{EDE1812B-5A62-410A-9553-02499CF29317}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
