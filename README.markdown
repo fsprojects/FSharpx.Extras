@@ -93,7 +93,7 @@ for an occurrence of an event (or other observable action):
 
     let counter n = async {
       printfn "Counting: %d" n
-      let! _ = Async.AwaitEvent(form.MouseDown)
+      let! _ = form.MouseDown |> Async.AwaitObservable
       return! counter (n + 1) }
 
 Overloaded version of the method allows waiting for the first of multiple events. The 
