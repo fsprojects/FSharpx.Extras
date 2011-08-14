@@ -36,6 +36,7 @@
     <Compile Include="MaybeTest.fs" />
     <Compile Include="StateTest.fs" />
     <Compile Include="ReaderTest.fs" />
+    <Compile Include="UndoTest.fs" />
     <Compile Include="WriterTest.fs" />
     <Compile Include="ContinuationTest.fs" />
   </ItemGroup>
