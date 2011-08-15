@@ -30,7 +30,7 @@ type ByteString = BS of byte array * int * int // TODO: Switch to the JoinList f
   /// disregarding any additional bytes in the original tail array.
   static member op_Cons (hd, BS(x,o,l)) =
     if l = 0 then ByteString.singleton hd
-    else let buffer = Array.zeroCreate<byte> (l + 1)
+    else let buffer = Array.init (l + 1) byte
          Buffer.SetByte(buffer,0,hd)
          Buffer.BlockCopy(x,o,buffer,1,l)
          BS(buffer,0,l+1)
@@ -44,7 +44,7 @@ type ByteString = BS of byte array * int * int // TODO: Switch to the JoinList f
     elif ByteString.isEmpty b then a
     else let (BS(x,o,l)) = a
          let (BS(x',o',l')) = b
-         let buffer = Array.zeroCreate<byte> (l + l')
+         let buffer = Array.init (l + l') byte
          Buffer.BlockCopy(x,o,buffer,0,l)
          Buffer.BlockCopy(x',o',buffer,l,l')
          BS(buffer,0,l+l')
@@ -60,6 +60,7 @@ type ByteString = BS of byte array * int * int // TODO: Switch to the JoinList f
   static member toString (BS(x,o,l)) = let len = l-1 in System.Text.Encoding.ASCII.GetString(x,o,l)
   static member isEmpty (BS(_,_,l)) = Contract.Requires(l >= 0); l <= 0
   static member length (BS(_,_,l)) = Contract.Requires(l >= 0); l
+  static member index (BS(x,o,l)) pos = Contract.Requires(o + pos <= l); x.[o + pos]
   static member head (BS(x,o,l)) = if l <= 0 then failwith "" else x.[o]
   static member tail (BS(x,o,l)) = BS(x,o+1,l-1)
   static member cons hd tl = ByteString.op_Cons(hd, tl)
