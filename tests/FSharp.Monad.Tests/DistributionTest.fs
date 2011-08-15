@@ -66,9 +66,13 @@ let ``When making the first choice in a MontyHall situation, the chances to win 
     |> probability 
     |> should equal (1N/3N)
 
+let montyHallWithSwitch = distribution {
+    let! firstDoor = firstChoice
+    return! switch firstDoor }
+
 [<Test>]
 let ``When switching in a MontyHall situation, the chances to win should be 2/3``() =
-  firstChoice >>= switch
+  montyHallWithSwitch
     |> filter ((=) Car)
     |> probability 
     |> should equal (2N/3N)

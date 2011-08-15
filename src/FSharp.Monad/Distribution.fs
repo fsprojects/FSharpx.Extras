@@ -27,6 +27,7 @@ let returnD (value:'a) =
 type DistributionMonadBuilder() =
     member this.Bind (r, f) = bindD r f
     member this.Return x = returnD x
+    member this.ReturnFrom x = x
 
 let distribution = DistributionMonadBuilder()
 
