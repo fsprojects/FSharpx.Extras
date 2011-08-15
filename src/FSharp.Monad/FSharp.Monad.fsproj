@@ -37,6 +37,7 @@
     <Compile Include="Maybe.fs" />
     <Compile Include="State.fs" />
     <Compile Include="Reader.fs" />
+    <Compile Include="Undo.fs" />
     <Compile Include="Writer.fs" />
     <Compile Include="Continuation.fs" />
   </ItemGroup>
