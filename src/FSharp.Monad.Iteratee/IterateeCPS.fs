@@ -7,21 +7,18 @@ type Stream<'a> =
   | Empty
   | EOF
 
-type IterateeCPS<'el,'a,'r> = Iteratee of (((Stream<'el> -> IterateeCPS<'el,'a,'r>) * exn option -> 'r) -> ('a * Stream<'el> -> 'r) -> 'r)
+type IterateeCPS<'el,'a,'r> = Iteratee of (((Stream<'el> -> IterateeCPS<'el,'a,'r>) -> 'r) -> (exn -> 'r) -> ('a * Stream<'el> -> 'r) -> 'r)
 
-let runIter (Iteratee(i)) onCont onDone = i onCont onDone
-let returnI x = Iteratee(fun _ onDone -> onDone(x, Empty))
+let runIter (Iteratee(i)) onCont onError onDone = i onCont onError onDone
+let returnI x = Iteratee(fun _ _ onDone -> onDone(x, Empty))
 let rec bind (m: IterateeCPS<'el,'a,'r>) (f: 'a -> IterateeCPS<'el,'b,'r>) : IterateeCPS<'el,'b,'r> =
-  Iteratee(fun onCont onDone ->
+  Iteratee(fun onCont onError onDone ->
     let mdone (a, s) =
-      let fcont (k, e) =
-        match e with
-        | None -> runIter (k s) onCont onDone
-        | Some _ -> onCont(k, e)
+      let fcont k = runIter (k s) onCont onError onDone
       match s with
-      | Empty -> runIter (f a) onCont onDone
-      | _ -> runIter (f a) fcont (fun (x, _) -> onDone(x, s))
-    in runIter m (fun (k, e) -> onCont(k >> (fun m' -> bind m' f), e)) mdone)
+      | Empty -> runIter (f a) onCont onError onDone
+      | _ -> runIter (f a) fcont onError (fun (x, _) -> onDone(x, s))
+    in runIter m (fun k -> onCont(k >> (fun m' -> bind m' f))) onError mdone)
 
 type IterateeCPSBuilder() =
   member this.Return(x) = returnI x
@@ -32,16 +29,38 @@ type IterateeCPSBuilder() =
   member this.Delay(f) = bind (returnI ()) f
 let iterateeCPS = IterateeCPSBuilder()
 
-let rec throw e = Iteratee(fun onCont _ -> onCont((fun _ -> throw e), (Some e)))
-let throwRecoverable e i = Iteratee(fun onCont _ -> onCont(i, (Some e)))
-let doneI x str = Iteratee(fun _ onDone -> onDone(x, str))
-let contI k e = Iteratee(fun onCont _ -> onCont(k, e))
-let liftI k = Iteratee(fun onCont _ -> onCont(k, None))
+let throw e = Iteratee(fun _ onError _ -> onError e)
+let throwRecoverable e i = Iteratee(fun onCont onError _ -> onError e; onCont i)
+let doneI x str = Iteratee(fun _ _ onDone -> onDone(x, str))
+let contI k = Iteratee(fun onCont _ _ -> onCont k)
+let liftI k = contI k
 let joinI outer = bind outer (fun inner ->
-  Iteratee(fun onCont onDone ->
+  Iteratee(fun onCont onError onDone ->
     let od (x, _) = onDone(x, Empty)
-    let rec oc = function
-      | k, None -> runIter (k EOF) oc' od
-      | _, Some e -> runIter (throw e) onCont od
-    and oc' (_, e) = runIter (throw (Option.get e)) oc od
-    runIter inner oc od))
+    let rec oc k = runIter (k EOF) oc' onError od
+    and oc' k = onError(Exception("divergent iteratee"))
+    runIter inner oc onError od))
+
+let run i =
+  let rec onCont k = runIter (k EOF) onCont' onError onDone
+  and onCont' k = Choice1Of2 (Exception("divergent iteratee"))
+  and onError e = Choice1Of2 e
+  and onDone (x,_) = Choice2Of2 x
+  runIter i onCont onError onDone
+
+// This matches the run_ implementation from Iteratee
+let run_ i =
+  match run i with
+  | Choice1Of2 e -> raise e
+  | x -> x
+
+let streamToList<'a,'b> : IterateeCPS<'a list,'a list,'b> =
+  let rec step acc str =
+    match str with
+    | Empty | Chunk [] -> liftI (step acc)
+    | Chunk ls -> liftI (step (acc @ ls))
+    | str -> doneI acc str
+  liftI (step [])
+
+
+(* Enumerators *)

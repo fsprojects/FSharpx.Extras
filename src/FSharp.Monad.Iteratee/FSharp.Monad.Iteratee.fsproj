@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Iteratee.fs" />
+    <Compile Include="IterateeCPS.fs" />
     <Compile Include="List.fs" />
     <Compile Include="JoinList.fs" />
     <Compile Include="ByteString.fs" />
