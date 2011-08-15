@@ -50,10 +50,15 @@ type Outcome =
 
 let firstChoice = toUniformDistribution [Car; Goat; Goat]
 
-let switch = function
-| Car -> certainly Goat
-| Goat -> certainly Car
-
+let switch firstCoice =
+    match firstCoice with
+    | Car -> 
+        // If you had the car and you switch ==> you lose sice there are only goats left
+        certainly Goat 
+    | Goat -> 
+        // If you had the goat, the host has to take out another goat ==> you win
+        certainly Car 
+ 
 [<Test>]
 let ``When making the first choice in a MontyHall situation, the chances to win should be 1/3``() =
   firstChoice 
