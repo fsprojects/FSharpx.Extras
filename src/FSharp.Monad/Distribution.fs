@@ -13,9 +13,8 @@ let bindD (dist:'a Distribution) (f: 'a -> 'b Distribution) =
                 f p1.Value
                 |> Seq.map (fun p2 -> 
                         { Value = p2.Value; 
-                            Probability = 
-                              p1.Probability * 
-                              p2.Probability}))
+                          Probability = 
+                            p1.Probability * p2.Probability}))
         |> Seq.concat : 'b Distribution
 
 let inline (>>=) dist f = bindD dist f
