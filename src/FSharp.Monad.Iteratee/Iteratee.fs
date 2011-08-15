@@ -21,19 +21,18 @@ type Stream<'a> =
 /// it receives an EOF or meets its own requirements for consuming data. The iteratee
 /// will return Continue whenever it is ready to receive the next chunk. An iteratee
 /// is fed data by an Enumerator, which generates a Stream. 
-type Iteratee<'el,'acc> =
-  | Continue of (Stream<'el> -> Iteratee<'el,'acc>)
-  | Yield of 'acc * Stream<'el>
+type Iteratee<'el,'a> =
+  | Yield of 'a * Stream<'el>
   | Error of exn
+  | Continue of (Stream<'el> -> Iteratee<'el,'a>)
 
 /// An enumerator generates a stream of data and feeds an iteratee, returning a new iteratee.
-type Enumerator<'el,'acc> = Iteratee<'el,'acc> -> Iteratee<'el,'acc>
+type Enumerator<'el,'a> = Iteratee<'el,'a> -> Iteratee<'el,'a>
 
 /// An Enumeratee is an Enumerator that feeds data streams to an internal iteratee.
-type Enumeratee<'elo,'eli,'acc> = Iteratee<'eli,'acc> -> Iteratee<'elo, Iteratee<'eli,'acc>>
+type Enumeratee<'elo,'eli,'a> = Iteratee<'eli,'a> -> Iteratee<'elo, Iteratee<'eli,'a>>
 
 // TODO: Make calls to bind tail recursive.
-// TODO: Fix bind; it is not currently applying correctly.
 let bind m f =
   let rec innerBind m =
     match m with
