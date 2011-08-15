@@ -18,6 +18,8 @@ let bindD (dist:'a Distribution) (f: 'a -> 'b Distribution) =
                               p2.Probability}))
         |> Seq.concat : 'b Distribution
 
+let inline (>>=) dist f = bindD dist f
+
 let returnD (value:'a) =   
     Seq.singleton { Value = value ; Probability = 1N/1N }
       : 'a Distribution
@@ -40,6 +42,9 @@ let probability (dist:'a Distribution) =
     dist
       |> Seq.map (fun o -> o.Probability)
       |> Seq.sum
+
+let certainly = returnD
+let impossible<'a> :'a Distribution = toUniformDistribution []
 
 let fairDice sides = toUniformDistribution [1..sides]
 

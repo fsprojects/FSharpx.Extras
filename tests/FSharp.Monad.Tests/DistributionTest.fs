@@ -33,3 +33,31 @@ let ``When creating a fair coin and a fair dice, then P(Heads) should be 1/2``()
 let ``When creating a fair coin and a fair dice, then P(Heads and dice > 3) should be 1/4``() =
   let actual = fairCoinAndDice |> filter (fun (d,c) -> c = Heads && d > 3)
   probability actual |> should equal (1N/4N)
+
+// MontyHall Problem
+// See Martin Erwig and Steve Kollmansberger's paper 
+// "Functional Pearls: Probabilistic functional programming in Haskell"
+
+type Outcome = 
+| Car
+| Goat
+
+let firstChoice = toUniformDistribution [Car; Goat; Goat]
+
+let switch = function
+| Car -> certainly Goat
+| Goat -> certainly Car
+
+[<Test>]
+let ``When making the first choice in a MontyHall situation, the chances to win should be 1/3``() =
+  firstChoice 
+    |> filter ((=) Car)
+    |> probability 
+    |> should equal (1N/3N)
+
+[<Test>]
+let ``When switching in a MontyHall situation, the chances to win should be 2/3``() =
+  firstChoice >>= switch
+    |> filter ((=) Car)
+    |> probability 
+    |> should equal (2N/3N)
