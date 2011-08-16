@@ -170,13 +170,12 @@ namespace FSharp.Core.CS.Tests {
         }
 
         public static FSharpChoice<IEnumerable<Order>, Errors> ValidateOrders(IEnumerable<Order> orders) {
-            var errors = L.F((Errors e) => FSharpChoice.Errors<FSharpList<Order>>(e));
             var zero = ListModule.Empty<Order>().PureValidate();
+            var cons = L.F((FSharpList<Order> oo) => L.F((Order o) => oo.Cons(o)));
+            var consV = cons.PureValidate();
             var ooo = orders
                 .Select(ValidateOrder)
-                .Aggregate(zero,
-                           (e, c) => e.Match(eo => c.Match(cc => eo.Cons(cc).PureValidate(), errors),
-                                             ee => c.Match(cc => errors(ee), ce => errors(ListModule.Append(ee, ce)))));
+                .Aggregate(zero, (e, c) => consV.ApV(e).ApV(c));
             return ooo.Select(x => (IEnumerable<Order>)x);
         }
 
