@@ -39,6 +39,7 @@
     <Compile Include="WriterTest.fs" />
     <Compile Include="ContinuationTest.fs" />
     <Compile Include="DistributionTest.fs" />
+    <Compile Include="PokerDistributionTest.fs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
