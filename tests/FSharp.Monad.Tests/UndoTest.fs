@@ -6,7 +6,7 @@ open FsUnit
 
 // Simple "text editor" example
 let addText newText = undoable {
-    let! text = getCurrent()
+    let! text = getCurrent
     do! putToHistory (text + newText) 
     return text}
 
@@ -30,8 +30,8 @@ let ``When starting a text editor with "" and adding three strings and undoing t
     let! _ = addText "foo"
     let! _ = addText "bar"
     let! _ = addText "baz"
-    let! firstUndo = undo()
-    let! secondUndo = undo()
+    let! firstUndo = undo
+    let! secondUndo = undo
     return firstUndo,secondUndo }
   let actual = test (empty "")
   actual |> snd |> current |> should equal "foo"
@@ -43,10 +43,10 @@ let ``When starting a text editor with "" and adding three strings and undoing t
     let! _ = addText "foo"
     let! _ = addText "bar"
     let! _ = addText "baz"
-    let! _ = undo()
-    let! _ = undo()
-    let! firstRedo = redo()
-    let! secondRedo = redo()
+    let! _ = undo
+    let! _ = undo
+    let! firstRedo = redo
+    let! secondRedo = redo
     return firstRedo,secondRedo }
   let actual = test (empty "")
   actual |> snd |> current |> should equal "foobarbaz"
@@ -56,8 +56,8 @@ let ``When starting a text editor with "" and adding three strings and undoing t
 let ``When starting a text editor with "" and adding a string, it should not allow two undos``() =
   let test = undoable {
     let! _ = addText "foo"    
-    let! firstUndo = undo()
-    let! secondUndo = undo()
+    let! firstUndo = undo
+    let! secondUndo = undo
     return firstUndo,secondUndo }
   let actual = test (empty "")
   actual |> snd |> current |> should equal ""
@@ -67,7 +67,7 @@ let ``When starting a text editor with "" and adding a string, it should not all
 let ``When starting a text editor with "" and adding a string, it should not allow a redo without an undo``() =
   let test = undoable {
     let! _ = addText "foo"    
-    let! firstRedo = redo()    
+    let! firstRedo = redo   
     return firstRedo }
   let actual = test (empty "")
   actual |> snd |> current |> should equal "foo"

@@ -40,20 +40,37 @@
     <Compile Include="Undo.fs" />
     <Compile Include="Writer.fs" />
     <Compile Include="Continuation.fs" />
+    <Compile Include="Distribution.fs" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
       <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
     </Reference>
+    <Reference Include="FSharp.PowerPack">
+      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharp.PowerPack.Linq">
+      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.Linq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharp.PowerPack.Metadata">
+      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.Metadata.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharp.PowerPack.Parallel.Seq">
+      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.Parallel.Seq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\FSharp.Monad.Core\FSharp.Monad.Core.fsproj">
       <Name>FSharp.Monad.Core</Name>
       <Project>{1653436c-d15f-4e79-920a-fa7bc94306bb}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <Reference Include="System.Numerics" />
   </ItemGroup>
 </Project>
