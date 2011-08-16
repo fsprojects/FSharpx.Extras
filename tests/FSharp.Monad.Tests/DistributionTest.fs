@@ -53,7 +53,7 @@ let firstChoice = toUniformDistribution [Car; Goat; Goat]
 let switch firstCoice =
     match firstCoice with
     | Car -> 
-        // If you had the car and you switch ==> you lose sice there are only goats left
+        // If you had the car and you switch ==> you lose since there are only goats left
         certainly Goat 
     | Goat -> 
         // If you had the goat, the host has to take out another goat ==> you win
