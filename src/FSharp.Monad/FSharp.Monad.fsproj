@@ -66,11 +66,13 @@
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\FSharp.Monad.Core\FSharp.Monad.Core.fsproj">
       <Name>FSharp.Monad.Core</Name>
       <Project>{1653436c-d15f-4e79-920a-fa7bc94306bb}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <Reference Include="System.Numerics" />
   </ItemGroup>
 </Project>
