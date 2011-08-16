@@ -176,8 +176,8 @@ namespace FSharp.Core.CS.Tests {
                 .Select(ValidateOrder)
                 .Aggregate(zero, (e, c) => from a in e
                                            join b in c on 1 equals 1
-                                           select a.Cons(b));
-            return ooo.Select(x => (IEnumerable<Order>)x); */
+                                           select a.Cons(b))
+                .Select(x => (IEnumerable<Order>)x); */
         }
 
         [Test]
