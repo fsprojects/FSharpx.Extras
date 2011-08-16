@@ -24,12 +24,12 @@ let putToHistory x = undoable {
 
 let exec m s = m s |> snd |> current
 
-let getCurrent() = undoable {
-    let! history = getState
+let getCurrent<'a> = undoable {
+    let! (history:'a History) = getState
     return current history}
 
-let undo() = undoable {
-    let! history = getState
+let undo<'a> = undoable {
+    let! (history:'a History) = getState
     match history.Undos with
     | [] -> return false
     | (x::rest) -> 
@@ -40,8 +40,8 @@ let undo() = undoable {
         return true}
 
 
-let redo() = undoable {
-    let! history = getState
+let redo<'a> = undoable {
+    let! (history:'a History) = getState
     match history.Redos with
     | [] -> return false
     | (x::rest) -> 
