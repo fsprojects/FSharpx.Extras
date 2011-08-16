@@ -3,8 +3,26 @@
 open System
 open System.Runtime.CompilerServices
 
+module Validation =
+    let (<*>) f x = 
+        match f,x with
+        | Choice1Of2 f, Choice1Of2 x   -> Choice1Of2 (f x)
+        | Choice2Of2 e, Choice1Of2 x   -> Choice2Of2 e
+        | Choice1Of2 f, Choice2Of2 e   -> Choice2Of2 e
+        | Choice2Of2 e1, Choice2Of2 e2 -> Choice2Of2 (e1 @ e2)
+
+    let (<!>) f x = (Choice1Of2 f) <*> x
+
+    let map f o =
+        match o with
+        | Choice1Of2 x -> f x |> Choice1Of2
+        | Choice2Of2 x -> Choice2Of2 x
+
+open Validation
+
 [<Extension>]
 type FSharpChoice =
+
     [<Extension>]
     static member Match (c, f1: Func<_,_>, f2: Func<_,_>) =
         match c with
@@ -46,10 +64,7 @@ type FSharpChoice =
         | _, Choice2Of2 x -> Choice2Of2 x
 
     [<Extension>]
-    static member Select (o, f: Func<_,_>) =
-        match o with
-        | Choice1Of2 x -> f.Invoke x |> Choice1Of2
-        | Choice2Of2 x -> Choice2Of2 x
+    static member Select (o, f: Func<_,_>) = map f.Invoke o
 
     [<Extension>]
     static member Ap (f: Choice<Func<_,_>, _>, x) =
@@ -86,6 +101,16 @@ type FSharpChoice =
 
     [<Extension>]
     static member PureValidate x : Choice<_, string list> = Choice1Of2 x
+
+    static member EnumerableValidator (f: Func<'a, Choice<'a, string list>>) : Func<'a seq, Choice<'a seq, string list>> =
+        let zero = Choice2Of2 []
+        let cons a b = List.Cons(a,b)
+        let ff coll =
+            coll
+            |> Seq.map f.Invoke
+            |> Seq.fold (fun c e -> cons <!> e <*> c) zero
+            |> map (fun x -> x :> _ seq)
+        Func<_,_>(ff)
 
     // constructors
 
