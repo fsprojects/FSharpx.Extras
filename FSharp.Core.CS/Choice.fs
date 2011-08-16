@@ -104,7 +104,7 @@ type FSharpChoice =
 
     static member EnumerableValidator (f: Func<'a, Choice<'a, string list>>) : Func<'a seq, Choice<'a seq, string list>> =
         let zero = Choice2Of2 []
-        let cons a b = List.Cons(a,b)
+        let cons a b = a::b
         let ff coll =
             coll
             |> Seq.map f.Invoke
