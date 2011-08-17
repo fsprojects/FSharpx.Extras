@@ -7,6 +7,15 @@ open Operators
 
 (* ========= Iteratees ========= *)
 
+let fold step seed =
+  let f = ByteString.fold step
+  let rec loop acc = function
+    | Empty -> Continue(loop acc)
+    | Chunk xs when ByteString.isEmpty xs -> Continue(loop acc)
+    | Chunk xs -> Continue(loop (f acc xs))
+    | EOF -> Yield(acc, EOF)
+  Continue(loop seed)
+
 let length = 
   let rec step n = function
     | Empty -> Continue (step n)

@@ -66,6 +66,13 @@ type ByteString = BS of byte array * int * int // TODO: Switch to the JoinList f
   static member cons hd tl = ByteString.op_Cons(hd, tl)
   static member append a b = ByteString.op_Append(a, b)
   static member take n (BS(x,o,l)) = Contract.Requires(l >= n); BS(x,o,n)
+  static member fold f seed bs =
+    let rec loop bs acc =
+      if ByteString.isEmpty bs then seed
+      else
+        let hd, tl = ByteString.head bs, ByteString.tail bs
+        loop tl (f acc hd)
+    loop bs seed
   
   static member split pred bs =
     // List-style

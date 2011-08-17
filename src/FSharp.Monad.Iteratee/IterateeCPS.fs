@@ -29,38 +29,63 @@ type IterateeCPSBuilder() =
   member this.Delay(f) = bind (returnI ()) f
 let iterateeCPS = IterateeCPSBuilder()
 
-let throw e = Iteratee(fun _ onError _ -> onError e)
-let throwRecoverable e i = Iteratee(fun onCont onError _ -> onError e; onCont i)
-let doneI x str = Iteratee(fun _ _ onDone -> onDone(x, str))
-let contI k = Iteratee(fun onCont _ _ -> onCont k)
-let liftI k = contI k
-let joinI outer = bind outer (fun inner ->
-  Iteratee(fun onCont onError onDone ->
-    let od (x, _) = onDone(x, Empty)
-    let rec oc k = runIter (k EOF) oc' onError od
-    and oc' k = onError(Exception("divergent iteratee"))
-    runIter inner oc onError od))
+[<AutoOpen>]
+module Primitives =
 
-let run i =
-  let rec onCont k = runIter (k EOF) onCont' onError onDone
-  and onCont' k = Choice1Of2 (Exception("divergent iteratee"))
-  and onError e = Choice1Of2 e
-  and onDone (x,_) = Choice2Of2 x
-  runIter i onCont onError onDone
+  let run i =
+    let rec onCont k = runIter (k EOF) onCont' onError onDone
+    and onCont' k = Choice1Of2 (Exception("divergent iteratee"))
+    and onError e = Choice1Of2 e
+    and onDone (x,_) = Choice2Of2 x
+    runIter i onCont onError onDone
+  
+  // This matches the run_ implementation from Iteratee
+  let run_ i =
+    match run i with
+    | Choice1Of2 e -> raise e
+    | x -> x
+  
+  let throw e = Iteratee(fun _ onError _ -> onError e)
+  let throwRecoverable e i = Iteratee(fun onCont onError _ -> onError e; onCont i)
+  let doneI x str = Iteratee(fun _ _ onDone -> onDone(x, str))
+  let contI k = Iteratee(fun onCont _ _ -> onCont k)
+  let liftI k = contI k
+  let joinI outer = bind outer (fun inner ->
+    Iteratee(fun onCont onError onDone ->
+      let od (x, _) = onDone(x, Empty)
+      let rec oc k = runIter (k EOF) oc' onError od
+      and oc' k = onError(Exception("divergent iteratee"))
+      runIter inner oc onError od))
 
-// This matches the run_ implementation from Iteratee
-let run_ i =
-  match run i with
-  | Choice1Of2 e -> raise e
-  | x -> x
-
-let streamToList<'a,'b> : IterateeCPS<'a list,'a list,'b> =
-  let rec step acc str =
-    match str with
-    | Empty | Chunk [] -> liftI (step acc)
-    | Chunk ls -> liftI (step (acc @ ls))
-    | str -> doneI acc str
-  liftI (step [])
-
-
-(* Enumerators *)
+//  let enumEOF i =
+//    let rec onDone(x, _) = doneI x EOF
+//    and onCont k = Iteratee(fun _ oe od -> runIter (k EOF) onCont' oe od)
+//    and onError e = throw e
+//    and onCont' k = failwith "divergent iteratee"
+//    in runIter i onCont onError onDone
+//
+//  let enumErr e i =
+//    let rec onDone _ = throw e
+//    and onCont _ = throw e
+//    and onError _ = throw e
+//    in runIter i onCont onError onDone
+//
+//  let enumPure1Chunk str i =
+//    let rec onDone(a, str') = doneI a (Chunk (str @ str')) // Stream needs to be a monoid and support mappend
+//    and onCont k = k (Chunk str)
+//    and onError e = throw e
+//    in runIter i onCont onError onDone
+//
+//  let enumChunk = function
+//    | Chunk xs -> enumPure1Chunk xs
+//    | EOF -> enumEOF
+//    | Error e -> enumErr e
+  
+  let streamToList<'a,'b> : IterateeCPS<'a list,'a list,'b> =
+    let rec step acc str =
+      match str with
+      | Empty | Chunk [] -> liftI (step acc)
+      | Chunk ls -> liftI (step (acc @ ls))
+      | str -> doneI acc str
+    liftI (step [])
+  

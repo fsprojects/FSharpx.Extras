@@ -30,6 +30,15 @@ module List =
 
 (* ========= Iteratees ========= *)
 
+let fold step seed =
+  let f = List.fold step
+  let rec loop acc = function
+    | Empty -> Continue(loop acc)
+    | Chunk [] -> Continue(loop acc)
+    | Chunk xs -> Continue(loop (f acc xs))
+    | EOF -> Yield(acc, EOF)
+  Continue(loop seed)
+
 let length<'a> : Iteratee<'a list, int> =
   let rec step n = function
     | Empty | Chunk [] -> Continue (step n)
