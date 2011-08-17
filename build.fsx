@@ -7,7 +7,7 @@ open System.IO
 // properties
 let currentDate = System.DateTime.UtcNow
 let projectName = "FSharp.Monad"
-let version = "1.1.4." + currentDate.ToString("yMMdd")
+let version = "1.1.5." + currentDate.ToString("yMMdd")
 let coreSummary = "Library containing standard operators for building computation expressions (monads)."
 let projectSummary = "A monad library for F# projects."
 let projectDescription = "A monad library for F# projects."
