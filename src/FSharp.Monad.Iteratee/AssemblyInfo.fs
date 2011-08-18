@@ -1,4 +1,4 @@
-module FSharp.Monad.AssemblyInfo
+module FSharp.Monad.Iteratee.AssemblyInfo
 #nowarn "49" // uppercase argument names
 #nowarn "67" // this type test or downcast will always hold
 #nowarn "66" // tis upast is unnecessary - the types are identical
@@ -16,13 +16,13 @@ exception ReturnNoneException183c26a427ae489c8fd92ec21a0c9a59
 
 [<assembly: CLSCompliant (false)>]
 
-[<assembly: Guid ("1e95a279-c2a9-498b-bc72-6e7a0d6854ce")>]
+[<assembly: Guid ("2211c000-4a7f-4254-9f3a-76a0e060c96a")>]
 
-[<assembly: AssemblyTitle ("FSharp.Monad")>]
+[<assembly: AssemblyTitle ("FSharp.Monad.Iteratee")>]
 
-[<assembly: AssemblyDescription ("A monad library for F# projects.")>]
+[<assembly: AssemblyDescription ("An implementation of the Iteratee for F#")>]
 
-[<assembly: AssemblyProduct ("FSharp.Monad")>]
+[<assembly: AssemblyProduct ("FSharp.Monad.Iteratee")>]
 
 [<assembly: AssemblyVersion ("1.1.6.110818")>]
 

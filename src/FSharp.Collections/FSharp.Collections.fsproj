@@ -5,12 +5,12 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2211c000-4a7f-4254-9f3a-76a0e060c96a}</ProjectGuid>
+    <ProjectGuid>{6f18b2dd-22ff-49ea-bcf0-0554936a90cf}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>FSharp.Monad.Iteratee</RootNamespace>
-    <AssemblyName>FSharp.Monad.Iteratee</AssemblyName>
+    <RootNamespace>FSharp.Collections</RootNamespace>
+    <AssemblyName>FSharp.Collections</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <Name>FSharp.Monad.Iteratee</Name>
+    <Name>FSharp.Collections</Name>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FscToolPath>..\..\lib\FSharp\</FscToolPath>
   </PropertyGroup>
@@ -30,7 +30,7 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\FSharp.Monad.Iteratee.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\FSharp.Collections.XML</DocumentationFile>
   </PropertyGroup>
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
@@ -42,21 +42,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Iteratee.fs" />
-    <Compile Include="IterateeCPS.fs" />
-    <Compile Include="List.fs" />
-    <Compile Include="Binary.fs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FSharp.Collections\FSharp.Collections.fsproj">
-      <Name>FSharp.Collections</Name>
-      <Project>{6f18b2dd-22ff-49ea-bcf0-0554936a90cf}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\FSharp.Monad.Core\FSharp.Monad.Core.fsproj">
-      <Name>FSharp.Monad.Core</Name>
-      <Project>{1653436c-d15f-4e79-920a-fa7bc94306bb}</Project>
-      <Private>True</Private>
-    </ProjectReference>
+    <Compile Include="JoinList.fs" />
+    <Compile Include="ByteString.fs" />
   </ItemGroup>
 </Project>

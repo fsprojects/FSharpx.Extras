@@ -77,6 +77,24 @@ Target "BuildApp" (fun _ ->
         {p with 
             CodeLanguage = FSharp
             AssemblyVersion = version
+            AssemblyTitle = "FSharp.Collections"
+            AssemblyDescription = "Additional collection types for use in F#"
+            Guid = "6f18b2dd-22ff-49ea-bcf0-0554936a90cf"
+            OutputFileName = "./src/FSharp.Collections/AssemblyInfo.fs" })
+
+    AssemblyInfo (fun p ->
+        {p with 
+            CodeLanguage = FSharp
+            AssemblyVersion = version
+            AssemblyTitle = projectName + ".Iteratee"
+            AssemblyDescription = "An implementation of the Iteratee for F#" 
+            Guid = "2211c000-4a7f-4254-9f3a-76a0e060c96a"
+            OutputFileName = "./src/FSharp.Monad.Iteratee/AssemblyInfo.fs" })
+
+    AssemblyInfo (fun p ->
+        {p with 
+            CodeLanguage = FSharp
+            AssemblyVersion = version
             AssemblyTitle = projectName + ".MinLinq"
             AssemblyDescription = projectSummary
             Guid = "258D97E2-004C-4F9A-913B-A08B3E281544"
@@ -131,6 +149,9 @@ Target "BuildNuGet" (fun _ ->
       buildDir + "FSharp.Monad.dll"
       buildDir + "FSharp.Monad.pdb"
       buildDir + "FSharp.Monad.xml"
+      buildDir + "FSharp.Collections.dll"
+      buildDir + "FSharp.Collections.pdb"
+      buildDir + "FSharp.Collections.xml"
       buildDir + "FSharp.Monad.Iteratee.dll"
       buildDir + "FSharp.Monad.Iteratee.pdb"
       buildDir + "FSharp.Monad.Iteratee.xml" ]

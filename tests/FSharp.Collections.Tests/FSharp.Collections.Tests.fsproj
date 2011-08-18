@@ -5,12 +5,12 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{b821f9ec-2678-45a2-a6a8-eb9860ce1ffc}</ProjectGuid>
+    <ProjectGuid>{2db370b1-0e0b-4da2-8cc4-d9eec15c87cb}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>FSharp.Monad.Iteratee.Tests</RootNamespace>
-    <AssemblyName>FSharp.Monad.Iteratee.Tests</AssemblyName>
+    <RootNamespace>FSharp.Collections.Tests</RootNamespace>
+    <AssemblyName>FSharp.Collections.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <Name>FSharp.Monad.Iteratee.Tests</Name>
+    <Name>FSharp.Collections.Tests</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,8 +32,8 @@
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
     <None Include="packages.config" />
-    <Compile Include="ListTest.fs" />
-    <Compile Include="BinaryTest.fs" />
+    <Compile Include="JoinListTest.fs" />
+    <Compile Include="ByteStringTest.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FsUnit.NUnit-0.9.0">
@@ -41,6 +41,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
+    <Reference Include="FSharp.Core">
+      <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\..\packages\NUnit.2.5.9.10348\lib\nunit.framework.dll</HintPath>
       <Private>True</Private>
@@ -53,24 +56,13 @@
       <HintPath>..\..\packages\NUnit.2.5.9.10348\lib\pnunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FSharp.Core">
-      <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\src\FSharp.Collections\FSharp.Collections.fsproj">
       <Name>FSharp.Collections</Name>
       <Project>{6f18b2dd-22ff-49ea-bcf0-0554936a90cf}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\FSharp.Monad.Core\FSharp.Monad.Core.fsproj">
-      <Name>FSharp.Monad.Core</Name>
-      <Project>{1653436c-d15f-4e79-920a-fa7bc94306bb}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\FSharp.Monad.Iteratee\FSharp.Monad.Iteratee.fsproj">
-      <Name>FSharp.Monad.Iteratee</Name>
-      <Project>{2211c000-4a7f-4254-9f3a-76a0e060c96a}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
