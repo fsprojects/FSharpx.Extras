@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 namespace FSharp.Core.CS.Tests {
-    public class Address {
+    class Address {
         public string Line1 { get; set; }
         public string Line2 { get; set; }
         public string Town { get; set; }
@@ -9,12 +9,12 @@ namespace FSharp.Core.CS.Tests {
         public string Postcode { get; set; }        
     }
 
-    public class Order {
+    class Order {
         public string ProductName { get; set; }
         public decimal? Cost { get; set; }
     }
 
-    public class Customer {
+    class Customer {
         public int Id { get; set; }
         public string Surname { get; set; }
         public string Forename { get; set; }

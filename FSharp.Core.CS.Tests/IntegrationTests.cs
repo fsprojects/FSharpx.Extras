@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
 using NUnit.Framework;
@@ -129,14 +127,14 @@ namespace FSharp.Core.CS.Tests {
             result.Match(Console.WriteLine, setErrors);
         }
 
-        public static FSharpChoice<T, Errors> NonNull<T>(T value, string err) where T: class {
+        static FSharpChoice<T, Errors> NonNull<T>(T value, string err) where T: class {
             return FSharpChoice.Validator<T>(x => x != null, err)(value);
             //if (value == null)
             //    return FSharpChoice.Error<T>(err);
             //return FSharpChoice.Ok(value);
         }
 
-        public static FSharpChoice<T, Errors> NotEqual<T>(T value, T other, string err) where T: IEquatable<T> {
+        static FSharpChoice<T, Errors> NotEqual<T>(T value, T other, string err) where T: IEquatable<T> {
             var valueNull = Equals(null, value);
             var otherNull = Equals(null, other);
             if (valueNull && otherNull || valueNull != otherNull || value.Equals(other))
@@ -144,11 +142,38 @@ namespace FSharp.Core.CS.Tests {
             return FSharpChoice.Error<T>(err);
         }
 
-        public static FSharpChoice<Address, Errors> ValidateAddress(Address a) {
-            return NonNull(a.Postcode, "Post code can't be null").Select(_ => a);
+        static FSharpChoice<Address, Errors> ValidateAddressLines(Address a) {
+            if (a.Line1 != null || a.Line2 == null)
+                return FSharpChoice.Ok(a);
+            return FSharpChoice.Error<Address>("Line1 is empty but Line2 is not");
         }
 
-        public static FSharpChoice<T, Errors> GreaterThan<T>(T value, T other, string err) where T: IComparable<T> {
+        /// <summary>
+        /// Same as FSharpChoice.Validator, for demo purposes only
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="pred"></param>
+        /// <param name="err"></param>
+        /// <returns></returns>
+        static Func<T, FSharpChoice<T, Errors>> Validator<T>(Predicate<T> pred, string err) {
+            return x => {
+                if (pred(x))
+                    return FSharpChoice.Ok(x);
+                return FSharpChoice.Error<T>(err);
+            };
+        }
+
+        static FSharpChoice<Address, Errors> ValidateAddressLines2(Address a) {
+            return Validator<Address>(x => x.Line1 != null || x.Line2 == null, "Line1 is empty but Line2 is not")(a);
+        }
+
+        static FSharpChoice<Address, Errors> ValidateAddress(Address a) {
+            return from x in NonNull(a.Postcode, "Post code can't be null")
+                   join y in ValidateAddressLines(a) on 1 equals 1
+                   select a;
+        }
+
+        static FSharpChoice<T, Errors> GreaterThan<T>(T value, T other, string err) where T: IComparable<T> {
             var valueNull = Equals(null, value);
             var otherNull = Equals(null, other);
             if (valueNull && otherNull || valueNull != otherNull || value.CompareTo(other) > 0)
@@ -156,20 +181,20 @@ namespace FSharp.Core.CS.Tests {
             return FSharpChoice.Error<T>(err);
         }
 
-        public static FSharpChoice<T?, Errors> GreaterThan<T>(T? value, T? other, string err) where T: struct, IComparable<T> {
+        static FSharpChoice<T?, Errors> GreaterThan<T>(T? value, T? other, string err) where T: struct, IComparable<T> {
             if (!value.HasValue && !other.HasValue || value.HasValue != other.HasValue || value.Value.CompareTo(other.Value) > 0)
                 return FSharpChoice.Ok(value);
             return FSharpChoice.Error<T?>(err);
         }
 
-        public static FSharpChoice<Order, Errors> ValidateOrder(Order o) {
+        static FSharpChoice<Order, Errors> ValidateOrder(Order o) {
             return
                 from name in NonNull(o.ProductName, "Product name can't be null")
                 from cost in GreaterThan(o.Cost, 0, string.Format("Cost for product '{0}' can't be negative", name))
                 select o;
         }
 
-        public static FSharpChoice<IEnumerable<Order>, Errors> ValidateOrders(IEnumerable<Order> orders) {
+        static FSharpChoice<IEnumerable<Order>, Errors> ValidateOrders(IEnumerable<Order> orders) {
             return FSharpChoice.EnumerableValidator<Order>(ValidateOrder)(orders);
 /*            var zero = ListModule.Empty<Order>().PureValidate();
             var ooo = orders
@@ -209,6 +234,41 @@ namespace FSharp.Core.CS.Tests {
                 select customer;
             result.Match(c => Assert.Fail("Validation should have failed"),
                          Console.WriteLine);
+        }
+
+        [Test]
+        public void AddressWithoutLine1() {
+            var a = new Address { Postcode = "1000" };
+            ValidateAddress(a)
+                .Match(_ => { },
+                       err => Assert.Fail("Validation should not have failed with errors {0}", err));
+        }
+
+        [Test]
+        public void AddressWithLine1AndNoLine2() {
+            var a = new Address { Postcode = "1000", Line1 = "Fake Street" };
+            ValidateAddress(a)
+                .Match(_ => { },
+                       err => Assert.Fail("Validation should not have failed with errors {0}", err));
+        }
+
+        [Test]
+        public void AddressWithLine1AndLine2() {
+            var a = new Address { Postcode = "1000", Line1 = "Fake Street", Line2 = "123" };
+            ValidateAddress(a)
+                .Match(_ => { },
+                       err => Assert.Fail("Validation should not have failed with errors {0}", err));
+        }
+
+        [Test]
+        public void AddressWithLine2AndNoLine1() {
+            var a = new Address { Postcode = "1000", Line2 = "123" };
+            ValidateAddress(a)
+                .Match(_ => Assert.Fail("Validation should have failed"),
+                       err => {
+                           Assert.AreEqual(1, err.Length);
+                           Assert.AreEqual("Line1 is empty but Line2 is not", err[0]);
+                       });
         }
     }
 
