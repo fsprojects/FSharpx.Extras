@@ -77,7 +77,7 @@ let splitTests = [|
 let ``test splitOnNewline should split strings on a newline character``(input, expectedRes:char list, expectedRem:char list) =
   let isNewline c = c = '\r' || c = '\n'
   let res, rem =
-    match enumeratePure1Chunk (List.ofSeq input) (split isNewline) with
+    match runIter <| enumeratePure1Chunk (List.ofSeq input) (split isNewline) with
     | Yield(res, (Chunk rem)) -> res, rem
     | Continue _ -> [], []
   res |> should equal expectedRes
@@ -87,75 +87,6 @@ let ``test splitOnNewline should split strings on a newline character``(input, e
 let ``test heads should count the number of characters in a set of headers``() =
   let actual = enumeratePure1Chunk (List.ofSeq "abd") (heads (List.ofSeq "abc")) |> runTest
   actual |> should equal 2
-
-[<TestCase("", 0)>]
-[<TestCase("\r", 1)>]
-[<TestCase("\n", 1)>]
-[<TestCase("\r\n", 2)>] 
-let ``test readTerminators should return the correct number of heads for each item``(input, expected) =
-  let newlines = ['\r';'\n']
-  let newline = ['\n']
-  let terminators = heads newlines >>= fun n -> if n = 0 then heads newline else Yield(n, Stream.Empty)
-  let actual = enumeratePure1Chunk (List.ofSeq input) terminators |> runTest
-  actual |> should equal expected
-
-[<TestCase("", 0)>]
-[<TestCase("\r", 1)>]
-[<TestCase("\n", 1)>]
-[<TestCase("\r\n", 2)>] 
-[<TestCase("line1", 0)>]
-[<TestCase("line1\r", 1)>]
-[<TestCase("line1\n", 1)>]
-[<TestCase("line1\r\n", 2)>] 
-let ``test splitReadTerminators should return the correct number of heads for each item``(input, expected) =
-  let newlines = ['\r';'\n']
-  let newline = ['\n']
-  let isNewline c = c = '\r' || c = '\n'
-  let terminators = heads newlines >>= fun n -> if n = 0 then heads newline else Yield(n, Stream.Empty)
-  let splitOnTerminators = split isNewline >>= fun l -> terminators
-  let actual = enumeratePure1Chunk (List.ofSeq input) splitOnTerminators |> runTest
-  actual |> should equal expected
-
-[<TestCase("", 0)>]
-[<TestCase("\r", 1)>]
-[<TestCase("\n", 1)>]
-[<TestCase("\r\n", 2)>] 
-[<TestCase("line1", 0)>]
-[<TestCase("line1\r", 0)>]
-[<TestCase("line1\n", 0)>]
-[<TestCase("line1\r\n", 0)>] 
-[<TestCase("line1\rline1", 0)>]
-[<TestCase("line1\rline1\r", 0)>]
-[<TestCase("line1\rline1\n", 0)>]
-[<TestCase("line1\rline1\r\n", 0)>] 
-[<TestCase("line1\nline1", 0)>]
-[<TestCase("line1\nline1\r", 0)>]
-[<TestCase("line1\nline1\n", 0)>]
-[<TestCase("line1\nline1\r\n", 0)>] 
-[<TestCase("line1\r\nline1", 0)>]
-[<TestCase("line1\r\nline1\r", 0)>]
-[<TestCase("line1\r\nline1\n", 0)>]
-[<TestCase("line1\r\nline1\r\n", 0)>] 
-[<TestCase("line1\r\nline1\r\r", 1)>]
-[<TestCase("line1\r\nline1\n\r", 1)>] 
-[<TestCase("line1\r\nline1\n\n", 1)>] 
-[<TestCase("line1\r\nline1\r\r\n", 2)>]
-[<TestCase("line1\r\nline1\n\r\n", 2)>]
-[<TestCase("line1\r\nline1\r\n\r\n", 2)>] 
-let ``test recursive splitReadTerminators should return the correct number of heads for each item``(input, expected) =
-  let newlines = ['\r';'\n']
-  let newline = ['\n']
-  let isNewline c = c = '\r' || c = '\n'
-  let terminators = heads newlines >>= fun n -> if n = 0 then heads newline else Yield(n, Stream.Empty)
-  let rec lines acc = split isNewline >>= fun l -> terminators >>= check acc l
-  and check acc l count =
-    match l, count with
-    | _, 0 -> Yield (0, Chunk l)
-    | [], _ -> Yield (count, EOF)
-    | l, _ -> lines (l::acc)
-    
-  let actual = enumeratePure1Chunk (List.ofSeq input) (lines []) |> runTest
-  actual |> should equal expected
 
 let readLinesTests = [|
   [| box ""; box (Choice1Of2 []:Choice<String list, String list>) |]

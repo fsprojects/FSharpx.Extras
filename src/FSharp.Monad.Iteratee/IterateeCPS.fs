@@ -9,7 +9,7 @@ type Stream<'a> =
 
 type IterateeCPS<'el,'a,'r> = Iteratee of (((Stream<'el> -> IterateeCPS<'el,'a,'r>) -> 'r) -> (exn -> 'r) -> ('a * Stream<'el> -> 'r) -> 'r)
 
-let runIter (Iteratee(i)) onCont onError onDone = i onCont onError onDone
+let runIter (Iteratee i) onCont onError onDone = i onCont onError onDone
 let returnI x = Iteratee(fun _ _ onDone -> onDone(x, Empty))
 let rec bind (m: IterateeCPS<'el,'a,'r>) (f: 'a -> IterateeCPS<'el,'b,'r>) : IterateeCPS<'el,'b,'r> =
   Iteratee(fun onCont onError onDone ->

@@ -17,13 +17,12 @@ type Stream<'a> =
 
 // TODO: Stream Monoid? I had this when using Chunk of 'a list, but trying to create a generic monoid appears impossible. I'll have to add multiple versions of everything in order to support such a construct. The Empty discriminator provides much of what was needed.
 
-// TODO: Stream Monad?
-
 /// The iteratee is a stream consumer that will consume a stream of data until either 
 /// it receives an EOF or meets its own requirements for consuming data. The iteratee
 /// will return Continue whenever it is ready to receive the next chunk. An iteratee
 /// is fed data by an Enumerator, which generates a Stream. 
-type Iteratee<'el,'a> =
+type Iteratee<'el,'a> = Iteratee of Step<'el,'a>
+and Step<'el,'a> =
   | Yield of 'a * Stream<'el>
   | Error of exn
   | Continue of (Stream<'el> -> Iteratee<'el,'a>)
@@ -37,31 +36,55 @@ type Enumeratee<'elo,'eli,'a> = Iteratee<'eli,'a> -> Iteratee<'elo, Iteratee<'el
 [<AutoOpen>]
 module Primitives =
 
+  let runIter (Iteratee step) = step
+  let returnI step = Iteratee step
+  let yieldI x s = returnI <| Yield(x,s)
+  let continueI k = returnI <| Continue k
+
   let bind m f =
     let rec innerBind m =
-      match m with
-      | Continue k -> Continue(innerBind << k)
-      | Error e -> Error e
-      | Yield(x, Empty) -> f x
-      | Yield(x, extra) ->
-          match f x with
-          | Continue k -> k extra
-          | Error e -> Error e
-          | Yield(acc',_) -> Yield(acc', extra)
+      Iteratee <|
+        match runIter m with
+        | Continue k -> Continue(innerBind << k)
+        | Error e -> Error e
+        | Yield(x, Empty) -> runIter (f x)
+        | Yield(x, extra) ->
+            match runIter (f x) with
+            | Continue k -> runIter (k extra)
+            | Error e -> Error e
+            | Yield(acc',_) -> Yield(acc', extra)
     innerBind m
-  
-  let rec enumEOF = function
-    | Yield(x,_) -> Yield(x,EOF)
-    | Error e -> Error e
+
+  let throw e = returnI <| Error e
+
+  let catchError h i =
+    let rec step i = 
+      match i with
+      | Yield(b, xs) -> yieldI b xs
+      | Error e -> h e
+      | Continue k -> continueI (fun s -> runIter (k s) |> step)
+    in step <| runIter i
+
+  let tryFinally compensation i =
+    let rec step i = 
+      match i with
+      | Continue k -> continueI (fun s -> step <| runIter (k s))
+      | i -> compensation(); returnI i
+    in step <| runIter i
+
+  let rec enumEOF i = 
+    match runIter i with
+    | Yield(x,_) -> yieldI x EOF
+    | Error e -> throw e
     | Continue k ->
-        match k EOF with
+        match runIter (k EOF) with
         | Continue _ -> failwith "enumEOF: divergent iteratee"
-        | i -> enumEOF i
+        | i -> enumEOF <| returnI i
   
   let enumErr e = function _ -> Error e
 
   let run i =
-    match enumEOF i with
+    match runIter (enumEOF i) with
     | Error e -> Choice1Of2 e
     | Yield(x,_) -> Choice2Of2 x
     | Continue _ -> failwith "run: divergent iteratee"
@@ -71,30 +94,13 @@ module Primitives =
     | Choice1Of2 e -> raise e
     | x -> x
   
-  let throw e = Error e
-
-  let catchError h i =
-    let rec step i = 
-      match i with
-      | Yield(b, xs) -> Yield(b, xs)
-      | Error e -> h e
-      | Continue k -> Continue(fun s -> k s |> step)
-    in step i
-
-  let tryFinally compensation i =
-    let rec step i = 
-      match i with
-      | Continue k -> Continue(fun s -> k s |> step)
-      | i -> compensation(); i
-    in step i
-
 type IterateeBuilder() =
   member this.Return(x) = Yield(x, Empty)
   member this.ReturnFrom(m:Iteratee<_,_>) = m
   member this.Bind(m, k) = bind m k
-  member this.Zero() = Yield((), Empty)
+  member this.Zero() = yieldI () Empty
   member this.Combine(comp1, comp2) = bind comp1 <| fun () -> comp2
-  member this.Delay(f) = bind (Yield((), Empty)) f
+  member this.Delay(f) = bind (yieldI () Empty) f
   member this.TryWith(m, h) = catchError h m
   member this.TryFinally(m, compensation) = tryFinally compensation m
   member this.Using(res:#IDisposable, body) =
@@ -108,12 +114,10 @@ type IterateeBuilder() =
 let iteratee = IterateeBuilder()
 
 module Operators =
-  open FSharp.Monad.Operators
-
-  let inline returnM x = returnM iteratee x
-  let inline (>>=) m f = bindM iteratee m f
-  let inline (<*>) f m = applyM iteratee iteratee f m
-  let inline lift f m = liftM iteratee f m
+  let inline returnM x = yieldI x Empty
+  let inline (>>=) m f = bind m f
+  let inline (<*>) f m = f >>= fun f' -> m >>= fun m' -> returnM (f' m')
+  let inline lift f m = m >>= fun x -> returnM (f x)
   let inline (<!>) f m = lift f m
   let inline lift2 f a b = returnM f <*> a <*> b
   let inline ( *>) x y = lift2 (fun _ z -> z) x y
