@@ -68,7 +68,7 @@ type ByteString = BS of byte array * int * int // TODO: Switch to the JoinList f
   static member take n (BS(x,o,l)) = Contract.Requires(l >= n); BS(x,o,n)
   static member fold f seed bs =
     let rec loop bs acc =
-      if ByteString.isEmpty bs then seed
+      if ByteString.isEmpty bs then acc 
       else
         let hd, tl = ByteString.head bs, ByteString.tail bs
         loop tl (f acc hd)

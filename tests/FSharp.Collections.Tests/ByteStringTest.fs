@@ -52,3 +52,9 @@ let ``test ByteString_splitAt correctly breaks the ByteString on the specified i
   let expected = BS(input, 0, 6), BS(input, 6, 14)
   let actual = ByteString.splitAt 6 str
   actual |> should equal expected
+
+[<Test>]
+let ``test ByteString_fold should concatenate bytes into a string``() =
+  ByteString.create "Howdy"B
+  |> ByteString.fold (fun a b -> a + (char b).ToString()) ""
+  |> should equal "Howdy"
