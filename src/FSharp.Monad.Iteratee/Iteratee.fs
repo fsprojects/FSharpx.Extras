@@ -55,22 +55,27 @@ module Primitives =
             | Yield(acc',_) -> Yield(acc', extra)
     innerBind m
 
+  let inline (>>==) (m:Iteratee<'a,'b>) (f:Iteratee<'a,'b> -> Iteratee<'c,'d>) = f m
+  let inline (==<<) f m = m >>== f
+  let inline (>==>) (e1:Enumerator<'a,'b>) (e2:Iteratee<'a,'b> -> Iteratee<'c,'d>) (s:Iteratee<'a,'b>) = e1 s >>== e2
+  let inline (<==<) (e1:Iteratee<'a,'b> -> Iteratee<'c,'d>) (e2:Enumerator<'a,'b>) (s:Iteratee<'a,'b>) = e2 s >>== e1
+
   let throw e = returnI <| Error e
 
   let catchError h i =
     let rec step i = 
-      match i with
+      match runIter i with
       | Yield(b, xs) -> yieldI b xs
       | Error e -> h e
-      | Continue k -> continueI (fun s -> runIter (k s) |> step)
-    in step <| runIter i
+      | Continue k -> continueI (fun s -> k s >>== step)
+    in i >>== step
 
   let tryFinally compensation i =
     let rec step i = 
-      match i with
-      | Continue k -> continueI (fun s -> step <| runIter (k s))
+      match runIter i with
+      | Continue k -> continueI (fun s -> k s >>== step)
       | i -> compensation(); returnI i
-    in step <| runIter i
+    in i >>== step
 
   let rec enumEOF i = 
     match runIter i with
@@ -84,7 +89,7 @@ module Primitives =
   let enumErr e = function _ -> Error e
 
   let run i =
-    match runIter (enumEOF i) with
+    match runIter (enumEOF ==<< i) with
     | Error e -> Choice1Of2 e
     | Yield(x,_) -> Choice2Of2 x
     | Continue _ -> failwith "run: divergent iteratee"

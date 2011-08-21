@@ -8,15 +8,17 @@ open Operators
 
 module List =
 
-  let split pred l =
+  let span pred l =
     let rec loop l cont =
       match l with
       | [] -> ([],[])
-      | x::[] when not (pred x) -> (cont l, [])
-      | x::xs when pred x -> (cont [], l)
-      | x::xs when not (pred x) -> loop xs (fun rest -> cont (x::rest))
-      | _ -> failwith "List.split: Unrecognized pattern"
+      | x::[] when pred x -> (cont l, [])
+      | x::xs when not (pred x) -> (cont [], l)
+      | x::xs when pred x -> loop xs (fun rest -> cont (x::rest))
+      | _ -> failwith "Unrecognized pattern"
     loop l id
+
+  let split pred l = span (not << pred) l
   
   let splitAt n l =
     let pred i = i >= n
@@ -26,8 +28,9 @@ module List =
       | x::[] when not (pred i) -> (cont l, [])
       | x::xs when pred i -> (cont [], l)
       | x::xs when not (pred i) -> loop (i+1) xs (fun rest -> cont (x::rest))
-      | _ -> failwith "List.splitAt: Unrecognized pattern"
+      | _ -> failwith "Unrecognized pattern"
     loop 0 l id
+
 
 (* ========= Iteratees ========= *)
 
@@ -45,7 +48,7 @@ let length<'a> : Iteratee<'a list, int> =
     | Empty | Chunk [] -> continueI (step n)
     | Chunk x          -> continueI (step (n + 1))
     | EOF         as s -> yieldI n s
-  continueI (step 0)
+  in continueI (step 0)
 
 let peek<'a> : Iteratee<'a list, 'a option> =
   let rec inner =
@@ -54,7 +57,7 @@ let peek<'a> : Iteratee<'a list, 'a option> =
       | Chunk(x::xs) as s -> yieldI (Some x) s
       | s -> yieldI (None: 'a option) s
     continueI step
-  inner
+  in inner
 
 let head<'a> : Iteratee<'a list, 'a option> =
   let rec inner =
@@ -63,14 +66,14 @@ let head<'a> : Iteratee<'a list, 'a option> =
       | Chunk(x::xs) -> yieldI (Some x) (Chunk xs)
       | EOF -> yieldI None (EOF:Stream<'a list>)
     continueI step
-  inner
+  in inner
 
 let rec drop n =
   let rec step = function
     | Empty | Chunk [] -> continueI step
     | Chunk x          -> drop (n - 1)
     | EOF         as s -> yieldI () s
-  if n <= 0 then yieldI () Empty else continueI step
+  in if n <= 0 then yieldI () Empty else continueI step
 
 let dropWhile pred =
   let rec step = function
@@ -80,17 +83,30 @@ let dropWhile pred =
         | [] -> continueI step
         | x' -> yieldI () (Chunk x')
     | EOF as s -> yieldI () s
-  continueI step
+  in continueI step
 
-let split (pred:char -> bool) =
+let take n =
+  let rec step before n = function
+    | Empty | Chunk [] -> continueI <| step before n
+    | Chunk str ->
+        if str.Length < n then
+          continueI <| step (before @ str) (n - str.Length)
+        else let str', extra = List.splitAt n str in yieldI (before @ str') (Chunk extra)
+    | EOF -> yieldI before EOF
+  in if n <= 0 then yieldI [] Empty else continueI (step [] n)
+
+let private takeWithPredicate (pred:'a -> bool) listOp =
   let rec step before = function
     | Empty | Chunk [] -> continueI (step before)
     | Chunk str ->
-        match List.split pred str with
-        | (_,[]) -> continueI (step (before @ str))
-        | (str,tail) -> yieldI (before @ str) (Chunk tail)
-    | s -> yieldI before s
-  continueI (step [])
+        match listOp pred str with
+        | str', [] -> continueI (step (before @ str'))
+        | str', extra -> yieldI (before @ str') (Chunk extra)
+    | EOF -> yieldI before EOF
+  in continueI (step [])
+
+let takeWhile pred = takeWithPredicate pred List.span
+let takeUntil pred = takeWithPredicate pred List.split
 
 let heads str =
   let rec loop count str =
@@ -113,7 +129,7 @@ let readLines =
   let newline = ['\n']
   let isNewline c = c = '\r' || c = '\n'
   let terminators = heads newlines >>= fun n -> if n = 0 then heads newline else yieldI n Empty
-  let rec lines acc = split isNewline >>= fun l -> terminators >>= check acc l
+  let rec lines acc = takeUntil isNewline >>= fun l -> terminators >>= check acc l
   and check acc l count =
     match l, count with
     | _, 0 -> yieldI (Choice1Of2 (List.rev acc |> List.map toString)) (Chunk l)

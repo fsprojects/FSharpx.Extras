@@ -53,7 +53,7 @@ let dropWhile pred =
     | Empty -> continueI step
     | Chunk x when ByteString.isEmpty x -> continueI step
     | Chunk x ->
-        let x' = ByteString.ofSeq <| Seq.skipWhile pred x
+        let x' = ByteString.ofSeq <| Seq.skipWhile pred x // Need to implement this for ByteString
         in if ByteString.isEmpty x' then continueI step else yieldI () (Chunk x')
     | s -> yieldI () s
   continueI step

@@ -19,6 +19,12 @@ let ``test List_splitAt correctly breaks the list on the specified index``() =
   let expected = (List.ofSeq "Howdy!", List.ofSeq " Want to play?")
   List.splitAt 6 str |> should equal expected
 
+[<Test>]
+let ``test List_span correctly breaks the list on the specified predicate``() =
+  let str = List.ofSeq "Howdy! Want to play?"
+  let expected = (List.ofSeq "Howdy!", List.ofSeq " Want to play?")
+  List.span (fun c -> c <> ' ') str |> should equal expected
+
 let runTest i =
   match run i with
   | Choice1Of2 e -> raise e
@@ -57,11 +63,31 @@ let ``test drop should drop the first n items``([<Values(0,1,2,3,4,5,6,7,8,9)>] 
   actual |> should equal (Some x)
 
 [<Test>]
-let ``test split should correctly split the input``() =
-  let actual = enumeratePure1Chunk (List.ofSeq "abcde") (split ((=) 'c')) |> runTest
+let ``test dropWhile should drop anything before the first space``() =
+  let dropWhile2Head = iteratee {
+    do! dropWhile ((<>) ' ')
+    return! head }
+  let actual = enumerate (List.ofSeq "Hello world") dropWhile2Head |> runTest
+  actual |> should equal (Some ' ')
+
+[<Test>]
+[<Sequential>]
+let ``test take should take the first n items``([<Values(0,1,2,3,4,5,6,7,8,9,10)>] x) =
+  let input = [0..9]
+  let actual = enumerate input (take x) |> runTest
+  actual |> should equal (List.ofSeq <| Seq.take x input)
+
+[<Test>]
+let ``test takeWhile should take anything before the first space``() =
+  let actual = enumerate (List.ofSeq "Hello world") (takeWhile ((<>) ' ')) |> runTest
+  actual |> should equal (List.ofSeq "Hello")
+
+[<Test>]
+let ``test takeUntil should correctly split the input``() =
+  let actual = enumeratePure1Chunk (List.ofSeq "abcde") (takeUntil ((=) 'c')) |> runTest
   actual |> should equal ['a';'b']
 
-let splitTests = [|
+let takeUntilTests = [|
   [| box ""; box ([]:char list); box ([]:char list) |]
   [| box "\r"; box ([]:char list); box ['\r']|]
   [| box "\n"; box ([]:char list); box ['\n'] |]
@@ -73,11 +99,11 @@ let splitTests = [|
 |]
 
 [<Test>]
-[<TestCaseSource("splitTests")>]
-let ``test splitOnNewline should split strings on a newline character``(input, expectedRes:char list, expectedRem:char list) =
+[<TestCaseSource("takeUntilTests")>]
+let ``test takeUntilNewline should split strings on a newline character``(input, expectedRes:char list, expectedRem:char list) =
   let isNewline c = c = '\r' || c = '\n'
   let res, rem =
-    match runIter <| enumeratePure1Chunk (List.ofSeq input) (split isNewline) with
+    match runIter <| enumeratePure1Chunk (List.ofSeq input) (takeUntil isNewline) with
     | Yield(res, (Chunk rem)) -> res, rem
     | Continue _ -> [], []
   res |> should equal expectedRes
