@@ -74,37 +74,20 @@ type ByteString = BS of byte array * int * int // TODO: Switch to the JoinList f
         loop tl (f acc hd)
     loop bs seed
   
-  static member split pred bs =
-    // List-style
-//    let rec loop l acc =
-//      if ByteString.isEmpty l then (ByteString.take acc bs, ByteString.empty)
-//      else
-//        let hd, tl = ByteString.head l, ByteString.tail l
-//        if ByteString.isEmpty tl && not (pred hd) then (ByteString.take acc bs, ByteString.empty)
-//        elif pred hd then (ByteString.take acc bs, l)
-//        else loop tl (acc+1)
-//    loop bs 0
+  static member span pred bs =
     let (BS(x,o,l)) = bs
     let rec loop acc =
       if l-acc = 0 then (BS(x,o,acc), ByteString.empty)
       else
-        if l-(acc+1) = 0 && not (pred x.[o+acc]) then (BS(x,o,acc), ByteString.empty)
-        elif pred x.[o+acc] then (BS(x,o,acc), BS(x,o+acc,l-acc))
+        if l-(acc+1) = 0 && pred x.[o+acc] then BS(x,o,acc), ByteString.empty
+        elif not (pred x.[o+acc]) then BS(x,o,acc), BS(x,o+acc,l-acc)
         else loop (acc+1)
     loop 0
  
+  static member split pred bs = ByteString.span (not << pred) bs
 
   static member splitAt n bs =
     let pred i = i >= n
-    // List-style
-//    let rec loop l acc =
-//      if ByteString.isEmpty l then (ByteString.take acc bs, ByteString.empty)
-//      else
-//        let hd, tl = ByteString.head l, ByteString.tail l
-//        if ByteString.isEmpty tl && not (pred acc) then (ByteString.take acc bs, ByteString.empty)
-//        elif pred acc then (ByteString.take acc bs, l)
-//        else loop tl (acc+1)
-//    loop bs 0
     let (BS(x,o,l)) = bs
     let rec loop acc =
       if l-acc = 0 then (BS(x,o,acc), ByteString.empty)
