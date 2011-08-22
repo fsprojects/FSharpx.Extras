@@ -45,7 +45,6 @@
     <Compile Include="Iteratee.fs" />
     <Compile Include="List.fs" />
     <Compile Include="Binary.fs" />
-    <Compile Include="IterateeCPS.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FSharp.Collections\FSharp.Collections.fsproj">
