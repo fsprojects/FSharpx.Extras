@@ -53,21 +53,35 @@ let dropWhile pred =
     | Empty -> continueI step
     | Chunk x when ByteString.isEmpty x -> continueI step
     | Chunk x ->
-        let x' = ByteString.ofSeq <| Seq.skipWhile pred x // Need to implement this for ByteString
+        let x' = ByteString.skipWhile pred x
         in if ByteString.isEmpty x' then continueI step else yieldI () (Chunk x')
     | s -> yieldI () s
   continueI step
 
-let split pred =
+let take n =
+  let rec step before n = function
+    | Empty -> continueI <| step before n
+    | Chunk x when ByteString.isEmpty x -> continueI <| step before n
+    | Chunk x ->
+        if ByteString.length x < n then
+          continueI <| step (ByteString.append before x) (n - (ByteString.length x))
+        else let str', extra = ByteString.splitAt n x in yieldI (ByteString.append before str') (Chunk extra)
+    | EOF -> yieldI before EOF
+  in if n <= 0 then yieldI ByteString.empty Empty else continueI (step ByteString.empty n)
+
+let private takeWithPredicate (pred:'a -> bool) op =
   let rec step before = function
     | Empty -> continueI (step before)
     | Chunk x when ByteString.isEmpty x -> continueI (step before)
-    | Chunk str ->
-        match ByteString.split pred str with
-        | (_,x) when ByteString.isEmpty x -> continueI (step (ByteString.append before str))
-        | (str,tail) -> yieldI (ByteString.append before str) (Chunk tail)
-    | s -> yieldI before s
-  continueI (step ByteString.empty)
+    | Chunk x ->
+        match op pred x with
+        | str, extra when ByteString.isEmpty extra -> continueI (step (ByteString.append before str))
+        | str, extra -> yieldI (ByteString.append before str) (Chunk extra)
+    | EOF -> yieldI before EOF
+  in continueI (step ByteString.empty)
+
+let takeWhile pred = takeWithPredicate pred ByteString.span
+let takeUntil pred = takeWithPredicate pred ByteString.split
 
 let heads str =
   let rec loop count str =
@@ -89,7 +103,7 @@ let readLines =
   let lf = ByteString.singleton '\n'B
   let isNewline c = c = '\r'B || c = '\n'B
   let terminators = heads crlf >>= fun n -> if n = 0 then heads lf else yieldI n Empty
-  let rec lines acc = split isNewline >>= fun bs -> terminators >>= check acc bs
+  let rec lines acc = takeUntil isNewline >>= fun bs -> terminators >>= check acc bs
   and check acc bs count =
     if count = 0 then yieldI (Choice1Of2 (List.rev acc |> List.map (ByteString.toString))) (Chunk bs)
     elif ByteString.isEmpty bs then yieldI (Choice2Of2 (List.rev acc |> List.map (ByteString.toString))) EOF
@@ -98,7 +112,7 @@ let readLines =
 
 (* ========= Enumerators ========= *)
 
-//val enumerate :: ByteString -> Enumerator<ByteString,'b>
+// val enumerate :: ByteString -> Enumerator<ByteString,'b>
 let rec enumerate input i =
   match runIter i with 
   | Continue k when ByteString.isEmpty input -> continueI k

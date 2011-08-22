@@ -31,6 +31,10 @@ module List =
       | _ -> failwith "Unrecognized pattern"
     loop 0 l id
 
+  let skipWhile pred l = span pred l |> snd
+  let skipUntil pred l = split pred l |> snd
+  let takeWhile pred l = span pred l |> fst
+  let takeUntil pred l = split pred l |> fst
 
 (* ========= Iteratees ========= *)
 
@@ -79,7 +83,7 @@ let dropWhile pred =
   let rec step = function
     | Empty | Chunk [] -> continueI step
     | Chunk x ->
-        match List.ofSeq <| Seq.skipWhile pred x with
+        match List.skipWhile pred x with
         | [] -> continueI step
         | x' -> yieldI () (Chunk x')
     | EOF as s -> yieldI () s

@@ -45,9 +45,30 @@ let ``test drop should drop the first n items``([<Values(0,1,2,3,4,5,6,7,8,9)>] 
   actual |> should equal (Some(byte x))
 
 [<Test>]
-let ``test split should correctly split the input``() =
+let ``test dropWhile should drop anything before the first space``() =
+  let dropWhile2Head = iteratee {
+    do! dropWhile ((<>) ' 'B)
+    return! head }
+  let actual = enumerate (ByteString.create "Hello world"B) dropWhile2Head |> runTest
+  actual |> should equal (Some ' 'B)
+
+[<Test>]
+[<Sequential>]
+let ``test take should take the first n items``([<Values(0,1,2,3,4,5,6,7,8,9,10)>] x) =
+  let input = ByteString.create [|0uy..9uy|]
+  let actual = enumerate input (take x) |> runTest
+  actual |> should equal (ByteString.take x input)
+
+[<Test>]
+let ``test takeWhile should take anything before the first space``() =
+  let input = "Hello world"B
+  let actual = enumeratePure1Chunk (ByteString.create input) (takeWhile ((<>) ' 'B)) |> runTest
+  actual |> should equal (BS(input, 0, 5))
+
+[<Test>]
+let ``test takeUntil should correctly split the input``() =
   let input = "abcde"B
-  let actual = enumeratePure1Chunk (ByteString.create input) (split ((=) 'c'B)) |> runTest
+  let actual = enumeratePure1Chunk (ByteString.create input) (takeUntil ((=) 'c'B)) |> runTest
   actual |> should equal (BS(input, 0, 2))
 
 [<Test>]

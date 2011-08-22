@@ -10,11 +10,11 @@ type ByteString = BS of byte array * int * int // TODO: Switch to the JoinList f
   interface System.Collections.Generic.IEnumerable<byte> with
     member this.GetEnumerator() =
       let (BS(a,o,l)) = this
-      let inner = seq { for i in o..l do yield a.[i] }
+      let inner = seq { for i in o..(l-1) do yield a.[i] }
       inner.GetEnumerator()
     member this.GetEnumerator() =
       let (BS(a,o,l)) = this
-      let inner = seq { for i in o..l do yield a.[i] }
+      let inner = seq { for i in o..(l-1) do yield a.[i] }
       inner.GetEnumerator() :> System.Collections.IEnumerator
 
   static member op_Equality (BS(x,o,l), BS(x',o',l')) =
@@ -65,7 +65,6 @@ type ByteString = BS of byte array * int * int // TODO: Switch to the JoinList f
   static member tail (BS(x,o,l)) = BS(x,o+1,l-1)
   static member cons hd tl = ByteString.op_Cons(hd, tl)
   static member append a b = ByteString.op_Append(a, b)
-  static member take n (BS(x,o,l)) = Contract.Requires(l >= n); BS(x,o,n)
   static member fold f seed bs =
     let rec loop bs acc =
       if ByteString.isEmpty bs then acc 
@@ -74,8 +73,7 @@ type ByteString = BS of byte array * int * int // TODO: Switch to the JoinList f
         loop tl (f acc hd)
     loop bs seed
   
-  static member span pred bs =
-    let (BS(x,o,l)) = bs
+  static member span pred (BS(x,o,l) as bs) =
     let rec loop acc =
       if l-acc = 0 then (BS(x,o,acc), ByteString.empty)
       else
@@ -86,14 +84,15 @@ type ByteString = BS of byte array * int * int // TODO: Switch to the JoinList f
  
   static member split pred bs = ByteString.span (not << pred) bs
 
-  static member splitAt n bs =
-    let pred i = i >= n
-    let (BS(x,o,l)) = bs
-    let rec loop acc =
-      if l-acc = 0 then (BS(x,o,acc), ByteString.empty)
-      else
-        if l-(acc+1) = 0 && not (pred acc) then (BS(x,o,acc), ByteString.empty)
-        elif pred acc then (BS(x,o,acc), BS(x,o+acc,l-acc))
-        else loop (acc+1)
-    loop 0
-  
+  static member splitAt n (BS(x,o,l) as bs) =
+    Contract.Requires(n >= 0 && n <= l)
+    if n = 0 then ByteString.empty, bs
+    elif n = l then bs, ByteString.empty
+    else BS(x,o,n), BS(x,n,l-n)
+
+  static member skip n bs = ByteString.splitAt n bs |> snd
+  static member skipWhile pred bs = ByteString.span pred bs |> snd
+  static member skipUntil pred bs = ByteString.split pred bs |> snd
+  static member take n bs = ByteString.splitAt n bs |> fst 
+  static member takeWhile pred bs = ByteString.span pred bs |> fst
+  static member takeUntil pred bs = ByteString.split pred bs |> fst 
