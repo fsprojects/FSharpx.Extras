@@ -103,7 +103,7 @@ let takeUntilTests = [|
 let ``test takeUntilNewline should split strings on a newline character``(input, expectedRes:char list, expectedRem:char list) =
   let isNewline c = c = '\r' || c = '\n'
   let res, rem =
-    match runIter <| enumeratePure1Chunk (List.ofSeq input) (takeUntil isNewline) with
+    match enumeratePure1Chunk (List.ofSeq input) (takeUntil isNewline) with
     | Yield(res, (Chunk rem)) -> res, rem
     | Continue _ -> [], []
   res |> should equal expectedRes

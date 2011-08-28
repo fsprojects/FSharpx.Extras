@@ -21,8 +21,7 @@ type Stream<'a> =
 /// it receives an EOF or meets its own requirements for consuming data. The iteratee
 /// will return Continue whenever it is ready to receive the next chunk. An iteratee
 /// is fed data by an Enumerator, which generates a Stream. 
-type Iteratee<'el,'a> = Iteratee of Step<'el,'a>
-and Step<'el,'a> =
+type Iteratee<'el,'a> =
   | Yield of 'a * Stream<'el>
   | Error of exn
   | Continue of (Stream<'el> -> Iteratee<'el,'a>)
@@ -36,60 +35,48 @@ type Enumeratee<'elo,'eli,'a> = Iteratee<'eli,'a> -> Iteratee<'elo, Iteratee<'el
 [<AutoOpen>]
 module Primitives =
 
-  let runIter (Iteratee step) = step
-  let returnI step = Iteratee step
-  let yieldI x s = returnI <| Yield(x,s)
-  let continueI k = returnI <| Continue k
+  let yieldI x s = Yield(x,s)
+  let continueI k = Continue k
 
   let bind m f =
-    let rec innerBind m =
-      Iteratee <|
-        match runIter m with
-        | Continue k -> Continue(innerBind << k)
-        | Error e -> Error e
-        | Yield(x, Empty) -> runIter (f x)
-        | Yield(x, extra) ->
-            match runIter (f x) with
-            | Continue k -> runIter (k extra)
-            | Error e -> Error e
-            | Yield(acc',_) -> Yield(acc', extra)
+    let rec innerBind = function
+      | Continue k -> Continue(innerBind << k)
+      | Error e -> Error e
+      | Yield(x, Empty) -> f x
+      | Yield(x, extra) ->
+          match f x with
+          | Continue k -> k extra
+          | Error e -> Error e
+          | Yield(acc',_) -> Yield(acc', extra)
     innerBind m
 
-  let inline (>>==) (m:Iteratee<'a,'b>) (f:Iteratee<'a,'b> -> Iteratee<'c,'d>) = f m
-  let inline (==<<) f m = m >>== f
-  let inline (>==>) (e1:Enumerator<'a,'b>) (e2:Iteratee<'a,'b> -> Iteratee<'c,'d>) (s:Iteratee<'a,'b>) = e1 s >>== e2
-  let inline (<==<) (e1:Iteratee<'a,'b> -> Iteratee<'c,'d>) (e2:Enumerator<'a,'b>) (s:Iteratee<'a,'b>) = e2 s >>== e1
-
-  let throw e = returnI <| Error e
+  let throw e = Error e
 
   let catchError h i =
-    let rec step i = 
-      match runIter i with
-      | Yield(b, xs) -> yieldI b xs
+    let rec step = function 
       | Error e -> h e
-      | Continue k -> continueI (fun s -> k s >>== step)
-    in i >>== step
+      | Continue k -> continueI (fun s -> step (k s))
+      | i -> i
+    in step i
 
   let tryFinally compensation i =
-    let rec step i = 
-      match runIter i with
-      | Continue k -> continueI (fun s -> k s >>== step)
-      | i -> compensation(); returnI i
-    in i >>== step
+    let rec step = function 
+      | Continue k -> continueI (fun s -> step (k s))
+      | i -> compensation(); i
+    in step i
 
-  let rec enumEOF i = 
-    match runIter i with
-    | Yield(x,_) -> yieldI x EOF
+  let rec enumEOF = function 
+    | Yield(x,_) -> Yield(x, EOF)
     | Error e -> throw e
     | Continue k ->
-        match runIter (k EOF) with
+        match k EOF with
         | Continue _ -> failwith "enumEOF: divergent iteratee"
-        | i -> enumEOF <| returnI i
+        | i -> enumEOF i
   
   let enumErr e = function _ -> Error e
 
   let run i =
-    match runIter (enumEOF ==<< i) with
+    match enumEOF i with
     | Error e -> Choice1Of2 e
     | Yield(x,_) -> Choice2Of2 x
     | Continue _ -> failwith "run: divergent iteratee"
@@ -103,9 +90,9 @@ type IterateeBuilder() =
   member this.Return(x) = Yield(x, Empty)
   member this.ReturnFrom(m:Iteratee<_,_>) = m
   member this.Bind(m, k) = bind m k
-  member this.Zero() = yieldI () Empty
+  member this.Zero() = Yield((), Empty)
   member this.Combine(comp1, comp2) = bind comp1 <| fun () -> comp2
-  member this.Delay(f) = bind (yieldI () Empty) f
+  member this.Delay(f) = bind (Yield((), Empty)) f
   member this.TryWith(m, h) = catchError h m
   member this.TryFinally(m, compensation) = tryFinally compensation m
   member this.Using(res:#IDisposable, body) =
@@ -119,7 +106,7 @@ type IterateeBuilder() =
 let iteratee = IterateeBuilder()
 
 module Operators =
-  let inline returnM x = yieldI x Empty
+  let inline returnM x = Yield(x, Empty)
   let inline (>>=) m f = bind m f
   let inline (<*>) f m = f >>= fun f' -> m >>= fun m' -> returnM (f' m')
   let inline lift f m = m >>= fun x -> returnM (f x)

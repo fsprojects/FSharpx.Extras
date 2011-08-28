@@ -41,73 +41,73 @@ module List =
 let fold step seed =
   let f = List.fold step
   let rec loop acc = function
-    | Empty -> continueI (loop acc)
-    | Chunk [] -> continueI (loop acc)
-    | Chunk xs -> continueI (loop (f acc xs))
-    | EOF -> yieldI acc EOF
-  continueI (loop seed)
+    | Empty -> Continue (loop acc)
+    | Chunk [] -> Continue (loop acc)
+    | Chunk xs -> Continue (loop (f acc xs))
+    | EOF -> Yield(acc, EOF)
+  Continue (loop seed)
 
 let length<'a> : Iteratee<'a list, int> =
   let rec step n = function
-    | Empty | Chunk [] -> continueI (step n)
-    | Chunk x          -> continueI (step (n + 1))
-    | EOF         as s -> yieldI n s
-  in continueI (step 0)
+    | Empty | Chunk [] -> Continue (step n)
+    | Chunk x          -> Continue (step (n + 1))
+    | EOF         as s -> Yield(n, s)
+  in Continue (step 0)
 
 let peek<'a> : Iteratee<'a list, 'a option> =
   let rec inner =
     let rec step = function
       | Empty | Chunk ([]:'a list) -> inner
-      | Chunk(x::xs) as s -> yieldI (Some x) s
-      | s -> yieldI (None: 'a option) s
-    continueI step
+      | Chunk(x::xs) as s -> Yield(Some x, s)
+      | s -> Yield(None, s)
+    Continue step
   in inner
 
 let head<'a> : Iteratee<'a list, 'a option> =
   let rec inner =
     let rec step = function
       | Empty | Chunk ([]:'a list) -> inner
-      | Chunk(x::xs) -> yieldI (Some x) (Chunk xs)
-      | EOF -> yieldI None (EOF:Stream<'a list>)
-    continueI step
+      | Chunk(x::xs) -> Yield(Some x, Chunk xs)
+      | EOF -> Yield(None, EOF)
+    Continue step
   in inner
 
 let rec drop n =
   let rec step = function
-    | Empty | Chunk [] -> continueI step
+    | Empty | Chunk [] -> Continue step
     | Chunk x          -> drop (n - 1)
-    | EOF         as s -> yieldI () s
-  in if n <= 0 then yieldI () Empty else continueI step
+    | EOF         as s -> Yield((), s)
+  in if n <= 0 then Yield((), Empty) else Continue step
 
 let dropWhile pred =
   let rec step = function
-    | Empty | Chunk [] -> continueI step
+    | Empty | Chunk [] -> Continue step
     | Chunk x ->
         match List.skipWhile pred x with
-        | [] -> continueI step
-        | x' -> yieldI () (Chunk x')
-    | EOF as s -> yieldI () s
-  in continueI step
+        | [] -> Continue step
+        | x' -> Yield((), Chunk x')
+    | EOF as s -> Yield((), s)
+  in Continue step
 
 let take n =
   let rec step before n = function
-    | Empty | Chunk [] -> continueI <| step before n
+    | Empty | Chunk [] -> Continue <| step before n
     | Chunk str ->
         if str.Length < n then
-          continueI <| step (before @ str) (n - str.Length)
-        else let str', extra = List.splitAt n str in yieldI (before @ str') (Chunk extra)
-    | EOF -> yieldI before EOF
-  in if n <= 0 then yieldI [] Empty else continueI (step [] n)
+          Continue <| step (before @ str) (n - str.Length)
+        else let str', extra = List.splitAt n str in Yield(before @ str', Chunk extra)
+    | EOF -> Yield(before, EOF)
+  in if n <= 0 then Yield([], Empty) else Continue (step [] n)
 
 let private takeWithPredicate (pred:'a -> bool) listOp =
   let rec step before = function
-    | Empty | Chunk [] -> continueI (step before)
+    | Empty | Chunk [] -> Continue (step before)
     | Chunk str ->
         match listOp pred str with
-        | str', [] -> continueI (step (before @ str'))
-        | str', extra -> yieldI (before @ str') (Chunk extra)
-    | EOF -> yieldI before EOF
-  in continueI (step [])
+        | str', [] -> Continue (step (before @ str'))
+        | str', extra -> Yield(before @ str', Chunk extra)
+    | EOF -> Yield(before, EOF)
+  in Continue (step [])
 
 let takeWhile pred = takeWithPredicate pred List.span
 let takeUntil pred = takeWithPredicate pred List.split
@@ -115,16 +115,16 @@ let takeUntil pred = takeWithPredicate pred List.split
 let heads str =
   let rec loop count str =
     match count, str with
-    | (count, []) -> yieldI count EOF
-    | (count, str) -> continueI (step count str)
+    | (count, []) -> Yield(count, EOF)
+    | (count, str) -> Continue (step count str)
   and step count str s =
     match str, s with
     | str, Empty -> loop count str
     | str, (Chunk []) -> loop count str
     | c::t, (Chunk (c'::t')) ->
         if c = c' then step (count + 1) t (Chunk t') 
-        else yieldI count (Chunk (c'::t'))
-    | _, s -> yieldI count s
+        else Yield(count, Chunk (c'::t'))
+    | _, s -> Yield(count, s)
   loop 0 str
 
 let readLines =
@@ -132,34 +132,33 @@ let readLines =
   let newlines = ['\r';'\n']
   let newline = ['\n']
   let isNewline c = c = '\r' || c = '\n'
-  let terminators = heads newlines >>= fun n -> if n = 0 then heads newline else yieldI n Empty
+  let terminators = heads newlines >>= fun n -> if n = 0 then heads newline else Yield(n, Empty)
   let rec lines acc = takeUntil isNewline >>= fun l -> terminators >>= check acc l
   and check acc l count =
     match l, count with
-    | _, 0 -> yieldI (Choice1Of2 (List.rev acc |> List.map toString)) (Chunk l)
-    | [], _ -> yieldI (Choice2Of2 (List.rev acc |> List.map toString)) EOF
+    | _, 0 -> Yield(Choice1Of2 (List.rev acc |> List.map toString), Chunk l)
+    | [], _ -> Yield(Choice2Of2 (List.rev acc |> List.map toString), EOF)
     | l, _ -> lines (l::acc)
   lines []
 
 (* ========= Enumerators ========= *)
 
 //val enumerate :: 'a list -> Enumerator<'a list,'b>
-let rec enumerate input i = 
-  match input, runIter i with
-  | [], Continue k -> continueI k
+let rec enumerate str i = 
+  match str, i with
+  | [], Continue k -> Continue k
   | (x::xs), Continue k -> enumerate xs (k (Chunk [x]))
   | _ -> i
 
 // val enumeratePure1Chunk :: 'a list -> Enumerator<'a list,'b>
-let enumeratePure1Chunk (str:'a list) i =
-  match runIter i with
+let enumeratePure1Chunk (str:'a list) = function
   | Continue k -> k (Chunk str)
-  | _ -> i
+  | i -> i
 
 // val enumeratePureNChunk :: 'a list -> int -> Enumerator<'a list,'b>
 let rec enumeratePureNChunk str n i =
-  match str, runIter i with
+  match str, i with
   | _::_, Continue k ->
-      let (s1, s2) = List.splitAt n str
+      let s1, s2 = List.splitAt n str
       enumeratePureNChunk s2 n (k (Chunk s1))
   | _ -> i

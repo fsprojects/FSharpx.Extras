@@ -101,7 +101,7 @@ let ``test readLines should return the lines from the input``(input, expected:Ch
   let actual = enumeratePure1Chunk (ByteString.create input) readLines |> runTest
   actual |> should equal expected
 
-[<Ignore("readLines doesn't carry trailing newline characters, so it's possible to have a trailing \r and a beginning \n that should go together.")>]
+[<Ignore("Array index out of range error, and still incorrect when parsing")>]
 [<Test>]
 [<TestCaseSource("readLinesTests")>]
 let ``test readLines should return the lines from the input when chunked``(input, expected:Choice<String list, String list>) =

@@ -24,9 +24,9 @@ exception ReturnNoneException183c26a427ae489c8fd92ec21a0c9a59
 
 [<assembly: AssemblyProduct ("FSharp.Collections")>]
 
-[<assembly: AssemblyVersion ("1.1.6.110822")>]
+[<assembly: AssemblyVersion ("1.1.6.110902")>]
 
-[<assembly: AssemblyFileVersion ("1.1.6.110822")>]
+[<assembly: AssemblyFileVersion ("1.1.6.110902")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 

@@ -85,9 +85,9 @@ type ByteString = BS of byte array * int * int // TODO: Switch to the JoinList f
   static member split pred bs = ByteString.span (not << pred) bs
 
   static member splitAt n (BS(x,o,l) as bs) =
-    Contract.Requires(n >= 0 && n <= l)
+    Contract.Requires(n >= 0)
     if n = 0 then ByteString.empty, bs
-    elif n = l then bs, ByteString.empty
+    elif n >= l then bs, ByteString.empty
     else BS(x,o,n), BS(x,n,l-n)
 
   static member skip n bs = ByteString.splitAt n bs |> snd
