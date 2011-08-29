@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
 using NUnit.Framework;
@@ -129,17 +130,10 @@ namespace FSharp.Core.CS.Tests {
 
         static FSharpChoice<T, Errors> NonNull<T>(T value, string err) where T: class {
             return FSharpChoice.Validator<T>(x => x != null, err)(value);
-            //if (value == null)
-            //    return FSharpChoice.Error<T>(err);
-            //return FSharpChoice.Ok(value);
         }
 
-        static FSharpChoice<T, Errors> NotEqual<T>(T value, T other, string err) where T: IEquatable<T> {
-            var valueNull = Equals(null, value);
-            var otherNull = Equals(null, other);
-            if (valueNull && otherNull || valueNull != otherNull || value.Equals(other))
-                return FSharpChoice.Ok(value);
-            return FSharpChoice.Error<T>(err);
+        static FSharpChoice<T, Errors> NotEqual<T>(T value, T other, string err) {
+            return FSharpChoice.Validator<T>(v => !Equals(v, other), err)(value);
         }
 
         static FSharpChoice<Address, Errors> ValidateAddressLines(Address a) {
@@ -163,9 +157,8 @@ namespace FSharp.Core.CS.Tests {
             };
         }
 
-        static FSharpChoice<Address, Errors> ValidateAddressLines2(Address a) {
-            return Validator<Address>(x => x.Line1 != null || x.Line2 == null, "Line1 is empty but Line2 is not")(a);
-        }
+        static Func<Address, FSharpChoice<Address, Errors>> ValidateAddressLines2 = 
+            Validator<Address>(x => x.Line1 != null || x.Line2 == null, "Line1 is empty but Line2 is not");
 
         static FSharpChoice<Address, Errors> ValidateAddress(Address a) {
             return from x in NonNull(a.Postcode, "Post code can't be null")
@@ -190,19 +183,17 @@ namespace FSharp.Core.CS.Tests {
         static FSharpChoice<Order, Errors> ValidateOrder(Order o) {
             return
                 from name in NonNull(o.ProductName, "Product name can't be null")
-                from cost in GreaterThan(o.Cost, 0, string.Format("Cost for product '{0}' can't be negative", name))
+                from cost in GreaterThan(o.Cost, 0, string.Format("Cost for product '{0}' must be positive", name))
                 select o;
         }
 
-        static FSharpChoice<IEnumerable<Order>, Errors> ValidateOrders(IEnumerable<Order> orders) {
-            return FSharpChoice.EnumerableValidator<Order>(ValidateOrder)(orders);
-/*            var zero = ListModule.Empty<Order>().PureValidate();
-            var ooo = orders
+        static FSharpChoice<FSharpList<Order>, Errors> ValidateOrders(IEnumerable<Order> orders) {
+            var zero = ListModule.Empty<Order>().PureValidate();
+            return orders
                 .Select(ValidateOrder)
                 .Aggregate(zero, (e, c) => from a in e
                                            join b in c on 1 equals 1
-                                           select a.Cons(b))
-                .Select(x => (IEnumerable<Order>)x); */
+                                           select a.Cons(b));
         }
 
         [Test]
