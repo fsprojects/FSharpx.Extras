@@ -102,7 +102,7 @@ let ``test readLines should return the lines from the input``(input, expected:Ch
   let actual = enumeratePure1Chunk (create input) readLines |> runTest
   actual |> should equal expected
 
-[<Ignore("Array index out of range error, and still incorrect when parsing")>]
+[<Ignore("The enumerator appears to be caching earlier values and re-applying them, rendering an invalid result. This happens in 5 cases currently.")>]
 [<Test>]
 [<TestCaseSource("readLinesTests")>]
 let ``test readLines should return the lines from the input when chunked``(input, expected:Choice<String list, String list>) =
