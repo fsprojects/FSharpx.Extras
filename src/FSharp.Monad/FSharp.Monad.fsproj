@@ -36,7 +36,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Compile Include="Collections.fs" />
-    <Compile Include="FSharp.Monad.fs" />
+    <Compile Include="Monad.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
