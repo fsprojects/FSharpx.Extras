@@ -125,7 +125,7 @@ let rec enumerate str = function
   | i -> i
 
 // val enumeratePure1Chunk :: ByteString -> Enumerator<ByteString,'b>
-let enumeratePure1Chunk (str:ByteString) = function
+let enumeratePure1Chunk str = function
   | Continue k -> k (Chunk str)
   | i -> i
 
@@ -146,5 +146,5 @@ let enumStream bufferSize (stream:#System.IO.Stream) i =
     match result with
     | Choice1Of2 e -> throw e
     | Choice2Of2 0 -> Continue k
-    | Choice2Of2 n -> step (k (Chunk(BS(buffer,0,buffer.Length))))
+    | Choice2Of2 n -> step (k (Chunk(ByteString.BS(buffer,0,buffer.Length))))
   step i

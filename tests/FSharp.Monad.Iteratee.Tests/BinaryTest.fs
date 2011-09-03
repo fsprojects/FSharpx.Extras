@@ -2,6 +2,7 @@
 
 open System
 open FSharp.Collections
+open FSharp.Collections.ByteString
 open FSharp.Monad.Iteratee
 open FSharp.Monad.Iteratee.Binary
 open NUnit.Framework
@@ -14,24 +15,24 @@ let runTest i =
 
 [<Test>]
 let ``test length should calculate the length of the list without modification``() =
-  let actual = enumerate (ByteString.create [|1uy;2uy;3uy|]) length |> runTest 
+  let actual = enumerate (create [|1uy;2uy;3uy|]) length |> runTest 
   actual |> should equal 3
 
 let testPeekAndHead = [|
-  [| box ByteString.empty; box None |]
-  [| box (ByteString.singleton 'c'B); box (Some 'c'B) |]
-  [| box (ByteString.create "char"B); box (Some 'c'B) |]
+  [| box empty; box None |]
+  [| box (singleton 'c'B); box (Some 'c'B) |]
+  [| box (create "char"B); box (Some 'c'B) |]
 |]
 
 [<Test>]
 [<TestCaseSource("testPeekAndHead")>]
-let ``test peek should return the value without removing it from the stream``(input:ByteString, expected:byte option) =
+let ``test peek should return the value without removing it from the stream``(input, expected:byte option) =
   let actual = enumerate input peek |> runTest 
   actual |> should equal expected
 
 [<Test>]
 [<TestCaseSource("testPeekAndHead")>]
-let ``test head should return the value and remove it from the stream``(input:ByteString, expected:byte option) =
+let ``test head should return the value and remove it from the stream``(input, expected:byte option) =
   let actual = enumerate input head |> runTest
   actual |> should equal expected
 
@@ -41,7 +42,7 @@ let ``test drop should drop the first n items``([<Values(0,1,2,3,4,5,6,7,8,9)>] 
   let drop2Head = iteratee {
     do! drop x
     return! head }
-  let actual = enumerate (ByteString.create [| 0uy..9uy |]) drop2Head |> runTest
+  let actual = enumerate (create [| 0uy..9uy |]) drop2Head |> runTest
   actual |> should equal (Some(byte x))
 
 [<Test>]
@@ -49,26 +50,26 @@ let ``test dropWhile should drop anything before the first space``() =
   let dropWhile2Head = iteratee {
     do! dropWhile ((<>) ' 'B)
     return! head }
-  let actual = enumerate (ByteString.create "Hello world"B) dropWhile2Head |> runTest
+  let actual = enumerate (create "Hello world"B) dropWhile2Head |> runTest
   actual |> should equal (Some ' 'B)
 
 [<Test>]
 [<Sequential>]
 let ``test take should take the first n items``([<Values(0,1,2,3,4,5,6,7,8,9,10)>] x) =
-  let input = ByteString.create [|0uy..9uy|]
+  let input = create [|0uy..9uy|]
   let actual = enumerate input (take x) |> runTest
-  actual |> should equal (ByteString.take x input)
+  Assert.That(actual == (ByteString.take x input))
 
 [<Test>]
 let ``test takeWhile should take anything before the first space``() =
   let input = "Hello world"B
-  let actual = enumeratePure1Chunk (ByteString.create input) (takeWhile ((<>) ' 'B)) |> runTest
+  let actual = enumeratePure1Chunk (create input) (takeWhile ((<>) ' 'B)) |> runTest
   actual |> should equal (BS(input, 0, 5))
 
 [<Test>]
 let ``test takeUntil should correctly split the input``() =
   let input = "abcde"B
-  let actual = enumeratePure1Chunk (ByteString.create input) (takeUntil ((=) 'c'B)) |> runTest
+  let actual = enumeratePure1Chunk (create input) (takeUntil ((=) 'c'B)) |> runTest
   actual |> should equal (BS(input, 0, 2))
 
 [<Test>]
@@ -98,12 +99,12 @@ let readLinesTests = [|
 [<Test>]
 [<TestCaseSource("readLinesTests")>]
 let ``test readLines should return the lines from the input``(input, expected:Choice<String list, String list>) =
-  let actual = enumeratePure1Chunk (ByteString.create input) readLines |> runTest
+  let actual = enumeratePure1Chunk (create input) readLines |> runTest
   actual |> should equal expected
 
 [<Ignore("Array index out of range error, and still incorrect when parsing")>]
 [<Test>]
 [<TestCaseSource("readLinesTests")>]
 let ``test readLines should return the lines from the input when chunked``(input, expected:Choice<String list, String list>) =
-  let actual = enumeratePureNChunk (ByteString.create input) 11 (* Problem is that this is not consistent; try 5 and 10 *) readLines |> runTest
+  let actual = enumeratePureNChunk (create input) 11 (* Problem is that this is not consistent; try 5 and 10 *) readLines |> runTest
   actual |> should equal expected
