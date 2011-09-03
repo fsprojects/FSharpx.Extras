@@ -32,6 +32,9 @@
   </PropertyGroup>
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
+    <None Include="packages.config" />
+    <Compile Include="OperatorsTest.fs" />
+    <Compile Include="AsyncOperatorsTest.fs" />
     <Compile Include="MaybeTest.fs" />
     <Compile Include="StateTest.fs" />
     <Compile Include="ReaderTest.fs" />
@@ -40,7 +43,8 @@
     <Compile Include="ContinuationTest.fs" />
     <Compile Include="DistributionTest.fs" />
     <Compile Include="PokerDistributionTest.fs" />
-    <None Include="packages.config" />
+    <Compile Include="ListTest.fs" />
+    <Compile Include="BinaryTest.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
@@ -84,9 +88,9 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\FSharp.Monad.Core\FSharp.Monad.Core.fsproj">
-      <Name>FSharp.Monad.Core</Name>
-      <Project>{1653436c-d15f-4e79-920a-fa7bc94306bb}</Project>
+    <ProjectReference Include="..\..\src\FSharp.Collections\FSharp.Collections.fsproj">
+      <Name>FSharp.Collections</Name>
+      <Project>{6f18b2dd-22ff-49ea-bcf0-0554936a90cf}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\FSharp.Monad\FSharp.Monad.fsproj">

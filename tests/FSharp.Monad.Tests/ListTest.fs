@@ -3,7 +3,7 @@
 open System
 open FSharp.Monad.Iteratee
 open FSharp.Monad.Iteratee.List
-open FSharp.Monad.Iteratee.Core.Operators
+open FSharp.Monad.Iteratee.Operators
 open NUnit.Framework
 open FsUnit
 

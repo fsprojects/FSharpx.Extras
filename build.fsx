@@ -55,23 +55,6 @@ Target "Clean" (fun _ ->
 )
 
 Target "BuildApp" (fun _ ->
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = version
-            AssemblyTitle = projectName + ".Core"
-            AssemblyDescription = coreSummary
-            Guid = "1653436C-D15F-4E79-920A-FA7BC94306BB"
-            OutputFileName = "./src/FSharp.Monad.Core/AssemblyInfo.fs" })
-
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = version
-            AssemblyTitle = projectName
-            AssemblyDescription = projectSummary
-            Guid = "1e95a279-c2a9-498b-bc72-6e7a0d6854ce"
-            OutputFileName = "./src/FSharp.Monad/AssemblyInfo.fs" })
 
     AssemblyInfo (fun p ->
         {p with 
@@ -86,19 +69,10 @@ Target "BuildApp" (fun _ ->
         {p with 
             CodeLanguage = FSharp
             AssemblyVersion = version
-            AssemblyTitle = projectName + ".Iteratee"
-            AssemblyDescription = "An implementation of the Iteratee for F#" 
-            Guid = "2211c000-4a7f-4254-9f3a-76a0e060c96a"
-            OutputFileName = "./src/FSharp.Monad.Iteratee/AssemblyInfo.fs" })
-
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = version
-            AssemblyTitle = projectName + ".MinLinq"
+            AssemblyTitle = projectName
             AssemblyDescription = projectSummary
-            Guid = "258D97E2-004C-4F9A-913B-A08B3E281544"
-            OutputFileName = "./src/FSharp.Monad.MinLinq/AssemblyInfo.fs" })
+            Guid = "1e95a279-c2a9-498b-bc72-6e7a0d6854ce"
+            OutputFileName = "./src/FSharp.Monad/AssemblyInfo.fs" })
 
     MSBuildRelease buildDir "Build" appReferences
         |> Log "AppBuild-Output: "
@@ -143,18 +117,12 @@ Target "BuildNuGet" (fun _ ->
     CleanDirs [nugetDir; nugetLibDir; nugetDocsDir]
 
     XCopy (docsDir |> FullName) nugetDocsDir
-    [ buildDir + "FSharp.Monad.Core.dll"
-      buildDir + "FSharp.Monad.Core.pdb"
-      buildDir + "FSharp.Monad.Core.xml"
-      buildDir + "FSharp.Monad.dll"
+    [ buildDir + "FSharp.Monad.dll"
       buildDir + "FSharp.Monad.pdb"
       buildDir + "FSharp.Monad.xml"
       buildDir + "FSharp.Collections.dll"
       buildDir + "FSharp.Collections.pdb"
-      buildDir + "FSharp.Collections.xml"
-      buildDir + "FSharp.Monad.Iteratee.dll"
-      buildDir + "FSharp.Monad.Iteratee.pdb"
-      buildDir + "FSharp.Monad.Iteratee.xml" ]
+      buildDir + "FSharp.Collections.xml" ]
         |> CopyTo nugetLibDir
 
     NuGet (fun p -> 

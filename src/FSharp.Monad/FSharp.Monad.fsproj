@@ -34,14 +34,8 @@
   </PropertyGroup>
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
-    <Compile Include="Maybe.fs" />
-    <Compile Include="State.fs" />
-    <Compile Include="Reader.fs" />
-    <Compile Include="Undo.fs" />
-    <Compile Include="Writer.fs" />
-    <Compile Include="Continuation.fs" />
-    <Compile Include="Distribution.fs" />
     <None Include="packages.config" />
+    <Compile Include="FSharp.Monad.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
@@ -69,9 +63,9 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FSharp.Monad.Core\FSharp.Monad.Core.fsproj">
-      <Name>FSharp.Monad.Core</Name>
-      <Project>{1653436c-d15f-4e79-920a-fa7bc94306bb}</Project>
+    <ProjectReference Include="..\FSharp.Collections\FSharp.Collections.fsproj">
+      <Name>FSharp.Collections</Name>
+      <Project>{6f18b2dd-22ff-49ea-bcf0-0554936a90cf}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
