@@ -35,6 +35,7 @@
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
     <None Include="packages.config" />
+    <Compile Include="Collections.fs" />
     <Compile Include="FSharp.Monad.fs" />
   </ItemGroup>
   <ItemGroup>
@@ -61,12 +62,5 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FSharp.Collections\FSharp.Collections.fsproj">
-      <Name>FSharp.Collections</Name>
-      <Project>{6f18b2dd-22ff-49ea-bcf0-0554936a90cf}</Project>
-      <Private>True</Private>
-    </ProjectReference>
   </ItemGroup>
 </Project>

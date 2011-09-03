@@ -33,6 +33,8 @@
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
     <None Include="packages.config" />
+    <Compile Include="JoinListTest.fs" />
+    <Compile Include="ByteStringTest.fs" />
     <Compile Include="OperatorsTest.fs" />
     <Compile Include="AsyncOperatorsTest.fs" />
     <Compile Include="MaybeTest.fs" />
@@ -88,11 +90,6 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\FSharp.Collections\FSharp.Collections.fsproj">
-      <Name>FSharp.Collections</Name>
-      <Project>{6f18b2dd-22ff-49ea-bcf0-0554936a90cf}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\src\FSharp.Monad\FSharp.Monad.fsproj">
       <Name>FSharp.Monad</Name>
       <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>

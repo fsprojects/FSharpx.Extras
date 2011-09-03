@@ -55,16 +55,6 @@ Target "Clean" (fun _ ->
 )
 
 Target "BuildApp" (fun _ ->
-
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = version
-            AssemblyTitle = "FSharp.Collections"
-            AssemblyDescription = "Additional collection types for use in F#"
-            Guid = "6f18b2dd-22ff-49ea-bcf0-0554936a90cf"
-            OutputFileName = "./src/FSharp.Collections/AssemblyInfo.fs" })
-
     AssemblyInfo (fun p ->
         {p with 
             CodeLanguage = FSharp
@@ -119,10 +109,7 @@ Target "BuildNuGet" (fun _ ->
     XCopy (docsDir |> FullName) nugetDocsDir
     [ buildDir + "FSharp.Monad.dll"
       buildDir + "FSharp.Monad.pdb"
-      buildDir + "FSharp.Monad.xml"
-      buildDir + "FSharp.Collections.dll"
-      buildDir + "FSharp.Collections.pdb"
-      buildDir + "FSharp.Collections.xml" ]
+      buildDir + "FSharp.Monad.xml" ]
         |> CopyTo nugetLibDir
 
     NuGet (fun p -> 
