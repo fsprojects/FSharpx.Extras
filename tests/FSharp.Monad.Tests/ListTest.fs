@@ -111,6 +111,7 @@ let ``test takeUntilNewline should split strings on a newline character``(input,
     match enumeratePure1Chunk (List.ofSeq input) (takeUntil isNewline) with
     | Yield(res, (Chunk rem)) -> res, rem
     | Continue _ -> [], []
+    | _ -> failwith "Unrecognized test result"
   res |> should equal expectedRes
   rem |> should equal expectedRem
 

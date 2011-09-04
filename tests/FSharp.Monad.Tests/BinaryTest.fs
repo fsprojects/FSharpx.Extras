@@ -19,7 +19,6 @@ let ``test length should calculate the length of the list without modification``
   let actual = enumerate (create [|1uy;2uy;3uy|]) length |> runTest 
   actual |> should equal 3
 
-[<Ignore("The enumerator appears to be caching earlier values and re-applying them, rendering an invalid result.")>]
 [<Test>]
 let ``test length should calculate the length of the list without modification when enumerated one byte at a time``() =
   let actual = enumeratePureNChunk 1 (create [|1uy;2uy;3uy|]) length |> runTest 
@@ -37,7 +36,6 @@ let ``test peek should return the value without removing it from the stream``(in
   let actual = enumerate input peek |> runTest 
   actual |> should equal expected
 
-[<Ignore("The enumerator appears to be caching earlier values and re-applying them, rendering an invalid result.")>]
 [<Test>]
 [<TestCaseSource("testPeekAndHead")>]
 let ``test peek should return the value without removing it from the stream when enumerated one byte at a time``(input, expected:byte option) =
@@ -50,7 +48,6 @@ let ``test head should return the value and remove it from the stream``(input, e
   let actual = enumerate input head |> runTest
   actual |> should equal expected
 
-[<Ignore("The enumerator appears to be caching earlier values and re-applying them, rendering an invalid result.")>]
 [<Test>]
 [<TestCaseSource("testPeekAndHead")>]
 let ``test head should return the value and remove it from the stream when enumerated one byte at a time``(input, expected:byte option) =
@@ -84,7 +81,6 @@ let ``test dropWhile should drop anything before the first space``() =
   let actual = enumerate (create "Hello world"B) dropWhile2Head |> runTest
   actual |> should equal (Some ' 'B)
 
-[<Ignore("The enumerator appears to be caching earlier values and re-applying them, rendering an invalid result.")>]
 [<Test>]
 let ``test dropWhile should drop anything before the first space when enumerating in chunks``() =
   let dropWhile2Head = iteratee {
@@ -100,7 +96,6 @@ let ``test take should take the first n items``([<Values(0,1,2,3,4,5,6,7,8,9,10)
   let actual = enumerate input (take x) |> runTest
   Assert.That(actual == (ByteString.take x input))
 
-[<Ignore("The enumerator appears to be caching earlier values and re-applying them, rendering an invalid result.")>]
 [<Test>]
 [<Sequential>]
 let ``test take should take the first n items when enumerating in chunks``([<Values(0,1,2,3,4,5,6,7,8,9,10)>] x) =
@@ -153,6 +148,7 @@ let ``test takeUntilNewline should split strings on a newline character``(input,
     match enumeratePure1Chunk (create input) (takeUntil isNewline) with
     | Yield(res, (Chunk rem)) -> res, rem
     | Continue _ -> empty, empty
+    | _ -> failwith "Unrecognized test result"
   Assert.That(res == expectedRes)
   Assert.That(rem == expectedRem)
 
@@ -166,7 +162,6 @@ let ``test heads should count the number of characters in a set of headers when 
   let actual = enumerate (ByteString.ofString "abd") (heads (ByteString.ofString "abc")) |> runTest
   actual |> should equal 2
 
-[<Ignore("The enumerator appears to be caching earlier values and re-applying them, rendering an invalid result.")>]
 [<Test>]
 let ``test heads should count the number of characters in a set of headers when enumerating in chunks``() =
   let actual = enumeratePureNChunk 2 (ByteString.ofString "abd") (heads (ByteString.ofString "abc")) |> runTest
