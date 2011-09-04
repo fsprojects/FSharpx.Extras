@@ -40,3 +40,24 @@ let ``When summing a list without a 2 via callCC it should return 8``() =
 [<Test>]
 let ``When summing a list containing 2 via callCC it should return 43``() =
   sum [1;2;3] |> should equal 43
+
+(* Test Coroutine *)
+[<Test>]
+let ``When running a coroutine it should yield elements in turn``() =
+  // This test comes from the sample on http://fssnip.net/7M
+  let actual = System.Text.StringBuilder()
+  let coroutine = Coroutine()
+  coroutine.Put(fun yield' -> cont {
+    actual.Append("A")
+    do! yield'()
+    actual.Append("B")
+    do! yield'()
+    actual.Append("C")
+  })
+  coroutine.Put(fun yield' -> cont {
+    actual.Append("1")
+    do! yield'()
+    actual.Append("2")
+  })
+  coroutine.Run()
+  actual.ToString() |> should equal "A1B2C"

@@ -365,6 +365,24 @@ module Continuation =
     let inline ( <*) x y = lift2 (fun z _ -> z) x y
     let inline (>>.) m f = bindM cont m (fun _ -> f)
 
+  /// The coroutine type from http://fssnip.net/7M
+  type Coroutine() =
+    let tasks = new System.Collections.Generic.Queue<Cont<unit,unit>>()
+
+    member this.Put(task) =
+      let withYield = cont {
+        do! callCC <| fun exit ->
+            task <| fun () ->
+            callCC <| fun c ->
+            tasks.Enqueue(c())
+            exit()
+        if tasks.Count <> 0 then
+          do! tasks.Dequeue() }
+      tasks.Enqueue(withYield)
+      
+    member this.Run() =
+      runCont (tasks.Dequeue()) ignore raise
+
 module Distribution =
   
   type 'a Outcome = {
