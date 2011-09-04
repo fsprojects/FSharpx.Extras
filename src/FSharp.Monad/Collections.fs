@@ -124,7 +124,10 @@ module ByteString =
     if bs.Count <= 0 then
       failwith "Cannot take the head of an empty byte string."
     else bs.Array.[bs.Offset]
-  let tail (bs:ArraySegment<byte>) = BS(bs.Array, bs.Offset+1, bs.Count-1)
+  let tail (bs:ArraySegment<byte>) =
+    Contract.Requires(bs.Count >= 1)
+    if bs.Count = 1 then empty
+    else BS(bs.Array, bs.Offset+1, bs.Count-1)
   
   /// cons uses Buffer.SetByte and Buffer.BlockCopy for efficient array operations.
   /// Please note that a new array is created and both the head and tail are copied in,
@@ -172,10 +175,10 @@ module ByteString =
   
   let splitAt n (bs:ArraySegment<byte>) =
     Contract.Requires(n >= 0)
-    let x,o,l = bs.Array, bs.Offset, bs.Count
-    if n = 0 then empty, bs
-    elif n >= l then bs, empty
-    else BS(x,o,n), BS(x,n,l-n)
+    if bs.Count = 0 then empty, empty
+    elif n = 0 then empty, bs
+    elif n >= bs.Count then bs, empty
+    else let x,o,l = bs.Array, bs.Offset, bs.Count in BS(x,o,n), BS(x,n,l-n)
   
   let skip n bs = splitAt n bs |> snd
   let skipWhile pred bs = span pred bs |> snd

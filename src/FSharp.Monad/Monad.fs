@@ -729,11 +729,11 @@ module Iteratee =
       | i -> i
     
     // val enumeratePureNChunk :: 'a list -> int -> Enumerator<'a list,'b>
-    let rec enumeratePureNChunk str n i =
+    let rec enumeratePureNChunk n str i =
       match str, i with
       | _::_, Continue k ->
           let s1, s2 = List.splitAt n str
-          enumeratePureNChunk s2 n (k (Chunk s1))
+          enumeratePureNChunk n s2 (k (Chunk s1))
       | _ -> i
   
   module Binary =
@@ -853,8 +853,7 @@ module Iteratee =
     
     // val enumerate :: ByteString -> Enumerator<ByteString,'b>
     let rec enumerate str = function
-      | Continue k when ByteString.isEmpty str -> Continue k
-      | Continue k ->
+      | Continue k when not (ByteString.isEmpty str) ->
           let x, xs = ByteString.head str, ByteString.tail str
           enumerate xs (k (Chunk (ByteString.singleton x)))
       | i -> i
@@ -865,10 +864,10 @@ module Iteratee =
       | i -> i
     
     // val enumeratePureNChunk :: ByteString -> int -> Enumerator<ByteString,'b>
-    let rec enumeratePureNChunk str n = function
+    let rec enumeratePureNChunk n str = function
       | Continue k when not (ByteString.isEmpty str) ->
           let s1, s2 = ByteString.splitAt n str
-          enumeratePureNChunk s2 n (k (Chunk s1))
+          enumeratePureNChunk n s2 (k (Chunk s1))
       | i -> i
     
     let enumStream bufferSize (stream:#System.IO.Stream) i =
