@@ -1,6 +1,7 @@
 ﻿module FSharp.Monad.Tests.ListTest
 
 open System
+open FSharp.Collections
 open FSharp.Monad.Iteratee
 open FSharp.Monad.Iteratee.List
 open FSharp.Monad.Iteratee.Operators

@@ -33,6 +33,7 @@
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
     <None Include="packages.config" />
+    <Compile Include="ListExtensionsTest.fs" />
     <Compile Include="JoinListTest.fs" />
     <Compile Include="ByteStringTest.fs" />
     <Compile Include="OperatorsTest.fs" />

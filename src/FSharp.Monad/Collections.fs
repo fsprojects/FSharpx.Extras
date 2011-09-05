@@ -5,6 +5,39 @@ open System.Collections
 open System.Collections.Generic
 open System.Diagnostics.Contracts
 
+module List =
+
+  let span pred l =
+    let rec loop l cont =
+      match l with
+      | [] -> ([],[])
+      | x::[] when pred x -> (cont l, [])
+      | x::xs when not (pred x) -> (cont [], l)
+      | x::xs when pred x -> loop xs (fun rest -> cont (x::rest))
+      | _ -> failwith "Unrecognized pattern"
+    loop l id
+
+  let split pred l = span (not << pred) l
+
+  let skipWhile pred l = span pred l |> snd
+  let skipUntil pred l = split pred l |> snd
+  let takeWhile pred l = span pred l |> fst
+  let takeUntil pred l = split pred l |> fst
+  
+  let splitAt n l =
+    let pred i = i >= n
+    let rec loop i l cont =
+      match l with
+      | [] -> ([],[])
+      | x::[] when not (pred i) -> (cont l, [])
+      | x::xs when pred i -> (cont [], l)
+      | x::xs when not (pred i) -> loop (i+1) xs (fun rest -> cont (x::rest))
+      | _ -> failwith "Unrecognized pattern"
+    loop 0 l id
+
+  let skip n l = splitAt n l |> snd
+  let take n l = splitAt n l |> fst
+
 type JoinList<'a> =
   | EmptyJoinList
   | Unit of 'a
