@@ -107,13 +107,45 @@ let ``test dropWhile should drop anything before the first space``() =
   actual |> should equal (Some ' 'B)
 
 [<Test>]
-let ``test dropWhile should drop anything before the first space when enumerating in chunks``() =
+let ``test dropWhile should drop anything before the first space at once``() =
   let dropWhile2Head = iteratee {
     do! dropWhile ((<>) ' 'B)
     return! head }
-  let actual = enumeratePureNChunk 5 (create "Hello world"B) dropWhile2Head |> runTest
+  let actual = enumeratePure1Chunk (create "Hello world"B) dropWhile2Head |> runTest
   actual |> should equal (Some ' 'B)
 
+[<Test>]
+let ``test dropWhile should drop anything before the first space when chunked``() =
+  let dropWhile2Head = iteratee {
+    do! dropWhile ((<>) ' 'B)
+    return! head }
+  let actual = enumeratePureNChunk 2 (create "Hello world"B) dropWhile2Head |> runTest
+  actual |> should equal (Some ' 'B)
+
+[<Test>]
+let ``test dropUntil should drop anything before the first space``() =
+  let dropUntil2Head = iteratee {
+    do! dropUntil ((=) ' 'B)
+    return! head }
+  let actual = enumerate (create "Hello world"B) dropUntil2Head |> runTest
+  actual |> should equal (Some ' 'B)
+
+[<Test>]
+let ``test dropUntil should drop anything before the first space at once``() =
+  let dropUntil2Head = iteratee {
+    do! dropUntil ((=) ' 'B)
+    return! head }
+  let actual = enumeratePure1Chunk (create "Hello world"B) dropUntil2Head |> runTest
+  actual |> should equal (Some ' 'B)
+
+[<Test>]
+let ``test dropUntil should drop anything before the first space when chunked``() =
+  let dropUntil2Head = iteratee {
+    do! dropUntil ((=) ' 'B)
+    return! head }
+  let actual = enumeratePureNChunk 2 (create "Hello world"B) dropUntil2Head |> runTest
+  actual |> should equal (Some ' 'B)
+  
 [<Test>]
 [<Sequential>]
 let ``test take should take the first n items``([<Values(0,1,2,3,4,5,6,7,8,9,10)>] x) =

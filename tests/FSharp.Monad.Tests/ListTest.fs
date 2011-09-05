@@ -106,6 +106,46 @@ let ``test dropWhile should drop anything before the first space``() =
   actual |> should equal (Some ' ')
 
 [<Test>]
+let ``test dropWhile should drop anything before the first space at once``() =
+  let dropWhile2Head = iteratee {
+    do! dropWhile ((<>) ' ')
+    return! head }
+  let actual = enumeratePure1Chunk (List.ofSeq "Hello world") dropWhile2Head |> runTest
+  actual |> should equal (Some ' ')
+
+[<Test>]
+let ``test dropWhile should drop anything before the first space when chunked``() =
+  let dropWhile2Head = iteratee {
+    do! dropWhile ((<>) ' ')
+    return! head }
+  let actual = enumeratePureNChunk 2 (List.ofSeq "Hello world") dropWhile2Head |> runTest
+  actual |> should equal (Some ' ')
+  
+[<Test>]
+let ``test dropUntil should drop anything before the first space``() =
+  let dropUntil2Head = iteratee {
+    do! dropUntil ((=) ' ')
+    return! head }
+  let actual = enumerate (List.ofSeq "Hello world") dropUntil2Head |> runTest
+  actual |> should equal (Some ' ')
+
+[<Test>]
+let ``test dropUntil should drop anything before the first space at once``() =
+  let dropUntil2Head = iteratee {
+    do! dropUntil ((=) ' ')
+    return! head }
+  let actual = enumeratePure1Chunk (List.ofSeq "Hello world") dropUntil2Head |> runTest
+  actual |> should equal (Some ' ')
+
+[<Test>]
+let ``test dropUntil should drop anything before the first space when chunked``() =
+  let dropUntil2Head = iteratee {
+    do! dropUntil ((=) ' ')
+    return! head }
+  let actual = enumeratePureNChunk 2 (List.ofSeq "Hello world") dropUntil2Head |> runTest
+  actual |> should equal (Some ' ')
+
+[<Test>]
 [<Sequential>]
 let ``test take should take the first n items``([<Values(0,1,2,3,4,5,6,7,8,9,10)>] x) =
   let input = [0..9]

@@ -632,15 +632,18 @@ module Iteratee =
         | EOF -> Yield((), EOF)
       in if n <= 0 then Yield((), Empty) else Continue (step n)
     
-    let dropWhile pred =
+    let private dropWithPredicate pred listOp =
       let rec step = function
         | Empty | Chunk [] -> Continue step
         | Chunk x ->
-            match List.skipWhile pred x with
+            match listOp pred x with
             | [] -> Continue step
             | x' -> Yield((), Chunk x')
         | EOF as s -> Yield((), s)
       in Continue step
+
+    let dropWhile pred = dropWithPredicate pred List.skipWhile
+    let dropUntil pred = dropWithPredicate pred List.skipUntil
     
     let take n =
       let rec step before n = function
@@ -765,16 +768,19 @@ module Iteratee =
         | EOF -> Yield((), EOF)
       in if n <= 0 then Yield((), Empty) else Continue (step n)
     
-    let dropWhile pred =
+    let private dropWithPredicate pred byteStringOp =
       let rec step = function
         | Empty -> Continue step
         | Chunk x when ByteString.isEmpty x -> Continue step
         | Chunk x ->
-            let x' = ByteString.skipWhile pred x
+            let x' = byteStringOp pred x
             in if ByteString.isEmpty x' then Continue step
                else Yield((), Chunk x')
         | s -> Yield((), s)
       Continue step
+
+    let dropWhile pred = dropWithPredicate pred ByteString.skipWhile
+    let dropUntil pred = dropWithPredicate pred ByteString.skipUntil
 
     let take n =
       let rec step before n = function
