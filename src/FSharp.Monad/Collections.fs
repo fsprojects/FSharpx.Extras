@@ -211,7 +211,7 @@ module ByteString =
     if bs.Count = 0 then empty, empty
     elif n = 0 then empty, bs
     elif n >= bs.Count then bs, empty
-    else let x,o,l = bs.Array, bs.Offset, bs.Count in BS(x,o,n), BS(x,n,l-n)
+    else let x,o,l = bs.Array, bs.Offset, bs.Count in BS(x,o,n), BS(x,o+n,l-n)
   
   let skip n bs = splitAt n bs |> snd
   let skipWhile pred bs = span pred bs |> snd

@@ -8,24 +8,6 @@ open FSharp.Monad.Iteratee.Operators
 open NUnit.Framework
 open FsUnit
 
-[<Test>]
-let ``test List_split correctly breaks the list on the specified predicate``() =
-  let str = List.ofSeq "Howdy! Want to play?"
-  let expected = (List.ofSeq "Howdy!", List.ofSeq " Want to play?")
-  List.split (fun c -> c = ' ') str |> should equal expected
-
-[<Test>]
-let ``test List_splitAt correctly breaks the list on the specified index``() =
-  let str = List.ofSeq "Howdy! Want to play?"
-  let expected = (List.ofSeq "Howdy!", List.ofSeq " Want to play?")
-  List.splitAt 6 str |> should equal expected
-
-[<Test>]
-let ``test List_span correctly breaks the list on the specified predicate``() =
-  let str = List.ofSeq "Howdy! Want to play?"
-  let expected = (List.ofSeq "Howdy!", List.ofSeq " Want to play?")
-  List.span (fun c -> c <> ' ') str |> should equal expected
-
 let runTest i =
   match run i with
   | Choice1Of2 e -> raise e
@@ -37,8 +19,13 @@ let ``test length should calculate the length of the list without modification``
   actual |> should equal 3
 
 [<Test>]
-let ``test length should calculate the length of the list without modification when enumerated one int at a time``() =
-  let actual = enumeratePureNChunk 1 [1;2;3] length |> runTest 
+let ``test length should calculate the length of the list without modification at once``() =
+  let actual = enumeratePure1Chunk [1;2;3] length |> runTest 
+  actual |> should equal 3
+
+[<Test>]
+let ``test length should calculate the length of the list without modification when chunked``() =
+  let actual = enumeratePureNChunk 2 [1;2;3] length |> runTest 
   actual |> should equal 3
 
 let testPeekAndHead = [|
@@ -55,8 +42,32 @@ let ``test peek should return the value without removing it from the stream``(in
 
 [<Test>]
 [<TestCaseSource("testPeekAndHead")>]
+let ``test peek should return the value without removing it from the stream at once``(input:char list, expected:char option) =
+  let actual = enumeratePure1Chunk input peek |> runTest 
+  actual |> should equal expected
+
+[<Test>]
+[<TestCaseSource("testPeekAndHead")>]
+let ``test peek should return the value without removing it from the stream when chunked``(input:char list, expected:char option) =
+  let actual = enumeratePureNChunk 2 input peek |> runTest 
+  actual |> should equal expected
+
+[<Test>]
+[<TestCaseSource("testPeekAndHead")>]
 let ``test head should return the value and remove it from the stream``(input:char list, expected:char option) =
   let actual = enumerate input head |> runTest
+  actual |> should equal expected
+
+[<Test>]
+[<TestCaseSource("testPeekAndHead")>]
+let ``test head should return the value and remove it from the stream at once``(input:char list, expected:char option) =
+  let actual = enumeratePure1Chunk input head |> runTest
+  actual |> should equal expected
+
+[<Test>]
+[<TestCaseSource("testPeekAndHead")>]
+let ``test head should return the value and remove it from the stream when chunked``(input:char list, expected:char option) =
+  let actual = enumeratePureNChunk 2 input head |> runTest
   actual |> should equal expected
 
 [<Test>]
@@ -66,6 +77,26 @@ let ``test drop should drop the first n items``([<Values(0,1,2,3,4,5,6,7,8,9)>] 
     do! drop x
     return! head }
   let actual = enumerate [0..9] drop2Head |> runTest
+  actual |> should equal (Some x)
+
+[<Ignore>]
+[<Test>]
+[<Sequential>]
+let ``test drop should drop the first n items at once``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
+  let drop2Head = iteratee {
+    do! drop x
+    return! head }
+  let actual = enumeratePure1Chunk [0..9] drop2Head |> runTest
+  actual |> should equal (Some x)
+
+[<Ignore>]
+[<Test>]
+[<Sequential>]
+let ``test drop should drop the first n items when chunked``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
+  let drop2Head = iteratee {
+    do! drop x
+    return! head }
+  let actual = enumeratePureNChunk 5 [0..9] drop2Head |> runTest
   actual |> should equal (Some x)
 
 [<Test>]
@@ -80,8 +111,25 @@ let ``test dropWhile should drop anything before the first space``() =
 [<Sequential>]
 let ``test take should take the first n items``([<Values(0,1,2,3,4,5,6,7,8,9,10)>] x) =
   let input = [0..9]
+  let expected = FSharp.Collections.List.take x input
   let actual = enumerate input (take x) |> runTest
-  actual |> should equal (List.ofSeq <| Seq.take x input)
+  actual |> should equal expected
+
+[<Test>]
+[<Sequential>]
+let ``test take should take the first n items at once``([<Values(0,1,2,3,4,5,6,7,8,9,10)>] x) =
+  let input = [0..9]
+  let expected = FSharp.Collections.List.take x input
+  let actual = enumeratePure1Chunk input (take x) |> runTest
+  actual |> should equal expected
+  
+[<Test>]
+[<Sequential>]
+let ``test take should take the first n items when chunked``([<Values(0,1,2,3,4,5,6,7,8,9,10)>] x) =
+  let input = [0..9]
+  let expected = FSharp.Collections.List.take x input
+  let actual = enumeratePureNChunk 2 input (take x) |> runTest
+  actual |> should equal expected
 
 [<Test>]
 let ``test takeWhile should take anything before the first space``() =

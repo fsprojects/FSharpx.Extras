@@ -600,7 +600,7 @@ module Iteratee =
     let length<'a> : Iteratee<'a list, int> =
       let rec step n = function
         | Empty | Chunk [] -> Continue (step n)
-        | Chunk x          -> Continue (step (n + 1))
+        | Chunk x          -> Continue (step (n + x.Length))
         | EOF         as s -> Yield(n, s)
       in Continue (step 0)
     
@@ -697,7 +697,7 @@ module Iteratee =
     let rec enumerate str i = 
       match str, i with
       | [], Continue k -> Continue k
-      | (x::xs), Continue k -> enumerate xs (k (Chunk [x]))
+      | x::xs, Continue k -> enumerate xs (k (Chunk [x]))
       | _ -> i
     
     // val enumeratePure1Chunk :: 'a list -> Enumerator<'a list,'b>
@@ -731,7 +731,7 @@ module Iteratee =
       let rec step n = function
         | Empty -> Continue (step n)
         | Chunk x when ByteString.isEmpty x -> Continue (step n)
-        | Chunk x -> Continue (step (n + 1))
+        | Chunk x -> Continue (step (n + x.Count))
         | EOF as s -> Yield(n, s)
       Continue (step 0)
     
@@ -769,18 +769,17 @@ module Iteratee =
                else Yield((), Chunk x')
         | s -> Yield((), s)
       Continue step
-    
+
     let take n =
       let rec step before n = function
         | Empty -> Continue <| step before n
-        | Chunk x when ByteString.isEmpty x -> Continue <| step before n
-        | Chunk x ->
-            if ByteString.length x < n then
-              Continue(step (ByteString.append before x) (n - (ByteString.length x)))
-            else let str', extra = ByteString.splitAt n x in Yield(ByteString.append before str', Chunk extra)
+        | Chunk str when ByteString.isEmpty str -> Continue <| step before n
+        | Chunk str ->
+            if ByteString.length str < n then
+              Continue <| step (ByteString.append before str) (n - (ByteString.length str))
+            else let str', extra = ByteString.splitAt n str in Yield(ByteString.append before str', Chunk extra)
         | EOF -> Yield(before, EOF)
-      if n <= 0 then Yield(ByteString.empty, Empty)
-      else Continue (step ByteString.empty n)
+      in if n <= 0 then Yield(ByteString.empty, Empty) else Continue (step ByteString.empty n)
     
     let private takeWithPredicate (pred:'a -> bool) op =
       let rec step before = function
