@@ -117,24 +117,51 @@ type JoinList<'a> with
   static member op_Cons(hd, tl) = JoinList.cons hd tl
   static member op_Append(left, right) = JoinList.append left right
 
+/// An ArraySegment with structural comparison and equality.
+[<CustomEquality; CustomComparison>]
+[<SerializableAttribute>]
+type ArraySegment<'a when 'a : comparison> =
+  struct
+    val Array: 'a[]
+    val Offset: int
+    val Count: int
+    new (array: 'a[]) = { Array = array; Offset = 0; Count = array.Length }
+    new (array: 'a[], offset: int, count: int) = { Array = array; Offset = offset; Count = count }
+    static member Compare (a:ArraySegment<'a>, b:ArraySegment<'a>) =
+      let x,o,l = a.Array, a.Offset, a.Count
+      let x',o',l' = b.Array, b.Offset, b.Count
+      if x = x' && o = o' && l = l' then 0
+      elif x = x' then
+        if o = o' then if l < l' then -1 else 1
+        else if o < o' then -1 else 1 
+      else let foldr res b b' =
+              if res <> 0 then res
+              else if b = b' then 0
+                   elif b < b' then -1
+                   else 1
+           let left = [| for i in o..(o+l-1) -> x.[i] |]
+           let right = [| for i' in o'..(o'+l'-1) -> x'.[i'] |]
+           Array.fold2 foldr 0 left right
+    override x.Equals(other) = 
+      match other with
+      | :? ArraySegment<'a> as other' -> ArraySegment.Compare(x, other') = 0
+      | _ -> false
+    override x.GetHashCode() = hash x
+    interface System.IComparable with
+      member x.CompareTo(other) =
+        match other with
+        | :? ArraySegment<'a> as other' -> ArraySegment.Compare(x, other')
+        | _ -> invalidArg "other" "Cannot compare a value of another type."
+  end
+  
 module ByteString =
   open System.Diagnostics.Contracts
-  
+
   /// An alias constructor to make it easier to create ArraySegment<byte>.
   let BS (x,o,l) = ArraySegment<byte>(x,o,l)
   /// An active pattern for conveniently retrieving the properties of the ArraySegment<byte>.
   let (|BS|) (x:ArraySegment<byte>) =
     x.Array, x.Offset, x.Count
-  
-  /// Structural equality comparison for ArraySegment<byte>.
-  /// Use this instead of = or .Equals(other).
-  let equals (a:ArraySegment<byte>) (b:ArraySegment<byte>) =
-    let x,o,l = a.Array, a.Offset, a.Count
-    let x',o',l' = b.Array, b.Offset, b.Count
-    if not (l = l') then false
-    else (l = 0 && l' = 0) || (x = x' && o = o' && l = l') ||
-         Array.forall2 (=) [| for i in o..(o+l-1) -> x.[i] |] [| for i' in o'..(o'+l'-1) -> x'.[i'] |]
-  let inline (==) a b = equals a b
   
   let empty = ArraySegment<byte>()
   let singleton c = BS(Array.create 1 c, 0, 1)
@@ -193,22 +220,22 @@ module ByteString =
         let hd, tl = head bs, tail bs
         loop tl (f acc hd)
     loop bs seed
-  
+
   let span pred (bs:ArraySegment<byte>) =
-    let x,o,l = bs.Array, bs.Offset, bs.Count
-    let rec loop acc =
-      if l-acc = 0 then (BS(x,o,acc), empty)
-      else
-        if l-(acc+1) = 0 && pred x.[o+acc] then BS(x,o,acc), empty
+    if isEmpty bs then empty, empty
+    else
+      let x,o,l = bs.Array, bs.Offset, bs.Count
+      let rec loop acc =
+        if l = acc + 1 && pred x.[o+acc] then bs, empty
         elif not (pred x.[o+acc]) then BS(x,o,acc), BS(x,o+acc,l-acc)
         else loop (acc+1)
-    loop 0
+      loop 0
   
   let split pred bs = span (not << pred) bs
   
   let splitAt n (bs:ArraySegment<byte>) =
     Contract.Requires(n >= 0)
-    if bs.Count = 0 then empty, empty
+    if isEmpty bs then empty, empty
     elif n = 0 then empty, bs
     elif n >= bs.Count then bs, empty
     else let x,o,l = bs.Array, bs.Offset, bs.Count in BS(x,o,n), BS(x,o+n,l-n)

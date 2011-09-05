@@ -175,8 +175,28 @@ let ``test takeWhile should take anything before the first space``() =
   actual |> should equal (List.ofSeq "Hello")
 
 [<Test>]
+let ``test takeWhile should take anything before the first space at once``() =
+  let actual = enumeratePure1Chunk (List.ofSeq "Hello world") (takeWhile ((<>) ' ')) |> runTest
+  actual |> should equal (List.ofSeq "Hello")
+
+[<Test>]
+let ``test takeWhile should take anything before the first space when chunked``() =
+  let actual = enumeratePureNChunk 2 (List.ofSeq "Hello world") (takeWhile ((<>) ' ')) |> runTest
+  actual |> should equal (List.ofSeq "Hello")
+
+[<Test>]
 let ``test takeUntil should correctly split the input``() =
+  let actual = enumerate (List.ofSeq "abcde") (takeUntil ((=) 'c')) |> runTest
+  actual |> should equal ['a';'b']
+
+[<Test>]
+let ``test takeUntil should correctly split the input at once``() =
   let actual = enumeratePure1Chunk (List.ofSeq "abcde") (takeUntil ((=) 'c')) |> runTest
+  actual |> should equal ['a';'b']
+
+[<Test>]
+let ``test takeUntil should correctly split the input when chunked``() =
+  let actual = enumeratePureNChunk 2 (List.ofSeq "abcde") (takeUntil ((=) 'c')) |> runTest
   actual |> should equal ['a';'b']
 
 let takeUntilTests = [|
@@ -190,9 +210,22 @@ let takeUntilTests = [|
   [| box "line1\r\n"; box ['l';'i';'n';'e';'1']; box ['\r';'\n'] |]
 |]
 
+[<Ignore("heads and readLines do not correctly return a correct result when the input is chunked and a \r\n is encountered in different chunks.")>]
 [<Test>]
 [<TestCaseSource("takeUntilTests")>]
 let ``test takeUntilNewline should split strings on a newline character``(input, expectedRes:char list, expectedRem:char list) =
+  let isNewline c = c = '\r' || c = '\n'
+  let res, rem =
+    match enumerate (List.ofSeq input) (takeUntil isNewline) with
+    | Yield(res, (Chunk rem)) -> res, rem
+    | Continue _ -> [], []
+    | _ -> failwith "Unrecognized test result"
+  res |> should equal expectedRes
+  rem |> should equal expectedRem
+
+[<Test>]
+[<TestCaseSource("takeUntilTests")>]
+let ``test takeUntilNewline should split strings on a newline character at once``(input, expectedRes:char list, expectedRem:char list) =
   let isNewline c = c = '\r' || c = '\n'
   let res, rem =
     match enumeratePure1Chunk (List.ofSeq input) (takeUntil isNewline) with
@@ -203,13 +236,25 @@ let ``test takeUntilNewline should split strings on a newline character``(input,
   rem |> should equal expectedRem
 
 [<Test>]
+let ``test heads should count the number of characters in a set of headers when enumerated one at a time``() =
+  let actual = enumerate (List.ofSeq "abd") (heads (List.ofSeq "abc")) |> runTest
+  actual |> should equal 2
+
+[<Test>]
 let ``test heads should count the number of characters in a set of headers``() =
   let actual = enumeratePure1Chunk (List.ofSeq "abd") (heads (List.ofSeq "abc")) |> runTest
   actual |> should equal 2
 
 [<Test>]
-let ``test heads should count the number of characters in a set of headers when enumerated one at a time``() =
-  let actual = enumerate (List.ofSeq "abd") (heads (List.ofSeq "abc")) |> runTest
+let ``test heads should count the number of characters in a set of headers when chunked``() =
+  let actual = enumeratePureNChunk 2 (List.ofSeq "abd") (heads (List.ofSeq "abc")) |> runTest
+  actual |> should equal 2
+
+[<Test>]
+let ``test heads should count the correct number of newline characters in a set of headers when enumerated char by char``() =
+  let isNewline c = c = '\r' || c = '\n'
+  let readUntilNewline = takeUntil isNewline >>= fun bs -> heads (List.ofSeq "\r\n")
+  let actual = enumerate (List.ofSeq "abc\r\n") readUntilNewline |> runTest
   actual |> should equal 2
 
 [<Test>]
@@ -220,10 +265,10 @@ let ``test heads should count the correct number of newline characters in a set 
   actual |> should equal 2
 
 [<Test>]
-let ``test heads should count the correct number of newline characters in a set of headers when enumerated char by char``() =
+let ``test heads should count the correct number of newline characters in a set of headers when chunked``() =
   let isNewline c = c = '\r' || c = '\n'
   let readUntilNewline = takeUntil isNewline >>= fun bs -> heads (List.ofSeq "\r\n")
-  let actual = enumerate (List.ofSeq "abc\r\n") readUntilNewline |> runTest
+  let actual = enumeratePureNChunk 2 (List.ofSeq "abc\r\n") readUntilNewline |> runTest
   actual |> should equal 2
 
 let readLinesTests = [|

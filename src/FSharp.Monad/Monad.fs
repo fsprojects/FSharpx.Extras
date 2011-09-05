@@ -793,14 +793,14 @@ module Iteratee =
         | EOF -> Yield(before, EOF)
       in if n <= 0 then Yield(ByteString.empty, Empty) else Continue (step ByteString.empty n)
     
-    let private takeWithPredicate (pred:'a -> bool) op =
+    let private takeWithPredicate (pred:'a -> bool) byteStringOp =
       let rec step before = function
-        | Empty -> Continue (step before)
-        | Chunk x when ByteString.isEmpty x -> Continue (step before)
-        | Chunk x ->
-            match op pred x with
-            | str, extra when ByteString.isEmpty extra -> Continue (step (ByteString.append before str))
-            | str, extra -> Yield(ByteString.append before str, Chunk extra)
+        | Empty -> Continue <| step before
+        | Chunk str when ByteString.isEmpty str -> Continue <| step before
+        | Chunk str ->
+            match byteStringOp pred str with
+            | str', extra when ByteString.isEmpty extra -> Continue <| step (ByteString.append before str')
+            | str', extra -> Yield(ByteString.append before str', Chunk extra)
         | EOF -> Yield(before, EOF)
       Continue (step ByteString.empty)
     

@@ -152,7 +152,7 @@ let ``test take should take the first n items``([<Values(0,1,2,3,4,5,6,7,8,9,10)
   let input = create [|0uy..9uy|]
   let expected = ByteString.take x input
   let actual = enumerate input (take x) |> runTest
-  Assert.That(actual == expected)
+  actual |> should equal expected
 
 [<Test>]
 [<Sequential>]
@@ -160,7 +160,7 @@ let ``test take should take the first n items at once``([<Values(0,1,2,3,4,5,6,7
   let input = create [|0uy..9uy|]
   let expected = ByteString.take x input
   let actual = enumeratePure1Chunk input (take x) |> runTest
-  Assert.That(actual == expected)
+  actual |> should equal expected
 
 [<Test>]
 [<Sequential>]
@@ -168,34 +168,45 @@ let ``test take should take the first n items when chunked``([<Values(0,1,2,3,4,
   let input = create [|0uy..9uy|]
   let expected = ByteString.take x input
   let actual = enumeratePureNChunk 2 input (take x) |> runTest
-  Assert.That(actual == expected)
+  actual |> should equal expected
 
 [<Test>]
 let ``test takeWhile should take anything before the first space``() =
   let input = "Hello world"B
   let expected = BS(input, 0, 5)
-  let actual = enumeratePure1Chunk (create input) (takeWhile ((<>) ' 'B)) |> runTest
-  Assert.That(actual == expected)
+  let actual = enumerate (create input) (takeWhile ((<>) ' 'B)) |> runTest
+  actual |> should equal expected
 
-[<Ignore("The enumerator appears to be caching earlier values and re-applying them, rendering an invalid result.")>]
+[<Test>]
+let ``test takeWhile should take anything before the first space at once``() =
+  let input = "Hello world"B
+  let expected = BS(input, 0, 5)
+  let actual = enumeratePure1Chunk (create input) (takeWhile ((<>) ' 'B)) |> runTest
+  actual |> should equal expected
+
 [<Test>]
 let ``test takeWhile should take anything before the first space when enumerating in chunks``() =
   let input = "Hello world"B
-  let actual = enumeratePureNChunk 5 (create input) (takeWhile ((<>) ' 'B)) |> runTest
-  Assert.That(actual == (BS(input, 0, 5)))
+  let actual = enumeratePureNChunk 2 (create input) (takeWhile ((<>) ' 'B)) |> runTest
+  actual |> should equal (BS(input, 0, 5))
 
 [<Test>]
 let ``test takeUntil should correctly split the input``() =
   let input = "abcde"B
-  let actual = enumeratePure1Chunk (create input) (takeUntil ((=) 'c'B)) |> runTest
-  Assert.That(actual == (BS(input, 0, 2)))
+  let actual = enumerate (create input) (takeUntil ((=) 'c'B)) |> runTest
+  actual |> should equal (BS(input, 0, 2))
 
-[<Ignore("The enumerator appears to be caching earlier values and re-applying them, rendering an invalid result.")>]
+[<Test>]
+let ``test takeUntil should correctly split the input at once``() =
+  let input = "abcde"B
+  let actual = enumeratePure1Chunk (create input) (takeUntil ((=) 'c'B)) |> runTest
+  actual |> should equal (BS(input, 0, 2))
+
 [<Test>]
 let ``test takeUntil should correctly split the input when enumerating in chunks``() =
   let input = "abcde"B
   let actual = enumeratePureNChunk 2 (create input) (takeUntil ((=) 'c'B)) |> runTest
-  Assert.That(actual == (BS(input, 0, 2)))
+  actual |> should equal (BS(input, 0, 2))
 
 let takeUntilTests = [|
   [| box ""B; box empty; box empty |]
@@ -208,6 +219,19 @@ let takeUntilTests = [|
   [| box "line1\r\n"B; box (create "line1"B); box (create "\r\n"B) |]
 |]
 
+[<Ignore("heads and readLines do not correctly return a correct result when the input is chunked and a \r\n is encountered in different chunks.")>]
+[<Test>]
+[<TestCaseSource("takeUntilTests")>]
+let ``test takeUntilNewline should split strings on a newline character at once``(input, expectedRes:ArraySegment<byte>, expectedRem:ArraySegment<byte>) =
+  let isNewline c = c = '\r'B || c = '\n'B
+  let res, rem =
+    match enumerate (create input) (takeUntil isNewline) with
+    | Yield(res, (Chunk rem)) -> res, rem
+    | Continue _ -> empty, empty
+    | _ -> failwith "Unrecognized test result"
+  res |> should equal expectedRes
+  rem |> should equal expectedRem
+
 [<Test>]
 [<TestCaseSource("takeUntilTests")>]
 let ``test takeUntilNewline should split strings on a newline character``(input, expectedRes:ArraySegment<byte>, expectedRem:ArraySegment<byte>) =
@@ -217,17 +241,17 @@ let ``test takeUntilNewline should split strings on a newline character``(input,
     | Yield(res, (Chunk rem)) -> res, rem
     | Continue _ -> empty, empty
     | _ -> failwith "Unrecognized test result"
-  Assert.That(res == expectedRes)
-  Assert.That(rem == expectedRem)
-
-[<Test>]
-let ``test heads should count the number of characters in a set of headers``() =
-  let actual = enumeratePure1Chunk (ByteString.ofString "abd") (heads (ByteString.ofString "abc")) |> runTest
-  actual |> should equal 2
+  res |> should equal expectedRes
+  rem |> should equal expectedRem
 
 [<Test>]
 let ``test heads should count the number of characters in a set of headers when enumerated one byte at a time``() =
   let actual = enumerate (ByteString.ofString "abd") (heads (ByteString.ofString "abc")) |> runTest
+  actual |> should equal 2
+
+[<Test>]
+let ``test heads should count the number of characters in a set of headers``() =
+  let actual = enumeratePure1Chunk (ByteString.ofString "abd") (heads (ByteString.ofString "abc")) |> runTest
   actual |> should equal 2
 
 [<Test>]
@@ -240,6 +264,20 @@ let ``test heads should count the correct number of newline characters in a set 
   let isNewline c = c = '\r'B || c = '\n'B
   let readUntilNewline = takeUntil isNewline >>= fun bs -> heads (create "\r\n"B)
   let actual = enumerate (ByteString.ofString "abc\r\n") readUntilNewline |> runTest
+  actual |> should equal 2
+
+[<Test>]
+let ``test heads should count the correct number of newline characters in a set of headers``() =
+  let isNewline c = c = '\r'B || c = '\n'B
+  let readUntilNewline = takeUntil isNewline >>= fun bs -> heads (create "\r\n"B)
+  let actual = enumeratePure1Chunk (ByteString.ofString "abc\r\n") readUntilNewline |> runTest
+  actual |> should equal 2
+
+[<Test>]
+let ``test heads should count the correct number of newline characters in a set of headers when chunked``() =
+  let isNewline c = c = '\r'B || c = '\n'B
+  let readUntilNewline = takeUntil isNewline >>= fun bs -> heads (create "\r\n"B)
+  let actual = enumeratePureNChunk 2 (ByteString.ofString "abc\r\n") readUntilNewline |> runTest
   actual |> should equal 2
 
 let readLinesTests = [|
@@ -274,7 +312,6 @@ let ``test readLines should return the lines from the input when enumerated one 
   let actual = enumerate (create input) readLines |> runTest
   actual |> should equal expected
 
-[<Ignore("The enumerator appears to be caching earlier values and re-applying them, rendering an invalid result.")>]
 [<Test>]
 [<TestCaseSource("readLinesTests")>]
 let ``test readLines should return the lines from the input when chunked``(input, expected:Choice<String list, String list>) =
