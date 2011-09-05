@@ -60,7 +60,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FSharp.Core.CS\FSharp.Core.CS.fsproj">
+    <ProjectReference Include="..\..\src\FSharp.Core.CS\FSharp.Core.CS.fsproj">
       <Project>{CDFDD597-0EF6-4682-995A-9C73BE122419}</Project>
       <Name>FSharp.Core.CS</Name>
     </ProjectReference>

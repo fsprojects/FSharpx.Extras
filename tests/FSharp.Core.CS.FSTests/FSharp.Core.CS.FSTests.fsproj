@@ -46,14 +46,14 @@
     <Compile Include="Tests.fs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\FSharp.Core.CS\FSharp.Core.CS.fsproj">
+      <Name>FSharp.Core.CS</Name>
+      <Project>{cdfdd597-0ef6-4682-995a-9c73be122419}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\FSharp.Core.CS.Tests\FSharp.Core.CS.Tests.csproj">
       <Name>FSharp.Core.CS.Tests</Name>
       <Project>{4354a199-6acf-4db5-a8fa-bad638d1d0e3}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\FSharp.Core.CS\FSharp.Core.CS.fsproj">
-      <Name>FSharp.Core.CS</Name>
-      <Project>{cdfdd597-0ef6-4682-995a-9c73be122419}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
