@@ -622,12 +622,15 @@ module Iteratee =
         Continue step
       in inner
     
-    let rec drop n =
-      let rec step = function
-        | Empty | Chunk [] -> Continue step
-        | Chunk x          -> drop (n - 1)
-        | EOF         as s -> Yield((), s)
-      in if n <= 0 then Yield((), Empty) else Continue step
+    let drop n =
+      let rec step n = function
+        | Empty | Chunk [] -> Continue <| step n
+        | Chunk str ->
+            if str.Length < n then
+              Continue <| step (n - str.Length)
+            else let extra = List.skip n str in Yield((), Chunk extra)
+        | EOF -> Yield((), EOF)
+      in if n <= 0 then Yield((), Empty) else Continue (step n)
     
     let dropWhile pred =
       let rec step = function
@@ -750,14 +753,17 @@ module Iteratee =
         | Chunk x -> Yield(Some(ByteString.head x), Chunk(ByteString.tail x))
         | s -> Yield(None, s)
       Continue step
-    
-    let rec drop n =
+
+    let drop n =
       let rec step n = function
-        | Empty -> Continue (step n)
-        | Chunk x when ByteString.isEmpty x -> Continue (step n)
-        | Chunk x -> drop (n - 1)
-        | s -> Yield((), s)
-      if n <= 0 then Yield((), Empty) else Continue (step n)
+        | Empty -> Continue <| step n
+        | Chunk str when ByteString.isEmpty str -> Continue <| step n
+        | Chunk str ->
+            if ByteString.length str < n then
+              Continue <| step (n - (ByteString.length str))
+            else let extra = ByteString.skip n str in Yield((), Chunk extra)
+        | EOF -> Yield((), EOF)
+      in if n <= 0 then Yield((), Empty) else Continue (step n)
     
     let dropWhile pred =
       let rec step = function

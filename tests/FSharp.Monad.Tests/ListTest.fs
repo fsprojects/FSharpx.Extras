@@ -79,7 +79,6 @@ let ``test drop should drop the first n items``([<Values(0,1,2,3,4,5,6,7,8,9)>] 
   let actual = enumerate [0..9] drop2Head |> runTest
   actual |> should equal (Some x)
 
-[<Ignore>]
 [<Test>]
 [<Sequential>]
 let ``test drop should drop the first n items at once``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
@@ -89,7 +88,6 @@ let ``test drop should drop the first n items at once``([<Values(0,1,2,3,4,5,6,7
   let actual = enumeratePure1Chunk [0..9] drop2Head |> runTest
   actual |> should equal (Some x)
 
-[<Ignore>]
 [<Test>]
 [<Sequential>]
 let ``test drop should drop the first n items when chunked``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
