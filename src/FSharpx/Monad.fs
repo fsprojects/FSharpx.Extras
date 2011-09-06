@@ -106,6 +106,7 @@ module State =
   let eval m s = m s |> fst
   let exec m s = m s |> snd
   let empty = fun s -> ((), s)
+  let bind k m = fun s -> let (a, s') = m s in (k a) s'
   
   /// The state monad.
   /// The algorithm is adjusted from my original work off of Brian Beckman's http://channel9.msdn.com/shows/Going+Deep/Brian-Beckman-The-Zen-of-Expressing-State-The-State-Monad/.
@@ -114,7 +115,7 @@ module State =
     member this.Return(a) : State<'a,'s> = fun s -> (a,s)
     member this.ReturnFrom(m:State<'a,'s>) = m
     member this.Bind(m:State<'a,'s>, k:'a -> State<'b,'s>) : State<'b,'s> =
-      fun s -> let (a, s') = m s in (k a) s'
+      bind k m
     member this.Zero() = this.Return ()
     member this.Combine(r1, r2) = this.Bind(r1, fun () -> r2)
     member this.TryWith(m:State<'a,'s>, h:exn -> State<'a,'s>) : State<'a,'s> =
@@ -149,6 +150,8 @@ module State =
 module Reader =
 
   type Reader<'r,'a> = 'r -> 'a
+
+  let bind k m = fun r -> (k (m r)) r
   
   /// The reader monad.
   /// This monad comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/07/much-ado-about-monads-reader-edition.aspx.
@@ -156,7 +159,7 @@ module Reader =
     member this.Return(a) : Reader<'r,'a> = fun _ -> a
     member this.ReturnFrom(a:Reader<'r,'a>) = a
     member this.Bind(m:Reader<'r,'a>, k:'a -> Reader<'r,'b>) : Reader<'r,'b> =
-      fun r -> (k (m r)) r
+      bind k m
     member this.Zero() = this.Return ()
     member this.Combine(r1, r2) = this.Bind(r1, fun () -> r2)
     member this.TryWith(m:Reader<'r,'a>, h:exn -> Reader<'r,'a>) : Reader<'r,'a> =
@@ -250,6 +253,12 @@ module Writer =
   open Monoid
     
   type Writer<'w, 'a> = unit -> 'a * 'w
+
+  let bind k writer =
+      fun () ->
+        let (a, w) = writer()
+        let (a', w') = (k a)()
+        (a', mappend w w')
   
   /// The writer monad.
   /// This monad comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.
@@ -257,10 +266,7 @@ module Writer =
     member this.Return(a) : Writer<'w,'a> = fun () -> (a, mempty())
     member this.ReturnFrom(w:Writer<'w,'a>) = w
     member this.Bind(writer:Writer<'w,'a>, k:'a -> Writer<'w,'b>) : Writer<'w,'b> =
-      fun () ->
-        let (a, w) = writer()
-        let (a', w') = (k a)()
-        (a', mappend w w')
+      bind k writer
     member this.Zero() = this.Return ()
     member this.TryWith(writer:Writer<'w,'a>, handler:exn -> Writer<'w,'a>) : Writer<'w,'a> =
       fun () -> try writer()
@@ -379,12 +385,14 @@ module Continuation =
   let throw exn : Cont<'a,'r> = fun cont econt -> econt exn
   let callCC (f: ('a -> Cont<'b,'r>) -> Cont<'a,'r>) : Cont<'a,'r> =
     fun cont econt -> runCont (f (fun a -> (fun _ _ -> cont a))) cont econt
-   
+  let bind f comp1 = 
+    fun cont econt ->
+      runCont comp1 (fun a -> protect f a (fun comp2 -> runCont comp2 cont econt) econt) econt   
+
   type ContinuationBuilder() =
     member this.Return(a) : Cont<_,_> = fun cont econt -> cont a
     member this.ReturnFrom(comp:Cont<_,_>) = comp
-    member this.Bind(comp1, f) = fun cont econt ->
-      runCont comp1 (fun a -> protect f a (fun comp2 -> runCont comp2 cont econt) econt) econt
+    member this.Bind(comp1, f) = bind f comp1
     member this.Catch(comp:Cont<_,_>) : Cont<Choice<_, exn>, _> = fun cont econt ->
       runCont comp (fun v -> cont (Choice1Of2 v)) (fun err -> cont (Choice2Of2 err))
     member this.Zero() =
