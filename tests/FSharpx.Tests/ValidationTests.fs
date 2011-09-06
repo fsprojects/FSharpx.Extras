@@ -1,4 +1,4 @@
-﻿module FSharpx.Tests.Validation
+﻿module FSharpx.Tests.ValidationTests
 
 open System
 open FSharpx
@@ -51,7 +51,7 @@ let validateOrder (o: Order) =
 let validateOrders c = seqValidator validateOrder c
     
 [<Test>]
-let Validation() = 
+let ValidateCustomer() = 
     let customer = 
         Customer(
             Surname = "foo",
@@ -68,5 +68,16 @@ let Validation() =
         <* validateAddress customer.Address
         <* validateOrders customer.Orders
     match result with
-    | Choice1Of2 c -> printfn "Valid customer: %A" c
+    | Choice1Of2 c -> failwith "Valid customer: %A" c
     | Choice2Of2 errors -> printfn "Invalid customer. Errors:\n%A" errors
+
+[<Test>]
+let ``using ap``() =
+  let customer = Customer()
+  let result = 
+    puree (fun _ _ -> customer)
+    |> Validation.ap (nonNull "Surname can't be null" customer.Surname)
+    |> Validation.ap (notEqual "foo" "Surname can't be foo" customer.Surname)
+  match result with
+  | Choice1Of2 c -> failwith "Valid customer: %A" c
+  | Choice2Of2 errors -> printfn "Invalid customer. Errors:\n%A" errors
