@@ -6,6 +6,7 @@ open System.Collections.Generic
 open System.Diagnostics.Contracts
 
 module List =
+  let inline cons hd tl = hd::tl
 
   let span pred l =
     let rec loop l cont =

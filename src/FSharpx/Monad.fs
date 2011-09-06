@@ -353,11 +353,9 @@ module Validation =
   let inline ( *>) a b = lift2 (fun _ z -> z) a b
   let inline ( <*) a b = lift2 (fun z _ -> z) a b
 
-  let inline flip f a b = f b a
-  let inline cons a b = a::b
   let seqValidator f = 
       let zero = puree []
-      Seq.map f >> Seq.fold (lift2 (flip cons)) zero
+      Seq.map f >> Seq.fold (lift2 (flip List.cons)) zero
 
 
 module Continuation =

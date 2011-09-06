@@ -35,6 +35,7 @@
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
     <None Include="packages.config" />
+    <Compile Include="Prelude.fs" />
     <Compile Include="Collections.fs" />
     <Compile Include="Monad.fs" />
     <Compile Include="CSharpCompat.fs" />
