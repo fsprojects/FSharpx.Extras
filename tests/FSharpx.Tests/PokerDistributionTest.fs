@@ -1,6 +1,6 @@
 ﻿module FSharpx.Tests.PokerDistributionTest
 
-open FSharp.Monad.Distribution
+open FSharpx.Distribution
 open NUnit.Framework
 open FsUnit
 

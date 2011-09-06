@@ -1,10 +1,10 @@
 ﻿module FSharpx.Tests.ListTest
 
 open System
-open FSharp.Collections
-open FSharp.Monad.Iteratee
-open FSharp.Monad.Iteratee.List
-open FSharp.Monad.Iteratee.Operators
+open FSharpx
+open FSharpx.Iteratee
+open FSharpx.Iteratee.List
+open FSharpx.Iteratee.Operators
 open NUnit.Framework
 open FsUnit
 
@@ -149,7 +149,7 @@ let ``test dropUntil should drop anything before the first space when chunked``(
 [<Sequential>]
 let ``test take should take the first n items``([<Values(0,1,2,3,4,5,6,7,8,9,10)>] x) =
   let input = [0..9]
-  let expected = FSharp.Collections.List.take x input
+  let expected = FSharpx.List.take x input
   let actual = enumerate input (take x) |> runTest
   actual |> should equal expected
 
@@ -157,7 +157,7 @@ let ``test take should take the first n items``([<Values(0,1,2,3,4,5,6,7,8,9,10)
 [<Sequential>]
 let ``test take should take the first n items at once``([<Values(0,1,2,3,4,5,6,7,8,9,10)>] x) =
   let input = [0..9]
-  let expected = FSharp.Collections.List.take x input
+  let expected = FSharpx.List.take x input
   let actual = enumeratePure1Chunk input (take x) |> runTest
   actual |> should equal expected
   
@@ -165,7 +165,7 @@ let ``test take should take the first n items at once``([<Values(0,1,2,3,4,5,6,7
 [<Sequential>]
 let ``test take should take the first n items when chunked``([<Values(0,1,2,3,4,5,6,7,8,9,10)>] x) =
   let input = [0..9]
-  let expected = FSharp.Collections.List.take x input
+  let expected = FSharpx.List.take x input
   let actual = enumeratePureNChunk 2 input (take x) |> runTest
   actual |> should equal expected
 

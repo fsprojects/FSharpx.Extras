@@ -2,7 +2,7 @@
 
 open System
 open System.Threading
-open FSharp.Monad.Reader
+open FSharpx.Reader
 open NUnit.Framework
 open FsUnit
 

@@ -1,8 +1,8 @@
 ﻿module FSharp.Collections.Tests.JoinListTest
 
 open System
-open FSharp.Collections
-open FSharp.Collections.JoinList
+open FSharpx
+open FSharpx.JoinList
 open NUnit.Framework
 open FsUnit
 

@@ -1,10 +1,11 @@
 ﻿module FSharpx.Tests.Validation
 
 open System
+open FSharpx
 open FSharpx.CSharpTests
+open FSharpx.Validation
 open NUnit.Framework
 open Microsoft.FSharp.Core
-open Microsoft.FSharp.Core.Validation
 
 let validator pred error value =
     if pred value
@@ -30,7 +31,7 @@ let validateAddress (a: Address) =
     <* nonNull "Post code can't be null" a.Postcode
     <* validateAddressLines a
 
-open FSharp.Nullable
+open FSharpx.Nullable
 
 let greaterThan o = validator ((<?) o)
 
@@ -43,7 +44,7 @@ let validation = ValidationBuilder()
 let validateOrder (o: Order) =
     let nameNotNull = nonNull "Product name can't be null" o.ProductName
     let positiveCost n = greaterThan (0m).n (sprintf "Cost for product '%s' can't be negative" n) o.Cost
-    nameNotNull >>= positiveCost |> map (fun _ -> o)
+    nameNotNull >>= positiveCost |> Validation.map (fun _ -> o)
 
 (*    validation {
         let! name = nonNull "Product name can't be null" o.ProductName

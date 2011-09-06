@@ -1,6 +1,6 @@
 ﻿module FSharp.Collections.Tests.ListExtensionsTest
 
-open FSharp.Collections
+open FSharpx
 open NUnit.Framework
 open FsUnit
 

@@ -1,6 +1,6 @@
 ﻿module FSharpx.Tests.WriterTest
 
-open FSharp.Monad.Writer
+open FSharpx.Writer
 open NUnit.Framework
 open FsUnit
 

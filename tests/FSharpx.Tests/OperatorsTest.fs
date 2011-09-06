@@ -1,6 +1,6 @@
 ﻿module FSharp.Monad.Operators.Tests.OperatorsTest
 
-open FSharp.Monad.Operators
+open FSharpx.Operators
 open NUnit.Framework
 open FsUnit
 

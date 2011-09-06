@@ -1,6 +1,8 @@
-﻿module FSharp.Monad.Core.Tests.AsyncOperatorsTest
+﻿module FSharpx.Tests.AsyncOperatorsTest
 
-open FSharp.Monad.Async.Operators
+open FSharpx
+open FSharpx.Async
+open FSharpx.Async.Operators
 open NUnit.Framework
 open FsUnit
 

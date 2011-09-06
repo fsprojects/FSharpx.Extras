@@ -1,6 +1,6 @@
 ﻿module FSharpx.Tests.UndoTest
 
-open FSharp.Monad.Undo
+open FSharpx.Undo
 open NUnit.Framework
 open FsUnit
 

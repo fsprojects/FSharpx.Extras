@@ -1,6 +1,6 @@
 ﻿module FSharpx.Tests.MaybeTest
 
-open FSharp.Monad.Maybe
+open FSharpx.Maybe
 open NUnit.Framework
 open FsUnit
 

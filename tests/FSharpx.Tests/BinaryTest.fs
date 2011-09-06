@@ -1,11 +1,11 @@
 ﻿module FSharpx.Tests.BinaryTest
 
 open System
-open FSharp.Collections
-open FSharp.Collections.ByteString
-open FSharp.Monad.Iteratee
-open FSharp.Monad.Iteratee.Binary
-open FSharp.Monad.Iteratee.Operators
+open FSharpx
+open FSharpx.ByteString
+open FSharpx.Iteratee
+open FSharpx.Iteratee.Binary
+open FSharpx.Iteratee.Operators
 open NUnit.Framework
 open FsUnit
 

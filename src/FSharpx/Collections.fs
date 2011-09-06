@@ -1,4 +1,4 @@
-namespace FSharp.Collections
+namespace FSharpx
 
 open System
 open System.Collections

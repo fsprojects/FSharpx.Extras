@@ -1,4 +1,4 @@
-module FSharp.Nullable
+namespace FSharpx
 
 open System
 open Microsoft.FSharp.Math
@@ -13,10 +13,10 @@ module Option =
         | None -> Nullable()
         | Some x -> Nullable(x)
 
-let (|Null|Value|) (x: _ Nullable) =
-    if x.HasValue then Value x.Value else Null
-
 module Nullable =
+    let (|Null|Value|) (x: _ Nullable) =
+        if x.HasValue then Value x.Value else Null
+
     let create x = Nullable x
     let getOrDefault n v = match n with Value x -> x | _ -> v
     let getOrElse (n: 'a Nullable) (v: 'a Lazy) = match n with Value x -> x | _ -> v.Force()
@@ -63,54 +63,54 @@ module Nullable =
         | Null -> []
         | Value v -> [v]
     
-let liftNullable op (a: _ Nullable) (b: _ Nullable) =
-    if a.HasValue && b.HasValue
-        then Nullable(op a.Value b.Value)
-        else Nullable()
+    let liftNullable op (a: _ Nullable) (b: _ Nullable) =
+        if a.HasValue && b.HasValue
+            then Nullable(op a.Value b.Value)
+            else Nullable()
 
-let mapBoolOp op a b =
-    match a,b with
-    | Value x, Value y -> op x y
-    | _ -> false
-
-let inline (+?) a b = (liftNullable (+)) a b
-let inline (-?) a b = (liftNullable (-)) a b
-let inline ( *?) a b = (liftNullable ( *)) a b
-let inline (/?) a b = (liftNullable (/)) a b
-let inline (>?) a b = (mapBoolOp (>)) a b
-let inline (>=?) a b = a >? b || a = b
-let inline (<?) a b = (mapBoolOp (<)) a b
-let inline (<=?) a b = a <? b || a = b
-let inline notn (a: bool Nullable) = 
-    if a.HasValue 
-        then Nullable(not a.Value) 
-        else Nullable()
-let inline (&?) a b = 
-    let rec and' a b = 
+    let mapBoolOp op a b =
         match a,b with
-        | Null, Value y when not y -> Nullable(false)
-        | Null, Value y when y -> Nullable()
-        | Null, Null -> Nullable()
-        | Value x, Value y -> Nullable(x && y)
-        | _ -> and' b a
-    and' a b
+        | Value x, Value y -> op x y
+        | _ -> false
 
-let inline (|?) a b = notn ((notn a) &? (notn b))
+    let inline (+?) a b = (liftNullable (+)) a b
+    let inline (-?) a b = (liftNullable (-)) a b
+    let inline ( *?) a b = (liftNullable ( *)) a b
+    let inline (/?) a b = (liftNullable (/)) a b
+    let inline (>?) a b = (mapBoolOp (>)) a b
+    let inline (>=?) a b = a >? b || a = b
+    let inline (<?) a b = (mapBoolOp (<)) a b
+    let inline (<=?) a b = a <? b || a = b
+    let inline notn (a: bool Nullable) = 
+        if a.HasValue 
+            then Nullable(not a.Value) 
+            else Nullable()
+    let inline (&?) a b = 
+        let rec and' a b = 
+            match a,b with
+            | Null, Value y when not y -> Nullable(false)
+            | Null, Value y when y -> Nullable()
+            | Null, Null -> Nullable()
+            | Value x, Value y -> Nullable(x && y)
+            | _ -> and' b a
+        and' a b
 
-type Int32 with
-    member x.n = Nullable x
+    let inline (|?) a b = notn ((notn a) &? (notn b))
 
-type Double with
-    member x.n = Nullable x
+    type Int32 with
+        member x.n = Nullable x
 
-type Single with
-    member x.n = Nullable x
+    type Double with
+        member x.n = Nullable x
 
-type Byte with
-    member x.n = Nullable x
+    type Single with
+        member x.n = Nullable x
 
-type Int64 with
-    member x.n = Nullable x
+    type Byte with
+        member x.n = Nullable x
 
-type Decimal with
-    member x.n = Nullable x
+    type Int64 with
+        member x.n = Nullable x
+
+    type Decimal with
+        member x.n = Nullable x

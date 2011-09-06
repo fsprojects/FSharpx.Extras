@@ -1,4 +1,4 @@
-﻿namespace Microsoft.FSharp.Core
+﻿namespace FSharpx
 
 open System
 open System.Runtime.CompilerServices
