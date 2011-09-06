@@ -256,28 +256,22 @@ type FSharpChoice =
 
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>) =
-        match o with
-        | Choice1Of2 x -> f.Invoke x
-        | Choice2Of2 x -> Choice2Of2 x // error
+      Either.bind f.Invoke o
 
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>, mapper: Func<_,_,_>) =
-        let r = FSharpChoice.SelectMany(o, f)
-        match o,r with
-        | Choice1Of2 x, Choice1Of2 y -> mapper.Invoke(x,y) |> Choice1Of2
-        | Choice2Of2 x, _ -> Choice2Of2 x
-        | _, Choice2Of2 x -> Choice2Of2 x
+      let mapper = Either.map2 (fun a b -> mapper.Invoke(a,b))
+      let v = Either.bind f.Invoke o
+      mapper o v
 
     [<Extension>]
     static member Select (o, f: Func<_,_>) = map f.Invoke o
 
     [<Extension>]
     static member Ap (f: Choice<Func<_,_>, _>, x) =
-        match f,x with
-        | Choice1Of2 f, Choice1Of2 x -> Choice1Of2 (f.Invoke x)
-        | Choice2Of2 e, _            -> Choice2Of2 e
-        | _           , Choice2Of2 e -> Choice2Of2 e
-
+      f
+      |> Either.map (fun a -> a.Invoke)
+      |> Either.ap x
 
     // validation
 
