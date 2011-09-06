@@ -1,4 +1,4 @@
-module FSharp.Monad.AssemblyInfo
+module FSharpx.AssemblyInfo
 #nowarn "49" // uppercase argument names
 #nowarn "67" // this type test or downcast will always hold
 #nowarn "66" // tis upast is unnecessary - the types are identical
@@ -18,15 +18,15 @@ exception ReturnNoneException183c26a427ae489c8fd92ec21a0c9a59
 
 [<assembly: Guid ("1e95a279-c2a9-498b-bc72-6e7a0d6854ce")>]
 
-[<assembly: AssemblyTitle ("FSharp.Monad")>]
+[<assembly: AssemblyTitle ("FSharpx")>]
 
 [<assembly: AssemblyDescription ("A monad library for F# projects.")>]
 
-[<assembly: AssemblyProduct ("FSharp.Monad")>]
+[<assembly: AssemblyProduct ("FSharpx")>]
 
-[<assembly: AssemblyVersion ("1.1.6.110905")>]
+[<assembly: AssemblyVersion ("1.2.0.110906")>]
 
-[<assembly: AssemblyFileVersion ("1.1.6.110905")>]
+[<assembly: AssemblyFileVersion ("1.2.0.110906")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 

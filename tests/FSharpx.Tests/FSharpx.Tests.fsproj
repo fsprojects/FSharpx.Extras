@@ -7,10 +7,10 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{26d9d3ee-e882-43e6-a79e-5d1d89e92c4f}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>FSharp.Monad.Tests</RootNamespace>
-    <AssemblyName>FSharp.Monad.Tests</AssemblyName>
+    <RootNamespace>FSharpx.Tests</RootNamespace>
+    <AssemblyName>FSharpx.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <Name>FSharp.Monad.Tests</Name>
+    <Name>FSharpx.Tests</Name>
     <FscToolPath>..\..\lib\FSharp\</FscToolPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -92,12 +92,12 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\FSharp.Monad\FSharp.Monad.fsproj">
-      <Name>FSharp.Monad</Name>
+    <ProjectReference Include="..\..\src\FSharpx\FSharpx.fsproj">
+      <Name>FSharpx</Name>
       <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\FSharp.Core.CS.Tests\FSharp.Core.CS.Tests.csproj">
+    <ProjectReference Include="..\FSharpx.CSharpTests\FSharpx.CSharpTests.csproj">
       <Name>FSharp.Core.CS.Tests</Name>
       <Project>{4354a199-6acf-4db5-a8fa-bad638d1d0e3}</Project>
       <Private>True</Private>

@@ -6,7 +6,7 @@ open System.IO
 
 // properties
 let currentDate = System.DateTime.UtcNow
-let projectName = "FSharp.Monad"
+let projectName = "FSharpx"
 let version = "1.2.0." + currentDate.ToString("yMMdd")
 let coreSummary = "Library containing standard operators for building computation expressions (monads)."
 let projectSummary = "A monad library for F# projects."
@@ -62,7 +62,7 @@ Target "BuildApp" (fun _ ->
             AssemblyTitle = projectName
             AssemblyDescription = projectSummary
             Guid = "1e95a279-c2a9-498b-bc72-6e7a0d6854ce"
-            OutputFileName = "./src/FSharp.Monad/AssemblyInfo.fs" })
+            OutputFileName = "./src/FSharpx/AssemblyInfo.fs" })
 
     MSBuildRelease buildDir "Build" appReferences
         |> Log "AppBuild-Output: "
@@ -107,9 +107,9 @@ Target "BuildNuGet" (fun _ ->
     CleanDirs [nugetDir; nugetLibDir; nugetDocsDir]
 
     XCopy (docsDir |> FullName) nugetDocsDir
-    [ buildDir + "FSharp.Monad.dll"
-      buildDir + "FSharp.Monad.pdb"
-      buildDir + "FSharp.Monad.xml" ]
+    [ buildDir + "FSharpx.dll"
+      buildDir + "FSharpx.pdb"
+      buildDir + "FSharpx.xml" ]
         |> CopyTo nugetLibDir
 
     NuGet (fun p -> 
@@ -122,9 +122,9 @@ Target "BuildNuGet" (fun _ ->
             AccessKey = nugetKey
             ToolPath = nugetPath
             Publish = nugetKey <> "" })
-        "fsharp.monad.nuspec"
+        "fsharpx.nuspec"
 
-    [nugetDir + sprintf "FSharp.Monad.%s.nupkg" version]
+    [nugetDir + sprintf "FSharpx.%s.nupkg" version]
         |> CopyTo deployDir
 )
 

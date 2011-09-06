@@ -8,8 +8,8 @@
     <ProjectGuid>{4354A199-6ACF-4DB5-A8FA-BAD638D1D0E3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>FSharp.Core.CS.Tests</RootNamespace>
-    <AssemblyName>FSharp.Core.CS.Tests</AssemblyName>
+    <RootNamespace>FSharpx.CSharpTests</RootNamespace>
+    <AssemblyName>FSharpx.CSharpTests</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -60,9 +60,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\FSharp.Monad\FSharp.Monad.fsproj">
+    <ProjectReference Include="..\..\src\FSharpx\FSharpx.fsproj">
       <Project>{1E95A279-C2A9-498B-BC72-6E7A0D6854CE}</Project>
-      <Name>FSharp.Monad</Name>
+      <Name>FSharpx</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
