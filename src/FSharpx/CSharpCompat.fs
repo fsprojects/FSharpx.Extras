@@ -1,6 +1,7 @@
 ﻿namespace FSharpx
 
 open System
+open System.Collections.Generic
 open System.Runtime.CompilerServices
 
 /// <summary>
@@ -325,11 +326,6 @@ type FSharpChoice =
     static member New2Of3<'a,'b,'c> (a: 'b) : Choice<'a,'b,'c> = Choice2Of3 a
     static member New3Of3<'a,'b,'c> (a: 'c) : Choice<'a,'b,'c> = Choice3Of3 a
 
-namespace Microsoft.FSharp.Collections
-
-open System
-open System.Runtime.CompilerServices
-
 [<Extension>]
 type FSharpList =
     [<Extension>]
@@ -366,11 +362,6 @@ type FSharpMap =
 
     [<Extension>]
     static member ToFSharpMap values = Map.ofSeq values
-
-namespace System.Collections.Generic
-
-open System
-open System.Runtime.CompilerServices
 
 [<Extension>]
 type DictionaryExtensions =
