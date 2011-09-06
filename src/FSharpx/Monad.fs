@@ -349,13 +349,18 @@ module Either =
 
 module Validation =
   open Either
+  open Monoid
 
-  let ap x f = 
+  let apa append x f = 
     match f,x with
     | Choice1Of2 f, Choice1Of2 x   -> Choice1Of2 (f x)
     | Choice2Of2 e, Choice1Of2 x   -> Choice2Of2 e
     | Choice1Of2 f, Choice2Of2 e   -> Choice2Of2 e
-    | Choice2Of2 e1, Choice2Of2 e2 -> Choice2Of2 (e1 @ e2) // TODO generalize to monoids
+    | Choice2Of2 e1, Choice2Of2 e2 -> Choice2Of2 (append e1 e2)
+
+  let inline apm (m: _ Monoid) = apa (fun a b -> m.mappend(a,b))
+
+  let inline ap x = apm (ListMonoid<string>()) x
 
   let inline (<*>) f x = ap x f
   let inline map2 f a b = f <!> a <*> b

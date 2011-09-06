@@ -293,16 +293,10 @@ type FSharpChoice =
         Func<_,_>(v)
 
     [<Extension>]
-    static member ApVG (f: Choice<Func<_,_>, _>, x, mappend) =
-        match f,x with
-        | Choice1Of2 f, Choice1Of2 x   -> Choice1Of2 (f.Invoke x)
-        | Choice2Of2 e, Choice1Of2 x   -> Choice2Of2 e
-        | Choice1Of2 f, Choice2Of2 e   -> Choice2Of2 e
-        | Choice2Of2 e1, Choice2Of2 e2 -> Choice2Of2 (mappend e1 e2)
-
-    [<Extension>]
     static member ApV (f: Choice<Func<_,_>, _>, x) =
-        FSharpChoice.ApVG(f, x, (@))
+      f 
+      |> Either.map (fun a -> a.Invoke)
+      |> Validation.ap x
 
     [<Extension>]
     static member PureValidate x : Choice<_, string list> = Choice1Of2 x
