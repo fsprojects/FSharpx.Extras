@@ -364,9 +364,11 @@ type FSharpMap =
     static member ToFSharpMap values = Map.ofSeq values
 
 [<Extension>]
-type DictionaryExtensions =
-    [<Extension>]
-    static member TryFind (d: IDictionary<_,_>, key) =
-        match d.TryGetValue key with
-        | true,v -> Some v
-        | _ -> None
+module Dictionary =
+  let tryFind key (d: IDictionary<_,_>) =
+    match d.TryGetValue key with
+    | true,v -> Some v
+    | _ -> None
+
+  [<Extension>]
+  let TryFind (d: IDictionary<_,_>, key) = tryFind key d
