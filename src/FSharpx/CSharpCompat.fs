@@ -308,14 +308,8 @@ type FSharpChoice =
     static member PureValidate x : Choice<_, string list> = Choice1Of2 x
 
     static member EnumerableValidator (f: Func<'a, Choice<'a, string list>>) : Func<'a seq, Choice<'a seq, string list>> =
-        let zero = Choice2Of2 []
-        let cons a b = a::b
-        let ff coll =
-            coll
-            |> Seq.map f.Invoke
-            |> Seq.fold (fun c e -> cons <!> e <*> c) zero
-            |> map (fun x -> x :> _ seq)
-        Func<_,_>(ff)
+      let ff = Validation.seqValidator f.Invoke >> Either.map (fun a -> a :> _ seq)
+      Func<_,_>(ff)
 
     // constructors
 
