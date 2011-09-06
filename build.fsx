@@ -10,16 +10,7 @@ let projectName = "FSharpx"
 let version = "1.2.1." + currentDate.ToString("yMMdd")
 let coreSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let projectSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
-let projectDescription = @"FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.
-
-It currently implements:
-
-* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution
-* Iteratee
-* Validation applicative functor
-* General functions like flip
-* Additional functions around collections
-* Functions to make C# - F# interop easier."
+let projectDescription = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.\r\n\r\nIt currently implements:\r\n\r\n* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n* Iteratee\r\n* Validation applicative functor\r\n* General functions like flip\r\n* Additional functions around collections\r\n* Functions to make C# - F# interop easier."
 let authors = ["Ryan Riley"; "Mauricio Scheffer"; "Steffen Forkmann"]
 let mail = "ryan.riley@panesofglass.org"
 let homepage = "http://github.com/panesofglass/fsharpx"
