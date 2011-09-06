@@ -20,7 +20,7 @@ exception ReturnNoneException183c26a427ae489c8fd92ec21a0c9a59
 
 [<assembly: AssemblyTitle ("FSharpx")>]
 
-[<assembly: AssemblyDescription ("A monad library for F# projects.")>]
+[<assembly: AssemblyDescription ("Extensions to the F# core library.")>]
 
 [<assembly: AssemblyProduct ("FSharpx")>]
 

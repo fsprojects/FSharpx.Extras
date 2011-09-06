@@ -8,10 +8,10 @@ open System.IO
 let currentDate = System.DateTime.UtcNow
 let projectName = "FSharpx"
 let version = "1.2.0." + currentDate.ToString("yMMdd")
-let coreSummary = "Library containing standard operators for building computation expressions (monads)."
-let projectSummary = "A monad library for F# projects."
-let projectDescription = "A monad library for F# projects."
-let authors = ["Ryan Riley"]
+let coreSummary = "Extensions to the F# core library."
+let projectSummary = "Extensions to the F# core library."
+let projectDescription = "Extensions to the F# core library, including C# interop and additional computation expressions."
+let authors = ["Ryan Riley"; "Mauricio Scheffer"; "Steffen Forkmann"]
 let mail = "ryan.riley@panesofglass.org"
 let homepage = "http://github.com/panesofglass/FSharp.Monad"
 let nugetKey = if System.IO.File.Exists "./key.txt" then ReadFileAsString "./key.txt" else ""
