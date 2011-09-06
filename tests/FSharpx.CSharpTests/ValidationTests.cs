@@ -8,7 +8,7 @@ using Errors = Microsoft.FSharp.Collections.FSharpList<string>;
 
 namespace FSharpx.CSharpTests {
     [TestFixture]
-    public class IntegrationTests {
+    public class ValidationTests {
         int doSomething(int userID, int id) {
             // fetch some other entity, do "stuff"
             return userID + id;
