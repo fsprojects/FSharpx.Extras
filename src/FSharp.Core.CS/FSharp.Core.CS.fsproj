@@ -38,12 +38,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Functions.fs" />
-    <Compile Include="Option.fs" />
-    <Compile Include="List.fs" />
-    <Compile Include="Choice.fs" />
-    <Compile Include="Set.fs" />
-    <Compile Include="Map.fs" />
     <Compile Include="Dictionary.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\FSharp\1.0\Microsoft.FSharp.Targets" Condition="!Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')" />
