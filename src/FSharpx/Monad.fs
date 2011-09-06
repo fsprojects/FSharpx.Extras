@@ -36,19 +36,18 @@ module Operators =
         returnM builder2 (f' m') 
 
 module Async =
-  module Operators =
-    open Operators
+  open Operators
     
-    let inline returnM x = returnM async x
-    let inline (>>=) m f = bindM async m f
-    let inline (<*>) f m = applyM async async f m
-    let inline pipe m f = liftM async f m
-    let inline pipe2 x y f = returnM f <*> x <*> y
-    let inline pipe3 x y z f = returnM f <*> x <*> y <*> z
-    let inline (<!>) f m = pipe m f
-    let inline ( *>) x y = pipe2 x y (fun _ z -> z)
-    let inline ( <*) x y = pipe2 x y (fun z _ -> z)
-    let inline (>>.) m f = bindM async m (fun _ -> f)
+  let inline returnM x = returnM async x
+  let inline (>>=) m f = bindM async m f
+  let inline (<*>) f m = applyM async async f m
+  let inline pipe m f = liftM async f m
+  let inline pipe2 x y f = returnM f <*> x <*> y
+  let inline pipe3 x y z f = returnM f <*> x <*> y <*> z
+  let inline (<!>) f m = pipe m f
+  let inline ( *>) x y = pipe2 x y (fun _ z -> z)
+  let inline ( <*) x y = pipe2 x y (fun z _ -> z)
+  let inline (>>.) m f = bindM async m (fun _ -> f)
 
 module Maybe =
 
@@ -76,18 +75,17 @@ module Maybe =
                  fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current)))
   let maybe = MaybeBuilder()
   
-  module Operators =
-    open Operators
+  open Operators
   
-    let inline returnM x = returnM maybe x
-    let inline (>>=) m f = bindM maybe m f
-    let inline (<*>) f m = applyM maybe maybe f m
-    let inline lift f m = liftM maybe f m
-    let inline (<!>) f m = lift f m
-    let inline lift2 f a b = returnM f <*> a <*> b
-    let inline ( *>) x y = lift2 (fun _ z -> z) x y
-    let inline ( <*) x y = lift2 (fun z _ -> z) x y
-    let inline (>>.) m f = bindM maybe m (fun _ -> f)
+  let inline returnM x = returnM maybe x
+  let inline (>>=) m f = bindM maybe m f
+  let inline (<*>) f m = applyM maybe maybe f m
+  let inline lift f m = liftM maybe f m
+  let inline (<!>) f m = lift f m
+  let inline lift2 f a b = returnM f <*> a <*> b
+  let inline ( *>) x y = lift2 (fun _ z -> z) x y
+  let inline ( <*) x y = lift2 (fun z _ -> z) x y
+  let inline (>>.) m f = bindM maybe m (fun _ -> f)
 
 module State =
 
@@ -126,18 +124,17 @@ module State =
                  (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current))))
   let state = new StateBuilder()
   
-  module Operators =
-    open Operators
+  open Operators
   
-    let inline returnM x = returnM state x
-    let inline (>>=) m f = bindM state m f
-    let inline (<*>) f m = applyM state state f m
-    let inline lift f m = liftM state f m
-    let inline (<!>) f m = lift f m
-    let inline lift2 f a b = returnM f <*> a <*> b
-    let inline ( *>) x y = lift2 (fun _ z -> z) x y
-    let inline ( <*) x y = lift2 (fun z _ -> z) x y
-    let inline (>>.) m f = bindM state m (fun _ -> f)
+  let inline returnM x = returnM state x
+  let inline (>>=) m f = bindM state m f
+  let inline (<*>) f m = applyM state state f m
+  let inline lift f m = liftM state f m
+  let inline (<!>) f m = lift f m
+  let inline lift2 f a b = returnM f <*> a <*> b
+  let inline ( *>) x y = lift2 (fun _ z -> z) x y
+  let inline ( <*) x y = lift2 (fun z _ -> z) x y
+  let inline (>>.) m f = bindM state m (fun _ -> f)
 
 module Reader =
 
@@ -175,18 +172,17 @@ module Reader =
     return (f r) }
   let local (f:'r1 -> 'r2) (m:Reader<'r2,'a>) : Reader<'r1, 'a> = f >> m
   
-  module Operators =
-    open Operators
+  open Operators
   
-    let inline returnM x = returnM reader x
-    let inline (>>=) m f = bindM reader m f
-    let inline (<*>) f m = applyM reader reader f m
-    let inline lift f m = liftM reader f m
-    let inline (<!>) f m = lift f m
-    let inline lift2 f a b = returnM f <*> a <*> b
-    let inline ( *>) x y = lift2 (fun _ z -> z) x y
-    let inline ( <*) x y = lift2 (fun z _ -> z) x y
-    let inline (>>.) m f = bindM reader m (fun _ -> f)
+  let inline returnM x = returnM reader x
+  let inline (>>=) m f = bindM reader m f
+  let inline (<*>) f m = applyM reader reader f m
+  let inline lift f m = liftM reader f m
+  let inline (<!>) f m = lift f m
+  let inline lift2 f a b = returnM f <*> a <*> b
+  let inline ( *>) x y = lift2 (fun _ z -> z) x y
+  let inline ( <*) x y = lift2 (fun z _ -> z) x y
+  let inline (>>.) m f = bindM reader m (fun _ -> f)
 
 module Undo =
   // UndoMonad on top of StateMonad
@@ -295,18 +291,17 @@ module Writer =
              return (a, f)
            } |> pass
   
-  module Operators =
-    open Operators
+  open Operators
   
-    let inline returnM x = returnM writer x
-    let inline (>>=) m f = bindM writer m f
-    let inline (<*>) f m = applyM writer writer f m
-    let inline lift f m = liftM writer f m
-    let inline (<!>) f m = lift f m
-    let inline lift2 f a b = returnM f <*> a <*> b
-    let inline ( *>) x y = lift2 (fun _ z -> z) x y
-    let inline ( <*) x y = lift2 (fun z _ -> z) x y
-    let inline (>>.) m f = bindM writer m (fun _ -> f)
+  let inline returnM x = returnM writer x
+  let inline (>>=) m f = bindM writer m f
+  let inline (<*>) f m = applyM writer writer f m
+  let inline lift f m = liftM writer f m
+  let inline (<!>) f m = lift f m
+  let inline lift2 f a b = returnM f <*> a <*> b
+  let inline ( *>) x y = lift2 (fun _ z -> z) x y
+  let inline ( <*) x y = lift2 (fun z _ -> z) x y
+  let inline (>>.) m f = bindM writer m (fun _ -> f)
 
 module Continuation =
 
@@ -352,18 +347,17 @@ module Continuation =
       this.Using(items.GetEnumerator(), (fun enum -> this.While((fun () -> enum.MoveNext()), this.Delay(fun () -> body enum.Current))))
   let cont = ContinuationBuilder()
   
-  module Operators =
-    open Operators
+  open Operators
   
-    let inline returnM x = returnM cont x
-    let inline (>>=) m f = bindM cont m f
-    let inline (<*>) f m = applyM cont cont f m
-    let inline lift f m = liftM cont f m
-    let inline (<!>) f m = lift f m
-    let inline lift2 f a b = returnM f <*> a <*> b
-    let inline ( *>) x y = lift2 (fun _ z -> z) x y
-    let inline ( <*) x y = lift2 (fun z _ -> z) x y
-    let inline (>>.) m f = bindM cont m (fun _ -> f)
+  let inline returnM x = returnM cont x
+  let inline (>>=) m f = bindM cont m f
+  let inline (<*>) f m = applyM cont cont f m
+  let inline lift f m = liftM cont f m
+  let inline (<!>) f m = lift f m
+  let inline lift2 f a b = returnM f <*> a <*> b
+  let inline ( *>) x y = lift2 (fun _ z -> z) x y
+  let inline ( <*) x y = lift2 (fun z _ -> z) x y
+  let inline (>>.) m f = bindM cont m (fun _ -> f)
 
   /// The coroutine type from http://fssnip.net/7M
   type Coroutine() =
@@ -574,16 +568,15 @@ module Iteratee =
                  (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current))))
   let iteratee = IterateeBuilder()
   
-  module Operators =
-    let inline returnM x = Yield(x, Empty)
-    let inline (>>=) m f = bind m f
-    let inline (<*>) f m = f >>= fun f' -> m >>= fun m' -> returnM (f' m')
-    let inline lift f m = m >>= fun x -> returnM (f x)
-    let inline (<!>) f m = lift f m
-    let inline lift2 f a b = returnM f <*> a <*> b
-    let inline ( *>) x y = lift2 (fun _ z -> z) x y
-    let inline ( <*) x y = lift2 (fun z _ -> z) x y
-    let inline (>>.) m f = m >>= (fun _ -> f)
+  let inline returnM x = Yield(x, Empty)
+  let inline (>>=) m f = bind m f
+  let inline (<*>) f m = f >>= fun f' -> m >>= fun m' -> returnM (f' m')
+  let inline lift f m = m >>= fun x -> returnM (f x)
+  let inline (<!>) f m = lift f m
+  let inline lift2 f a b = returnM f <*> a <*> b
+  let inline ( *>) x y = lift2 (fun _ z -> z) x y
+  let inline ( <*) x y = lift2 (fun z _ -> z) x y
+  let inline (>>.) m f = m >>= (fun _ -> f)
   
   module List =
     open Operators

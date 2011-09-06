@@ -4,7 +4,6 @@ open System
 open FSharpx
 open FSharpx.Iteratee
 open FSharpx.Iteratee.List
-open FSharpx.Iteratee.Operators
 open NUnit.Framework
 open FsUnit
 

@@ -5,7 +5,6 @@ open FSharpx
 open FSharpx.ByteString
 open FSharpx.Iteratee
 open FSharpx.Iteratee.Binary
-open FSharpx.Iteratee.Operators
 open NUnit.Framework
 open FsUnit
 
