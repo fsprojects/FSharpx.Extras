@@ -262,11 +262,4 @@ namespace FSharpx.CSharpTests {
                        });
         }
     }
-
-    public static class ValidationLINQ {
-        public static FSharpChoice<R, FSharpList<string>> Join<T,I,K,R>(this FSharpChoice<T, FSharpList<string>> c, FSharpChoice<I, FSharpList<string>> inner, Func<T,K> outerKeySelector, Func<I,K> innerKeySelector, Func<T,I,R> resultSelector) {
-            var ff = FSharpChoice.PureValidate(new Func<T, Func<I, Tuple<T, I>>>(a => b => Tuple.Create(a, b)));
-            return ff.ApV(c).ApV(inner).Select(t => resultSelector(t.Item1, t.Item2));
-        }
-    }
 }
