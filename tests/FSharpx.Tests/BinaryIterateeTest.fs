@@ -1,4 +1,4 @@
-﻿module FSharpx.Tests.BinaryTest
+﻿module FSharpx.Tests.BinaryIterateeTest
 
 open System
 open FSharpx

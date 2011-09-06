@@ -47,8 +47,8 @@
     <Compile Include="ContinuationTest.fs" />
     <Compile Include="DistributionTest.fs" />
     <Compile Include="PokerDistributionTest.fs" />
-    <Compile Include="ListTest.fs" />
-    <Compile Include="BinaryTest.fs" />
+    <Compile Include="ListIterateeTest.fs" />
+    <Compile Include="BinaryIterateeTest.fs" />
     <Compile Include="ValidationTests.fs" />
   </ItemGroup>
   <ItemGroup>
