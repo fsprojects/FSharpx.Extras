@@ -3,6 +3,7 @@
 open System
 open FSharpx
 open FSharpx.CSharpTests
+open FSharpx.Either
 open FSharpx.Validation
 open NUnit.Framework
 open Microsoft.FSharp.Core
@@ -35,16 +36,10 @@ open FSharpx.Nullable
 
 let greaterThan o = validator ((<?) o)
 
-type ValidationBuilder() =
-    member x.Bind(m,f) = m >>= f
-    member x.Return a = Choice1Of2 a
-
-let validation = ValidationBuilder()
-
 let validateOrder (o: Order) =
     let nameNotNull = nonNull "Product name can't be null" o.ProductName
     let positiveCost n = greaterThan (0m).n (sprintf "Cost for product '%s' can't be negative" n) o.Cost
-    nameNotNull >>= positiveCost |> Validation.map (fun _ -> o)
+    nameNotNull >>= positiveCost |> Either.map (fun _ -> o)
 
 (*    validation {
         let! name = nonNull "Product name can't be null" o.ProductName
