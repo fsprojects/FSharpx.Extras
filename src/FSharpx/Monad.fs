@@ -7,21 +7,31 @@ module Monoid =
   open System.Collections.Generic
   
   /// The monoid.
-  /// The monoid implementation comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.
-  type IMonoid<'a> =
+  /// The monoid implementation comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.  
+  [<AbstractClass>]
+  type Monoid<'a>() =
     abstract member mempty  : unit -> 'a
     abstract member mappend : 'a * 'a -> 'a
+    abstract member mconcat : 'a seq -> 'a
+    default x.mconcat a = Seq.fold (fun a b -> x.mappend(a,b)) (x.mempty()) a
   
   type MonoidAssociations private() =
     static let associations = new Dictionary<Type, obj>()
-    static member Add<'a>(monoid : IMonoid<'a>) = associations.Add(typeof<'a>, monoid)
+    static member Add<'a>(monoid : Monoid<'a>) = associations.Add(typeof<'a>, monoid)
     static member Get<'a>() =
       match associations.TryGetValue(typeof<'a>) with
-      | true, assoc -> assoc :?> IMonoid<'a>
+      | true, assoc -> assoc :?> Monoid<'a>
       | false, _    -> failwithf "No IMonoid defined for %O" <| typeof<'a>
   
   let mempty<'a> = MonoidAssociations.Get<'a>().mempty
   let mappend<'a> a b = MonoidAssociations.Get<'a>().mappend(a, b)
+
+  type ListMonoid<'a>() =
+    inherit Monoid<'a list>()
+      override this.mempty() = []
+      override this.mappend(a,b) = a @ b
+  
+  MonoidAssociations.Add(new ListMonoid<string>())
   
 module Operators =
 
@@ -238,14 +248,7 @@ module Undo =
 
 module Writer =
   open Monoid
-  
-  type ListMonoid<'a>() =
-    interface IMonoid<'a list> with
-      member this.mempty() = []
-      member this.mappend(a,b) = a @ b
-  
-  MonoidAssociations.Add(new ListMonoid<string>())
-  
+    
   type Writer<'w, 'a> = unit -> 'a * 'w
   
   /// The writer monad.
