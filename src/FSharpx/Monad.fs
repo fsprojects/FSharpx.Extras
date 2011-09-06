@@ -918,6 +918,6 @@ module Iteratee =
         match result with
         | Choice1Of2 e -> throw e
         | Choice2Of2 0 -> Continue k
-        | Choice2Of2 n -> step (k (Chunk(ByteString.BS(buffer,0,buffer.Length))))
+        | Choice2Of2 n -> step (k (Chunk(BS(buffer,0,buffer.Length))))
       step i
   

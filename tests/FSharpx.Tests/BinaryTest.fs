@@ -221,7 +221,7 @@ let takeUntilTests = [|
 [<Ignore("heads and readLines do not correctly return a correct result when the input is chunked and a \r\n is encountered in different chunks.")>]
 [<Test>]
 [<TestCaseSource("takeUntilTests")>]
-let ``test takeUntilNewline should split strings on a newline character at once``(input, expectedRes:ArraySegment<byte>, expectedRem:ArraySegment<byte>) =
+let ``test takeUntilNewline should split strings on a newline character at once``(input, expectedRes:BS, expectedRem:BS) =
   let isNewline c = c = '\r'B || c = '\n'B
   let res, rem =
     match enumerate (create input) (takeUntil isNewline) with
@@ -233,7 +233,7 @@ let ``test takeUntilNewline should split strings on a newline character at once`
 
 [<Test>]
 [<TestCaseSource("takeUntilTests")>]
-let ``test takeUntilNewline should split strings on a newline character``(input, expectedRes:ArraySegment<byte>, expectedRem:ArraySegment<byte>) =
+let ``test takeUntilNewline should split strings on a newline character``(input, expectedRes:BS, expectedRem:BS) =
   let isNewline c = c = '\r'B || c = '\n'B
   let res, rem =
     match enumeratePure1Chunk (create input) (takeUntil isNewline) with

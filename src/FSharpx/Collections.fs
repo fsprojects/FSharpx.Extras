@@ -121,14 +121,14 @@ type JoinList<'a> with
 /// An ArraySegment with structural comparison and equality.
 [<CustomEquality; CustomComparison>]
 [<SerializableAttribute>]
-type ArraySegment<'a when 'a : comparison> =
+type BS =
   struct
-    val Array: 'a[]
+    val Array: byte[]
     val Offset: int
     val Count: int
-    new (array: 'a[]) = { Array = array; Offset = 0; Count = array.Length }
-    new (array: 'a[], offset: int, count: int) = { Array = array; Offset = offset; Count = count }
-    static member Compare (a:ArraySegment<'a>, b:ArraySegment<'a>) =
+    new (array: byte[]) = { Array = array; Offset = 0; Count = array.Length }
+    new (array: byte[], offset: int, count: int) = { Array = array; Offset = offset; Count = count }
+    static member Compare (a:BS, b:BS) =
       let x,o,l = a.Array, a.Offset, a.Count
       let x',o',l' = b.Array, b.Offset, b.Count
       if x = x' && o = o' && l = l' then 0
@@ -145,47 +145,44 @@ type ArraySegment<'a when 'a : comparison> =
            Array.fold2 foldr 0 left right
     override x.Equals(other) = 
       match other with
-      | :? ArraySegment<'a> as other' -> ArraySegment.Compare(x, other') = 0
+      | :? BS as other' -> BS.Compare(x, other') = 0
       | _ -> false
     override x.GetHashCode() = hash x
     interface System.IComparable with
       member x.CompareTo(other) =
         match other with
-        | :? ArraySegment<'a> as other' -> ArraySegment.Compare(x, other')
+        | :? BS as other' -> BS.Compare(x, other')
         | _ -> invalidArg "other" "Cannot compare a value of another type."
   end
   
 module ByteString =
-  open System.Diagnostics.Contracts
 
-  /// An alias constructor to make it easier to create ArraySegment<byte>.
-  let BS (x,o,l) = ArraySegment<byte>(x,o,l)
-  /// An active pattern for conveniently retrieving the properties of the ArraySegment<byte>.
-  let (|BS|) (x:ArraySegment<byte>) =
-    x.Array, x.Offset, x.Count
+  /// An active pattern for conveniently retrieving the properties of a BS.
+  let (|BS|) (x:BS) = x.Array, x.Offset, x.Count
   
-  let empty = ArraySegment<byte>()
+  let empty = BS()
   let singleton c = BS(Array.create 1 c, 0, 1)
-  let create bs = BS(bs, 0, bs.Length)
+  let create arr = BS(arr, 0, arr.Length)
+  let ofArraySegment (segment:ArraySegment<byte>) = BS(segment.Array, segment.Offset, segment.Count)
   let ofSeq s = let arr = Array.ofSeq s in BS(arr, 0, arr.Length)
   let ofList l = BS(Array.ofList l, 0, l.Length)
   let ofString (s:string) = s.ToCharArray() |> Array.map byte |> create
-  let toSeq (bs:ArraySegment<byte>) =
+  let toSeq (bs:BS) =
     seq { for i in bs.Offset..(bs.Offset + bs.Count - 1) do yield bs.Array.[i] }
-  let toList (bs:ArraySegment<byte>) =
+  let toList (bs:BS) =
     [ for i in bs.Offset..(bs.Offset + bs.Count - 1) -> bs.Array.[i] ]
-  let toString (bs:ArraySegment<byte>) =
+  let toString (bs:BS) =
     System.Text.Encoding.ASCII.GetString(bs.Array, bs.Offset, bs.Count)
-  let isEmpty (bs:ArraySegment<byte>) = Contract.Requires(bs.Count >= 0); bs.Count <= 0
-  let length (bs:ArraySegment<byte>) = Contract.Requires(bs.Count >= 0); bs.Count
-  let index (bs:ArraySegment<byte>) pos =
+  let isEmpty (bs:BS) = Contract.Requires(bs.Count >= 0); bs.Count <= 0
+  let length (bs:BS) = Contract.Requires(bs.Count >= 0); bs.Count
+  let index (bs:BS) pos =
     Contract.Requires(bs.Offset + pos <= bs.Count)
     bs.Array.[bs.Offset + pos]
-  let head (bs:ArraySegment<byte>) =
+  let head (bs:BS) =
     if bs.Count <= 0 then
       failwith "Cannot take the head of an empty byte string."
     else bs.Array.[bs.Offset]
-  let tail (bs:ArraySegment<byte>) =
+  let tail (bs:BS) =
     Contract.Requires(bs.Count >= 1)
     if bs.Count = 1 then empty
     else BS(bs.Array, bs.Offset+1, bs.Count-1)
@@ -193,7 +190,7 @@ module ByteString =
   /// cons uses Buffer.SetByte and Buffer.BlockCopy for efficient array operations.
   /// Please note that a new array is created and both the head and tail are copied in,
   /// disregarding any additional bytes in the original tail array.
-  let cons hd (bs:ArraySegment<byte>) =
+  let cons hd (bs:BS) =
     let x,o,l = bs.Array, bs.Offset, bs.Count in
     if l = 0 then singleton hd
     else let buffer = Array.init (l + 1) byte
@@ -222,7 +219,7 @@ module ByteString =
         loop tl (f acc hd)
     loop bs seed
 
-  let span pred (bs:ArraySegment<byte>) =
+  let span pred (bs:BS) =
     if isEmpty bs then empty, empty
     else
       let x,o,l = bs.Array, bs.Offset, bs.Count
@@ -234,7 +231,7 @@ module ByteString =
   
   let split pred bs = span (not << pred) bs
   
-  let splitAt n (bs:ArraySegment<byte>) =
+  let splitAt n (bs:BS) =
     Contract.Requires(n >= 0)
     if isEmpty bs then empty, empty
     elif n = 0 then empty, bs
