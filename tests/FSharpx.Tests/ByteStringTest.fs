@@ -1,4 +1,4 @@
-﻿module FSharp.Collections.Tests.ByteStringTest
+﻿module FSharpx.Tests.ByteStringTest
 
 open System
 open FSharpx

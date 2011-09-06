@@ -1,4 +1,4 @@
-﻿module FSharp.Collections.Tests.JoinListTest
+﻿module FSharpx.Tests.JoinListTest
 
 open System
 open FSharpx
