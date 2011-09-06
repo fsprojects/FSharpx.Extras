@@ -7,10 +7,19 @@ open System.IO
 // properties
 let currentDate = System.DateTime.UtcNow
 let projectName = "FSharpx"
-let version = "1.2.0." + currentDate.ToString("yMMdd")
-let coreSummary = "Extensions to the F# core library."
-let projectSummary = "Extensions to the F# core library."
-let projectDescription = "Extensions to the F# core library, including C# interop and additional computation expressions."
+let version = "1.2.1." + currentDate.ToString("yMMdd")
+let coreSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
+let projectSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
+let projectDescription = @"FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.
+
+It currently implements:
+
+* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution
+* Iteratee
+* Validation applicative functor
+* General functions like flip
+* Additional functions around collections
+* Functions to make C# - F# interop easier."
 let authors = ["Ryan Riley"; "Mauricio Scheffer"; "Steffen Forkmann"]
 let mail = "ryan.riley@panesofglass.org"
 let homepage = "http://github.com/panesofglass/FSharp.Monad"

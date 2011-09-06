@@ -20,13 +20,13 @@ exception ReturnNoneException183c26a427ae489c8fd92ec21a0c9a59
 
 [<assembly: AssemblyTitle ("FSharpx")>]
 
-[<assembly: AssemblyDescription ("Extensions to the F# core library.")>]
+[<assembly: AssemblyDescription ("FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library.")>]
 
 [<assembly: AssemblyProduct ("FSharpx")>]
 
-[<assembly: AssemblyVersion ("1.2.0.110906")>]
+[<assembly: AssemblyVersion ("1.2.1.110906")>]
 
-[<assembly: AssemblyFileVersion ("1.2.0.110906")>]
+[<assembly: AssemblyFileVersion ("1.2.1.110906")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 
