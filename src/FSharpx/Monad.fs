@@ -80,11 +80,11 @@ module Maybe =
   let inline returnM x = returnM maybe x
   let inline (>>=) m f = bindM maybe m f
   let inline (<*>) f m = applyM maybe maybe f m
-  let inline lift f m = liftM maybe f m
-  let inline (<!>) f m = lift f m
-  let inline lift2 f a b = returnM f <*> a <*> b
-  let inline ( *>) x y = lift2 (fun _ z -> z) x y
-  let inline ( <*) x y = lift2 (fun z _ -> z) x y
+  let inline map f m = liftM maybe f m
+  let inline (<!>) f m = map f m
+  let inline map2 f a b = returnM f <*> a <*> b
+  let inline ( *>) x y = map2 (fun _ z -> z) x y
+  let inline ( <*) x y = map2 (fun z _ -> z) x y
   let inline (>>.) m f = bindM maybe m (fun _ -> f)
 
 module State =
@@ -129,11 +129,11 @@ module State =
   let inline returnM x = returnM state x
   let inline (>>=) m f = bindM state m f
   let inline (<*>) f m = applyM state state f m
-  let inline lift f m = liftM state f m
-  let inline (<!>) f m = lift f m
-  let inline lift2 f a b = returnM f <*> a <*> b
-  let inline ( *>) x y = lift2 (fun _ z -> z) x y
-  let inline ( <*) x y = lift2 (fun z _ -> z) x y
+  let inline map f m = liftM state f m
+  let inline (<!>) f m = map f m
+  let inline map2 f a b = returnM f <*> a <*> b
+  let inline ( *>) x y = map2 (fun _ z -> z) x y
+  let inline ( <*) x y = map2 (fun z _ -> z) x y
   let inline (>>.) m f = bindM state m (fun _ -> f)
 
 module Reader =
@@ -177,11 +177,11 @@ module Reader =
   let inline returnM x = returnM reader x
   let inline (>>=) m f = bindM reader m f
   let inline (<*>) f m = applyM reader reader f m
-  let inline lift f m = liftM reader f m
-  let inline (<!>) f m = lift f m
-  let inline lift2 f a b = returnM f <*> a <*> b
-  let inline ( *>) x y = lift2 (fun _ z -> z) x y
-  let inline ( <*) x y = lift2 (fun z _ -> z) x y
+  let inline map f m = liftM reader f m
+  let inline (<!>) f m = map f m
+  let inline map2 f a b = returnM f <*> a <*> b
+  let inline ( *>) x y = map2 (fun _ z -> z) x y
+  let inline ( <*) x y = map2 (fun z _ -> z) x y
   let inline (>>.) m f = bindM reader m (fun _ -> f)
 
 module Undo =
@@ -296,11 +296,11 @@ module Writer =
   let inline returnM x = returnM writer x
   let inline (>>=) m f = bindM writer m f
   let inline (<*>) f m = applyM writer writer f m
-  let inline lift f m = liftM writer f m
-  let inline (<!>) f m = lift f m
-  let inline lift2 f a b = returnM f <*> a <*> b
-  let inline ( *>) x y = lift2 (fun _ z -> z) x y
-  let inline ( <*) x y = lift2 (fun z _ -> z) x y
+  let inline map f m = liftM writer f m
+  let inline (<!>) f m = map f m
+  let inline map2 f a b = returnM f <*> a <*> b
+  let inline ( *>) x y = map2 (fun _ z -> z) x y
+  let inline ( <*) x y = map2 (fun z _ -> z) x y
   let inline (>>.) m f = bindM writer m (fun _ -> f)
 
 module Either =
@@ -320,10 +320,10 @@ module Either =
       | Choice2Of2 x -> Choice2Of2 x
 
   let inline (<!>) f x = map f x
-  let inline lift2 f a b = f <!> a <*> b
+  let inline map2 f a b = f <!> a <*> b
 
-  let inline ( *>) a b = lift2 (fun _ z -> z) a b
-  let inline ( <*) a b = lift2 (fun z _ -> z) a b
+  let inline ( *>) a b = map2 (fun _ z -> z) a b
+  let inline ( <*) a b = map2 (fun z _ -> z) a b
 
   let bind f = 
       function
@@ -348,14 +348,14 @@ module Validation =
     | Choice2Of2 e1, Choice2Of2 e2 -> Choice2Of2 (e1 @ e2) // TODO generalize to monoids
 
   let inline (<*>) f x = ap x f
-  let inline lift2 f a b = f <!> a <*> b
+  let inline map2 f a b = f <!> a <*> b
 
-  let inline ( *>) a b = lift2 (fun _ z -> z) a b
-  let inline ( <*) a b = lift2 (fun z _ -> z) a b
+  let inline ( *>) a b = map2 (fun _ z -> z) a b
+  let inline ( <*) a b = map2 (fun z _ -> z) a b
 
   let seqValidator f = 
       let zero = puree []
-      Seq.map f >> Seq.fold (lift2 (flip List.cons)) zero
+      Seq.map f >> Seq.fold (map2 (flip List.cons)) zero
 
 
 module Continuation =
@@ -407,11 +407,11 @@ module Continuation =
   let inline returnM x = returnM cont x
   let inline (>>=) m f = bindM cont m f
   let inline (<*>) f m = applyM cont cont f m
-  let inline lift f m = liftM cont f m
-  let inline (<!>) f m = lift f m
-  let inline lift2 f a b = returnM f <*> a <*> b
-  let inline ( *>) x y = lift2 (fun _ z -> z) x y
-  let inline ( <*) x y = lift2 (fun z _ -> z) x y
+  let inline map f m = liftM cont f m
+  let inline (<!>) f m = map f m
+  let inline map2 f a b = returnM f <*> a <*> b
+  let inline ( *>) x y = map2 (fun _ z -> z) x y
+  let inline ( <*) x y = map2 (fun z _ -> z) x y
   let inline (>>.) m f = bindM cont m (fun _ -> f)
 
   /// The coroutine type from http://fssnip.net/7M
@@ -626,11 +626,11 @@ module Iteratee =
   let inline returnM x = Yield(x, Empty)
   let inline (>>=) m f = bind m f
   let inline (<*>) f m = f >>= fun f' -> m >>= fun m' -> returnM (f' m')
-  let inline lift f m = m >>= fun x -> returnM (f x)
-  let inline (<!>) f m = lift f m
-  let inline lift2 f a b = returnM f <*> a <*> b
-  let inline ( *>) x y = lift2 (fun _ z -> z) x y
-  let inline ( <*) x y = lift2 (fun z _ -> z) x y
+  let inline map f m = m >>= fun x -> returnM (f x)
+  let inline (<!>) f m = map f m
+  let inline map2 f a b = returnM f <*> a <*> b
+  let inline ( *>) x y = map2 (fun _ z -> z) x y
+  let inline ( <*) x y = map2 (fun z _ -> z) x y
   let inline (>>.) m f = m >>= (fun _ -> f)
   
   module List =
