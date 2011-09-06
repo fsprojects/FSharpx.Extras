@@ -37,6 +37,8 @@
     <None Include="packages.config" />
     <Compile Include="Collections.fs" />
     <Compile Include="Monad.fs" />
+    <Compile Include="CSharpCompat.fs" />
+    <Compile Include="Nullable.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">

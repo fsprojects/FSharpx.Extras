@@ -48,6 +48,7 @@
     <Compile Include="PokerDistributionTest.fs" />
     <Compile Include="ListTest.fs" />
     <Compile Include="BinaryTest.fs" />
+    <Compile Include="ValidationTests.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
@@ -94,6 +95,11 @@
     <ProjectReference Include="..\..\src\FSharp.Monad\FSharp.Monad.fsproj">
       <Name>FSharp.Monad</Name>
       <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\FSharp.Core.CS.Tests\FSharp.Core.CS.Tests.csproj">
+      <Name>FSharp.Core.CS.Tests</Name>
+      <Project>{4354a199-6acf-4db5-a8fa-bad638d1d0e3}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
