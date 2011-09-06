@@ -60,7 +60,7 @@ module Async =
   let inline ( <*) x y = pipe2 x y (fun z _ -> z)
   let inline (>>.) m f = bindM async m (fun _ -> f)
 
-module Maybe =
+module Option =
 
   /// The maybe monad.
   /// This monad is my own and uses an 'a option. Others generally make their own Maybe<'a> type from Option<'a>.
@@ -91,12 +91,21 @@ module Maybe =
   let inline returnM x = returnM maybe x
   let inline (>>=) m f = bindM maybe m f
   let inline (<*>) f m = applyM maybe maybe f m
-  let inline map f m = liftM maybe f m
-  let inline (<!>) f m = map f m
+  let inline (<!>) f m = Option.map f m
   let inline map2 f a b = returnM f <*> a <*> b
   let inline ( *>) x y = map2 (fun _ z -> z) x y
   let inline ( <*) x y = map2 (fun z _ -> z) x y
   let inline (>>.) m f = bindM maybe m (fun _ -> f)
+
+  let fromNullable (n: _ Nullable) = 
+      if n.HasValue
+          then Some n.Value
+          else None
+  let toNullable =
+      function
+      | None -> Nullable()
+      | Some x -> Nullable(x)
+
 
 module State =
 

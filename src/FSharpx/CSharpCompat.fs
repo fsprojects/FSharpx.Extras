@@ -119,10 +119,9 @@ type FSharpOption =
 
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>, mapper: Func<_,_,_>) =
-        let c = Option.bind f.Invoke o
-        match o,c with
-        | Some a,Some b -> mapper.Invoke(a,b) |> Some
-        | _ -> None
+      let mapper = Option.map2 (fun a b -> mapper.Invoke(a,b))
+      let v = Option.bind f.Invoke o
+      mapper o v
 
     [<Extension>]
     static member Aggregate (o, state, f: Func<_,_,_>) =

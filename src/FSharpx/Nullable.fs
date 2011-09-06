@@ -3,16 +3,6 @@ namespace FSharpx
 open System
 open Microsoft.FSharp.Math
 
-module Option =
-    let fromNullable (n: _ Nullable) = 
-        if n.HasValue
-            then Some n.Value
-            else None
-    let toNullable =
-        function
-        | None -> Nullable()
-        | Some x -> Nullable(x)
-
 module Nullable =
     let (|Null|Value|) (x: _ Nullable) =
         if x.HasValue then Value x.Value else Null
