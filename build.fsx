@@ -22,7 +22,7 @@ It currently implements:
 * Functions to make C# - F# interop easier."
 let authors = ["Ryan Riley"; "Mauricio Scheffer"; "Steffen Forkmann"]
 let mail = "ryan.riley@panesofglass.org"
-let homepage = "http://github.com/panesofglass/FSharp.Monad"
+let homepage = "http://github.com/panesofglass/fsharpx"
 let nugetKey = if System.IO.File.Exists "./key.txt" then ReadFileAsString "./key.txt" else ""
 
 // directories
