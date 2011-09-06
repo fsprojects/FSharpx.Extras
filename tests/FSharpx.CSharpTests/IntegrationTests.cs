@@ -6,7 +6,7 @@ using Microsoft.FSharp.Core;
 using NUnit.Framework;
 using Errors = Microsoft.FSharp.Collections.FSharpList<string>;
 
-namespace FSharp.Core.CS.Tests {
+namespace FSharpx.CSharpTests {
     [TestFixture]
     public class IntegrationTests {
         int doSomething(int userID, int id) {

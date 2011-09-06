@@ -1,4 +1,4 @@
-﻿module FSharp.Monad.Tests.WriterTest
+﻿module FSharpx.Tests.WriterTest
 
 open FSharp.Monad.Writer
 open NUnit.Framework

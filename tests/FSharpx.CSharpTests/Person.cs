@@ -3,7 +3,7 @@ using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
 using Errors = Microsoft.FSharp.Collections.FSharpList<string>;
 
-namespace FSharp.Core.CS.Tests {
+namespace FSharpx.CSharpTests {
     public class Person {
         private readonly string name;
         private readonly int age;

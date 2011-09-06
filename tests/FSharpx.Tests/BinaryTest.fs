@@ -1,4 +1,4 @@
-﻿module FSharp.Monad.Tests.BinaryTest
+﻿module FSharpx.Tests.BinaryTest
 
 open System
 open FSharp.Collections

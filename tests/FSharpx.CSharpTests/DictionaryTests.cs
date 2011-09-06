@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Microsoft.FSharp.Core;
 
-namespace FSharp.Core.CS.Tests {
+namespace FSharpx.CSharpTests {
     [TestFixture]
     public class DictionaryTests {
         [Test]

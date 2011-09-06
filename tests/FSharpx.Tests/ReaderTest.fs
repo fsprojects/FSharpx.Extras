@@ -1,4 +1,4 @@
-﻿module FSharp.Monad.Tests.ReaderTest
+﻿module FSharpx.Tests.ReaderTest
 
 open System
 open System.Threading

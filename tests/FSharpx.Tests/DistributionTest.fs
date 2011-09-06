@@ -1,4 +1,4 @@
-﻿module FSharp.Monad.Tests.DistributionTest
+﻿module FSharpx.Tests.DistributionTest
 
 open FSharp.Monad.Distribution
 open NUnit.Framework

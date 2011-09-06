@@ -1,4 +1,4 @@
-﻿module FSharp.Monad.Tests.StateTest
+﻿module FSharpx.Tests.StateTest
 
 open FSharp.Monad.State
 open NUnit.Framework

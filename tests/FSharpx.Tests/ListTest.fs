@@ -1,4 +1,4 @@
-﻿module FSharp.Monad.Tests.ListTest
+﻿module FSharpx.Tests.ListTest
 
 open System
 open FSharp.Collections

@@ -1,4 +1,4 @@
-﻿module FSharp.Monad.Tests.PokerDistributionTest
+﻿module FSharpx.Tests.PokerDistributionTest
 
 open FSharp.Monad.Distribution
 open NUnit.Framework

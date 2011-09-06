@@ -2,7 +2,7 @@
 using Microsoft.FSharp.Core;
 using NUnit.Framework;
 
-namespace FSharp.Core.CS.Tests {
+namespace FSharpx.CSharpTests {
     [TestFixture]
     public class ListTests {
         [Test]

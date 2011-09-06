@@ -1,4 +1,4 @@
-﻿module FSharp.Monad.Tests.MaybeTest
+﻿module FSharpx.Tests.MaybeTest
 
 open FSharp.Monad.Maybe
 open NUnit.Framework

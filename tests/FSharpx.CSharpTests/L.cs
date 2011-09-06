@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FSharp.Core.CS.Tests {
+namespace FSharpx.CSharpTests {
     public static class L {
         public static Func<T> F<T>(Func<T> f) {
             return f;

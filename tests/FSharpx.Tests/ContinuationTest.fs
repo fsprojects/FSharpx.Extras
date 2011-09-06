@@ -1,4 +1,4 @@
-﻿module FSharp.Monad.Tests.ContinuationTest
+﻿module FSharpx.Tests.ContinuationTest
 
 open System
 open FSharp.Monad

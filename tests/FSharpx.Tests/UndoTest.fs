@@ -1,4 +1,4 @@
-﻿module FSharp.Monad.Tests.UndoTest
+﻿module FSharpx.Tests.UndoTest
 
 open FSharp.Monad.Undo
 open NUnit.Framework

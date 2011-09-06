@@ -1,7 +1,7 @@
-﻿module Tests
+﻿module FSharpx.Tests.Validation
 
 open System
-open FSharp.Core.CS.Tests
+open FSharpx.CSharpTests
 open NUnit.Framework
 open Microsoft.FSharp.Core
 open Microsoft.FSharp.Core.Validation
