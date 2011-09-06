@@ -452,7 +452,7 @@ module Distribution =
   type 'a Distribution = 'a Outcome seq
   
   // P(A AND B) = P(A | B) * P(B)
-  let bindD (dist:'a Distribution) (f: 'a -> 'b Distribution) =
+  let bind (f: 'a -> 'b Distribution) (dist:'a Distribution) =
       dist 
           |> Seq.map (fun p1 -> 
                   f p1.Value
@@ -462,15 +462,15 @@ module Distribution =
                               p1.Probability * p2.Probability}))
           |> Seq.concat : 'b Distribution
   
-  let inline (>>=) dist f = bindD dist f
+  let inline (>>=) dist f = bind f dist
   
-  let returnD (value:'a) =   
+  let returnM (value:'a) =   
       Seq.singleton { Value = value ; Probability = 1N/1N }
         : 'a Distribution
   
   type DistributionMonadBuilder() =
-      member this.Bind (r, f) = bindD r f
-      member this.Return x = returnD x
+      member this.Bind (r, f) = bind f r
+      member this.Return x = returnM x
       member this.ReturnFrom x = x
   
   let distribution = DistributionMonadBuilder()
@@ -488,7 +488,7 @@ module Distribution =
         |> Seq.map (fun o -> o.Probability)
         |> Seq.sum
   
-  let certainly = returnD
+  let certainly = returnM
   let impossible<'a> :'a Distribution = toUniformDistribution []
   
   let fairDice sides = toUniformDistribution [1..sides]
