@@ -53,23 +53,23 @@ module Nullable =
         | Null -> []
         | Value v -> [v]
     
-    let liftNullable op (a: _ Nullable) (b: _ Nullable) =
+    let map2 f (a: _ Nullable) (b: _ Nullable) =
         if a.HasValue && b.HasValue
-            then Nullable(op a.Value b.Value)
+            then Nullable(f a.Value b.Value)
             else Nullable()
 
-    let mapBoolOp op a b =
+    let mapBool op a b =
         match a,b with
         | Value x, Value y -> op x y
         | _ -> false
 
-    let inline (+?) a b = (liftNullable (+)) a b
-    let inline (-?) a b = (liftNullable (-)) a b
-    let inline ( *?) a b = (liftNullable ( *)) a b
-    let inline (/?) a b = (liftNullable (/)) a b
-    let inline (>?) a b = (mapBoolOp (>)) a b
+    let inline (+?) a b = (map2 (+)) a b
+    let inline (-?) a b = (map2 (-)) a b
+    let inline ( *?) a b = (map2 ( *)) a b
+    let inline (/?) a b = (map2 (/)) a b
+    let inline (>?) a b = (mapBool (>)) a b
     let inline (>=?) a b = a >? b || a = b
-    let inline (<?) a b = (mapBoolOp (<)) a b
+    let inline (<?) a b = (mapBool (<)) a b
     let inline (<=?) a b = a <? b || a = b
     let inline notn (a: bool Nullable) = 
         if a.HasValue 
