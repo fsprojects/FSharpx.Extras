@@ -48,6 +48,7 @@ module Operators =
 module Async =
   open Operators
     
+  let inline bind f m = async.Bind(m,f)
   let inline returnM x = returnM async x
   let inline (>>=) m f = bindM async m f
   let inline (<*>) f m = applyM async async f m
@@ -55,6 +56,7 @@ module Async =
   let inline pipe2 x y f = returnM f <*> x <*> y
   let inline pipe3 x y z f = returnM f <*> x <*> y <*> z
   let inline map f m = pipe m f
+  let inline map2 f x y = returnM f <*> x <*> y
   let inline (<!>) f m = pipe m f
   let inline ( *>) x y = pipe2 x y (fun _ z -> z)
   let inline ( <*) x y = pipe2 x y (fun z _ -> z)

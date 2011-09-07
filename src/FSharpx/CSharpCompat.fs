@@ -359,3 +359,15 @@ module Dictionary =
 
   [<Extension>]
   let TryFind (d: IDictionary<_,_>, key) = tryFind key d
+
+[<Extension>]
+type AsyncExtensions =
+    [<Extension>]
+    static member SelectMany (o, f: Func<_,_>, mapper: Func<_,_,_>) =
+      let mapper = Async.map2 (fun a b -> mapper.Invoke(a,b))
+      let v = Async.bind f.Invoke o
+      mapper o v
+
+    [<Extension>]
+    static member Select (o, f: Func<_,_>) = 
+      Async.map f.Invoke o
