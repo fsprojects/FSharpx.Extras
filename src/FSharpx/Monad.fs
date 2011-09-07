@@ -10,10 +10,10 @@ module Monoid =
   /// The monoid implementation comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.  
   [<AbstractClass>]
   type Monoid<'a>() =
-    abstract member mempty  : unit -> 'a
-    abstract member mappend : 'a * 'a -> 'a
+    abstract member mempty  : 'a
+    abstract member mappend : 'a -> 'a -> 'a
     abstract member mconcat : 'a seq -> 'a
-    default x.mconcat a = Seq.fold (fun a b -> x.mappend(a,b)) (x.mempty()) a
+    default x.mconcat a = Seq.fold x.mappend x.mempty a
   
   type MonoidAssociations private() =
     static let associations = new Dictionary<Type, obj>()
@@ -24,12 +24,12 @@ module Monoid =
       | false, _    -> failwithf "No IMonoid defined for %O" <| typeof<'a>
   
   let mempty<'a> = MonoidAssociations.Get<'a>().mempty
-  let mappend<'a> a b = MonoidAssociations.Get<'a>().mappend(a, b)
+  let mappend<'a> a b = MonoidAssociations.Get<'a>().mappend a b
 
   type ListMonoid<'a>() =
     inherit Monoid<'a list>()
-      override this.mempty() = []
-      override this.mappend(a,b) = a @ b
+      override this.mempty = []
+      override this.mappend a b = a @ b
   
   MonoidAssociations.Add(new ListMonoid<string>())
   
@@ -369,7 +369,7 @@ module Validation =
     | Choice1Of2 f, Choice2Of2 e   -> Choice2Of2 e
     | Choice2Of2 e1, Choice2Of2 e2 -> Choice2Of2 (append e1 e2)
 
-  let inline apm (m: _ Monoid) = apa (fun a b -> m.mappend(a,b))
+  let inline apm (m: _ Monoid) = apa m.mappend
 
   let inline ap x = apm (ListMonoid<string>()) x
 
