@@ -29,6 +29,12 @@ let nugetDocsDir = nugetDir @@ "docs"
 
 // params
 let target = getBuildParamOrDefault "target" "All"
+let frameworkVersion = getBuildParamOrDefault "frameworkVersion" "v4.0"
+let frameworkParams = 
+    let v = ("[^\\d]" >=> "") frameworkVersion
+    let v = v.Substring(0,2)
+    ["TargetFrameworkVersion", frameworkVersion; "DefineConstants", "NET" + v]
+    
 
 // tools
 let fakePath = "./packages/FAKE.1.56.6/tools"
@@ -64,12 +70,12 @@ Target "BuildApp" (fun _ ->
             Guid = "1e95a279-c2a9-498b-bc72-6e7a0d6854ce"
             OutputFileName = "./src/FSharpx/AssemblyInfo.fs" })
 
-    MSBuildRelease buildDir "Build" appReferences
+    MSBuild buildDir "Build" (["Configuration","Release"] @ frameworkParams) appReferences
         |> Log "AppBuild-Output: "
 )
 
 Target "BuildTest" (fun _ ->
-    MSBuildDebug testDir "Build" testReferences
+    MSBuild testDir "Build" (["Configuration","Debug"] @ frameworkParams) testReferences
         |> Log "TestBuild-Output: "
 )
 

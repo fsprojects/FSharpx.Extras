@@ -3,7 +3,9 @@ namespace FSharpx
 open System
 open System.Collections
 open System.Collections.Generic
+#if NET40
 open System.Diagnostics.Contracts
+#endif
 
 module List =
   let inline cons hd tl = hd::tl
@@ -168,17 +170,29 @@ module ByteString =
     [ for i in bs.Offset..(bs.Offset + bs.Count - 1) -> bs.Array.[i] ]
   let toString (bs:BS) =
     System.Text.Encoding.ASCII.GetString(bs.Array, bs.Offset, bs.Count)
-  let isEmpty (bs:BS) = Contract.Requires(bs.Count >= 0); bs.Count <= 0
-  let length (bs:BS) = Contract.Requires(bs.Count >= 0); bs.Count
+  let isEmpty (bs:BS) = 
+    #if NET40
+    Contract.Requires(bs.Count >= 0)
+    #endif
+    bs.Count <= 0
+  let length (bs:BS) = 
+    #if NET40
+    Contract.Requires(bs.Count >= 0)
+    #endif
+    bs.Count
   let index (bs:BS) pos =
+    #if NET40
     Contract.Requires(bs.Offset + pos <= bs.Count)
+    #endif
     bs.Array.[bs.Offset + pos]
   let head (bs:BS) =
     if bs.Count <= 0 then
       failwith "Cannot take the head of an empty byte string."
     else bs.Array.[bs.Offset]
   let tail (bs:BS) =
+    #if NET40
     Contract.Requires(bs.Count >= 1)
+    #endif
     if bs.Count = 1 then empty
     else BS(bs.Array, bs.Offset+1, bs.Count-1)
   
@@ -227,7 +241,9 @@ module ByteString =
   let split pred bs = span (not << pred) bs
   
   let splitAt n (bs:BS) =
+    #if NET40
     Contract.Requires(n >= 0)
+    #endif
     if isEmpty bs then empty, empty
     elif n = 0 then empty, bs
     elif n >= bs.Count then bs, empty

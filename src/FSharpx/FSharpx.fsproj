@@ -20,7 +20,7 @@
     <Optimize>false</Optimize>
     <Tailcalls>false</Tailcalls>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET40</DefineConstants>
     <WarningLevel>3</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -42,28 +42,43 @@
     <Compile Include="Nullable.fs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="FSharp.Core">
+    <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
       <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
     </Reference>
-    <Reference Include="FSharp.PowerPack">
+    <Reference Include="FSharp.PowerPack" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
       <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FSharp.PowerPack.Linq">
+    <Reference Include="FSharp.PowerPack.Linq" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
       <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.Linq.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FSharp.PowerPack.Metadata">
+    <Reference Include="FSharp.PowerPack.Metadata" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
       <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.Metadata.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FSharp.PowerPack.Parallel.Seq">
+    <Reference Include="FSharp.PowerPack.Parallel.Seq" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
       <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.Parallel.Seq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
+      <HintPath>..\..\lib\FSharp\Net20\FSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="FSharp.PowerPack" Condition="$(TargetFrameworkVersion) == 'v3.5'">
+      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net20\FSharp.PowerPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharp.PowerPack.Linq" Condition="$(TargetFrameworkVersion) == 'v3.5'">
+      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net20\FSharp.PowerPack.Linq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharp.PowerPack.Metadata" Condition="$(TargetFrameworkVersion) == 'v3.5'">
+      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net20\FSharp.PowerPack.Metadata.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics" Condition="'$(TargetFrameworkVersion)' != 'v3.5'"/>
   </ItemGroup>
 </Project>
