@@ -135,14 +135,8 @@ type BS =
       elif x = x' then
         if o = o' then if l < l' then -1 else 1
         else if o < o' then -1 else 1 
-      else let foldr res b b' =
-              if res <> 0 then res
-              else if b = b' then 0
-                   elif b < b' then -1
-                   else 1
-           let left = [| for i in o..(o+l-1) -> x.[i] |]
-           let right = [| for i' in o'..(o'+l'-1) -> x'.[i'] |]
-           Array.fold2 foldr 0 left right
+      else let left, right = x.[o..(o+l-1)], x'.[o'..(o'+l'-1)] in
+           if left = right then 0 elif left < right then -1 else 1
     override x.Equals(other) = 
       match other with
       | :? BS as other' -> BS.Compare(x, other') = 0
@@ -167,6 +161,7 @@ module ByteString =
   let ofSeq s = let arr = Array.ofSeq s in BS(arr, 0, arr.Length)
   let ofList l = BS(Array.ofList l, 0, l.Length)
   let ofString (s:string) = s.ToCharArray() |> Array.map byte |> create
+  let toArray (bs:BS) = bs.Array.[bs.Offset..(bs.Count - 1)]
   let toSeq (bs:BS) =
     seq { for i in bs.Offset..(bs.Offset + bs.Count - 1) do yield bs.Array.[i] }
   let toList (bs:BS) =
@@ -193,7 +188,7 @@ module ByteString =
   let cons hd (bs:BS) =
     let x,o,l = bs.Array, bs.Offset, bs.Count in
     if l = 0 then singleton hd
-    else let buffer = Array.init (l + 1) byte
+    else let buffer = Array.zeroCreate<byte> (l + 1)
          Buffer.SetByte(buffer,0,hd)
          Buffer.BlockCopy(x,o,buffer,1,l)
          BS(buffer,0,l+1)
@@ -206,7 +201,7 @@ module ByteString =
     elif isEmpty b then a
     else let x,o,l = a.Array, a.Offset, a.Count
          let x',o',l' = b.Array, b.Offset, b.Count
-         let buffer = Array.init (l + l') byte
+         let buffer = Array.zeroCreate<byte> (l + l')
          Buffer.BlockCopy(x,o,buffer,0,l)
          Buffer.BlockCopy(x',o',buffer,l,l')
          BS(buffer,0,l+l')

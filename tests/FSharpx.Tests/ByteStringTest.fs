@@ -6,6 +6,18 @@ open FSharpx.ByteString
 open NUnit.Framework
 open FsUnit
 
+let comparisonTests = [|
+  [| box (create ""B); box (create ""B); box 0 |]
+  [| box (create "a"B); box (create "a"B); box 0 |]
+  [| box (create "a"B); box (create "b"B); box -1 |]
+  [| box (create "b"B); box (create "a"B); box 1 |]
+|]
+  
+[<Test>]
+[<TestCaseSource("comparisonTests")>]
+let ``test ByteString comparison should correctly return -1, 0, or 1``(left:BS, right:BS, result:int) =
+  BS.Compare(left, right) |> should equal result
+
 [<Test>]
 let ``test ByteString_length should return the length of the byte string``() =
   let input = create "Hello, world!"B
