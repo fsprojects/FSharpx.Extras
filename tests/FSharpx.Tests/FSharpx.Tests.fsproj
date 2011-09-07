@@ -33,6 +33,7 @@
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
     <None Include="packages.config" />
+    <Compile Include="FsUnit.fs" />
     <Compile Include="ListExtensionsTest.fs" />
     <Compile Include="DictionaryExtensionsTests.fs" />
     <Compile Include="JoinListTest.fs" />
@@ -86,10 +87,6 @@
       <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net20\FSharp.PowerPack.Metadata.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FsUnit.NUnit-0.9.0">
-      <HintPath>..\..\packages\FsUnit.0.9.1\Lib\FsUnit.NUnit-0.9.0.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="nunit.framework">
       <HintPath>..\..\packages\NUnit.2.5.9.10348\lib\nunit.framework.dll</HintPath>
@@ -105,7 +102,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" Condition="'$(TargetFrameworkVersion)' != 'v3.5'"/>
+    <Reference Include="System.Numerics" Condition="'$(TargetFrameworkVersion)' != 'v3.5'" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\FSharpx\FSharpx.fsproj">
