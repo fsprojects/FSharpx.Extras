@@ -21,10 +21,10 @@ let ``When throwing an exception, it should catch the exception``() =
   let message = "failed"
   runCont (Continuation.throw (Exception(message))) (fun _ -> "didn't handle exception") (fun (e:exn) -> e.Message) |> should equal message
 
-(* Test callCC *)
+(* Test callcc *)
 let sum l =
   let rec sum l = cont {
-    let! result = callCC (fun exit1 -> cont {
+    let! result = callcc (fun exit1 -> cont {
       match l with
       | [] -> return 0
       | h::t when h = 2 -> return! exit1 42
@@ -34,11 +34,11 @@ let sum l =
   runCont (sum l) id (fun _ -> -1)
 
 [<Test>]
-let ``When summing a list without a 2 via callCC it should return 8``() =
+let ``When summing a list without a 2 via callcc it should return 8``() =
   sum [1;1;3;3] |> should equal 8
 
 [<Test>]
-let ``When summing a list containing 2 via callCC it should return 43``() =
+let ``When summing a list containing 2 via callcc it should return 43``() =
   sum [1;2;3] |> should equal 43
 
 (* Test Coroutine *)
