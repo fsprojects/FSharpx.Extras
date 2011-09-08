@@ -32,6 +32,16 @@ module Monoid =
       override this.mappend a b = a @ b
   
   MonoidAssociations.Add(new ListMonoid<string>())
+
+  type IntSumMonoid() =
+    inherit Monoid<int>()
+      override this.mempty = 0
+      override this.mappend a b = a + b
+
+  type IntProductMonoid() =
+    inherit Monoid<int>()
+      override this.mempty = 1
+      override this.mappend a b = a * b
   
 module Operators =
 
@@ -108,7 +118,16 @@ module Option =
       | None -> Nullable()
       | Some x -> Nullable(x)
 
-
+  type OptionMonoid<'a>(m: 'a Monoid.Monoid) =
+    inherit Monoid.Monoid<'a option>()
+      override this.mempty = None
+      override this.mappend a b = 
+        match a,b with
+        | Some a, Some b -> Some (m.mappend a b)
+        | Some a, None   -> Some a
+        | None  , Some a -> Some a
+        | None  , None   -> None
+        
 module State =
 
   type State<'a, 's> = 's -> 'a * 's
