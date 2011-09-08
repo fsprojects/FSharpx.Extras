@@ -33,15 +33,23 @@ module Monoid =
   
   MonoidAssociations.Add(new ListMonoid<string>())
 
+  type 'a Sum = Sum of 'a
+
   type IntSumMonoid() =
-    inherit Monoid<int>()
-      override this.mempty = 0
-      override this.mappend a b = a + b
+    inherit Monoid<Sum<int>>()
+      override this.mempty = Sum 0
+      override this.mappend (Sum a) (Sum b) = Sum (a + b)
+
+  MonoidAssociations.Add(new IntSumMonoid())
+
+  type 'a Product = Product of 'a
 
   type IntProductMonoid() =
-    inherit Monoid<int>()
-      override this.mempty = 1
-      override this.mappend a b = a * b
+    inherit Monoid<Product<int>>()
+      override this.mempty = Product 1
+      override this.mappend (Product a) (Product b) = Product (a * b)
+
+  MonoidAssociations.Add(new IntProductMonoid())
   
 module Operators =
 
