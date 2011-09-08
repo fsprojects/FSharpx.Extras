@@ -28,7 +28,7 @@ let validateAddressLines =
 //let inline konst2 a _ _ = a
 
 let validateAddress (a: Address) = 
-    puree a
+    returnM a
     <* nonNull "Post code can't be null" a.Postcode
     <* validateAddressLines a
 
@@ -62,7 +62,7 @@ let ValidateCustomer() =
                                     Order(ProductName = null , Cost = (-1m).n)
                      ]))
     let result = 
-        puree customer
+        returnM customer
         <* nonNull "Surname can't be null" customer.Surname
         <* notEqual "foo" "Surname can't be foo" customer.Surname
         <* validateAddress customer.Address
@@ -75,7 +75,7 @@ let ValidateCustomer() =
 let ``using ap``() =
   let customer = Customer()
   let result = 
-    puree (fun _ _ -> customer)
+    returnM (fun _ _ -> customer)
     |> Validation.ap (nonNull "Surname can't be null" customer.Surname)
     |> Validation.ap (notEqual "foo" "Surname can't be foo" customer.Surname)
   match result with
@@ -93,7 +93,7 @@ let ``validation with monoid``() =
   let notEqual a = validator ((<>) a)
   let lengthNotEquals l = validator (fun (x: string) -> x.Length <> l)
   let validateString x = 
-    Either.puree x
+    Either.returnM x
     |> v.apl (notEqual "hello" x)
     |> v.apl (lengthNotEquals 5 x)
   match validateString "hello" with

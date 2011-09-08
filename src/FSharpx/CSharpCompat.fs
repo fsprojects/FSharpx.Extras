@@ -268,7 +268,7 @@ type FSharpChoice =
 
     [<Extension>]
     static member Join (c: Choice<'a, string list>, inner: Choice<'b, string list>, outerKeySelector: Func<'a,'c>, innerKeySelector: Func<'b,'c>, resultSelector: Func<'a,'b,'d>) =
-      Either.puree (fun a b -> resultSelector.Invoke(a,b)) 
+      Either.returnM (fun a b -> resultSelector.Invoke(a,b)) 
       |> Validation.ap c 
       |> Validation.ap inner 
 

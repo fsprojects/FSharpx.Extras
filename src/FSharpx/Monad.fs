@@ -344,7 +344,7 @@ module Writer =
   let inline (>>.) m f = bindM writer m (fun _ -> f)
 
 module Either =
-  let puree = Choice1Of2
+  let returnM = Choice1Of2
 
   let ap x f = 
     match f,x with
@@ -374,7 +374,7 @@ module Either =
   let inline (>>.) m1 m2 = m1 >>= (fun _ -> m2)
 
   type EitherBuilder() =
-    member this.Return a = puree a
+    member this.Return a = returnM a
     member this.Bind(m,f) = bind f m
 
 module Validation =
@@ -399,12 +399,12 @@ module Validation =
   let inline ( <*) a b = map2 (fun z _ -> z) a b
 
   let seqValidator f = 
-      let zero = puree []
+      let zero = returnM []
       Seq.map f >> Seq.fold (map2 (flip List.cons)) zero
 
   type CustomValidation<'a>(monoid: 'a Monoid) =
     member this.ap x = apm monoid x
-    member this.map2 f a b = puree f |> this.ap a |> this.ap b
+    member this.map2 f a b = returnM f |> this.ap a |> this.ap b
     member this.apr b a = this.map2 (fun _ z -> z) a b
     member this.apl b a = this.map2 (fun z _ -> z) a b
 
