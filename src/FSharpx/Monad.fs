@@ -17,22 +17,36 @@ module Monoid =
   
   type MonoidAssociations private() =
     static let associations = new Dictionary<Type, obj>()
-    static member Add<'a>(monoid : Monoid<'a>) = associations.Add(typeof<'a>, monoid)
+    static member Add<'a>(monoid : Monoid<'a>) =
+      if associations.ContainsKey(typeof<'a>) then
+        if associations.Remove(typeof<'a>) then
+          associations.Add(typeof<'a>, monoid)
+        else failwithf "Could not remove monoid association for %O" <| typeof<'a>
+      else associations.Add(typeof<'a>, monoid)
     static member Get<'a>() =
       match associations.TryGetValue(typeof<'a>) with
       | true, assoc -> assoc :?> Monoid<'a>
-      | false, _    -> failwithf "No IMonoid defined for %O" <| typeof<'a>
+      | false, _    -> failwithf "No monoid defined for %O" <| typeof<'a>
   
-  let mempty<'a>() = MonoidAssociations.Get<'a>().mempty
+  let mempty<'a> = MonoidAssociations.Get<'a>().mempty
   let mappend<'a> a b = MonoidAssociations.Get<'a>().mappend a b
+  let mconcat<'a> xs = MonoidAssociations.Get<'a>().mconcat xs
 
   type ListMonoid<'a>() =
     inherit Monoid<'a list>()
       override this.mempty = []
       override this.mappend a b = a @ b
-  
-  MonoidAssociations.Add(new ListMonoid<string>())
 
+  type OptionMonoid<'a>(m: 'a Monoid) =
+    inherit Monoid<'a option>()
+      override this.mempty = None
+      override this.mappend a b = 
+        match a,b with
+        | Some a, Some b -> Some (m.mappend a b)
+        | Some a, None   -> Some a
+        | None  , Some a -> Some a
+        | None  , None   -> None
+        
   type 'a Sum = Sum of 'a
 
   type IntSumMonoid() =
@@ -43,7 +57,6 @@ module Monoid =
   MonoidAssociations.Add(new IntSumMonoid())
 
   type 'a Product = Product of 'a
-
   type IntProductMonoid() =
     inherit Monoid<Product<int>>()
       override this.mempty = Product 1
@@ -126,16 +139,6 @@ module Option =
       | None -> Nullable()
       | Some x -> Nullable(x)
 
-  type OptionMonoid<'a>(m: 'a Monoid.Monoid) =
-    inherit Monoid.Monoid<'a option>()
-      override this.mempty = None
-      override this.mappend a b = 
-        match a,b with
-        | Some a, Some b -> Some (m.mappend a b)
-        | Some a, None   -> Some a
-        | None  , Some a -> Some a
-        | None  , None   -> None
-        
 module State =
 
   type State<'a, 's> = 's -> 'a * 's
@@ -293,19 +296,18 @@ module Writer =
     
   type Writer<'w, 'a> = unit -> 'a * 'w
 
-  let bind k writer =
-      fun () ->
-        let (a, w) = writer()
-        let (a', w') = (k a)()
-        (a', mappend w w')
+  let bind (k:'a -> Writer<'w,'b>) (writer:Writer<'w,'a>) : Writer<'w,'b> =
+    fun () ->
+      let (a, w) = writer()
+      let (a', w') = (k a)()
+      (a', mappend w w')
   
   /// The writer monad.
   /// This monad comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.
   type WriterBuilder() =
     member this.Return(a) : Writer<'w,'a> = fun () -> (a, mempty)
     member this.ReturnFrom(w:Writer<'w,'a>) = w
-    member this.Bind(writer:Writer<'w,'a>, k:'a -> Writer<'w,'b>) : Writer<'w,'b> =
-      bind k writer
+    member this.Bind(writer, k) = bind k writer
     member this.Zero() = this.Return ()
     member this.TryWith(writer:Writer<'w,'a>, handler:exn -> Writer<'w,'a>) : Writer<'w,'a> =
       fun () -> try writer()
@@ -342,14 +344,14 @@ module Writer =
   open Operators
   
   let inline returnM x = returnM writer x
-  let inline (>>=) m f = bindM writer m f
+  let inline (>>=) m f = bind m f
   let inline (<*>) f m = applyM writer writer f m
   let inline map f m = liftM writer f m
   let inline (<!>) f m = map f m
   let inline map2 f a b = returnM f <*> a <*> b
   let inline ( *>) x y = map2 (fun _ z -> z) x y
   let inline ( <*) x y = map2 (fun z _ -> z) x y
-  let inline (>>.) m f = bindM writer m (fun _ -> f)
+  let inline (>>.) m f = bind m (fun _ -> f)
 
 module Either =
   let returnM = Choice1Of2
@@ -388,6 +390,8 @@ module Either =
 module Validation =
   open Either
   open Monoid
+
+  MonoidAssociations.Add(new ListMonoid<string>())
 
   let apa append x f = 
     match f,x with
