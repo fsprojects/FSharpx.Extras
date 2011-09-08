@@ -402,6 +402,11 @@ module Validation =
       let zero = puree []
       Seq.map f >> Seq.fold (map2 (flip List.cons)) zero
 
+  type CustomValidation<'a>(monoid: 'a Monoid) =
+    member this.ap x = apm monoid x
+    member this.map2 f a b = puree f |> this.ap a |> this.ap b
+    member this.apr b a = this.map2 (fun _ z -> z) a b
+    member this.apl b a = this.map2 (fun z _ -> z) a b
 
 module Continuation =
 
