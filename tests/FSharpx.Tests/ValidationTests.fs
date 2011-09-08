@@ -68,7 +68,7 @@ let ValidateCustomer() =
         <* validateAddress customer.Address
         <* validateOrders customer.Orders
     match result with
-    | Choice1Of2 c -> failwith "Valid customer: %A" c
+    | Choice1Of2 c -> failwithf "Valid customer: %A" c
     | Choice2Of2 errors -> printfn "Invalid customer. Errors:\n%A" errors
 
 [<Test>]
@@ -79,5 +79,5 @@ let ``using ap``() =
     |> Validation.ap (nonNull "Surname can't be null" customer.Surname)
     |> Validation.ap (notEqual "foo" "Surname can't be foo" customer.Surname)
   match result with
-  | Choice1Of2 c -> failwith "Valid customer: %A" c
+  | Choice1Of2 c -> failwithf "Valid customer: %A" c
   | Choice2Of2 errors -> printfn "Invalid customer. Errors:\n%A" errors
