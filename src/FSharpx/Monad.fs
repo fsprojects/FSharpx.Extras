@@ -23,7 +23,7 @@ module Monoid =
       | true, assoc -> assoc :?> Monoid<'a>
       | false, _    -> failwithf "No IMonoid defined for %O" <| typeof<'a>
   
-  let mempty<'a> = MonoidAssociations.Get<'a>().mempty
+  let mempty<'a>() = MonoidAssociations.Get<'a>().mempty
   let mappend<'a> a b = MonoidAssociations.Get<'a>().mappend a b
 
   type ListMonoid<'a>() =
