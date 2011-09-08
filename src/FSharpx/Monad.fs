@@ -302,7 +302,7 @@ module Writer =
   /// The writer monad.
   /// This monad comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.
   type WriterBuilder() =
-    member this.Return(a) : Writer<'w,'a> = fun () -> (a, mempty())
+    member this.Return(a) : Writer<'w,'a> = fun () -> (a, mempty)
     member this.ReturnFrom(w:Writer<'w,'a>) = w
     member this.Bind(writer:Writer<'w,'a>, k:'a -> Writer<'w,'b>) : Writer<'w,'b> =
       bind k writer
