@@ -99,3 +99,19 @@ let ``validation with monoid``() =
   match validateString "hello" with
   | Choice1Of2 c -> failwithf "Valid string: %s" c
   | Choice2Of2 (Monoid.Sum e) -> Assert.AreEqual(2, e)
+
+[<Test>]
+let ``validation with implicit monoid``() =
+  let validator pred value =
+      if pred value
+          then Choice1Of2 value
+          else Choice2Of2 (Monoid.Sum 1)
+  let notEqual a = validator ((<>) a)
+  let lengthNotEquals l = validator (fun (x: string) -> x.Length <> l)
+  let validateString x = 
+    Either.returnM x
+    <* notEqual "hello" x
+    <* lengthNotEquals 5 x
+  match validateString "hello" with
+  | Choice1Of2 c -> failwithf "Valid string: %s" c
+  | Choice2Of2 (Monoid.Sum e) -> Assert.AreEqual(2, e)

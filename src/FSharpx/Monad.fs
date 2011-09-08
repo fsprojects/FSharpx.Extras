@@ -398,7 +398,7 @@ module Validation =
 
   let inline apm (m: _ Monoid) = apa m.mappend
 
-  let inline ap x = apm (ListMonoid<string>()) x
+  let inline ap x = apa Monoid.mappend x
 
   let inline (<*>) f x = ap x f
   let inline map2 f a b = f <!> a <*> b
