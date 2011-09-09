@@ -78,10 +78,6 @@ module Operators =
 
 module Async =
   open Operators
-
-  let callcc (f: ('a -> Async<'b>) -> Async<'a>) : Async<'a> =
-    Async.FromContinuations(fun (cont, econt, ccont) ->
-        Async.StartWithContinuations(f (fun a -> Async.FromContinuations(fun (_, _, _) -> cont a)), cont, econt, ccont))
     
   let inline bind f m = async.Bind(m,f)
   let inline returnM x = returnM async x
@@ -440,7 +436,7 @@ module Continuation =
   
   let runCont (c:Cont<_,_>) cont econt = c cont econt
   let throw exn : Cont<'a,'r> = fun cont econt -> econt exn
-  let callcc (f: ('a -> Cont<'b,'r>) -> Cont<'a,'r>) : Cont<'a,'r> =
+  let callCC (f: ('a -> Cont<'b,'r>) -> Cont<'a,'r>) : Cont<'a,'r> =
     fun cont econt -> runCont (f (fun a -> (fun _ _ -> cont a))) cont econt
   let bind f comp1 = 
     fun cont econt ->
@@ -488,9 +484,9 @@ module Continuation =
 
     member this.Put(task) =
       let withYield = cont {
-        do! callcc <| fun exit ->
+        do! callCC <| fun exit ->
             task <| fun () ->
-            callcc <| fun c ->
+            callCC <| fun c ->
             tasks.Enqueue(c())
             exit()
         if tasks.Count <> 0 then
