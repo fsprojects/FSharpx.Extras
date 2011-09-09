@@ -60,6 +60,7 @@ module Async =
   let inline bind f m = async.Bind(m,f)
   let inline returnM x = returnM async x
   let inline (>>=) m f = bindM async m f
+  let inline (=<<) f m = bindM async m f
   let inline (<*>) f m = applyM async async f m
   let inline pipe m f = liftM async f m
   let inline pipe2 x y f = returnM f <*> x <*> y
@@ -101,6 +102,7 @@ module Option =
   
   let inline returnM x = returnM maybe x
   let inline (>>=) m f = bindM maybe m f
+  let inline (=<<) f m = bindM maybe m f
   let inline (<*>) f m = applyM maybe maybe f m
   let inline (<!>) f m = Option.map f m
   let inline map2 f a b = returnM f <*> a <*> b
@@ -159,6 +161,7 @@ module State =
   
   let inline returnM x = returnM state x
   let inline (>>=) m f = bindM state m f
+  let inline (=<<) f m = bindM state m f
   let inline (<*>) f m = applyM state state f m
   let inline map f m = liftM state f m
   let inline (<!>) f m = map f m
@@ -209,6 +212,7 @@ module Reader =
   
   let inline returnM x = returnM reader x
   let inline (>>=) m f = bindM reader m f
+  let inline (=<<) f m = bindM reader m f
   let inline (<*>) f m = applyM reader reader f m
   let inline map f m = liftM reader f m
   let inline (<!>) f m = map f m
@@ -352,6 +356,7 @@ module Either =
       | Choice2Of2 x -> Choice2Of2 x
   
   let inline (>>=) m f = bind f m
+  let inline (=<<) f m = bind f m
   let inline (>>.) m1 m2 = m1 >>= (fun _ -> m2)
 
   type EitherBuilder() =
@@ -442,6 +447,7 @@ module Continuation =
   
   let inline returnM x = returnM cont x
   let inline (>>=) m f = bindM cont m f
+  let inline (=<<) f m = bindM cont m f
   let inline (<*>) f m = applyM cont cont f m
   let inline map f m = liftM cont f m
   let inline (<!>) f m = map f m
@@ -488,6 +494,7 @@ module Distribution =
           |> Seq.concat : 'b Distribution
   
   let inline (>>=) dist f = bind f dist
+  let inline (=<<) f dist = bind f dist
   
   let returnM (value:'a) =   
       Seq.singleton { Value = value ; Probability = 1N/1N }
@@ -661,6 +668,7 @@ module Iteratee =
   
   let inline returnM x = Yield(x, Empty)
   let inline (>>=) m f = bind m f
+  let inline (=<<) f m = bind m f
   let inline (<*>) f m = f >>= fun f' -> m >>= fun m' -> returnM (f' m')
   let inline map f m = m >>= fun x -> returnM (f x)
   let inline (<!>) f m = map f m
