@@ -15,23 +15,6 @@ module Monoid =
     abstract member mconcat : 'a seq -> 'a
     default x.mconcat a = Seq.fold x.mappend x.mempty a
   
-  type MonoidAssociations private() =
-    static let associations = new Dictionary<Type, obj>()
-    static member Add<'a>(monoid : Monoid<'a>) =
-      if associations.ContainsKey(typeof<'a>) then
-        if associations.Remove(typeof<'a>) then
-          associations.Add(typeof<'a>, monoid)
-        else failwithf "Could not remove monoid association for %O" <| typeof<'a>
-      else associations.Add(typeof<'a>, monoid)
-    static member Get<'a>() =
-      match associations.TryGetValue(typeof<'a>) with
-      | true, assoc -> assoc :?> Monoid<'a>
-      | false, _    -> failwithf "No monoid defined for %O" <| typeof<'a>
-  
-  let mempty<'a> = MonoidAssociations.Get<'a>().mempty
-  let mappend<'a> a b = MonoidAssociations.Get<'a>().mappend a b
-  let mconcat<'a> xs = MonoidAssociations.Get<'a>().mconcat xs
-
   type ListMonoid<'a>() =
     inherit Monoid<'a list>()
       override this.mempty = []
@@ -48,21 +31,16 @@ module Monoid =
         | None  , None   -> None
         
   type 'a Sum = Sum of 'a
-
   type IntSumMonoid() =
     inherit Monoid<Sum<int>>()
       override this.mempty = Sum 0
       override this.mappend (Sum a) (Sum b) = Sum (a + b)
-
-  MonoidAssociations.Add(new IntSumMonoid())
 
   type 'a Product = Product of 'a
   type IntProductMonoid() =
     inherit Monoid<Product<int>>()
       override this.mempty = Product 1
       override this.mappend (Product a) (Product b) = Product (a * b)
-
-  MonoidAssociations.Add(new IntProductMonoid())
   
 module Operators =
 
@@ -296,18 +274,21 @@ module Writer =
     
   type Writer<'w, 'a> = unit -> 'a * 'w
 
-  let bind (k:'a -> Writer<'w,'b>) (writer:Writer<'w,'a>) : Writer<'w,'b> =
+  let bind (m: _ Monoid) (k:'a -> Writer<'w,'b>) (writer:Writer<'w,'a>) : Writer<'w,'b> =
     fun () ->
       let (a, w) = writer()
       let (a', w') = (k a)()
-      (a', mappend w w')
+      (a', m.mappend w w')
+
+  let returnM (monoid: _ Monoid) a = 
+    fun () -> (a, monoid.mempty)
   
   /// The writer monad.
   /// This monad comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.
-  type WriterBuilder() =
-    member this.Return(a) : Writer<'w,'a> = fun () -> (a, mempty)
+  type WriterBuilder<'w>(monoid: 'w Monoid) =
+    member this.Return(a) : Writer<'w,'a> = returnM monoid a
     member this.ReturnFrom(w:Writer<'w,'a>) = w
-    member this.Bind(writer, k) = bind k writer
+    member this.Bind(writer, k) = bind monoid k writer
     member this.Zero() = this.Return ()
     member this.TryWith(writer:Writer<'w,'a>, handler:exn -> Writer<'w,'a>) : Writer<'w,'a> =
       fun () -> try writer()
@@ -326,33 +307,23 @@ module Writer =
     member this.For(sequence:seq<'a>, body:'a -> Writer<'w,unit>) =
       this.Using(sequence.GetEnumerator(), 
                  fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current)))
-  let writer = new WriterBuilder()
   
   let tell   w = fun () -> ((), w)
   let listen m = fun () -> let (a, w) = m() in ((a, w), w)
   let pass   m = fun () -> let ((a, f), w) = m() in (a, f w)
   
-  let listens f m = writer {
-    let! (a, b) = m
-    return (a, f b) }
+  let listens monoid f m = 
+    let writer = WriterBuilder(monoid)
+    writer {
+      let! (a, b) = m
+      return (a, f b) }
   
-  let censor (f:'w1 -> 'w2) (m:Writer<'w1,'a>) : Writer<'w2,'a> =
+  let censor monoid (f:'w1 -> 'w2) (m:Writer<'w1,'a>) : Writer<'w2,'a> =
+    let writer = WriterBuilder(monoid)
     writer { let! a = m
              return (a, f)
            } |> pass
   
-  open Operators
-  
-  let inline returnM x = returnM writer x
-  let inline (>>=) m f = bind m f
-  let inline (<*>) f m = applyM writer writer f m
-  let inline map f m = liftM writer f m
-  let inline (<!>) f m = map f m
-  let inline map2 f a b = returnM f <*> a <*> b
-  let inline ( *>) x y = map2 (fun _ z -> z) x y
-  let inline ( <*) x y = map2 (fun z _ -> z) x y
-  let inline (>>.) m f = bind m (fun _ -> f)
-
 module Either =
   let returnM = Choice1Of2
 
@@ -391,8 +362,6 @@ module Validation =
   open Either
   open Monoid
 
-  MonoidAssociations.Add(new ListMonoid<string>())
-
   let apa append x f = 
     match f,x with
     | Choice1Of2 f, Choice1Of2 x   -> Choice1Of2 (f x)
@@ -402,7 +371,7 @@ module Validation =
 
   let inline apm (m: _ Monoid) = apa m.mappend
 
-  let inline ap x = apa Monoid.mappend x
+  let inline ap x = apm (ListMonoid<string>()) x
 
   let inline (<*>) f x = ap x f
   let inline map2 f a b = f <!> a <*> b

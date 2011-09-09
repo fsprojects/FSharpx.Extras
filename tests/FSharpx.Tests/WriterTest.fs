@@ -1,11 +1,11 @@
 ﻿module FSharpx.Tests.WriterTest
 
-open FSharpx.Monoid
+open FSharpx
 open FSharpx.Writer
 open NUnit.Framework
 open FsUnit
 
-MonoidAssociations.Add(new ListMonoid<string>())
+let writer = WriterBuilder(Monoid.ListMonoid<string>())
 
 let logMsg (message:string) = tell [message]
 let processFile file = printfn "%s" file
