@@ -371,23 +371,26 @@ module Validation =
 
   let inline apm (m: _ Monoid) = apa m.mappend
 
-  let inline ap x = apm (ListMonoid<string>()) x
-
-  let inline (<*>) f x = ap x f
-  let inline map2 f a b = f <!> a <*> b
-
-  let inline ( *>) a b = map2 (fun _ z -> z) a b
-  let inline ( <*) a b = map2 (fun z _ -> z) a b
-
-  let seqValidator f = 
-      let zero = returnM []
-      Seq.map f >> Seq.fold (map2 (flip List.cons)) zero
-
   type CustomValidation<'a>(monoid: 'a Monoid) =
     member this.ap x = apm monoid x
     member this.map2 f a b = returnM f |> this.ap a |> this.ap b
     member this.apr b a = this.map2 (fun _ z -> z) a b
     member this.apl b a = this.map2 (fun z _ -> z) a b
+
+  let private stringListValidation = CustomValidation(ListMonoid<string>())
+
+  let ap = stringListValidation.ap
+
+  let inline (<*>) f x = ap x f
+  let map2 = stringListValidation.map2
+
+  let ( *>) = stringListValidation.apr
+  let ( <*) = stringListValidation.apl
+
+  let seqValidator f = 
+      let zero = returnM []
+      Seq.map f >> Seq.fold (map2 (flip List.cons)) zero
+
 
 module Continuation =
 
