@@ -119,13 +119,13 @@ type FSharpOption =
 
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>, mapper: Func<_,_,_>) =
-      let mapper = Option.map2 (fun a b -> mapper.Invoke(a,b))
+      let mapper = Option.map2 (curry mapper.Invoke)
       let v = Option.bind f.Invoke o
       mapper o v
 
     [<Extension>]
     static member Aggregate (o, state, f: Func<_,_,_>) =
-        Option.fold (fun s x -> f.Invoke(s,x)) state o
+        Option.fold (curry f.Invoke) state o
 
     [<Extension>]
     static member Where (o: _ option, pred: _ Predicate) =
@@ -259,7 +259,7 @@ type FSharpChoice =
 
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>, mapper: Func<_,_,_>) =
-      let mapper = Either.map2 (fun a b -> mapper.Invoke(a,b))
+      let mapper = Either.map2 (curry mapper.Invoke)
       let v = Either.bind f.Invoke o
       mapper o v
 
@@ -268,7 +268,7 @@ type FSharpChoice =
 
     [<Extension>]
     static member Join (c: Choice<'a, string list>, inner: Choice<'b, string list>, outerKeySelector: Func<'a,'c>, innerKeySelector: Func<'b,'c>, resultSelector: Func<'a,'b,'d>) =
-      Either.returnM (fun a b -> resultSelector.Invoke(a,b)) 
+      Either.returnM (curry resultSelector.Invoke) 
       |> Validation.ap c 
       |> Validation.ap inner 
 
@@ -358,13 +358,13 @@ module Dictionary =
     | _ -> None
 
   [<Extension>]
-  let TryFind (d: IDictionary<_,_>, key) = tryFind key d
+  let TryFind (d, key) = tryFind key d
 
 [<Extension>]
 type AsyncExtensions =
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>, mapper: Func<_,_,_>) =
-      let mapper = Async.map2 (fun a b -> mapper.Invoke(a,b))
+      let mapper = Async.map2 (curry mapper.Invoke)
       let v = Async.bind f.Invoke o
       mapper o v
 
