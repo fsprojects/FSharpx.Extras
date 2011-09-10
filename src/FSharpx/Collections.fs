@@ -269,3 +269,62 @@ module ByteString =
   let take n bs = splitAt n bs |> fst 
   let takeWhile pred bs = span pred bs |> fst
   let takeUntil pred bs = split pred bs |> fst 
+
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module NameValueCollection =
+    open System.Collections.Specialized
+    open System.Linq
+
+    /// <summary>
+    /// Returns a new <see cref="NameValueCollection"/> with the concatenation of two <see cref="NameValueCollection"/>s
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    let concat a b = 
+      let x = NameValueCollection()
+      x.Add a
+      x.Add b
+      x
+
+    /// <summary>
+    /// In-place add of a key-value pair to a <see cref="NameValueCollection"/>
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    let inline addInPlace (x: NameValueCollection) (a,b) = x.Add(a,b)
+
+    /// Adds an element to a copy of an existing NameValueCollection
+    let add name value (x: NameValueCollection) =
+      let r = NameValueCollection x
+      r.Add(name,value)
+      r
+
+    /// <summary>
+    /// Returns a <see cref="NameValueCollection"/> as a sequence of key-value pairs.
+    /// Note that keys may be duplicated.
+    /// </summary>
+    /// <param name="a"></param>
+    let toSeq (a: NameValueCollection) =
+      a.AllKeys
+      |> Seq.collect (fun k -> a.GetValues k |> Seq.map (fun v -> k,v))
+
+    /// <summary>
+    /// Returns a <see cref="NameValueCollection"/> as a list of key-value pairs.
+    /// Note that keys may be duplicated.
+    /// </summary>
+    /// <param name="a"></param>
+    let inline toList a = toSeq a |> Seq.toList
+
+    /// <summary>
+    /// Creates a <see cref="NameValueCollection"/> from a list of key-value pairs
+    /// </summary>
+    /// <param name="l"></param>
+    let fromSeq l =
+      let x = NameValueCollection()
+      Seq.iter (addInPlace x) l
+      x
+
+    let toLookup a =
+      let s = toSeq a
+      s.ToLookup(fst, snd)
