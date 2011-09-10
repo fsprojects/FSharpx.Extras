@@ -164,9 +164,40 @@ module Option =
       | Some x -> Nullable(x)
 
   let inline fromBool b = if b then Some() else None
+
   let fromChoice =
     function
     | Choice1Of2 a -> Some a
+    | _ -> None
+
+  let inline getOrElse v =
+    function
+    | Some x -> x
+    | None -> v
+
+  let inline getOrElseLazy (v: _ Lazy) =
+    function
+    | Some x -> x
+    | None -> v.Value
+
+  let inline getOrElseF v =
+    function
+    | Some x -> x
+    | None -> v()
+
+  let getOrDefault =
+    function
+    | Some x -> x
+    | None -> Unchecked.defaultof<_>
+    
+  let inline orElse v =
+    function
+    | Some x -> Some x
+    | None -> v
+
+  let inline filter pred =
+    function
+    | Some x when pred x -> Some x
     | _ -> None
 
 module State =
