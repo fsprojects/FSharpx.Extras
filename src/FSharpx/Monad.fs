@@ -43,17 +43,17 @@ module Monoid =
         | None  , Some a -> Some a
         | None  , None   -> None
         
-  /// Monoid 0,+
-  type IntSumMonoid() =
-    inherit Monoid<int>()
-      override this.mempty = 0
-      override this.mappend a b = a + b
+  /// Monoid (int,0,+)
+  let IntSumMonoid = 
+    { new Monoid<int>() with
+        override this.mempty = 0
+        override this.mappend a b = a + b }
 
-  /// Monoid 1,*
-  type IntProductMonoid() =
-    inherit Monoid<int>()
-      override this.mempty = 1
-      override this.mappend a b = a * b
+  /// Monoid (int,1,*)
+  let IntProductMonoid =
+    { new Monoid<int>() with
+        override this.mempty = 1
+        override this.mappend a b = a * b }
 
 /// Generic monadic operators  
 module Operators =
