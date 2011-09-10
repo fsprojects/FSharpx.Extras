@@ -163,6 +163,12 @@ module Option =
       | None -> Nullable()
       | Some x -> Nullable(x)
 
+  let inline fromBool b = if b then Some() else None
+  let fromChoice =
+    function
+    | Choice1Of2 a -> Some a
+    | _ -> None
+
 module State =
 
   type State<'a, 's> = 's -> 'a * 's
@@ -422,6 +428,12 @@ module Either =
   type EitherBuilder() =
     member this.Return a = returnM a
     member this.Bind(m,f) = bind f m
+
+  let toOption = Option.fromChoice
+  let fromOption o = 
+    function
+    | Some a -> Choice1Of2 a
+    | None -> Choice2Of2 o
 
 module Validation =
   open Either
