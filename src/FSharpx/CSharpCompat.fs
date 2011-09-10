@@ -221,9 +221,6 @@ type FSharpOption =
         | :? int as i -> Some i
         | _ -> None
 
-open Either
-open Validation
-
 [<Extension>]
 type FSharpChoice =
 
@@ -255,28 +252,28 @@ type FSharpChoice =
 
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>) =
-      Either.bind f.Invoke o
+      Choice.bind f.Invoke o
 
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>, mapper: Func<_,_,_>) =
-      let mapper = Either.map2 (curry mapper.Invoke)
-      let v = Either.bind f.Invoke o
+      let mapper = Choice.map2 (curry mapper.Invoke)
+      let v = Choice.bind f.Invoke o
       mapper o v
 
     [<Extension>]
-    static member Select (o, f: Func<_,_>) = map f.Invoke o
+    static member Select (o, f: Func<_,_>) = Choice.map f.Invoke o
 
     [<Extension>]
     static member Join (c: Choice<'a, string list>, inner: Choice<'b, string list>, outerKeySelector: Func<'a,'c>, innerKeySelector: Func<'b,'c>, resultSelector: Func<'a,'b,'d>) =
-      Either.returnM (curry resultSelector.Invoke) 
+      Choice.returnM (curry resultSelector.Invoke) 
       |> Validation.ap c 
       |> Validation.ap inner 
 
     [<Extension>]
     static member Ap (f: Choice<Func<_,_>, _>, x) =
       f
-      |> Either.map (fun a -> a.Invoke)
-      |> Either.ap x
+      |> Choice.map (fun a -> a.Invoke)
+      |> Choice.ap x
 
     // validation
 
@@ -294,14 +291,14 @@ type FSharpChoice =
     [<Extension>]
     static member ApV (f: Choice<Func<_,_>, _>, x) =
       f 
-      |> Either.map (fun a -> a.Invoke)
+      |> Choice.map (fun a -> a.Invoke)
       |> Validation.ap x
 
     [<Extension>]
     static member PureValidate x : Choice<_, string list> = Choice1Of2 x
 
     static member EnumerableValidator (f: Func<'a, Choice<'a, string list>>) : Func<'a seq, Choice<'a seq, string list>> =
-      let ff = Validation.seqValidator f.Invoke >> Either.map (fun a -> a :> _ seq)
+      let ff = Validation.seqValidator f.Invoke >> Choice.map (fun a -> a :> _ seq)
       Func<_,_>(ff)
 
     // constructors

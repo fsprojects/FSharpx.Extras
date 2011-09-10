@@ -3,7 +3,7 @@
 open System
 open FSharpx
 open FSharpx.CSharpTests
-open FSharpx.Either
+open FSharpx.Choice
 open FSharpx.Validation
 open NUnit.Framework
 open Microsoft.FSharp.Core
@@ -39,7 +39,7 @@ let greaterThan o = validator ((<?) o)
 let validateOrder (o: Order) =
     let nameNotNull = nonNull "Product name can't be null" o.ProductName
     let positiveCost n = greaterThan (0m).n (sprintf "Cost for product '%s' can't be negative" n) o.Cost
-    nameNotNull >>= positiveCost |> Either.map (fun _ -> o)
+    nameNotNull >>= positiveCost |> Choice.map (fun _ -> o)
 
 (*    validation {
         let! name = nonNull "Product name can't be null" o.ProductName
@@ -93,7 +93,7 @@ let ``validation with monoid``() =
   let notEqual a = validator ((<>) a)
   let lengthNotEquals l = validator (fun (x: string) -> x.Length <> l)
   let validateString x = 
-    Either.returnM x
+    Choice.returnM x
     |> v.apl (notEqual "hello" x)
     |> v.apl (lengthNotEquals 5 x)
   match validateString "hello" with

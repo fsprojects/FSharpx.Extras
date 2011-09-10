@@ -438,7 +438,7 @@ module Writer =
              return (a, f)
            } |> pass
   
-module Either =
+module Choice =
   let returnM = Choice1Of2
 
   let ap x f = 
@@ -488,7 +488,7 @@ module Either =
     | None -> Choice2Of2 o
 
 module Validation =
-  open Either
+  open Choice
   open Monoid
 
   /// Sequential application, parameterized by append
