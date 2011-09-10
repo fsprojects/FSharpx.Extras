@@ -40,6 +40,9 @@ module Seq =
     let tryFindWithIndex pred l =
         l |> index |> Seq.tryFind (fun (_,v) -> pred v)
 
+module Array = 
+  let inline nth i arr = Array.get arr i
+
 module List =
   /// Curried cons
   let inline cons hd tl = hd::tl
