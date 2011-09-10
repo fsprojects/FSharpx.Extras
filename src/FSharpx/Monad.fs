@@ -6,20 +6,33 @@ open System
 module Monoid =
   open System.Collections.Generic
   
-  /// The monoid.
+  /// Monoid (associative binary operation with identity)
   /// The monoid implementation comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.  
   [<AbstractClass>]
   type Monoid<'a>() =
+    /// <summary>
+    /// Identity
+    /// </summary>
     abstract member mempty  : 'a
+
+    /// <summary>
+    /// Associative operation
+    /// </summary>
     abstract member mappend : 'a -> 'a -> 'a
+
+    /// <summary>
+    /// Fold a list using this monoid
+    /// </summary>
     abstract member mconcat : 'a seq -> 'a
     default x.mconcat a = Seq.fold x.mappend x.mempty a
   
+  /// List monoid
   type ListMonoid<'a>() =
     inherit Monoid<'a list>()
       override this.mempty = []
       override this.mappend a b = a @ b
 
+  /// Option wrapper monoid
   type OptionMonoid<'a>(m: 'a Monoid) =
     inherit Monoid<'a option>()
       override this.mempty = None
@@ -31,17 +44,20 @@ module Monoid =
         | None  , None   -> None
         
   type 'a Sum = Sum of 'a
+  /// Monoid 0,+
   type IntSumMonoid() =
     inherit Monoid<Sum<int>>()
       override this.mempty = Sum 0
       override this.mappend (Sum a) (Sum b) = Sum (a + b)
 
   type 'a Product = Product of 'a
+  /// Monoid 1,*
   type IntProductMonoid() =
     inherit Monoid<Product<int>>()
       override this.mempty = Product 1
       override this.mappend (Product a) (Product b) = Product (a * b)
-  
+
+/// Generic monadic operators  
 module Operators =
 
   let inline returnM builder x = (^M: (member Return: 'b -> 'c) (builder, x))
@@ -49,6 +65,8 @@ module Operators =
   let inline liftM builder f m =
     let inline ret x = returnM builder (f x)
     bindM builder m ret
+
+  /// Sequential application
   let inline applyM (builder1:^M1) (builder2:^M2) f m =
     bindM builder1 f <| fun f' ->
       bindM builder2 m <| fun m' ->
@@ -61,15 +79,22 @@ module Async =
   let inline returnM x = returnM async x
   let inline (>>=) m f = bindM async m f
   let inline (=<<) f m = bindM async m f
+  /// Sequential application
   let inline (<*>) f m = applyM async async f m
+  /// Sequential application
+  let inline ap m f = f <*> m
   let inline pipe m f = liftM async f m
   let inline pipe2 x y f = returnM f <*> x <*> y
   let inline pipe3 x y z f = returnM f <*> x <*> y <*> z
   let inline map f m = pipe m f
   let inline map2 f x y = returnM f <*> x <*> y
   let inline (<!>) f m = pipe m f
+  /// Sequence actions, discarding the value of the first argument.
   let inline ( *>) x y = pipe2 x y (fun _ z -> z)
+  /// Sequence actions, discarding the value of the second argument.
   let inline ( <*) x y = pipe2 x y (fun z _ -> z)
+
+  /// Sequentially compose two async actions, discarding any value produced by the first
   let inline (>>.) m f = bindM async m (fun _ -> f)
 
 module Option =
@@ -103,11 +128,18 @@ module Option =
   let inline returnM x = returnM maybe x
   let inline (>>=) m f = bindM maybe m f
   let inline (=<<) f m = bindM maybe m f
+  /// Sequential application
   let inline (<*>) f m = applyM maybe maybe f m
+  /// Sequential application
+  let inline ap m f = f <*> m
   let inline (<!>) f m = Option.map f m
   let inline map2 f a b = returnM f <*> a <*> b
+  /// Sequence actions, discarding the value of the first argument.
   let inline ( *>) x y = map2 (fun _ z -> z) x y
+  /// Sequence actions, discarding the value of the second argument.
   let inline ( <*) x y = map2 (fun z _ -> z) x y
+
+  /// Sequentially compose two maybe actions, discarding any value produced by the first
   let inline (>>.) m f = bindM maybe m (fun _ -> f)
 
   let fromNullable (n: _ Nullable) = 
@@ -162,12 +194,18 @@ module State =
   let inline returnM x = returnM state x
   let inline (>>=) m f = bindM state m f
   let inline (=<<) f m = bindM state m f
+  /// Sequential application
   let inline (<*>) f m = applyM state state f m
+  /// Sequential application
+  let inline ap m f = f <*> m
   let inline map f m = liftM state f m
   let inline (<!>) f m = map f m
   let inline map2 f a b = returnM f <*> a <*> b
+  /// Sequence actions, discarding the value of the first argument.
   let inline ( *>) x y = map2 (fun _ z -> z) x y
+  /// Sequence actions, discarding the value of the second argument.
   let inline ( <*) x y = map2 (fun z _ -> z) x y
+  /// Sequentially compose two state actions, discarding any value produced by the first
   let inline (>>.) m f = bindM state m (fun _ -> f)
 
 module Reader =
@@ -213,12 +251,18 @@ module Reader =
   let inline returnM x = returnM reader x
   let inline (>>=) m f = bindM reader m f
   let inline (=<<) f m = bindM reader m f
+  /// Sequential application
   let inline (<*>) f m = applyM reader reader f m
+  /// Sequential application
+  let inline ap m f = f <*> m
   let inline map f m = liftM reader f m
   let inline (<!>) f m = map f m
   let inline map2 f a b = returnM f <*> a <*> b
+  /// Sequence actions, discarding the value of the first argument.
   let inline ( *>) x y = map2 (fun _ z -> z) x y
+  /// Sequence actions, discarding the value of the second argument.
   let inline ( <*) x y = map2 (fun z _ -> z) x y
+  /// Sequentially compose two reader actions, discarding any value produced by the first
   let inline (>>.) m f = bindM reader m (fun _ -> f)
 
 module Undo =
@@ -337,6 +381,7 @@ module Either =
     | Choice2Of2 e, _            -> Choice2Of2 e
     | _           , Choice2Of2 e -> Choice2Of2 e
 
+  /// Sequential application
   let inline (<*>) f x = ap x f
 
   let map f =
@@ -347,7 +392,9 @@ module Either =
   let inline (<!>) f x = map f x
   let inline map2 f a b = f <!> a <*> b
 
+  /// Sequence actions, discarding the value of the first argument.
   let inline ( *>) a b = map2 (fun _ z -> z) a b
+  /// Sequence actions, discarding the value of the second argument.
   let inline ( <*) a b = map2 (fun z _ -> z) a b
 
   let bind f = 
@@ -357,6 +404,7 @@ module Either =
   
   let inline (>>=) m f = bind f m
   let inline (=<<) f m = bind f m
+  /// Sequentially compose two either actions, discarding any value produced by the first
   let inline (>>.) m1 m2 = m1 >>= (fun _ -> m2)
 
   type EitherBuilder() =
@@ -367,6 +415,7 @@ module Validation =
   open Either
   open Monoid
 
+  /// Sequential application, parameterized by append
   let apa append x f = 
     match f,x with
     | Choice1Of2 f, Choice1Of2 x   -> Choice1Of2 (f x)
@@ -374,22 +423,30 @@ module Validation =
     | Choice1Of2 f, Choice2Of2 e   -> Choice2Of2 e
     | Choice2Of2 e1, Choice2Of2 e2 -> Choice2Of2 (append e1 e2)
 
+  /// Sequential application, parameterized by monoid
   let inline apm (m: _ Monoid) = apa m.mappend
 
   type CustomValidation<'a>(monoid: 'a Monoid) =
+    /// Sequential application
     member this.ap x = apm monoid x
     member this.map2 f a b = returnM f |> this.ap a |> this.ap b
+    /// Sequence actions, discarding the value of the first argument.
     member this.apr b a = this.map2 (fun _ z -> z) a b
+    /// Sequence actions, discarding the value of the second argument.
     member this.apl b a = this.map2 (fun z _ -> z) a b
 
   let private stringListValidation = CustomValidation(ListMonoid<string>())
 
+  /// Sequential application
   let ap = stringListValidation.ap
 
+  /// Sequential application
   let inline (<*>) f x = ap x f
   let map2 = stringListValidation.map2
 
+  /// Sequence actions, discarding the value of the first argument.
   let ( *>) = stringListValidation.apr
+  /// Sequence actions, discarding the value of the first argument.
   let ( <*) = stringListValidation.apl
 
   let seqValidator f = 
@@ -448,12 +505,18 @@ module Continuation =
   let inline returnM x = returnM cont x
   let inline (>>=) m f = bindM cont m f
   let inline (=<<) f m = bindM cont m f
+  /// Sequential application
   let inline (<*>) f m = applyM cont cont f m
+  /// Sequential application
+  let inline ap m f = f <*> m
   let inline map f m = liftM cont f m
   let inline (<!>) f m = map f m
   let inline map2 f a b = returnM f <*> a <*> b
+  /// Sequence actions, discarding the value of the first argument.
   let inline ( *>) x y = map2 (fun _ z -> z) x y
+  /// Sequence actions, discarding the value of the second argument.
   let inline ( <*) x y = map2 (fun z _ -> z) x y
+  /// Sequentially compose two continuation actions, discarding any value produced by the first
   let inline (>>.) m f = bindM cont m (fun _ -> f)
 
   /// The coroutine type from http://fssnip.net/7M
@@ -669,12 +732,18 @@ module Iteratee =
   let inline returnM x = Yield(x, Empty)
   let inline (>>=) m f = bind m f
   let inline (=<<) f m = bind m f
+  /// Sequential application
   let inline (<*>) f m = f >>= fun f' -> m >>= fun m' -> returnM (f' m')
+  /// Sequential application
+  let inline ap m f = f <*> m
   let inline map f m = m >>= fun x -> returnM (f x)
   let inline (<!>) f m = map f m
   let inline map2 f a b = returnM f <*> a <*> b
+  /// Sequence actions, discarding the value of the first argument.
   let inline ( *>) x y = map2 (fun _ z -> z) x y
+  /// Sequence actions, discarding the value of the second argument.
   let inline ( <*) x y = map2 (fun z _ -> z) x y
+  /// Sequentially compose two iteratee actions, discarding any value produced by the first
   let inline (>>.) m f = m >>= (fun _ -> f)
   
   module List =
