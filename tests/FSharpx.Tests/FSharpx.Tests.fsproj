@@ -51,6 +51,7 @@
     <Compile Include="ListIterateeTest.fs" />
     <Compile Include="BinaryIterateeTest.fs" />
     <Compile Include="ValidationTests.fs" />
+    <Compile Include="ZipListTests.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) != 'v3.5'">

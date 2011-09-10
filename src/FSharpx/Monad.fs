@@ -97,6 +97,18 @@ module Async =
   /// Sequentially compose two async actions, discarding any value produced by the first
   let inline (>>.) m f = bindM async m (fun _ -> f)
 
+module ZipList = 
+  let returnM v = Seq.initInfinite (fun _ -> v)
+  /// Sequential application
+  let (<*>) f a = Seq.zip f a |> Seq.map (fun (k,v) -> k v)
+  /// Sequential application
+  let inline ap m f = f <*> m
+  let inline map2 f a b = returnM f <*> a <*> b
+  /// Sequence actions, discarding the value of the first argument.
+  let inline ( *>) x y = map2 (fun _ z -> z) x y
+  /// Sequence actions, discarding the value of the second argument.
+  let inline ( <*) x y = map2 (fun z _ -> z) x y
+
 module Option =
 
   /// The maybe monad.

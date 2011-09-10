@@ -7,7 +7,21 @@ open System.Collections.Generic
 open System.Diagnostics.Contracts
 #endif
 
+/// Functions to create tuples
+module Tuples =
+  /// Creates a pair
+  let inline t2 a b = a,b
+  /// Creates a 3-tuple
+  let inline t3 a b c = a,b,c
+  /// Creates a 4-tuple
+  let inline t4 a b c d = a,b,c,d
+  /// Creates a 5-tuple
+  let inline t5 a b c d e = a,b,c,d,e
+  /// Creates a 6-tuple
+  let inline t6 a b c d e f = a,b,c,d,e,f
+
 module List =
+  /// Curried cons
   let inline cons hd tl = hd::tl
 
   let span pred l =
