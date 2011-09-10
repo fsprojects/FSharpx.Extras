@@ -24,6 +24,8 @@ module List =
   /// Curried cons
   let inline cons hd tl = hd::tl
 
+  let inline singleton x = [x]
+
   let span pred l =
     let rec loop l cont =
       match l with
