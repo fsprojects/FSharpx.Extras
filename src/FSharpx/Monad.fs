@@ -523,7 +523,9 @@ module Writer =
     member this.For(sequence:seq<'a>, body:'a -> Writer<'w,unit>) =
       this.Using(sequence.GetEnumerator(), 
                  fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current)))
-  
+
+  let writer = WriterBuilder(Monoid.ListMonoid<string>())
+
   let tell   w = fun () -> ((), w)
   let listen m = fun () -> let (a, w) = m() in ((a, w), w)
   let pass   m = fun () -> let ((a, f), w) = m() in (a, f w)

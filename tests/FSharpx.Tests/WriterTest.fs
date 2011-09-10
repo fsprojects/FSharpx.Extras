@@ -5,8 +5,6 @@ open FSharpx.Writer
 open NUnit.Framework
 open FsUnit
 
-let writer = WriterBuilder(Monoid.ListMonoid<string>())
-
 let logMsg (message:string) = tell [message]
 let processFile file = printfn "%s" file
 let processFiles files = writer {
