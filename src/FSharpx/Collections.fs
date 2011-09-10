@@ -20,6 +20,22 @@ module Tuples =
   /// Creates a 6-tuple
   let inline t6 a b c d e f = a,b,c,d,e,f
 
+module Seq =
+    /// <summary>
+    /// Adds an index to a sequence
+    /// </summary>
+    /// <param name="a"></param>
+    let index a = Seq.zip (Seq.initInfinite id) a
+
+    /// <summary>
+    /// Returns the first element (with its index) for which the given function returns true.
+    /// Return None if no such element exists.
+    /// </summary>
+    /// <param name="pred">Predicate</param>
+    /// <param name="l">Sequence</param>
+    let tryFindWithIndex pred l =
+        l |> index |> Seq.tryFind (fun (_,v) -> pred v)
+
 module List =
   /// Curried cons
   let inline cons hd tl = hd::tl
