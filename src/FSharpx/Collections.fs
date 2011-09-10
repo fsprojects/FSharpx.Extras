@@ -20,6 +20,10 @@ module Tuples =
   /// Creates a 6-tuple
   let inline t6 a b c d e f = a,b,c,d,e,f
 
+  let inline fst3 (a,_,_) = a
+  let inline snd3 (_,a,_) = a
+  let inline thr3 (_,_,a) = a
+
 module Seq =
     /// <summary>
     /// Adds an index to a sequence
