@@ -43,19 +43,17 @@ module Monoid =
         | None  , Some a -> Some a
         | None  , None   -> None
         
-  type 'a Sum = Sum of 'a
   /// Monoid 0,+
   type IntSumMonoid() =
-    inherit Monoid<Sum<int>>()
-      override this.mempty = Sum 0
-      override this.mappend (Sum a) (Sum b) = Sum (a + b)
+    inherit Monoid<int>()
+      override this.mempty = 0
+      override this.mappend a b = a + b
 
-  type 'a Product = Product of 'a
   /// Monoid 1,*
   type IntProductMonoid() =
-    inherit Monoid<Product<int>>()
-      override this.mempty = Product 1
-      override this.mappend (Product a) (Product b) = Product (a * b)
+    inherit Monoid<int>()
+      override this.mempty = 1
+      override this.mappend a b = a * b
 
 /// Generic monadic operators  
 module Operators =

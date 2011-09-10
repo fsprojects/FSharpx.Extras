@@ -89,7 +89,7 @@ let ``validation with monoid``() =
   let validator pred value =
       if pred value
           then Choice1Of2 value
-          else Choice2Of2 (Monoid.Sum 1)
+          else Choice2Of2 1
   let notEqual a = validator ((<>) a)
   let lengthNotEquals l = validator (fun (x: string) -> x.Length <> l)
   let validateString x = 
@@ -98,5 +98,5 @@ let ``validation with monoid``() =
     |> v.apl (lengthNotEquals 5 x)
   match validateString "hello" with
   | Choice1Of2 c -> failwithf "Valid string: %s" c
-  | Choice2Of2 (Monoid.Sum e) -> Assert.AreEqual(2, e)
+  | Choice2Of2 e -> Assert.AreEqual(2, e)
 
