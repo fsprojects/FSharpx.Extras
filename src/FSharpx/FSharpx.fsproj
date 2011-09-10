@@ -39,7 +39,6 @@
     <Compile Include="Collections.fs" />
     <Compile Include="Monad.fs" />
     <Compile Include="CSharpCompat.fs" />
-    <Compile Include="Nullable.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
@@ -79,6 +78,6 @@
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" Condition="'$(TargetFrameworkVersion)' != 'v3.5'"/>
+    <Reference Include="System.Numerics" Condition="'$(TargetFrameworkVersion)' != 'v3.5'" />
   </ItemGroup>
 </Project>
