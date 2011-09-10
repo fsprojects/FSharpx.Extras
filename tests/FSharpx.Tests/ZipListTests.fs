@@ -3,12 +3,11 @@
 open FsUnit
 open NUnit.Framework
 open FSharpx
-open FSharpx.Tuples
 
 [<Test>]
 let zipping() =
   let z = 
-    ZipList.returnM t3
+    ZipList.returnM tuple3
     |> ZipList.ap [1;2;3]
     |> ZipList.ap ["one";"two";"three"]
     |> ZipList.ap ["uno";"dos";"tres"]
