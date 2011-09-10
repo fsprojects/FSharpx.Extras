@@ -6,6 +6,7 @@ open FSharpx.CSharpTests
 open FSharpx.Choice
 open FSharpx.Validation
 open NUnit.Framework
+open FsUnit
 open Microsoft.FSharp.Core
 
 let validator pred error value =
@@ -24,9 +25,6 @@ let validateAddressLines =
         (fun (a: Address) -> a.Line1 != null || a.Line2 == null) 
         "Line1 is empty but Line2 is not"
 
-//let inline konst a _ = a
-//let inline konst2 a _ _ = a
-
 let validateAddress (a: Address) = 
     returnM a
     <* nonNull "Post code can't be null" a.Postcode
@@ -39,7 +37,7 @@ let greaterThan o = validator ((<?) o)
 let validateOrder (o: Order) =
     let nameNotNull = nonNull "Product name can't be null" o.ProductName
     let positiveCost n = greaterThan (0m).n (sprintf "Cost for product '%s' can't be negative" n) o.Cost
-    nameNotNull >>= positiveCost |> Choice.map (fun _ -> o)
+    nameNotNull >>= positiveCost |> Choice.map (konst o)
 
 (*    validation {
         let! name = nonNull "Product name can't be null" o.ProductName
@@ -69,18 +67,26 @@ let ValidateCustomer() =
         <* validateOrders customer.Orders
     match result with
     | Choice1Of2 c -> failwithf "Valid customer: %A" c
-    | Choice2Of2 errors -> printfn "Invalid customer. Errors:\n%A" errors
+    | Choice2Of2 errors -> 
+        printfn "Invalid customer. Errors:\n%A" errors
+        errors.Length |> should equal 3
+        errors |> should contain "Cost for product 'Bar' can't be negative"
+        errors |> should contain "Product name can't be null"
+        errors |> should contain "Surname can't be foo"
 
 [<Test>]
 let ``using ap``() =
   let customer = Customer()
   let result = 
-    returnM (fun _ _ -> customer)
+    returnM (konst2 customer)
     |> Validation.ap (nonNull "Surname can't be null" customer.Surname)
     |> Validation.ap (notEqual "foo" "Surname can't be foo" customer.Surname)
   match result with
   | Choice1Of2 c -> failwithf "Valid customer: %A" c
-  | Choice2Of2 errors -> printfn "Invalid customer. Errors:\n%A" errors
+  | Choice2Of2 errors -> 
+      printfn "Invalid customer. Errors:\n%A" errors
+      errors.Length |> should equal 1
+      errors |> should contain "Surname can't be null"
 
 [<Test>]
 let ``validation with monoid``() =
