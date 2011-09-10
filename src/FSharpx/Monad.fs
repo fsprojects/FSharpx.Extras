@@ -96,6 +96,11 @@ module Async =
 
   /// Sequentially compose two async actions, discarding any value produced by the first
   let inline (>>.) m f = bindM async m (fun _ -> f)
+  /// Left-to-right Kleisli composition
+  let inline (>=>) f g = fun x -> f x >>= g
+  /// Right-to-left Kleisli composition
+  let inline (<=<) x = flip (>=>) x
+
 
 module ZipList = 
   let returnM v = Seq.initInfinite (fun _ -> v)
@@ -153,6 +158,10 @@ module Option =
 
   /// Sequentially compose two maybe actions, discarding any value produced by the first
   let inline (>>.) m f = bindM maybe m (fun _ -> f)
+  /// Left-to-right Kleisli composition
+  let inline (>=>) f g = fun x -> f x >>= g
+  /// Right-to-left Kleisli composition
+  let inline (<=<) x = flip (>=>) x
 
   let fromNullable (n: _ Nullable) = 
       if n.HasValue
@@ -256,6 +265,11 @@ module State =
   let inline ( <*) x y = map2 (fun z _ -> z) x y
   /// Sequentially compose two state actions, discarding any value produced by the first
   let inline (>>.) m f = bindM state m (fun _ -> f)
+  /// Left-to-right Kleisli composition
+  let inline (>=>) f g = fun x -> f x >>= g
+  /// Right-to-left Kleisli composition
+  let inline (<=<) x = flip (>=>) x
+
 
 module Reader =
 
@@ -313,6 +327,11 @@ module Reader =
   let inline ( <*) x y = map2 (fun z _ -> z) x y
   /// Sequentially compose two reader actions, discarding any value produced by the first
   let inline (>>.) m f = bindM reader m (fun _ -> f)
+  /// Left-to-right Kleisli composition
+  let inline (>=>) f g = fun x -> f x >>= g
+  /// Right-to-left Kleisli composition
+  let inline (<=<) x = flip (>=>) x
+
 
 module Undo =
   // UndoMonad on top of StateMonad
@@ -455,6 +474,10 @@ module Either =
   let inline (=<<) f m = bind f m
   /// Sequentially compose two either actions, discarding any value produced by the first
   let inline (>>.) m1 m2 = m1 >>= (fun _ -> m2)
+  /// Left-to-right Kleisli composition
+  let inline (>=>) f g = fun x -> f x >>= g
+  /// Right-to-left Kleisli composition
+  let inline (<=<) x = flip (>=>) x
 
   type EitherBuilder() =
     member this.Return a = returnM a
@@ -573,6 +596,11 @@ module Continuation =
   let inline ( <*) x y = map2 (fun z _ -> z) x y
   /// Sequentially compose two continuation actions, discarding any value produced by the first
   let inline (>>.) m f = bindM cont m (fun _ -> f)
+  /// Left-to-right Kleisli composition
+  let inline (>=>) f g = fun x -> f x >>= g
+  /// Right-to-left Kleisli composition
+  let inline (<=<) x = flip (>=>) x
+
 
   /// The coroutine type from http://fssnip.net/7M
   type Coroutine() =
@@ -800,6 +828,10 @@ module Iteratee =
   let inline ( <*) x y = map2 (fun z _ -> z) x y
   /// Sequentially compose two iteratee actions, discarding any value produced by the first
   let inline (>>.) m f = m >>= (fun _ -> f)
+  /// Left-to-right Kleisli composition
+  let inline (>=>) f g = fun x -> f x >>= g
+  /// Right-to-left Kleisli composition
+  let inline (<=<) x = flip (>=>) x
   
   module List =
     open Operators
