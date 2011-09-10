@@ -1,8 +1,11 @@
 ﻿module FSharpx.Tests.NameValueCollectionTests
 
+open FsUnit
 open FSharpx
 open NUnit.Framework
+open System.Collections.Generic
 open System.Collections.Specialized
+open System.Linq
 
 [<Test>]
 let fromSeq() =
@@ -31,11 +34,35 @@ let concat() =
   let c = NameValueCollection.concat a b
   ()
 
+let assertKeyIs (l: ILookup<_,_>) a key = 
+  Assert.AreEqual(a, l.[key] |> Seq.toList)
+
 [<Test>]
 let toLookup() =
   let n1 = NameValueCollection.fromSeq ["1","uno"; "1","one"; "2","two"]
   let l = NameValueCollection.toLookup n1
-  let assertKeyIs a (key: string) = Assert.AreEqual(a, l.[key] |> Seq.toList)
-  "1" |> assertKeyIs ["uno"; "one"]
-  "2" |> assertKeyIs ["two"]
-  "3" |> assertKeyIs []
+  "1" |> assertKeyIs l ["uno"; "one"]
+  "2" |> assertKeyIs l ["two"]
+  "3" |> assertKeyIs l []
+  n1.Add("3", "three")
+  "3" |> assertKeyIs l []
+
+[<Test>]
+let asLookup() =
+  let n1 = NameValueCollection.fromSeq ["1","uno"; "1","one"; "2","two"]
+  let l = NameValueCollection.asLookup n1
+  "1" |> assertKeyIs l ["uno"; "one"]
+  "2" |> assertKeyIs l ["two"]
+  "3" |> assertKeyIs l []
+  n1.Add("3", "three")
+  "3" |> assertKeyIs l ["three"]
+
+[<Test>]
+let asDictionary() =
+  let n1 = NameValueCollection.fromSeq ["1","uno"; "1","one"; "2","two"]
+  let d = NameValueCollection.asDictionary n1
+  Assert.AreEqual([|"uno";"one"|], d.["1"])
+  Assert.AreEqual([|"two"|], d.["2"])
+  (fun () -> ignore d.["3"]) |> should throw typeof<KeyNotFoundException>
+  n1.Add("3", "three")
+  Assert.AreEqual([|"three"|], d.["3"])
