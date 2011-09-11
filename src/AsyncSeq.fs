@@ -447,7 +447,7 @@ module AsyncSeq =
       let! v = input
       match v with
       | Cons(h, t) -> 
-          return Cons(h, skip (count - 1) t)
+          return! skip (count - 1) t
       | Nil -> return Nil 
     else return! input }
 
