@@ -67,3 +67,16 @@ downloadLines (ystock + "MSFT")
 |> AsyncSeq.take 30
 |> AsyncSeq.iter (printfn "%A")
 |> Async.Start
+
+// ----------------------------------------------------------------------------
+// Wrap inside a reusable function
+
+/// Reusable function that downloads parsed stock prices
+let downloadStockPrices stock =
+  downloadLines (ystock + stock)
+  |> AsyncSeq.skip 1
+  |> AsyncSeq.map (fun line ->
+     // Split line into Open, High, Low, Close values
+     let infos = line.Split(',')
+     DateTime.Parse(infos.[0]),
+     (float infos.[1], float infos.[2], float infos.[3], float infos.[4]))

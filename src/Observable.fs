@@ -6,6 +6,7 @@
 namespace FSharp.Control
 
 open System
+open System.Threading
 
 // ----------------------------------------------------------------------------
 
@@ -18,6 +19,36 @@ type ObservableUpdate<'T> =
   | Completed
 
 module Observable =
+
+  /// Returns an observable that yields sliding windows of 
+  /// containing elements drawn from the input observable. 
+  /// Each window is returned as a fresh array.
+  let windowed size (input:IObservable<'T>) =
+    { new IObservable<'T[]> with
+        member x.Subscribe(observer) =
+          // Create sliding window agent for every call
+          // and redirect batches to the observer
+          let cts = new CancellationTokenSource()
+          let agent = new SlidingWindowAgent<_>(size, cts.Token)
+          agent.WindowProduced.Add(observer.OnNext)
+
+          // Subscribe to the input and send values to the agent
+          let subscription = 
+            input.Subscribe
+              ({ new IObserver<'T> with
+                  member x.OnNext(v) = agent.Enqueue(v)
+                  member x.OnCompleted() = 
+                    cts.Cancel()
+                    observer.OnCompleted()
+                  member x.OnError(e) = 
+                    cts.Cancel()
+                    observer.OnError(e) })
+
+          // Cancel subscription & cancel the agent
+          { new IDisposable with 
+              member x.Dispose() =
+                subscription.Dispose()
+                cts.Cancel() } }
 
   /// Creates an observable that calls the specified function (each time)
   /// after an observer is attached to the observable. This is useful to 

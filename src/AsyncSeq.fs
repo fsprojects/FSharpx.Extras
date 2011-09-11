@@ -48,6 +48,13 @@ module AsyncSeq =
   /// sequences using the 'asyncSeq { ... }' syntax
   type AsyncSeqBuilder() =
     member x.Yield(v) = singleton v
+    // This looks weird, but it is needed to allow:
+    //
+    //   while foo do
+    //     do! something
+    //
+    // because F# translates body as Bind(something, fun () -> Return())
+    member x.Return(()) = empty
     member x.YieldFrom(s) = s
     member x.Zero () = empty
     member x.Bind (inp:Async<'T>, body : 'T -> AsyncSeq<'U>) : AsyncSeq<'U> = 
@@ -479,22 +486,10 @@ module AsyncSeqExtensions =
         | Nil -> async.Zero()
         | Cons(h, t) -> async.Combine(action h, x.For(t, action)))
 
-namespace Microsoft.FSharp.Collections
-  module Seq = 
-    open FSharp.Control
+module Seq = 
+  open FSharp.Control
 
-    /// Converts asynchronous sequence to a synchronous blocking sequence.
-    /// The elements of the asynchronous sequence are consumed lazily.
-    let ofAsyncSeq (input : AsyncSeq<'T>) =
-      AsyncSeq.toBlockingSeq input
-
-namespace Microsoft.FSharp.Control
-  module Observable = 
-    open FSharp.Control
-    
-    /// Converts asynchronous sequence to an IObservable<_>. When the client subscribes
-    /// to the observable, a new copy of asynchronous sequence is started and is 
-    /// sequentially iterated over (at the maximal possible speed). Disposing of the 
-    /// observer cancels the iteration over asynchronous sequence. 
-    let ofObservable (aseq:AsyncSeq<_>) =
-      AsyncSeq.toObservable aseq
+  /// Converts asynchronous sequence to a synchronous blocking sequence.
+  /// The elements of the asynchronous sequence are consumed lazily.
+  let ofAsyncSeq (input : AsyncSeq<'T>) =
+    AsyncSeq.toBlockingSeq input

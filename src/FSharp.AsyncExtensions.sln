@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{DD79
 		..\samples\BlockingQueue.fsx = ..\samples\BlockingQueue.fsx
 		..\samples\Caching.fsx = ..\samples\Caching.fsx
 		..\samples\Crawler.fsx = ..\samples\Crawler.fsx
+		..\samples\MouseFollow.fsx = ..\samples\MouseFollow.fsx
 		..\samples\StockStream.fsx = ..\samples\StockStream.fsx
 		..\samples\WebProxy.fsx = ..\samples\WebProxy.fsx
 	EndProjectSection

@@ -48,8 +48,9 @@ nuget pack $(ProjectDir)..\bin\release\FSharp.AsyncExtensions.dll.nuspec
     <Compile Include="Agents\ConcurrentSetAgent.fs" />
     <Compile Include="Agents\BatchProcessingAgent.fs" />
     <Compile Include="Agents\BlockingQueueAgent.fs" />
-    <Compile Include="Observable.fs" />
+    <Compile Include="Agents\SlidingWindowAgent.fs" />
     <Compile Include="Async.fs" />
+    <Compile Include="Observable.fs" />
     <Compile Include="AsyncSeq.fs" />
     <Compile Include="IO.fs" />
   </ItemGroup>
