@@ -347,6 +347,22 @@ module AsyncSeq =
             | Put v -> repl.Reply(v)
             | _ -> failwith "Unexpected Get" })
 
+  /// Converts asynchronous sequence to an IObservable<_>. When the client subscribes
+  /// to the observable, a new copy of asynchronous sequence is started and is 
+  /// sequentially iterated over (at the maximal possible speed). Disposing of the 
+  /// observer cancels the iteration over asynchronous sequence. 
+  let toObservable (aseq:AsyncSeq<_>) =
+    let start (obs:IObserver<_>) =
+      async {
+        try 
+          for v in aseq do obs.OnNext(v)
+          obs.OnCompleted()
+        with e ->
+          obs.OnError(e) }
+      |> Async.StartDisposable
+    { new IObservable<_> with
+        member x.Subscribe(obs) = start obs }
+
   /// Converts asynchronous sequence to a synchronous blocking sequence.
   /// The elements of the asynchronous sequence are consumed lazily.
   let toBlockingSeq (input : AsyncSeq<'T>) = 
@@ -451,14 +467,6 @@ module AsyncSeq =
       | Nil -> return Nil 
     else return! input }
 
-
-module Seq = 
-  /// Converts asynchronous sequence to a synchronous blocking sequence.
-  /// The elements of the asynchronous sequence are consumed lazily.
-  let ofAsyncSeq (input : AsyncSeq<'T>) =
-    AsyncSeq.toBlockingSeq input
-
-
 [<AutoOpen>]
 module AsyncSeqExtensions = 
   /// Builds an asynchronou sequence using the computation builder syntax
@@ -471,3 +479,22 @@ module AsyncSeqExtensions =
         | Nil -> async.Zero()
         | Cons(h, t) -> async.Combine(action h, x.For(t, action)))
 
+namespace Microsoft.FSharp.Collections
+  module Seq = 
+    open FSharp.Control
+
+    /// Converts asynchronous sequence to a synchronous blocking sequence.
+    /// The elements of the asynchronous sequence are consumed lazily.
+    let ofAsyncSeq (input : AsyncSeq<'T>) =
+      AsyncSeq.toBlockingSeq input
+
+namespace Microsoft.FSharp.Control
+  module Observable = 
+    open FSharp.Control
+    
+    /// Converts asynchronous sequence to an IObservable<_>. When the client subscribes
+    /// to the observable, a new copy of asynchronous sequence is started and is 
+    /// sequentially iterated over (at the maximal possible speed). Disposing of the 
+    /// observer cancels the iteration over asynchronous sequence. 
+    let ofObservable (aseq:AsyncSeq<_>) =
+      AsyncSeq.toObservable aseq

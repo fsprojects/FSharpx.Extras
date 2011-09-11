@@ -3,6 +3,7 @@
 // (c) Tomas Petricek, 2011, Available under Apache 2.0 license.
 // ----------------------------------------------------------------------------
 namespace FSharp.Control
+open System
 
 // ----------------------------------------------------------------------------
 
@@ -24,3 +25,12 @@ module AsyncExtensions =
           let! repl = agent.Receive()
           repl.Reply(res) })
       async { return! agent.PostAndAsyncReply(id) }
+
+    /// Starts the specified operation using a new CancellationToken and returns
+    /// IDisposable object that cancels the computation. This method can be used
+    /// when implementing the Subscribe method of IObservable interface.
+    static member StartDisposable(op:Async<unit>) =
+      let ct = new System.Threading.CancellationTokenSource()
+      Async.Start(op, ct.Token)
+      { new IDisposable with 
+          member x.Dispose() = ct.Cancel() }
