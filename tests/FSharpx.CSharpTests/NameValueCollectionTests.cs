@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using NUnit.Framework;
@@ -35,6 +36,17 @@ namespace FSharpx.CSharpTests {
             Assert.AreEqual(1, l.Count);
             Assert.AreEqual(2, l["1"].Count());
             Assert.AreEqual(0, l["2"].Count());
+        }
+
+        [Test]
+        public void AsDictionary() {
+            var a = new NameValueCollection {
+                { "1", "one" },
+                { "1", "uno" },
+            };
+            var d = a.AsDictionary();
+            Assert.AreEqual(new[] { "one", "uno" }, d["1"]);
+            Assert.Throws<KeyNotFoundException>(() => { var x = d["2"]; });
         }
     }
 }

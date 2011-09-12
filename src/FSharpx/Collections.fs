@@ -345,6 +345,8 @@ module NameValueCollection =
       let s = toSeq a
       s.ToLookup(fst, snd)
 
+    [<Extension>]
+    [<CompiledName("AsDictionary")>]
     let asDictionary (x: NameValueCollection) =
       let notimpl() = raise <| NotImplementedException()
       let getEnumerator() =
