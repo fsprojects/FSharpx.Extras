@@ -4,6 +4,11 @@ open System
 open System.Collections.Generic
 open System.Runtime.CompilerServices
 
+type L =
+  static member F (f: Func<_>) = f
+  static member F (f: Func<_,_>) = f
+  static member F (f: Func<_,_,_>) = f
+
 /// <summary>
 /// Conversion functions from Action/Func to FSharpFunc
 /// We need these because FuncConvert often makes C# type inference fail.
