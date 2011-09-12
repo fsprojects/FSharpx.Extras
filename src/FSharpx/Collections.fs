@@ -6,6 +6,7 @@ open System.Collections.Generic
 #if NET40
 open System.Diagnostics.Contracts
 #endif
+open System.Runtime.CompilerServices
 
 module Seq =
     /// <summary>
@@ -279,6 +280,7 @@ module ByteString =
   let takeUntil pred bs = split pred bs |> fst 
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+[<Extension>]
 module NameValueCollection =
     open System.Collections.Specialized
     open System.Linq
@@ -288,6 +290,8 @@ module NameValueCollection =
     /// </summary>
     /// <param name="a"></param>
     /// <param name="b"></param>
+    [<Extension>]
+    [<CompiledName("Concat")>]
     let concat a b = 
       let x = NameValueCollection()
       x.Add a

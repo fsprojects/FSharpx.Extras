@@ -52,6 +52,7 @@
     <Compile Include="Customer.cs" />
     <Compile Include="DictionaryTests.cs" />
     <Compile Include="FuncTests.cs" />
+    <Compile Include="NameValueCollectionTests.cs" />
     <Compile Include="ValidationTests.cs" />
     <Compile Include="L.cs" />
     <Compile Include="ListTests.cs" />
