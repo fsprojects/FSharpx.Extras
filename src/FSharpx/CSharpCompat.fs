@@ -36,6 +36,20 @@ type FSharpFunc =
         Func<_,Func<_,_>>(fun a -> Func<_,_>(fun b -> f.Invoke(a,b)))
 
 [<Extension>]
+type Funcs =
+  [<Extension>]
+  static member ToFunc (a: Action<_>) =
+    Func<_,_>(a.Invoke)
+
+  [<Extension>]
+  static member ToFunc (a: Action<_,_>) =
+    Func<_,_,_>(curry a.Invoke)
+
+  [<Extension>]
+  static member ToFunc (f: Action<_,_,_>) =
+    Func<_,_,_,_>(fun a b c -> f.Invoke(a,b,c))
+
+[<Extension>]
 type FSharpOption =
     [<Extension>]
     static member HasValue o = Option.isSome o
