@@ -48,5 +48,20 @@ namespace FSharpx.CSharpTests {
             Assert.AreEqual(new[] { "one", "uno" }, d["1"]);
             Assert.Throws<KeyNotFoundException>(() => { var x = d["2"]; });
         }
+
+        [Test]
+        public void AsLookup() {
+            var a = new NameValueCollection {
+                { "1", "one" },
+                { "1", "uno" },
+            };
+            var l = a.AsLookup();
+            Assert.AreEqual(1, l.Count);
+            Assert.AreEqual(2, l["1"].Count());
+            Assert.AreEqual(0, l["2"].Count());
+            a.Add("2", "dos");
+            Assert.AreEqual(2, l.Count);
+            Assert.AreEqual(1, l["2"].Count());
+        }
     }
 }

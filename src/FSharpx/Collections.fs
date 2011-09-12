@@ -411,6 +411,8 @@ module NameValueCollection =
                   false
           }
 
+    [<Extension>]
+    [<CompiledName("AsReadonlyDictionary")>]
     let asReadonlyDictionary x =
       let a = asDictionary x
       let notSupported() = raise <| NotSupportedException("Readonly dictionary")
@@ -435,6 +437,8 @@ module NameValueCollection =
           member d.TryGetValue(key: string, value: byref<string[]>) = a.TryGetValue(key, ref value)
       }                
 
+    [<Extension>]
+    [<CompiledName("AsLookup")>]
     let asLookup (this: NameValueCollection) =
       let getEnumerator() = 
           let e = this.GetEnumerator()
