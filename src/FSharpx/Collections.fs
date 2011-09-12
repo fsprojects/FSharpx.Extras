@@ -317,6 +317,8 @@ module NameValueCollection =
     /// Note that keys may be duplicated.
     /// </summary>
     /// <param name="a"></param>
+    [<Extension>]
+    [<CompiledName("ToEnumerable")>]
     let toSeq (a: NameValueCollection) =
       a.AllKeys
       |> Seq.collect (fun k -> a.GetValues k |> Seq.map (fun v -> k,v))
