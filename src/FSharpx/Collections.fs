@@ -339,6 +339,8 @@ module NameValueCollection =
       Seq.iter (addInPlace x) l
       x
 
+    [<Extension>]
+    [<CompiledName("ToLookup")>]
     let toLookup a =
       let s = toSeq a
       s.ToLookup(fst, snd)

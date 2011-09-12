@@ -24,5 +24,17 @@ namespace FSharpx.CSharpTests {
             Assert.AreEqual(1, e.Count);
             Assert.AreEqual(Tuple.Create("1", "one"), e[0]);
         }
+
+        [Test]
+        public void ToLookup() {
+            var a = new NameValueCollection {
+                { "1", "one" },
+                { "1", "uno" },
+            };
+            var l = a.ToLookup();
+            Assert.AreEqual(1, l.Count);
+            Assert.AreEqual(2, l["1"].Count());
+            Assert.AreEqual(0, l["2"].Count());
+        }
     }
 }
