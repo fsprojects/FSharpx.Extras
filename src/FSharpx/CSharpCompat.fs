@@ -148,9 +148,7 @@ type FSharpOption =
 
     [<Extension>]
     static member Where (o: _ option, pred: _ Predicate) =
-        match o with
-        | Some v -> if pred.Invoke v then Some v else None
-        | _ -> None
+      Option.filter pred.Invoke o
 
     static member SomeUnit = Some()
 
