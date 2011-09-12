@@ -280,6 +280,13 @@ module ByteString =
   let takeUntil pred bs = split pred bs |> fst 
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module Dictionary =
+  let tryFind key (d: IDictionary<_,_>) =
+    match d.TryGetValue key with
+    | true,v -> Some v
+    | _ -> None
+
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 [<Extension>]
 module NameValueCollection =
     open System.Collections.Specialized
