@@ -24,7 +24,7 @@ let ``When throwing an exception, it should catch the exception``() =
 (* Test callCC *)
 let sum l =
   let rec sum l = cont {
-    let! result = callCC (fun exit1 -> cont {
+    let! result = callcc (fun exit1 -> cont {
       match l with
       | [] -> return 0
       | h::t when h = 2 -> return! exit1 42

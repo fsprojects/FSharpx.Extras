@@ -5,9 +5,9 @@ open System.Collections.Generic
 open System.Runtime.CompilerServices
 
 type L =
-  static member F (f: Func<_>) = f
-  static member F (f: Func<_,_>) = f
-  static member F (f: Func<_,_,_>) = f
+    static member F (f: Func<_>) = f
+    static member F (f: Func<_,_>) = f
+    static member F (f: Func<_,_,_>) = f
 
 /// <summary>
 /// Conversion functions from Action/Func to FSharpFunc
@@ -42,17 +42,17 @@ type FSharpFunc =
 
 [<Extension>]
 type Funcs =
-  [<Extension>]
-  static member ToFunc (a: Action<_>) =
-    Func<_,_>(a.Invoke)
-
-  [<Extension>]
-  static member ToFunc (a: Action<_,_>) =
-    Func<_,_,_>(curry a.Invoke)
-
-  [<Extension>]
-  static member ToFunc (f: Action<_,_,_>) =
-    Func<_,_,_,_>(fun a b c -> f.Invoke(a,b,c))
+    [<Extension>]
+    static member ToFunc (a: Action<_>) =
+        Func<_,_>(a.Invoke)
+  
+    [<Extension>]
+    static member ToFunc (a: Action<_,_>) =
+        Func<_,_,_>(curry a.Invoke)
+  
+    [<Extension>]
+    static member ToFunc (f: Action<_,_,_>) =
+        Func<_,_,_,_>(fun a b c -> f.Invoke(a,b,c))
 
 [<Extension>]
 type FSharpOption =
@@ -269,22 +269,22 @@ type FSharpChoice =
 
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>) =
-      Choice.bind f.Invoke o
+        Choice.bind f.Invoke o
 
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>, mapper: Func<_,_,_>) =
-      let mapper = Choice.map2 (curry mapper.Invoke)
-      let v = Choice.bind f.Invoke o
-      mapper o v
+        let mapper = Choice.map2 (curry mapper.Invoke)
+        let v = Choice.bind f.Invoke o
+        mapper o v
 
     [<Extension>]
     static member Select (o, f: Func<_,_>) = Choice.map f.Invoke o
 
     [<Extension>]
     static member Join (c: Choice<'a, string list>, inner: Choice<'b, string list>, outerKeySelector: Func<'a,'c>, innerKeySelector: Func<'b,'c>, resultSelector: Func<'a,'b,'d>) =
-      Choice.returnM (curry resultSelector.Invoke) 
-      |> Validation.ap c 
-      |> Validation.ap inner 
+        Choice.returnM (curry resultSelector.Invoke) 
+        |> Validation.ap c 
+        |> Validation.ap inner 
 
     [<Extension>]
     static member Ap (f: Choice<Func<_,_>, _>, x) =
@@ -307,16 +307,16 @@ type FSharpChoice =
 
     [<Extension>]
     static member ApV (f: Choice<Func<_,_>, _>, x) =
-      f 
-      |> Choice.map (fun a -> a.Invoke)
-      |> Validation.ap x
+        f 
+        |> Choice.map (fun a -> a.Invoke)
+        |> Validation.ap x
 
     [<Extension>]
     static member PureValidate x : Choice<_, string list> = Choice1Of2 x
 
     static member EnumerableValidator (f: Func<'a, Choice<'a, string list>>) : Func<'a seq, Choice<'a seq, string list>> =
-      let ff = Validation.seqValidator f.Invoke >> Choice.map (fun a -> a :> _ seq)
-      Func<_,_>(ff)
+        let ff = Validation.seqValidator f.Invoke >> Choice.map (fun a -> a :> _ seq)
+        Func<_,_>(ff)
 
     // constructors
 
@@ -373,10 +373,10 @@ type Dictionary =
 type AsyncExtensions =
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>, mapper: Func<_,_,_>) =
-      let mapper = Async.map2 (curry mapper.Invoke)
-      let v = Async.bind f.Invoke o
-      mapper o v
+        let mapper = Async.map2 (curry mapper.Invoke)
+        let v = Async.bind f.Invoke o
+        mapper o v
 
     [<Extension>]
     static member Select (o, f: Func<_,_>) = 
-      Async.map f.Invoke o
+        Async.map f.Invoke o
