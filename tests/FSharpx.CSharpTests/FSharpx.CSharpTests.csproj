@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncTests.cs" />
+    <Compile Include="StringTests.cs" />
     <Compile Include="Customer.cs" />
     <Compile Include="DictionaryTests.cs" />
     <Compile Include="FuncTests.cs" />
