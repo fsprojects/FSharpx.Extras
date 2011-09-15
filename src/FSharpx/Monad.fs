@@ -539,6 +539,11 @@ module Writer =
 module Choice =
     let returnM = Choice1Of2
 
+    let get =
+        function
+        | Choice1Of2 a -> a
+        | Choice2Of2 e -> invalidArg "choice" (sprintf "The choice value was Choice2Of2 '%A'" e)
+        
     let ap x f = 
         match f,x with
         | Choice1Of2 f, Choice1Of2 x -> Choice1Of2 (f x)

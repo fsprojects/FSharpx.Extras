@@ -55,6 +55,7 @@
     <Compile Include="NameValueCollectionTests.fs" />
     <Compile Include="SeqTests.fs" />
     <Compile Include="OptionTests.fs" />
+    <Compile Include="ChoiceTests.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) != 'v3.5'">
