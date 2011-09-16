@@ -893,7 +893,7 @@ module Iteratee =
         let run_ i =
             match run i with
             | Choice1Of2 e -> raise e
-            | x -> x
+            | Choice2Of2 x -> x
         
     type IterateeBuilder() =
         member this.Return(x) = Yield(x, Empty)
