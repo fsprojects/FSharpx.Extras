@@ -90,3 +90,32 @@ module HttpExtensions =
       response.ContentType <- typ
       do! output.AsyncWrite(buffer,0,buffer.Length)
       output.Close() }
+
+// ----------------------------------------------------------------------------
+// Extensions that simplify working with SocketAsyncEventArgs and related types
+
+[<AutoOpen>]
+module SocketExtensions =
+  open System.Net.Sockets
+  open FSharp.Control
+
+  let internal asyncInvoke (invoke:SocketAsyncEventArgs -> bool, args) = async {
+    if invoke(args) then
+      return! Async.AwaitObservable args.Completed
+    else return args }
+
+  type System.Net.Sockets.Socket with
+    /// Accepts socket connections from clients asynchronously using I/O Completion Ports.
+    member socket.AsyncAccept(args) = asyncInvoke(socket.AcceptAsync, args)
+
+    /// Connects to a server socket connection asynchronously using I/O Completion Ports.
+    member socket.AsyncConnect(args) = asyncInvoke(socket.ConnectAsync, args)
+
+    /// Disconnects the socket connection asynchronously using I/O Completion Ports.
+    member socket.AsyncDisconnect(args) = asyncInvoke(socket.DisconnectAsync, args)
+
+    /// Receives packets from client socket connections asynchronously using I/O Completion Ports.
+    member socket.AsyncReceive(args) = asyncInvoke(socket.ReceiveAsync, args)
+
+    /// Sends the data provided in the args to client socket connections asynchronously using I/O Completion Ports.
+    member socket.AsyncSend(args) = asyncInvoke(socket.SendAsync, args)
