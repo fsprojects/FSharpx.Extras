@@ -4,6 +4,8 @@
 // Simplyfied, added AST and fixed some minor bugs
 
 open System
+open System.Xml.Linq
+open System.Text
 
 type Token =
 | OpenBracket | CloseBracket
@@ -59,10 +61,6 @@ let tokenize source=
 
     tokenize' [] [for x in source -> x]
 
-#if INTERACTIVE
-#r "System.Xml.Linq.dll"
-#endif
-open System.Xml.Linq
 
 type JSON =
 | Text of string
@@ -84,16 +82,35 @@ type JSON =
         toXml' json :?> XElement seq
 
     override json.ToString() =
-        let strCat sep (seq:string seq) =
-            seq |> Seq.fold (fun s1 s2 -> if s1 = "" then s2 else s1 + sep + s2) ""
+        let sb = new StringBuilder()
+        let rec writeToStringBuilder = function
+        | Text t -> sb.AppendFormat("\"{0}\"",t)  |> ignore
+        | Number n -> sb.Append n |> ignore
+        | Boolean true -> sb.Append "true" |> ignore
+        | Boolean false -> sb.Append "false" |> ignore
+        | Null -> sb.Append "null" |> ignore
+        | JArray list -> 
+            let isNotFirst = ref false
+            sb.Append "[" |> ignore
+            list
+              |> List.iter 
+                    (fun element -> 
+                        if !isNotFirst then sb.Append "," |> ignore else isNotFirst := true
+                        writeToStringBuilder element |> ignore)
+            sb.Append "]"  |> ignore
+        | JObject map -> 
+            let isNotFirst = ref false
+            sb.Append "{"  |> ignore
+            map
+              |> Map.iter 
+                    (fun key value -> 
+                        if !isNotFirst then sb.Append "," |> ignore else isNotFirst := true
+                        sb.AppendFormat("\"{0}\":",key)  |> ignore
+                        writeToStringBuilder value |> ignore)
+            sb.Append "}"  |> ignore
 
-        match json with
-        | Text(str) -> "\"" + str + "\""
-        | Number(int) -> string int
-        | Boolean(bool) -> if bool then "true" else "false"
-        | Null -> "null"
-        | JArray(array) -> "[" + (array |> Seq.map (fun item -> item.ToString()) |> strCat ", ") + "]"
-        | JObject(map) -> "{" + (map |> Map.toSeq |> Seq.map (fun (k,v) -> "\"" + k + "\": " + v.ToString()) |> strCat ", ") + "}"    
+        writeToStringBuilder json
+        sb.ToString()
 
 let emptyJObject = JObject Map.empty
 let addProperty key value = function
