@@ -59,6 +59,10 @@ let tokenize source=
 
     tokenize' [] [for x in source -> x]
 
+#if INTERACTIVE
+#r "System.Xml.Linq.dll"
+#endif
+open System.Xml.Linq
 
 type JSON =
 | Text of string
@@ -68,13 +72,36 @@ type JSON =
 | JArray of JSON list
 | JObject of Map<string,JSON>
 
+    member json.ToXml() =
+        let rec toXml' json =
+            match json with
+            | Text(str) -> str :> obj
+            | Number(int) -> int :> obj
+            | Boolean(bool) -> bool :> obj
+            | Null -> null
+            | JArray(array) -> array |> Seq.map (fun item -> new XElement(XName.Get "item", toXml' item)) :> obj
+            | JObject(map) -> map |> Map.toSeq |> Seq.map (fun (k,v) -> new XElement(XName.Get k, toXml' v)) :> obj 
+        toXml' json :?> XElement seq
+
+    override json.ToString() =
+        let strCat sep (seq:string seq) =
+            seq |> Seq.fold (fun s1 s2 -> if s1 = "" then s2 else s1 + sep + s2) ""
+
+        match json with
+        | Text(str) -> "\"" + str + "\""
+        | Number(int) -> string int
+        | Boolean(bool) -> if bool then "true" else "false"
+        | Null -> "null"
+        | JArray(array) -> "[" + (array |> Seq.map (fun item -> item.ToString()) |> strCat ", ") + "]"
+        | JObject(map) -> "{" + (map |> Map.toSeq |> Seq.map (fun (k,v) -> "\"" + k + "\": " + v.ToString()) |> strCat ", ") + "}"    
+
 let emptyJObject = JObject Map.empty
 let addProperty key value = function
 | JObject(properties) -> JObject(Map.add key value properties)
 | _ -> failwith "Malformed JSON object" 
 
 
-/// Parses a JSOPN source text and returns an JSON AST
+/// Parses a JSON source text and returns an JSON AST
 let parse source =
     let map = function
     | Token.Number number -> Number (Double.Parse number) 
