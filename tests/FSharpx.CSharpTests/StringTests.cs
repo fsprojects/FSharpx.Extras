@@ -8,13 +8,13 @@ namespace FSharpx.CSharpTests
         [Test]
         public void WhenDetectingIfStringStartsWithHelloAndItDoes()
         {
-            Assert.IsTrue(String.startsWith("Hello", "Hello World"));
+            Assert.IsTrue(Strings.startsWith("Hello", "Hello World"));
         }
 
         [Test]
         public void WhenDetectingIfStringStartsWithHelloAndItDoesnt()
         {
-            Assert.IsFalse(String.startsWith("Hello", "World"));
+            Assert.IsFalse(Strings.startsWith("Hello", "World"));
         }
     }
 }
