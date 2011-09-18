@@ -50,3 +50,13 @@ let ``Can parse document with booleans``() =
         (emptyJObject 
             |> addProperty "hasTrue" (Boolean true)
             |> addProperty "hasFalse" (Boolean false))
+
+[<Test>] 
+let ``Can parse document with null``() =
+    let innerArray =
+        [emptyJObject |> addProperty "id" (Text "Open")
+         JSON.Null
+         emptyJObject |> addProperty "id" (Text "Pause")]
+
+    parse "{\"items\": [{\"id\": \"Open\"}, null, {\"id\": \"Pause\"}] }"
+    |> should equal (emptyJObject |> addProperty "items" (JArray innerArray))

@@ -11,6 +11,7 @@ type Token =
 | Colon | Comma
 | String of string
 | Boolean of bool
+| Null
 | Number of string
 
 let tokenize source=
@@ -40,6 +41,7 @@ let tokenize source=
         | ']' :: t -> tokenize' (CloseArray :: acc) t
         | ':' :: t -> tokenize' (Colon :: acc) t
         | ',' :: t -> tokenize' (Comma :: acc) t
+        | 'n' :: 'u' :: 'l' :: 'l' :: t -> tokenize' (Token.Null :: acc) t
         | 't' :: 'r' :: 'u' :: 'e' :: t -> tokenize' (Boolean true :: acc) t
         | 'f' :: 'a' :: 'l' :: 's' :: 'e' :: t -> tokenize' (Boolean false :: acc) t
         | '"' :: t -> // start of string
@@ -62,6 +64,7 @@ type JSON =
 | Text of string
 | Number of float
 | Boolean of bool
+| Null
 | JArray of JSON list
 | JObject of Map<string,JSON>
 
@@ -74,8 +77,9 @@ let addProperty key value = function
 /// Parses a JSOPN source text and returns an JSON AST
 let parse source =
     let map = function
-    | Token.Number(n) -> Number (System.Double.Parse n) 
-    | Token.String(x) -> Text x
+    | Token.Number number -> Number (Double.Parse number) 
+    | Token.String text -> Text text
+    | Token.Null -> JSON.Null
     | Token.Boolean(b) -> Boolean b
     | v -> failwith "Syntax Error, unrecognized token in map()"
  
