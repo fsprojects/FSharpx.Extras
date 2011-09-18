@@ -38,6 +38,7 @@
     <Compile Include="Prelude.fs" />
     <Compile Include="Strings.fs" />
     <Compile Include="Collections.fs" />
+    <Compile Include="JSON.fs" />
     <Compile Include="Monad.fs" />
     <Compile Include="CSharpCompat.fs" />
   </ItemGroup>
