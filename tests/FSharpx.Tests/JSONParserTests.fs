@@ -25,6 +25,21 @@ let ``Can parse document with text and numbers``() =
             |> addProperty "lastName" (Text "Smith")
             |> addProperty "age" (Number 25.))
 
+open System.Globalization
+open System.Threading
+
+[<Test>] 
+let ``Can parse document with fractional numbers``() =
+    let originalCulture = Thread.CurrentThread.CurrentCulture
+    Thread.CurrentThread.CurrentCulture <- new CultureInfo("pt-PT") // use a culture that uses ',' instead o '.' for decimal separators
+    try 
+        parse "{\"age\": 2.5}" 
+        |> should equal 
+            (emptyJObject 
+                |> addProperty "age" (Number 2.5))
+    finally
+        Thread.CurrentThread.CurrentCulture <- originalCulture
+
 [<Test>]
 let ``Can parse nested document`` () =
     "{
