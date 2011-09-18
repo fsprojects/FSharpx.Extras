@@ -56,8 +56,6 @@
     <Compile Include="SeqTests.fs" />
     <Compile Include="OptionTests.fs" />
     <Compile Include="ChoiceTests.fs" />
-    <Compile Include="JSONParserTests.fs" />
-    <Compile Include="JSONWriterTest.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) != 'v3.5'">
