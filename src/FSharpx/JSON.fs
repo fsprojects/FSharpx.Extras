@@ -10,6 +10,7 @@ type Token =
 | OpenArray | CloseArray
 | Colon | Comma
 | String of string
+| Boolean of bool
 | Number of string
 
 let tokenize source=
@@ -39,6 +40,8 @@ let tokenize source=
         | ']' :: t -> tokenize' (CloseArray :: acc) t
         | ':' :: t -> tokenize' (Colon :: acc) t
         | ',' :: t -> tokenize' (Comma :: acc) t
+        | 't' :: 'r' :: 'u' :: 'e' :: t -> tokenize' (Boolean true :: acc) t
+        | 'f' :: 'a' :: 'l' :: 's' :: 'e' :: t -> tokenize' (Boolean false :: acc) t
         | '"' :: t -> // start of string
             let s, t' = parseString "" t
             tokenize' (Token.String(s) :: acc) t'        
@@ -58,6 +61,7 @@ let tokenize source=
 type JSON =
 | Text of string
 | Number of float
+| Boolean of bool
 | JArray of JSON list
 | JObject of Map<string,JSON>
 
@@ -72,6 +76,7 @@ let parse source =
     let map = function
     | Token.Number(n) -> Number (System.Double.Parse n) 
     | Token.String(x) -> Text x
+    | Token.Boolean(b) -> Boolean b
     | v -> failwith "Syntax Error, unrecognized token in map()"
  
     let rec parseValue = function

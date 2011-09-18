@@ -42,3 +42,11 @@ let ``Can parse nested document`` () =
                 (emptyJObject
                     |> addProperty "title" (Text "example")
                     |> addProperty "nested" (emptyJObject |> addProperty "nestedTitle" (Text "sub"))))
+
+[<Test>] 
+let ``Can parse document with booleans``() =
+    parse "{\"hasTrue\": true, \"hasFalse\": false }" 
+    |> should equal 
+        (emptyJObject 
+            |> addProperty "hasTrue" (Boolean true)
+            |> addProperty "hasFalse" (Boolean false))
