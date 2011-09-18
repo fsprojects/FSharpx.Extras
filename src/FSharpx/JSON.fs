@@ -117,11 +117,13 @@ let addProperty key value = function
 | JObject(properties) -> JObject(Map.add key value properties)
 | _ -> failwith "Malformed JSON object" 
 
+open System.Globalization
 
 /// Parses a JSON source text and returns an JSON AST
 let parse source =
     let map = function
-    | Token.Number number -> Number (Double.Parse number) 
+    | Token.Number number -> 
+        Number (Double.Parse(number, CultureInfo.InvariantCulture))
     | Token.String text -> Text text
     | Token.Null -> JSON.Null
     | Token.Boolean(b) -> Boolean b
