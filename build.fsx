@@ -13,7 +13,7 @@ let projectSummary = "FSharpx is a library for the .NET platform implementing ge
 let projectDescription = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.\r\n\r\nIt currently implements:\r\n\r\n* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n* Iteratee\r\n* Validation applicative functor\r\n* General functions like flip\r\n* Additional functions around collections\r\n* Functions to make C# - F# interop easier."
 let authors = ["Ryan Riley"; "Mauricio Scheffer"; "Steffen Forkmann"]
 let mail = "ryan.riley@panesofglass.org"
-let homepage = "http://github.com/panesofglass/fsharpx"
+let homepage = "http://github.com/fsharp/fsharpx"
 let nugetKey = if System.IO.File.Exists "./key.txt" then ReadFileAsString "./key.txt" else ""
 
 // directories

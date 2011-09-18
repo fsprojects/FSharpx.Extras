@@ -8,8 +8,8 @@
     <owners>@authors@</owners>
     <language>en-US</language>
     <summary>@description@</summary>
-    <projectUrl>http://github.com/panesofglass/FSharp.Monad</projectUrl>
-    <licenseUrl>http://github.com/panesofglass/FSharp.Monad/raw/master/License.txt</licenseUrl>
+    <projectUrl>http://github.com/fsharp/fsharpx</projectUrl>
+    <licenseUrl>http://github.com/fsharp/fsharpx/raw/master/License.txt</licenseUrl>
     <tags>fsharp csharp interop monad iteratee validation bytestring testing</tags>
   </metadata>  
 </package>
