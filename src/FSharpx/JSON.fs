@@ -106,9 +106,6 @@ let parse source =
     | CloseBracket :: t -> emptyJObject, t
     | _ -> failwith "Malformed JSON object"
     
-
-    match tokenize source with
-    | OpenBracket :: t ->
-        let result, t' = parseJObject t
-        result
-    | _ -> failwith "JSON did not begin with an object"
+    tokenize source 
+    |> parseValue
+    |> fst
