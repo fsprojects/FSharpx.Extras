@@ -68,7 +68,7 @@ Target "BuildApp" (fun _ ->
             AssemblyTitle = projectName
             AssemblyDescription = projectSummary
             Guid = "1e95a279-c2a9-498b-bc72-6e7a0d6854ce"
-            OutputFileName = "./src/FSharpx/AssemblyInfo.fs" })
+            OutputFileName = "./src/FSharpx.Core/AssemblyInfo.fs" })
 
     MSBuild buildDir "Build" (["Configuration","Release"] @ frameworkParams) appReferences
         |> Log "AppBuild-Output: "
@@ -113,9 +113,9 @@ Target "BuildNuGet" (fun _ ->
     CleanDirs [nugetDir; nugetLibDir; nugetDocsDir]
 
     XCopy (docsDir |> FullName) nugetDocsDir
-    [ buildDir + "FSharpx.dll"
-      buildDir + "FSharpx.pdb"
-      buildDir + "FSharpx.xml" ]
+    [ buildDir + "FSharpx.Core.dll"
+      buildDir + "FSharpx.Core.pdb"
+      buildDir + "FSharpx.Core.xml" ]
         |> CopyTo nugetLibDir
 
     NuGet (fun p -> 
@@ -128,9 +128,9 @@ Target "BuildNuGet" (fun _ ->
             AccessKey = nugetKey
             ToolPath = nugetPath
             Publish = nugetKey <> "" })
-        "fsharpx.nuspec"
+        "FSharpx.Core.nuspec"
 
-    [nugetDir + sprintf "FSharpx.%s.nupkg" version]
+    [nugetDir + sprintf "FSharpx.Core.%s.nupkg" version]
         |> CopyTo deployDir
 )
 

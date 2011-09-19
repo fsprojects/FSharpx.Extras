@@ -8,9 +8,9 @@
     <ProjectGuid>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx</RootNamespace>
-    <AssemblyName>FSharpx</AssemblyName>
+    <AssemblyName>FSharpx.Core</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <Name>FSharpx</Name>
+    <Name>FSharpx.Core</Name>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FscToolPath>..\..\lib\FSharp\</FscToolPath>
   </PropertyGroup>
@@ -30,7 +30,7 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\FSharpx.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\FSharpx.Core.XML</DocumentationFile>
   </PropertyGroup>
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>

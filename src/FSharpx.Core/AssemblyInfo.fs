@@ -1,4 +1,4 @@
-module FSharpx.AssemblyInfo
+module FSharpx.Core.AssemblyInfo
 #nowarn "49" // uppercase argument names
 #nowarn "67" // this type test or downcast will always hold
 #nowarn "66" // tis upast is unnecessary - the types are identical

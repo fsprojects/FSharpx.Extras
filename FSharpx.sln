@@ -1,13 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx", "src\FSharpx\FSharpx.fsproj", "{1E95A279-C2A9-498B-BC72-6E7A0D6854CE}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{722621A6-FA45-4129-8B8D-94880DCD7971}"
 	ProjectSection(SolutionItems) = preProject
 		build.bat = build.bat
 		build.fsx = build.fsx
-		fsharpx.nuspec = fsharpx.nuspec
 		LICENSE.txt = LICENSE.txt
 		README.md = README.md
 	EndProjectSection
@@ -16,16 +13,14 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.Tests", "tests\FSha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSharpx.CSharpTests", "tests\FSharpx.CSharpTests\FSharpx.CSharpTests.csproj", "{4354A199-6ACF-4DB5-A8FA-BAD638D1D0E3}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.Core", "src\FSharpx.Core\FSharpx.Core.fsproj", "{1E95A279-C2A9-498B-BC72-6E7A0D6854CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1E95A279-C2A9-498B-BC72-6E7A0D6854CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1E95A279-C2A9-498B-BC72-6E7A0D6854CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1E95A279-C2A9-498B-BC72-6E7A0D6854CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1E95A279-C2A9-498B-BC72-6E7A0D6854CE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{26D9D3EE-E882-43E6-A79E-5D1D89E92C4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{26D9D3EE-E882-43E6-A79E-5D1D89E92C4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26D9D3EE-E882-43E6-A79E-5D1D89E92C4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -34,6 +29,10 @@ Global
 		{4354A199-6ACF-4DB5-A8FA-BAD638D1D0E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4354A199-6ACF-4DB5-A8FA-BAD638D1D0E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4354A199-6ACF-4DB5-A8FA-BAD638D1D0E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E95A279-C2A9-498B-BC72-6E7A0D6854CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E95A279-C2A9-498B-BC72-6E7A0D6854CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E95A279-C2A9-498B-BC72-6E7A0D6854CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E95A279-C2A9-498B-BC72-6E7A0D6854CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

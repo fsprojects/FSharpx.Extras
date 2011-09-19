@@ -67,9 +67,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\FSharpx\FSharpx.fsproj">
+    <ProjectReference Include="..\..\src\FSharpx.Core\FSharpx.Core.fsproj">
       <Project>{1E95A279-C2A9-498B-BC72-6E7A0D6854CE}</Project>
-      <Name>FSharpx</Name>
+      <Name>FSharpx.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
