@@ -554,6 +554,12 @@ module Choice =
         function
         | Choice1Of2 a -> a
         | Choice2Of2 e -> invalidArg "choice" (sprintf "The choice value was Choice2Of2 '%A'" e)
+
+    [<CompiledName("Cast")>]
+    let inline cast (o: obj) =
+        try 
+            Choice1Of2 (unbox o)
+        with e -> Choice2Of2 e
         
     let ap x f =
         match f,x with
