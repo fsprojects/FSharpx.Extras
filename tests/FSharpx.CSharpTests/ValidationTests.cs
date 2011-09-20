@@ -41,11 +41,11 @@ namespace FSharpx.CSharpTests {
 
         [Test]
         public void Test1_option() {
-            var userID = FSharpOption.TryParseInt(req_userID);
+            var userID = FSharpOption.ParseInt(req_userID);
             if (!userID.HasValue()) {
                 setError("Invalid User ID");
             } else {
-                var otherID = FSharpOption.TryParseInt(req_otherID);
+                var otherID = FSharpOption.ParseInt(req_otherID);
                 if (!otherID.HasValue()) {
                     setError("Invalid ID");
                 } else {
@@ -59,8 +59,8 @@ namespace FSharpx.CSharpTests {
         public void Test1_either() {
 
             var somethingOrError =
-                from userID in FSharpOption.TryParseInt(req_userID).ToFSharpChoice("Invalid User ID")
-                from id in FSharpOption.TryParseInt(req_otherID).ToFSharpChoice("Invalid ID")
+                from userID in FSharpOption.ParseInt(req_userID).ToFSharpChoice("Invalid User ID")
+                from id in FSharpOption.ParseInt(req_otherID).ToFSharpChoice("Invalid ID")
                 select doSomething(userID, id);
 
             somethingOrError.Match(Console.WriteLine, setError);
@@ -94,9 +94,9 @@ namespace FSharpx.CSharpTests {
 
         [Test]
         public void Test2_either() {
-            var userID = FSharpOption.TryParseInt(req_userID)
+            var userID = FSharpOption.ParseInt(req_userID)
                 .ToFSharpChoice(FSharpList.New("Invalid User ID"));
-            var id = FSharpOption.TryParseInt(req_otherID)
+            var id = FSharpOption.ParseInt(req_otherID)
                 .ToFSharpChoice(FSharpList.New("Invalid ID"));
 
             var doSomethingFunc = L.F((int a, int b) => doSomething(a, b));
@@ -115,9 +115,9 @@ namespace FSharpx.CSharpTests {
 
         [Test]
         public void Test2_either_LINQ() {
-            var userID = FSharpOption.TryParseInt(req_userID)
+            var userID = FSharpOption.ParseInt(req_userID)
                 .ToFSharpChoice(FSharpList.New("Invalid User ID"));
-            var id = FSharpOption.TryParseInt(req_otherID)
+            var id = FSharpOption.ParseInt(req_otherID)
                 .ToFSharpChoice(FSharpList.New("Invalid ID"));
 
             var result =

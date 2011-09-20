@@ -152,87 +152,33 @@ type FSharpOption =
 
     static member SomeUnit = Some()
 
-    static member TryParseInt s =
-        match Int32.TryParse s with
-        | true,v -> Some v
-        | _ -> None
-    static member TryParseInt (s, style, provider) =
-        match Int32.TryParse(s, style, provider) with
-        | true,v -> Some v
-        | _ -> None
+    static member ParseInt s = Int32.parse s
+    static member ParseInt (s, style, provider) = Int32.parseWithOptions style provider s
 
-    static member TryParseDecimal s =
-        match Decimal.TryParse s with
-        | true,v -> Some v
-        | _ -> None
-    static member TryParseDecimal (s, style, provider) =
-        match Decimal.TryParse(s, style, provider) with
-        | true,v -> Some v
-        | _ -> None
+    static member ParseDecimal s = Decimal.parse s
+    static member ParseDecimal (s, style, provider) = Decimal.parseWithOptions style provider s
 
-    static member TryParseDouble s =
-        match Double.TryParse s with
-        | true,v -> Some v
-        | _ -> None
-    static member TryParseDouble (s, style, provider) =
-        match Double.TryParse(s, style, provider) with
-        | true,v -> Some v
-        | _ -> None
-        
-    static member TryParseFloat s =
-        match Single.TryParse s with
-        | true,v -> Some v
-        | _ -> None
-    static member TryParseFloat (s, style, provider) =
-        match Single.TryParse(s, style, provider) with
-        | true,v -> Some v
-        | _ -> None
-        
-    static member TryParseInt16 s =
-        match Int16.TryParse s with
-        | true,v -> Some v
-        | _ -> None
-    static member TryParseInt16 (s, style, provider) =
-        match Int16.TryParse(s, style, provider) with
-        | true,v -> Some v
-        | _ -> None
+    static member ParseDouble s = Double.parse s
+    static member ParseDouble (s, style, provider) = Double.parseWithOptions style provider s
 
-    static member TryParseInt64 s =
-        match Int64.TryParse s with
-        | true,v -> Some v
-        | _ -> None
-    static member TryParseInt64 (s, style, provider) =
-        match Int64.TryParse(s, style, provider) with
-        | true,v -> Some v
-        | _ -> None
-        
-    static member TryParseByte s =
-        match Byte.TryParse s with
-        | true,v -> Some v
-        | _ -> None
-    static member TryParseByte (s, style, provider) =
-        match Byte.TryParse(s, style, provider) with
-        | true,v -> Some v
-        | _ -> None
-        
-    static member TryParseDateTime s =
-        match DateTime.TryParse s with
-        | true,v -> Some v
-        | _ -> None
-    static member TryParseDateTime (s, style, provider) =
-        match DateTime.TryParse(s, style, provider) with
-        | true,v -> Some v
-        | _ -> None
-        
-    static member TryParseDateTimeOffset s =
-        match DateTimeOffset.TryParse s with
-        | true,v -> Some v
-        | _ -> None
-    static member TryParseDateTimeOffset (s, style, provider) =
-        match DateTimeOffset.TryParse(s, style, provider) with
-        | true,v -> Some v
-        | _ -> None
-        
+    static member ParseFloat s = Single.parse s
+    static member ParseFloat (s, style, provider) = Single.parseWithOptions style provider s
+
+    static member ParseInt16 s = Int16.parse s
+    static member ParseInt16 (s, style, provider) = Int16.parseWithOptions style provider s
+
+    static member ParseInt64 s = Int64.parse s
+    static member ParseInt64 (s, style, provider) = Int64.parseWithOptions style provider s
+
+    static member ParseByte s = Byte.parse s
+    static member ParseByte (s, style, provider) = Byte.parseWithOptions style provider s
+
+    static member ParseDateTime s = DateTime.parse s
+    static member ParseDateTime (s, style, provider) = DateTime.parseWithOptions style provider s
+
+    static member ParseDateTimeOffset s = DateTimeOffset.parse s
+    static member ParseDateTimeOffset (s, style, provider) = DateTimeOffset.parseWithOptions style provider s
+                
     static member TryCastInt (o: obj) = 
         match o with
         | :? int as i -> Some i

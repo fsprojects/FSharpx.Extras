@@ -153,25 +153,25 @@ namespace FSharpx.CSharpTests {
 
         [Test]
         public void TryParseInt() {
-            var a = FSharpOption.TryParseInt("123");
+            var a = FSharpOption.ParseInt("123");
             Assert.AreEqual(123, a.Value);
         }
 
         [Test]
         public void TryParseDec() {
-            var a = FSharpOption.TryParseDecimal("123.44", NumberStyles.Any, CultureInfo.InvariantCulture);
+            var a = FSharpOption.ParseDecimal("123.44", NumberStyles.Any, CultureInfo.InvariantCulture);
             Assert.AreEqual(123.44m, a.Value);
         }
 
         [Test]
         public void TryParseDouble() {
-            FSharpOption<double> a = FSharpOption.TryParseDouble("123E12");
+            FSharpOption<double> a = FSharpOption.ParseDouble("123E12");
             Assert.AreEqual(123E12, a.Value);
         }
 
         [Test]
         public void TryParseFloat() {
-            FSharpOption<float> a = FSharpOption.TryParseFloat("12");
+            FSharpOption<float> a = FSharpOption.ParseFloat("12");
             Assert.AreEqual(12, a.Value);
         }
 
