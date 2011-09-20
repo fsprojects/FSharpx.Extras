@@ -176,16 +176,16 @@ namespace FSharpx.CSharpTests {
         }
 
         [Test]
-        public void TryCastInt() {
+        public void CastInt() {
             object o = 22;
-            FSharpOption<int> a = FSharpOption.TryCastInt(o);
+            FSharpOption<int> a = Option.Cast<int>(o);
             Assert.AreEqual(22, a.Value);
         }
 
         [Test]
-        public void TryCastInt_null() {
+        public void CastInt_null() {
             object o = null;
-            FSharpOption<int> a = FSharpOption.TryCastInt(o);
+            FSharpOption<int> a = Option.Cast<int>(o);
             Assert.IsFalse(a.HasValue());
         }
 

@@ -212,6 +212,12 @@ module Option =
         | Some x when pred x -> Some x
         | _ -> None
 
+    [<CompiledName("Cast")>]
+    let inline cast (o: obj) =
+        try
+            Some (unbox o)
+        with _ -> None
+
 module Nullable =
     let (|Null|Value|) (x: _ Nullable) =
         if x.HasValue then Value x.Value else Null

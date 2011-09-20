@@ -28,3 +28,16 @@ let ``from bool and value``() =
         |> Option.fromBoolAndValue
     Assert.AreEqual(Some 34, parse "34")
     Assert.AreEqual(None, parse "xx")
+
+[<Test>]
+let ``valid cast``() =
+    let a = box 11    
+    let r = Option.cast a
+    Assert.IsTrue(Option.isSome r)
+    Assert.AreEqual(11, Option.get r)
+
+[<Test>]
+let ``invalid cast``() =
+    let a = box "a string"
+    let r : int option = Option.cast a
+    Assert.IsTrue(Option.isNone r)

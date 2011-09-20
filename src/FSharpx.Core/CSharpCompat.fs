@@ -178,11 +178,6 @@ type FSharpOption =
 
     static member ParseDateTimeOffset s = DateTimeOffset.parse s
     static member ParseDateTimeOffset (s, style, provider) = DateTimeOffset.parseWithOptions style provider s
-                
-    static member TryCastInt (o: obj) = 
-        match o with
-        | :? int as i -> Some i
-        | _ -> None
 
 [<Extension>]
 type FSharpChoice =
