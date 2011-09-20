@@ -1,5 +1,8 @@
 ﻿namespace FSharpx
 
+open System
+open System.Globalization
+
 [<AutoOpen>]
 module Prelude =
     let inline flip f a b = f b a
@@ -19,3 +22,100 @@ module Prelude =
     let inline tuple5 a b c d e = a,b,c,d,e
     /// Creates a 6-tuple
     let inline tuple6 a b c d e f = a,b,c,d,e,f
+
+    type Int16 with
+        static member parseWithOptions style provider x =
+            match Int16.TryParse(x, style, provider) with
+            | true,v -> Some v
+            | _ -> None
+            
+        static member parse x = 
+            Int16.parseWithOptions NumberStyles.Integer CultureInfo.InvariantCulture x
+
+    type Int32 with
+        static member parseWithOptions style provider x =
+            match Int32.TryParse(x, style, provider) with
+            | true,v -> Some v
+            | _ -> None
+            
+        static member parse x = 
+            Int32.parseWithOptions NumberStyles.Integer CultureInfo.InvariantCulture x
+
+    type Decimal with
+        static member parseWithOptions style provider x =
+            match Decimal.TryParse(x, style, provider) with
+            | true,v -> Some v
+            | _ -> None
+            
+        static member parse x = 
+            Decimal.parseWithOptions NumberStyles.Currency CultureInfo.InvariantCulture x
+
+    type Byte with
+        static member parseWithOptions style provider x =
+            match Byte.TryParse(x, style, provider) with
+            | true,v -> Some v
+            | _ -> None
+            
+        static member parse x = 
+            Byte.parseWithOptions NumberStyles.Integer CultureInfo.InvariantCulture x
+
+    type Int64 with
+        static member parseWithOptions style provider x =
+            match Int64.TryParse(x, style, provider) with
+            | true,v -> Some v
+            | _ -> None
+            
+        static member parse x = 
+            Int64.parseWithOptions NumberStyles.Integer CultureInfo.InvariantCulture x
+
+    type Single with
+        static member parseWithOptions style provider x =
+            match Single.TryParse(x, style, provider) with
+            | true,v -> Some v
+            | _ -> None
+            
+        static member parse x = 
+            Single.parseWithOptions NumberStyles.Float CultureInfo.InvariantCulture x
+
+    type Double with
+        static member parseWithOptions style provider x =
+            match Double.TryParse(x, style, provider) with
+            | true,v -> Some v
+            | _ -> None
+            
+        static member parse x = 
+            Double.parseWithOptions NumberStyles.Float CultureInfo.InvariantCulture x
+
+    type DateTime with
+        static member parseWithOptions style provider x =
+            match DateTime.TryParse(x, provider, style) with
+            | true,v -> Some v
+            | _ -> None
+            
+        static member parse x = 
+            DateTime.parseWithOptions DateTimeStyles.None CultureInfo.InvariantCulture x
+
+        static member parseExactWithOptions style provider (formats: string[]) x =
+            match DateTime.TryParseExact(x, formats, provider, style) with
+            | true,v -> Some v
+            | _ -> None
+
+        static member parseExact formats x =
+            DateTime.parseExactWithOptions DateTimeStyles.None CultureInfo.InvariantCulture formats x
+
+    type DateTimeOffset with
+        static member parseWithOptions style provider x =
+            match DateTimeOffset.TryParse(x, provider, style) with
+            | true,v -> Some v
+            | _ -> None
+            
+        static member parse x = 
+            DateTimeOffset.parseWithOptions DateTimeStyles.None CultureInfo.InvariantCulture x
+
+        static member parseExactWithOptions style provider (formats: string[]) x =
+            match DateTimeOffset.TryParseExact(x, formats, provider, style) with
+            | true,v -> Some v
+            | _ -> None
+
+        static member parseExact formats x =
+            DateTimeOffset.parseExactWithOptions DateTimeStyles.None CultureInfo.InvariantCulture formats x
