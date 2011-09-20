@@ -594,6 +594,11 @@ module Validation =
     open Choice
     open Monoid
 
+    let (|Success|Failure|) = 
+        function
+        | Choice1Of2 a -> Success a
+        | Choice2Of2 e -> Failure e
+
     /// Sequential application, parameterized by append
     let apa append x f = 
         match f,x with

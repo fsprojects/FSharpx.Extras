@@ -1,13 +1,13 @@
 ﻿module FSharpx.Tests.ValidationTests
 
 open System
+open FsUnit
+open Microsoft.FSharp.Core
 open FSharpx
 open FSharpx.CSharpTests
 open FSharpx.Choice
 open FSharpx.Validation
 open NUnit.Framework
-open FsUnit
-open Microsoft.FSharp.Core
 
 let validator pred error value =
     if pred value
@@ -66,8 +66,8 @@ let ValidateCustomer() =
         <* validateAddress customer.Address
         <* validateOrders customer.Orders
     match result with
-    | Choice1Of2 c -> failwithf "Valid customer: %A" c
-    | Choice2Of2 errors -> 
+    | Success c -> failwithf "Valid customer: %A" c
+    | Failure errors -> 
         printfn "Invalid customer. Errors:\n%A" errors
         errors.Length |> should equal 3
         errors |> should contain "Cost for product 'Bar' can't be negative"
@@ -82,8 +82,8 @@ let ``using ap``() =
     |> Validation.ap (nonNull "Surname can't be null" customer.Surname)
     |> Validation.ap (notEqual "foo" "Surname can't be foo" customer.Surname)
   match result with
-  | Choice1Of2 c -> failwithf "Valid customer: %A" c
-  | Choice2Of2 errors -> 
+  | Success c -> failwithf "Valid customer: %A" c
+  | Failure errors -> 
       printfn "Invalid customer. Errors:\n%A" errors
       errors.Length |> should equal 1
       errors |> should contain "Surname can't be null"
@@ -103,6 +103,6 @@ let ``validation with monoid``() =
     |> v.apl (notEqual "hello" x)
     |> v.apl (lengthNotEquals 5 x)
   match validateString "hello" with
-  | Choice1Of2 c -> failwithf "Valid string: %s" c
-  | Choice2Of2 e -> Assert.AreEqual(2, e)
+  | Success c -> failwithf "Valid string: %s" c
+  | Failure e -> Assert.AreEqual(2, e)
 
