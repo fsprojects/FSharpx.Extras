@@ -172,6 +172,11 @@ module Option =
 
     let inline fromBool b = if b then Some() else None
 
+    let inline fromBoolAndValue b = 
+        match b with
+        | true,v -> Some v
+        | _ -> None
+
     let fromChoice =
         function
         | Choice1Of2 a -> Some a
