@@ -39,7 +39,7 @@ let frameworkParams =
 // tools
 let fakePath = "./packages/FAKE.1.56.6/tools"
 let nugetPath = "./lib/Nuget/nuget.exe"
-let nunitPath = "./packages/NUnit.2.5.9.10348/Tools"
+let nunitPath = "./packages/NUnit.2.5.10.11092/Tools"
 
 // files
 let appReferences =
