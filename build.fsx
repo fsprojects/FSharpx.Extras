@@ -121,7 +121,7 @@ Target "BuildNuGet" (fun _ ->
     NuGet (fun p -> 
         {p with               
             Authors = authors
-            Project = projectName
+            Project = projectName + ".Core"
             Description = projectDescription
             Version = version
             OutputPath = nugetDir
