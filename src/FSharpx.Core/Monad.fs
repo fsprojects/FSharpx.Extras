@@ -652,7 +652,7 @@ module Validation =
 
     let seqValidator f = 
         let zero = returnM []
-        Seq.map f >> Seq.fold (map2 (flip List.cons)) zero
+        Seq.map f >> Seq.fold (map2 (flip FSharpx.List.cons)) zero
 
 
 module Continuation =
@@ -1241,4 +1241,3 @@ module Iteratee =
                 | Choice2Of2 0 -> Continue k
                 | Choice2Of2 n -> step (k (Chunk(BS(buffer,0,buffer.Length))))
             step i
-

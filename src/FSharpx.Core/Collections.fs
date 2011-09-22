@@ -106,8 +106,8 @@ module JoinList =
         | Unit _ -> Join(xs, Unit x, 2)
         | Join(_,_,l) -> Join(xs, Unit x, l+1)) EmptyJoinList s
     let toSeq (l:JoinList<_>) = l :> seq<_>
-    let toList (l:JoinList<_>) = List.ofSeq l   // NOTE: There is likely a better conversion to the List type.
-    let toArray (l:JoinList<_>) = Array.ofSeq l // NOTE: There is likely a better conversion to the Array type.
+    let toList (l:JoinList<_>) = List.ofSeq l
+    let toArray (l:JoinList<_>) = Array.ofSeq l
     let rec equal left right =
         match left with
         | EmptyJoinList -> match right with EmptyJoinList -> true | _ -> false
