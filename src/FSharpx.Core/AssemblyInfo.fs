@@ -1,4 +1,4 @@
-module FSharpx.Core.AssemblyInfo
+module FSharpx.AssemblyInfo
 #nowarn "49" // uppercase argument names
 #nowarn "67" // this type test or downcast will always hold
 #nowarn "66" // tis upast is unnecessary - the types are identical
@@ -24,9 +24,9 @@ exception ReturnNoneException183c26a427ae489c8fd92ec21a0c9a59
 
 [<assembly: AssemblyProduct ("FSharpx")>]
 
-[<assembly: AssemblyVersion ("1.2.110918")>]
+[<assembly: AssemblyVersion ("1.2.110910")>]
 
-[<assembly: AssemblyFileVersion ("1.2.110918")>]
+[<assembly: AssemblyFileVersion ("1.2.110910")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 

@@ -1,5 +1,6 @@
 ﻿#r @"..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.dll"
 #load @"..\src\FSharpx\Prelude.fs"
+open FSharpx
 #load @"..\src\FSharpx\Collections.fs"
 #load @"..\src\FSharpx\Monad.fs"
 
@@ -42,7 +43,7 @@ let runAsyncStream() =
 let runIteratee() =
     let sw = Stopwatch.StartNew()
     use stream = new MemoryStream(bytes)
-    let result = match enumStream 4096 stream readLines |> run_ with
+    let result = match enumStream 4096 stream readLines |> run with
                  | Choice1Of2 x -> x
                  | Choice2Of2 y -> y
     sw.Stop()
