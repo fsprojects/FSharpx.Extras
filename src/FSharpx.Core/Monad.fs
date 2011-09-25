@@ -2,9 +2,10 @@
 #nowarn "40"
 
 open System
+open System.Collections
+open System.Collections.Generic
 
 module Monoid =
-    open System.Collections.Generic
     
     /// Monoid (associative binary operation with identity)
     /// The monoid implementation comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.
@@ -728,7 +729,7 @@ module Continuation =
 
     /// The coroutine type from http://fssnip.net/7M
     type Coroutine() =
-        let tasks = new System.Collections.Generic.Queue<Cont<unit,unit>>()
+        let tasks = new Queue<Cont<unit,unit>>()
 
         member this.Put(task) =
             let withYield = cont {
@@ -1216,4 +1217,14 @@ module Iteratee =
                 let result = stream.Read(buffer, 0, bufferSize) in
                 if result = 0 then Continue k
                 else step (k (Chunk(BS(buffer,0,buffer.Length))))
+            step i
+
+        let enumStreamReader (reader:#System.IO.TextReader) i =
+            let rec step i =
+                match i with
+                | Done(_,_) -> i
+                | Continue k ->
+                    let line = reader.ReadLine()
+                    if line = null then i
+                    else step (k (Chunk(ByteString.ofString line)))
             step i

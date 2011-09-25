@@ -69,7 +69,7 @@ module Enumerator =
    
     let toSeq gen = 
         { new IEnumerable<'T> with 
-              member x.GetEnumerator() = gen() 
+              member x.GetEnumerator() = gen()
           interface IEnumerable with 
               member x.GetEnumerator() = (gen() :> IEnumerator) }
 
