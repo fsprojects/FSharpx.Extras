@@ -41,9 +41,13 @@
     </Compile>
     <Compile Include="JSON.ParserTests.fs" />
     <Compile Include="JSON.SerializationTests.fs" />
+    <Compile Include="Regex.Tests.fs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="FSharpx.TypeProviders">
+      <HintPath>..\..\src\FSharpx.TypeProviders\bin\Debug\FSharpx.TypeProviders.dll</HintPath>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core" />
     <Reference Include="nunit.framework">
@@ -63,11 +67,6 @@
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <ProjectReference Include="..\..\src\FSharpx.TypeProviders\FSharpx.TypeProviders.fsproj">
-      <Name>FSharpx.TypeProviders</Name>
-      <Project>{72613558-b230-43f0-84d7-584030bf5316}</Project>
-      <Private>True</Private>
-    </ProjectReference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
 	     Other similar extension points exist, see Microsoft.Common.targets.

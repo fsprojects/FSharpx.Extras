@@ -1,4 +1,4 @@
-﻿module FSharp.TypeProviders.JSON
+﻿module FSharpx.TypeProviders.JSON
 
 // Initial version of the parser from http://blog.efvincent.com/parsing-json-using-f/
 // Simplyfied, added AST and fixed some minor bugs

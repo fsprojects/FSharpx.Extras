@@ -1,7 +1,7 @@
 ﻿module FSharp.TypeProviders.Tests.JSONWriterTests
 
 open NUnit.Framework
-open FSharp.TypeProviders.JSON
+open FSharpx.TypeProviders.JSON
 open FsUnit
 
 [<Test>] 
