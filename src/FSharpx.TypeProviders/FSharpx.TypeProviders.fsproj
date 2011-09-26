@@ -42,7 +42,10 @@
   <ItemGroup>
     <Compile Include="ProvidedTypes-0.1.fsi" />
     <Compile Include="ProvidedTypes-0.1.fs" />
+    <Compile Include="Settings.fs" />
     <Compile Include="TypeSafeRegex.fs" />
+    <Compile Include="FileSystem.fs" />
+    <Compile Include="NamespaceProvider.fs" />
     <Compile Include="JSON.fs" />
   </ItemGroup>
   <ItemGroup>

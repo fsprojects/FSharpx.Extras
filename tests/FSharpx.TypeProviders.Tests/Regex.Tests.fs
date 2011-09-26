@@ -1,10 +1,10 @@
 ﻿module FSharp.TypeProviders.Tests.RegexTests
 
 open NUnit.Framework
-open FSharpx.RegexTypeProvider
+open FSharpx
 open FsUnit
 
-type T =  FSharpx.RegexTypeProvider.RegexTyped< @"(?<AreaCode>^\d{3})-(?<PhoneNumber>\d{3}-\d{4}$)">
+type T = RegexTyped< @"(?<AreaCode>^\d{3})-(?<PhoneNumber>\d{3}-\d{4}$)">
 
 [<Test>] 
 let ``Can parse simple phone number``() = 
