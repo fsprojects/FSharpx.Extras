@@ -8,8 +8,7 @@ open Samples.FSharpPreviewRelease2011.ProvidedTypes
 open System.Text.RegularExpressions
 open FSharpx.TypeProviders.Settings
 
-let baseTy = typeof<obj>
-let regexTy = ProvidedTypeDefinition(thisAssembly, rootNamespace, "RegexTyped", Some baseTy)
+let regexTy = ProvidedTypeDefinition(thisAssembly, rootNamespace, "RegexTyped", Some objectBaseType)
 
 do regexTy.DefineStaticParameters(
     parameters=
@@ -32,7 +31,7 @@ do regexTy.DefineStaticParameters(
                     assembly = thisAssembly, 
                     namespaceName = rootNamespace, 
                     typeName = typeName, 
-                    baseType = Some baseTy, 
+                    baseType = Some objectBaseType, 
                     HideObjectMethods = true)
 
         ty.AddXmlDoc "A strongly typed interface to the regular expression '%s'"
@@ -53,7 +52,7 @@ do regexTy.DefineStaticParameters(
         // Again, erase to obj even though the representation will always be a Match
         let matchTy = ProvidedTypeDefinition(
                         typeName = "MatchType", 
-                        baseType = Some baseTy, 
+                        baseType = Some objectBaseType, 
                         HideObjectMethods = true)
 
         // Nest the match type within parameterized Regex type

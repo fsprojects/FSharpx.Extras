@@ -8,8 +8,7 @@ open Samples.FSharpPreviewRelease2011.ProvidedTypes
 open System.Text.RegularExpressions
 open FSharpx.TypeProviders.Settings
 
-let baseTy = typeof<obj>
-let rec addMembers (path:string) (ownerTy:ProvidedTypeDefinition) = 
+let rec addMembers (path:string) (ownerTy:ProvidedTypeDefinition) =          
     ownerTy.AddXmlDoc "A strongly typed interface to the directory '%s'"
     let dir = new System.IO.DirectoryInfo(path)
     let pathField = ProvidedLiteralField("Path", typeof<string>, dir.FullName);
@@ -18,7 +17,7 @@ let rec addMembers (path:string) (ownerTy:ProvidedTypeDefinition) =
     for sub in dir.EnumerateDirectories() do
                 let subTy = ProvidedTypeDefinition(
                                 typeName = sub.Name.Replace(' ','_'), 
-                                baseType = Some baseTy, 
+                                baseType = Some objectBaseType, 
                                 HideObjectMethods = true)
                 let pathField = ProvidedLiteralField("Path", typeof<string>, sub.FullName)
                 pathField.AddXmlDoc "Full path to fullName"
@@ -28,22 +27,22 @@ let rec addMembers (path:string) (ownerTy:ProvidedTypeDefinition) =
     for file in dir.EnumerateFiles() do
                 let subTy = ProvidedTypeDefinition(
                                 typeName = file.Name.Replace(' ','_'), 
-                                baseType = Some baseTy, 
+                                baseType = Some objectBaseType, 
                                 HideObjectMethods = true)
                 let pathField = ProvidedLiteralField("Path", typeof<string>, file.FullName)
                 pathField.AddXmlDoc "Full path to fullName"
                 subTy.AddMember pathField
                 ownerTy.AddMember subTy
 and addMembersSafe (path:string) (ownerTy:ProvidedTypeDefinition) = 
-    try
-        addMembers path ownerTy
-    with | exn ->
-            ()
+        try 
+            addMembers path ownerTy
+        with 
+        | exn -> ()
 
 
-let fileTy = ProvidedTypeDefinition(thisAssembly, rootNamespace, "FileTyped", Some baseTy)
+let fileTy = ProvidedTypeDefinition(thisAssembly, rootNamespace, "FileTyped", Some objectBaseType)
 
-do fileTy.DefineStaticParameters(
+fileTy.DefineStaticParameters(
     parameters=[ProvidedStaticParameter("path", typeof<string>)], 
     instantiationFunction=(fun typeName parameterValues ->
 
@@ -53,7 +52,7 @@ do fileTy.DefineStaticParameters(
                     assembly = thisAssembly, 
                     namespaceName = rootNamespace, 
                     typeName = typeName, 
-                    baseType = Some baseTy, 
+                    baseType = Some objectBaseType, 
                     HideObjectMethods = true)
             
             
