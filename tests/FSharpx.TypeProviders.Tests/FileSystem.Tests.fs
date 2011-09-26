@@ -2,8 +2,6 @@
 
 open FSharpx
 
-type T = FileTyped< @"C:\Users\sforkmann\Documents">
+type T = FileSystemTyped< @"C:\Users\Steffen\Documents">
 
-//printf "Dir path = %s" T.Visual_Studio_2010.Code_Snippets.Nemerle.My_Code_Snippets.Path
-
-let printType() = printfn "%A" T.Path
+let printType() = printfn "%A" T.Visual_Studio_11.Path

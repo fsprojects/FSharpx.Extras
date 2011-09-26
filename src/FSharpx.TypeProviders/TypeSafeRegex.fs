@@ -8,7 +8,7 @@ open Samples.FSharpPreviewRelease2011.ProvidedTypes
 open System.Text.RegularExpressions
 open FSharpx.TypeProviders.Settings
 
-let regexTy = ProvidedTypeDefinition(thisAssembly, rootNamespace, "RegexTyped", Some objectBaseType)
+let regexTy = erasedType<obj> "RegexTyped"
 
 do regexTy.DefineStaticParameters(
     parameters=
@@ -22,7 +22,7 @@ do regexTy.DefineStaticParameters(
         //
         // This will fail with System.ArgumentException if the regular expression is invalid. 
         // The exception will excape the type provider and be reported in client code.
-        let r = System.Text.RegularExpressions.Regex(pattern, options)            
+        let r = Regex(pattern, options)            
 
         // Declare the typed regex provided type.
         // The type erasure of this typs ia 'obj', even though the representation will always be a Regex
@@ -50,10 +50,7 @@ do regexTy.DefineStaticParameters(
 
         // Provided type for matches
         // Again, erase to obj even though the representation will always be a Match
-        let matchTy = ProvidedTypeDefinition(
-                        typeName = "MatchType", 
-                        baseType = Some objectBaseType, 
-                        HideObjectMethods = true)
+        let matchTy = runtimeType<obj> "MatchType" |> hideOldMethods
 
         // Nest the match type within parameterized Regex type
         ty.AddMember matchTy

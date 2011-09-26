@@ -15,20 +15,15 @@ let rec addMembers (path:string) (ownerTy:ProvidedTypeDefinition) =
     pathField.AddXmlDoc "Full path to fullName"
     ownerTy.AddMember pathField
     for sub in dir.EnumerateDirectories() do
-                let subTy = ProvidedTypeDefinition(
-                                typeName = sub.Name.Replace(' ','_'), 
-                                baseType = Some objectBaseType, 
-                                HideObjectMethods = true)
+                let subTy = runtimeType<obj> (sub.Name.Replace(' ','_'))  |> hideOldMethods
+
                 let pathField = ProvidedLiteralField("Path", typeof<string>, sub.FullName)
                 pathField.AddXmlDoc "Full path to fullName"
                 subTy.AddMember pathField
                 addMembersSafe sub.FullName subTy
                 ownerTy.AddMember subTy
     for file in dir.EnumerateFiles() do
-                let subTy = ProvidedTypeDefinition(
-                                typeName = file.Name.Replace(' ','_'), 
-                                baseType = Some objectBaseType, 
-                                HideObjectMethods = true)
+                let subTy = runtimeType<obj> (file.Name.Replace(' ','_'))  |> hideOldMethods
                 let pathField = ProvidedLiteralField("Path", typeof<string>, file.FullName)
                 pathField.AddXmlDoc "Full path to fullName"
                 subTy.AddMember pathField
@@ -40,7 +35,7 @@ and addMembersSafe (path:string) (ownerTy:ProvidedTypeDefinition) =
         | exn -> ()
 
 
-let fileTy = ProvidedTypeDefinition(thisAssembly, rootNamespace, "FileTyped", Some objectBaseType)
+let fileTy = erasedType<obj> "FileSystemTyped"
 
 fileTy.DefineStaticParameters(
     parameters=[ProvidedStaticParameter("path", typeof<string>)], 
@@ -48,14 +43,8 @@ fileTy.DefineStaticParameters(
 
         match parameterValues with 
         | [| :? string as path |] -> 
-        let ty = ProvidedTypeDefinition(
-                    assembly = thisAssembly, 
-                    namespaceName = rootNamespace, 
-                    typeName = typeName, 
-                    baseType = Some objectBaseType, 
-                    HideObjectMethods = true)
-            
-            
+        let ty = erasedType<obj> typeName |> hideOldMethods
+                    
         addMembersSafe path ty
                     
         ty
