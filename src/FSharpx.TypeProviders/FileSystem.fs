@@ -8,29 +8,22 @@ open Samples.FSharpPreviewRelease2011.ProvidedTypes
 open System.Text.RegularExpressions
 open FSharpx.TypeProviders.Settings
 open FSharpx.TypeProviders.DSL
+open System.IO
 
-let annotateAsFileSystemType path (ownerTy:ProvidedTypeDefinition) =
-    ownerTy.AddXmlDoc <| sprintf "A strongly typed interface to '%s'" path
-    ownerTy
-        |> hideOldMethods
-        |> addMember (literalField "Path" (sprintf "Full path to '%s'" path) path)
-
-let rec annotateWithSubdirectories path (ownerTy:ProvidedTypeDefinition) =
+let rec annotateWithSubdirectories (fileSystemInfo:FileSystemInfo) (ownerTy:ProvidedTypeDefinition) =
     try        
-        let dir = new System.IO.DirectoryInfo(path)
+        let annotated =
+            ownerTy.AddXmlDoc <| sprintf "A strongly typed interface to '%s'" fileSystemInfo.FullName
+            ownerTy
+                |> hideOldMethods
+                |> addMember (literalField "Path" (sprintf "Full path to '%s'" fileSystemInfo.FullName) fileSystemInfo.FullName)
         
-        let typeWithSubdirectories =
-            dir.EnumerateDirectories()
-                |> Seq.map (fun sub -> 
-                    runtimeType<obj> sub.Name
-                      |> annotateWithSubdirectories sub.FullName)
-                |> Seq.fold (fun ownerType subdirType -> addMember subdirType ownerType)
-                    (annotateAsFileSystemType path ownerTy)
-
-        dir.EnumerateFiles()
-            |> Seq.map (fun file -> runtimeType<obj> file.Name |> annotateAsFileSystemType file.FullName)
-            |> Seq.fold (fun ownerType fileType -> addMember fileType ownerType) typeWithSubdirectories
-    
+        match fileSystemInfo with
+        | :? DirectoryInfo as dir ->
+             dir.EnumerateFileSystemInfos()
+                |> Seq.map (fun info -> runtimeType<obj> info.Name |> annotateWithSubdirectories info)
+                |> Seq.fold (fun ownerType subdirType -> addMember subdirType ownerType) annotated
+        | _ -> annotated    
     with 
     | exn -> ownerTy
 
@@ -38,4 +31,4 @@ let typedFileSystem =
     erasedType<obj> thisAssembly rootNamespace "FileSystemTyped"
       |> staticParameter "path" (fun typeName path -> 
             erasedType<obj> thisAssembly rootNamespace typeName
-                |> annotateWithSubdirectories path)
+                |> annotateWithSubdirectories (new DirectoryInfo(path)))
