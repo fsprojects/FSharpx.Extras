@@ -19,9 +19,13 @@ let rec annotateAsFileSystemInfo (fileSystemInfo:FileSystemInfo) (ownerTy:Provid
         
         match fileSystemInfo with
         | :? DirectoryInfo as dir ->
-             dir.EnumerateFileSystemInfos()
-                |> Seq.map (fun info -> runtimeType<obj> info.Name |> annotateAsFileSystemInfo info)
-                |> Seq.fold (fun ownerType subdirType -> addMember subdirType ownerType) annotated
+             annotated
+               |> addMembers (
+                    dir.EnumerateFileSystemInfos()
+                        |> Seq.map (fun info -> 
+                                runtimeType<obj> info.Name 
+                                    |> annotateAsFileSystemInfo info))
+                 
         | _ -> annotated    
     with 
     | exn -> ownerTy

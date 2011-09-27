@@ -28,6 +28,8 @@ let addMember memberDef (typeDef:ProvidedTypeDefinition) =
     typeDef.AddMember memberDef
     typeDef
 
+let addMembers members ownerType = Seq.fold (fun ownerType subType -> addMember subType ownerType) ownerType members
+
 open Microsoft.FSharp.Quotations
 
 let property<'r> name quotationF =    

@@ -18,24 +18,25 @@ regexTy.DefineStaticParameters(
     instantiationFunction=(fun typeName parameterValues ->
 
         match parameterValues with 
-        | [| :? string as pattern; :? RegexOptions as options |] -> 
-        let r = Regex(pattern, options)
-                
-        let matchTy = 
-            r.GetGroupNames()
+        | [| :? string as pattern; :? RegexOptions as options |] ->
+
+        let groupProperties =
+            Regex(pattern, options).GetGroupNames()
                 |> Seq.map (fun group ->
                         property<Group> 
                             (if group <> "0" then group else "CompleteMatch") 
                             (fun args -> <@@ (%%args.[0]:Match).Groups.[group] @@>)
-                         |> addXmlDoc(sprintf @"Gets the ""%s"" group from this match" group))
-                |> Seq.fold 
-                    (fun ownerType subType -> ownerType |> addMember subType)
-                    (runtimeType<Match> "MatchType"  |> hideOldMethods)
+                            |> addXmlDoc(sprintf @"Gets the ""%s"" group from this match" group))
+                
+        let matchTy =
+            runtimeType<Match> "MatchType"
+              |> hideOldMethods 
+              |> addMembers groupProperties
 
         erasedType<Regex> thisAssembly rootNamespace typeName 
             |> hideOldMethods
             |> addXmlDoc "A strongly typed interface to the regular expression '%s'"
-            |> addMember (            
+            |> addMember (
                 ProvidedMethod(
                     methodName = "IsMatch", 
                     parameters = [ProvidedParameter("input", typeof<string>)], 
