@@ -5,17 +5,20 @@ open System.Reflection
 
 // Starting to implement a DSL on top of ProvidedTypes API
 
+let cleanupTypeName(name:string) = name.Replace(' ','_')
+
 let hideOldMethods (typeDef:ProvidedTypeDefinition) = 
     typeDef.HideObjectMethods <- true
     typeDef
 
-let runtimeType<'a> typeName = ProvidedTypeDefinition(typeName = typeName, baseType = Some typeof<'a>)
+let runtimeType<'a> typeName = 
+    ProvidedTypeDefinition(typeName = cleanupTypeName typeName, baseType = Some typeof<'a>)
 
 let erasedType<'a> assemblyName rootNamespace typeName = 
-    ProvidedTypeDefinition(assemblyName, rootNamespace, typeName, Some typeof<'a>)
+    ProvidedTypeDefinition(assemblyName, rootNamespace, cleanupTypeName typeName, Some typeof<'a>)
 
 let literalField name xmlDoc (value:'a) =
-    let field = ProvidedLiteralField(name, typeof<'a>, value)
+    let field = ProvidedLiteralField(cleanupTypeName name, typeof<'a>, value)
     field.AddXmlDoc xmlDoc
     field
 
