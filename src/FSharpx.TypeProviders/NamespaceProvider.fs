@@ -12,7 +12,7 @@ type public FSharpxProvider() as this =
     do this.AddNamespace(
         Settings.rootNamespace, 
         [RegexTypeProvider.regexTy
-         FilesTypeProvider.fileTy])
+         FilesTypeProvider.typedFileSystem])
 
 [<TypeProviderAssembly>]
 do ()

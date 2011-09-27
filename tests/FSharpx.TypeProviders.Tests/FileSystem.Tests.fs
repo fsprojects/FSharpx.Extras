@@ -4,4 +4,5 @@ open FSharpx
 
 type T = FileSystemTyped< @"C:\Users\Steffen\Documents">
 
-let printType() = printfn "%s" T.Visual_Studio_11.Path
+let printPath() = printfn "%s" T.Visual_Studio_2010.Path
+let printFile() = printfn "%s" T.``desktop.ini``.Path

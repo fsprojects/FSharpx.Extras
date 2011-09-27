@@ -9,33 +9,33 @@ open System.Text.RegularExpressions
 open FSharpx.TypeProviders.Settings
 open FSharpx.TypeProviders.DSL
 
-let rec addMembers (path:string) (ownerTy:ProvidedTypeDefinition) =
-    try
-        ownerTy.AddXmlDoc "A strongly typed interface to the directory '%s'"
-        let dir = new System.IO.DirectoryInfo(path)
-        let typeWithPath = ownerTy |> addMember (literalField "Path" "Full path to fullName" dir.FullName) 
+let annotateAsFileSystemType path (ownerTy:ProvidedTypeDefinition) =
+    ownerTy.AddXmlDoc <| sprintf "A strongly typed interface to '%s'" path
+    ownerTy
+        |> hideOldMethods
+        |> addMember (literalField "Path" (sprintf "Full path to '%s'" path) path)
 
+let rec annotateWithSubdirectories path (ownerTy:ProvidedTypeDefinition) =
+    try        
+        let dir = new System.IO.DirectoryInfo(path)
+        
         let typeWithSubdirectories =
             dir.EnumerateDirectories()
-              |> Seq.map (fun sub -> sub,runtimeType<obj> sub.Name |> hideOldMethods)
-              |> Seq.fold (fun ownerType (sub,dirType) ->                
-                    addMember (addMembers sub.FullName dirType) ownerType)
-                    typeWithPath
+                |> Seq.map (fun sub -> 
+                    runtimeType<obj> sub.Name
+                      |> annotateWithSubdirectories sub.FullName)
+                |> Seq.fold (fun ownerType subdirType -> addMember subdirType ownerType)
+                    (annotateAsFileSystemType path ownerTy)
 
         dir.EnumerateFiles()
-          |> Seq.map (fun file -> 
-                runtimeType<obj> file.Name
-                    |> hideOldMethods
-                    |> addMember (literalField "Path" "Full path to fullName" file.FullName))
-          |> Seq.fold (fun ownerType fileType -> addMember fileType ownerType) typeWithSubdirectories
+            |> Seq.map (fun file -> runtimeType<obj> file.Name |> annotateAsFileSystemType file.FullName)
+            |> Seq.fold (fun ownerType fileType -> addMember fileType ownerType) typeWithSubdirectories
     
     with 
     | exn -> ownerTy
 
-
-let fileTy =
+let typedFileSystem =
     erasedType<obj> thisAssembly rootNamespace "FileSystemTyped"
       |> staticParameter "path" (fun typeName path -> 
-            erasedType<obj> thisAssembly rootNamespace typeName 
-                |> hideOldMethods
-                |> addMembers path)
+            erasedType<obj> thisAssembly rootNamespace typeName
+                |> annotateWithSubdirectories path)
