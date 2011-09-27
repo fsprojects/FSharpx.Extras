@@ -22,21 +22,16 @@ regexTy.DefineStaticParameters(
         let r = Regex(pattern, options)
                 
         let matchTy = 
-            runtimeType<Match> "MatchType" 
-                |> hideOldMethods        
-        
-        // Add group properties to match type
-        for group in r.GetGroupNames() do
-            // ignore the group named 0, which represents all input
-            if group <> "0" then
-                let prop = 
-                    ProvidedProperty(
-                        propertyName = group, 
-                        propertyType = typeof<Group>, 
-                        GetterCode = fun args -> <@@ (%%args.[0]:Match).Groups.[group] @@>)
-                    |> addXmlDoc(sprintf @"Gets the ""%s"" group from this match" group)
-                matchTy.AddMember(prop)
-        
+            r.GetGroupNames()
+                |> Seq.map (fun group ->
+                        property<Group> 
+                            (if group <> "0" then group else "CompleteMatch") 
+                            (fun args -> <@@ (%%args.[0]:Match).Groups.[group] @@>)
+                         |> addXmlDoc(sprintf @"Gets the ""%s"" group from this match" group))
+                |> Seq.fold 
+                    (fun ownerType subType -> ownerType |> addMember subType)
+                    (runtimeType<Match> "MatchType"  |> hideOldMethods)
+
         erasedType<Regex> thisAssembly rootNamespace typeName 
             |> hideOldMethods
             |> addXmlDoc "A strongly typed interface to the regular expression '%s'"

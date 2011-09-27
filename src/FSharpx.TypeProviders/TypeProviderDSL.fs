@@ -28,6 +28,14 @@ let addMember memberDef (typeDef:ProvidedTypeDefinition) =
     typeDef.AddMember memberDef
     typeDef
 
+open Microsoft.FSharp.Quotations
+
+let property<'r> name quotationF =    
+    ProvidedProperty(
+        propertyName = name, 
+        propertyType = typeof<'r>, 
+        GetterCode = quotationF)
+
 let staticParameter name instantiateFunction (typeDef:ProvidedTypeDefinition) =
     typeDef.DefineStaticParameters(
         parameters = [ProvidedStaticParameter(name, typeof<'a>)], 
