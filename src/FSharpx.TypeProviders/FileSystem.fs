@@ -12,22 +12,21 @@ open FSharpx.TypeProviders.DSL
 let rec addMembers (path:string) (ownerTy:ProvidedTypeDefinition) =          
     ownerTy.AddXmlDoc "A strongly typed interface to the directory '%s'"
     let dir = new System.IO.DirectoryInfo(path)
-    let pathField = ProvidedLiteralField("Path", typeof<string>, dir.FullName);
-    pathField.AddXmlDoc "Full path to fullName"
-    ownerTy.AddMember pathField
+    ownerTy 
+        |> addMember (literalField "Path" "Full path to fullName" dir.FullName) 
+        |> ignore
     for sub in dir.EnumerateDirectories() do
-                let subTy = runtimeType<obj> (sub.Name.Replace(' ','_'))  |> hideOldMethods
-
-                let pathField = ProvidedLiteralField("Path", typeof<string>, sub.FullName)
-                pathField.AddXmlDoc "Full path to fullName"
-                subTy.AddMember pathField
+                let subTy = 
+                    runtimeType<obj> (sub.Name.Replace(' ','_'))
+                        |> hideOldMethods
+                        |> addMember (literalField "Path" "Full path to fullName" sub.FullName)
                 addMembersSafe sub.FullName subTy
                 ownerTy.AddMember subTy
     for file in dir.EnumerateFiles() do
-                let subTy = runtimeType<obj> (file.Name.Replace(' ','_'))  |> hideOldMethods
-                let pathField = ProvidedLiteralField("Path", typeof<string>, file.FullName)
-                pathField.AddXmlDoc "Full path to fullName"
-                subTy.AddMember pathField
+                let subTy = 
+                    runtimeType<obj> (file.Name.Replace(' ','_'))
+                        |> hideOldMethods
+                        |> addMember (literalField "Path" "Full path to fullName" file.FullName)
                 ownerTy.AddMember subTy
 and addMembersSafe (path:string) (ownerTy:ProvidedTypeDefinition) = 
         try 
