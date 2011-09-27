@@ -7,6 +7,7 @@ open Microsoft.FSharp.Core.CompilerServices
 open Samples.FSharpPreviewRelease2011.ProvidedTypes
 open System.Text.RegularExpressions
 open FSharpx.TypeProviders.Settings
+open FSharpx.TypeProviders.DSL
 
 let rec addMembers (path:string) (ownerTy:ProvidedTypeDefinition) =          
     ownerTy.AddXmlDoc "A strongly typed interface to the directory '%s'"
@@ -35,7 +36,7 @@ and addMembersSafe (path:string) (ownerTy:ProvidedTypeDefinition) =
         | exn -> ()
 
 
-let fileTy = erasedType<obj> "FileSystemTyped"
+let fileTy = erasedType<obj> thisAssembly rootNamespace "FileSystemTyped"
 
 fileTy.DefineStaticParameters(
     parameters=[ProvidedStaticParameter("path", typeof<string>)], 
@@ -43,7 +44,7 @@ fileTy.DefineStaticParameters(
 
         match parameterValues with 
         | [| :? string as path |] -> 
-        let ty = erasedType<obj> typeName |> hideOldMethods
+        let ty = erasedType<obj> thisAssembly rootNamespace typeName |> hideOldMethods
                     
         addMembersSafe path ty
                     

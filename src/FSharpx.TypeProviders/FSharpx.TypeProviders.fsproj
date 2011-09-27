@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="ProvidedTypes-0.1.fsi" />
     <Compile Include="ProvidedTypes-0.1.fs" />
+    <Compile Include="TypeProviderDSL.fs" />
     <Compile Include="Settings.fs" />
     <Compile Include="TypeSafeRegex.fs" />
     <Compile Include="FileSystem.fs" />

@@ -7,8 +7,9 @@ open Microsoft.FSharp.Core.CompilerServices
 open Samples.FSharpPreviewRelease2011.ProvidedTypes
 open System.Text.RegularExpressions
 open FSharpx.TypeProviders.Settings
+open FSharpx.TypeProviders.DSL
 
-let regexTy = erasedType<obj> "RegexTyped"
+let regexTy = erasedType<obj> thisAssembly rootNamespace "RegexTyped"
 
 do regexTy.DefineStaticParameters(
     parameters=
@@ -27,13 +28,8 @@ do regexTy.DefineStaticParameters(
         // Declare the typed regex provided type.
         // The type erasure of this typs ia 'obj', even though the representation will always be a Regex
         // This, combined with hiding the object methods, makes the IntelliSense experience simpler.
-        let ty = ProvidedTypeDefinition(
-                    assembly = thisAssembly, 
-                    namespaceName = rootNamespace, 
-                    typeName = typeName, 
-                    baseType = Some objectBaseType, 
-                    HideObjectMethods = true)
-
+        let ty = erasedType<obj> thisAssembly rootNamespace typeName |> hideOldMethods
+        
         ty.AddXmlDoc "A strongly typed interface to the regular expression '%s'"
 
         // Provide strongly typed version of Regex.IsMatch static method
