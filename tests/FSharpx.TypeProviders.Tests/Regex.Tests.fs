@@ -5,11 +5,13 @@ open FSharpx
 open FsUnit
 
 type T = RegexTyped< @"(?<AreaCode>^\d{3})-(?<PhoneNumber>\d{3}-\d{4}$)">
+let reg = T()
 
 [<Test>] 
-let ``Can parse simple phone number``() = 
-    
-    let reg = T() 
-    let result = T.IsMatch("425-123-2345")
+let ``Can call typed IsMatch function``() =      
+    Assert.IsTrue <| T.IsMatch "425-123-2345"
+
+[<Test>] 
+let ``Can parse simple phone number``() =
     reg.Match("425-123-2345").AreaCode.Value
     |> should equal "425"
