@@ -33,15 +33,9 @@ let rec addMembers (path:string) (ownerTy:ProvidedTypeDefinition) =
     | exn -> ownerTy
 
 
-let fileTy = erasedType<obj> thisAssembly rootNamespace "FileSystemTyped"
-
-fileTy.DefineStaticParameters(
-    parameters=[ProvidedStaticParameter("path", typeof<string>)], 
-    instantiationFunction=(fun typeName parameterValues ->
-
-        match parameterValues with 
-        | [| :? string as path |] -> 
+let fileTy =
+    erasedType<obj> thisAssembly rootNamespace "FileSystemTyped"
+      |> staticParameter "path" (fun typeName path -> 
             erasedType<obj> thisAssembly rootNamespace typeName 
                 |> hideOldMethods
-                |> addMembers path
-        | _ -> failwith "unexpected parameter values")) 
+                |> addMembers path)

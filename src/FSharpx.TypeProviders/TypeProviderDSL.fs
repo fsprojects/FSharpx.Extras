@@ -22,6 +22,15 @@ let literalField name xmlDoc (value:'a) =
     field.AddXmlDoc xmlDoc
     field
 
-let addMember memberDef (typeDef:ProvidedTypeDefinition)  =
+let addMember memberDef (typeDef:ProvidedTypeDefinition) =
     typeDef.AddMember memberDef
+    typeDef
+
+let staticParameter name instantiateFunction (typeDef:ProvidedTypeDefinition) =
+    typeDef.DefineStaticParameters(
+        parameters = [ProvidedStaticParameter(name, typeof<'a>)], 
+        instantiationFunction = (fun typeName parameterValues ->
+            match parameterValues with 
+            | [| :? 'a as parameterValue |] -> instantiateFunction typeName parameterValue
+            | x -> failwithf "unexpected parameter values %A" x))
     typeDef
