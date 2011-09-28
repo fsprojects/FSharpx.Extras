@@ -22,14 +22,15 @@ let regexTy =
             let groupProperties =
                 Regex(pattern, options).GetGroupNames()
                     |> Seq.map (fun group ->
-                            property<Group> 
-                                (if group <> "0" then group else "CompleteMatch") 
+                            provideProperty 
+                                (if group <> "0" then group else "CompleteMatch")
+                                typeof<Group>
                                 (fun args -> <@@ (%%args.[0]:Match).Groups.[group] @@>)
                                 |> addXmlDoc(sprintf @"Gets the ""%s"" group from this match" group))
                 
             let matchTy =
                 runtimeType<Match> "MatchType"
-                  |> hideOldMethods 
+                  |> hideOldMethods
                   |> addMembers groupProperties
 
             erasedType<Regex> thisAssembly rootNamespace typeName 

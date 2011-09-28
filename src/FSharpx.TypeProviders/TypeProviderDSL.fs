@@ -32,10 +32,10 @@ let addMembers members ownerType = Seq.fold (fun ownerType subType -> addMember 
 
 open Microsoft.FSharp.Quotations
 
-let property<'r> name quotationF =    
+let provideProperty name propertyType quotationF =    
     ProvidedProperty(
         propertyName = name, 
-        propertyType = typeof<'r>, 
+        propertyType = propertyType, 
         GetterCode = quotationF)
 
 let provideMethod name parameters returnType quotationF =
