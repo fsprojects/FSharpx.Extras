@@ -1,5 +1,4 @@
-#I "./packages/FAKE.1.56.6/tools"
-#r "FakeLib.dll"
+#r "./packages/FAKE.1.56.6/tools/FakeLib.dll"
 
 open Fake 
 open System.IO
@@ -7,11 +6,11 @@ open System.IO
 // properties
 let currentDate = System.DateTime.UtcNow
 let projectName = "FSharpx"
-let version = "1.2." + currentDate.ToString("yMMdd")
+let version = "1.3." + currentDate.ToString("yMMdd")
 let coreSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let projectSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let projectDescription = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.\r\n\r\nIt currently implements:\r\n\r\n* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n* Iteratee\r\n* Validation applicative functor\r\n* General functions like flip\r\n* Additional functions around collections\r\n* Functions to make C# - F# interop easier."
-let authors = ["Ryan Riley"; "Mauricio Scheffer"; "Steffen Forkmann"]
+let authors = ["Steffen Forkmann"; "Tomas Petricek"; "Ryan Riley"; "Mauricio Scheffer" ]
 let mail = "ryan.riley@panesofglass.org"
 let homepage = "http://github.com/fsharp/fsharpx"
 let nugetKey = if System.IO.File.Exists "./key.txt" then ReadFileAsString "./key.txt" else ""
@@ -70,6 +69,15 @@ Target "BuildApp" (fun _ ->
             Guid = "1e95a279-c2a9-498b-bc72-6e7a0d6854ce"
             OutputFileName = "./src/FSharpx.Core/AssemblyInfo.fs" })
 
+    AssemblyInfo (fun p ->
+        {p with 
+            CodeLanguage = FSharp
+            AssemblyVersion = version
+            AssemblyTitle = "FSharp.AsyncExtensions"
+            AssemblyDescription = "This library implements various extensions for asynchronous programming using F# asynchronous workflows and F# agents."
+            Guid = "ede1812b-5a62-410a-9553-02499cf29317"
+            OutputFileName = "./src/FSharpx.AsyncExtensions/AssemblyInfo.fs" })
+
     MSBuild buildDir "Build" (["Configuration","Release"] @ frameworkParams) appReferences
         |> Log "AppBuild-Output: "
 )
@@ -100,7 +108,7 @@ Target "GenerateDocumentation" (fun _ ->
 )
 
 Target "CopyLicense" (fun _ ->
-    [ "LICENSE.txt" ] |> CopyTo buildDir
+    [ "LICENSE.md" ] |> CopyTo buildDir
 )
 
 Target "ZipDocumentation" (fun _ ->
@@ -115,7 +123,10 @@ Target "BuildNuGet" (fun _ ->
     XCopy (docsDir |> FullName) nugetDocsDir
     [ buildDir + "FSharpx.Core.dll"
       buildDir + "FSharpx.Core.pdb"
-      buildDir + "FSharpx.Core.xml" ]
+      buildDir + "FSharpx.Core.xml"
+      buildDir + "FSharp.AsyncExtensions.dll"
+      buildDir + "FSharp.AsyncExtensions.pdb"
+      buildDir + "FSharp.AsyncExtensions.xml" ]
         |> CopyTo nugetLibDir
 
     NuGet (fun p -> 
