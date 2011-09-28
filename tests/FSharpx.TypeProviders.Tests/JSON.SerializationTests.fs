@@ -5,7 +5,7 @@ open FSharpx.TypeProviders.JSON
 open FsUnit
 
 [<Test>] 
-let ``Can serialize empty empty document``() = 
+let ``Can serialize empty document``() = 
     emptyJObject.ToString()
     |> should equal "{}"
 

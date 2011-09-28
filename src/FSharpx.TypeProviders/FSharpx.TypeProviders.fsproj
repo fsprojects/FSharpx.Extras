@@ -46,8 +46,9 @@
     <Compile Include="Settings.fs" />
     <Compile Include="TypeSafeRegex.fs" />
     <Compile Include="FileSystem.fs" />
-    <Compile Include="NamespaceProvider.fs" />
     <Compile Include="JSON.fs" />
+    <Compile Include="MiniCsvProvider.fs" />
+    <Compile Include="NamespaceProvider.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Data.TypeProviders, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />

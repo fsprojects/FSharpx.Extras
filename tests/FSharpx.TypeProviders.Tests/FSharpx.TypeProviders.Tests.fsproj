@@ -35,16 +35,19 @@
     <DocumentationFile>bin\Release\FSharpx.TypeProviders.Tests.XML</DocumentationFile>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets" Condition=" Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')" />
-
   <ItemGroup>
     <Compile Include="..\FSharpx.Tests\FsUnit.fs">
       <Link>FsUnit.fs</Link>
     </Compile>
     <Compile Include="JSON.ParserTests.fs" />
     <Compile Include="JSON.SerializationTests.fs" />
+    <Compile Include="MiniCsv.Tests.fs" />
     <Compile Include="FileSystem.Tests.fs" />
     <Compile Include="Regex.Tests.fs" />
     <None Include="packages.config" />
+    <None Include="SmallTest.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Data.TypeProviders, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />

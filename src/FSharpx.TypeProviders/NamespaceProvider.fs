@@ -6,12 +6,13 @@ open Samples.FSharpPreviewRelease2011.ProvidedTypes
 open System.Text.RegularExpressions
 
 [<TypeProvider>]
-type public FSharpxProvider() as this =
+type public FSharpxProvider(cfg:TypeProviderConfig) as this =
     inherit TypeProviderForNamespaces()
 
     do this.AddNamespace(
         Settings.rootNamespace, 
         [RegexTypeProvider.regexTy
+         MiniCsvProvider.csvType cfg
          FilesTypeProvider.typedFileSystem])
 
 [<TypeProviderAssembly>]
