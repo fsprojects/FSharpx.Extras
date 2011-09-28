@@ -56,6 +56,7 @@ let provideConstructor parameters quotationF =
 let makeStatic (providedMethod:ProvidedMethod) =
     providedMethod.IsStaticMethod <- true
     providedMethod
+
 let staticParameter name instantiateFunction (typeDef:ProvidedTypeDefinition) =
     typeDef.DefineStaticParameters(
         parameters = [ProvidedStaticParameter(name, typeof<'a>)], 
@@ -63,4 +64,16 @@ let staticParameter name instantiateFunction (typeDef:ProvidedTypeDefinition) =
             match parameterValues with 
             | [| :? 'a as parameterValue |] -> instantiateFunction typeName parameterValue
             | x -> failwithf "unexpected parameter values %A" x))
+    typeDef
+
+let staticParameters parameters instantiateFunction (typeDef:ProvidedTypeDefinition) =
+    typeDef.DefineStaticParameters(
+        parameters = 
+            (parameters
+                |> Seq.map (fun (name,t,initValue) -> 
+                        match initValue with
+                        | None   -> ProvidedStaticParameter(name, t)
+                        | Some v -> ProvidedStaticParameter(name, t,v)) 
+                |> Seq.toList), 
+        instantiationFunction = instantiateFunction)
     typeDef
