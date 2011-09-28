@@ -45,7 +45,7 @@ let runStream() =
         [ for _ in 1..10000 do 
             use stream = new System.IO.MemoryStream(httpRequest)
             use reader = new System.IO.StreamReader(stream)
-            yield readConsecutiveLines reader id ]
+            yield! readConsecutiveLines reader id ]
     sw.Stop()
     printfn "Stream read %d in %d ms" result.Length sw.ElapsedMilliseconds
 
@@ -104,19 +104,18 @@ let runIterateeWithReader() =
     printfn "Iteratee with reader read %d lines in %d ms" result.Length sw.ElapsedMilliseconds
 
 let runEnumerator() =
-    let readLines (stream:Stream) =
-        // Note: not able to automatically dispose of the reader
-        let reader = new StreamReader(stream)
-        let loop (reader:TextReader) = FSharpx.Enumerator.iter {
+    let readLines reader =
+        let rec loop (reader:StreamReader) cont = FSharpx.Enumerator.iter {
             let line = reader.ReadLine()
-            if String.IsNullOrEmpty(line) then ()
-            else yield line }
-        loop reader
+            if String.IsNullOrEmpty(line) then yield cont []
+            else yield! loop reader (fun rest -> cont(line::rest)) }
+        loop reader id
     let sw = Stopwatch.StartNew()
     let result =
         [ for _ in 1..10000 do
             use stream = new MemoryStream(httpRequest)
-            yield! FSharpx.Enumerator.toSeq <| fun () -> readLines stream ]
+            use reader = new StreamReader(stream)
+            yield! FSharpx.Enumerator.toSeq <| fun () -> readLines reader ] |> List.concat
     sw.Stop()
     printfn "Enumerator read %d lines in %d ms" result.Length sw.ElapsedMilliseconds
 
