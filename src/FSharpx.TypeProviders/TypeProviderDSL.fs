@@ -50,7 +50,10 @@ let provideMethod name parameters returnType quotationF =
 
 let provideConstructor parameters quotationF =
     ProvidedConstructor(
-        parameters = parameters, 
+        parameters = 
+            (parameters
+                |> Seq.map (fun (name,t) -> ProvidedParameter(name, t)) 
+                |> Seq.toList), 
         InvokeCode = quotationF)
 
 let makeStatic (providedMethod:ProvidedMethod) =

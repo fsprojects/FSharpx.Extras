@@ -61,14 +61,20 @@ let csvType (cfg:TypeProviderConfig) =
                 rowTy.AddMember(prop)
                 
             // define the provided type, erasing to CsvFile
-            let ty = ProvidedTypeDefinition(thisAssembly, rootNamespace , typeName, Some(typeof<CsvFile>))
-
-            // add a parameterless constructor which loads the file that was used to define the schema
-            ty.AddMember(ProvidedConstructor([], InvokeCode = fun [] -> <@@ CsvFile(resolvedFilename) @@>))
-
-            // add a constructor taking the filename to load
-            ty.AddMember(ProvidedConstructor([ProvidedParameter("filename", typeof<string>)], InvokeCode = fun [filename] -> <@@ CsvFile(%%filename) @@>))
-        
+            let ty =
+                erasedType<CsvFile> thisAssembly rootNamespace typeName 
+                |> addXmlDoc (sprintf "A strongly typed interface to the csv file '%s'" fileName)
+                |> addMember (
+                    provideConstructor
+                        [] 
+                        (fun _ -> <@@ CsvFile(resolvedFilename) @@>)
+                    |> addXmlDoc "Initializes a CsvFile instance")
+                |> addMember (
+                    provideConstructor
+                        ["filename", typeof<string>] 
+                        (fun args -> <@@ CsvFile(%%args.[0]) @@>)
+                    |> addXmlDoc "Initializes a CsvFile instance from the given path.")
+            
             // add a new, more strongly typed Data property (which uses the existing property at runtime)
             ty.AddMember(ProvidedProperty("Data", typedefof<seq<_>>.MakeGenericType(rowTy), GetterCode = fun [csvFile] -> <@@ (%%csvFile:CsvFile).Data @@>))
 
