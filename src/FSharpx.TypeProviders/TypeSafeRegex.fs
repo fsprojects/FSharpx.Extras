@@ -53,8 +53,8 @@ regexTy.DefineStaticParameters(
                     (fun args -> <@@ (%%args.[0]:Regex).Match(%%args.[1]) @@>)
                 |> addXmlDoc "Searches the specified input string for the first occurence of this regular expression")
             |> addMember (
-                ProvidedConstructor(
-                    parameters = [], 
-                    InvokeCode = fun args -> <@@ Regex(pattern, options) @@>)
+                provideConstructor
+                    [] 
+                    (fun args -> <@@ Regex(pattern, options) @@>)
                 |> addXmlDoc "Initializes a regular expression instance")
         | _ -> failwith "unexpected parameter values"))

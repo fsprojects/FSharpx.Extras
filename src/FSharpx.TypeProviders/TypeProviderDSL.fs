@@ -48,6 +48,11 @@ let provideMethod name parameters returnType quotationF =
         returnType = returnType, 
         InvokeCode = quotationF)
 
+let provideConstructor parameters quotationF =
+    ProvidedConstructor(
+        parameters = parameters, 
+        InvokeCode = quotationF)
+
 let makeStatic (providedMethod:ProvidedMethod) =
     providedMethod.IsStaticMethod <- true
     providedMethod
