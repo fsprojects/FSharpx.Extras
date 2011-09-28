@@ -38,6 +38,16 @@ let property<'r> name quotationF =
         propertyType = typeof<'r>, 
         GetterCode = quotationF)
 
+let provideMethod name parameters returnType quotationF =
+    ProvidedMethod(
+        methodName = name, 
+        parameters = 
+            (parameters
+                |> Seq.map (fun (name,t) -> ProvidedParameter(name, t)) 
+                |> Seq.toList), 
+        returnType = returnType, 
+        InvokeCode = quotationF)
+
 let staticParameter name instantiateFunction (typeDef:ProvidedTypeDefinition) =
     typeDef.DefineStaticParameters(
         parameters = [ProvidedStaticParameter(name, typeof<'a>)], 

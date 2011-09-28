@@ -46,11 +46,11 @@ regexTy.DefineStaticParameters(
                 |> addXmlDoc "Indicates whether the regular expression finds a match in the specified input string")
             |> addMember matchTy
             |> addMember (
-                ProvidedMethod(
-                    methodName = "Match", 
-                    parameters = [ProvidedParameter("input", typeof<string>)], 
-                    returnType = matchTy, 
-                    InvokeCode = fun args -> <@@ (%%args.[0]:Regex).Match(%%args.[1]) @@>)
+                provideMethod 
+                    "Match"
+                    ["input", typeof<string>]
+                    matchTy
+                    (fun args -> <@@ (%%args.[0]:Regex).Match(%%args.[1]) @@>)
                 |> addXmlDoc "Searches the specified input string for the first occurence of this regular expression")
             |> addMember (
                 ProvidedConstructor(
