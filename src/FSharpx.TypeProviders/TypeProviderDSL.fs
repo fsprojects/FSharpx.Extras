@@ -48,6 +48,9 @@ let provideMethod name parameters returnType quotationF =
         returnType = returnType, 
         InvokeCode = quotationF)
 
+let makeStatic (providedMethod:ProvidedMethod) =
+    providedMethod.IsStaticMethod <- true
+    providedMethod
 let staticParameter name instantiateFunction (typeDef:ProvidedTypeDefinition) =
     typeDef.DefineStaticParameters(
         parameters = [ProvidedStaticParameter(name, typeof<'a>)], 

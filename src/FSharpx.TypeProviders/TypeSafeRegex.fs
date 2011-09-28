@@ -37,12 +37,12 @@ regexTy.DefineStaticParameters(
             |> hideOldMethods
             |> addXmlDoc "A strongly typed interface to the regular expression '%s'"
             |> addMember (
-                ProvidedMethod(
-                    methodName = "IsMatch", 
-                    parameters = [ProvidedParameter("input", typeof<string>)], 
-                    returnType = typeof<bool>, 
-                    IsStaticMethod = true,
-                    InvokeCode = fun args -> <@@ Regex.IsMatch(%%args.[0], pattern, options) @@>) 
+                provideMethod
+                    "IsMatch"
+                    ["input", typeof<string>]
+                    typeof<bool>
+                    (fun args -> <@@ Regex.IsMatch(%%args.[0], pattern, options) @@>)
+                |> makeStatic
                 |> addXmlDoc "Indicates whether the regular expression finds a match in the specified input string")
             |> addMember matchTy
             |> addMember (
