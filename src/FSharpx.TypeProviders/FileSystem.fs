@@ -13,8 +13,7 @@ let rec annotateAsFileSystemInfo (fileSystemInfo:FileSystemInfo) (ownerTy:Provid
             ownerTy
                 |> addXmlDoc (sprintf "A strongly typed interface to '%s'" fileSystemInfo.FullName)
                 |> hideOldMethods
-                |> addMember (
-                    literalField "Path" fileSystemInfo.FullName
+                |+> (literalField "Path" fileSystemInfo.FullName
                       |> addXmlDoc (sprintf "Full path to '%s'" fileSystemInfo.FullName))
         
         match fileSystemInfo with

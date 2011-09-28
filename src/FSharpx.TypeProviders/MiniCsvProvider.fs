@@ -66,20 +66,16 @@ let csvType (cfg:TypeProviderConfig) =
             // define the provided type, erasing to CsvFile
             erasedType<CsvFile> thisAssembly rootNamespace typeName 
             |> addXmlDoc (sprintf "A strongly typed interface to the csv file '%s'" fileName)
-            |> addMember (
-                provideConstructor
+            |+> (provideConstructor
                     [] 
                     (fun _ -> <@@ CsvFile(resolvedFileName) @@>)
                 |> addXmlDoc "Initializes a CsvFile instance")
-            |> addMember (
-                provideConstructor
+            |+> (provideConstructor
                     ["filename", typeof<string>] 
                     (fun args -> <@@ CsvFile(%%args.[0]) @@>)
                 |> addXmlDoc "Initializes a CsvFile instance from the given path.")
-            |> addMember (
-                provideProperty
+            |+> provideProperty
                     "Data"
                     (typedefof<seq<_>>.MakeGenericType rowType)
                     (fun args -> <@@ (%%args.[0]:CsvFile).Data @@>)
-                )
-            |> addMember rowType)
+            |+> rowType)

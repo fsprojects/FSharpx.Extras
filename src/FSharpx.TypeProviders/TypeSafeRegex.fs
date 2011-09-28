@@ -28,7 +28,7 @@ let regexTy =
                                 (fun args -> <@@ (%%args.[0]:Match).Groups.[group] @@>)
                                 |> addXmlDoc(sprintf @"Gets the ""%s"" group from this match" group))
                 
-            let matchTy =
+            let matchType =
                 runtimeType<Match> "MatchType"
                   |> hideOldMethods
                   |> addMembers groupProperties
@@ -36,24 +36,21 @@ let regexTy =
             erasedType<Regex> thisAssembly rootNamespace typeName 
                 |> hideOldMethods
                 |> addXmlDoc "A strongly typed interface to the regular expression '%s'"
-                |> addMember (
-                    provideMethod
+                |+> (provideMethod
                         "IsMatch"
                         ["input", typeof<string>]
                         typeof<bool>
                         (fun args -> <@@ Regex.IsMatch(%%args.[0], pattern, options) @@>)
                     |> makeStatic
                     |> addXmlDoc "Indicates whether the regular expression finds a match in the specified input string")
-                |> addMember matchTy
-                |> addMember (
-                    provideMethod 
+                |+> matchType
+                |+> (provideMethod 
                         "Match"
                         ["input", typeof<string>]
-                        matchTy
+                        matchType
                         (fun args -> <@@ (%%args.[0]:Regex).Match(%%args.[1]) @@>)
                     |> addXmlDoc "Searches the specified input string for the first occurence of this regular expression")
-                |> addMember (
-                    provideConstructor
+                |+> (provideConstructor
                         [] 
                         (fun args -> <@@ Regex(pattern, options) @@>)
                     |> addXmlDoc "Initializes a regular expression instance")

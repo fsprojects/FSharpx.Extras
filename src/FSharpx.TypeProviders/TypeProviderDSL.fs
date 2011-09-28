@@ -24,9 +24,11 @@ let erasedType<'a> assemblyName rootNamespace typeName =
 let literalField name (value:'a) =
     ProvidedLiteralField(cleanupTypeName name, typeof<'a>, value)
 
-let addMember memberDef (typeDef:ProvidedTypeDefinition) =
+let inline (|+>) (typeDef:ProvidedTypeDefinition) memberDef =
     typeDef.AddMember memberDef
     typeDef
+
+let addMember memberDef (typeDef:ProvidedTypeDefinition) = typeDef |+> memberDef
 
 let addMembers members ownerType = Seq.fold (fun ownerType subType -> addMember subType ownerType) ownerType members
 
