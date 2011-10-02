@@ -13,7 +13,8 @@ type public FSharpxProvider(cfg:TypeProviderConfig) as this =
         Settings.rootNamespace, 
         [RegexTypeProvider.regexTy
          MiniCsvProvider.csvType cfg
-         FilesTypeProvider.typedFileSystem])
+         FilesTypeProvider.typedFileSystem
+         AppSettingsTypeProvider.typedAppSettings cfg])
 
 [<TypeProviderAssembly>]
 do ()
