@@ -12,15 +12,14 @@ open FSharpx.TypeProviders.DSL
 let regexTy = 
     erasedType<Regex> thisAssembly rootNamespace "RegexTyped"
     |> staticParameters
-        ["pattern", typeof<string>, None
-         "options", typeof<RegexOptions>, Some RegexOptions.None]
+        ["pattern", typeof<string>, None]
         (fun typeName parameterValues ->
 
             match parameterValues with 
-            | [| :? string as pattern; :? RegexOptions as options |] ->
+            | [| :? string as pattern |] ->
 
             let groupProperties =
-                Regex(pattern, options).GetGroupNames()
+                Regex(pattern).GetGroupNames()
                     |> Seq.map (fun group ->
                             provideProperty 
                                 (if group <> "0" then group else "CompleteMatch")
@@ -40,7 +39,7 @@ let regexTy =
                         "IsMatch"
                         ["input", typeof<string>]
                         typeof<bool>
-                        (fun args -> <@@ Regex.IsMatch(%%args.[0], pattern, options) @@>)
+                        (fun args -> <@@ Regex.IsMatch(%%args.[0], pattern) @@>)
                     |> makeStatic
                     |> addXmlDoc "Indicates whether the regular expression finds a match in the specified input string")
                 |+> matchType
@@ -52,6 +51,6 @@ let regexTy =
                     |> addXmlDoc "Searches the specified input string for the first occurence of this regular expression")
                 |+> (provideConstructor
                         [] 
-                        (fun args -> <@@ Regex(pattern, options) @@>)
+                        (fun args -> <@@ Regex(pattern) @@>)
                     |> addXmlDoc "Initializes a regular expression instance")
             | _ -> failwith "unexpected parameter values")
