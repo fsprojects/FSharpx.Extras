@@ -1,8 +1,12 @@
 ﻿module FSharp.TypeProviders.Tests.FileSystemTests
 
 open FSharpx
+open NUnit.Framework
+open FSharpx.TypeProviders.JSON
+open FsUnit
 
-type T = FileSystemTyped< @"C:\Users\Steffen\Documents">
+type T = FileSystemTyped< @"C:\Users\">
 
-let printPath() = printfn "%s" T.Visual_Studio_2010.Path
-let printFile() = printfn "%s" T.``desktop.ini``.Path
+[<Test>] 
+let ``Can create type for users path``() = 
+    T.Path |> should equal @"C:\Users\"
