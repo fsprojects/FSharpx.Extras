@@ -140,7 +140,7 @@ Building the project
 
 Due to missing fsc.exe and fsi.exe there is no automated build for the type providers project at the moment.
 The nuget package is created by the following steps:
- * Build the application within Visual Studio 2011 Developer Preview
+ * Build the application with the Visual Studio 2011 Developer Preview
  * Copy the created dlls into /manualNuget/
  * Fix the version no. in /manualNuget/FSharpx.TypeProviders.nuspec 
  * Run .\lib\NuGet\NuGet.exe pack "manualNuget\FSharpx.TypeProviders.nuspec"

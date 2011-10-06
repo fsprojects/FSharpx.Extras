@@ -27,7 +27,7 @@ It currently implements type safe variants of:
     <tags>fsharp csharp interop monad iteratee validation bytestring testing typeproviders</tags>
   </metadata>  
    <files>
-	  <file src="..\build\FSharpx.TypeProviders.*" target="Lib" />
+	  <file src="lib\*.*" target="Lib" />
 	  <file src="tools\*.ps1" target="Tools" />
   </files>
 </package>
