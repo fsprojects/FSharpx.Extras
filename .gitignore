@@ -34,3 +34,5 @@ test/
 FSharp.Monad_mm_cache.bin
 
 *.orig
+*.nupkg
+manualNuget/lib/
