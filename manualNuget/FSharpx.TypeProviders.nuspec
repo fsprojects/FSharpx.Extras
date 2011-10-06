@@ -10,7 +10,7 @@ It currently implements type safe variants of:
 * Csv
 * AppSettings.</description>
     <id>FSharpx.TypeProviders</id>
-    <version>1.3.111004</version>
+    <version>1.3.111005</version>
     <authors>Steffen Forkmann, Tomas Petricek, Ryan Riley, Mauricio Scheffer, Dan Mohl</authors>
     <owners>Steffen Forkmann, Tomas Petricek, Ryan Riley, Mauricio Scheffer, Dan Mohl</owners>
     <language>en-US</language>
@@ -26,4 +26,8 @@ It currently implements type safe variants of:
     <licenseUrl>http://github.com/fsharp/fsharpx/raw/master/License.txt</licenseUrl>
     <tags>fsharp csharp interop monad iteratee validation bytestring testing typeproviders</tags>
   </metadata>  
+   <files>
+	  <file src="..\build\FSharpx.TypeProviders.*" target="Lib" />
+	  <file src="tools\*.ps1" target="Tools" />
+  </files>
 </package>

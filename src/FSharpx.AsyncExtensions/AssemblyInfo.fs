@@ -1,4 +1,4 @@
-module FSharpx.Core.AssemblyInfo
+module FSharpx.AsyncExtensions.AssemblyInfo
 #nowarn "49" // uppercase argument names
 #nowarn "67" // this type test or downcast will always hold
 #nowarn "66" // tis upast is unnecessary - the types are identical
@@ -16,13 +16,13 @@ exception ReturnNoneException183c26a427ae489c8fd92ec21a0c9a59
 
 [<assembly: CLSCompliant (false)>]
 
-[<assembly: Guid ("1e95a279-c2a9-498b-bc72-6e7a0d6854ce")>]
+[<assembly: Guid ("ede1812b-5a62-410a-9553-02499cf29317")>]
 
-[<assembly: AssemblyTitle ("FSharpx")>]
+[<assembly: AssemblyTitle ("FSharp.AsyncExtensions")>]
 
-[<assembly: AssemblyDescription ("FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library.")>]
+[<assembly: AssemblyDescription ("This library implements various extensions for asynchronous programming using F# asynchronous workflows and F# agents.")>]
 
-[<assembly: AssemblyProduct ("FSharpx")>]
+[<assembly: AssemblyProduct ("FSharp.AsyncExtensions")>]
 
 [<assembly: AssemblyVersion ("1.3.111006")>]
 
