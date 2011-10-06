@@ -1,5 +1,6 @@
 ﻿module FSharpx.TypeProviders.AppSettingsTypeProvider
 
+open FSharpx
 open FSharpx.TypeProviders.DSL
 open FSharpx.TypeProviders.Settings
 open Microsoft.FSharp.Core.CompilerServices
@@ -9,13 +10,9 @@ open System.Configuration
 open System.IO
 open System.Reflection
 
-let tryParseWith func = func >> function
-    | true, value -> Some value
-    | false, _ -> None
-
-let (|Bool|_|) = tryParseWith Boolean.TryParse
-let (|Int|_|) = tryParseWith Int32.TryParse
-let (|Double|_|) = tryParseWith Double.TryParse
+let (|Bool|_|) = Option.tryParseWith Boolean.TryParse
+let (|Int|_|) = Option.tryParseWith Int32.TryParse
+let (|Double|_|) = Option.tryParseWith Double.TryParse
 
 let addTypedAppSettings (cfg:TypeProviderConfig) (configFileName:string) (tyDef:ProvidedTypeDefinition) = 
     try        
