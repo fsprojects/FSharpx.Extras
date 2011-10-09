@@ -102,17 +102,17 @@ module Enumerator =
             loop 1
   
     let take n (en:IEnumerator<'a>) =
-      if n = 0 then empty<_>
-      else
-        let rec loop acc = iter {
-          let! v = en
-          match v with
-          | None -> ()
-          | Some v' ->
-            yield v'
-            if acc = n then ()
-            else yield! loop (acc+1) }
-        loop 1
+        if n = 0 then empty<_>
+        else
+            let rec loop acc = iter {
+                let! v = en
+                match v with
+                | None -> ()
+                | Some v' ->
+                    yield v'
+                    if acc = n then ()
+                    else yield! loop (acc+1) }
+            loop 1
 
     // Implementing the zip function for enumerators
     let rec zip xs ys = iter {
