@@ -102,17 +102,17 @@ module Enumerator =
             loop 1
   
     let take n (en:IEnumerator<'a>) =
-      if n = 0 then empty<_>
-      else
-        let rec loop acc = iter {
-          let! v = en
-          match v with
-          | None -> ()
-          | Some v' ->
-            yield v'
-            if acc = n then ()
-            else yield! loop (acc+1) }
-        loop 1
+        if n = 0 then empty<_>
+        else
+            let rec loop acc = iter {
+                let! v = en
+                match v with
+                | None -> ()
+                | Some v' ->
+                    yield v'
+                    if acc = n then ()
+                    else yield! loop (acc+1) }
+            loop 1
 
     // Implementing the zip function for enumerators
     let rec zip xs ys = iter {
@@ -274,6 +274,7 @@ type BS =
     val Count: int
     new (array: byte[]) = { Array = array; Offset = 0; Count = array.Length }
     new (array: byte[], offset: int, count: int) = { Array = array; Offset = offset; Count = count }
+    /// Compares two byte strings based on their structure.
     static member Compare (a:BS, b:BS) =
         let x,o,l = a.Array, a.Offset, a.Count
         let x',o',l' = b.Array, b.Offset, b.Count
@@ -283,11 +284,43 @@ type BS =
             else if o < o' then -1 else 1 
         else let left, right = x.[o..(o+l-1)], x'.[o'..(o'+l'-1)] in
              if left = right then 0 elif left < right then -1 else 1
+    /// Compares two objects for equality. When both are byte strings, structural equality is used.
     override x.Equals(other) = 
         match other with
         | :? BS as other' -> BS.Compare(x, other') = 0
         | _ -> false
+    /// Gets the hash code for the byte string.
     override x.GetHashCode() = hash x
+    /// Gets an enumerator for the bytes stored in the byte string.
+    member x.GetEnumerator() =
+        if x.Count = 0 then Enumerator.empty<_>
+        else
+            let segment = x.Array
+            let minIndex = x.Offset
+            let maxIndex = x.Offset + x.Count - 1
+            let currentIndex = ref <| minIndex - 1
+            { new IEnumerator<_> with 
+                member self.Current =
+                    if !currentIndex < minIndex then
+                        invalidOp "Enumeration has not started. Call MoveNext."
+                    elif !currentIndex > maxIndex then
+                        invalidOp "Enumeration already finished."
+                    else segment.[!currentIndex]
+              interface System.Collections.IEnumerator with
+                member self.Current =
+                    if !currentIndex < minIndex then
+                        invalidOp "Enumeration has not started. Call MoveNext."
+                    elif !currentIndex > maxIndex then
+                        invalidOp "Enumeration already finished."
+                    else box segment.[!currentIndex]
+                member self.MoveNext() = 
+                    if !currentIndex < maxIndex then
+                        incr currentIndex
+                        true
+                    else false
+                member self.Reset() = currentIndex := minIndex - 1
+              interface System.IDisposable with 
+                member self.Dispose() = () }
     interface System.IComparable with
         member x.CompareTo(other) =
             match other with
@@ -295,15 +328,9 @@ type BS =
             | _ -> invalidArg "other" "Cannot compare a value of another type."
     interface System.Collections.Generic.IEnumerable<byte> with
         /// Gets an enumerator for the bytes stored in the byte string.
-        /// NOTE: The enumerator gets a new reference to the contained data and does not mutate the actual byte string.
-        member x.GetEnumerator() =
-            if x.Count = 0 then Enumerator.empty<_>
-            else (x.Array.[x.Offset..(x.Offset + x.Count-1)] :> seq<byte>).GetEnumerator()
+        member x.GetEnumerator() = x.GetEnumerator()
         /// Gets an enumerator for the bytes stored in the byte string.
-        /// NOTE: The enumerator gets a new reference to the contained data and does not mutate the actual byte string.
-        member x.GetEnumerator() =
-            if x.Count = 0 then Enumerator.empty<_> :> IEnumerator
-            else x.Array.[x.Offset..(x.Offset + x.Count-1)].GetEnumerator()
+        member x.GetEnumerator() = x.GetEnumerator() :> IEnumerator
   
 module ByteString =
     /// An active pattern for conveniently retrieving the properties of a BS.
