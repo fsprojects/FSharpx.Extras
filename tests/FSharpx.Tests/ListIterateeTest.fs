@@ -8,6 +8,26 @@ open NUnit.Framework
 open FsUnit
 
 [<Test>]
+let ``test length using Seq_scan``() =
+  let length = Seq.scan (fun state x -> state + 1) 0
+  // `Seq.scan` does not allow for chunking input data.
+  // It's possible to create additional operators based on `scan`.
+  //
+  // Another issue is that `scan` does not stop when a `Done` state
+  // is achieved. Taking a slightly different approach, we could
+  // implement `scanWhile` and `scanUntil`. These would work provided
+  // they return any unconsumed data, in addition to the result.
+  //
+  // As you can see, iteratee is really no different than `Seq.scan`
+  // with the state seed already embedded.
+  //
+  // Finally, we need a `run` function, as no such run method exists.
+  // The run function should iterate through the sequence and return
+  // the final state.
+  let actual = length [1;2;3] |> Seq.max 
+  actual |> should equal 3
+
+[<Test>]
 let ``test length should calculate the length of the list without modification``() =
   let actual = enumerate [1;2;3] length |> run
   actual |> should equal 3
