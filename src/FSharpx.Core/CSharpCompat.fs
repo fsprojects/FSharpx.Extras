@@ -234,9 +234,12 @@ type FSharpChoice =
 
     [<Extension>]
     static member Ap (f: Choice<Func<_,_>, _>, x) =
-      f
-      |> Choice.map (fun a -> a.Invoke)
-      |> Choice.ap x
+        f
+        |> Choice.map (fun a -> a.Invoke)
+        |> Choice.ap x
+
+    [<Extension>]
+    static member SelectSecond (o, f: Func<_,_>) = Choice.mapSecond f.Invoke o
 
     // validation
 

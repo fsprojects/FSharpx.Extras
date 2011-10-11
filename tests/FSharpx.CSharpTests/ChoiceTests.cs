@@ -97,7 +97,30 @@ namespace FSharpx.CSharpTests {
             var r = from i in FSharpOption.ParseInt(b).ToFSharpChoice(new Exception())
                     from j in FSharpChoice.Cast<int>(a)
                     select i + j;
-            Assert.AreEqual(FSharpChoice.New1Of2<int,Exception>(100), r);
+            r.Match(i => Assert.AreEqual(100, i),
+                    e => Assert.Fail(e.Message));
+        }
+
+        [Test]
+        public void SelectSecond_OK() {
+            object a = 40;
+            const string b = "60";
+            var r = from i in FSharpOption.ParseInt(b).ToFSharpChoice("Invalid value b")
+                    from j in FSharpChoice.Cast<int>(a).SelectSecond(_ => "Invalid value a")
+                    select i + j;
+            r.Match(i => Assert.AreEqual(100, i),
+                    Assert.Fail);
+        }
+
+        [Test]
+        public void SelectSecond_Error() {
+            object a = 40;
+            const string b = "xx";
+            var r = from i in FSharpOption.ParseInt(b).ToFSharpChoice("Invalid value b")
+                    from j in FSharpChoice.Cast<int>(a).SelectSecond(_ => "Invalid value a")
+                    select i + j;
+            r.Match(i => Assert.Fail("should not have succeeded with value {0}", i),
+                    e => Assert.AreEqual("Invalid value b", e));
         }
 
     }
