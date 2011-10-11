@@ -85,7 +85,21 @@ module Enumerator =
     let head (en:IEnumerator<'a>) =
         if en.MoveNext() then en.Current
         else invalidOp "!"
-  
+
+    let firstOrDefault def (en:IEnumerator<'a>) =
+        if en.MoveNext() then en.Current
+        else def
+
+    let rec lastOrDefault def (en:IEnumerator<'a>) =
+        if en.MoveNext() then
+            lastOrDefault en.Current en
+        else def
+
+    let last (en:IEnumerator<'a>) =
+        if en.MoveNext() then
+            lastOrDefault en.Current en
+        else invalidOp "!"
+
     let length (en:IEnumerator<'a>) =
         let rec loop acc =
             if en.MoveNext() then loop (acc+1)
@@ -130,6 +144,29 @@ module Enumerator =
         | Some(x) -> yield f x
                      yield! map f en
         | _ -> () }               
+
+    /// Scan progressively folds over the enumerator, returning a new enumerator
+    /// that lazily computes each state.
+    let rec scan f state (en : IEnumerator<_>) = iter {
+        yield state
+        if en.MoveNext() then
+            let state' = f state en.Current
+            yield! scan f state' en }
+
+    let private scanWithPredicate f state pred (en : IEnumerator<_>) = iter {
+        yield state
+        if en.MoveNext() then
+            let state' = f state en.Current
+            if pred state' then
+                yield! scan f state' en }
+
+    /// Scan progressively folds over the enumerator, returning a new enumerator
+    /// that lazily computes each state while the provided predicate is true.
+    let scanWhile f state pred en = scanWithPredicate f state pred en
+
+    /// Scan progressively folds over the enumerator, returning a new enumerator
+    /// that lazily computes each state until the provided predicate is true.
+    let scanUntil f state pred en = scanWithPredicate f state (not << pred) en
    
 module Seq =
     /// <summary>

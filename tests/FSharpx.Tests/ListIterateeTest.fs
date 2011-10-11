@@ -4,13 +4,15 @@ open System
 open FSharpx
 open FSharpx.Iteratee
 open FSharpx.Iteratee.List
+open Microsoft.FSharp.Collections
 open NUnit.Framework
 open FsUnit
 
 [<Test>]
-let ``test length using Seq_scan``() =
-  let length = Seq.scan (fun state x -> state + 1) 0
-  // `Seq.scan` does not allow for chunking input data.
+let ``test length using Enumerator_scan``() =
+  let en = [1..3] |> List.toSeq |> fun x -> x.GetEnumerator()
+
+  // `Enumerator.scan` does not allow for chunking input data.
   // It's possible to create additional operators based on `scan`.
   //
   // Another issue is that `scan` does not stop when a `Done` state
@@ -20,11 +22,14 @@ let ``test length using Seq_scan``() =
   //
   // As you can see, iteratee is really no different than `Seq.scan`
   // with the state seed already embedded.
-  //
-  // Finally, we need a `run` function, as no such run method exists.
-  // The run function should iterate through the sequence and return
+  let length = FSharpx.Enumerator.scan (fun state x -> state + 1) 0
+  let ``iteratee`` = length en
+
+  // Finally, we need a `last` function, as no such method exists.
+  // The `last` function should iterate through the sequence and return
   // the final state.
-  let actual = length [1;2;3] |> Seq.max 
+  let actual = ``iteratee`` |> Enumerator.last
+
   actual |> should equal 3
 
 [<Test>]
