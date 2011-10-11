@@ -147,6 +147,7 @@ module Seq =
     let tryFindWithIndex pred l =
         l |> index |> Seq.tryFind (fun (_,v) -> pred v)
 
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Array = 
     let inline nth i arr = Array.get arr i
 
