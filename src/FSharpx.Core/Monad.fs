@@ -547,7 +547,7 @@ module Writer =
         writer { let! a = m
                  return (a, f)
                } |> pass
-    
+
 module Choice =
     let returnM = Choice1Of2
 
@@ -556,7 +556,6 @@ module Choice =
         | Choice1Of2 a -> a
         | Choice2Of2 e -> invalidArg "choice" (sprintf "The choice value was Choice2Of2 '%A'" e)
 
-    [<CompiledName("Cast")>]
     let inline cast (o: obj) =
         try 
             Choice1Of2 (unbox o)

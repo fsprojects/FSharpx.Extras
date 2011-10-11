@@ -182,6 +182,11 @@ type FSharpOption =
 [<Extension>]
 type FSharpChoice =
 
+    static member Cast (o: obj) = Choice.cast o
+
+    [<Extension>]
+    static member ToFSharpOption c = Option.fromChoice c
+
     [<Extension>]
     static member Match (c, f1: Func<_,_>, f2: Func<_,_>) =
         match c with

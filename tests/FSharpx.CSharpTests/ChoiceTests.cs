@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
 using NUnit.Framework;
 
@@ -63,6 +61,43 @@ namespace FSharpx.CSharpTests {
                     Assert.AreEqual(40, p.Age);
                 }, 
                 _ => Assert.Fail("should not have failed"));
+        }
+
+        [Test]
+        public void Cast_OK() {
+            object a = 40;
+            FSharpChoice.Cast<int>(a)
+                .Match(i => Assert.AreEqual(40, i),
+                       e => Assert.Fail(e.Message));
+        }
+
+        [Test]
+        public void Cast_Exception() {
+            object a = "hello";
+            FSharpChoice.Cast<int>(a)
+                .Match(i => Assert.Fail("should not have succeeded with value {0}", i),
+                       e => {});
+        }
+
+        [Test]
+        public void ChoiceToOption() {
+            object a = 40;
+            const string b = "60";
+            var r = from i in FSharpOption.ParseInt(b)
+                    from j in FSharpChoice.Cast<int>(a).ToFSharpOption()
+                    select i + j;
+            Assert.AreEqual(100.Some(), r);
+
+        }
+
+        [Test]
+        public void OptionToChoice() {
+            object a = 40;
+            const string b = "60";
+            var r = from i in FSharpOption.ParseInt(b).ToFSharpChoice(new Exception())
+                    from j in FSharpChoice.Cast<int>(a)
+                    select i + j;
+            Assert.AreEqual(FSharpChoice.New1Of2<int,Exception>(100), r);
         }
 
     }
