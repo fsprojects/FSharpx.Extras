@@ -289,6 +289,14 @@ type FSharpList =
         List.choose chooser.Invoke l
 
     [<Extension>]
+    static member TryFind (l, pred: _ Predicate) = 
+        List.tryFind pred.Invoke l
+
+    [<Extension>]
+    static member TryFind (l, value) = 
+        List.tryFind ((=) value) l
+
+    [<Extension>]
     static member Cons (l, e) = e::l
 
     static member New([<ParamArray>] values: 'a array) =
