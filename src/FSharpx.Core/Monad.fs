@@ -987,6 +987,7 @@ module Iteratee =
     /// is fed data by an Enumerator, which generates a Stream. 
     type Iteratee<'el,'a> =
         | Done of 'a * Stream<'el>
+        | Error of exn
         | Continue of (Stream<'el> -> Iteratee<'el,'a>)
     
     /// An enumerator generates a stream of data and feeds an iteratee, returning a new iteratee.
@@ -1003,32 +1004,51 @@ module Iteratee =
         let empty<'a> : Iteratee<'a,_> = Done((),Empty)
         let doneI x s = Done(x,s)
         let continueI k = Continue k
+        let throw e = Error e
     
         let rec bind f m =
             match m with
             | Done(x, extra) ->
                 match f x with
                 | Done(x',_) -> Done(x', extra)
+                | Error e    -> Error e
                 | Continue k -> k extra
+            | Error e    -> Error e
             | Continue k -> Continue(bind f << k)
+
+        let catchError h i =
+            let rec step = function
+                | Error e    -> h e
+                | Continue k -> Continue <| fun s -> step (k s)
+                | i          -> i
+            in step i
     
         let tryFinally compensation i =
             let rec step = function 
-                | Continue k -> Continue(fun s -> step (k s))
-                | i -> compensation(); i
+                | Continue k -> Continue <| fun s -> step (k s)
+                | i          -> compensation(); i
             in step i
-    
+
         let rec enumEOF = function 
-            | Done(x,_) -> Done(x, EOF)
+            | Done(x,_)  -> Done(x, EOF)
+            | Error e    -> Error e
             | Continue k ->
                 match k EOF with
                 | Continue _ -> failwith "enumEOF: divergent iteratee"
-                | i -> enumEOF i
+                | i          -> enumEOF i
+
+        let enumErr e = function _ -> Error e
+
+        let run_ i =
+            match enumEOF i with
+            | Done(x,_)  -> Choice1Of2 x
+            | Error e    -> Choice2Of2 e
+            | Continue _ -> failwith "run: divergent iteratee"
         
         let run i =
-            match enumEOF i with
-            | Done(x,_) -> x
-            | Continue _ -> failwith "run: divergent iteratee"
+            match run_ i with
+            | Choice1Of2 x -> x
+            | Choice2Of2 e -> raise e
         
     type IterateeBuilder() =
         member this.Return(x) = Done(x, Empty)
@@ -1037,6 +1057,7 @@ module Iteratee =
         member this.Zero() = empty<_>
         member this.Combine(comp1, comp2) = bind (fun () -> comp2) comp1
         member this.Delay(f) = bind f empty<_>
+        member this.TryCatch(m, handler) = catchError handler m
         member this.TryFinally(m, compensation) = tryFinally compensation m
         member this.Using(res:#IDisposable, body) =
             this.TryFinally(body res, (fun () -> match res with null -> () | disp -> disp.Dispose()))
@@ -1189,6 +1210,7 @@ module Iteratee =
             | [], _ -> i
             | _, Done(_,_) -> i
             | _::_, Continue k -> k (Chunk str)
+            | _ -> i
         
         // val enumeratePureNChunk :: 'a list -> int -> Enumerator<'a list,'b>
         let rec enumeratePureNChunk n str i =
@@ -1197,6 +1219,7 @@ module Iteratee =
             | _, Done(_,_) -> i
             | _::_, Continue k ->
                 let x, xs = List.splitAt n str in enumeratePureNChunk n xs (k (Chunk x))
+            | _ -> i
 
         //val enumerate :: 'a list -> Enumerator<'a list,'b>
         let rec enumerate str i = 
@@ -1204,6 +1227,7 @@ module Iteratee =
             | [], _ -> i
             | _, Done(_,_) -> i
             | x::xs, Continue k -> enumerate xs (k (Chunk [x]))
+            | _ -> i
 
     module Binary =
         open Operators
@@ -1330,6 +1354,7 @@ module Iteratee =
             else match i with
                  | Done(_,_) -> i
                  | Continue k -> k (Chunk str)
+                 | _ -> i
 
         // val enumeratePureNChunk :: ByteString -> int -> Enumerator<ByteString,'b>
         let rec enumeratePureNChunk n str i =
@@ -1337,6 +1362,7 @@ module Iteratee =
             else match i with
                  | Done(_,_) -> i
                  | Continue k -> let s1, s2 = ByteString.splitAt n str in enumeratePureNChunk n s2 (k (Chunk s1))
+                 | _ -> i
 
         // val enumerate :: ByteString -> Enumerator<ByteString,'b>
         let rec enumerate str i =
@@ -1344,6 +1370,7 @@ module Iteratee =
             else match i with
                  | Done(_,_) -> i
                  | Continue k -> let x, xs = ByteString.head str, ByteString.tail str in enumerate xs (k (Chunk (ByteString.singleton x)))
+                 | _ -> i
 
         let enumStream bufferSize (stream:#System.IO.Stream) i =
             let buffer = Array.zeroCreate<byte> bufferSize
@@ -1362,4 +1389,5 @@ module Iteratee =
                     let line = reader.ReadLine()
                     if line = null then i
                     else step (k (Chunk(ByteString.ofString line)))
+                | _ -> i
             step i
