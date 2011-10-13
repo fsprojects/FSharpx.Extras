@@ -1340,9 +1340,9 @@ module Iteratee =
             let rec lines cont = takeUntil isNewline >>= fun bs -> terminators >>= check cont bs
             and check cont bs count =
                 if count = 0 then
-                    Done(Choice1Of2 (cont [] |> List.map ByteString.toString), Chunk bs)
+                    Done(Choice1Of2 (cont []), Chunk bs)
                 elif ByteString.isEmpty bs then
-                    Done(Choice2Of2 (cont [] |> List.map ByteString.toString), EOF)
+                    Done(Choice2Of2 (cont []), EOF)
                 else lines (fun tail -> cont(bs::tail))
             lines id
 
