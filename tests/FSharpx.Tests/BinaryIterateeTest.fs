@@ -366,4 +366,4 @@ let ``test readCsvLine1 should take chunks until no commas remain``() =
 [<Test>]
 let ``test readCsvLine1 should throw when no match is found``() =
   let csvSample = ByteString.empty
-  enumerate csvSample readCsvLine1 |> run |> should throw typeof<Exception>
+  (fun () -> enumerate csvSample readCsvLine1 |> run |> ignore) |> should throw typeof<exn>
