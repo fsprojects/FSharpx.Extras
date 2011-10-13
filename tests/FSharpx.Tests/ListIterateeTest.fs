@@ -9,30 +9,6 @@ open NUnit.Framework
 open FsUnit
 
 [<Test>]
-let ``test length using Enumerator_scan``() =
-  let en = [1..3] |> List.toSeq |> fun x -> x.GetEnumerator()
-
-  // `Enumerator.scan` does not allow for chunking input data.
-  // It's possible to create additional operators based on `scan`.
-  //
-  // Another issue is that `scan` does not stop when a `Done` state
-  // is achieved. Taking a slightly different approach, we could
-  // implement `scanWhile` and `scanUntil`. These would work provided
-  // they return any unconsumed data, in addition to the result.
-  //
-  // As you can see, iteratee is really no different than `Seq.scan`
-  // with the state seed already embedded.
-  let length = FSharpx.Enumerator.scan (fun state x -> state + 1) 0
-  let ``iteratee`` = length en
-
-  // Finally, we need a `last` function, as no such method exists.
-  // The `last` function should iterate through the sequence and return
-  // the final state.
-  let actual = ``iteratee`` |> Enumerator.last
-
-  actual |> should equal 3
-
-[<Test>]
 let ``test length should calculate the length of the list without modification``() =
   let actual = enumerate [1;2;3] length |> run
   actual |> should equal 3
