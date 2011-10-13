@@ -1194,13 +1194,13 @@ module Iteratee =
             let newline = ['\n']
             let isNewline c = c = '\r' || c = '\n'
             let terminators = heads newlines >>= fun n -> if n = 0 then heads newline else Done(n, Empty)
-            let rec lines acc = takeUntil isNewline >>= fun l -> terminators >>= check acc l
-            and check acc l count =
+            let rec lines cont = takeUntil isNewline >>= fun l -> terminators >>= check cont l
+            and check cont l count =
                 match l, count with
-                | _, 0 -> Done(Choice1Of2 (List.rev acc |> List.map toString), Chunk l)
-                | [], _ -> Done(Choice2Of2 (List.rev acc |> List.map toString), EOF)
-                | l, _ -> lines (l::acc)
-            lines []
+                | _, 0 -> Done(Choice1Of2 (cont [] |> List.map toString), Chunk l)
+                | [], _ -> Done(Choice2Of2 (cont [] |> List.map toString), EOF)
+                | l, _ -> lines (fun tail -> cont(l::tail))
+            lines id
         
         (* ========= Enumerators ========= *)
         
@@ -1337,14 +1337,14 @@ module Iteratee =
             let lf = ByteString.singleton '\n'B
             let isNewline c = c = '\r'B || c = '\n'B
             let terminators = heads crlf >>= fun n -> if n = 0 then heads lf else Done(n, Empty)
-            let rec lines acc = takeUntil isNewline >>= fun bs -> terminators >>= check acc bs
-            and check acc bs count =
+            let rec lines cont = takeUntil isNewline >>= fun bs -> terminators >>= check cont bs
+            and check cont bs count =
                 if count = 0 then
-                    Done(Choice1Of2 (List.rev acc |> List.map ByteString.toString), Chunk bs)
+                    Done(Choice1Of2 (cont [] |> List.map ByteString.toString), Chunk bs)
                 elif ByteString.isEmpty bs then
-                    Done(Choice2Of2 (List.rev acc |> List.map ByteString.toString), EOF)
-                else lines (bs::acc)
-            lines []
+                    Done(Choice2Of2 (cont [] |> List.map ByteString.toString), EOF)
+                else lines (fun tail -> cont(bs::tail))
+            lines id
 
         (* ========= Enumerators ========= *)
 
