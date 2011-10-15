@@ -323,14 +323,6 @@ let ``test takeUntilComma should take until the first comma``() =
   let actual = enumerate csvSample takeUntilComma |> run
   actual |> should equal (BS("blah"B))
 
-let many i =
-    let rec inner acc = i >>= check acc
-    and check cont bs =
-        if ByteString.isEmpty bs then
-            Done(cont [], Chunk bs)
-        else inner (fun tail -> cont (bs::tail))
-    inner id
-
 let readCsvLine = many (takeUntilComma <* drop 1)
 
 [<Test>]
@@ -344,26 +336,3 @@ let ``test readCsvLine should return the empty byte string when that's all it is
   let csvSample = ByteString.empty
   let actual = enumerate csvSample readCsvLine |> run
   actual |> should equal ByteString.empty
-
-let many1 i =
-    let rec inner acc = i >>= check acc
-    and check acc bs =
-        if ByteString.isEmpty bs then
-            if List.isEmpty acc then
-                Error <| failwith "Required at least one match but found none"
-            else Done(List.rev acc, Chunk bs)
-        else inner (bs::acc)
-    inner []
-
-let readCsvLine1 = many1 (takeUntilComma <* drop 1)
-
-[<Test>]
-let ``test readCsvLine1 should take chunks until no commas remain``() =
-  let csvSample = BS("blah,blah,blah"B)
-  let actual = enumerate csvSample readCsvLine1 |> run
-  actual |> should equal [BS("blah"B);BS("blah"B);BS("blah"B)]
-
-[<Test>]
-let ``test readCsvLine1 should throw when no match is found``() =
-  let csvSample = ByteString.empty
-  (fun () -> enumerate csvSample readCsvLine1 |> run |> ignore) |> should throw typeof<exn>

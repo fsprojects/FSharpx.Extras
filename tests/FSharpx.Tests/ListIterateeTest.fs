@@ -305,3 +305,28 @@ let ``test readLines should return the lines from the input when enumerated one 
 let ``test readLines should return the lines from the input when chunked``(input, expected:Choice<String list, String list>) =
   let actual = enumeratePureNChunk 11 (* Problem is that this is not consistent; try 5 and 10 *) (List.ofSeq input) readLines |> run
   actual |> should equal expected
+
+
+(* CSV Parser *)
+
+let takeUntilComma = takeUntil ((=) ',')
+
+[<Test>]
+let ``test takeUntilComma should take until the first comma``() =
+  let csvSample = List.ofSeq "blah,blah,blah"
+  let actual = enumerate csvSample takeUntilComma |> run
+  actual |> should equal (List.ofSeq "blah")
+
+let readCsvLine = many (takeUntilComma <* drop 1)
+
+[<Test>]
+let ``test readCsvLine should take chunks until no commas remain``() =
+  let csvSample = List.ofSeq "blah,blah,blah"
+  let actual = enumerate csvSample readCsvLine |> run
+  actual |> should equal [List.ofSeq "blah";List.ofSeq "blah";List.ofSeq "blah"]
+
+[<Test>]
+let ``test readCsvLine should return the empty byte string when that's all it is passed``() =
+  let csvSample = []
+  let actual = enumerate csvSample readCsvLine |> run
+  actual |> should equal []
