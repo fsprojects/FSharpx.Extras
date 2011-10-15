@@ -355,6 +355,13 @@ module Iteratee =
                 | _, s -> Done(count, s)
             loop 0 str
         
+        let many i =
+            let rec inner acc = i >>= check acc
+            and check cont = function
+                | [] -> Done(cont [], Empty)
+                | xs -> inner (fun tail -> cont (xs::tail))
+            inner id
+
         let readLines =
             let toString chars = String(Array.ofList chars)
             let newlines = ['\r';'\n']
@@ -498,6 +505,14 @@ module Iteratee =
                     else Done(count, Chunk x)
                 | s -> Done(count, s)
             loop 0 str
+
+        let many i =
+            let rec inner acc = i >>= check acc
+            and check cont bs =
+                if ByteString.isEmpty bs then
+                    Done(cont [], Empty)
+                else inner (fun tail -> cont (bs::tail))
+            inner id
 
         let readLines =
             let crlf = ByteString.create "\r\n"B
