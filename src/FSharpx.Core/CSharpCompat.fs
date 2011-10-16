@@ -182,6 +182,11 @@ type FSharpOption =
 [<Extension>]
 type FSharpChoice =
 
+    static member Cast (o: obj) = Choice.cast o
+
+    [<Extension>]
+    static member ToFSharpOption c = Option.fromChoice c
+
     [<Extension>]
     static member Match (c, f1: Func<_,_>, f2: Func<_,_>) =
         match c with
@@ -229,9 +234,12 @@ type FSharpChoice =
 
     [<Extension>]
     static member Ap (f: Choice<Func<_,_>, _>, x) =
-      f
-      |> Choice.map (fun a -> a.Invoke)
-      |> Choice.ap x
+        f
+        |> Choice.map (fun a -> a.Invoke)
+        |> Choice.ap x
+
+    [<Extension>]
+    static member SelectSecond (o, f: Func<_,_>) = Choice.mapSecond f.Invoke o
 
     // validation
 
@@ -279,6 +287,14 @@ type FSharpList =
     [<Extension>]
     static member Choose (l, chooser: Func<_,_>) =
         List.choose chooser.Invoke l
+
+    [<Extension>]
+    static member TryFind (l, pred: _ Predicate) = 
+        List.tryFind pred.Invoke l
+
+    [<Extension>]
+    static member TryFind (l, value) = 
+        List.tryFind ((=) value) l
 
     [<Extension>]
     static member Cons (l, e) = e::l

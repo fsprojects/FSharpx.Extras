@@ -546,7 +546,7 @@ module Writer =
         writer { let! a = m
                  return (a, f)
                } |> pass
-    
+
 module Choice =
     let returnM = Choice1Of2
 
@@ -555,7 +555,6 @@ module Choice =
         | Choice1Of2 a -> a
         | Choice2Of2 e -> invalidArg "choice" (sprintf "The choice value was Choice2Of2 '%A'" e)
 
-    [<CompiledName("Cast")>]
     let inline cast (o: obj) =
         try 
             Choice1Of2 (unbox o)
@@ -596,6 +595,13 @@ module Choice =
     let inline (>=>) f g = fun x -> f x >>= g
     /// Right-to-left Kleisli composition
     let inline (<=<) x = flip (>=>) x
+
+    let bimap f1 f2 = 
+        function
+        | Choice1Of2 x -> Choice1Of2 (f1 x)
+        | Choice2Of2 x -> Choice2Of2 (f2 x)
+
+    let inline mapSecond f = bimap id f
 
     type EitherBuilder() =
         member this.Return a = returnM a
@@ -980,6 +986,7 @@ module Iteratee =
     /// is fed data by an Enumerator, which generates a Stream. 
     type Iteratee<'el,'a> =
         | Done of 'a * Stream<'el>
+        | Error of exn
         | Continue of (Stream<'el> -> Iteratee<'el,'a>)
     
     /// An enumerator generates a stream of data and feeds an iteratee, returning a new iteratee.
@@ -996,32 +1003,51 @@ module Iteratee =
         let empty<'a> : Iteratee<'a,_> = Done((),Empty)
         let doneI x s = Done(x,s)
         let continueI k = Continue k
+        let throw e = Error e
     
         let rec bind f m =
             match m with
             | Done(x, extra) ->
                 match f x with
                 | Done(x',_) -> Done(x', extra)
+                | Error e    -> Error e
                 | Continue k -> k extra
+            | Error e    -> Error e
             | Continue k -> Continue(bind f << k)
+
+        let catchError h i =
+            let rec step = function
+                | Error e    -> h e
+                | Continue k -> Continue <| fun s -> step (k s)
+                | i          -> i
+            in step i
     
         let tryFinally compensation i =
             let rec step = function 
-                | Continue k -> Continue(fun s -> step (k s))
-                | i -> compensation(); i
+                | Continue k -> Continue <| fun s -> step (k s)
+                | i          -> compensation(); i
             in step i
-    
+
         let rec enumEOF = function 
-            | Done(x,_) -> Done(x, EOF)
+            | Done(x,_)  -> Done(x, EOF)
+            | Error e    -> Error e
             | Continue k ->
                 match k EOF with
                 | Continue _ -> failwith "enumEOF: divergent iteratee"
-                | i -> enumEOF i
+                | i          -> enumEOF i
+
+        let enumErr e = function _ -> Error e
+
+        let run_ i =
+            match enumEOF i with
+            | Done(x,_)  -> Choice1Of2 x
+            | Error e    -> Choice2Of2 e
+            | Continue _ -> failwith "run: divergent iteratee"
         
         let run i =
-            match enumEOF i with
-            | Done(x,_) -> x
-            | Continue _ -> failwith "run: divergent iteratee"
+            match run_ i with
+            | Choice1Of2 x -> x
+            | Choice2Of2 e -> raise e
         
     type IterateeBuilder() =
         member this.Return(x) = Done(x, Empty)
@@ -1030,6 +1056,7 @@ module Iteratee =
         member this.Zero() = empty<_>
         member this.Combine(comp1, comp2) = bind (fun () -> comp2) comp1
         member this.Delay(f) = bind f empty<_>
+        member this.TryCatch(m, handler) = catchError handler m
         member this.TryFinally(m, compensation) = tryFinally compensation m
         member this.Using(res:#IDisposable, body) =
             this.TryFinally(body res, (fun () -> match res with null -> () | disp -> disp.Dispose()))
@@ -1166,13 +1193,13 @@ module Iteratee =
             let newline = ['\n']
             let isNewline c = c = '\r' || c = '\n'
             let terminators = heads newlines >>= fun n -> if n = 0 then heads newline else Done(n, Empty)
-            let rec lines acc = takeUntil isNewline >>= fun l -> terminators >>= check acc l
-            and check acc l count =
+            let rec lines cont = takeUntil isNewline >>= fun l -> terminators >>= check cont l
+            and check cont l count =
                 match l, count with
-                | _, 0 -> Done(Choice1Of2 (List.rev acc |> List.map toString), Chunk l)
-                | [], _ -> Done(Choice2Of2 (List.rev acc |> List.map toString), EOF)
-                | l, _ -> lines (l::acc)
-            lines []
+                | _, 0 -> Done(Choice1Of2 (cont [] |> List.map toString), Chunk l)
+                | [], _ -> Done(Choice2Of2 (cont [] |> List.map toString), EOF)
+                | l, _ -> lines (fun tail -> cont(l::tail))
+            lines id
         
         (* ========= Enumerators ========= *)
         
@@ -1182,6 +1209,7 @@ module Iteratee =
             | [], _ -> i
             | _, Done(_,_) -> i
             | _::_, Continue k -> k (Chunk str)
+            | _ -> i
         
         // val enumeratePureNChunk :: 'a list -> int -> Enumerator<'a list,'b>
         let rec enumeratePureNChunk n str i =
@@ -1190,6 +1218,7 @@ module Iteratee =
             | _, Done(_,_) -> i
             | _::_, Continue k ->
                 let x, xs = List.splitAt n str in enumeratePureNChunk n xs (k (Chunk x))
+            | _ -> i
 
         //val enumerate :: 'a list -> Enumerator<'a list,'b>
         let rec enumerate str i = 
@@ -1197,6 +1226,7 @@ module Iteratee =
             | [], _ -> i
             | _, Done(_,_) -> i
             | x::xs, Continue k -> enumerate xs (k (Chunk [x]))
+            | _ -> i
 
     module Binary =
         open Operators
@@ -1306,14 +1336,14 @@ module Iteratee =
             let lf = ByteString.singleton '\n'B
             let isNewline c = c = '\r'B || c = '\n'B
             let terminators = heads crlf >>= fun n -> if n = 0 then heads lf else Done(n, Empty)
-            let rec lines acc = takeUntil isNewline >>= fun bs -> terminators >>= check acc bs
-            and check acc bs count =
+            let rec lines cont = takeUntil isNewline >>= fun bs -> terminators >>= check cont bs
+            and check cont bs count =
                 if count = 0 then
-                    Done(Choice1Of2 (List.rev acc |> List.map ByteString.toString), Chunk bs)
+                    Done(Choice1Of2 (cont []), Chunk bs)
                 elif ByteString.isEmpty bs then
-                    Done(Choice2Of2 (List.rev acc |> List.map ByteString.toString), EOF)
-                else lines (bs::acc)
-            lines []
+                    Done(Choice2Of2 (cont []), EOF)
+                else lines (fun tail -> cont(bs::tail))
+            lines id
 
         (* ========= Enumerators ========= *)
 
@@ -1323,6 +1353,7 @@ module Iteratee =
             else match i with
                  | Done(_,_) -> i
                  | Continue k -> k (Chunk str)
+                 | _ -> i
 
         // val enumeratePureNChunk :: ByteString -> int -> Enumerator<ByteString,'b>
         let rec enumeratePureNChunk n str i =
@@ -1330,6 +1361,7 @@ module Iteratee =
             else match i with
                  | Done(_,_) -> i
                  | Continue k -> let s1, s2 = ByteString.splitAt n str in enumeratePureNChunk n s2 (k (Chunk s1))
+                 | _ -> i
 
         // val enumerate :: ByteString -> Enumerator<ByteString,'b>
         let rec enumerate str i =
@@ -1337,6 +1369,7 @@ module Iteratee =
             else match i with
                  | Done(_,_) -> i
                  | Continue k -> let x, xs = ByteString.head str, ByteString.tail str in enumerate xs (k (Chunk (ByteString.singleton x)))
+                 | _ -> i
 
         let enumStream bufferSize (stream:#System.IO.Stream) i =
             let buffer = Array.zeroCreate<byte> bufferSize
@@ -1355,4 +1388,5 @@ module Iteratee =
                     let line = reader.ReadLine()
                     if line = null then i
                     else step (k (Chunk(ByteString.ofString line)))
+                | _ -> i
             step i
