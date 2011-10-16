@@ -48,20 +48,5 @@ namespace FSharpx.CSharpTests {
             var b = a.ToFSharpList();
             Assert.AreEqual(FSharpList.New(1, 2, 3), b);
         }
-
-        [Test]
-        public void TryFind_predicate() {
-            var a = FSharpList.New(1, 2, 3);
-            a.TryFind(x => x > 4)
-                .Match(v => Assert.Fail("shouldn't have found value {0}", v),
-                       () => { });
-        }
-
-        [Test]
-        public void TryFind_value() {
-            var a = FSharpList.New(1, 2, 3);
-            a.TryFind(2).Match(v => { }, 
-                               () => Assert.Fail("Should have found value"));
-        }
     }
 }

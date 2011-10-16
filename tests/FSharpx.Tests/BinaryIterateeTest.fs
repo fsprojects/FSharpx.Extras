@@ -275,95 +275,39 @@ let ``test heads should count the correct number of newline characters in a set 
   actual |> should equal 2
 
 let readLinesTests = [|
-  [| box ""B; box (Choice1Of2 []:Choice<BS list, BS list>) |]
-  [| box "\r"B; box (Choice2Of2 []:Choice<BS list, BS list>) |]
-  [| box "\n"B; box (Choice2Of2 []:Choice<BS list, BS list>) |]
-  [| box "\r\n"B; box (Choice2Of2 []:Choice<BS list, BS list>) |]
-  [| box "line1"B; box (Choice1Of2 []:Choice<BS list, BS list>) |]
-  [| box "line1\n"B; box (Choice1Of2 [BS"line1"B]:Choice<BS list, BS list>) |]
-  [| box "line1\r"B; box (Choice1Of2 [BS"line1"B]:Choice<BS list, BS list>) |]
-  [| box "line1\r\n"B; box (Choice1Of2 [BS"line1"B]:Choice<BS list, BS list>) |]
-  [| box "line1\r\nline2"B; box (Choice1Of2 [BS"line1"B]:Choice<BS list, BS list>) |]
-  [| box "line1\r\nline2\r\n"B; box (Choice1Of2 [BS"line1"B;BS"line2"B]:Choice<BS list, BS list>) |]
-  [| box "line1\r\nline2\r\n\r\n"B; box (Choice2Of2 [BS"line1"B;BS"line2"B]:Choice<BS list, BS list>) |]
-  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5"B; box (Choice1Of2 [BS"line1"B;BS"line2"B;BS"line3"B;BS"line4"B]:Choice<BS list, BS list>) |]
+  [| box ""B; box (Choice1Of2 []:Choice<String list, String list>) |]
+  [| box "\r"B; box (Choice2Of2 []:Choice<String list, String list>) |]
+  [| box "\n"B; box (Choice2Of2 []:Choice<String list, String list>) |]
+  [| box "\r\n"B; box (Choice2Of2 []:Choice<String list, String list>) |]
+  [| box "line1"B; box (Choice1Of2 []:Choice<String list, String list>) |]
+  [| box "line1\n"B; box (Choice1Of2 ["line1"]:Choice<String list, String list>) |]
+  [| box "line1\r"B; box (Choice1Of2 ["line1"]:Choice<String list, String list>) |]
+  [| box "line1\r\n"B; box (Choice1Of2 ["line1"]:Choice<String list, String list>) |]
+  [| box "line1\r\nline2"B; box (Choice1Of2 ["line1"]:Choice<String list, String list>) |]
+  [| box "line1\r\nline2\r\n"B; box (Choice1Of2 ["line1";"line2"]:Choice<String list, String list>) |]
+  [| box "line1\r\nline2\r\n\r\n"B; box (Choice2Of2 ["line1";"line2"]:Choice<String list, String list>) |]
+  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5"B; box (Choice1Of2 ["line1";"line2";"line3";"line4"]:Choice<String list, String list>) |]
   [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5\r\n"B
-     box (Choice1Of2 [BS"line1"B;BS"line2"B;BS"line3"B;BS"line4"B;BS"line5"B]:Choice<BS list, BS list>) |]
+     box (Choice1Of2 ["line1";"line2";"line3";"line4";"line5"]:Choice<String list, String list>) |]
   [| box "PUT /file HTTP/1.1\r\nHost: example.com\rUser-Agent: X\nContent-Type: text/plain\r\n\r\n1C\r\nbody line 2\r\n\r\n7"B
-     box (Choice2Of2 [BS"PUT /file HTTP/1.1"B;BS"Host: example.com"B;BS"User-Agent: X"B;BS"Content-Type: text/plain"B]:Choice<BS list, BS list>) |]
+     box (Choice2Of2 ["PUT /file HTTP/1.1";"Host: example.com";"User-Agent: X";"Content-Type: text/plain"]:Choice<String list, String list>) |]
 |]
 
 [<Test>]
 [<TestCaseSource("readLinesTests")>]
-let ``test readLines should return the lines from the input``(input, expected:Choice<BS list, BS list>) =
+let ``test readLines should return the lines from the input``(input, expected:Choice<String list, String list>) =
   let actual = enumeratePure1Chunk (create input) readLines |> run
   actual |> should equal expected
 
 [<Ignore("heads and readLines do not correctly return a correct result when the input is chunked and a \r\n is encountered in different chunks.")>]
 [<Test>]
 [<TestCaseSource("readLinesTests")>]
-let ``test readLines should return the lines from the input when enumerated one byte at a time``(input, expected:Choice<BS list, BS list>) =
+let ``test readLines should return the lines from the input when enumerated one byte at a time``(input, expected:Choice<String list, String list>) =
   let actual = enumerate (create input) readLines |> run
   actual |> should equal expected
 
 [<Test>]
 [<TestCaseSource("readLinesTests")>]
-let ``test readLines should return the lines from the input when chunked``(input, expected:Choice<BS list, BS list>) =
+let ``test readLines should return the lines from the input when chunked``(input, expected:Choice<String list, String list>) =
   let actual = enumeratePureNChunk 11 (* Problem is that this is not consistent; try 5 and 10 *) (create input) readLines |> run
   actual |> should equal expected
-
-
-(* CSV Parser *)
-
-let takeUntilComma = takeUntil ((=) ','B)
-
-[<Test>]
-let ``test takeUntilComma should take until the first comma``() =
-  let csvSample = BS("blah,blah,blah"B)
-  let actual = enumerate csvSample takeUntilComma |> run
-  actual |> should equal (BS("blah"B))
-
-let many i =
-    let rec inner acc = i >>= check acc
-    and check cont bs =
-        if ByteString.isEmpty bs then
-            Done(cont [], Chunk bs)
-        else inner (fun tail -> cont (bs::tail))
-    inner id
-
-let readCsvLine = many (takeUntilComma <* drop 1)
-
-[<Test>]
-let ``test readCsvLine should take chunks until no commas remain``() =
-  let csvSample = BS("blah,blah,blah"B)
-  let actual = enumerate csvSample readCsvLine |> run
-  actual |> should equal [BS("blah"B);BS("blah"B);BS("blah"B)]
-
-[<Test>]
-let ``test readCsvLine should return the empty byte string when that's all it is passed``() =
-  let csvSample = ByteString.empty
-  let actual = enumerate csvSample readCsvLine |> run
-  actual |> should equal ByteString.empty
-
-let many1 i =
-    let rec inner acc = i >>= check acc
-    and check acc bs =
-        if ByteString.isEmpty bs then
-            if List.isEmpty acc then
-                Error <| failwith "Required at least one match but found none"
-            else Done(List.rev acc, Chunk bs)
-        else inner (bs::acc)
-    inner []
-
-let readCsvLine1 = many1 (takeUntilComma <* drop 1)
-
-[<Test>]
-let ``test readCsvLine1 should take chunks until no commas remain``() =
-  let csvSample = BS("blah,blah,blah"B)
-  let actual = enumerate csvSample readCsvLine1 |> run
-  actual |> should equal [BS("blah"B);BS("blah"B);BS("blah"B)]
-
-[<Test>]
-let ``test readCsvLine1 should throw when no match is found``() =
-  let csvSample = ByteString.empty
-  (fun () -> enumerate csvSample readCsvLine1 |> run |> ignore) |> should throw typeof<exn>
