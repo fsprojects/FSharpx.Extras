@@ -173,8 +173,7 @@ module Iteratee =
         let continueI k = Continue k
         let throw e = Error e
     
-        let rec bind f m =
-            match m with
+        let rec bind f = function
             | Done(x, extra) ->
                 match f x with
                 | Done(x',_) -> Done(x', extra)
@@ -358,16 +357,21 @@ module Iteratee =
         let many i =
             let rec inner cont = i >>= check cont
             and check cont = function
-                | [] -> Done(cont [], Empty)
+                | [] -> Done(cont [], EOF)
                 | xs -> inner (fun tail -> cont (xs::tail))
             inner id
 
+        let skipNewline =
+            let crlf = ['\r';'\n']
+            let lf = ['\n']
+            heads crlf >>= fun n ->
+                if n = 0 then
+                    heads lf
+                else Done(n, EOF)
+
         let readLines =
-            let newlines = ['\r';'\n']
-            let newline = ['\n']
             let isNewline c = c = '\r' || c = '\n'
-            let terminators = heads newlines >>= fun n -> if n = 0 then heads newline else Done(n, Empty)
-            many (takeUntil isNewline <* terminators)
+            many (takeUntil isNewline <* skipNewline)
             |> map (List.map (fun chars -> String(Array.ofList chars)))
         
         (* ========= Enumerators ========= *)
@@ -504,16 +508,21 @@ module Iteratee =
             let rec inner cont = i >>= check cont
             and check cont bs =
                 if ByteString.isEmpty bs then
-                    Done(cont [], Empty)
+                    Done(cont [], EOF)
                 else inner (fun tail -> cont (bs::tail))
             inner id
 
+        let skipNewline =
+            let crlf = BS"\r\n"B
+            let lf = BS"\n"B
+            heads crlf >>= fun n ->
+                if n = 0 then
+                    heads lf
+                else Done(n, EOF)
+
         let readLines : Iteratee<BS, BS list> =
-            let crlf = ByteString.create "\r\n"B
-            let lf = ByteString.singleton '\n'B
             let isNewline c = c = '\r'B || c = '\n'B
-            let terminators = heads crlf >>= fun n -> if n = 0 then heads lf else Done(n, Empty)
-            many (takeUntil isNewline <* terminators)
+            many (takeUntil isNewline <* skipNewline)
 
         (* ========= Enumerators ========= *)
 
