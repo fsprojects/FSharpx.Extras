@@ -369,9 +369,12 @@ module Iteratee =
                     heads lf
                 else Done(n, EOF)
 
-        let readLines =
+        let readLine =
             let isNewline c = c = '\r' || c = '\n'
-            many (takeUntil isNewline <* skipNewline)
+            takeUntil isNewline
+
+        let readLines =
+            many (readLine <* skipNewline)
             |> map (List.map (fun chars -> String(Array.ofList chars)))
         
         (* ========= Enumerators ========= *)
@@ -520,9 +523,11 @@ module Iteratee =
                     heads lf
                 else Done(n, EOF)
 
-        let readLines : Iteratee<BS, BS list> =
+        let readLine = 
             let isNewline c = c = '\r'B || c = '\n'B
-            many (takeUntil isNewline <* skipNewline)
+            takeUntil isNewline
+
+        let readLines = many (readLine <* skipNewline)
 
         (* ========= Enumerators ========= *)
 
