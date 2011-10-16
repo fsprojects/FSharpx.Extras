@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-    <description>This package provides an example for how to use the TypeProviderDSL in FSharpx.TypeProviders to author F# 3.0 Type Providers. 
-
+    <description>This package provides an example of how to use the type providers available in the FSharpx.TypeProviders library (using the TypedAppSettings type provider as an example). 
 FSharpx.TypeProviders is a library for the .NET platform implementing common type providers on top of the FSharpx.Core. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.
 
 It currently implements type safe variants of:
@@ -11,7 +10,7 @@ It currently implements type safe variants of:
 * FileSystem
 * Csv
 * AppSettings.</description>
-    <id>FSharpx.TypeProviders.DslSample</id>
+    <id>FSharpx.TypeProviders.Sample</id>
 	<dependencies>
       <dependency id="FSharpx.TypeProviders" version="[1.3.100000, 2.9.999999)" />
     </dependencies>	
@@ -19,7 +18,7 @@ It currently implements type safe variants of:
     <authors>Steffen Forkmann, Tomas Petricek, Ryan Riley, Mauricio Scheffer, Dan Mohl</authors>
     <owners>Steffen Forkmann, Tomas Petricek, Ryan Riley, Mauricio Scheffer, Dan Mohl</owners>
     <language>en-US</language>
-    <summary>This package provides an example for how to use the TypeProviderDSL in FSharpx.TypeProviders to author F# 3.0 Type Providers. 
+    <summary>This package provides an example of how to use the type providers available in the FSharpx.TypeProviders library (using the TypedAppSettings type provider as an example). 
 	
 FSharpx.TypeProviders is a library for the .NET platform implementing common type providers on top of the FSharpx. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.
 
