@@ -103,15 +103,15 @@ module Enumerator =
     let length (en:IEnumerator<'a>) =
         let rec loop acc =
             if en.MoveNext() then loop (acc+1)
-            else acc
+            else acc, en
         loop 0
   
     let skip n (en:IEnumerator<'a>) =
-        if n = 0 then en
+        if n = 0 then ()
         else
             let rec loop acc =
-                if not (en.MoveNext()) then empty<_>
-                elif n = acc then en
+                if not (en.MoveNext()) then ()
+                elif n = acc then ()
                 else loop (acc+1)
             loop 1
   
