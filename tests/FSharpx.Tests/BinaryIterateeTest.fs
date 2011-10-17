@@ -274,42 +274,65 @@ let ``test heads should count the correct number of newline characters in a set 
   let actual = enumeratePureNChunk 2 (ByteString.ofString "abc\r\n") readUntilNewline |> run
   actual |> should equal 2
 
+let readLineTests = [|
+  [| box (BS""B); box ByteString.empty |]
+  [| box (BS"\r"B); box ByteString.empty |]
+  [| box (BS"\n"B); box ByteString.empty |]
+  [| box (BS"\r\n"B); box ByteString.empty |]
+  [| box (BS"line1"B); box (BS"line1"B) |]
+  [| box (BS"line1\n"B); box (BS"line1"B) |]
+  [| box (BS"line1\r"B); box (BS"line1"B) |]
+  [| box (BS"line1\r\n"B); box (BS"line1"B) |]
+|]
+
+[<Test>]
+[<TestCaseSource("readLineTests")>]
+let ``test readLine should split strings on a newline character``(input, expectedRes:BS) =
+  let actual = enumerate input readLine |> run
+  actual |> should equal expectedRes
+
+[<Test>]
+[<TestCaseSource("readLineTests")>]
+let ``test readLine should split strings on a newline character at once``(input, expectedRes:BS) =
+  let actual = enumeratePure1Chunk input readLine |> run
+  actual |> should equal expectedRes
+
 let readLinesTests = [|
-  [| box ""B; box ([]:BS list) |]
-  [| box "\r"B; box ([]:BS list) |]
-  [| box "\n"B; box ([]:BS list) |]
-  [| box "\r\n"B; box ([]:BS list) |]
-  [| box "line1"B; box [BS"line1"B] |]
-  [| box "line1\n"B; box [BS"line1"B] |]
-  [| box "line1\r"B; box [BS"line1"B] |]
-  [| box "line1\r\n"B; box [BS"line1"B] |]
-  [| box "line1\r\nline2"B; box [BS"line1"B;BS"line2"B] |]
-  [| box "line1\r\nline2\r\n"B; box [BS"line1"B;BS"line2"B] |]
-  [| box "line1\r\nline2\r\n\r\n"B; box [BS"line1"B;BS"line2"B] |]
-  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5"B; box [BS"line1"B;BS"line2"B;BS"line3"B;BS"line4"B;BS"line5"B] |]
-  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5\r\n"B; box [BS"line1"B;BS"line2"B;BS"line3"B;BS"line4"B;BS"line5"B] |]
-  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5\r\n\r\n"B; box [BS"line1"B;BS"line2"B;BS"line3"B;BS"line4"B;BS"line5"B] |]
-  [| box "PUT /file HTTP/1.1\r\nHost: example.com\rUser-Agent: X\nContent-Type: text/plain\r\n\r\n1C\r\nbody line 2\r\n\r\n7"B
+  [| box (BS""B); box ([]:BS list) |]
+  [| box (BS"\r"B); box ([]:BS list) |]
+  [| box (BS"\n"B); box ([]:BS list) |]
+  [| box (BS"\r\n"B); box ([]:BS list) |]
+  [| box (BS"line1"B); box [BS"line1"B] |]
+  [| box (BS"line1\n"B); box [BS"line1"B] |]
+  [| box (BS"line1\r"B); box [BS"line1"B] |]
+  [| box (BS"line1\r\n"B); box [BS"line1"B] |]
+  [| box (BS"line1\r\nline2"B); box [BS"line1"B;BS"line2"B] |]
+  [| box (BS"line1\r\nline2\r\n"B); box [BS"line1"B;BS"line2"B] |]
+  [| box (BS"line1\r\nline2\r\n\r\n"B); box [BS"line1"B;BS"line2"B] |]
+  [| box (BS"line1\r\nline2\r\nline3\r\nline4\r\nline5"B); box [BS"line1"B;BS"line2"B;BS"line3"B;BS"line4"B;BS"line5"B] |]
+  [| box (BS"line1\r\nline2\r\nline3\r\nline4\r\nline5\r\n"B); box [BS"line1"B;BS"line2"B;BS"line3"B;BS"line4"B;BS"line5"B] |]
+  [| box (BS"line1\r\nline2\r\nline3\r\nline4\r\nline5\r\n\r\n"B); box [BS"line1"B;BS"line2"B;BS"line3"B;BS"line4"B;BS"line5"B] |]
+  [| box (BS"PUT /file HTTP/1.1\r\nHost: example.com\rUser-Agent: X\nContent-Type: text/plain\r\n\r\n1C\r\nbody line 2\r\n\r\n7"B)
      box [BS"PUT /file HTTP/1.1"B;BS"Host: example.com"B;BS"User-Agent: X"B;BS"Content-Type: text/plain"B] |]
 |]
 
 [<Test>]
 [<TestCaseSource("readLinesTests")>]
 let ``test readLines should return the lines from the input``(input, expected:BS list) =
-  let actual = enumeratePure1Chunk (create input) readLines |> run
+  let actual = enumeratePure1Chunk input readLines |> run
   actual |> should equal expected
 
 [<Ignore("heads and readLines do not correctly return a correct result when the input is chunked and a \r\n is encountered in different chunks.")>]
 [<Test>]
 [<TestCaseSource("readLinesTests")>]
 let ``test readLines should return the lines from the input when enumerated one byte at a time``(input, expected:BS list) =
-  let actual = enumerate (create input) readLines |> run
+  let actual = enumerate input readLines |> run
   actual |> should equal expected
 
 [<Test>]
 [<TestCaseSource("readLinesTests")>]
 let ``test readLines should return the lines from the input when chunked``(input, expected:BS list) =
-  let actual = enumeratePureNChunk 11 (* Problem is that this is not consistent; try 5 and 10 *) (create input) readLines |> run
+  let actual = enumeratePureNChunk 11 (* Problem is that this is not consistent; try 5 and 10 *) input readLines |> run
   actual |> should equal expected
 
 
