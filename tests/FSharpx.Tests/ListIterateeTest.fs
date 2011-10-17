@@ -266,6 +266,27 @@ let ``test heads should count the correct number of newline characters in a set 
   let actual = enumeratePureNChunk 2 (List.ofSeq "abc\r\n") readUntilNewline |> run
   actual |> should equal 2
 
+[<Test>]
+let ``test skipNewline should consume \r for a single newline``() =
+  let ``take 'a'``= takeWhile ((=) 'a')
+  let actual = enumerate (List.ofSeq "\ra") (skipNewline *> ``take 'a'``) |> run
+  actual |> should equal ['a']
+
+[<Ignore("This test reproduces the issue with reading newlines.")>]
+[<Test>]
+let ``test skipNewline should consume \n for a single newline``() =
+  let ``take 'a'``= takeWhile ((=) 'a')
+  let actual = enumerate (List.ofSeq "\na") (skipNewline *> ``take 'a'``) |> run
+  actual |> should equal 'a'
+  actual |> should equal ['a']
+
+[<Ignore("This test reproduces the issue with reading newlines.")>]
+[<Test>]
+let ``test skipNewline should consume \r\n for a single newline``() =
+  let ``take 'a'``= takeWhile ((=) 'a')
+  let actual = enumerate (List.ofSeq "\r\na") (skipNewline *> ``take 'a'``) |> run
+  actual |> should equal ['a']
+
 let readLineTests = [|
   [| box ""; box ([]:char list) |]
   [| box "\r"; box ([]:char list) |]

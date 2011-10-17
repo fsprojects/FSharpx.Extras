@@ -274,6 +274,26 @@ let ``test heads should count the correct number of newline characters in a set 
   let actual = enumeratePureNChunk 2 (ByteString.ofString "abc\r\n") readUntilNewline |> run
   actual |> should equal 2
 
+[<Test>]
+let ``test skipNewline should consume \r for a single newline``() =
+  let ``take 'a'``= takeWhile ((=) 'a'B)
+  let actual = enumerate (BS"\ra"B) (skipNewline *> ``take 'a'``) |> run
+  actual |> should equal (BS"a"B)
+
+[<Ignore("This test reproduces the issue with reading newlines.")>]
+[<Test>]
+let ``test skipNewline should consume \n for a single newline``() =
+  let ``take 'a'``= takeWhile ((=) 'a'B)
+  let actual = enumerate (BS"\na"B) (skipNewline *> ``take 'a'``) |> run
+  actual |> should equal (BS"a"B)
+
+[<Ignore("This test reproduces the issue with reading newlines.")>]
+[<Test>]
+let ``test skipNewline should consume \r\n for a single newline``() =
+  let ``take 'a'``= takeWhile ((=) 'a'B)
+  let actual = enumerate (BS"\r\na"B) (skipNewline *> ``take 'a'``) |> run
+  actual |> should equal (BS"a"B)
+
 let readLineTests = [|
   [| box (BS""B); box ByteString.empty |]
   [| box (BS"\r"B); box ByteString.empty |]
