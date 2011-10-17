@@ -95,9 +95,9 @@ namespace FSharpx.CSharpTests {
         [Test]
         public void Test2_either() {
             var userID = FSharpOption.ParseInt(req_userID)
-                .ToFSharpChoice(FSharpList.New("Invalid User ID"));
+                .ToFSharpChoice(FSharpList.Create("Invalid User ID"));
             var id = FSharpOption.ParseInt(req_otherID)
-                .ToFSharpChoice(FSharpList.New("Invalid ID"));
+                .ToFSharpChoice(FSharpList.Create("Invalid ID"));
 
             var doSomethingFunc = L.F((int a, int b) => doSomething(a, b));
             var curriedDoSomething = doSomethingFunc.Curry();
@@ -116,9 +116,9 @@ namespace FSharpx.CSharpTests {
         [Test]
         public void Test2_either_LINQ() {
             var userID = FSharpOption.ParseInt(req_userID)
-                .ToFSharpChoice(FSharpList.New("Invalid User ID"));
+                .ToFSharpChoice(FSharpList.Create("Invalid User ID"));
             var id = FSharpOption.ParseInt(req_otherID)
-                .ToFSharpChoice(FSharpList.New("Invalid ID"));
+                .ToFSharpChoice(FSharpList.Create("Invalid ID"));
 
             var result =
                 from a in userID

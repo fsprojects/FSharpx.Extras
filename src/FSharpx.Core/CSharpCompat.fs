@@ -299,7 +299,7 @@ type FSharpList =
     [<Extension>]
     static member Cons (l, e) = e::l
 
-    static member New([<ParamArray>] values: 'a array) =
+    static member Create([<ParamArray>] values: 'a array) =
         Seq.toList values
 
     [<Extension>]
@@ -307,7 +307,7 @@ type FSharpList =
 
 [<Extension>]
 type FSharpSet =
-    static member New([<ParamArray>] values: 'a array) =
+    static member Create([<ParamArray>] values: 'a array) =
         set values
 
     [<Extension>]
@@ -315,7 +315,7 @@ type FSharpSet =
 
 [<Extension>]
 type FSharpMap =
-    static member New([<ParamArray>] values) =
+    static member Create([<ParamArray>] values) =
         Map.ofArray values
 
     [<Extension>]
