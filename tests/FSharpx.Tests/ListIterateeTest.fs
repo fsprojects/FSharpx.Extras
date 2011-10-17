@@ -266,6 +266,29 @@ let ``test heads should count the correct number of newline characters in a set 
   let actual = enumeratePureNChunk 2 (List.ofSeq "abc\r\n") readUntilNewline |> run
   actual |> should equal 2
 
+let readLineTests = [|
+  [| box ""; box ([]:char list) |]
+  [| box "\r"; box ([]:char list) |]
+  [| box "\n"; box ([]:char list) |]
+  [| box "\r\n"; box ([]:char list) |]
+  [| box "line1"; box ['l';'i';'n';'e';'1'] |]
+  [| box "line1\n"; box ['l';'i';'n';'e';'1'] |]
+  [| box "line1\r"; box ['l';'i';'n';'e';'1'] |]
+  [| box "line1\r\n"; box ['l';'i';'n';'e';'1'] |]
+|]
+
+[<Test>]
+[<TestCaseSource("readLineTests")>]
+let ``test readLine should split strings on a newline character``(input, expectedRes:char list) =
+  let actual = enumerate (List.ofSeq input) readLine |> run
+  actual |> should equal expectedRes
+
+[<Test>]
+[<TestCaseSource("readLineTests")>]
+let ``test readLine should split strings on a newline character at once``(input, expectedRes:char list) =
+  let actual = enumeratePure1Chunk (List.ofSeq input) readLine |> run
+  actual |> should equal expectedRes
+
 let readLinesTests = [|
   [| box ""; box ([]:String list) |]
   [| box "\r"; box ([]:String list) |]

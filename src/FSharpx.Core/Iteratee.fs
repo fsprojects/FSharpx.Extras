@@ -372,9 +372,10 @@ module Iteratee =
         let readLine =
             let isNewline c = c = '\r' || c = '\n'
             takeUntil isNewline
+            <* skipNewline
 
         let readLines =
-            many (readLine <* skipNewline)
+            many readLine
             |> map (List.map (fun chars -> String(Array.ofList chars)))
         
         (* ========= Enumerators ========= *)
@@ -526,8 +527,9 @@ module Iteratee =
         let readLine = 
             let isNewline c = c = '\r'B || c = '\n'B
             takeUntil isNewline
+            <* skipNewline
 
-        let readLines = many (readLine <* skipNewline)
+        let readLines = many readLine
 
         (* ========= Enumerators ========= *)
 

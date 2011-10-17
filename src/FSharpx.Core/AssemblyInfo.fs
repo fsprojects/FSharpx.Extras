@@ -24,9 +24,9 @@ exception ReturnNoneException183c26a427ae489c8fd92ec21a0c9a59
 
 [<assembly: AssemblyProduct ("FSharpx")>]
 
-[<assembly: AssemblyVersion ("1.3.111016")>]
+[<assembly: AssemblyVersion ("1.3.111017")>]
 
-[<assembly: AssemblyFileVersion ("1.3.111016")>]
+[<assembly: AssemblyFileVersion ("1.3.111017")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 
