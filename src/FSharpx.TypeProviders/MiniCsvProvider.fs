@@ -27,8 +27,8 @@ let csvType (cfg:TypeProviderConfig) =
     erasedType<obj> thisAssembly rootNamespace "MinCsv"
     |> staticParameter "filename"
         (fun typeName fileName ->
-            let resolvedFileName = Path.Combine(cfg.ResolutionFolder, fileName)
-            let headerLine = 
+            let resolvedFileName = findConfigFile cfg.ResolutionFolder fileName
+            let headerLine =
                 resolvedFileName
                     |> File.ReadLines
                     |> Seq.head
@@ -53,15 +53,15 @@ let csvType (cfg:TypeProviderConfig) =
                                 else
                                     // no units, just treat it as a normal float
                                     header.Value, typeof<float>
-                            let prop = 
-                                provideProperty 
-                                    fieldName 
-                                    fieldType
-                                    (fun args -> <@@ (%%args.[0]:float[]).[i] @@>)
-
-                            // Add metadata defining the property's location in the referenced file
-                            prop.AddDefinitionLocation(1, header.Index + 1, fileName)
-                            prop))
+                            
+                            provideProperty 
+                                fieldName 
+                                fieldType
+                                (fun args -> <@@ (%%args.[0]:float[]).[i] @@>)
+                              |> addDefinitionLocation 
+                                    { Line = 1
+                                      Column = header.Index + 1 
+                                      FileName = fileName}))
                 
             // define the provided type, erasing to CsvFile
             erasedType<CsvFile> thisAssembly rootNamespace typeName 

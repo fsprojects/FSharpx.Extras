@@ -45,10 +45,12 @@
     <Compile Include="FileSystem.Tests.fs" />
     <Compile Include="Regex.Tests.fs" />
     <Compile Include="AppSettings.Tests.fs" />
+    <Compile Include="Xaml.Tests.fs" />
     <None Include="packages.config" />
     <None Include="SmallTest.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="StackPanel.xaml" />
     <None Include="SmallTest_SameStructure.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -73,11 +75,15 @@
       <HintPath>..\..\packages\NUnit.2.5.10.11092\lib\pnunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
 	     Other similar extension points exist, see Microsoft.Common.targets.

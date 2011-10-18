@@ -19,7 +19,7 @@ let (|Double|_|) text =
 
 let addTypedAppSettings (cfg:TypeProviderConfig) (configFileName:string) (tyDef:ProvidedTypeDefinition) = 
     try        
-        let filePath = Path.Combine(cfg.ResolutionFolder, configFileName) 
+        let filePath = findConfigFile cfg.ResolutionFolder configFileName
         let fileMap = ExeConfigurationFileMap(ExeConfigFilename=filePath)
         let appSettings = ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None).AppSettings.Settings
 

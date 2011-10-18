@@ -1,0 +1,10 @@
+﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid Name="MainGrid">
+        <StackPanel Name="StackPanel1">
+            <Button Name="Button1">First Button</Button>
+            <Button Name="Button2">Second Button</Button>
+        </StackPanel>
+    </Grid>
+</Window>

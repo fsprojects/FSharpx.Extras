@@ -5,6 +5,13 @@ open System.Reflection
 
 // Starting to implement a DSL on top of ProvidedTypes API
 
+type FilePosition =  
+   { Line: int; 
+     Column: int;
+     FileName: string }
+
+let fileStart fileName = { Line = 0; Column = 0; FileName = fileName }
+
 let cleanupTypeName(name:string) = name.Replace(' ','_')
 
 let hideOldMethods (typeDef:ProvidedTypeDefinition) = 
@@ -13,6 +20,12 @@ let hideOldMethods (typeDef:ProvidedTypeDefinition) =
 
 let inline addXmlDoc xmlDoc (definition: ^a) = 
     (^a : (member AddXmlDoc: string -> unit) (definition,xmlDoc))
+    definition
+
+/// Add metadata defining the property's location in the referenced file
+let inline addDefinitionLocation (filePosition:FilePosition) (definition: ^a) = 
+    if System.String.IsNullOrEmpty filePosition.FileName then definition else
+    (^a : (member AddDefinitionLocation: int*int*string -> unit) (definition,filePosition.Line,filePosition.Column,filePosition.FileName))
     definition
 
 let runtimeType<'a> typeName = 
@@ -26,6 +39,10 @@ let literalField name (value:'a) =
 
 let inline (|+>) (typeDef:ProvidedTypeDefinition) memberDef =
     typeDef.AddMember memberDef
+    typeDef
+
+let inline (|++>) (typeDef:ProvidedTypeDefinition) memberDef =
+    typeDef.AddMembers memberDef
     typeDef
 
 let addMember memberDef (typeDef:ProvidedTypeDefinition) = typeDef |+> memberDef
@@ -82,3 +99,18 @@ let staticParameters parameters instantiateFunction (typeDef:ProvidedTypeDefinit
                 |> Seq.toList), 
         instantiationFunction = instantiateFunction)
     typeDef
+
+open System.IO
+
+let findConfigFile resolutionFolder configFileName =
+    if Path.IsPathRooted configFileName then 
+        configFileName 
+    else 
+        Path.Combine(resolutionFolder, configFileName)
+
+let watchPath invalidateF path =
+    let folder = Path.GetDirectoryName path
+    let file = Path.GetFileName path
+    let watcher = new FileSystemWatcher(folder, file)
+    watcher.Changed.Add (fun _ -> invalidateF())
+    watcher.EnableRaisingEvents <- true
