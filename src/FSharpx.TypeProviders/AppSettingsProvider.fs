@@ -12,7 +12,10 @@ open System.Reflection
 
 let (|Bool|_|) = Option.tryParseWith Boolean.TryParse
 let (|Int|_|) = Option.tryParseWith Int32.TryParse
-let (|Double|_|) = Option.tryParseWith Double.TryParse
+let (|Double|_|) text =  
+    match Double.TryParse(text,Globalization.NumberStyles.Any,Globalization.CultureInfo.InvariantCulture) with
+    | true, value -> Some value
+    | _ -> None
 
 let addTypedAppSettings (cfg:TypeProviderConfig) (configFileName:string) (tyDef:ProvidedTypeDefinition) = 
     try        
