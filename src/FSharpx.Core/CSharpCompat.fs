@@ -1,8 +1,10 @@
 ﻿namespace FSharpx
 
 open System
+open System.Net
 open System.Collections.Generic
 open System.Runtime.CompilerServices
+open Microsoft.FSharp.Control.WebExtensions
 
 type L =
     static member F (f: Func<_>) = f
@@ -329,6 +331,10 @@ type Dictionary =
 [<Extension>]
 type AsyncExtensions =
     [<Extension>]
+    static member SelectMany (o, f: Func<_,_>) = 
+        Async.bind f.Invoke o
+        
+    [<Extension>]
     static member SelectMany (o, f: Func<_,_>, mapper: Func<_,_,_>) =
         let mapper = Async.map2 (curry mapper.Invoke)
         let v = Async.bind f.Invoke o
@@ -337,6 +343,17 @@ type AsyncExtensions =
     [<Extension>]
     static member Select (o, f: Func<_,_>) = 
         Async.map f.Invoke o
+    
+    [<Extension>]
+    static member Run a = 
+        Async.RunSynchronously a
+
+    [<Extension>]
+    static member AsyncDownloadString (web: WebClient, address: Uri) =
+        web.AsyncDownloadString address
+
+    static member FromBeginEnd (abegin: Func<_,_,_>, aend: Func<_,_>) = 
+        Async.FromBeginEnd(abegin.Invoke, aend.Invoke)
 
 type FSharpLazy = 
     static member Create (v: _ Func) = Lazy.Create v.Invoke
