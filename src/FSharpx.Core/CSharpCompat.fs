@@ -337,3 +337,7 @@ type AsyncExtensions =
     [<Extension>]
     static member Select (o, f: Func<_,_>) = 
         Async.map f.Invoke o
+
+type FSharpLazy = 
+    static member Create (v: _ Func) = Lazy.Create v.Invoke
+    static member CreateFromValue v = Lazy.CreateFromValue v
