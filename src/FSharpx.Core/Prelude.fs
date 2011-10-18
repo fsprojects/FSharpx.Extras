@@ -23,6 +23,12 @@ module Prelude =
     /// Creates a 6-tuple
     let inline tuple6 a b c d e f = a,b,c,d,e,f
 
+    type Boolean with
+        static member parse x =
+            match bool.TryParse(x) with
+            | true,v -> Some v
+            | _ -> None
+            
     type Int16 with
         static member parseWithOptions style provider x =
             match Int16.TryParse(x, style, provider) with
@@ -119,3 +125,8 @@ module Prelude =
 
         static member parseExact formats x =
             DateTimeOffset.parseExactWithOptions DateTimeStyles.None CultureInfo.InvariantCulture formats x
+
+    // Active patterns
+    let (|Boolean|_|) = Boolean.parse
+    let (|Int32|_|) = Int32.parse
+    let (|Double|_|) = Double.parse
