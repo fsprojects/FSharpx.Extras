@@ -31,8 +31,11 @@ let inline addDefinitionLocation (filePosition:FilePosition) (definition: ^a) =
 let runtimeType<'a> typeName = 
     ProvidedTypeDefinition(typeName = cleanupTypeName typeName, baseType = Some typeof<'a>)
 
+let eraseType assemblyName rootNamespace typeName toType = 
+    ProvidedTypeDefinition(assemblyName, rootNamespace, cleanupTypeName typeName, Some toType)
+
 let erasedType<'a> assemblyName rootNamespace typeName = 
-    ProvidedTypeDefinition(assemblyName, rootNamespace, cleanupTypeName typeName, Some typeof<'a>)
+    eraseType assemblyName rootNamespace typeName typeof<'a>
 
 let literalField name (value:'a) =
     ProvidedLiteralField(cleanupTypeName name, typeof<'a>, value)

@@ -13,12 +13,12 @@ let ``Can access the grid``() =
 
 [<Test>] 
 let ``Can access the stackpanel``() =      
-   // TODO: this should be window.Maingrind.StackPanel1
+   // TODO: this should be window.MainGrid.StackPanel1
    window.StackPanel1.Name |> should equal "StackPanel1"
 
 [<Test>] 
 let ``Can access the first button``() =      
-   // TODO: this should be window.Maingrind.StackPanel1.Button1
+   // TODO: this should be window.MainGrid.StackPanel1.Button1
    window.Button1.Name |> should equal "Button1"
 
 [<Test>] 

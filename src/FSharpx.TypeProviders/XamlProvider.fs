@@ -115,7 +115,7 @@ let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
         createXmlReader(reader) 
         |> readXamlFile (fileStart xamlInfo.FileName)
 
-    ProvidedTypeDefinition(thisAssembly,rootNamespace,typeName,baseType=Some xaml.Root)
+    eraseType thisAssembly rootNamespace typeName xaml.Root
         |> addDefinitionLocation xaml.Position
         |+> (provideConstructor
                 [] 
