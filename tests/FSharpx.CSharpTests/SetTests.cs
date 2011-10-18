@@ -7,7 +7,7 @@ namespace FSharpx.CSharpTests {
     public class SetTests {
         [Test]
         public void New() {
-            FSharpSet<int> set1 = FSharpSet.New(1, 2, 3);
+            FSharpSet<int> set1 = FSharpSet.Create(1, 2, 3);
             FSharpSet<int> set2 = new FSharpSet<int>(new[] { 1, 2, 3 });
             Assert.AreEqual(set1, set2);
         }

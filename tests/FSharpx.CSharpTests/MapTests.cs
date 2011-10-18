@@ -9,7 +9,7 @@ namespace FSharpx.CSharpTests {
     public class MapTests {
         [Test]
         public void New() {
-            FSharpMap<int, string> m1 = FSharpMap.New(Tuple.Create(1, "one"), Tuple.Create(2, "two"));
+            FSharpMap<int, string> m1 = FSharpMap.Create(Tuple.Create(1, "one"), Tuple.Create(2, "two"));
             FSharpMap<int, string> m2 = new FSharpMap<int, string>(new[] {
                 Tuple.Create(1, "one"), 
                 Tuple.Create(2, "two"),
@@ -23,7 +23,7 @@ namespace FSharpx.CSharpTests {
 
         [Test]
         public void TryFind() {
-            var map = FSharpMap.New(Tuple.Create(1, "one"), Tuple.Create(2, "two"));
+            var map = FSharpMap.Create(Tuple.Create(1, "one"), Tuple.Create(2, "two"));
             var r = map.TryFind(2).Match(x => x, () => "not found");
             Assert.AreEqual("two", r);
         }
