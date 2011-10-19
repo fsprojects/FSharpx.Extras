@@ -173,14 +173,16 @@ module Iteratee =
         let continueI k = Continue k
         let throw e = Error e
     
-        let rec bind f = function
-            | Done(x, extra) ->
-                match f x with
-                | Done(x',_) -> Done(x', extra)
+        let bind f i =
+            let inner bind = function
+                | Done(x, extra) ->
+                    match f x with
+                    | Done(x',_) -> Done(x', extra)
+                    | Error e    -> Error e
+                    | Continue k -> k extra
                 | Error e    -> Error e
-                | Continue k -> k extra
-            | Error e    -> Error e
-            | Continue k -> Continue(bind f << k)
+                | Continue k -> Continue(bind << k)
+            fix inner i
 
         let catchError h i =
             let rec step = function
