@@ -5,30 +5,35 @@ open FSharpx
 open FsUnit
 
 type T = XamlFile< @"StackPanel.xaml">
-let window = T()
 
-[<Test>] 
+[<Test>][<RequiresSTA>]
 let ``Can access the grid``() =      
+   let window = T()
    window.MainGrid.Name |> should equal "MainGrid"
 
-[<Test>] 
+[<Test>][<RequiresSTA>]
 let ``Can access the stackpanel``() =      
+   let window = T()
    // TODO: this should be window.MainGrid.StackPanel1
    window.StackPanel1.Name |> should equal "StackPanel1"
 
-[<Test>] 
+[<Test>][<RequiresSTA>]
 let ``Can access the first button``() =      
+   let window = T()
    // TODO: this should be window.MainGrid.StackPanel1.Button1
    window.Button1.Name |> should equal "Button1"
 
-[<Test>] 
+[<Test>][<RequiresSTA>]
 let ``The window should have the right type``() =
+   let window = T()
    window.GetType() |> should equal typeof<System.Windows.Window>
 
-[<Test>] 
+[<Test>][<RequiresSTA>]
 let ``The grid should have the right type``() =
+   let window = T()
    window.MainGrid.GetType() |> should equal typeof<System.Windows.Controls.Grid>
 
-[<Test>] 
+[<Test>][<RequiresSTA>]
 let ``The button should have the right type``() =
+   let window = T()
    window.Button2.GetType() |> should equal typeof<System.Windows.Controls.Button>
