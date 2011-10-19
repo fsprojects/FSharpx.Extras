@@ -22,6 +22,7 @@ module Iteratee =
 
     // It should be noted that this head is more like `run`.
     let head en = Enumerator.head en
+    let length en = Enumerator.length en
     let skip n en = Enumerator.skip n en |> ignore
     let skipUntil pred en = Enumerator.skipUntil pred en |> ignore
     let skipWhile pred en = Enumerator.skipWhile pred en |> ignore
@@ -42,77 +43,73 @@ module Iteratee =
                 | None -> yield count
                 | Some e' when e' <> p' -> yield count
                 | Some e' -> yield! loop (count + 1) pattern }
-        loop 0 pattern
+        loop 0 pattern |> Enumerator.head
 
 open Iteratee
 
 [<Test>]
+let ``test length``() =
+    enumerate length [1..4] |> should equal 4
+
+// Tests skip n and head
+[<Test>]
 let ``test skip2Head``() =
-    let input = seq { 1..4 }
     let skip2Head = iteratee {
         do! skip 2
         return! head }
-    enumerate skip2Head input |> should equal 3
+    enumerate skip2Head [1..4] |> should equal 3
 
 [<Test>]
 let ``test skip2Head2``() =
-    let input = seq { 1..4 }
     let skip2Head2 = iteratee {
         do! skip 2
         let! _ = head
         return! head }
-    enumerate skip2Head2 input |> should equal 4
+    enumerate skip2Head2 [1..4] |> should equal 4
 
 [<Test>]
 let ``test skipUntil``() =
-    let input = seq { 1..4 }
     let skipUntil3Head = iteratee {
         do! skipUntil ((=) 3)
         return! head }
-    enumerate skipUntil3Head input |> should equal 3
+    enumerate skipUntil3Head [1..4] |> should equal 3
 
 [<Test>]
 let ``test skipWhile``() =
-    let input = seq { 1..4 }
     let skipWhileLessThan3Head = iteratee {
         do! skipWhile ((>) 3)
         return! head }
-    enumerate skipWhileLessThan3Head input |> should equal 3
+    enumerate skipWhileLessThan3Head [1..4] |> should equal 3
 
 [<Test>]
 let ``test take 2``() =
-    let input = seq { 1..4 }
-    let actual = enumerate (take 2) input
+    let actual = enumerate (take 2) [1..4]
     (fun () -> actual) |> Enumerator.toSeq |> List.ofSeq |> should equal [1;2]
 
 [<Test>]
 let ``test takeUntil``() =
-    let input = seq { 1..4 }
-    let actual = enumerate (takeUntil <| (=) 3) input
+    let actual = enumerate (takeUntil <| (=) 3) [1..4]
     (fun () -> actual) |> Enumerator.toSeq |> List.ofSeq |> should equal [1;2]
 
 [<Test>]
 let ``test takeWhile``() =
-    let input = seq { 1..4 }
-    let actual = enumerate (takeWhile <| (>) 3) input
+    let actual = enumerate (takeWhile <| (>) 3) [1..4]
     (fun () -> actual) |> Enumerator.toSeq |> List.ofSeq |> should equal [1;2]
 
 [<Test>]
 let ``test map``() =
-    let input = [1..4]
-    let actual = enumerate (map <| fun i -> i.ToString()) input
+    let actual = enumerate (map <| fun i -> i.ToString()) [1..4]
     (fun () -> actual) |> Enumerator.toSeq |> List.ofSeq |> should equal ["1";"2";"3";"4"]
 
 // Tests scan and last as well as fold.
 [<Test>]
 let ``test fold``() =
-    let input = [1..4]
     let sum = fold (+) 0
-    let actual = enumerate sum input
-    actual |> should equal 10
+    enumerate sum [1..4] |> should equal 10
 
 [<Test>]
 let ``test heads``() =
+    // Two options for creating the pattern:
+    //    let pattern = Enumerator.iter { yield 'a'; yield 'b'; yield 'c' }
     let pattern = ("abc").GetEnumerator()
-    let actual = enumerate (heads pattern) "abd"
-    head actual |> should equal 2
+    enumerate (heads pattern) "abd" |> should equal 2
