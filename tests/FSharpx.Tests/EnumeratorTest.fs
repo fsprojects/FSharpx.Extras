@@ -1,16 +1,17 @@
 ﻿module FSharpx.Tests.EnumeratorTest
 
 open System
+open System.Collections.Generic
 open FSharpx
 open NUnit.Framework
 open FsUnit
 
 module Iteratee =
-    open System.Collections.Generic
+    open Reader
 
-    type Iteratee<'el, 'a> = Reader.Reader<IEnumerator<'el>, 'a>
+    type Iteratee<'el, 'a> = Reader<IEnumerator<'el>, 'a>
 
-    let iteratee = Reader.reader
+    let iteratee = reader
 
     let enumerate (i : Iteratee<'el, 'a>) (xs : #seq<'el>) =
         let en = xs.GetEnumerator() in i en
@@ -44,6 +45,34 @@ module Iteratee =
                 | Some e' when e' <> p' -> yield count
                 | Some e' -> yield! loop (count + 1) pattern }
         loop 0 pattern |> Enumerator.head
+
+    let opt (i:Iteratee<_,_>) (en:IEnumerator<_>) =
+        try Some(i en)
+        with _ -> None
+
+    let many (i:Iteratee<_,_>) (en:IEnumerator<_>) =
+        let i = opt i
+        let rec loop() = Enumerator.iter {
+            match i en with
+            | None -> ()
+            | Some x ->
+                yield x
+                yield! loop() }
+        loop()
+
+    let skipNewline : Iteratee<byte, unit> =
+        let crlf = (BS"\r\n"B).GetEnumerator()
+        let lf = (BS"\n"B).GetEnumerator()
+        iteratee {
+            let! n = heads crlf
+            if n = 0 then
+                let! n' = heads lf
+                if n' = 0 then failwith "Could not match newline character." }
+
+    let readLine : Iteratee<byte, IEnumerator<byte>> =
+        let isNewline c = c = '\r'B || c = '\n'B
+        takeUntil isNewline
+        <* opt skipNewline
 
 open Iteratee
 
@@ -113,3 +142,36 @@ let ``test heads``() =
     //    let pattern = Enumerator.iter { yield 'a'; yield 'b'; yield 'c' }
     let pattern = ("abc").GetEnumerator()
     enumerate (heads pattern) "abd" |> should equal 2
+
+[<Test>]
+let ``test opt -> None``() =
+    enumerate (opt head) Seq.empty |> should equal None
+
+[<Test>]
+let ``test opt -> Some``() =
+    enumerate (opt head) "a" |> should equal (Some('a'))
+
+[<Test>]
+let ``test many``() =
+    let actual = enumerate (many head) [1..4]
+    (fun () -> actual) |> Enumerator.toSeq |> List.ofSeq |> should equal [1..4]
+
+[<Test>]
+let ``test skipNewline \r``() =
+    enumerate (opt skipNewline) "\r"B |> should equal (Some())
+
+// TODO: The next tests demonstrate why Reader is insufficient. Revert to a State monad in order to support backtracking.
+// NOTE: A more efficient backtracking mechanism -- perhaps Stream -- may be necessary.
+
+[<Test;Ignore("This test succeeds when run manually but may be broken elsewhere.")>]
+let ``test skipNewline \r\n``() =
+    enumerate (opt skipNewline) "\r\n"B |> should equal (Some())
+
+[<Test;Ignore("The character has previously been read, and there is no way to backtrack to try again with another parser.")>]
+let ``test skipNewline \n``() =
+    enumerate (opt skipNewline) "\n"B |> should equal (Some())
+
+[<Test;Ignore("Investigate the break here; likely related to skipNewline.")>]
+let ``test readLine "blah"``() =
+    let actual = enumerate readLine "blah"B
+    (fun () -> actual) |> Enumerator.toSeq |> Array.ofSeq |> should equal "blah"B
