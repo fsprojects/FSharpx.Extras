@@ -27,7 +27,7 @@ let csvType (cfg:TypeProviderConfig) =
     erasedType<obj> thisAssembly rootNamespace "MinCsv"
     |> staticParameter "filename"
         (fun typeName fileName ->
-            let resolvedFileName = findConfigFile cfg.ResolutionFolder fileName
+            let resolvedFileName = findConfigFile cfg.ResolutionFolder fileName            
             let headerLine =
                 resolvedFileName
                     |> File.ReadLines
@@ -66,16 +66,16 @@ let csvType (cfg:TypeProviderConfig) =
             // define the provided type, erasing to CsvFile
             erasedType<CsvFile> thisAssembly rootNamespace typeName 
             |> addXmlDoc (sprintf "A strongly typed interface to the csv file '%s'" fileName)
-            |+> (provideConstructor
+            |+!> (provideConstructor
                     [] 
                     (fun _ -> <@@ CsvFile(resolvedFileName) @@>)
                 |> addXmlDoc "Initializes a CsvFile instance")
-            |+> (provideConstructor
+            |+!> (provideConstructor
                     ["filename", typeof<string>] 
                     (fun args -> <@@ CsvFile(%%args.[0]) @@>)
                 |> addXmlDoc "Initializes a CsvFile instance from the given path.")
-            |+> provideProperty
+            |+!> provideProperty
                     "Data"
                     (typedefof<seq<_>>.MakeGenericType rowType)
                     (fun args -> <@@ (%%args.[0]:CsvFile).Data @@>)
-            |+> rowType)
+            |+!> rowType)

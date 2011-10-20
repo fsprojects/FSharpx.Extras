@@ -25,7 +25,8 @@ let addTypedAppSettings (cfg:TypeProviderConfig) (configFileName:string) (tyDef:
 
         Seq.iter (fun (key) ->
             tyDef 
-            |+> match (appSettings.Item key).Value with
+            |+!> 
+                match (appSettings.Item key).Value with
                 | Int fieldValue -> literalField key fieldValue
                 | Bool fieldValue -> literalField key fieldValue
                 | Double fieldValue -> literalField key fieldValue

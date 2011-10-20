@@ -41,16 +41,28 @@ let literalField name (value:'a) =
     ProvidedLiteralField(cleanupTypeName name, typeof<'a>, value)
 
 let inline (|+>) (typeDef:ProvidedTypeDefinition) memberDef =
-    typeDef.AddMember memberDef
+    typeDef.AddMemberDelayed memberDef
     typeDef
 
-let inline (|++>) (typeDef:ProvidedTypeDefinition) memberDef =
+let inline (|++>) (typeDef:ProvidedTypeDefinition) memberDefinitionF =
+    typeDef.AddMembersDelayed memberDefinitionF
+    typeDef
+
+let inline (|+!>) (typeDef:ProvidedTypeDefinition) memberDefinitionF =
+    typeDef.AddMember memberDefinitionF
+    typeDef
+
+let inline (|++!>) (typeDef:ProvidedTypeDefinition) memberDef =
     typeDef.AddMembers memberDef
     typeDef
 
-let addMember memberDef (typeDef:ProvidedTypeDefinition) = typeDef |+> memberDef
+let addMember memberDef (typeDef:ProvidedTypeDefinition) = typeDef |+!> memberDef
 
 let addMembers members ownerType = Seq.fold (fun ownerType subType -> addMember subType ownerType) ownerType members
+
+let addMemberDelayed memberDef (typeDef:ProvidedTypeDefinition) = typeDef |+> memberDef
+
+let addMembersDelayed members ownerType = Seq.fold (fun ownerType subType -> addMemberDelayed subType ownerType) ownerType members
 
 open Microsoft.FSharp.Quotations
 

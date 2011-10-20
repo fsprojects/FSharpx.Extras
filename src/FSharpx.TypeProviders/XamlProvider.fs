@@ -117,15 +117,17 @@ let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
 
     eraseType thisAssembly rootNamespace typeName xaml.Root
         |> addDefinitionLocation xaml.Position
-        |+> (provideConstructor
-                [] 
-                (fun args -> 
-                    match xamlInfo with 
-                    | XamlInfo.Path path -> Expr.Coerce(<@@ XamlReader.Parse(File.ReadAllText(path)) @@>, xaml.Root)
-                    | XamlInfo.Text text -> Expr.Coerce(<@@ XamlReader.Parse(text) @@>, xaml.Root))
-            |> addXmlDoc (sprintf "Initializes a %s instance" typeName)
-            |> addDefinitionLocation xaml.Position)
-        |++> (xaml.Children
+        |+> (fun () ->
+                provideConstructor
+                    [] 
+                    (fun args -> 
+                        match xamlInfo with 
+                        | XamlInfo.Path path -> Expr.Coerce(<@@ XamlReader.Parse(File.ReadAllText(path)) @@>, xaml.Root)
+                        | XamlInfo.Text text -> Expr.Coerce(<@@ XamlReader.Parse(text) @@>, xaml.Root))
+                |> addXmlDoc (sprintf "Initializes a %s instance" typeName)
+                |> addDefinitionLocation xaml.Position)
+        |++> (fun () ->
+                xaml.Children
                 |> List.map 
                     (fun (XamlId(pos, propertyName), resultType) ->
                         provideProperty
