@@ -57,6 +57,7 @@
     <Compile Include="OptionTests.fs" />
     <Compile Include="ChoiceTests.fs" />
     <Compile Include="PreludeTests.fs" />
+    <Compile Include="LensTests.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) != 'v3.5'">

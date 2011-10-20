@@ -5,16 +5,17 @@ type Lens<'a,'b> = {
     Set: 'b -> 'a -> 'a
 }
 
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Lens =
-    let get a (l: Lens<_,_>) = l.Get a
-    let set v a (l: Lens<_,_>) = l.Set v a
-    let update f a (l: Lens<_,_>) = l.Set (f(l.Get a)) a
+    let inline get a (l: Lens<_,_>) = l.Get a
+    let inline set v a (l: Lens<_,_>) = l.Set v a
+    let inline update f (l: Lens<_,_>) a = l.Set (f(l.Get a)) a
 
-    let compose (l1: Lens<_,_>) (l2: Lens<_,_>) = 
+    let inline compose (l1: Lens<_,_>) (l2: Lens<_,_>) = 
         { Get = fun a -> l1.Get (l2.Get a)
-          Set = fun b a -> update (l1.Set b) a l2 }
+          Set = fun b -> update (l1.Set b) l2 }
 
-    let inline (.*.) l1 l2 = compose l1 l2
+    let inline (.*.) l1 l2 = compose l2 l1
 
     let fst =
         { Get = Operators.fst
@@ -42,3 +43,5 @@ module Lens =
     let ignore = 
         { Get = ignore
           Set = fun _ v -> v }
+
+    let inline (+=) l v = update ((+) v) l

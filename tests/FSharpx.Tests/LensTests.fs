@@ -1,0 +1,56 @@
+﻿module FSharpx.LensTests
+
+open NUnit.Framework
+
+let (.*.) = Lens.(.*.)
+let (+=) = Lens.(+=)
+
+type Car = {
+    Make: string
+    Model: string
+} with 
+    static member make = 
+        { Lens.Get = fun (x: Car) -> x.Make
+          Set = fun v (x: Car) -> { x with Make = v } }
+    static member model = 
+        { Lens.Get = fun (x: Car) -> x.Model
+          Set = fun v (x: Car) -> { x with Model = v } }
+
+type Employee = {
+    Name: string
+    Salary: int
+    Car: Car
+} with
+    static member salary =
+        { Lens.Get = fun (x: Employee) -> x.Salary
+          Set = fun v (x: Employee) -> { x with Salary = v } }
+    static member car = 
+        { Lens.Get = fun (x: Employee) -> x.Car
+          Set = fun v (x: Employee) -> { x with Car = v } }
+
+let giveRaise v = Lens.update ((+) v) Employee.salary
+
+let hondaAccura = { Make = "Honda"; Model = "Accura" }
+let bmwE90 = { Make = "BMW"; Model = "E90" }
+let tom = { Name = "Tom"; Salary = 4000; Car = bmwE90 }
+let dick = { Name = "Dick"; Salary = 3000; Car = hondaAccura }
+
+[<Test>]
+let update() =
+    let tom1 = { tom with Salary = tom.Salary + 1000 }
+    let tom2 = Lens.update ((+) 1000) Employee.salary tom
+    Assert.AreEqual(tom1, tom2)
+
+[<Test>]
+let updateCompose() =
+    let tom1 = { tom with Car = { tom.Car with Model = "Z4" } }
+    let employeeCarModel = Employee.car .*. Car.model
+    let tom2 = tom |> employeeCarModel.Set "Z4"
+    Assert.AreEqual(tom1, tom2)
+
+[<Test>]
+let pluseq() =
+    let giveRaise = Employee.salary += 1000
+    let tom1 = { tom with Salary = tom.Salary + 1000 }
+    let tom2 = (Employee.salary += 1000) tom
+    Assert.AreEqual(tom1, tom2)
