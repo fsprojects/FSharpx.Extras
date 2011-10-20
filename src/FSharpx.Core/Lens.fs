@@ -16,12 +16,13 @@ module Lens =
         { Get = fun a -> l1.Get (l2.Get a)
           Set = fun b -> l2.Update (l1.Set b) }
 
-    let inline (.*.) l1 l2 = compose l2 l1
+    let getState l = 
+        fun a -> get a l, a
 
-    let getState (l: Lens<_,_>) = 
-        fun a -> (l.Get a, a)
+    let setState l v = 
+        fun a -> (), set v a l
 
-    let updateState (l: Lens<_,_>) f =
+    let updateState l f =
         fun a -> (), update f l a
 
     let fst =
@@ -60,12 +61,15 @@ module Lens =
         { Get = ignore
           Set = fun _ v -> v }
 
-    let inline (+=) l v = update ((+) v) l
-    let inline (-=) l v = update ((-) v) l
-    let inline (/=) l v = update ((/) v) l
-    let inline ( *=) l v = update (( *) v) l
-    let inline (|||=) l v = update ((|||) v) l
-    let inline (||=) l v = update ((||) v) l
-    let inline (&&&=) l v = update ((&&&) v) l
-    let inline (&&=) l v = update ((&&) v) l
-    let inline (=!) l v = fun a -> set v a l
+    module Operators = 
+        let inline (.*.) l1 l2 = compose l2 l1
+        let inline (+=) l v = update ((+) v) l
+        let inline (-=) l v = update ((-) v) l
+        let inline (/=) l v = update ((/) v) l
+        let inline ( *=) l v = update (( *) v) l
+        let inline (|||=) l v = update ((|||) v) l
+        let inline (||=) l v = update ((||) v) l
+        let inline (&&&=) l v = update ((&&&) v) l
+        let inline (&&=) l v = update ((&&) v) l
+        let inline (=!) l v = fun a -> set v a l
+

@@ -2,9 +2,7 @@
 
 open NUnit.Framework
 
-let (.*.) = Lens.(.*.)
-let (+=) = Lens.(+=)
-let (=!) = Lens.(=!)
+open FSharpx.Lens.Operators
 
 type Car = {
     Make: string
@@ -70,9 +68,11 @@ let setValueOperator() =
 let stateMonad() =
     let getSalary = Lens.getState Employee.salary
     let modSalary = Lens.updateState Employee.salary
+    let setSalary = Lens.setState Employee.salary
     let modify = 
         State.state {
             let! s = getSalary
+            do! setSalary 1000
             do! modSalary ((+) 100)
             return s
         }
