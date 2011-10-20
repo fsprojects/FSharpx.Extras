@@ -4,6 +4,7 @@ open NUnit.Framework
 
 let (.*.) = Lens.(.*.)
 let (+=) = Lens.(+=)
+let (=!) = Lens.(=!)
 
 type Car = {
     Make: string
@@ -38,19 +39,29 @@ let dick = { Name = "Dick"; Salary = 3000; Car = hondaAccura }
 [<Test>]
 let update() =
     let tom1 = { tom with Salary = tom.Salary + 1000 }
-    let tom2 = Lens.update ((+) 1000) Employee.salary tom
+    let tom2 = tom |> Lens.update ((+) 1000) Employee.salary
+    let tom3 = tom |> Employee.salary.Update ((+) 1000)
     Assert.AreEqual(tom1, tom2)
+    Assert.AreEqual(tom1, tom3)
 
 [<Test>]
 let updateCompose() =
     let tom1 = { tom with Car = { tom.Car with Model = "Z4" } }
     let employeeCarModel = Employee.car .*. Car.model
     let tom2 = tom |> employeeCarModel.Set "Z4"
+    let tom3 = employeeCarModel |> Lens.set "Z4" tom
     Assert.AreEqual(tom1, tom2)
+    Assert.AreEqual(tom1, tom3)
 
 [<Test>]
 let pluseq() =
     let giveRaise = Employee.salary += 1000
     let tom1 = { tom with Salary = tom.Salary + 1000 }
-    let tom2 = (Employee.salary += 1000) tom
+    let tom2 = tom |> Employee.salary += 1000
+    Assert.AreEqual(tom1, tom2)
+
+[<Test>]
+let setValueOperator() =
+    let tom1 = { tom with Salary = 1000 }
+    let tom2 = tom |> (Employee.salary =! 1000)
     Assert.AreEqual(tom1, tom2)

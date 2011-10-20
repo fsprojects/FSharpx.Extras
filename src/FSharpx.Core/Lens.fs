@@ -3,17 +3,18 @@
 type Lens<'a,'b> = {
     Get: 'a -> 'b
     Set: 'b -> 'a -> 'a
-}
+} with 
+    member l.Update f a = l.Set (f(l.Get a)) a
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Lens =
     let inline get a (l: Lens<_,_>) = l.Get a
     let inline set v a (l: Lens<_,_>) = l.Set v a
-    let inline update f (l: Lens<_,_>) a = l.Set (f(l.Get a)) a
+    let inline update f (l: Lens<_,_>) = l.Update f
 
     let inline compose (l1: Lens<_,_>) (l2: Lens<_,_>) = 
         { Get = fun a -> l1.Get (l2.Get a)
-          Set = fun b -> update (l1.Set b) l2 }
+          Set = fun b -> l2.Update (l1.Set b) }
 
     let inline (.*.) l1 l2 = compose l2 l1
 
@@ -27,7 +28,7 @@ module Lens =
 
     let id = 
         { Get = Operators.id
-          Set = fun _ a -> a }
+          Set = fun a b -> a }
 
     let forSet value =
         { Get = Set.contains value
@@ -40,8 +41,25 @@ module Lens =
             | Some value -> Map.add key value
             | None -> Map.remove key }
 
+    let forArray i = 
+        { Get = Array.nth i
+          Set = fun v -> Array.copy >> Array.setAt i v }
+
+// not side-effect free
+//    let forRef =
+//        { Get = (!)
+//          Set = fun v a -> a := v; a }
+
     let ignore = 
         { Get = ignore
           Set = fun _ v -> v }
 
     let inline (+=) l v = update ((+) v) l
+    let inline (-=) l v = update ((-) v) l
+    let inline (/=) l v = update ((/) v) l
+    let inline ( *=) l v = update (( *) v) l
+    let inline (|||=) l v = update ((|||) v) l
+    let inline (||=) l v = update ((||) v) l
+    let inline (&&&=) l v = update ((&&&) v) l
+    let inline (&&=) l v = update ((&&) v) l
+    let inline (=!) l v = fun a -> set v a l

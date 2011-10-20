@@ -37,10 +37,10 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Compile Include="Prelude.fs" />
-    <Compile Include="Lens.fs" />
     <Compile Include="Strings.fs" />
     <Compile Include="Collections.fs" />
     <Compile Include="Monad.fs" />
+    <Compile Include="Lens.fs" />
     <Compile Include="CSharpCompat.fs" />
   </ItemGroup>
   <ItemGroup>
