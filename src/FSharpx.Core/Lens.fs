@@ -1,51 +1,44 @@
 ﻿namespace FSharpx
 
-[<AbstractClass>]
-type Lens<'a,'b>() =
-    abstract Get : 'a -> 'b
-    abstract Set : 'b -> 'a -> 'a
-    abstract Mod: ('b -> 'b) -> 'a -> 'a
-    default x.Mod f a = x.Set (f(x.Get a)) a
-    abstract Compose : Lens<'c,'a> -> Lens<'c,'b>
-    default x.Compose l = 
-        { new Lens<_,_>() with
-            override y.Get a = x.Get (l.Get a)
-            override y.Set b a = l.Mod (x.Set b) a }
+type Lens<'a,'b> = {
+    Get: 'a -> 'b
+    Set: 'b -> 'a -> 'a
+}
 
 module Lens =
     let get a (l: Lens<_,_>) = l.Get a
     let set v a (l: Lens<_,_>) = l.Set v a
-    let fst<'a,'b> =
-        { new Lens<'a * 'b,'a>() with
-            override x.Get a = Operators.fst a
-            override x.Set v a = v, Operators.snd a }
-    let snd<'a,'b> =
-        { new Lens<'a * 'b,'b>() with
-            override x.Get a = Operators.snd a
-            override x.Set v a = Operators.fst a, v }
-    let id<'a> = 
-        { new Lens<'a,'a>() with
-            override x.Get a = a
-            override x.Set _ a = a }
+    let update f a (l: Lens<_,_>) = l.Set (f(l.Get a)) a
+
+    let compose (l1: Lens<_,_>) (l2: Lens<_,_>) = 
+        { Get = fun a -> l1.Get (l2.Get a)
+          Set = fun b a -> update (l1.Set b) a l2 }
+
+    let inline (.*.) l1 l2 = compose l1 l2
+
+    let fst =
+        { Get = Operators.fst
+          Set = fun v a -> v, Operators.snd a }
+
+    let snd =
+        { Get = Operators.snd
+          Set = fun v a -> Operators.fst a, v }
+
+    let id = 
+        { Get = Operators.id
+          Set = fun _ a -> a }
 
     let forSet value =
-        { new Lens<'a Set, bool>() with
-            override x.Get set = 
-                Set.contains value set
-            override x.Set contains set = 
-                (if contains then Set.add else Set.remove) value set }
+        { Get = Set.contains value
+          Set = fun contains -> (if contains then Set.add else Set.remove) value }
 
     let forMap key = 
-        { new Lens<Map<'k,'v>, 'v option>() with
-            override x.Get map = 
-                Map.tryFind key map
-            override x.Set value map = 
-                match value with
-                | Some value -> Map.add key value map
-                | None -> Map.remove key map }
+        { Get = Map.tryFind key
+          Set = 
+            function
+            | Some value -> Map.add key value
+            | None -> Map.remove key }
 
-    // doesn't compile for some reason
-//        let ignore<'a> = 
-//            { new Lens<'a,unit>() with
-//                override x.Get a = ()
-//                override x.Set _ v = v }
+    let ignore = 
+        { Get = ignore
+          Set = fun _ v -> v }
