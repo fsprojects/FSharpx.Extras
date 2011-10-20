@@ -1,11 +1,8 @@
 ﻿module FSharp.TypeProviders.Tests.MiniCsvTests
 
 open NUnit.Framework
-open FSharpx.TypeProviders.JSON
 open FsUnit
-
 open FSharpx
-
 open Data.UnitSystems.SI.UnitNames
 
 type smallCsv = MinCsv<"SmallTest.csv">

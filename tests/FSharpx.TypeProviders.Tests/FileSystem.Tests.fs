@@ -2,7 +2,6 @@
 
 open FSharpx
 open NUnit.Framework
-open FSharpx.TypeProviders.JSON
 open FsUnit
 
 type T = FileSystemTyped< @"C:\Users\">
