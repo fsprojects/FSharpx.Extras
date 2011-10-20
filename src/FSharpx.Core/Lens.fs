@@ -18,6 +18,12 @@ module Lens =
 
     let inline (.*.) l1 l2 = compose l2 l1
 
+    let getState (l: Lens<_,_>) = 
+        fun a -> (l.Get a, a)
+
+    let updateState (l: Lens<_,_>) f =
+        fun a -> (), update f l a
+
     let fst =
         { Get = Operators.fst
           Set = fun v a -> v, Operators.snd a }

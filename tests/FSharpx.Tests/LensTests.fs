@@ -65,3 +65,17 @@ let setValueOperator() =
     let tom1 = { tom with Salary = 1000 }
     let tom2 = tom |> (Employee.salary =! 1000)
     Assert.AreEqual(tom1, tom2)
+
+[<Test>]
+let stateMonad() =
+    let getSalary = Lens.getState Employee.salary
+    let modSalary = Lens.updateState Employee.salary
+    let modify = 
+        State.state {
+            let! s = getSalary
+            do! modSalary ((+) 100)
+            return s
+        }
+    let r,tom1 = modify tom
+    Assert.AreEqual(tom.Salary, r)
+    Assert.AreEqual(tom.Salary + 100, tom1.Salary)
