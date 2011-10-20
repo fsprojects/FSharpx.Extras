@@ -351,7 +351,7 @@ module Iteratee =
         let heads str =
             let rec loop count str =
                 match count, str with
-                | (count, []) -> Done(count, EOF)
+                | (count, []) -> Done(count, Empty)
                 | (count, str) -> Continue (step count str)
             and step count str s =
                 match str, s with
@@ -366,7 +366,7 @@ module Iteratee =
         let many i =
             let rec inner cont = i >>= check cont
             and check cont = function
-                | [] -> Done(cont [], EOF)
+                | [] -> Done(cont [], Empty)
                 | xs -> inner (fun tail -> cont (xs::tail))
             inner id
 
@@ -376,16 +376,20 @@ module Iteratee =
             heads crlf >>= fun n ->
                 if n = 0 then
                     heads lf
-                else Done(n, EOF)
+                else Done(n, Empty)
 
         let readLine =
             let isNewline c = c = '\r' || c = '\n'
             takeUntil isNewline
-            <* skipNewline
 
         let readLines =
-            many readLine
-            |> map (List.map (fun chars -> String(Array.ofList chars)))
+            let rec lines cont = readLine >>= fun xs -> skipNewline >>= check cont xs
+            and check cont xs count =
+                match xs, count with
+                | [], 0 -> Done(cont [] |> List.map (fun chars -> String(Array.ofList chars)), EOF)
+                | xs, 0 -> Done(cont [xs] |> List.map (fun chars -> String(Array.ofList chars)), EOF)
+                | _ -> lines (fun tail -> cont (xs::tail))
+            lines id
         
         (* ========= Enumerators ========= *)
         
@@ -504,7 +508,7 @@ module Iteratee =
 
         let heads str =
             let rec loop count str =
-                if ByteString.isEmpty str then Done(count, EOF)
+                if ByteString.isEmpty str then Done(count, Empty)
                 else Continue (step count str)
             and step count str = function
                 | Empty -> loop count str
@@ -521,8 +525,8 @@ module Iteratee =
             let rec inner cont = i >>= check cont
             and check cont bs =
                 if ByteString.isEmpty bs then
-                    Done(cont [], EOF)
-                else inner (fun tail -> cont (bs::tail))
+                    Done(cont [], Empty)
+                else inner <| fun tail -> cont <| bs::tail
             inner id
 
         let skipNewline =
@@ -531,14 +535,20 @@ module Iteratee =
             heads crlf >>= fun n ->
                 if n = 0 then
                     heads lf
-                else Done(n, EOF)
+                else Done(n, Empty)
 
         let readLine = 
             let isNewline c = c = '\r'B || c = '\n'B
             takeUntil isNewline
-            <* skipNewline
 
-        let readLines = many readLine
+        let readLines =
+            let rec lines cont = readLine >>= fun bs -> skipNewline >>= check cont bs
+            and check cont bs count =
+                match bs, count with
+                | bs, 0 when ByteString.isEmpty bs -> Done(cont [], EOF)
+                | bs, 0 -> Done(cont [bs], EOF)
+                | _ -> lines <| fun tail -> cont <| bs::tail
+            lines id
 
         (* ========= Enumerators ========= *)
 
