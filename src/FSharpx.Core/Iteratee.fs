@@ -184,6 +184,13 @@ module Iteratee =
                 | Continue k -> Continue(bind << k)
             fix inner i
 
+        let opt i =
+            let inner opt = function
+                | Done(x, s) -> Done(Some x, s)
+                | Error e    -> Done(None, Empty)
+                | Continue k -> Continue(opt << k)
+            fix inner i
+
         let catchError h i =
             let rec step = function
                 | Error e    -> h e
