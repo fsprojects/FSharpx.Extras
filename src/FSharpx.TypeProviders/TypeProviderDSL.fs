@@ -10,7 +10,7 @@ type FilePosition =
      Column: int;
      FileName: string }
 
-let fileStart fileName = { Line = 0; Column = 0; FileName = fileName }
+let fileStart fileName = { Line = 1; Column = 1; FileName = fileName }
 
 let cleanupTypeName(name:string) = name.Replace(' ','_')
 
@@ -40,20 +40,20 @@ let erasedType<'a> assemblyName rootNamespace typeName =
 let literalField name (value:'a) =
     ProvidedLiteralField(cleanupTypeName name, typeof<'a>, value)
 
-let inline (|+>) (typeDef:ProvidedTypeDefinition) memberDef =
-    typeDef.AddMemberDelayed memberDef
+let inline (|+>) (typeDef:ProvidedTypeDefinition) memberDefinitionF =
+    typeDef.AddMemberDelayed memberDefinitionF
     typeDef
 
 let inline (|++>) (typeDef:ProvidedTypeDefinition) memberDefinitionF =
     typeDef.AddMembersDelayed memberDefinitionF
     typeDef
 
-let inline (|+!>) (typeDef:ProvidedTypeDefinition) memberDefinitionF =
-    typeDef.AddMember memberDefinitionF
+let inline (|+!>) (typeDef:ProvidedTypeDefinition) memberDef =
+    typeDef.AddMember memberDef
     typeDef
 
 let inline (|++!>) (typeDef:ProvidedTypeDefinition) memberDef =
-    typeDef.AddMembers memberDef
+    typeDef.AddMembers (memberDef |> Seq.toList)
     typeDef
 
 let addMember memberDef (typeDef:ProvidedTypeDefinition) = typeDef |+!> memberDef
