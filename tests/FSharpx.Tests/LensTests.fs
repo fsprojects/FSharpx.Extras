@@ -79,3 +79,16 @@ let stateMonad() =
     let r,tom1 = modify tom
     Assert.AreEqual(tom.Salary, r)
     Assert.AreEqual(tom.Salary + 100, tom1.Salary)
+
+open FSharpx.Lens.StateOperators
+
+[<Test>]
+let stateMonadOperators() =
+    let modify = 
+        State.state {
+            do! Employee.salary += 100
+            do! Employee.salary =! 1000
+            return ()
+        }
+    let tom1 = modify tom |> snd
+    Assert.AreEqual(1000, tom1.Salary)

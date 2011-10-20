@@ -73,3 +73,13 @@ module Lens =
         let inline (&&=) l v = update ((&&) v) l
         let inline (=!) l v = fun a -> set v a l
 
+    module StateOperators = 
+        let inline (+=) l v = updateState l ((+) v)
+        let inline (-=) l v = updateState l ((-) v)
+        let inline (/=) l v = updateState l ((/) v)
+        let inline ( *=) l v = updateState l (( *) v)
+        let inline (|||=) l v = updateState l ((|||) v)
+        let inline (||=) l v = updateState l ((||) v)
+        let inline (&&&=) l v = updateState l ((&&&) v)
+        let inline (&&=) l v = updateState l ((&&) v)
+        let inline (=!) l v = setState l v
