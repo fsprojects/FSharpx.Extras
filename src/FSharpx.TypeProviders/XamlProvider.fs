@@ -98,20 +98,12 @@ let readXamlFile filename (xaml:XmlReader) =
                          else
                             []) }
                     :: siblings
-                    |> readEndElement
+                    |> readNewElement
                 | None -> failwithf "Error near %A" (posOfReader filename xaml)
-            | XmlNodeType.Comment -> readNewElement siblings
-            | unexpected -> failwithf "Unexpected node type %A at %A" unexpected (posOfReader filename xaml)
-
-    and readEndElement siblings =
-        match xaml.Read() with
-        | false -> failwith "Expected closing element, got end of file"
-        | true ->
-            match xaml.NodeType with
             | XmlNodeType.EndElement ->
-                readNewElement siblings
-            | XmlNodeType.Comment -> readEndElement siblings
-            | unexpected -> failwith "Unexpected node type %A at %A" unexpected (posOfReader filename xaml)
+                siblings
+            | XmlNodeType.Comment | XmlNodeType.Text -> readNewElement siblings
+            | unexpected -> failwithf "Unexpected node type %A at %A" unexpected (posOfReader filename xaml)
 
     match readNewElement [] with
     | [root] -> root
@@ -138,7 +130,7 @@ let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
             |> addXmlDoc (sprintf "Initializes a %s instance" typeName)
             |> addDefinitionLocation root.Data.Position)
 
-    //TODO: Generate names for each unnamed child
+    //TODO: Lift children of unnamed nodes
     //TODO: Generate nested types for each child
     //TODO: Generate properties for each child
 (*        |++> (root.Children
