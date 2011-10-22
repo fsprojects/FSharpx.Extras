@@ -32,6 +32,10 @@ type XamlId =
     member this.Position =
         match this with
         | Named(pos, _) | Unnamed(pos) -> pos
+    member this.Name =
+        match this with
+        | Named(_, name) -> Some name
+        | Unnamed _ -> None
 
 type XamlElementInfo =
 | XamlElementInfo of XamlId * string
@@ -90,15 +94,20 @@ let readXamlFile filename (xaml:XmlReader) =
                 match infoOfXamlElement filename xaml with
                 | Some (XamlElementInfo(data, typeName)) ->
                     let has_children = not xaml.IsEmptyElement
-                    { NodeType = typeOfXamlElement typeName ;
-                      Data = data ;
-                      Children =
-                        (if has_children then
-                            readNewElement []
-                         else
-                            []) }
-                    :: siblings
-                    |> readNewElement
+                    match data with
+                    | Named _ ->
+                        { NodeType = typeOfXamlElement typeName ;
+                          Data = data ;
+                          Children =
+                            (if has_children then
+                                readNewElement []
+                             else
+                                []) }
+                        :: siblings
+                        |> readNewElement
+                    | Unnamed _ ->
+                        readNewElement siblings
+                        |> readNewElement
                 | None -> failwithf "Error near %A" (posOfReader filename xaml)
             | XmlNodeType.EndElement ->
                 siblings
@@ -119,6 +128,26 @@ let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
         createXmlReader(reader) 
         |> readXamlFile xamlInfo.FileName
 
+    let rec checkConflictingNames root =
+        let dups =
+            root.Children
+            |> Seq.groupBy (fun node -> node.Data.Name)
+            |> Seq.tryFind (fun (key, values) -> Seq.length values > 1)
+        match dups with
+        | Some (_, nodes) ->
+            failwithf
+                "Components at %A under %A at %A have identical names"
+                (nodes
+                 |> Seq.map (fun node -> node.Data.Position)
+                 |> List.ofSeq)
+                (root.Data.Name)
+                (root.Data.Position)
+        | None ->
+            root.Children
+            |> Seq.iter checkConflictingNames
+
+    checkConflictingNames root
+
     eraseType thisAssembly rootNamespace typeName root.NodeType
         |> addDefinitionLocation root.Data.Position
         |+> (provideConstructor
@@ -130,7 +159,7 @@ let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
             |> addXmlDoc (sprintf "Initializes a %s instance" typeName)
             |> addDefinitionLocation root.Data.Position)
 
-    //TODO: Lift children of unnamed nodes
+
     //TODO: Generate nested types for each child
     //TODO: Generate properties for each child
 (*        |++> (root.Children
