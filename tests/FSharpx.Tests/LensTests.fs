@@ -78,7 +78,7 @@ let stateMonad() =
         }
     let r,tom1 = modify tom
     Assert.AreEqual(tom.Salary, r)
-    Assert.AreEqual(tom.Salary + 100, tom1.Salary)
+    Assert.AreEqual(1100, tom1.Salary)
 
 open FSharpx.Lens.StateOperators
 
@@ -86,9 +86,45 @@ open FSharpx.Lens.StateOperators
 let stateMonadOperators() =
     let modify = 
         State.state {
-            do! Employee.salary += 100
             do! Employee.salary =! 1000
+            do! Employee.salary += 100
             return ()
         }
     let tom1 = modify tom |> snd
-    Assert.AreEqual(1000, tom1.Salary)
+    Assert.AreEqual(1100, tom1.Salary)
+
+type LensProperties =
+    /// If the view does not change, neither should the source.
+    static member GetSet (l: Lens<_,_>) a = l.Set (l.Get a) a = a
+
+    /// Updates should be "translated exactly" - i.e., to a source
+    /// structure for which get yields exactly the updated target structure
+    static member SetGet (l: Lens<_,_>) a b = l.Get (l.Set b a) = b
+
+    /// Each update should completely overwrite the effect of the
+    /// previous one. Thus, the effect of two putbacks in a row
+    /// should be the same as just the second.
+    static member SetSet (l: Lens<_,_>) a b c =
+        let p = l.Set b (l.Set a c)
+        let s = l.Set b c
+        p = s
+
+let checkLens lens = 
+    FsCheck.Check.Quick (LensProperties.GetSet lens)
+    FsCheck.Check.Quick (LensProperties.SetGet lens)
+    FsCheck.Check.Quick (LensProperties.SetSet lens)
+
+[<Test>] 
+let LensId() = checkLens Lens.id
+
+[<Test>] 
+let LensFst() = checkLens Lens.fst
+
+[<Test>] 
+let LensSnd() = checkLens Lens.snd
+
+[<Test>] 
+let LensFstSnd() = checkLens (Lens.fst .*. Lens.snd)
+
+[<Test>]
+let LensIgnore() = checkLens Lens.ignore
