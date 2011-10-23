@@ -43,8 +43,8 @@
     <Compile Include="ProvidedTypes-0.1.fs" />
     <Compile Include="TypeProviderDSL.fs" />
     <Compile Include="Settings.fs" />
-    <Compile Include="TypeSafeRegex.fs" />
-    <Compile Include="FileSystem.fs" />
+    <Compile Include="RegexProvider.fs" />
+    <Compile Include="FileSystemProvider.fs" />
     <Compile Include="JSON.fs" />
     <Compile Include="MiniCsvProvider.fs" />
     <Compile Include="AppSettingsProvider.fs" />
