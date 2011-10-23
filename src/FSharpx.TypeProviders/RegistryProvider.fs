@@ -22,7 +22,9 @@ let getAccessibleValues (registryKey:RegistryKey) =
             with
             | enx -> None) // TODO: Handle access violation     
 
-let registryProperty<'a> key valueName = provideProperty valueName typeof<'a> (fun args -> <@@ Registry.GetValue(key,valueName,"") :?> 'a @@>)
+let registryProperty<'a> key valueName = 
+    provideProperty valueName typeof<'a> (fun args -> <@@ Registry.GetValue(key,valueName,"") :?> 'a @@>)
+      |> addSetter (fun args -> <@@ Registry.SetValue(key,valueName,(%%args.[0] : 'a)) @@>)
 
 let rec createRegistryNode (registryKey:RegistryKey,subkeyName) () =   
     runtimeType<obj> subkeyName

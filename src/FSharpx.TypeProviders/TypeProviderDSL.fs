@@ -72,6 +72,10 @@ let provideProperty name propertyType quotationF =
         propertyType = propertyType, 
         GetterCode = quotationF)
 
+let addSetter quotationF (providedProperty:ProvidedProperty) =
+    providedProperty.SetterCode <- quotationF
+    providedProperty
+
 let makePropertyStatic (providedProperty:ProvidedProperty) =
     providedProperty.IsStatic <- true
     providedProperty
