@@ -17,6 +17,8 @@ open FSharpx.TypeProviders.Settings
 
 let wpfAssembly = typeof<System.Windows.Controls.Button>.Assembly
 
+let badargs() = failwith "Wrong type or number of arguments"
+
 [<RequireQualifiedAccess>]
 type XamlInfo = 
 | Path of string
@@ -27,36 +29,44 @@ type XamlInfo =
         | _ -> null
     
 type XamlId =  
-| XamlId of FilePosition * string
+| Named of FilePosition * string
+| Unnamed of FilePosition
+    member this.Position =
+        match this with
+        | Named(pos, _) | Unnamed(pos) -> pos
+    member this.Name =
+        match this with
+        | Named(_, name) -> Some name
+        | Unnamed _ -> None
 
 type XamlElementInfo =
-| XamlElementInfo of XamlId option * string
+| XamlElementInfo of XamlId * string
 
-type XamlFile = 
-    { Root : Type
-      Position : FilePosition
-      Children : list<XamlId * Type> }   
-    static member FileStart fileName = 
-        { Root = typeof<obj>
-          Position = fileStart fileName
-          Children = [] }
+type Tree<'Data> =
+    { Data : 'Data
+      Children : Tree<'Data> list }
 
-let posOfReader info (xaml:XmlReader) = 
+type XamlNode =
+    { NodeType : Type
+      Data : XamlId
+      Children : XamlNode list }
+
+let posOfReader filename (xaml:XmlReader) = 
     let lineInfo = xaml :> obj :?> IXmlLineInfo
     { Line = lineInfo.LineNumber
       Column = lineInfo.LinePosition
-      FileName = info.FileName }
+      FileName = filename }
 
-let infoOfXamlElement info (xaml:XmlReader) =
+let infoOfXamlElement filename (xaml:XmlReader) =
     try
-        let pos = posOfReader info xaml
+        let pos = posOfReader filename xaml
         let name = 
             match xaml.GetAttribute("Name") with
-            | name when name <> null -> XamlId (pos, name) |> Some
+            | name when name <> null -> Named (pos, name)
             | _ ->
                 match xaml.GetAttribute("x:Name") with
-                | name when name <> null -> XamlId (pos, name) |> Some
-                | _ -> None        
+                | name when name <> null -> Named (pos, name)
+                | _ -> Unnamed (pos)
         
         XamlElementInfo(name,xaml.Name) |> Some
     with
@@ -69,72 +79,136 @@ let typeOfXamlElement = function
         | null -> typeof<obj>
         | st -> st
    
-let readXamlFile info (xaml:XmlReader) =
-    let rec readElementChildren () = 
-        seq {
-            let more = ref true
-            while !more && not xaml.EOF do
-                match xaml.Read() with
-                | false -> more := false
-                | true -> 
-                    match xaml.NodeType with
-                    | XmlNodeType.Element -> 
-                        match infoOfXamlElement info xaml with                                                             
-                        |   Some (XamlElementInfo(name,typeName)) ->
-                                match name with
-                                |   None -> () // TODO: No name given
-                                |   Some xamlId -> yield (xamlId, typeOfXamlElement typeName)
-                                if not xaml.IsEmptyElement then yield! readElementChildren()
-                        |   None -> ()
-                    | XmlNodeType.EndElement -> more := false
-                    | _ -> ()
-        }
-        
-    let getXamlFileFromRootElement() =
-        match  infoOfXamlElement info xaml with
-        |   Some (XamlElementInfo(_name,typeName)) ->                 
-                { Root = typeOfXamlElement typeName 
-                  Position = posOfReader info xaml
-                  Children = readElementChildren() |> Seq.toList }
-        |   None -> XamlFile.FileStart info.FileName
+let readXamlFile filename (xaml:XmlReader) =
+    let rec readNewElement skipUnnamed siblings =
+        match xaml.Read() with
+        | false -> siblings
+        | true ->
+            match xaml.NodeType with
+            | XmlNodeType.Element ->
+                match infoOfXamlElement filename xaml with
+                | Some (XamlElementInfo(data, typeName)) ->
+                    let hasChildren = not xaml.IsEmptyElement
+                    match skipUnnamed, data with
+                    | _, Named _ | false, Unnamed _->
+                        { NodeType = typeOfXamlElement typeName ;
+                          Data = data ;
+                          Children =
+                            (if hasChildren then
+                                readNewElement true []
+                             else
+                                []) }
+                        :: siblings
+                        |> readNewElement skipUnnamed
+                    | true, Unnamed _ ->
+                        readNewElement true siblings
+                        |> readNewElement true
+                | None -> failwithf "Error near %A" (posOfReader filename xaml)
+            | XmlNodeType.EndElement ->
+                siblings
+            | XmlNodeType.Comment | XmlNodeType.Text -> readNewElement skipUnnamed siblings
+            | unexpected -> failwithf "Unexpected node type %A at %A" unexpected (posOfReader filename xaml)
 
-    match xaml.Read() with
-    | false -> XamlFile.FileStart info.FileName
-    | true ->                
-        if xaml.NodeType = XmlNodeType.XmlDeclaration then
-            xaml.Read() |> ignore
-        if xaml.NodeType = XmlNodeType.Element then
-            getXamlFileFromRootElement()
-        else failwithf "Expected Root element but got %A" xaml.NodeType
+    let dontSkipTop = false
+    match readNewElement dontSkipTop [] with
+    | [root] -> root
+    | _ :: _ -> failwith "Multiple roots"
+    | [] -> failwith "No root"
+
 
 let createXmlReader(textReader:TextReader) =
     XmlReader.Create(textReader, XmlReaderSettings(IgnoreProcessingInstructions = true, IgnoreWhitespace = true))
 
-let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
-    let xaml = 
-        createXmlReader(reader) 
-        |> readXamlFile (fileStart xamlInfo.FileName)
+let rec createNestedType parent node =
+    let mkTypeName = sprintf "GraphOf%s"
+    let name =
+        match node.Data.Name with
+        | Some name -> name            
+        | None ->
+            failwith "Cannot create a nested type without a name"
 
-    eraseType thisAssembly rootNamespace typeName xaml.Root
-        |> addDefinitionLocation xaml.Position
-        |+> (fun () ->
-                provideConstructor
+    if name = "Control" then failwithf "'Control' at %A is reserved by this type provider and cannot be used for elements" node.Data.Position
+    
+    let nestedType =
+        runtimeType<obj> (mkTypeName name)
+        |+!> provideConstructor
+                [("control", node.NodeType)]
+                (function
+                 | [x] -> x
+                 | _ -> badargs())            
+        |+> fun () ->
+            provideProperty
+                "Control"
+                node.NodeType
+                (function
+                    | [this] -> Expr.Coerce(<@@ (%%this : obj) @@>, node.NodeType)
+                    | _ -> badargs())
+            |> addXmlDoc (sprintf "Access to the underlying %s" name)
+
+    node.Children
+    |> List.iter (createNestedType nestedType)
+
+    parent
+    |+!> nestedType
+    |+> fun () ->
+        provideProperty
+            name
+            nestedType
+            (function
+                | [this] -> Expr.Coerce(<@@ ((%%this : obj) :?> FrameworkElement).FindName(name) @@>, nestedType)
+                | _ -> badargs())
+        |> addDefinitionLocation node.Data.Position
+    |> ignore
+
+let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
+    let root = 
+        createXmlReader(reader) 
+        |> readXamlFile xamlInfo.FileName
+
+    let rec checkConflictingNames root =
+        let dups =
+            root.Children
+            |> Seq.groupBy (fun node -> node.Data.Name)
+            |> Seq.tryFind (fun (key, values) -> Seq.length values > 1)
+        match dups with
+        | Some (_, nodes) ->
+            failwithf
+                "Components at %A under %A at %A have identical names"
+                (nodes
+                 |> Seq.map (fun node -> node.Data.Position)
+                 |> List.ofSeq)
+                (root.Data.Name)
+                (root.Data.Position)
+        | None ->
+            root.Children
+            |> Seq.iter checkConflictingNames
+
+    checkConflictingNames root
+
+    let topType =
+        eraseType thisAssembly rootNamespace typeName typeof<obj>
+            |> addDefinitionLocation root.Data.Position
+            |+!> provideConstructor
                     [] 
                     (fun args -> 
                         match xamlInfo with 
-                        | XamlInfo.Path path -> Expr.Coerce(<@@ XamlReader.Parse(File.ReadAllText(path)) @@>, xaml.Root)
-                        | XamlInfo.Text text -> Expr.Coerce(<@@ XamlReader.Parse(text) @@>, xaml.Root))
-                |> addXmlDoc (sprintf "Initializes a %s instance" typeName)
-                |> addDefinitionLocation xaml.Position)
-        |++> (fun () ->
-                xaml.Children
-                |> List.map 
-                    (fun (XamlId(pos, propertyName), resultType) ->
-                        provideProperty
-                            propertyName
-                            resultType
-                            (fun args -> Expr.Coerce(<@@ (%%args.[0]:Window).FindName(propertyName) @@>, resultType))
-                        |> addDefinitionLocation pos))
+                        | XamlInfo.Path path -> <@@ XamlReader.Parse(File.ReadAllText(path)) @@>
+                        | XamlInfo.Text text -> <@@ XamlReader.Parse(text) @@>)
+                |> addXmlDoc (sprintf "Initializes a wrapper over %s from Xaml" typeName)
+                |> addDefinitionLocation root.Data.Position
+            |+> fun () ->
+                provideProperty
+                    "Control"
+                    root.NodeType
+                    (function
+                     | [this] -> Expr.Coerce(this, root.NodeType)
+                     | _ -> badargs())
+                |> addXmlDoc (sprintf "Access to the underlying %s" typeName)
+
+    for child in root.Children do
+        createNestedType topType child
+
+    topType
         
 let xamlFileTypeUninstantiated invalidateF (cfg:TypeProviderConfig) =
     erasedType<obj> thisAssembly rootNamespace "XamlFile"
