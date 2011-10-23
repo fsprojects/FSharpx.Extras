@@ -126,6 +126,8 @@ let rec createNestedType parent node =
         | Some name -> name            
         | None ->
             failwith "Cannot create a nested type without a name"
+
+    if name = "Control" then failwithf "'Control' at %A is reserved by this type provider and cannot be used for elements" node.Data.Position
     
     let nestedType =
         runtimeType<obj> (mkTypeName name)
@@ -139,8 +141,8 @@ let rec createNestedType parent node =
                 "Control"
                 node.NodeType
                 (function
-                 | [this] -> Expr.Coerce(<@@ (%%this : obj) @@>, node.NodeType)
-                 | _ -> badargs())
+                    | [this] -> Expr.Coerce(<@@ (%%this : obj) @@>, node.NodeType)
+                    | _ -> badargs())
             |> addXmlDoc (sprintf "Access to the underlying %s" name)
 
     node.Children
@@ -153,8 +155,8 @@ let rec createNestedType parent node =
             name
             nestedType
             (function
-             | [this] -> Expr.Coerce(<@@ ((%%this : obj) :?> FrameworkElement).FindName(name) @@>, nestedType)
-             | _ -> badargs())
+                | [this] -> Expr.Coerce(<@@ ((%%this : obj) :?> FrameworkElement).FindName(name) @@>, nestedType)
+                | _ -> badargs())
         |> addDefinitionLocation node.Data.Position
     |> ignore
 
