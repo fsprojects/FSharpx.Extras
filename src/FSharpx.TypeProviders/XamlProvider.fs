@@ -133,7 +133,7 @@ let rec createNestedType parent node =
                 [("control", node.NodeType)]
                 (function
                  | [x] -> x
-                 | _ -> badargs())
+                 | _ -> badargs())            
         |+> fun () ->
             provideProperty
                 "Control"
@@ -141,6 +141,7 @@ let rec createNestedType parent node =
                 (function
                  | [this] -> Expr.Coerce(<@@ (%%this : obj) @@>, node.NodeType)
                  | _ -> badargs())
+            |> addXmlDoc (sprintf "Access to the underlying %s" name)
 
     node.Children
     |> List.iter (createNestedType nested_type)
@@ -191,7 +192,7 @@ let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
                         match xamlInfo with 
                         | XamlInfo.Path path -> <@@ XamlReader.Parse(File.ReadAllText(path)) @@>
                         | XamlInfo.Text text -> <@@ XamlReader.Parse(text) @@>)
-                |> addXmlDoc (sprintf "Initializes a %s instance" typeName)
+                |> addXmlDoc (sprintf "Initializes a wrapper over %s from Xaml" typeName)
                 |> addDefinitionLocation root.Data.Position
             |+> fun () ->
                 provideProperty
@@ -200,6 +201,7 @@ let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
                     (function
                      | [this] -> Expr.Coerce(this, root.NodeType)
                      | _ -> badargs())
+                |> addXmlDoc (sprintf "Access to the underlying %s" typeName)
 
     for child in root.Children do
         createNestedType top_type child
