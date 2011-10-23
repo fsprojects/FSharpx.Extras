@@ -44,6 +44,7 @@
     <Compile Include="TypeProviderDSL.fs" />
     <Compile Include="Settings.fs" />
     <Compile Include="RegexProvider.fs" />
+    <Compile Include="RegistryProvider.fs" />
     <Compile Include="FileSystemProvider.fs" />
     <Compile Include="JSON.fs" />
     <Compile Include="MiniCsvProvider.fs" />
