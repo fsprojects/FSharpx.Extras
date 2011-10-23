@@ -72,6 +72,10 @@ let provideProperty name propertyType quotationF =
         propertyType = propertyType, 
         GetterCode = quotationF)
 
+let makePropertyStatic (providedProperty:ProvidedProperty) =
+    providedProperty.IsStatic <- true
+    providedProperty
+
 let provideMethod name parameters returnType quotationF =
     ProvidedMethod(
         methodName = name, 

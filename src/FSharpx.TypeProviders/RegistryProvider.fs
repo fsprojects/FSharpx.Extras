@@ -7,19 +7,19 @@ open Microsoft.Win32
 
 let getAccessibleSubkeys (registryKey:RegistryKey) =
     registryKey.GetSubKeyNames()            
-        |> Seq.choose (fun keyName -> 
+        |> Seq.choose (fun name -> 
             try
-                Some (registryKey.OpenSubKey keyName,keyName)
+               Some (registryKey.OpenSubKey name,name)
             with
-            | enx -> None) // TODO: Handle access violation     
+            | enx -> None) // TODO: Handle access violation
 
-let rec createRegistryNode (registryKey:RegistryKey,subkeyName) () =               
-    runtimeType<RegistryKey> subkeyName
-        |> addXmlDoc (sprintf "A strongly typed interface to '%s'" registryKey.Name)
+let rec createRegistryNode (registryKey:RegistryKey,subkeyName) () =     
+    runtimeType<obj> subkeyName
         |> hideOldMethods
+        |> addXmlDoc (sprintf "A strongly typed interface to '%s'" registryKey.Name)
         |+> (fun () ->
                 literalField "Path" registryKey.Name
-                    |> addXmlDoc (sprintf "Full path to '%s'" registryKey.Name))        
+                    |> addXmlDoc (sprintf "Full path to '%s'" registryKey.Name)) 
         |> addMembersDelayed (
             registryKey
             |> getAccessibleSubkeys 
@@ -32,6 +32,4 @@ let subNodes =
 
 let typedRegistry =
     erasedType<obj> thisAssembly rootNamespace "RegistryTyped"
-      |> staticParameter "name" (fun typeName (name:string) -> 
-            erasedType<obj> thisAssembly rootNamespace typeName
-              |> addMembersDelayed (Seq.map createRegistryNode subNodes))
+      |> addMembersDelayed (Seq.map createRegistryNode subNodes)
