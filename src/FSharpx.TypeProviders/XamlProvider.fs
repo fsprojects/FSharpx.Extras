@@ -80,7 +80,7 @@ let typeOfXamlElement = function
         | st -> st
    
 let readXamlFile filename (xaml:XmlReader) =
-    let rec readNewElement skip_unnamed siblings =
+    let rec readNewElement skipUnnamed siblings =
         match xaml.Read() with
         | false -> siblings
         | true ->
@@ -88,29 +88,29 @@ let readXamlFile filename (xaml:XmlReader) =
             | XmlNodeType.Element ->
                 match infoOfXamlElement filename xaml with
                 | Some (XamlElementInfo(data, typeName)) ->
-                    let has_children = not xaml.IsEmptyElement
-                    match skip_unnamed, data with
+                    let hasChildren = not xaml.IsEmptyElement
+                    match skipUnnamed, data with
                     | _, Named _ | false, Unnamed _->
                         { NodeType = typeOfXamlElement typeName ;
                           Data = data ;
                           Children =
-                            (if has_children then
+                            (if hasChildren then
                                 readNewElement true []
                              else
                                 []) }
                         :: siblings
-                        |> readNewElement skip_unnamed
+                        |> readNewElement skipUnnamed
                     | true, Unnamed _ ->
                         readNewElement true siblings
                         |> readNewElement true
                 | None -> failwithf "Error near %A" (posOfReader filename xaml)
             | XmlNodeType.EndElement ->
                 siblings
-            | XmlNodeType.Comment | XmlNodeType.Text -> readNewElement skip_unnamed siblings
+            | XmlNodeType.Comment | XmlNodeType.Text -> readNewElement skipUnnamed siblings
             | unexpected -> failwithf "Unexpected node type %A at %A" unexpected (posOfReader filename xaml)
 
-    let dont_skip_top = false
-    match readNewElement dont_skip_top [] with
+    let dontSkipTop = false
+    match readNewElement dontSkipTop [] with
     | [root] -> root
     | _ :: _ -> failwith "Multiple roots"
     | [] -> failwith "No root"
@@ -127,7 +127,7 @@ let rec createNestedType parent node =
         | None ->
             failwith "Cannot create a nested type without a name"
     
-    let nested_type =
+    let nestedType =
         runtimeType<obj> (mkTypeName name)
         |+!> provideConstructor
                 [("control", node.NodeType)]
@@ -144,16 +144,16 @@ let rec createNestedType parent node =
             |> addXmlDoc (sprintf "Access to the underlying %s" name)
 
     node.Children
-    |> List.iter (createNestedType nested_type)
+    |> List.iter (createNestedType nestedType)
 
     parent
-    |+!> nested_type
+    |+!> nestedType
     |+> fun () ->
         provideProperty
             name
-            nested_type
+            nestedType
             (function
-             | [this] -> Expr.Coerce(<@@ ((%%this : obj) :?> FrameworkElement).FindName(name) @@>, nested_type)
+             | [this] -> Expr.Coerce(<@@ ((%%this : obj) :?> FrameworkElement).FindName(name) @@>, nestedType)
              | _ -> badargs())
         |> addDefinitionLocation node.Data.Position
     |> ignore
@@ -183,7 +183,7 @@ let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
 
     checkConflictingNames root
 
-    let top_type =
+    let topType =
         eraseType thisAssembly rootNamespace typeName typeof<obj>
             |> addDefinitionLocation root.Data.Position
             |+!> provideConstructor
@@ -204,9 +204,9 @@ let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
                 |> addXmlDoc (sprintf "Access to the underlying %s" typeName)
 
     for child in root.Children do
-        createNestedType top_type child
+        createNestedType topType child
 
-    top_type
+    topType
         
 let xamlFileTypeUninstantiated invalidateF (cfg:TypeProviderConfig) =
     erasedType<obj> thisAssembly rootNamespace "XamlFile"
