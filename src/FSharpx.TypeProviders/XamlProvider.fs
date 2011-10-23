@@ -129,12 +129,13 @@ let rec createNestedType parent node =
     
     let nested_type =
         runtimeType<obj> (mkTypeName name)
-        |+> provideConstructor
+        |+!> provideConstructor
                 [("control", node.NodeType)]
                 (function
                  | [x] -> x
                  | _ -> badargs())
-        |+> provideProperty
+        |+> fun () ->
+            provideProperty
                 "Control"
                 node.NodeType
                 (function
@@ -145,8 +146,9 @@ let rec createNestedType parent node =
     |> List.iter (createNestedType nested_type)
 
     parent
-    |+> nested_type        
-    |+> provideProperty
+    |+!> nested_type
+    |+> fun () ->
+        provideProperty
             name
             nested_type
             (function
@@ -183,20 +185,21 @@ let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
     let top_type =
         eraseType thisAssembly rootNamespace typeName typeof<obj>
             |> addDefinitionLocation root.Data.Position
-            |+> (provideConstructor
+            |+!> provideConstructor
                     [] 
                     (fun args -> 
                         match xamlInfo with 
                         | XamlInfo.Path path -> <@@ XamlReader.Parse(File.ReadAllText(path)) @@>
                         | XamlInfo.Text text -> <@@ XamlReader.Parse(text) @@>)
                 |> addXmlDoc (sprintf "Initializes a %s instance" typeName)
-                |> addDefinitionLocation root.Data.Position)
-            |+> (provideProperty
+                |> addDefinitionLocation root.Data.Position
+            |+> fun () ->
+                provideProperty
                     "Control"
                     root.NodeType
                     (function
                      | [this] -> Expr.Coerce(this, root.NodeType)
-                     | _ -> badargs()))
+                     | _ -> badargs())
 
     for child in root.Children do
         createNestedType top_type child
