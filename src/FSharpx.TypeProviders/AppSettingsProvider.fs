@@ -23,17 +23,19 @@ let addTypedAppSettings (cfg:TypeProviderConfig) (configFileName:string) (tyDef:
         let fileMap = ExeConfigurationFileMap(ExeConfigFilename=filePath)
         let appSettings = ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None).AppSettings.Settings
 
-        Seq.iter (fun (key) ->
-            tyDef 
-            |+> match (appSettings.Item key).Value with
-                | Int fieldValue -> literalField key fieldValue
-                | Bool fieldValue -> literalField key fieldValue
-                | Double fieldValue -> literalField key fieldValue
-                | fieldValue -> literalField key fieldValue
-            |> addXmlDoc (sprintf "Returns the value from the appSetting with key %s" key)
-            |> ignore) appSettings.AllKeys 
-
         tyDef
+          |++!>
+            (appSettings.AllKeys 
+              |> Seq.map (fun key -> 
+                        let field =
+                            match (appSettings.Item key).Value with
+                            | Int fieldValue -> literalField key fieldValue
+                            | Bool fieldValue -> literalField key fieldValue
+                            | Double fieldValue -> literalField key fieldValue
+                            | fieldValue -> literalField key fieldValue
+                        field
+                        |> addXmlDoc (sprintf "Returns the value from %s with key %s" configFileName key)
+                        |> addDefinitionLocation (fileStart configFileName)))
     with 
     | exn -> tyDef
     

@@ -35,21 +35,21 @@ let regexTy =
             erasedType<Regex> thisAssembly rootNamespace typeName 
                 |> hideOldMethods
                 |> addXmlDoc "A strongly typed interface to the regular expression '%s'"
-                |+> (provideMethod
+                |+!> (provideMethod
                         "IsMatch"
                         ["input", typeof<string>]
                         typeof<bool>
                         (fun args -> <@@ Regex.IsMatch(%%args.[0], pattern) @@>)
                     |> makeStatic
                     |> addXmlDoc "Indicates whether the regular expression finds a match in the specified input string")
-                |+> matchType
-                |+> (provideMethod 
+                |+!> matchType
+                |+!> (provideMethod 
                         "Match"
                         ["input", typeof<string>]
                         matchType
                         (fun args -> <@@ (%%args.[0]:Regex).Match(%%args.[1]) @@>)
                     |> addXmlDoc "Searches the specified input string for the first occurence of this regular expression")
-                |+> (provideConstructor
+                |+!> (provideConstructor
                         [] 
                         (fun args -> <@@ Regex(pattern) @@>)
                     |> addXmlDoc "Initializes a regular expression instance")

@@ -15,6 +15,7 @@ type public FSharpxProvider(cfg:TypeProviderConfig) as this =
         [RegexTypeProvider.regexTy
          MiniCsvProvider.csvType cfg
          FilesTypeProvider.typedFileSystem
+         RegistryProvider.typedRegistry
          XamlProvider.xamlFileTypeUninstantiated makeInvalid cfg
          XamlProvider.xamlTextTypeUninstantiated cfg
          AppSettingsTypeProvider.typedAppSettings cfg])

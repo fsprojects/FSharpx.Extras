@@ -7,19 +7,20 @@ open FSharpx.TypeProviders.Settings
 open FSharpx.TypeProviders.DSL
 open System.IO
 
-let rec annotateAsFileSystemInfo (fileSystemInfo:FileSystemInfo) (ownerTy:ProvidedTypeDefinition) =
+let rec annotateAsFileSystemInfo (fileSystemInfo:FileSystemInfo) (ownerTy:ProvidedTypeDefinition) () =
     try        
         let annotated =
             ownerTy
                 |> addXmlDoc (sprintf "A strongly typed interface to '%s'" fileSystemInfo.FullName)
                 |> hideOldMethods
-                |+> (literalField "Path" fileSystemInfo.FullName
-                      |> addXmlDoc (sprintf "Full path to '%s'" fileSystemInfo.FullName))
+                |+> (fun () ->
+                        literalField "Path" fileSystemInfo.FullName
+                         |> addXmlDoc (sprintf "Full path to '%s'" fileSystemInfo.FullName))
         
         match fileSystemInfo with
         | :? DirectoryInfo as dir ->
              annotated
-               |> addMembers (
+               |> addMembersDelayed (
                     dir.EnumerateFileSystemInfos()
                         |> Seq.map (fun info -> 
                                 runtimeType<obj> info.Name 
@@ -32,5 +33,7 @@ let rec annotateAsFileSystemInfo (fileSystemInfo:FileSystemInfo) (ownerTy:Provid
 let typedFileSystem =
     erasedType<obj> thisAssembly rootNamespace "FileSystemTyped"
       |> staticParameter "path" (fun typeName path -> 
-            erasedType<obj> thisAssembly rootNamespace typeName
-                |> annotateAsFileSystemInfo (new DirectoryInfo(path)))
+            annotateAsFileSystemInfo 
+              (new DirectoryInfo(path))
+              (erasedType<obj> thisAssembly rootNamespace typeName)
+              ())

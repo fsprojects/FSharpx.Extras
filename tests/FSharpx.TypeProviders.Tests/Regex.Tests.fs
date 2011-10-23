@@ -17,6 +17,11 @@ let ``Can call typed CompleteMatch function``() =
     |> should equal "425-123-2345"
 
 [<Test>] 
-let ``Can parse simple phone number``() =
+let ``Can return AreaCode in simple phone number``() =
     reg.Match("425-123-2345").AreaCode.Value
     |> should equal "425"
+
+[<Test>] 
+let ``Can return PhoneNumber property in simple phone number``() =
+    reg.Match("425-123-2345").PhoneNumber.Value
+    |> should equal "123-2345"

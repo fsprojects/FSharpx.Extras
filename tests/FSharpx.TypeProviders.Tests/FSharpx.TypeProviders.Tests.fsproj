@@ -42,6 +42,7 @@
     <Compile Include="JSON.ParserTests.fs" />
     <Compile Include="JSON.SerializationTests.fs" />
     <Compile Include="MiniCsv.Tests.fs" />
+    <Compile Include="Registry.Tests.fs" />
     <Compile Include="FileSystem.Tests.fs" />
     <Compile Include="Regex.Tests.fs" />
     <Compile Include="AppSettings.Tests.fs" />
