@@ -30,7 +30,7 @@ let regexTy =
             let matchType =
                 runtimeType<Match> "MatchType"
                   |> hideOldMethods
-                  |> addMembers groupProperties
+                  |++!> groupProperties
 
             erasedType<Regex> thisAssembly rootNamespace typeName 
                 |> hideOldMethods

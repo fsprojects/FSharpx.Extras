@@ -42,7 +42,7 @@ let rec createRegistryNode (registryKey:RegistryKey,subkeyName) () =
                     | RegistryValueKind.String -> registryProperty<string> registryKey.Name name
                     | _ -> registryProperty<obj> registryKey.Name name
                     |> makePropertyStatic))
-        |> addMembersDelayed (
+        |++> (
             registryKey
             |> getAccessibleSubkeys 
             |> Seq.map createRegistryNode)
@@ -54,4 +54,4 @@ let subNodes =
 
 let typedRegistry =
     erasedType<obj> thisAssembly rootNamespace "RegistryTyped"
-      |> addMembersDelayed (Seq.map createRegistryNode subNodes)
+      |++> (Seq.map createRegistryNode subNodes)

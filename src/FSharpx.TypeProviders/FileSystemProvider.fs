@@ -20,12 +20,11 @@ let rec annotateAsFileSystemInfo (fileSystemInfo:FileSystemInfo) (ownerTy:Provid
         match fileSystemInfo with
         | :? DirectoryInfo as dir ->
              annotated
-               |> addMembersDelayed (
+               |++> (
                     dir.EnumerateFileSystemInfos()
                         |> Seq.map (fun info -> 
                                 runtimeType<obj> info.Name 
                                     |> annotateAsFileSystemInfo info))
-                 
         | _ -> annotated    
     with 
     | exn -> ownerTy

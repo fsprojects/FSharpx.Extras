@@ -1,9 +1,9 @@
-﻿module FSharpx.TypeProviders.DSL
+﻿// Starting to implement a DSL on top of ProvidedTypes API
+module FSharpx.TypeProviders.DSL
 
 open Samples.FSharpPreviewRelease2011.ProvidedTypes
 open System.Reflection
-
-// Starting to implement a DSL on top of ProvidedTypes API
+open Microsoft.FSharp.Quotations
 
 type FilePosition =  
    { Line: int; 
@@ -44,9 +44,8 @@ let inline (|+>) (typeDef:ProvidedTypeDefinition) memberDefinitionF =
     typeDef.AddMemberDelayed memberDefinitionF
     typeDef
 
-let inline (|++>) (typeDef:ProvidedTypeDefinition) memberDefinitionF =
-    typeDef.AddMembersDelayed memberDefinitionF
-    typeDef
+let inline (|++>) (typeDef:ProvidedTypeDefinition) memberDefinitionsF =
+    Seq.fold (fun typeDef memberF -> typeDef |+> memberF) typeDef memberDefinitionsF
 
 let inline (|+!>) (typeDef:ProvidedTypeDefinition) memberDef =
     typeDef.AddMember memberDef
@@ -55,16 +54,6 @@ let inline (|+!>) (typeDef:ProvidedTypeDefinition) memberDef =
 let inline (|++!>) (typeDef:ProvidedTypeDefinition) memberDef =
     typeDef.AddMembers (memberDef |> Seq.toList)
     typeDef
-
-let addMember memberDef (typeDef:ProvidedTypeDefinition) = typeDef |+!> memberDef
-
-let addMembers members ownerType = Seq.fold (fun ownerType subType -> addMember subType ownerType) ownerType members
-
-let addMemberDelayed memberDef (typeDef:ProvidedTypeDefinition) = typeDef |+> memberDef
-
-let addMembersDelayed members ownerType = Seq.fold (fun ownerType subType -> addMemberDelayed subType ownerType) ownerType members
-
-open Microsoft.FSharp.Quotations
 
 let provideProperty name propertyType quotationF =    
     ProvidedProperty(

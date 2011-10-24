@@ -40,7 +40,7 @@ let csvType (cfg:TypeProviderConfig) =
             let rowType =
                 runtimeType<float[]> "Row"
                   |> hideOldMethods
-                  |> addMembers (
+                  |++!> (
                         headers
                         |> Seq.mapi (fun i header ->
                             // try to decompose this header into a name and unit
