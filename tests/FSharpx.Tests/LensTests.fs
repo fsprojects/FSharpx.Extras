@@ -88,7 +88,6 @@ let stateMonadOperators() =
         State.state {
             do! Employee.salary =! 1000
             do! Employee.salary += 100
-            return ()
         }
     let tom1 = modify tom |> snd
     Assert.AreEqual(1100, tom1.Salary)
@@ -102,7 +101,7 @@ type LensProperties =
     static member SetGet (l: Lens<_,_>) a b = l.Get (l.Set b a) = b
 
     /// Each update should completely overwrite the effect of the
-    /// previous one. Thus, the effect of two putbacks in a row
+    /// previous one. Thus, the effect of two sets in a row
     /// should be the same as just the second.
     static member SetSet (l: Lens<_,_>) a b c =
         let p = l.Set b (l.Set a c)
@@ -128,3 +127,6 @@ let LensFstSnd() = checkLens (Lens.fst .*. Lens.snd)
 
 [<Test>]
 let LensIgnore() = checkLens Lens.ignore
+
+[<Test>]
+let LensCodiag() = checkLens Lens.codiag

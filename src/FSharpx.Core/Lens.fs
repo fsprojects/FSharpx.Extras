@@ -16,6 +16,13 @@ module Lens =
         { Get = fun a -> l1.Get (l2.Get a)
           Set = fun b -> l2.Update (l1.Set b) }
 
+    let inline choice (l1: Lens<_,_>) (l2: Lens<_,_>) = 
+        { Get = 
+            function
+            | Choice1Of2 a -> l1.Get a
+            | Choice2Of2 a -> l2.Get a
+          Set = fun b -> Choice.bimap (l1.Set b) (l2.Set b) }    
+
     let getState l = 
         fun a -> get a l, a
 
@@ -36,6 +43,8 @@ module Lens =
     let id = 
         { Get = Operators.id
           Set = fun a b -> a }
+
+    let codiag<'a> : Lens<Choice<'a,'a>,'a> = choice id id
 
     let forSet value =
         { Get = Set.contains value
@@ -63,6 +72,7 @@ module Lens =
 
     module Operators = 
         let inline (.*.) l1 l2 = compose l2 l1
+        let inline (.|.) l1 l2 = choice l2 l1
         let inline (+=) l v = update ((+) v) l
         let inline (-=) l v = update ((-) v) l
         let inline (/=) l v = update ((/) v) l
