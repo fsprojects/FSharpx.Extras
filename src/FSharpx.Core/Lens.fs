@@ -32,6 +32,20 @@ module Lens =
     let updateState l f =
         fun a -> (), update f l a
 
+    /// Modifies the state in a state monad and returns the original value.
+    let getAndModifyState l f = 
+        State.state {
+            let! v = State.getState
+            do! updateState l f
+            return v
+        }
+
+    let modifyAndGetState l f = 
+        State.state {
+            do! updateState l f
+            return! State.getState
+        }
+
     let fst =
         { Get = Operators.fst
           Set = fun v a -> v, Operators.snd a }
