@@ -5,6 +5,11 @@ type Lens<'a,'b> = {
     Set: 'b -> 'a -> 'a
 } with 
     member l.Update f a = l.Set (f(l.Get a)) a
+    member l2.Compose (l1: Lens<_,_>) = 
+        { Get = fun a -> l1.Get (l2.Get a)
+          Set = fun b -> l2.Update (l1.Set b) }
+    static member (>>|) (l2: Lens<_,_>, l1: Lens<_,_>) = l2.Compose l1
+    static member (|<<) (l1: Lens<_,_>, l2: Lens<_,_>) = l2.Compose l1
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Lens =
@@ -12,9 +17,7 @@ module Lens =
     let inline set v a (l: Lens<_,_>) = l.Set v a
     let inline update f (l: Lens<_,_>) = l.Update f
 
-    let inline compose (l1: Lens<_,_>) (l2: Lens<_,_>) = 
-        { Get = fun a -> l1.Get (l2.Get a)
-          Set = fun b -> l2.Update (l1.Set b) }
+    let inline compose (l1: Lens<_,_>) l2 = l2 >>| l1
 
     let inline choice (l1: Lens<_,_>) (l2: Lens<_,_>) = 
         { Get = 

@@ -45,11 +45,13 @@ let update() =
 [<Test>]
 let updateCompose() =
     let tom1 = { tom with Car = { tom.Car with Model = "Z4" } }
-    let employeeCarModel = Employee.car .*. Car.model
+    let employeeCarModel = Employee.car >>| Car.model
+    let employeeCarModelAlt = Car.model |<< Employee.car
     let tom2 = tom |> employeeCarModel.Set "Z4"
-    let tom3 = employeeCarModel |> Lens.set "Z4" tom
-    Assert.AreEqual(tom1, tom2)
-    Assert.AreEqual(tom1, tom3)
+    let tom3 = tom |> employeeCarModelAlt.Set "Z4"
+    let tom4 = employeeCarModel |> Lens.set "Z4" tom
+    let all = [tom1;tom2;tom3;tom4]
+    for i in all do for j in all do Assert.AreEqual(i, j)
 
 [<Test>]
 let pluseq() =
