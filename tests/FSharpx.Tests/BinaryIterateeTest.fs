@@ -202,42 +202,6 @@ let ``test takeUntil should correctly split the input when enumerating in chunks
   let actual = enumeratePureNChunk 2 (create input) (takeUntil ((=) 'c'B)) |> run
   actual |> should equal (BS(input, 0, 2))
 
-let takeUntilTests = [|
-  [| box ""B; box ByteString.empty; box ByteString.empty |]
-  [| box "\r"B; box ByteString.empty; box (singleton '\r'B) |]
-  [| box "\n"B; box ByteString.empty; box (singleton '\n'B) |]
-  [| box "\r\n"B; box ByteString.empty; box (create "\r\n"B) |]
-  [| box "line1"B; box ByteString.empty; box ByteString.empty |]
-  [| box "line1\n"B; box (create "line1"B); box (singleton '\n'B) |]
-  [| box "line1\r"B; box (create "line1"B); box (singleton '\r'B) |]
-  [| box "line1\r\n"B; box (create "line1"B); box (create "\r\n"B) |]
-|]
-
-[<Ignore("heads and readLines do not correctly return a correct result when the input is chunked and a \r\n is encountered in different chunks.")>]
-[<Test>]
-[<TestCaseSource("takeUntilTests")>]
-let ``test takeUntilNewline should split strings on a newline character at once``(input, expectedRes:BS, expectedRem:BS) =
-  let isNewline c = c = '\r'B || c = '\n'B
-  let res, rem =
-    match enumerate (create input) (takeUntil isNewline) with
-    | Done(res, (Chunk rem)) -> res, rem
-    | Continue _ -> ByteString.empty, ByteString.empty
-    | _ -> failwith "Unrecognized test result"
-  res |> should equal expectedRes
-  rem |> should equal expectedRem
-
-[<Test>]
-[<TestCaseSource("takeUntilTests")>]
-let ``test takeUntilNewline should split strings on a newline character``(input, expectedRes:BS, expectedRem:BS) =
-  let isNewline c = c = '\r'B || c = '\n'B
-  let res, rem =
-    match enumeratePure1Chunk (create input) (takeUntil isNewline) with
-    | Done(res, (Chunk rem)) -> res, rem
-    | Continue _ -> ByteString.empty, ByteString.empty
-    | _ -> failwith "Unrecognized test result"
-  res |> should equal expectedRes
-  rem |> should equal expectedRem
-
 [<Test>]
 let ``test heads should count the number of characters in a set of headers when enumerated one byte at a time``() =
   let actual = enumerate (ByteString.ofString "abd") (heads (ByteString.ofString "abc")) |> run
@@ -274,42 +238,85 @@ let ``test heads should count the correct number of newline characters in a set 
   let actual = enumeratePureNChunk 2 (ByteString.ofString "abc\r\n") readUntilNewline |> run
   actual |> should equal 2
 
+[<Test>]
+let ``test skipNewline should consume \r for a single newline``() =
+  let ``take 'a'``= takeWhile ((=) 'a'B)
+  let actual = enumerate (BS"\ra"B) (skipNewline *> ``take 'a'``) |> run
+  actual |> should equal (BS"a"B)
+
+[<Test>]
+let ``test skipNewline should consume \n for a single newline``() =
+  let ``take 'a'``= takeWhile ((=) 'a'B)
+  let actual = enumerate (BS"\na"B) (skipNewline *> ``take 'a'``) |> run
+  actual |> should equal (BS"a"B)
+
+[<Test>]
+let ``test skipNewline should consume \r\n for a single newline``() =
+  let ``take 'a'``= takeWhile ((=) 'a'B)
+  let actual = enumerate (BS"\r\na"B) (skipNewline *> ``take 'a'``) |> run
+  actual |> should equal (BS"a"B)
+
+let readLineTests = [|
+  [| box (BS""B); box ByteString.empty |]
+  [| box (BS"\r"B); box ByteString.empty |]
+  [| box (BS"\n"B); box ByteString.empty |]
+  [| box (BS"\r\n"B); box ByteString.empty |]
+  [| box (BS"line1"B); box (BS"line1"B) |]
+  [| box (BS"line1\n"B); box (BS"line1"B) |]
+  [| box (BS"line1\r"B); box (BS"line1"B) |]
+  [| box (BS"line1\r\n"B); box (BS"line1"B) |]
+|]
+
+[<Test>]
+[<TestCaseSource("readLineTests")>]
+let ``test readLine should split strings on a newline character``(input, expectedRes:BS) =
+  let actual = enumerate input readLine |> run
+  actual |> should equal expectedRes
+
+[<Test>]
+[<TestCaseSource("readLineTests")>]
+let ``test readLine should split strings on a newline character at once``(input, expectedRes:BS) =
+  let actual = enumeratePure1Chunk input readLine |> run
+  actual |> should equal expectedRes
+
 let readLinesTests = [|
-  [| box ""B; box (Choice1Of2 []:Choice<BS list, BS list>) |]
-  [| box "\r"B; box (Choice2Of2 []:Choice<BS list, BS list>) |]
-  [| box "\n"B; box (Choice2Of2 []:Choice<BS list, BS list>) |]
-  [| box "\r\n"B; box (Choice2Of2 []:Choice<BS list, BS list>) |]
-  [| box "line1"B; box (Choice1Of2 []:Choice<BS list, BS list>) |]
-  [| box "line1\n"B; box (Choice1Of2 [BS"line1"B]:Choice<BS list, BS list>) |]
-  [| box "line1\r"B; box (Choice1Of2 [BS"line1"B]:Choice<BS list, BS list>) |]
-  [| box "line1\r\n"B; box (Choice1Of2 [BS"line1"B]:Choice<BS list, BS list>) |]
-  [| box "line1\r\nline2"B; box (Choice1Of2 [BS"line1"B]:Choice<BS list, BS list>) |]
-  [| box "line1\r\nline2\r\n"B; box (Choice1Of2 [BS"line1"B;BS"line2"B]:Choice<BS list, BS list>) |]
-  [| box "line1\r\nline2\r\n\r\n"B; box (Choice2Of2 [BS"line1"B;BS"line2"B]:Choice<BS list, BS list>) |]
-  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5"B; box (Choice1Of2 [BS"line1"B;BS"line2"B;BS"line3"B;BS"line4"B]:Choice<BS list, BS list>) |]
-  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5\r\n"B
-     box (Choice1Of2 [BS"line1"B;BS"line2"B;BS"line3"B;BS"line4"B;BS"line5"B]:Choice<BS list, BS list>) |]
-  [| box "PUT /file HTTP/1.1\r\nHost: example.com\rUser-Agent: X\nContent-Type: text/plain\r\n\r\n1C\r\nbody line 2\r\n\r\n7"B
-     box (Choice2Of2 [BS"PUT /file HTTP/1.1"B;BS"Host: example.com"B;BS"User-Agent: X"B;BS"Content-Type: text/plain"B]:Choice<BS list, BS list>) |]
+  [| box ""; box ([]:BS list) |]
+  [| box "\r"; box [BS""B] |]
+  [| box "\n"; box [BS""B] |]
+  [| box "\r\n"; box [BS""B] |]
+  [| box "line1"; box [BS"line1"B] |]
+  [| box "line1\n"; box [BS"line1"B] |]
+  [| box "line1\r"; box [BS"line1"B] |]
+  [| box "line1\r\n"; box [BS"line1"B] |]
+  [| box "line1\r\nline2"; box [BS"line1"B;BS"line2"B] |]
+  [| box "line1\r\nline2\r\n"; box [BS"line1"B;BS"line2"B] |]
+  [| box "line1\r\nline2\r\n\r\n"; box [BS"line1"B;BS"line2"B;BS""B] |]
+  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5"; box [BS"line1"B;BS"line2"B;BS"line3"B;BS"line4"B;BS"line5"B] |]
+  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5\r\n"; box [BS"line1"B;BS"line2"B;BS"line3"B;BS"line4"B;BS"line5"B] |]
+  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5\r\n\r\n"; box [BS"line1"B;BS"line2"B;BS"line3"B;BS"line4"B;BS"line5"B;BS""B] |]
+  [| box "PUT /file HTTP/1.1\r\nHost: example.com\rUser-Agent: X\nContent-Type: text/plain\r\n\r\n1C\r\nbody line 2\r\n\r\n7"
+     box [BS"PUT /file HTTP/1.1"B;BS"Host: example.com"B;BS"User-Agent: X"B;BS"Content-Type: text/plain"B;BS""B;BS"1C"B;BS"body line 2"B;BS""B;BS"7"B] |]
 |]
 
 [<Test>]
 [<TestCaseSource("readLinesTests")>]
-let ``test readLines should return the lines from the input``(input, expected:Choice<BS list, BS list>) =
-  let actual = enumeratePure1Chunk (create input) readLines |> run
-  actual |> should equal expected
-
-[<Ignore("heads and readLines do not correctly return a correct result when the input is chunked and a \r\n is encountered in different chunks.")>]
-[<Test>]
-[<TestCaseSource("readLinesTests")>]
-let ``test readLines should return the lines from the input when enumerated one byte at a time``(input, expected:Choice<BS list, BS list>) =
-  let actual = enumerate (create input) readLines |> run
+let ``test readLines should return the lines from the input``(input, expected:BS list) =
+  let input = ByteString.ofString input
+  let actual = enumeratePure1Chunk input readLines |> run
   actual |> should equal expected
 
 [<Test>]
 [<TestCaseSource("readLinesTests")>]
-let ``test readLines should return the lines from the input when chunked``(input, expected:Choice<BS list, BS list>) =
-  let actual = enumeratePureNChunk 11 (* Problem is that this is not consistent; try 5 and 10 *) (create input) readLines |> run
+let ``test readLines should return the lines from the input when enumerated one byte at a time``(input, expected:BS list) =
+  let input = ByteString.ofString input
+  let actual = enumerate input readLines |> run
+  actual |> should equal expected
+
+[<Test>]
+[<TestCaseSource("readLinesTests")>]
+let ``test readLines should return the lines from the input when chunked``(input, expected:BS list) =
+  let input = ByteString.ofString input
+  let actual = enumeratePureNChunk 5 input readLines |> run
   actual |> should equal expected
 
 
@@ -322,14 +329,6 @@ let ``test takeUntilComma should take until the first comma``() =
   let csvSample = BS("blah,blah,blah"B)
   let actual = enumerate csvSample takeUntilComma |> run
   actual |> should equal (BS("blah"B))
-
-let many i =
-    let rec inner acc = i >>= check acc
-    and check cont bs =
-        if ByteString.isEmpty bs then
-            Done(cont [], Chunk bs)
-        else inner (fun tail -> cont (bs::tail))
-    inner id
 
 let readCsvLine = many (takeUntilComma <* drop 1)
 
@@ -344,26 +343,3 @@ let ``test readCsvLine should return the empty byte string when that's all it is
   let csvSample = ByteString.empty
   let actual = enumerate csvSample readCsvLine |> run
   actual |> should equal ByteString.empty
-
-let many1 i =
-    let rec inner acc = i >>= check acc
-    and check acc bs =
-        if ByteString.isEmpty bs then
-            if List.isEmpty acc then
-                Error <| failwith "Required at least one match but found none"
-            else Done(List.rev acc, Chunk bs)
-        else inner (bs::acc)
-    inner []
-
-let readCsvLine1 = many1 (takeUntilComma <* drop 1)
-
-[<Test>]
-let ``test readCsvLine1 should take chunks until no commas remain``() =
-  let csvSample = BS("blah,blah,blah"B)
-  let actual = enumerate csvSample readCsvLine1 |> run
-  actual |> should equal [BS("blah"B);BS("blah"B);BS("blah"B)]
-
-[<Test>]
-let ``test readCsvLine1 should throw when no match is found``() =
-  let csvSample = ByteString.empty
-  (fun () -> enumerate csvSample readCsvLine1 |> run |> ignore) |> should throw typeof<exn>

@@ -194,42 +194,6 @@ let ``test takeUntil should correctly split the input when chunked``() =
   let actual = enumeratePureNChunk 2 (List.ofSeq "abcde") (takeUntil ((=) 'c')) |> run
   actual |> should equal ['a';'b']
 
-let takeUntilTests = [|
-  [| box ""; box ([]:char list); box ([]:char list) |]
-  [| box "\r"; box ([]:char list); box ['\r']|]
-  [| box "\n"; box ([]:char list); box ['\n'] |]
-  [| box "\r\n"; box ([]:char list); box ['\r';'\n'] |]
-  [| box "line1"; box ([]:char list); box ([]:char list) |]
-  [| box "line1\n"; box ['l';'i';'n';'e';'1']; box ['\n'] |]
-  [| box "line1\r"; box ['l';'i';'n';'e';'1']; box ['\r']|]
-  [| box "line1\r\n"; box ['l';'i';'n';'e';'1']; box ['\r';'\n'] |]
-|]
-
-[<Ignore("heads and readLines do not correctly return a correct result when the input is chunked and a \r\n is encountered in different chunks.")>]
-[<Test>]
-[<TestCaseSource("takeUntilTests")>]
-let ``test takeUntilNewline should split strings on a newline character``(input, expectedRes:char list, expectedRem:char list) =
-  let isNewline c = c = '\r' || c = '\n'
-  let res, rem =
-    match enumerate (List.ofSeq input) (takeUntil isNewline) with
-    | Done(res, (Chunk rem)) -> res, rem
-    | Continue _ -> [], []
-    | _ -> failwith "Unrecognized test result"
-  res |> should equal expectedRes
-  rem |> should equal expectedRem
-
-[<Test>]
-[<TestCaseSource("takeUntilTests")>]
-let ``test takeUntilNewline should split strings on a newline character at once``(input, expectedRes:char list, expectedRem:char list) =
-  let isNewline c = c = '\r' || c = '\n'
-  let res, rem =
-    match enumeratePure1Chunk (List.ofSeq input) (takeUntil isNewline) with
-    | Done(res, (Chunk rem)) -> res, rem
-    | Continue _ -> [], []
-    | _ -> failwith "Unrecognized test result"
-  res |> should equal expectedRes
-  rem |> should equal expectedRem
-
 [<Test>]
 let ``test heads should count the number of characters in a set of headers when enumerated one at a time``() =
   let actual = enumerate (List.ofSeq "abd") (heads (List.ofSeq "abc")) |> run
@@ -266,42 +230,108 @@ let ``test heads should count the correct number of newline characters in a set 
   let actual = enumeratePureNChunk 2 (List.ofSeq "abc\r\n") readUntilNewline |> run
   actual |> should equal 2
 
+[<Test>]
+let ``test skipNewline should consume \r for a single newline``() =
+  let ``take 'a'``= takeWhile ((=) 'a')
+  let actual = enumerate (List.ofSeq "\ra") (skipNewline *> ``take 'a'``) |> run
+  actual |> should equal ['a']
+
+[<Test>]
+let ``test skipNewline should consume \n for a single newline``() =
+  let ``take 'a'``= takeWhile ((=) 'a')
+  let actual = enumerate (List.ofSeq "\na") (skipNewline *> ``take 'a'``) |> run
+  actual |> should equal ['a']
+
+[<Test>]
+let ``test skipNewline should consume \r\n for a single newline``() =
+  let ``take 'a'``= takeWhile ((=) 'a')
+  let actual = enumerate (List.ofSeq "\r\na") (skipNewline *> ``take 'a'``) |> run
+  actual |> should equal ['a']
+
+let readLineTests = [|
+  [| box ""; box ([]:char list) |]
+  [| box "\r"; box ([]:char list) |]
+  [| box "\n"; box ([]:char list) |]
+  [| box "\r\n"; box ([]:char list) |]
+  [| box "line1"; box ['l';'i';'n';'e';'1'] |]
+  [| box "line1\n"; box ['l';'i';'n';'e';'1'] |]
+  [| box "line1\r"; box ['l';'i';'n';'e';'1'] |]
+  [| box "line1\r\n"; box ['l';'i';'n';'e';'1'] |]
+|]
+
+[<Test>]
+[<TestCaseSource("readLineTests")>]
+let ``test readLine should split strings on a newline character``(input, expectedRes:char list) =
+  let actual = enumerate (List.ofSeq input) readLine |> run
+  actual |> should equal expectedRes
+
+[<Test>]
+[<TestCaseSource("readLineTests")>]
+let ``test readLine should split strings on a newline character at once``(input, expectedRes:char list) =
+  let actual = enumeratePure1Chunk (List.ofSeq input) readLine |> run
+  actual |> should equal expectedRes
+
 let readLinesTests = [|
-  [| box ""; box (Choice1Of2 []:Choice<String list, String list>) |]
-  [| box "\r"; box (Choice2Of2 []:Choice<String list, String list>) |]
-  [| box "\n"; box (Choice2Of2 []:Choice<String list, String list>) |]
-  [| box "\r\n"; box (Choice2Of2 []:Choice<String list, String list>) |]
-  [| box "line1"; box (Choice1Of2 []:Choice<String list, String list>) |]
-  [| box "line1\n"; box (Choice1Of2 ["line1"]:Choice<String list, String list>) |]
-  [| box "line1\r"; box (Choice1Of2 ["line1"]:Choice<String list, String list>) |]
-  [| box "line1\r\n"; box (Choice1Of2 ["line1"]:Choice<String list, String list>) |]
-  [| box "line1\r\nline2"; box (Choice1Of2 ["line1"]:Choice<String list, String list>) |]
-  [| box "line1\r\nline2\r\n"; box (Choice1Of2 ["line1";"line2"]:Choice<String list, String list>) |]
-  [| box "line1\r\nline2\r\n\r\n"; box (Choice2Of2 ["line1";"line2"]:Choice<String list, String list>) |]
-  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5"; box (Choice1Of2 ["line1";"line2";"line3";"line4"]:Choice<String list, String list>) |]
-  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5\r\n"
-     box (Choice1Of2 ["line1";"line2";"line3";"line4";"line5"]:Choice<String list, String list>) |]
-  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5\r\n\r\n"
-     box (Choice2Of2 ["line1";"line2";"line3";"line4";"line5"]:Choice<String list, String list>) |]
+  [| box ""; box ([]:String list) |]
+  [| box "\r"; box [""] |]
+  [| box "\n"; box [""] |]
+  [| box "\r\n"; box [""] |]
+  [| box "line1"; box ["line1"] |]
+  [| box "line1\n"; box ["line1"] |]
+  [| box "line1\r"; box ["line1"] |]
+  [| box "line1\r\n"; box ["line1"] |]
+  [| box "line1\r\nline2"; box ["line1";"line2"] |]
+  [| box "line1\r\nline2\r\n"; box ["line1";"line2"] |]
+  [| box "line1\r\nline2\r\n\r\n"; box ["line1";"line2";""] |]
+  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5"; box ["line1";"line2";"line3";"line4";"line5"] |]
+  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5\r\n"; box ["line1";"line2";"line3";"line4";"line5"] |]
+  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5\r\n\r\n"; box ["line1";"line2";"line3";"line4";"line5";""] |]
   [| box "PUT /file HTTP/1.1\r\nHost: example.com\nUser-Agent: X\nContent-Type: text/plain\r\n\r\n1C\r\nbody line 2\r\n\r\n7"
-     box (Choice2Of2 ["PUT /file HTTP/1.1";"Host: example.com";"User-Agent: X";"Content-Type: text/plain"]:Choice<String list, String list>) |]
+     box ["PUT /file HTTP/1.1";"Host: example.com";"User-Agent: X";"Content-Type: text/plain";"";"1C";"body line 2";"";"7"] |]
 |]
 
 [<Test>]
 [<TestCaseSource("readLinesTests")>]
-let ``test readLines should return the lines from the input``(input, expected:Choice<String list, String list>) =
-  let actual = enumeratePure1Chunk (List.ofSeq input) readLines |> run
-  actual |> should equal expected
-
-[<Ignore("heads and readLines do not correctly return a correct result when the input is chunked and a \r\n is encountered in different chunks.")>]
-[<Test>]
-[<TestCaseSource("readLinesTests")>]
-let ``test readLines should return the lines from the input when enumerated one char at a time``(input, expected:Choice<String list, String list>) =
-  let actual = enumerate (List.ofSeq input) readLines |> run
+let ``test readLines should return the lines from the input``(input, expected:String list) =
+  let input = List.ofSeq input
+  let actual = enumeratePure1Chunk input readLines |> run
   actual |> should equal expected
 
 [<Test>]
 [<TestCaseSource("readLinesTests")>]
-let ``test readLines should return the lines from the input when chunked``(input, expected:Choice<String list, String list>) =
-  let actual = enumeratePureNChunk 11 (* Problem is that this is not consistent; try 5 and 10 *) (List.ofSeq input) readLines |> run
+let ``test readLines should return the lines from the input when enumerated one char at a time``(input, expected:String list) =
+  let input = List.ofSeq input
+  let actual = enumerate input readLines |> run
   actual |> should equal expected
+
+[<Test>]
+[<TestCaseSource("readLinesTests")>]
+let ``test readLines should return the lines from the input when chunked``(input, expected:String list) =
+  let input = List.ofSeq input
+  let actual = enumeratePureNChunk 5 input readLines |> run
+  actual |> should equal expected
+
+
+(* CSV Parser *)
+
+let takeUntilComma = takeUntil ((=) ',')
+
+[<Test>]
+let ``test takeUntilComma should take until the first comma``() =
+  let csvSample = List.ofSeq "blah,blah,blah"
+  let actual = enumerate csvSample takeUntilComma |> run
+  actual |> should equal (List.ofSeq "blah")
+
+let readCsvLine = many (takeUntilComma <* drop 1)
+
+[<Test>]
+let ``test readCsvLine should take chunks until no commas remain``() =
+  let csvSample = List.ofSeq "blah,blah,blah"
+  let actual = enumerate csvSample readCsvLine |> run
+  actual |> should equal [List.ofSeq "blah";List.ofSeq "blah";List.ofSeq "blah"]
+
+[<Test>]
+let ``test readCsvLine should return the empty byte string when that's all it is passed``() =
+  let csvSample = []
+  let actual = enumerate csvSample readCsvLine |> run
+  actual |> should equal []

@@ -23,6 +23,10 @@ module Prelude =
     /// Creates a 6-tuple
     let inline tuple6 a b c d e f = a,b,c,d,e,f
 
+    let rec fix f x = f (fix f) x
+    let rec fix2 f x y = f (fix2 f) x y
+    let rec fix3 f x y z = f (fix3 f) x y z
+
     type Boolean with
         static member parse x =
             match bool.TryParse(x) with
