@@ -58,7 +58,7 @@
     <Compile Include="ArrayTests.cs" />
     <Compile Include="AsyncTests.cs" />
     <Compile Include="LazyTests.cs" />
-    <Compile Include="StringTests.cs" />
+    <Compile Include="StringsTests.cs" />
     <Compile Include="Customer.cs" />
     <Compile Include="DictionaryTests.cs" />
     <Compile Include="FuncTests.cs" />
