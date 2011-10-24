@@ -4,6 +4,7 @@ module FSharpx.TypeProviders.DSL
 open Samples.FSharpPreviewRelease2011.ProvidedTypes
 open System.Reflection
 open Microsoft.FSharp.Quotations
+open FSharpx.Strings
 
 type FilePosition =  
    { Line: int; 
@@ -12,7 +13,8 @@ type FilePosition =
 
 let fileStart fileName = { Line = 1; Column = 1; FileName = fileName }
 
-let cleanupTypeName(name:string) = name.Replace(' ','_')
+/// Converts the given type name proposal into a compilable type name
+let cleanupTypeName = replace " " "_"
 
 let hideOldMethods (typeDef:ProvidedTypeDefinition) = 
     typeDef.HideObjectMethods <- true
