@@ -125,7 +125,7 @@ let LensFst() = checkLens Lens.fst
 let LensSnd() = checkLens Lens.snd
 
 [<Test>] 
-let LensFstSnd() = checkLens (Lens.fst .*. Lens.snd)
+let LensFstSnd() = checkLens (Lens.fst >>| Lens.snd)
 
 [<Test>]
 let LensIgnore() = checkLens Lens.ignore
