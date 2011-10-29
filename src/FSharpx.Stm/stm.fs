@@ -73,19 +73,19 @@ open System.Threading
 //[<SealedAttribute>]
 //type private ReferenceEqualityComparer<'a when 'a : equality and 'a : not struct>() =
 //    interface IEqualityComparer<'a> with
-//        member this.Equals(x, y) = x = y
+//        member this.Equals(x, y) = Object.ReferenceEquals(x, y)
 //        member this.GetHashCode(obj) = obj.GetHashCode()
 //
 //[<SealedAttribute>]
 //type private EquatableEqualityComparer<'a when 'a : equality and 'a : struct and 'a :> IEquatable<'a>>() =
 //    interface IEqualityComparer<'a> with
-//        member this.Equals(x, y) = x = y
+//        member this.Equals(x, y) = x.Equals(y)
 //        member this.GetHashCode(obj) = obj.GetHashCode()
 //
 //[<SealedAttribute>]
 //type private AnyEqualityComparer<'a when 'a : equality>() =
 //    interface IEqualityComparer<'a> with
-//        member this.Equals(x, y) = x = y
+//        member this.Equals(x, y) = x.Equals(y)
 //        member this.GetHashCode(obj) = obj.GetHashCode()
 //
 //[<SealedAttribute>]
