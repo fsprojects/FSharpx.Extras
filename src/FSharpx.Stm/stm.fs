@@ -12,6 +12,8 @@
  *)
 
 [<AutoOpen>]
+/// <summary>The Software Transactional Memory monad.</summary>
+/// <see href="http://cs.hubfs.net/blogs/hell_is_other_languages/archive/2008/01/16/4565.aspx" />
 module FSharpx.Stm.Core
 
 open System
