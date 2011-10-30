@@ -73,6 +73,24 @@ Target "BuildApp" (fun _ ->
         {p with 
             CodeLanguage = FSharp
             AssemblyVersion = version
+            AssemblyTitle = "FSharpx.Http"
+            AssemblyDescription = "This library provides common features for working with HTTP applications."
+            Guid = "60F3BB81-5449-45DD-A217-B6045327680C"
+            OutputFileName = "./src/FSharpx.Http/AssemblyInfo.fs" })
+
+    AssemblyInfo (fun p ->
+        {p with 
+            CodeLanguage = FSharp
+            AssemblyVersion = version
+            AssemblyTitle = "FSharpx.Stm"
+            AssemblyDescription = "This library implements the Software Transactional Memory workflow in F#."
+            Guid = "FFDBAF72-7F9F-4DE0-A8F3-83D0D21EBEB5"
+            OutputFileName = "./src/FSharpx.Stm/AssemblyInfo.fs" })
+
+    AssemblyInfo (fun p ->
+        {p with 
+            CodeLanguage = FSharp
+            AssemblyVersion = version
             AssemblyTitle = "FSharp.AsyncExtensions"
             AssemblyDescription = "This library implements various extensions for asynchronous programming using F# asynchronous workflows and F# agents."
             Guid = "ede1812b-5a62-410a-9553-02499cf29317"
@@ -124,9 +142,18 @@ Target "BuildNuGet" (fun _ ->
     [ buildDir + "FSharpx.Core.dll"
       buildDir + "FSharpx.Core.pdb"
       buildDir + "FSharpx.Core.xml"
+      buildDir + "FSharpx.Http.dll"
+      buildDir + "FSharpx.Http.pdb"
+      buildDir + "FSharpx.Http.xml"
+      buildDir + "FSharpx.Stm.Core.dll"
+      buildDir + "FSharpx.Stm.Core.pdb"
+      buildDir + "FSharpx.Stm.Core.xml"
+      buildDir + "FSharpx.Stm.dll"
+      buildDir + "FSharpx.Stm.pdb"
+      buildDir + "FSharpx.Stm.xml"
       buildDir + "FSharp.AsyncExtensions.dll"
       buildDir + "FSharp.AsyncExtensions.pdb"
-      buildDir + "FSharp.AsyncExtensions.xml" ]
+      buildDir + "FSharp.AsyncExtensions.xml"]
         |> CopyTo nugetLibDir
 
     NuGet (fun p -> 
