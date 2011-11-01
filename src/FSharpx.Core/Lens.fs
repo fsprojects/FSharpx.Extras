@@ -20,6 +20,10 @@ module Lens =
         { Get = Choice.choice l1.Get l2.Get
           Set = fun b -> Choice.bimap (l1.Set b) (l2.Set b) }
 
+    let inline pair (l1: Lens<_,_>) (l2: Lens<_,_>) = 
+        { Get = fun (a,b) -> (l1.Get a, l2.Get b)
+          Set = fun (a,c) (b,d) -> (l1.Set a b, l2.Set c d) }
+
     let getState l = 
         fun a -> get a l, a
 
@@ -85,6 +89,7 @@ module Lens =
         let inline (>>|) l1 l2 = compose l2 l1
         let inline (|<<) l1 l2 = compose l1 l2
         let inline (.|.) l1 l2 = choice l2 l1
+        let inline ( ***) l1 l2 = pair l2 l1
         let inline (+=) l v = update ((+) v) l
         let inline (-=) l v = update ((-) v) l
         let inline (/=) l v = update ((/) v) l
