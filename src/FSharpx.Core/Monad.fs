@@ -86,7 +86,7 @@ module Async =
     let inline pipe2 x y f = returnM f <*> x <*> y
     let inline pipe3 x y z f = returnM f <*> x <*> y <*> z
     let inline map f m = pipe m f
-    let inline map2 f x y = returnM f <*> x <*> y
+    let inline lift2 f x y = returnM f <*> x <*> y
     let inline (<!>) f m = pipe m f
     /// Sequence actions, discarding the value of the first argument.
     let inline ( *>) x y = pipe2 x y (fun _ z -> z)
@@ -107,11 +107,11 @@ module ZipList =
     let (<*>) f a = Seq.zip f a |> Seq.map (fun (k,v) -> k v)
     /// Sequential application
     let inline ap m f = f <*> m
-    let inline map2 f a b = returnM f <*> a <*> b
+    let inline lift2 f a b = returnM f <*> a <*> b
     /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) x y = map2 (fun _ z -> z) x y
+    let inline ( *>) x y = lift2 (fun _ z -> z) x y
     /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) x y = map2 (fun z _ -> z) x y
+    let inline ( <*) x y = lift2 (fun z _ -> z) x y
 
 module Option =
 
@@ -149,11 +149,11 @@ module Option =
     /// Sequential application
     let inline ap m f = f <*> m
     let inline (<!>) f m = Option.map f m
-    let inline map2 f a b = returnM f <*> a <*> b
+    let inline lift2 f a b = returnM f <*> a <*> b
     /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) x y = map2 (fun _ z -> z) x y
+    let inline ( *>) x y = lift2 (fun _ z -> z) x y
     /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) x y = map2 (fun z _ -> z) x y
+    let inline ( <*) x y = lift2 (fun z _ -> z) x y
 
     /// Sequentially compose two maybe actions, discarding any value produced by the first
     let inline (>>.) m f = bindM maybe m (fun _ -> f)
@@ -269,7 +269,7 @@ module Nullable =
         | Null -> []
         | Value v -> [v]
         
-    let map2 f (a: _ Nullable) (b: _ Nullable) =
+    let lift2 f (a: _ Nullable) (b: _ Nullable) =
         if a.HasValue && b.HasValue
             then Nullable(f a.Value b.Value)
             else Nullable()
@@ -279,10 +279,10 @@ module Nullable =
         | Value x, Value y -> op x y
         | _ -> false
 
-    let inline (+?) a b = (map2 (+)) a b
-    let inline (-?) a b = (map2 (-)) a b
-    let inline ( *?) a b = (map2 ( *)) a b
-    let inline (/?) a b = (map2 (/)) a b
+    let inline (+?) a b = (lift2 (+)) a b
+    let inline (-?) a b = (lift2 (-)) a b
+    let inline ( *?) a b = (lift2 ( *)) a b
+    let inline (/?) a b = (lift2 (/)) a b
     let inline (>?) a b = (mapBool (>)) a b
     let inline (>=?) a b = a >? b || a = b
     let inline (<?) a b = (mapBool (<)) a b
@@ -369,11 +369,11 @@ module State =
     let inline ap m f = f <*> m
     let inline map f m = liftM state f m
     let inline (<!>) f m = map f m
-    let inline map2 f a b = returnM f <*> a <*> b
+    let inline lift2 f a b = returnM f <*> a <*> b
     /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) x y = map2 (fun _ z -> z) x y
+    let inline ( *>) x y = lift2 (fun _ z -> z) x y
     /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) x y = map2 (fun z _ -> z) x y
+    let inline ( <*) x y = lift2 (fun z _ -> z) x y
     /// Sequentially compose two state actions, discarding any value produced by the first
     let inline (>>.) m f = bindM state m (fun _ -> f)
     /// Left-to-right Kleisli composition
@@ -430,11 +430,11 @@ module Reader =
     let inline ap m f = f <*> m
     let inline map f m = liftM reader f m
     let inline (<!>) f m = map f m
-    let inline map2 f a b = returnM f <*> a <*> b
+    let inline lift2 f a b = returnM f <*> a <*> b
     /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) x y = map2 (fun _ z -> z) x y
+    let inline ( *>) x y = lift2 (fun _ z -> z) x y
     /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) x y = map2 (fun z _ -> z) x y
+    let inline ( <*) x y = lift2 (fun z _ -> z) x y
     /// Sequentially compose two reader actions, discarding any value produced by the first
     let inline (>>.) m f = bindM reader m (fun _ -> f)
     /// Left-to-right Kleisli composition
@@ -576,12 +576,12 @@ module Choice =
         | Choice2Of2 x -> Choice2Of2 x
 
     let inline (<!>) f x = map f x
-    let inline map2 f a b = f <!> a <*> b
+    let inline lift2 f a b = f <!> a <*> b
 
     /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) a b = map2 (fun _ z -> z) a b
+    let inline ( *>) a b = lift2 (fun _ z -> z) a b
     /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) a b = map2 (fun z _ -> z) a b
+    let inline ( <*) a b = lift2 (fun z _ -> z) a b
 
     let bind f = 
         function
@@ -637,11 +637,11 @@ module Validation =
     type CustomValidation<'a>(monoid: 'a Monoid) =
         /// Sequential application
         member this.ap x = apm monoid x
-        member this.map2 f a b = returnM f |> this.ap a |> this.ap b
+        member this.lift2 f a b = returnM f |> this.ap a |> this.ap b
         /// Sequence actions, discarding the value of the first argument.
-        member this.apr b a = this.map2 (fun _ z -> z) a b
+        member this.apr b a = this.lift2 (fun _ z -> z) a b
         /// Sequence actions, discarding the value of the second argument.
-        member this.apl b a = this.map2 (fun z _ -> z) a b
+        member this.apl b a = this.lift2 (fun z _ -> z) a b
 
     let private stringListValidation = CustomValidation(ListMonoid<string>())
 
@@ -650,7 +650,7 @@ module Validation =
 
     /// Sequential application
     let inline (<*>) f x = ap x f
-    let map2 = stringListValidation.map2
+    let lift2 = stringListValidation.lift2
 
     /// Sequence actions, discarding the value of the first argument.
     let ( *>) = stringListValidation.apr
@@ -659,7 +659,7 @@ module Validation =
 
     let seqValidator f = 
         let zero = returnM []
-        Seq.map f >> Seq.fold (map2 (flip FSharpx.List.cons)) zero
+        Seq.map f >> Seq.fold (lift2 (flip FSharpx.List.cons)) zero
 
 
 module Continuation =
@@ -720,11 +720,11 @@ module Continuation =
     let inline ap m f = f <*> m
     let inline map f m = liftM cont f m
     let inline (<!>) f m = map f m
-    let inline map2 f a b = returnM f <*> a <*> b
+    let inline lift2 f a b = returnM f <*> a <*> b
     /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) x y = map2 (fun _ z -> z) x y
+    let inline ( *>) x y = lift2 (fun _ z -> z) x y
     /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) x y = map2 (fun z _ -> z) x y
+    let inline ( <*) x y = lift2 (fun z _ -> z) x y
     /// Sequentially compose two continuation actions, discarding any value produced by the first
     let inline (>>.) m f = bindM cont m (fun _ -> f)
     /// Left-to-right Kleisli composition

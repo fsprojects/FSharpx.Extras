@@ -253,11 +253,11 @@ module Iteratee =
     let inline ap m f = f <*> m
     let inline map f m = m >>= fun x -> returnM (f x)
     let inline (<!>) f m = map f m
-    let inline map2 f a b = returnM f <*> a <*> b
+    let inline lift2 f a b = returnM f <*> a <*> b
     /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) x y = map2 (fun _ z -> z) x y
+    let inline ( *>) x y = lift2 (fun _ z -> z) x y
     /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) x y = map2 (fun z _ -> z) x y
+    let inline ( <*) x y = lift2 (fun z _ -> z) x y
     /// Sequentially compose two iteratee actions, discarding any value produced by the first
     let inline (>>.) m f = m >>= (fun _ -> f)
     /// Left-to-right Kleisli composition
