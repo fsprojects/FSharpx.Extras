@@ -17,11 +17,8 @@ module Lens =
           Set = fun b -> l2.Update (l1.Set b) }
 
     let inline choice (l1: Lens<_,_>) (l2: Lens<_,_>) = 
-        { Get = 
-            function
-            | Choice1Of2 a -> l1.Get a
-            | Choice2Of2 a -> l2.Get a
-          Set = fun b -> Choice.bimap (l1.Set b) (l2.Set b) }    
+        { Get = Choice.choice l1.Get l2.Get
+          Set = fun b -> Choice.bimap (l1.Set b) (l2.Set b) }
 
     let getState l = 
         fun a -> get a l, a

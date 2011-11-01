@@ -597,10 +597,15 @@ module Choice =
     /// Right-to-left Kleisli composition
     let inline (<=<) x = flip (>=>) x
 
-    let bimap f1 f2 = 
+    let inline bimap f1 f2 = 
         function
         | Choice1Of2 x -> Choice1Of2 (f1 x)
         | Choice2Of2 x -> Choice2Of2 (f2 x)
+
+    let inline choice f1 f2 = 
+        function
+        | Choice1Of2 x -> f1 x
+        | Choice2Of2 x -> f2 x
 
     let inline mapSecond f = bimap id f
 
