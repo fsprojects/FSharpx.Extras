@@ -1,7 +1,7 @@
 ﻿module FSharpx.LensTests
 
+open System
 open NUnit.Framework
-
 open FSharpx.Lens.Operators
 
 type Car = {
@@ -132,3 +132,9 @@ let LensIgnore() = checkLens Lens.ignore
 
 [<Test>]
 let LensCodiag() = checkLens Lens.codiag
+
+[<Test>]
+let LensChoice() = checkLens (Car.make .|. Car.model)
+
+[<Test>]
+let LensProduct() = checkLens (Car.make *** Car.model)
