@@ -184,6 +184,13 @@ module Seq =
     let tryFindWithIndex pred l =
         l |> index |> Seq.tryFind (fun (_,v) -> pred v)
 
+    let inline lift2 f l1 l2 = 
+        seq {
+            for i in l1 do
+                for j in l2 do
+                    yield f i j }
+        
+
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Array = 
     let inline nth i arr = Array.get arr i
@@ -193,6 +200,12 @@ module List =
     let inline cons hd tl = hd::tl
   
     let inline singleton x = [x]
+
+    let inline lift2 f (l1: _ list) (l2: _ list) = 
+        [ for i in l1 do
+            for j in l2 do
+                yield f i j ]
+
   
     let span pred l =
         let rec loop l cont =

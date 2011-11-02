@@ -2,6 +2,7 @@
 
 open FSharpx
 open NUnit.Framework
+open FsUnit
 
 [<Test>]
 let index() =
@@ -23,3 +24,9 @@ let tryFindWithIndex_Some() =
   match r with
   | Some e -> Assert.AreEqual((4,'e'), e)
   | _ -> failwith "Not found"
+
+
+[<Test>]
+let lift2() =
+    Seq.lift2 (+) [0;1] [0;2] |> Seq.toList
+    |> should equal [0;2;1;3]

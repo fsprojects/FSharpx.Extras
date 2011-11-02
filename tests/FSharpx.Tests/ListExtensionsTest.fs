@@ -21,3 +21,8 @@ let ``test List_span correctly breaks the list on the specified predicate``() =
   let str = List.ofSeq "Howdy! Want to play?"
   let expected = (List.ofSeq "Howdy!", List.ofSeq " Want to play?")
   List.span (fun c -> c <> ' ') str |> should equal expected
+
+[<Test>]
+let lift2() =
+    List.lift2 (+) [0;1] [0;2]
+    |> should equal [0;2;1;3]
