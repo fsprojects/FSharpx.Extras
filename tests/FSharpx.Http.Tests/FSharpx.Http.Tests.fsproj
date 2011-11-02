@@ -32,7 +32,7 @@
   </PropertyGroup>
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
-    <Compile Include="FsConnegTests.fs" />
+    <Compile Include="ConnegTests.fs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

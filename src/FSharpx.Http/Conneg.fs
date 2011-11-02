@@ -1,6 +1,6 @@
 ﻿namespace FSharpx.Http
 
-module FsConneg =
+module Conneg =
     
     open System
     open System.Globalization

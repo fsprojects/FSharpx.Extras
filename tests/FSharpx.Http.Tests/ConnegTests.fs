@@ -1,6 +1,6 @@
-﻿module FSharpx.Http.Tests.FsConnegTests
+﻿module FSharpx.Http.Tests.ConnegTests
 
-open FSharpx.Http.FsConneg
+open FSharpx.Http.Conneg
 open NUnit.Framework
 
 [<Test>]

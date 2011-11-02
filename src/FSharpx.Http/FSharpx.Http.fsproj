@@ -45,6 +45,6 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FsConneg.fs" />
+    <Compile Include="Conneg.fs" />
   </ItemGroup>
 </Project>
