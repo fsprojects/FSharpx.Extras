@@ -7,24 +7,20 @@ open FsUnit
 [<Test>]
 let index() =
   let a = {'a'..'z'}
-  let i = Seq.index a |> Seq.take 5 |> Seq.toList
-  Assert.AreEqual([0,'a'; 1,'b'; 2,'c'; 3,'d'; 4,'e'], i)
-  ()
+  Seq.index a |> Seq.take 5 |> Seq.toList
+  |> should equal [0,'a'; 1,'b'; 2,'c'; 3,'d'; 4,'e']
 
 [<Test>]
 let tryFindWithIndex_None() =
   let a = {1..10}
-  let r = Seq.tryFindWithIndex ((<)10) a
-  Assert.AreEqual(None, r)
+  Seq.tryFindWithIndex ((<)10) a
+  |> should equal None
 
 [<Test>]
 let tryFindWithIndex_Some() =
   let a = {'a'..'z'}
-  let r = Seq.tryFindWithIndex ((=)'e') a
-  match r with
-  | Some e -> Assert.AreEqual((4,'e'), e)
-  | _ -> failwith "Not found"
-
+  Seq.tryFindWithIndex ((=)'e') a
+  |> should equal (Some (4,'e'))
 
 [<Test>]
 let lift2() =
