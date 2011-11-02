@@ -110,31 +110,32 @@ type LensProperties =
         let s = l.Set b c
         p = s
 
-let checkLens lens = 
-    FsCheck.Check.Quick (LensProperties.GetSet lens)
-    FsCheck.Check.Quick (LensProperties.SetGet lens)
-    FsCheck.Check.Quick (LensProperties.SetSet lens)
+let checkLens name lens = 
+    let tname = sprintf "%s: %s" name
+    FsCheck.Check.Quick (tname "GetSet", LensProperties.GetSet lens)
+    FsCheck.Check.Quick (tname "SetGet", LensProperties.SetGet lens)
+    FsCheck.Check.Quick (tname "SetSet", LensProperties.SetSet lens)
 
 [<Test>] 
-let LensId() = checkLens Lens.id
+let LensId() = checkLens "Id" Lens.id
 
 [<Test>] 
-let LensFst() = checkLens Lens.fst
+let LensFst() = checkLens "fst" Lens.fst
 
 [<Test>] 
-let LensSnd() = checkLens Lens.snd
+let LensSnd() = checkLens "snd" Lens.snd
 
 [<Test>] 
-let LensFstSnd() = checkLens (Lens.fst >>| Lens.snd)
+let LensFstSnd() = checkLens "fst composed with snd" (Lens.fst >>| Lens.snd)
 
 [<Test>]
-let LensIgnore() = checkLens Lens.ignore
+let LensIgnore() = checkLens "ignore" Lens.ignore
 
 [<Test>]
-let LensCodiag() = checkLens Lens.codiag
+let LensCodiag() = checkLens "codiag" Lens.codiag
 
 [<Test>]
-let LensChoice() = checkLens (Car.make .|. Car.model)
+let LensChoice() = checkLens "choice" (Car.make .|. Car.model)
 
 [<Test>]
-let LensProduct() = checkLens (Car.make *** Car.model)
+let LensProduct() = checkLens "product" (Car.make *** Car.model)
