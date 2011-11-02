@@ -173,7 +173,7 @@ module Seq =
     /// Adds an index to a sequence
     /// </summary>
     /// <param name="a"></param>
-    let index a = Seq.zip (Seq.initInfinite id) a
+    let inline index a = Seq.mapi tuple2 a
 
     /// <summary>
     /// Returns the first element (with its index) for which the given function returns true.
