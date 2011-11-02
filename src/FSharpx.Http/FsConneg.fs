@@ -54,33 +54,27 @@ module FsConneg =
     /// <summary>
     /// Parses any Accept-* header, returns a seq of items with associated q (quality/preference)
     /// </summary>
-    /// <param name="l"></param>
-    let parseAccept l =
-        split ',' l
-        |> Seq.map (split ';')
-        |> Seq.map parseQ
+    let parseAccept =
+        split ',' >> Seq.map (split ';' >> parseQ)
     
     /// <summary>
     /// Takes a list of items with associated numeric quality (preference), and:
     /// removes all items with q=0 (i.e. not acceptable by client);
     /// sorts by q descending (client preference)
     /// </summary>
-    /// <param name="x"></param>
-    let filterSortAccept x =
-        x 
-        |> Seq.filter (thr3 >> (<) 0.)
-        |> Seq.sortBy (thr3 >> (*) -1.)
-        |> Seq.map (fun (a,b,_) -> a,b)
-        |> Seq.toList
+    let filterSortAccept =
+        Seq.filter (thr3 >> (<) 0.)
+        >> Seq.sortBy (thr3 >> (*) -1.)
+        >> Seq.map (fun (a,b,_) -> a,b)
+        >> Seq.toList
     
     /// <summary>
     /// Parses any Accept-* header. 
     /// Removes all items with q=0 (i.e. not acceptable by client).
     /// Sorts by q descending (client preference)
     /// </summary>
-    /// <param name="l"></param>
-    let parseFilterSortAccept l =
-        parseAccept l |> filterSortAccept
+    let parseFilterSortAccept =
+        parseAccept >> filterSortAccept
     
     /// <summary>
     /// Splits media type and subtype, e.g. "text/html" -> "text","html"
@@ -94,11 +88,10 @@ module FsConneg =
     /// Parses an Accept header into a list of media,(media type, media subtype),q
     /// E.g. "text/html",("text","html"),0.8
     /// </summary>
-    /// <param name="l"></param>
-    let parseMediaTypes l =
-        parseFilterSortAccept l
-        |> Seq.map (fun (a,q) -> a, splitMediaTypeSubtype a, q)
-        |> Seq.toList
+    let parseMediaTypes =
+        parseFilterSortAccept
+        >> Seq.map (fun (a,q) -> a, splitMediaTypeSubtype a, q)
+        >> Seq.toList
     
     /// <summary>
     /// Filters an Accept header by type.
