@@ -40,7 +40,7 @@
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
-      <HintPath>..\..\lib\FSharp\Net20\FSharp.Core.dll</HintPath>
+      <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
   </ItemGroup>
