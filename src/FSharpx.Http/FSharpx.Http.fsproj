@@ -35,12 +35,12 @@
   </PropertyGroup>
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
-    <Reference Include="FSharp.Core">
-      <HintPath>..\..\lib\FSharp\Net20\FSharp.Core.dll</HintPath>
+    <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion.Contains(`v4.0`))">
+      <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />
-    <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
-      <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
+    <Reference Include="FSharp.Core" Condition="!$(TargetFrameworkVersion.Contains(`v4.0`))">
+      <HintPath>..\..\lib\FSharp\Net20\FSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
   </ItemGroup>
