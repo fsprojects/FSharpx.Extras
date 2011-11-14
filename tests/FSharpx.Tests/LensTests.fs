@@ -7,6 +7,7 @@ open FSharpx.Lens.Operators
 type Car = {
     Make: string
     Model: string
+    Mileage: int
 } with 
     static member make = 
         { Lens.Get = fun (x: Car) -> x.Make
@@ -14,63 +15,77 @@ type Car = {
     static member model = 
         { Lens.Get = fun (x: Car) -> x.Model
           Set = fun v (x: Car) -> { x with Model = v } }
+    static member mileage = 
+        { Lens.Get = fun (x: Car) -> x.Mileage
+          Set = fun v (x: Car) -> { x with Mileage = v } }
 
-type Employee = {
+type Editor = {
     Name: string
     Salary: int
     Car: Car
 } with
     static member salary =
-        { Lens.Get = fun (x: Employee) -> x.Salary
-          Set = fun v (x: Employee) -> { x with Salary = v } }
+        { Lens.Get = fun (x: Editor) -> x.Salary
+          Set = fun v (x: Editor) -> { x with Salary = v } }
     static member car = 
-        { Lens.Get = fun (x: Employee) -> x.Car
-          Set = fun v (x: Employee) -> { x with Car = v } }
+        { Lens.Get = fun (x: Editor) -> x.Car
+          Set = fun v (x: Editor) -> { x with Car = v } }
 
-let giveRaise v = Lens.update ((+) v) Employee.salary
+type Book = {
+    Name: string
+    Author: string
+    Editor: Editor
+} with
+    static member editor =
+        { Lens.Get = fun (x: Book) -> x.Editor
+          Set = fun v (x: Book) -> { x with Editor = v } }
 
-let hondaAccura = { Make = "Honda"; Model = "Accura" }
-let bmwE90 = { Make = "BMW"; Model = "E90" }
+let giveRaise v = Lens.update ((+) v) Editor.salary
+
+let hondaAccura = { Make = "Honda"; Model = "Accura"; Mileage = 1000 }
+let bmwE90 = { Make = "BMW"; Model = "E90"; Mileage = 0 }
 let tom = { Name = "Tom"; Salary = 4000; Car = bmwE90 }
 let dick = { Name = "Dick"; Salary = 3000; Car = hondaAccura }
+let aBook = { Name = "Ficciones"; Author = "Jorge Luis Borges"; Editor = tom }
 
 [<Test>]
 let update() =
+    let book2 = { aBook with Editor = { aBook.Editor with Car = { aBook.Editor.Car with Mileage = 1000 } } }
     let tom1 = { tom with Salary = tom.Salary + 1000 }
-    let tom2 = tom |> Lens.update ((+) 1000) Employee.salary
-    let tom3 = tom |> Employee.salary.Update ((+) 1000)
+    let tom2 = tom |> Lens.update ((+) 1000) Editor.salary
+    let tom3 = tom |> Editor.salary.Update ((+) 1000)
     Assert.AreEqual(tom1, tom2)
     Assert.AreEqual(tom1, tom3)
 
 [<Test>]
 let updateCompose() =
     let tom1 = { tom with Car = { tom.Car with Model = "Z4" } }
-    let employeeCarModel = Employee.car >>| Car.model
-    let employeeCarModelAlt = Car.model |<< Employee.car
-    let tom2 = tom |> employeeCarModel.Set "Z4"
-    let tom3 = tom |> employeeCarModelAlt.Set "Z4"
-    let tom4 = employeeCarModel |> Lens.set "Z4" tom
+    let EditorCarModel = Editor.car >>| Car.model
+    let EditorCarModelAlt = Car.model |<< Editor.car
+    let tom2 = tom |> EditorCarModel.Set "Z4"
+    let tom3 = tom |> EditorCarModelAlt.Set "Z4"
+    let tom4 = EditorCarModel |> Lens.set "Z4" tom
     let all = [tom1;tom2;tom3;tom4]
     for i in all do for j in all do Assert.AreEqual(i, j)
 
 [<Test>]
 let pluseq() =
-    let giveRaise = Employee.salary += 1000
+    let giveRaise = Editor.salary += 1000
     let tom1 = { tom with Salary = tom.Salary + 1000 }
-    let tom2 = tom |> Employee.salary += 1000
+    let tom2 = tom |> Editor.salary += 1000
     Assert.AreEqual(tom1, tom2)
 
 [<Test>]
 let setValueOperator() =
     let tom1 = { tom with Salary = 1000 }
-    let tom2 = tom |> (Employee.salary =! 1000)
+    let tom2 = tom |> (Editor.salary =! 1000)
     Assert.AreEqual(tom1, tom2)
 
 [<Test>]
 let stateMonad() =
-    let getSalary = Lens.getState Employee.salary
-    let modSalary = Lens.updateState Employee.salary
-    let setSalary = Lens.setState Employee.salary
+    let getSalary = Lens.getState Editor.salary
+    let modSalary = Lens.updateState Editor.salary
+    let setSalary = Lens.setState Editor.salary
     let modify = 
         State.state {
             let! s = getSalary
@@ -88,8 +103,8 @@ open FSharpx.Lens.StateOperators
 let stateMonadOperators() =
     let modify = 
         State.state {
-            do! Employee.salary =! 1000
-            do! Employee.salary += 100
+            do! Editor.salary =! 1000
+            do! Editor.salary += 100
         }
     let tom1 = modify tom |> snd
     Assert.AreEqual(1100, tom1.Salary)
