@@ -13,8 +13,8 @@ module Lens =
     let inline update f (l: Lens<_,_>) = l.Update f
 
     let inline compose (l1: Lens<_,_>) (l2: Lens<_,_>) = 
-        { Get = fun a -> l1.Get (l2.Get a)
-          Set = fun b -> l2.Update (l1.Set b) }
+        { Get = l2.Get >> l1.Get
+          Set = l1.Set >> l2.Update }
 
     let inline choice (l1: Lens<_,_>) (l2: Lens<_,_>) = 
         { Get = Choice.choice l1.Get l2.Get
