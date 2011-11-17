@@ -24,6 +24,11 @@ module Lens =
         { Get = fun (a,b) -> (l1.Get a, l2.Get b)
           Set = fun (a,c) (b,d) -> (l1.Set a b, l2.Set c d) }
 
+    let cond pred lensTrue lensFalse =
+        let inline choose a = if pred a then lensTrue else lensFalse
+        { Get = fun a -> choose a |> get a
+          Set = fun b a -> choose a |> set b a }
+      
     let getState l = 
         fun a -> get a l, a
 

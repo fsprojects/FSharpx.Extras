@@ -168,3 +168,26 @@ let LensChoice() = checkLens "choice" (Car.make .|. Car.model)
 
 [<Test>]
 let LensProduct() = checkLens "product" (Car.make *** Car.model)
+
+type Product = {
+    Name: string
+    PriceWithTax: int
+    PriceWithoutTax: int
+} with 
+    static member name =
+        { Get = fun (x: Product) -> x.Name 
+          Set = fun v (x: Product) -> { x with Name = v } }
+    static member priceWithTax =
+        { Get = fun (x: Product) -> x.PriceWithTax
+          Set = fun v (x: Product) -> { x with PriceWithTax = v } }
+    static member priceWithoutTax =
+        { Get = fun (x: Product) -> x.PriceWithoutTax
+          Set = fun v (x: Product) -> { x with PriceWithoutTax = v } }
+
+let productPrice = 
+    Lens.cond (Product.name.Get >> Strings.contains "book") 
+        Product.priceWithoutTax // true
+        Product.priceWithTax // false
+
+[<Test>]
+let LensCond() = checkLens "cond" productPrice
