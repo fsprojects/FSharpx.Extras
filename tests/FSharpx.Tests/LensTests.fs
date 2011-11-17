@@ -50,7 +50,6 @@ let aBook = { Name = "Ficciones"; Author = "Jorge Luis Borges"; Editor = tom }
 
 [<Test>]
 let update() =
-    let book2 = { aBook with Editor = { aBook.Editor with Car = { aBook.Editor.Car with Mileage = 1000 } } }
     let tom1 = { tom with Salary = tom.Salary + 1000 }
     let tom2 = tom |> Lens.update ((+) 1000) Editor.salary
     let tom3 = tom |> Editor.salary.Update ((+) 1000)
@@ -73,7 +72,9 @@ let pluseq() =
     let giveRaise = Editor.salary += 1000
     let tom1 = { tom with Salary = tom.Salary + 1000 }
     let tom2 = tom |> Editor.salary += 1000
+    let tom3 = giveRaise tom
     Assert.AreEqual(tom1, tom2)
+    Assert.AreEqual(tom1, tom3)
 
 [<Test>]
 let setValueOperator() =
@@ -108,6 +109,19 @@ let stateMonadOperators() =
         }
     let tom1 = modify tom |> snd
     Assert.AreEqual(1100, tom1.Salary)
+
+[<Test>]
+let stateMonadOperators2() =
+    let modify =
+        State.state {
+            let! oldSalary = Lens.getState Editor.salary
+            do! Editor.salary += 1000
+            return oldSalary
+        }
+    let oldSalary, promotedTom = modify tom
+    printfn "Tom used to make %d, after promotion he now makes %d" oldSalary promotedTom.Salary
+    Assert.AreEqual(4000, oldSalary)
+    Assert.AreEqual(5000, promotedTom.Salary)
 
 type LensProperties =
     /// If the view does not change, neither should the source.
