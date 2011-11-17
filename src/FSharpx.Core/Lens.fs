@@ -12,29 +12,40 @@ module Lens =
     let inline set v a (l: Lens<_,_>) = l.Set v a
     let inline update f (l: Lens<_,_>) = l.Update f
 
+    /// Sequentially composes two lenses
     let inline compose (l1: Lens<_,_>) (l2: Lens<_,_>) = 
         { Get = l2.Get >> l1.Get
           Set = l1.Set >> l2.Update }
 
+    /// Composes two lenses through a sum in the source
     let inline choice (l1: Lens<_,_>) (l2: Lens<_,_>) = 
         { Get = Choice.choice l1.Get l2.Get
           Set = fun b -> Choice.bimap (l1.Set b) (l2.Set b) }
 
+    /// Pair two lenses
     let inline pair (l1: Lens<_,_>) (l2: Lens<_,_>) = 
         { Get = fun (a,b) -> (l1.Get a, l2.Get b)
           Set = fun (a,c) (b,d) -> (l1.Set a b, l2.Set c d) }
 
+    /// <summary>
+    /// <paramref name="pred"/> is applied to source. 
+    /// If true, <paramref name="lensTrue"/> is selected.
+    /// If false, <paramref name="lensFalse"/> is selected.
+    /// </summary>
     let cond pred lensTrue lensFalse =
         let inline choose a = if pred a then lensTrue else lensFalse
         { Get = fun a -> choose a |> get a
           Set = fun b a -> choose a |> set b a }
-      
+
+    /// Applies a lens in the 'get' direction within a state monad      
     let getState l = 
         fun a -> get a l, a
 
+    /// Applies a lens in the 'set' direction within a state monad
     let setState l v = 
         fun a -> (), set v a l
 
+    /// Update through a lens within a state monad
     let updateState l f =
         fun a -> (), update f l a
 
@@ -53,24 +64,29 @@ module Lens =
             return! State.getState
         }
 
+    /// Gets/sets the fst element in a pair
     let fst =
         { Get = Operators.fst
           Set = fun v a -> v, Operators.snd a }
 
+    /// Gets/sets the snd element in a pair
     let snd =
         { Get = Operators.snd
           Set = fun v a -> Operators.fst a, v }
 
+    /// Identity lens
     let id = 
         { Get = Operators.id
           Set = fun a b -> a }
 
     let codiag<'a> : Lens<Choice<'a,'a>,'a> = choice id id
 
+    /// Lens for a particular value in a set
     let forSet value =
         { Get = Set.contains value
           Set = fun contains -> (if contains then Set.add else Set.remove) value }
 
+    /// Lens for a particular key in a map
     let forMap key = 
         { Get = Map.tryFind key
           Set = 
@@ -78,6 +94,7 @@ module Lens =
             | Some value -> Map.add key value
             | None -> Map.remove key }
 
+    /// Lens for a particular position in an array
     let forArray i = 
         { Get = Array.nth i
           Set = fun v -> Array.copy >> Array.setAt i v }
