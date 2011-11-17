@@ -41,6 +41,7 @@
     <Compile Include="Collections.fs" />
     <Compile Include="Monad.fs" />
     <Compile Include="Iteratee.fs" />
+    <Compile Include="Lens.fs" />
     <Compile Include="CSharpCompat.fs" />
   </ItemGroup>
   <ItemGroup>

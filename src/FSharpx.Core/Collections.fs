@@ -194,6 +194,7 @@ module Seq =
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Array = 
     let inline nth i arr = Array.get arr i
+    let inline setAt i v arr = Array.set arr i v; arr
 
 module List =
     /// Curried cons
