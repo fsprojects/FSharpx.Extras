@@ -3,6 +3,8 @@
 open System
 open NUnit.Framework
 open FSharpx.Lens.Operators
+open FsCheck
+open FsCheck.NUnit
 
 type Car = {
     Make: string
@@ -141,9 +143,9 @@ type LensProperties =
 
 let checkLens name lens = 
     let tname = sprintf "%s: %s" name
-    FsCheck.Check.Quick (tname "GetSet", LensProperties.GetSet lens)
-    FsCheck.Check.Quick (tname "SetGet", LensProperties.SetGet lens)
-    FsCheck.Check.Quick (tname "SetSet", LensProperties.SetSet lens)
+    fsCheck (tname "GetSet") (LensProperties.GetSet lens)
+    fsCheck (tname "SetGet") (LensProperties.SetGet lens)
+    fsCheck (tname "SetSet") (LensProperties.SetSet lens)
 
 [<Test>] 
 let LensId() = checkLens "Id" Lens.id
