@@ -99,6 +99,34 @@ module Lens =
         { Get = Array.nth i
           Set = fun v -> Array.copy >> Array.setAt i v }
 
+    /// Lens for a particular position in a list
+    let forList i =
+        { Get = (flip List.nth) i
+          Set = fun v -> List.mapi (fun j e -> if j = i then v else e) }
+
+    /// Creates a lens that maps the given lens in a list
+    let listMap (l: Lens<_,_>) =
+        { Get = List.map l.Get
+          Set = List.map2 l.Set }
+
+    /// Creates a lens that maps the given lens in an array
+    let arrayMap (l: Lens<_,_>) = 
+        { Get = Array.map l.Get
+          Set = Array.map2 l.Set }
+
+    /// Creates a lens that maps the given lens in a sequence
+    let seqMap (l: Lens<_,_>) = 
+        { Get = Seq.map l.Get
+          Set = Seq.map2 l.Set }
+
+    /// Applies an isomorphism to the value viewed through a lens
+    let xmap f g (l: Lens<_,_>) = 
+        { Get = l.Get >> f
+          Set = g >> l.Set }
+
+    /// Converts a lens that views a list into a lens that views an array
+    let inline listToArray l = xmap List.toArray Array.toList l
+
 // not side-effect free
 //    let forRef =
 //        { Get = (!)

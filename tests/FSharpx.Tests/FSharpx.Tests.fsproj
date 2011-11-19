@@ -60,6 +60,7 @@
     <Compile Include="ChoiceTests.fs" />
     <Compile Include="PreludeTests.fs" />
     <Compile Include="LensTests.fs" />
+    <Compile Include="LensExample.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FsCheck">

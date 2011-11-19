@@ -239,6 +239,10 @@ module List =
     let skip n l = splitAt n l |> snd
     let take n l = splitAt n l |> fst
 
+    let inline mapIf pred f =
+        List.map (fun x -> if pred x then f x else x)
+
+
 /// The DList is an implementation of John Hughes' append list.
 /// See http://dl.acm.org/citation.cfm?id=8475 for more information.
 /// This implementation adds an additional parameter to allow a more

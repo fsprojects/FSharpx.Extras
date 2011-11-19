@@ -193,3 +193,15 @@ let productPrice =
 
 [<Test>]
 let LensCond() = checkLens "cond" productPrice
+
+[<Test>]
+let LensListMap() = 
+    let l = Lens.listMap Car.mileage
+    // can't test with FsCheck, it passes lists of different lenghts.
+    // checkLens "listMap" l
+    let cars = [hondaAccura; bmwE90]
+    let getSet = LensProperties.GetSet l cars
+    let setGet = LensProperties.SetGet l cars [2000;3000]
+    let setSet = LensProperties.SetSet l [2000;3000] [3000;4000] cars
+    for p in [getSet; setGet; setSet] do
+        Assert.True p
