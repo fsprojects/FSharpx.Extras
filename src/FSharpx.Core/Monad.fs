@@ -556,10 +556,12 @@ module Choice =
         | Choice1Of2 a -> a
         | Choice2Of2 e -> invalidArg "choice" (sprintf "The choice value was Choice2Of2 '%A'" e)
 
-    let inline cast (o: obj) =
-        try 
-            Choice1Of2 (unbox o)
+    let inline protect f x = 
+        try
+            Choice1Of2 (f x)
         with e -> Choice2Of2 e
+
+    let inline cast (o: obj) = protect unbox o
         
     let ap x f =
         match f,x with
