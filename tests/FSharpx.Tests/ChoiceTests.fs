@@ -54,7 +54,7 @@ let ChoiceFolding() =
     let finalPosition = 
         let inline folder a (f,message) = 
             Choice.protect f a |> Choice.mapSecond (konst message)
-        actions |> Choice.fold folder startingPosition
+        actions |> Choice.foldM folder startingPosition
 
     match finalPosition with
     | Validation.Success (x,y) -> 

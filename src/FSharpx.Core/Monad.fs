@@ -100,6 +100,8 @@ module Async =
     /// Right-to-left Kleisli composition
     let inline (<=<) x = flip (>=>) x
 
+    let foldM f s = 
+        Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
 
 module ZipList = 
     let returnM v = Seq.initInfinite (fun _ -> v)
@@ -218,6 +220,9 @@ module Option =
         try
             Some (unbox o)
         with _ -> None
+
+    let foldM f s = 
+        Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
 
 module Nullable =
     let (|Null|Value|) (x: _ Nullable) =
@@ -381,6 +386,8 @@ module State =
     /// Right-to-left Kleisli composition
     let inline (<=<) x = flip (>=>) x
 
+    let foldM f s = 
+        Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
 
 module Reader =
 
@@ -442,6 +449,8 @@ module Reader =
     /// Right-to-left Kleisli composition
     let inline (<=<) x = flip (>=>) x
 
+    let foldM f s = 
+        Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
 
 module Undo =
     // UndoMonad on top of StateMonad
@@ -571,6 +580,9 @@ module Writer =
     /// Right-to-left Kleisli composition
     let inline (<=<) x = flip (>=>) x
 
+    let foldM f s = 
+        Seq.fold (fun acc t -> acc >>= (flip f) t) (ret s)
+
 module Choice =
     let returnM = Choice1Of2
 
@@ -644,7 +656,7 @@ module Choice =
         | Some a -> Choice1Of2 a
         | None -> Choice2Of2 o
 
-    let fold f s = 
+    let foldM f s = 
         Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
         // pointfree:
         //Seq.fold (flip f >> bind |> flip) (returnM s)
@@ -767,6 +779,8 @@ module Continuation =
     /// Right-to-left Kleisli composition
     let inline (<=<) x = flip (>=>) x
 
+    let foldM f s = 
+        Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
 
     /// The coroutine type from http://fssnip.net/7M
     type Coroutine() =
