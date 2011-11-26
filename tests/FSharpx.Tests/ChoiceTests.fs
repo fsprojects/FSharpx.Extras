@@ -51,14 +51,15 @@ let ChoiceFolding() =
             moveByLengthAndAngle 4. 5., "failed second moveByLengthAndAngle"
         ]
 
-    let folder position (f,message) =
-        Choice.bind (Choice.protect f >> Choice.mapSecond (konst message)) position
+    let finalPosition = 
+        let inline folder a (f,message) = 
+            Choice.protect f a |> Choice.mapSecond (konst message)
+        actions |> Choice.fold folder startingPosition
 
-    let finalPosition = List.fold folder (Choice1Of2 startingPosition) actions
     match finalPosition with
-    | Choice1Of2 (x,y) -> 
+    | Validation.Success (x,y) -> 
         printfn "final position: %f,%f" x y
-    | Choice2Of2 error -> 
+    | Validation.Failure error -> 
         printfn "error: %s" error
         Assert.Fail("should not have failed: {0}", error)
     

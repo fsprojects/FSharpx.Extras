@@ -621,6 +621,11 @@ module Choice =
         | Some a -> Choice1Of2 a
         | None -> Choice2Of2 o
 
+    let fold f s = 
+        Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
+        // pointfree:
+        //Seq.fold (flip f >> bind |> flip) (returnM s)
+
 module Validation =
     open Choice
     open Monoid
