@@ -548,6 +548,29 @@ module Writer =
                  return (a, f)
                } |> pass
 
+    open Operators
+    
+    let inline private ret x = returnM writer x
+    let inline (>>=) m f = bindM writer m f
+    let inline (=<<) f m = bindM writer m f
+    /// Sequential application
+    let inline (<*>) f m = applyM writer writer f m
+    /// Sequential application
+    let inline ap m f = f <*> m
+    let inline map f m = liftM writer f m
+    let inline (<!>) f m = map f m
+    let inline lift2 f a b = ret f <*> a <*> b
+    /// Sequence actions, discarding the value of the first argument.
+    let inline ( *>) x y = lift2 (fun _ z -> z) x y
+    /// Sequence actions, discarding the value of the second argument.
+    let inline ( <*) x y = lift2 (fun z _ -> z) x y
+    /// Sequentially compose two state actions, discarding any value produced by the first
+    let inline (>>.) m f = bindM writer m (fun _ -> f)
+    /// Left-to-right Kleisli composition
+    let inline (>=>) f g = fun x -> f x >>= g
+    /// Right-to-left Kleisli composition
+    let inline (<=<) x = flip (>=>) x
+
 module Choice =
     let returnM = Choice1Of2
 
