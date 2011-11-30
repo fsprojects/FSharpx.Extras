@@ -190,6 +190,12 @@ type FSharpChoice =
     static member ToFSharpOption c = Option.fromChoice c
 
     [<Extension>]
+    static member Try (f: Func<_,_>) = Func<_,_>(Choice.protect f.Invoke)
+
+    [<Extension>]
+    static member Try (f: Func<_,_>, v) = Choice.protect f.Invoke v
+
+    [<Extension>]
     static member Match (c, f1: Func<_,_>, f2: Func<_,_>) =
         match c with
         | Choice1Of2 x -> f1.Invoke x
