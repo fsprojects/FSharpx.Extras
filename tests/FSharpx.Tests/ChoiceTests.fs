@@ -30,4 +30,36 @@ let ``invalid cast``() =
     | Choice2Of2 e -> 
         printfn "%A" e
         Assert.IsInstanceOf<InvalidCastException>(e)
+
+[<Test>]
+let ChoiceFolding() =
+    // http://stackoverflow.com/questions/8249744/exception-handling-in-pipeline-sequence
+    let startingPosition = 0. ,0.
+
+    let moveByLengthAndAngle l a (x,y) = x,y // too lazy to do the math
+    let moveByXandY dx dy (x,y) = 
+        //failwith "oops"
+        x+dx, y+dy
+    let moveByXandAngle dx a (x,y) = x+dx, y
+
+    let actions = 
+        [
+            moveByLengthAndAngle 0. 0., "failed first moveByLengthAndAngle"
+            moveByXandY 1. 2., "failed moveByXandY"
+            moveByXandY 3. 4., "failed moveByXandY"
+            moveByXandAngle 3. 4., "failed moveByXandAngle"
+            moveByLengthAndAngle 4. 5., "failed second moveByLengthAndAngle"
+        ]
+
+    let finalPosition = 
+        let inline folder a (f,message) = 
+            Choice.protect f a |> Choice.mapSecond (konst message)
+        actions |> Choice.foldM folder startingPosition
+
+    match finalPosition with
+    | Validation.Success (x,y) -> 
+        printfn "final position: %f,%f" x y
+    | Validation.Failure error -> 
+        printfn "error: %s" error
+        Assert.Fail("should not have failed: {0}", error)
     

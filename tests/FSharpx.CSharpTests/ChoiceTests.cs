@@ -123,5 +123,29 @@ namespace FSharpx.CSharpTests {
                     e => Assert.AreEqual("Invalid value b", e));
         }
 
+        private static int ThisThrows(int a) {
+            throw new Exception("bad");
+        }
+
+        [Test]
+        public void Try() {
+            FSharpChoice.Try<int, int>(ThisThrows)(2)
+                .Match(a => Assert.Fail("Should have returned an exception"),
+                       e => { });
+        }
+
+        [Test]
+        public void Try_as_extension_method_creating_a_new_function() {
+            Func<int, int> f = a => a + 2;
+            var v = f.Try()(5);
+            Assert.AreEqual(v,7);
+        }
+
+        [Test]
+        public void Try_as_extension_method_applying_function() {
+            Func<int, int> f = a => a + 2;
+            var v = f.Try(5);
+            Assert.AreEqual(v, 7);
+        }
     }
 }

@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{41d22552-bafb-47d5-b20a-d81e18c3c1e8}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Santa</RootNamespace>
+    <AssemblyName>Santa</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <Name>Santa</Name>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FscToolPath>..\..\lib\FSharp\</FscToolPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <Tailcalls>false</Tailcalls>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <WarningLevel>3</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <Tailcalls>true</Tailcalls>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <WarningLevel>3</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
+  <ItemGroup>
+    <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
+      <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
+      <HintPath>..\..\lib\FSharp\Net20\FSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\FSharpx.Stm\FSharpx.Stm.Core.csproj">
+      <Name>FSharpx.Stm.Core</Name>
+      <Project>{7c2f2110-6e08-42c6-93ef-5a1c90c78616}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\FSharpx.Stm\FSharpx.Stm.fsproj">
+      <Name>FSharpx.Stm</Name>
+      <Project>{ffdbaf72-7f9f-4de0-a8f3-83d0d21ebeb5}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

@@ -1,9 +1,7 @@
 ﻿#load @"..\src\FSharpx.Core\Prelude.fs"
 open FSharpx
 #load @"..\src\FSharpx.Core\Collections.fs"
-#r @"..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.dll"
-let inline flip f a b = f b a
-#load @"..\src\FSharpx.Core\Monad.fs"
+#load @"..\src\FSharpx.Core\Iteratee.fs"
 
 open System
 open System.Diagnostics

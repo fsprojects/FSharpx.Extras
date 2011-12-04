@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{60f3bb81-5449-45dd-a217-b6045327680c}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>FSharpx.Http</RootNamespace>
+    <AssemblyName>FSharpx.Http</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <Name>FSharpx.Http</Name>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FscToolPath>..\..\lib\FSharp\</FscToolPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <Tailcalls>false</Tailcalls>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <WarningLevel>3</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <Tailcalls>true</Tailcalls>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <WarningLevel>3</WarningLevel>
+    <DocumentationFile>bin\Release\FSharpx.Http.XML</DocumentationFile>
+  </PropertyGroup>
+  <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
+  <ItemGroup>
+    <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion.Contains(`v4.0`))">
+      <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="FSharp.Core" Condition="!$(TargetFrameworkVersion.Contains(`v4.0`))">
+      <HintPath>..\..\lib\FSharp\Net20\FSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Conneg.fs" />
+  </ItemGroup>
+</Project>

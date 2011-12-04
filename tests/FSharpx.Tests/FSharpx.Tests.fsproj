@@ -34,9 +34,10 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Compile Include="FsUnit.fs" />
+    <Compile Include="FsCheckRunner.fs" />
     <Compile Include="ListExtensionsTest.fs" />
     <Compile Include="DictionaryExtensionsTests.fs" />
-    <Compile Include="JoinListTest.fs" />
+    <Compile Include="DListTest.fs" />
     <Compile Include="ByteStringTest.fs" />
     <Compile Include="OperatorsTest.fs" />
     <Compile Include="AsyncOperatorsTest.fs" />
@@ -48,8 +49,6 @@
     <Compile Include="ContinuationTest.fs" />
     <Compile Include="DistributionTest.fs" />
     <Compile Include="PokerDistributionTest.fs" />
-    <Compile Include="ListIterateeTest.fs" />
-    <Compile Include="BinaryIterateeTest.fs" />
     <Compile Include="ValidationTests.fs" />
     <Compile Include="ZipListTests.fs" />
     <Compile Include="NameValueCollectionTests.fs" />
@@ -57,8 +56,14 @@
     <Compile Include="OptionTests.fs" />
     <Compile Include="ChoiceTests.fs" />
     <Compile Include="PreludeTests.fs" />
+    <Compile Include="LensTests.fs" />
+    <Compile Include="LensExample.fs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="FsCheck">
+      <HintPath>..\..\packages\FsCheck.0.7.1\lib\net35\FsCheck.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) != 'v3.5'">
       <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
     </Reference>

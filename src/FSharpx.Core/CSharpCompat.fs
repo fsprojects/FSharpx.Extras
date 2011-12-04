@@ -140,7 +140,7 @@ type FSharpOption =
 
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>, mapper: Func<_,_,_>) =
-      let mapper = Option.map2 (curry mapper.Invoke)
+      let mapper = Option.lift2 (curry mapper.Invoke)
       let v = Option.bind f.Invoke o
       mapper o v
 
@@ -190,6 +190,12 @@ type FSharpChoice =
     static member ToFSharpOption c = Option.fromChoice c
 
     [<Extension>]
+    static member Try (f: Func<_,_>) = Func<_,_>(Choice.protect f.Invoke)
+
+    [<Extension>]
+    static member Try (f: Func<_,_>, v) = Choice.protect f.Invoke v
+
+    [<Extension>]
     static member Match (c, f1: Func<_,_>, f2: Func<_,_>) =
         match c with
         | Choice1Of2 x -> f1.Invoke x
@@ -221,7 +227,7 @@ type FSharpChoice =
 
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>, mapper: Func<_,_,_>) =
-        let mapper = Choice.map2 (curry mapper.Invoke)
+        let mapper = Choice.lift2 (curry mapper.Invoke)
         let v = Choice.bind f.Invoke o
         mapper o v
 
@@ -336,7 +342,7 @@ type AsyncExtensions =
         
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>, mapper: Func<_,_,_>) =
-        let mapper = Async.map2 (curry mapper.Invoke)
+        let mapper = Async.lift2 (curry mapper.Invoke)
         let v = Async.bind f.Invoke o
         mapper o v
 
