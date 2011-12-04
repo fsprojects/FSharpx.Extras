@@ -5,6 +5,10 @@ open System.IO
 open System.Text
 
 module IO =
+    let LinuxLineBreaks = "\n"
+    let WindowsLineBreaks = "\r\n"
+    let MacLineBreaks = "\r"
+
     /// Creates a DirectoryInfo for the given path
     let inline directoryInfo path = new DirectoryInfo(path)
 
@@ -62,3 +66,12 @@ module IO =
             fi.IsReadOnly <- false
             fi.Delete()
         writeToFile false fileName lines
+
+    open Strings 
+
+    /// Converts the given text from linux or mac linebreaks to windows line breaks
+    let convertTextToWindowsLineBreaks text = 
+        text
+        |> replace WindowsLineBreaks LinuxLineBreaks 
+        |> replace MacLineBreaks LinuxLineBreaks 
+        |> replace LinuxLineBreaks WindowsLineBreaks

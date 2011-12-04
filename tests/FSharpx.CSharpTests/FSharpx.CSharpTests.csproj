@@ -58,6 +58,7 @@
     <Compile Include="ArrayTests.cs" />
     <Compile Include="AssertionHelper.cs" />
     <Compile Include="AsyncTests.cs" />
+    <Compile Include="IOTests.cs" />
     <Compile Include="LazyTests.cs" />
     <Compile Include="StringsTests.cs" />
     <Compile Include="Customer.cs" />
