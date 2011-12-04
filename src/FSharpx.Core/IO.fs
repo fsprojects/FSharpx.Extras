@@ -75,3 +75,29 @@ module IO =
         |> replace WindowsLineBreaks LinuxLineBreaks 
         |> replace MacLineBreaks LinuxLineBreaks 
         |> replace LinuxLineBreaks WindowsLineBreaks
+
+    /// Appends a text
+    let inline append s (builder:StringBuilder) = builder.Append(sprintf "\"%s\" " s)
+
+    /// Appends a text if the predicate is true
+    let inline appendIfTrue p s builder = if p then append s builder else builder
+
+    /// Appends a text if the predicate is false
+    let inline appendIfFalse p = appendIfTrue (not p)
+
+    /// Appends a text if the value is not null
+    let inline appendIfNotNull value s = appendIfTrue (value <> null) (sprintf "%s%A" s value)
+
+    /// Appends a text if the value is not null
+    let inline appendStringIfValueIsNotNull value = appendIfTrue (value <> null)
+
+    /// Appends a text if the value is not null or empty
+    let inline appendStringIfValueIsNotNullOrEmpty value = appendIfTrue (isNullOrEmpty value |> not)
+
+    /// Appends all notnull fileNames
+    let inline appendFileNamesIfNotNull fileNames (builder:StringBuilder) =
+        fileNames 
+          |> Seq.fold (fun builder file -> appendIfTrue (isNullOrEmpty file |> not) file builder) builder
+
+    /// The directory separator string. On most systems / or \
+    let directorySeparator = Path.DirectorySeparatorChar.ToString()

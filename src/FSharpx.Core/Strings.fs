@@ -17,3 +17,6 @@ module Strings =
 
     /// Converts a sequence of strings to a single string separated with the delimiters
     let inline separatedBy delimiter (items: string seq) = String.Join(delimiter, Array.ofSeq items)
+
+    /// Returns if the string is null or empty
+    let inline isNullOrEmpty text = String.IsNullOrEmpty text
