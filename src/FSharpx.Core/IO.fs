@@ -101,3 +101,6 @@ module IO =
 
     /// The directory separator string. On most systems / or \
     let directorySeparator = Path.DirectorySeparatorChar.ToString()
+
+    /// Combines two path strings
+    let inline combinePaths path1 (path2:string) = Path.Combine(path1,path2.TrimStart [|'\\'|])
