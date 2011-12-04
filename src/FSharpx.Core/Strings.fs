@@ -11,3 +11,6 @@ module Strings =
 
     /// Returns a value indicating whether the specified substring occurs within this string
     let inline contains substr (t: string) = t.Contains substr
+    
+    /// Splits the given string at the given delimiter
+    let inline split (delimiter:char) (text:string) = text.Split [|delimiter|]
