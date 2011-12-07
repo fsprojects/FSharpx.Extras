@@ -34,7 +34,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{EFB3
 		samples\WebProxy.fsx = samples\WebProxy.fsx
 	EndProjectSection
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharp.AsyncExtensions", "src\FSharpx.AsyncExtensions\FSharp.AsyncExtensions.fsproj", "{EDE1812B-5A62-410A-9553-02499CF29317}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharp.AsyncExtensions", "src\FSharpx.Async\FSharpx.Async.fsproj", "{EDE1812B-5A62-410A-9553-02499CF29317}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Stm", "Stm", "{6392A890-AE72-4BFB-B1EE-B1E5CBAAFB06}"
 EndProject

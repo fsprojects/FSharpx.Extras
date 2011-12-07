@@ -5,7 +5,7 @@
 
 // This example demonstrates how to implement simple HTTP proxy
 
-#r @"..\build\FSharp.AsyncExtensions.dll"
+#r @"..\build\FSharpx.Async.dll"
 open FSharp.Control
 open FSharp.IO
 open FSharp.Net

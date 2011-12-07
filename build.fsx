@@ -91,10 +91,10 @@ Target "BuildApp" (fun _ ->
         {p with 
             CodeLanguage = FSharp
             AssemblyVersion = version
-            AssemblyTitle = "FSharp.AsyncExtensions"
+            AssemblyTitle = "FSharpx.Async"
             AssemblyDescription = "This library implements various extensions for asynchronous programming using F# asynchronous workflows and F# agents."
             Guid = "ede1812b-5a62-410a-9553-02499cf29317"
-            OutputFileName = "./src/FSharpx.AsyncExtensions/AssemblyInfo.fs" })
+            OutputFileName = "./src/FSharpx.Async/AssemblyInfo.fs" })
 
     MSBuild buildDir "Build" (["Configuration","Release"] @ frameworkParams) appReferences
         |> Log "AppBuild-Output: "
@@ -151,9 +151,9 @@ Target "BuildNuGet" (fun _ ->
       buildDir + "FSharpx.Stm.dll"
       buildDir + "FSharpx.Stm.pdb"
       buildDir + "FSharpx.Stm.xml"
-      buildDir + "FSharp.AsyncExtensions.dll"
-      buildDir + "FSharp.AsyncExtensions.pdb"
-      buildDir + "FSharp.AsyncExtensions.xml"]
+      buildDir + "FSharpx.Async.dll"
+      buildDir + "FSharpx.Async.pdb"
+      buildDir + "FSharpx.Async.xml"]
         |> CopyTo nugetLibDir
 
     NuGet (fun p -> 

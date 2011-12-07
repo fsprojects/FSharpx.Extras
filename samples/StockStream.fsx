@@ -12,7 +12,7 @@
 
 // Also available at: http://fssnip.net/7X
 
-#r @"..\build\FSharp.AsyncExtensions.dll"
+#r @"..\build\FSharpx.Async.dll"
 
 open System
 open System.Net
