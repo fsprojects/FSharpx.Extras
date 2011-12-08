@@ -54,6 +54,11 @@ module private BufferAgent =
             loop ()
         )
 
+[<Interface>]
+type ISubject<'TIn,'TOut> =
+    inherit System.IObserver<'TIn>
+    inherit System.IObservable<'TOut>
+
 type ReplaySubject<'T> (bufferSize:int) =
     let bufferSize = max 0 bufferSize
     let agent = BufferAgent.start bufferSize    
@@ -63,15 +68,16 @@ type ReplaySubject<'T> (bufferSize:int) =
             member this.Dispose () =
                 observer |> Remove |> agent.Post
         }
+
     member this.OnNext value = Next value |> agent.Post
     member this.OnError error = Error error |> agent.Post
     member this.OnCompleted () = Completed |> agent.Post    
-    interface System.IObserver<'T> with
+    member this.Subscribe(observer:System.IObserver<'T>) = subscribe observer
+
+    interface ISubject<'T,'T> with
         member this.OnNext value = Next value |> agent.Post
         member this.OnError error = Error error |> agent.Post
         member this.OnCompleted () = Completed |> agent.Post
-    member this.Subscribe(observer:System.IObserver<'T>) =
-        subscribe observer
-    interface System.IObservable<'T> with
         member this.Subscribe observer = subscribe observer
+
 and Subject<'T>() = inherit ReplaySubject<'T>(0)

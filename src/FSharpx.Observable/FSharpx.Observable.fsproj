@@ -48,6 +48,6 @@
     <Compile Include="BatchProcessor.fs" />
     <Compile Include="Observable.fs" />
     <Compile Include="ObservableExtensions.fs" />
-    <Compile Include="ReplaySubject.fs" />
+    <Compile Include="Subject.fs" />
   </ItemGroup>
 </Project>
