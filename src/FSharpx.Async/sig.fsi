@@ -248,30 +248,4 @@ namespace FSharp.Net
     type HttpListenerResponse with
       member AsyncReply : typ:string * buffer:byte [] -> Async<unit>
   end
-  module SocketExtensions = begin
-    val internal asyncInvoke :
-      (System.Net.Sockets.SocketAsyncEventArgs -> bool) *
-      System.Net.Sockets.SocketAsyncEventArgs ->
-        Async<System.Net.Sockets.SocketAsyncEventArgs>
-    type Socket with
-      member
-        AsyncAccept : args:System.Net.Sockets.SocketAsyncEventArgs ->
-                        Async<System.Net.Sockets.SocketAsyncEventArgs>
-    type Socket with
-      member
-        AsyncConnect : args:System.Net.Sockets.SocketAsyncEventArgs ->
-                         Async<System.Net.Sockets.SocketAsyncEventArgs>
-    type Socket with
-      member
-        AsyncDisconnect : args:System.Net.Sockets.SocketAsyncEventArgs ->
-                            Async<System.Net.Sockets.SocketAsyncEventArgs>
-    type Socket with
-      member
-        AsyncReceive : args:System.Net.Sockets.SocketAsyncEventArgs ->
-                         Async<System.Net.Sockets.SocketAsyncEventArgs>
-    type Socket with
-      member
-        AsyncSend : args:System.Net.Sockets.SocketAsyncEventArgs ->
-                      Async<System.Net.Sockets.SocketAsyncEventArgs>
-  end
 

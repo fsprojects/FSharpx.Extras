@@ -10,7 +10,7 @@ let version = "1.3." + currentDate.ToString("yMMdd")
 let coreSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let projectSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let projectDescription = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.\r\n\r\nIt currently implements:\r\n\r\n* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n* Iteratee\r\n* Validation applicative functor\r\n* General functions like flip\r\n* Additional functions around collections\r\n* Functions to make C# - F# interop easier."
-let authors = ["Steffen Forkmann"; "Tomas Petricek"; "Ryan Riley"; "Mauricio Scheffer" ]
+let authors = ["Steffen Forkmann"; "Daniel Mohl"; "Tomas Petricek"; "Ryan Riley"; "Mauricio Scheffer"; "Phil Trelford" ]
 let mail = "ryan.riley@panesofglass.org"
 let homepage = "http://github.com/fsharp/fsharpx"
 let nugetKey = if System.IO.File.Exists "./key.txt" then ReadFileAsString "./key.txt" else ""
@@ -43,6 +43,7 @@ let nunitPath = "./packages/NUnit.2.5.10.11092/Tools"
 // files
 let appReferences =
     !+ "./src/**/*.*proj"
+      -- "./src/**/*.Silverlight.*proj"
         |> Scan
 
 let testReferences =
@@ -95,6 +96,15 @@ Target "BuildApp" (fun _ ->
             AssemblyDescription = "This library implements various extensions for asynchronous programming using F# asynchronous workflows and F# agents."
             Guid = "ede1812b-5a62-410a-9553-02499cf29317"
             OutputFileName = "./src/FSharpx.Async/AssemblyInfo.fs" })
+
+    AssemblyInfo (fun p ->
+        {p with 
+            CodeLanguage = FSharp
+            AssemblyVersion = version
+            AssemblyTitle = "FSharpx.Observable"
+            AssemblyDescription = "This library implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford."
+            Guid = "2E802F54-9CD0-4B0A-B834-5C5979403B50"
+            OutputFileName = "./src/FSharpx.Observable/AssemblyInfo.fs" })
 
     MSBuild buildDir "Build" (["Configuration","Release"] @ frameworkParams) appReferences
         |> Log "AppBuild-Output: "
@@ -153,7 +163,10 @@ Target "BuildNuGet" (fun _ ->
       buildDir + "FSharpx.Stm.xml"
       buildDir + "FSharpx.Async.dll"
       buildDir + "FSharpx.Async.pdb"
-      buildDir + "FSharpx.Async.xml"]
+      buildDir + "FSharpx.Async.xml"
+      buildDir + "FSharpx.Observable.dll"
+      buildDir + "FSharpx.Observable.pdb"
+      buildDir + "FSharpx.Observable.xml"]
         |> CopyTo nugetLibDir
 
     NuGet (fun p -> 
