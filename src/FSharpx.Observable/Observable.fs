@@ -3,6 +3,21 @@
 open System
 open System.Collections.Generic
 
+let create x =
+    { new IObservable<_> with
+        member this.Subscribe(observer:IObserver<_>) =
+            observer.OnNext x
+            observer.OnCompleted()
+            { new IDisposable with member this.Dispose() = () }
+    }
+
+let error e =
+    { new IObservable<_> with
+        member this.Subscribe(observer:IObserver<_>) =
+            observer.OnError e
+            { new IDisposable with member this.Dispose() = () }
+    }
+
 let FromEventHandler<'TEventArgs when 'TEventArgs:> EventArgs>
     (addHandler:Action<EventHandler<_>>,
         removeHandler:Action<EventHandler<_>>)  =
