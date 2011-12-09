@@ -5,12 +5,15 @@ open NUnit.Framework
 open FsUnit
 
 // Simple "text editor" example
-let addText = combineWithCurrent (+)
+let addText text = combineWithCurrent (+) text
 
 [<Test>]
 let ``When starting a text editior with empty string, it should have a empty string in history``() =
-  let actual = addText "" (empty "")
-  fst actual |> should equal ""
+  empty ""
+   |> addText ""
+   |> snd 
+   |> current 
+   |> should equal ""
 
 [<Test>]
 let ``When starting a text editor with "" and adding two strings, it should contain both string``() =
@@ -50,7 +53,7 @@ let ``When starting a text editor with "" and adding three strings and undoing t
   actual |> fst |> should equal (true,true)
 
 [<Test>]
-let ``When starting a text editor with "" and adding a string, it should not allow two undos``() =
+let ``When starting a text editor with "" and adding a string, it should allow two undos``() =
   let test = undoable {
     let! _ = addText "foo"    
     let! firstUndo = undo
@@ -58,7 +61,19 @@ let ``When starting a text editor with "" and adding a string, it should not all
     return firstUndo,secondUndo }
   let actual = test (empty "")
   actual |> snd |> current |> should equal ""
-  actual |> fst |> should equal (true,false)
+  actual |> fst |> should equal (true,true)
+
+[<Test>]
+let ``When starting a text editor with "" and adding a string, it should not allow three undos``() =
+  let test = undoable {
+    let! _ = addText "foo"    
+    let! firstUndo = undo
+    let! secondUndo = undo
+    let! thirdUndo = undo
+    return firstUndo,secondUndo,thirdUndo }
+  let actual = test (empty "")
+  actual |> snd |> current |> should equal ""
+  actual |> fst |> should equal (true,true,false)
 
 [<Test>]
 let ``When starting a text editor with "" and adding a string, it should not allow a redo without an undo``() =

@@ -463,7 +463,7 @@ module Undo =
         Undos : 'a list
         Redos : 'a list }
     
-    let empty x = { Current = x; Undos = []; Redos = [] }
+    let empty x = { Current = x; Undos = [x]; Redos = [] }
     let current history = history.Current
     
     let getHistory = getState
