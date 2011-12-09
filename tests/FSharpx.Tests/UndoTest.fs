@@ -5,10 +5,7 @@ open NUnit.Framework
 open FsUnit
 
 // Simple "text editor" example
-let addText newText = undoable {
-    let! text = getCurrent
-    do! putToHistory (text + newText) 
-    return text}
+let addText = combineWithCurrent (+)
 
 [<Test>]
 let ``When starting a text editior with empty string, it should have a empty string in history``() =

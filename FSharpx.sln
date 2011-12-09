@@ -20,7 +20,7 @@ EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Tests", "tests\FSharpx.TypeProviders.Tests\FSharpx.TypeProviders.Tests.fsproj", "{7B3C99B0-E1B6-4BD8-81BC-3F62300A363F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{EFB3F0C2-10B4-4EF5-8FA7-CC39880067A1}"
-	ProjectSection(SolutionItems) = preProject
+	ProjectSection(SolutionItems)  = preProject
 		samples\AsyncSeqObservable.fsx = samples\AsyncSeqObservable.fsx
 		samples\AutoCancel.fsx = samples\AutoCancel.fsx
 		samples\BatchProcessing.fsx = samples\BatchProcessing.fsx
@@ -56,6 +56,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSharpx.Observable.Tests", "tests\FSharpx.Observable.Tests\FSharpx.Observable.Tests.csproj", "{13CF1E8D-D712-4031-8EEF-414534CC234E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeFliesLikeAnArrow.Silverlight", "samples\TimeFliesLikeAnArrow.Silverlight\TimeFliesLikeAnArrow.Silverlight.csproj", "{114263B8-7820-43BD-B596-5511D5205666}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "UndoSample", "samples\UndoSample\UndoSample.fsproj", "{3939EBF0-264F-480B-BFC4-25B21C8EEB1C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -173,6 +175,16 @@ Global
 		{3D1FCA4C-757E-4AD0-9E4B-4101C8AFCCA4}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{3D1FCA4C-757E-4AD0-9E4B-4101C8AFCCA4}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{3D1FCA4C-757E-4AD0-9E4B-4101C8AFCCA4}.Release|x86.ActiveCfg = Release|Any CPU
+		{3939EBF0-264F-480B-BFC4-25B21C8EEB1C}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{3939EBF0-264F-480B-BFC4-25B21C8EEB1C}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{3939EBF0-264F-480B-BFC4-25B21C8EEB1C}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{3939EBF0-264F-480B-BFC4-25B21C8EEB1C}.Debug|x86.ActiveCfg = Debug|x86
+		{3939EBF0-264F-480B-BFC4-25B21C8EEB1C}.Debug|x86.Build.0 = Debug|x86
+		{3939EBF0-264F-480B-BFC4-25B21C8EEB1C}.Release|Any CPU.ActiveCfg = Release|x86
+		{3939EBF0-264F-480B-BFC4-25B21C8EEB1C}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{3939EBF0-264F-480B-BFC4-25B21C8EEB1C}.Release|Mixed Platforms.Build.0 = Release|x86
+		{3939EBF0-264F-480B-BFC4-25B21C8EEB1C}.Release|x86.ActiveCfg = Release|x86
+		{3939EBF0-264F-480B-BFC4-25B21C8EEB1C}.Release|x86.Build.0 = Release|x86
 		{EC2F35C2-6DC7-437B-9BD1-44DC1B6F7136}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{EC2F35C2-6DC7-437B-9BD1-44DC1B6F7136}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{EC2F35C2-6DC7-437B-9BD1-44DC1B6F7136}.Debug|Mixed Platforms.Build.0 = Debug|x86
@@ -229,6 +241,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{41D22552-BAFB-47D5-B20A-D81E18C3C1E8} = {EFB3F0C2-10B4-4EF5-8FA7-CC39880067A1}
+		{3939EBF0-264F-480B-BFC4-25B21C8EEB1C} = {EFB3F0C2-10B4-4EF5-8FA7-CC39880067A1}
 		{EC2F35C2-6DC7-437B-9BD1-44DC1B6F7136} = {EFB3F0C2-10B4-4EF5-8FA7-CC39880067A1}
 		{114263B8-7820-43BD-B596-5511D5205666} = {EFB3F0C2-10B4-4EF5-8FA7-CC39880067A1}
 		{FFDBAF72-7F9F-4DE0-A8F3-83D0D21EBEB5} = {6392A890-AE72-4BFB-B1EE-B1E5CBAAFB06}

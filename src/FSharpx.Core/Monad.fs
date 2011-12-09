@@ -479,6 +479,10 @@ module Undo =
     let getCurrent<'a> = undoable {
         let! (history:'a History) = getState
         return current history}
+
+    let combineWithCurrent f x = undoable {
+        let! currentVal = getCurrent
+        do! putToHistory (f currentVal x) }
     
     let undo<'a> = undoable {
         let! (history:'a History) = getState
