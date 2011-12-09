@@ -16,4 +16,4 @@ module Sample =
         printfn "The current total is %O" currentVal
         return! handleInput }
 
-Sample.handleInput (empty 0.) |> ignore
+Sample.handleInput (newHistory 0.) |> ignore

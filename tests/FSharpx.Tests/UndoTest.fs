@@ -9,7 +9,7 @@ let addText text = combineWithCurrent (+) text
 
 [<Test>]
 let ``When starting a text editior with empty string, it should have a empty string in history``() =
-  empty ""
+  newHistory ""
    |> addText ""
    |> snd 
    |> current 
@@ -21,7 +21,7 @@ let ``When starting a text editor with "" and adding two strings, it should cont
     let! _ = addText "foo"
     let! _ = addText "bar"
     return () }
-  let actual = exec test (empty "")
+  let actual = exec test (newHistory "")
   actual |> should equal "foobar"
 
 [<Test>]
@@ -33,7 +33,7 @@ let ``When starting a text editor with "" and adding three strings and undoing t
     let! firstUndo = undo
     let! secondUndo = undo
     return firstUndo,secondUndo }
-  let actual = test (empty "")
+  let actual = test (newHistory "")
   actual |> snd |> current |> should equal "foo"
   actual |> fst |> should equal (true,true)
 
@@ -48,7 +48,7 @@ let ``When starting a text editor with "" and adding three strings and undoing t
     let! firstRedo = redo
     let! secondRedo = redo
     return firstRedo,secondRedo }
-  let actual = test (empty "")
+  let actual = test (newHistory "")
   actual |> snd |> current |> should equal "foobarbaz"
   actual |> fst |> should equal (true,true)
 
@@ -59,7 +59,7 @@ let ``When starting a text editor with "" and adding a string, it should allow t
     let! firstUndo = undo
     let! secondUndo = undo
     return firstUndo,secondUndo }
-  let actual = test (empty "")
+  let actual = test (newHistory "")
   actual |> snd |> current |> should equal ""
   actual |> fst |> should equal (true,true)
 
@@ -71,7 +71,7 @@ let ``When starting a text editor with "" and adding a string, it should not all
     let! secondUndo = undo
     let! thirdUndo = undo
     return firstUndo,secondUndo,thirdUndo }
-  let actual = test (empty "")
+  let actual = test (newHistory "")
   actual |> snd |> current |> should equal ""
   actual |> fst |> should equal (true,true,false)
 
@@ -81,6 +81,6 @@ let ``When starting a text editor with "" and adding a string, it should not all
     let! _ = addText "foo"    
     let! firstRedo = redo   
     return firstRedo }
-  let actual = test (empty "")
+  let actual = test (newHistory "")
   actual |> snd |> current |> should equal "foo"
   actual |> fst |> should equal false
