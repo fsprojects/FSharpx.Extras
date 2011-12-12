@@ -37,8 +37,6 @@
     <Compile Include="..\FSharpx.Tests\FsUnit.fs">
       <Link>FsUnit.fs</Link>
     </Compile>
-    <Compile Include="JSON.ParserTests.fs" />
-    <Compile Include="JSON.SerializationTests.fs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

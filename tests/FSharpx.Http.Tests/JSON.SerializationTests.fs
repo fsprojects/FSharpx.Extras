@@ -1,11 +1,11 @@
-﻿module FSharp.TypeProviders.Tests.JSONWriterTests
+﻿module FSharp.Http.Tests.JSONWriterTests
 
 open NUnit.Framework
-open FSharp.TypeProviders.JSON
+open FSharpx.Http.JSON
 open FsUnit
 
 [<Test>] 
-let ``Can serialize empty empty document``() = 
+let ``Can serialize empty document``() = 
     emptyJObject.ToString()
     |> should equal "{}"
 
