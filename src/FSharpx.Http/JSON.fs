@@ -6,6 +6,7 @@
 open System
 open System.Xml.Linq
 open System.Text
+open Microsoft.FSharp.Reflection
 
 type Token =
 | OpenBracket | CloseBracket
@@ -155,3 +156,13 @@ let parse source =
     tokenize source 
     |> parseValue
     |> fst
+
+
+let rec toJSON(value:obj) = 
+    match value with
+    | x when x = null-> Null
+    | :? string as s -> Text s
+    | :? int as n -> Number (float n)
+    | :? float as n -> Number n
+    | :? bool as b -> Boolean b
+

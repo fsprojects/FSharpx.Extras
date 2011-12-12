@@ -35,3 +35,28 @@ let ``Can serialize document to XML``() =
     let xml = json.ToXml() |> Seq.head 
     let expectedXml = XElement.Parse("<items><item><id>Open</id></item><item /><item><id>25</id></item></items>")
     xml.ToString() |> should equal (expectedXml.ToString())
+
+[<Test>] 
+let ``Can serialize null``() = 
+    toJSON null
+    |> should equal JSON.Null
+
+[<Test>] 
+let ``Can serialize a simple string``() = 
+    toJSON "simple text"
+    |> should equal (JSON.Text "simple text")
+
+[<Test>] 
+let ``Can serialize a simple integer``() = 
+    toJSON 23
+    |> should equal (JSON.Number 23.)
+    
+[<Test>] 
+let ``Can serialize a simple float``() = 
+    toJSON 23.23
+    |> should equal (JSON.Number 23.23)
+
+[<Test>] 
+let ``Can serialize a simple bool``() = 
+    toJSON true
+    |> should equal (JSON.Boolean true)
