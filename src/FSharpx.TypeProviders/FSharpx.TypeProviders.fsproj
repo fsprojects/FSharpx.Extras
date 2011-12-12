@@ -46,7 +46,6 @@
     <Compile Include="RegexProvider.fs" />
     <Compile Include="RegistryProvider.fs" />
     <Compile Include="FileSystemProvider.fs" />
-    <Compile Include="JSON.fs" />
     <Compile Include="MiniCsvProvider.fs" />
     <Compile Include="AppSettingsProvider.fs" />
     <Compile Include="XamlProvider.fs" />

@@ -33,9 +33,16 @@
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
     <Compile Include="ConnegTests.fs" />
+    <Compile Include="JSON.ParserTests.fs" />
+    <Compile Include="JSON.SerializationTests.fs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FSharpx.Tests\FSharpx.Tests.fsproj">
+      <Name>FSharpx.Tests</Name>
+      <Project>{26d9d3ee-e882-43e6-a79e-5d1d89e92c4f}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
       <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
@@ -54,5 +61,7 @@
       <Project>{60f3bb81-5449-45dd-a217-b6045327680c}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
 </Project>

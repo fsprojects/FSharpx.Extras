@@ -1,7 +1,7 @@
 ﻿module FSharp.TypeProviders.Tests.JSONParserTests
 
 open NUnit.Framework
-open FSharpx.TypeProviders.JSON
+open FSharpx.Http.JSON
 open FsUnit
 
 

@@ -1,9 +1,10 @@
-﻿module FSharpx.TypeProviders.JSON
+﻿module FSharpx.Http.JSON
 
 // Initial version of the parser from http://blog.efvincent.com/parsing-json-using-f/
 // Simplyfied, added AST and fixed some minor bugs
 
 open System
+open System.Xml
 open System.Xml.Linq
 open System.Text
 
