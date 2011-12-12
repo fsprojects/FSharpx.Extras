@@ -18,15 +18,47 @@ namespace FSharpx.CSharpTests
         }
 
         [Test]
+        public void WhenJoiningStringsWithQuestionMark()
+        {
+            Strings.separatedBy("?", FSharpList.Create("Hello", "World", "fsharpx"))
+                .ShouldEqual("Hello?World?fsharpx");
+        }
+
+        [Test]
+        public void WhenJoiningStringsWithComma()
+        {
+            Strings.separatedBy("?", FSharpList.Create("Hello", "World", "fsharpx"))
+                .ShouldEqual("Hello?World?fsharpx");
+        }
+
+        [Test]
         public void WhenReplacingSimplePatternInStringWhichContainsThePattern()
         {
-            Assert.AreEqual(Strings.replace("Hello", "World", "Hello World!"), "World World!");
+            (Strings.replace("Hello", "World", "Hello World!")).ShouldEqual("World World!");
         }
 
         [Test]
         public void WhenReplacingSimplePatternInStringWhichDoesntContainThePattern()
         {
-            Assert.AreEqual(Strings.replace("Hello?", "World", "Hello World!"), "Hello World!");
+            (Strings.replace("Hello?", "World", "Hello World!")).ShouldEqual("Hello World!");
+        }
+
+        [Test]
+        public void WhenSplittingAStringWithEmptyGroup()
+        {
+            string[] strings = Strings.split(',', "Hello,,fsharpx");
+            strings.Length.ShouldEqual(3);
+            strings[0].ShouldEqual("Hello");
+            strings[2].ShouldEqual("fsharpx");
+        }
+
+        [Test]
+        public void WhenSplittingAStringWithQuestionMark()
+        {
+            string[] strings = Strings.split('?', "Hello?World?fsharpx");
+            strings[0].ShouldEqual("Hello");
+            strings[1].ShouldEqual("World");
+            strings[2].ShouldEqual("fsharpx");
         }
     }
 }

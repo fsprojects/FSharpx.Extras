@@ -1,4 +1,4 @@
-module FSharpx.Stm.AssemblyInfo
+module FSharpx.Async.AssemblyInfo
 #nowarn "49" // uppercase argument names
 #nowarn "67" // this type test or downcast will always hold
 #nowarn "66" // tis upast is unnecessary - the types are identical
@@ -16,13 +16,13 @@ exception ReturnNoneException183c26a427ae489c8fd92ec21a0c9a59
 
 [<assembly: CLSCompliant (false)>]
 
-[<assembly: Guid ("FFDBAF72-7F9F-4DE0-A8F3-83D0D21EBEB5")>]
+[<assembly: Guid ("ede1812b-5a62-410a-9553-02499cf29317")>]
 
-[<assembly: AssemblyTitle ("FSharpx.Stm")>]
+[<assembly: AssemblyTitle ("FSharpx.Async")>]
 
-[<assembly: AssemblyDescription ("This library implements the Software Transactional Memory workflow in F#.")>]
+[<assembly: AssemblyDescription ("This library implements various extensions for asynchronous programming using F# asynchronous workflows and F# agents.")>]
 
-[<assembly: AssemblyProduct ("FSharpx.Stm")>]
+[<assembly: AssemblyProduct ("FSharpx.Async")>]
 
 [<assembly: AssemblyVersion ("1.3.111208")>]
 

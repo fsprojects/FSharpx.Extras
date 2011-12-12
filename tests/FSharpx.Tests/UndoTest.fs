@@ -5,15 +5,15 @@ open NUnit.Framework
 open FsUnit
 
 // Simple "text editor" example
-let addText newText = undoable {
-    let! text = getCurrent
-    do! putToHistory (text + newText) 
-    return text}
+let addText text = combineWithCurrent (+) text
 
 [<Test>]
 let ``When starting a text editior with empty string, it should have a empty string in history``() =
-  let actual = addText "" (empty "")
-  fst actual |> should equal ""
+  newHistory ""
+   |> addText ""
+   |> snd 
+   |> current 
+   |> should equal ""
 
 [<Test>]
 let ``When starting a text editor with "" and adding two strings, it should contain both string``() =
@@ -21,7 +21,7 @@ let ``When starting a text editor with "" and adding two strings, it should cont
     let! _ = addText "foo"
     let! _ = addText "bar"
     return () }
-  let actual = exec test (empty "")
+  let actual = exec test (newHistory "")
   actual |> should equal "foobar"
 
 [<Test>]
@@ -33,7 +33,7 @@ let ``When starting a text editor with "" and adding three strings and undoing t
     let! firstUndo = undo
     let! secondUndo = undo
     return firstUndo,secondUndo }
-  let actual = test (empty "")
+  let actual = test (newHistory "")
   actual |> snd |> current |> should equal "foo"
   actual |> fst |> should equal (true,true)
 
@@ -48,20 +48,32 @@ let ``When starting a text editor with "" and adding three strings and undoing t
     let! firstRedo = redo
     let! secondRedo = redo
     return firstRedo,secondRedo }
-  let actual = test (empty "")
+  let actual = test (newHistory "")
   actual |> snd |> current |> should equal "foobarbaz"
   actual |> fst |> should equal (true,true)
 
 [<Test>]
-let ``When starting a text editor with "" and adding a string, it should not allow two undos``() =
+let ``When starting a text editor with "" and adding a string, it should allow two undos``() =
   let test = undoable {
     let! _ = addText "foo"    
     let! firstUndo = undo
     let! secondUndo = undo
     return firstUndo,secondUndo }
-  let actual = test (empty "")
+  let actual = test (newHistory "")
   actual |> snd |> current |> should equal ""
-  actual |> fst |> should equal (true,false)
+  actual |> fst |> should equal (true,true)
+
+[<Test>]
+let ``When starting a text editor with "" and adding a string, it should not allow three undos``() =
+  let test = undoable {
+    let! _ = addText "foo"    
+    let! firstUndo = undo
+    let! secondUndo = undo
+    let! thirdUndo = undo
+    return firstUndo,secondUndo,thirdUndo }
+  let actual = test (newHistory "")
+  actual |> snd |> current |> should equal ""
+  actual |> fst |> should equal (true,true,false)
 
 [<Test>]
 let ``When starting a text editor with "" and adding a string, it should not allow a redo without an undo``() =
@@ -69,6 +81,6 @@ let ``When starting a text editor with "" and adding a string, it should not all
     let! _ = addText "foo"    
     let! firstRedo = redo   
     return firstRedo }
-  let actual = test (empty "")
+  let actual = test (newHistory "")
   actual |> snd |> current |> should equal "foo"
   actual |> fst |> should equal false

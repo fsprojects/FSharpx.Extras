@@ -1,4 +1,4 @@
-module FSharpx.AsyncExtensions.AssemblyInfo
+module FSharpx.Observable.AssemblyInfo
 #nowarn "49" // uppercase argument names
 #nowarn "67" // this type test or downcast will always hold
 #nowarn "66" // tis upast is unnecessary - the types are identical
@@ -16,17 +16,17 @@ exception ReturnNoneException183c26a427ae489c8fd92ec21a0c9a59
 
 [<assembly: CLSCompliant (false)>]
 
-[<assembly: Guid ("ede1812b-5a62-410a-9553-02499cf29317")>]
+[<assembly: Guid ("2E802F54-9CD0-4B0A-B834-5C5979403B50")>]
 
-[<assembly: AssemblyTitle ("FSharp.AsyncExtensions")>]
+[<assembly: AssemblyTitle ("FSharpx.Observable")>]
 
-[<assembly: AssemblyDescription ("This library implements various extensions for asynchronous programming using F# asynchronous workflows and F# agents.")>]
+[<assembly: AssemblyDescription ("This library implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford.")>]
 
-[<assembly: AssemblyProduct ("FSharp.AsyncExtensions")>]
+[<assembly: AssemblyProduct ("FSharpx.Observable")>]
 
-[<assembly: AssemblyVersion ("1.3.111030")>]
+[<assembly: AssemblyVersion ("1.3.111208")>]
 
-[<assembly: AssemblyFileVersion ("1.3.111030")>]
+[<assembly: AssemblyFileVersion ("1.3.111208")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 

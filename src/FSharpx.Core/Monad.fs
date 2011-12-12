@@ -467,7 +467,7 @@ module Undo =
         Undos : 'a list
         Redos : 'a list }
     
-    let empty x = { Current = x; Undos = []; Redos = [] }
+    let newHistory x = { Current = x; Undos = [x]; Redos = [] }
     let current history = history.Current
     
     let getHistory = getState
@@ -483,6 +483,10 @@ module Undo =
     let getCurrent<'a> = undoable {
         let! (history:'a History) = getState
         return current history}
+
+    let combineWithCurrent f x = undoable {
+        let! currentVal = getCurrent
+        do! putToHistory (f currentVal x) }
     
     let undo<'a> = undoable {
         let! (history:'a History) = getState

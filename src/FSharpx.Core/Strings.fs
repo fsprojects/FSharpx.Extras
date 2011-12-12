@@ -11,3 +11,12 @@ module Strings =
 
     /// Returns a value indicating whether the specified substring occurs within this string
     let inline contains substr (t: string) = t.Contains substr
+    
+    /// Splits the given string at the given delimiter
+    let inline split (delimiter:char) (text:string) = text.Split [|delimiter|]
+
+    /// Converts a sequence of strings to a single string separated with the delimiters
+    let inline separatedBy delimiter (items: string seq) = String.Join(delimiter, Array.ofSeq items)
+
+    /// Returns if the string is null or empty
+    let inline isNullOrEmpty text = String.IsNullOrEmpty text
