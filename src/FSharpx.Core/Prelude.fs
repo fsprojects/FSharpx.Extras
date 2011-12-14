@@ -134,3 +134,11 @@ module Prelude =
     let (|Boolean|_|) = Boolean.parse
     let (|Int32|_|) = Int32.parse
     let (|Double|_|) = Double.parse
+
+    // Typeclasses
+
+    type Fmap = Fmap with
+        static member (?<-) (_, _Functor:Fmap, x:option<_>) = fun f -> Option.map f x
+        static member (?<-) (_, _Functor:Fmap, x:seq<_>   ) = fun f -> Seq.map    f x
+        static member (?<-) (_, _Functor:Fmap, g:_->_     ) = (>>) g
+    let inline fmap f x = (() ? (Fmap) <- x) f
