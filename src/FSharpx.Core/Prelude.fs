@@ -137,8 +137,36 @@ module Prelude =
 
     // Typeclasses
 
+    open System.Collections.Generic
+
+    // Functor
     type Fmap = Fmap with
         static member (?<-) (_, _Functor:Fmap, x:option<_>) = fun f -> Option.map f x
         static member (?<-) (_, _Functor:Fmap, x:seq<_>   ) = fun f -> Seq.map    f x
+        static member (?<-) (_, _Functor:Fmap, x:list<_>  ) = fun f -> List.map    f x
         static member (?<-) (_, _Functor:Fmap, g:_->_     ) = (>>) g
     let inline fmap f x = (() ? (Fmap) <- x) f
+
+    // Monad
+    type Return = Return with
+        static member (?<-) (_, _Monad:Return, _:'a option   ) = fun (x:'a) -> Some x        
+        static member (?<-) (_, _Monad:Return, _:'a list     ) = fun (x:'a) -> [x]
+
+        static member (?<-) (_, _Monad:Return, _: _ -> 'a    ) = fun (x:'a) -> konst x        
+        static member (?<-) (_, _Monad:Return, _:'a IEnumerator) = fun (x:'a) -> (seq [x]).GetEnumerator()
+        static member (?<-) (_, _Monad:Return, _:'a seq      ) = fun (x:'a) -> seq [x]
+
+    let inline return' x : ^R = (() ? (Return) <- Unchecked.defaultof< ^R> ) x
+
+    type Bind = Bind with
+        static member (?<-) (x:option<_>     , _Monad:Bind,_:'b option     ) = fun f -> Option.bind f x
+        static member (?<-) (x:list<_>       , _Monad:Bind,_:'b list       ) = fun f -> 
+            let rec bind f = function
+                             | x::xs -> f x @ bind f xs
+                             | []    -> []
+            bind f x
+        static member (?<-) (f:'e->'a        , _Monad:Bind,_:'e->'b        ) = fun (k:'a->'e->'b) r -> k (f r) r
+        static member (?<-) (x:IEnumerator<_>, _Monad:Bind,_:'b IEnumerator) = (|>) x.Current
+        static member (?<-) (x:seq<_>        , _Monad:Bind,_:'b seq        ) = fun (f:'a->seq<'b>) -> Seq.collect f x
+
+    let inline (>>=) x f : ^R = (x ? (Bind) <- Unchecked.defaultof< ^R> ) f
