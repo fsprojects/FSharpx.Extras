@@ -357,7 +357,7 @@ module Nullable =
 
 module State =
 
-    type State<'a, 's> = 's -> 'a * 's
+    type State_<'a, 's> = 's -> 'a * 's
     
     let getState = fun s -> (s,s)
     let putState s = fun _ -> ((),s)
@@ -370,15 +370,15 @@ module State =
     /// The algorithm is adjusted from my original work off of Brian Beckman's http://channel9.msdn.com/shows/Going+Deep/Brian-Beckman-The-Zen-of-Expressing-State-The-State-Monad/.
     /// The approach was adjusted from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2009/12/30/much-ado-about-monads-state-edition.aspx and mirrors his final result.
     type StateBuilder() =
-        member this.Return(a) : State<'a,'s> = fun s -> (a,s)
-        member this.ReturnFrom(m:State<'a,'s>) = m
-        member this.Bind(m:State<'a,'s>, k:'a -> State<'b,'s>) : State<'b,'s> = bind k m
+        member this.Return(a) : State_<'a,'s> = fun s -> (a,s)
+        member this.ReturnFrom(m:State_<'a,'s>) = m
+        member this.Bind(m:State_<'a,'s>, k:'a -> State_<'b,'s>) : State_<'b,'s> = bind k m
         member this.Zero() = this.Return ()
         member this.Combine(r1, r2) = this.Bind(r1, fun () -> r2)
-        member this.TryWith(m:State<'a,'s>, h:exn -> State<'a,'s>) : State<'a,'s> =
+        member this.TryWith(m:State_<'a,'s>, h:exn -> State_<'a,'s>) : State_<'a,'s> =
             fun env -> try m env
                        with e -> (h e) env
-        member this.TryFinally(m:State<'a,'s>, compensation) : State<'a,'s> =
+        member this.TryFinally(m:State_<'a,'s>, compensation) : State_<'a,'s> =
             fun env -> try m env
                        finally compensation()
         member this.Using(res:#IDisposable, body) =
