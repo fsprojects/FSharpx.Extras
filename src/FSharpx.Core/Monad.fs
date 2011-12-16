@@ -10,7 +10,7 @@ module Monoid =
     /// Monoid (associative binary operation with identity)
     /// The monoid implementation comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.
     [<AbstractClass>]
-    type Monoid<'a>() =
+    type Monoid_<'a>() =
         /// <summary>
         /// Identity
         /// </summary>
@@ -29,13 +29,13 @@ module Monoid =
     
     /// List monoid
     type ListMonoid<'a>() =
-        inherit Monoid<'a list>()
+        inherit Monoid_<'a list>()
             override this.mempty = []
             override this.mappend a b = a @ b
 
     /// Option wrapper monoid
-    type OptionMonoid<'a>(m: 'a Monoid) =
-        inherit Monoid<'a option>()
+    type OptionMonoid<'a>(m: 'a Monoid_) =
+        inherit Monoid_<'a option>()
             override this.mempty = None
             override this.mappend a b = 
                 match a,b with
@@ -46,15 +46,44 @@ module Monoid =
                 
     /// Monoid (int,0,+)
     let IntSumMonoid = 
-        { new Monoid<int>() with
+        { new Monoid_<int>() with
             override this.mempty = 0
             override this.mappend a b = a + b }
 
     /// Monoid (int,1,*)
     let IntProductMonoid =
-        { new Monoid<int>() with
+        { new Monoid_<int>() with
             override this.mempty = 1
             override this.mappend a b = a * b }
+
+
+    // Monoid instances
+    type Dual<'a> = Dual of 'a with
+        static member inline (?<-) (_     , _Monoid:Mempty , _:Dual<_>) = Dual (mempty()   )
+        static member inline (?<-) (Dual x, _Monoid:Mappend,   Dual y ) = Dual (mappend y x)
+    let getDual (Dual x) = x
+
+    type Endo<'a> = Endo of ('a -> 'a) with
+        static member        (?<-) (_     , _Monoid:Mempty , _:Endo<_>) = Endo id
+        static member        (?<-) (Endo f, _Monoid:Mappend,   Endo g ) = Endo (f << g)
+
+    let appEndo (Endo f) = f
+
+    type All = All of bool with
+        static member (?<-) (_    , _Monoid:Mempty , _:All  ) = All true
+        static member (?<-) (All x, _Monoid:Mappend,   All y) = All (x && y)
+
+    type Any = Any of bool with
+        static member (?<-) (_    , _Monoid:Mempty , _:Any  ) = Any false
+        static member (?<-) (Any x, _Monoid:Mappend,   Any y) = Any (x || y)
+
+    type Sum<'a> = Sum of 'a with
+        static member inline (?<-) (_    , _Monoid:Mempty , _:Sum<_>) = Sum LanguagePrimitives.GenericZero
+        static member inline (?<-) (Sum x, _Monoid:Mappend,   Sum y ) = Sum (x + y)
+
+    type Product<'a> = Product of 'a with
+        static member inline (?<-) (_        , _Monoid:Mempty , _:Product<_>) = Product LanguagePrimitives.GenericOne
+        static member inline (?<-) (Product x, _Monoid:Mappend,   Product y ) = Product (x * y)
 
 /// Generic monadic operators    
 module Operators =
@@ -509,18 +538,18 @@ module Writer =
         
     type Writer<'w, 'a> = unit -> 'a * 'w
 
-    let bind (m: _ Monoid) (k:'a -> Writer<'w,'b>) (writer:Writer<'w,'a>) : Writer<'w,'b> =
+    let bind (m: _ Monoid_) (k:'a -> Writer<'w,'b>) (writer:Writer<'w,'a>) : Writer<'w,'b> =
         fun () ->
             let (a, w) = writer()
             let (a', w') = (k a)()
             (a', m.mappend w w')
 
-    let returnM (monoid: _ Monoid) a = 
+    let returnM (monoid: _ Monoid_) a = 
         fun () -> (a, monoid.mempty)
     
     /// The writer monad.
     /// This monad comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.
-    type WriterBuilder<'w>(monoid: 'w Monoid) =
+    type WriterBuilder<'w>(monoid: 'w Monoid_) =
         member this.Return(a) : Writer<'w,'a> = returnM monoid a
         member this.ReturnFrom(w:Writer<'w,'a>) = w
         member this.Bind(writer, k) = bind monoid k writer
@@ -683,9 +712,9 @@ module Validation =
         | Choice2Of2 e1, Choice2Of2 e2 -> Choice2Of2 (append e1 e2)
 
     /// Sequential application, parameterized by monoid
-    let inline apm (m: _ Monoid) = apa m.mappend
+    let inline apm (m: _ Monoid_) = apa m.mappend
 
-    type CustomValidation<'a>(monoid: 'a Monoid) =
+    type CustomValidation<'a>(monoid: 'a Monoid_) =
         /// Sequential application
         member this.ap x = apm monoid x
         member this.lift2 f a b = returnM f |> this.ap a |> this.ap b
