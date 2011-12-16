@@ -135,6 +135,7 @@ module Prelude =
     let (|Int32|_|) = Int32.parse
     let (|Double|_|) = Double.parse
 
+
     // Typeclasses
 
     open System.Collections.Generic
@@ -143,30 +144,62 @@ module Prelude =
     type Fmap = Fmap with
         static member (?<-) (_, _Functor:Fmap, x:option<_>) = fun f -> Option.map f x
         static member (?<-) (_, _Functor:Fmap, x:seq<_>   ) = fun f -> Seq.map    f x
-        static member (?<-) (_, _Functor:Fmap, x:list<_>  ) = fun f -> List.map    f x
+        static member (?<-) (_, _Functor:Fmap, x:list<_>  ) = fun f -> List.map   f x
         static member (?<-) (_, _Functor:Fmap, g:_->_     ) = (>>) g
     let inline fmap f x = (() ? (Fmap) <- x) f
 
     // Monad
     type Return = Return with
-        static member (?<-) (_, _Monad:Return, _:'a option   ) = fun (x:'a) -> Some x        
-        static member (?<-) (_, _Monad:Return, _:'a list     ) = fun (x:'a) -> [x]
-
-        static member (?<-) (_, _Monad:Return, _: _ -> 'a    ) = fun (x:'a) -> konst x        
+        static member (?<-) (_, _Monad:Return, _:'a option     ) = fun (x:'a) -> Some x        
+        static member (?<-) (_, _Monad:Return, _:'a list       ) = fun (x:'a) -> [x]
+        static member (?<-) (_, _Monad:Return, _: _ -> 'a      ) = fun (x:'a) -> konst x        
         static member (?<-) (_, _Monad:Return, _:'a IEnumerator) = fun (x:'a) -> (seq [x]).GetEnumerator()
-        static member (?<-) (_, _Monad:Return, _:'a seq      ) = fun (x:'a) -> seq [x]
-
+        static member (?<-) (_, _Monad:Return, _:'a seq        ) = fun (x:'a) -> seq [x]
     let inline return' x : ^R = (() ? (Return) <- Unchecked.defaultof< ^R> ) x
 
     type Bind = Bind with
-        static member (?<-) (x:option<_>     , _Monad:Bind,_:'b option     ) = fun f -> Option.bind f x
-        static member (?<-) (x:list<_>       , _Monad:Bind,_:'b list       ) = fun f -> 
-            let rec bind f = function
-                             | x::xs -> f x @ bind f xs
-                             | []    -> []
-            bind f x
+        static member (?<-) (x:option<_>     , _Monad:Bind,_:'b option     ) = fun f -> Option.bind  f x
+        static member (?<-) (x:list<_>       , _Monad:Bind,_:'b list       ) = fun f -> List.collect f x
         static member (?<-) (f:'e->'a        , _Monad:Bind,_:'e->'b        ) = fun (k:'a->'e->'b) r -> k (f r) r
-        static member (?<-) (x:IEnumerator<_>, _Monad:Bind,_:'b IEnumerator) = (|>) x.Current
+        static member (?<-) (x:IEnumerator<_>, _Monad:Bind,_:'b IEnumerator) = fun (f:'a->IEnumerator<'b>) -> x.Current
         static member (?<-) (x:seq<_>        , _Monad:Bind,_:'b seq        ) = fun (f:'a->seq<'b>) -> Seq.collect f x
-
     let inline (>>=) x f : ^R = (x ? (Bind) <- Unchecked.defaultof< ^R> ) f
+
+
+    
+    // Utility functions for Monad
+
+    let inline sequence ms =
+        let k m m' = m >>= fun (x:'a) -> m' >>= fun xs -> (return' :list<'a> -> ^M) (List.Cons(x,xs))
+        List.foldBack k ms ((return' :list<'a> -> ^M) [])
+
+    let inline mapM f as' = sequence (List.map f as')
+
+    let inline liftM  f m1    = m1 >>= (return' << f)
+    let inline liftM2 f m1 m2 = m1 >>= fun x1 -> m2 >>= fun x2 -> return' (f x1 x2)
+    let inline when'  p s     = if p then s else return' ()
+    let inline unless p s     = when' (not p) s
+    let inline ap     x y     = liftM2 id x y
+
+    let inline (>=>)  f g x   = f x >>= g
+
+
+    // Applicative
+    type Pure = Pure with
+        member inline this.Base x = return' x
+        static member (?<-) (_, _Applicative:Pure, _:'a option     ) = fun (x:'a) -> Pure.Pure.Base x :'a option        
+        static member (?<-) (_, _Applicative:Pure, _:'a list       ) = fun (x:'a) -> Pure.Pure.Base x :'a list
+        static member (?<-) (_, _Applicative:Pure, _: _ -> 'a      ) = konst
+        static member (?<-) (_, _Applicative:Pure, _:'a IEnumerator) = fun (x:'a) -> Pure.Pure.Base x :'a IEnumerator
+        static member (?<-) (_, _Applicative:Pure, _:'a seq        ) = fun (x:'a) -> seq [x]
+    let inline pure' x : ^R = (() ? (Pure) <- Unchecked.defaultof< ^R> ) x
+
+
+    type Ap = Ap with
+        member inline this.Base f x = ap f x
+        static member (?<-) (f:option<_>     , _Applicative:Ap, x:option<_>     ) = Ap.Ap.Base f x
+        static member (?<-) (f:list<_>       , _Applicative:Ap, x:list<_>       ) = Ap.Ap.Base f x : list<_>
+        static member (?<-) (f:_ -> _        , _Applicative:Ap, g: _ -> _       ) = fun x ->   f x (g x)
+        static member (?<-) (f:IEnumerator<_>, _Applicative:Ap, x:IEnumerator<_>) = Ap.Ap.Base f x : IEnumerator<_>
+        static member (?<-) (f:seq<_>        , _Applicative:Ap, x:seq<_>        ) = Ap.Ap.Base f x :seq<_>
+    let inline (<*>) x y : ^R = (x ? (Ap) <- y)
