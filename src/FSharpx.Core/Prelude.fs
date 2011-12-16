@@ -160,7 +160,12 @@ module Prelude =
         static member (?<-) (f:'e->'a   , _Monad:Bind,_:'e->'b   ) = fun (k:'a->'e->'b) r -> k (f r) r
     let inline (>>=) x f : ^R = (x ? (Bind) <- Unchecked.defaultof< ^R> ) f
 
-
+    type DoNotationBuilder() =
+        member inline b.Return(x)    = return' x
+        member inline b.Bind(p,rest) = p >>= rest
+        member        b.Let (p,rest) = rest p
+        member    b.ReturnFrom(expr) = expr
+    let do' = new DoNotationBuilder()
     
     // Utility functions for Monad
 
