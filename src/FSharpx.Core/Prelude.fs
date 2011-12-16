@@ -179,6 +179,39 @@ module Prelude =
     let inline (>=>)  f g x   = f x >>= g
 
 
+    // Monoid
+    type Mempty = Mempty with    
+        static member        (?<-) (_, _Monoid:Mempty, _:'a list  ) = []    
+        static member        (?<-) (_, _Monoid:Mempty, _:'a option) = None
+        static member        (?<-) (_, _Monoid:Mempty, _:'a[]     ) = [||]
+        static member        (?<-) (_, _Monoid:Mempty, _:string   ) = ""
+        static member        (?<-) (_, _Monoid:Mempty, _:unit     ) = ()
+        static member inline (?<-) (_, _Monoid:Mempty, _: ^A * ^B ) = (() ? (Mempty) <- Unchecked.defaultof< ^A>) , (() ? (Mempty) <- Unchecked.defaultof< ^B>)
+
+    let inline mempty() : ^R = (() ? (Mempty) <- Unchecked.defaultof< ^R>)
+
+
+    type Mappend = Mappend with        
+        static member        (?<-) (x:list<_>  , _Monoid:Mappend, y      ) = List.append  x y        
+        static member inline (?<-) (x:option<_>, _Monoid:Mappend, y      ) = 
+            match (x,y) with
+            | (Some a,Some b) -> Some (a ? (Mappend) <- b)
+            | (Some a,None  ) -> Some a
+            | (None  ,Some b) -> Some b
+            | _               -> None
+        static member        (?<-) (x:_[]      , _Monoid:Mappend, y      ) = Array.append x y
+        static member        (?<-) (x:string   , _Monoid:Mappend, y      ) = x + y
+        static member        (?<-) (()         , _Monoid:Mappend, _:unit ) = ()    
+        static member inline (?<-) ((x1,x2)    , _Monoid:Mappend, (y1,y2)) = (x1 ? (Mappend) <- y1) , (x2 ? (Mappend) <- y2)
+    
+    let inline mappend (x:'a) (y:'a) : 'a = x ? (Mappend) <- y
+
+
+    let inline mconcat x =
+        let foldR f s lst = List.foldBack f lst s
+        foldR mappend (mempty()) x
+
+
     // Applicative
     type Pure = Pure with
         member inline this.Base x = return' x
