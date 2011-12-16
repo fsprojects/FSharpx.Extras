@@ -420,22 +420,22 @@ module State =
 
 module Reader =
 
-    type Reader<'r,'a> = 'r -> 'a
+    type Reader_<'r,'a> = 'r -> 'a
 
     let bind k m = fun r -> (k (m r)) r
     
     /// The reader monad.
     /// This monad comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/07/much-ado-about-monads-reader-edition.aspx.
     type ReaderBuilder() =
-        member this.Return(a) : Reader<'r,'a> = fun _ -> a
-        member this.ReturnFrom(a:Reader<'r,'a>) = a
-        member this.Bind(m:Reader<'r,'a>, k:'a -> Reader<'r,'b>) : Reader<'r,'b> = bind k m
+        member this.Return(a) : Reader_<'r,'a> = fun _ -> a
+        member this.ReturnFrom(a:Reader_<'r,'a>) = a
+        member this.Bind(m:Reader_<'r,'a>, k:'a -> Reader_<'r,'b>) : Reader_<'r,'b> = bind k m
         member this.Zero() = this.Return ()
         member this.Combine(r1, r2) = this.Bind(r1, fun () -> r2)
-        member this.TryWith(m:Reader<'r,'a>, h:exn -> Reader<'r,'a>) : Reader<'r,'a> =
+        member this.TryWith(m:Reader_<'r,'a>, h:exn -> Reader_<'r,'a>) : Reader_<'r,'a> =
             fun env -> try m env
                        with e -> (h e) env
-        member this.TryFinally(m:Reader<'r,'a>, compensation) : Reader<'r,'a> =
+        member this.TryFinally(m:Reader_<'r,'a>, compensation) : Reader_<'r,'a> =
             fun env -> try m env
                        finally compensation()
         member this.Using(res:#IDisposable, body) =
@@ -449,11 +449,11 @@ module Reader =
                 (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current))))
     let reader = new ReaderBuilder()
     
-    let ask : Reader<'r,'r> = id
+    let ask : Reader_<'r,'r> = id
     let asks f = reader {
         let! r = ask
         return (f r) }
-    let local (f:'r1 -> 'r2) (m:Reader<'r2,'a>) : Reader<'r1, 'a> = f >> m
+    let local (f:'r1 -> 'r2) (m:Reader_<'r2,'a>) : Reader_<'r1, 'a> = f >> m
     
     open Operators
     
