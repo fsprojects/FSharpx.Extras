@@ -536,9 +536,9 @@ module Undo =
 module Writer =
     open Monoid
         
-    type Writer<'w, 'a> = unit -> 'a * 'w
+    type Writer_<'w, 'a> = unit -> 'a * 'w
 
-    let bind (m: _ Monoid_) (k:'a -> Writer<'w,'b>) (writer:Writer<'w,'a>) : Writer<'w,'b> =
+    let bind (m: _ Monoid_) (k:'a -> Writer_<'w,'b>) (writer:Writer_<'w,'a>) : Writer_<'w,'b> =
         fun () ->
             let (a, w) = writer()
             let (a', w') = (k a)()
@@ -550,17 +550,17 @@ module Writer =
     /// The writer monad.
     /// This monad comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.
     type WriterBuilder<'w>(monoid: 'w Monoid_) =
-        member this.Return(a) : Writer<'w,'a> = returnM monoid a
-        member this.ReturnFrom(w:Writer<'w,'a>) = w
+        member this.Return(a) : Writer_<'w,'a> = returnM monoid a
+        member this.ReturnFrom(w:Writer_<'w,'a>) = w
         member this.Bind(writer, k) = bind monoid k writer
         member this.Zero() = this.Return ()
-        member this.TryWith(writer:Writer<'w,'a>, handler:exn -> Writer<'w,'a>) : Writer<'w,'a> =
+        member this.TryWith(writer:Writer_<'w,'a>, handler:exn -> Writer_<'w,'a>) : Writer_<'w,'a> =
             fun () -> try writer()
                       with e -> (handler e)()
         member this.TryFinally(writer, compensation) =
             fun () -> try writer()
                       finally compensation()
-        member this.Using<'d,'w,'a when 'd :> IDisposable and 'd : null>(resource : 'd, body : 'd -> Writer<'w,'a>) : Writer<'w,'a> =
+        member this.Using<'d,'w,'a when 'd :> IDisposable and 'd : null>(resource : 'd, body : 'd -> Writer_<'w,'a>) : Writer_<'w,'a> =
             this.TryFinally(body resource, fun () -> match resource with null -> () | disp -> disp.Dispose())
         member this.Combine(comp1, comp2) = this.Bind(comp1, fun () -> comp2)
         member this.Delay(f) = this.Bind(this.Return (), f)
@@ -568,7 +568,7 @@ module Writer =
             match guard() with
             | true -> this.Bind(m, (fun () -> this.While(guard, m))) 
             | _        -> this.Zero()
-        member this.For(sequence:seq<'a>, body:'a -> Writer<'w,unit>) =
+        member this.For(sequence:seq<'a>, body:'a -> Writer_<'w,unit>) =
             this.Using(sequence.GetEnumerator(), 
                 fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current)))
 
@@ -584,7 +584,7 @@ module Writer =
             let! (a, b) = m
             return (a, f b) }
     
-    let censor monoid (f:'w1 -> 'w2) (m:Writer<'w1,'a>) : Writer<'w2,'a> =
+    let censor monoid (f:'w1 -> 'w2) (m:Writer_<'w1,'a>) : Writer_<'w2,'a> =
         let writer = WriterBuilder(monoid)
         writer { let! a = m
                  return (a, f)
