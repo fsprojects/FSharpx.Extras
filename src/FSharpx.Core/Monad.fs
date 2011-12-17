@@ -386,7 +386,7 @@ module State =
     /// The state monad.
     /// The algorithm is adjusted from my original work off of Brian Beckman's http://channel9.msdn.com/shows/Going+Deep/Brian-Beckman-The-Zen-of-Expressing-State-The-State-Monad/.
     /// The approach was adjusted from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2009/12/30/much-ado-about-monads-state-edition.aspx and mirrors his final result.
-    type StateBuilder() =
+    type StateBuilder_() =
         member this.Return(a) : State_<'a,'s> = fun s -> (a,s)
         member this.ReturnFrom(m:State_<'a,'s>) = m
         member this.Bind(m:State_<'a,'s>, k:'a -> State_<'b,'s>) : State_<'b,'s> = bind k m
@@ -407,7 +407,7 @@ module State =
         member this.For(sequence:seq<_>, body) =
             this.Using(sequence.GetEnumerator(),
                 (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current))))
-    let state = new StateBuilder()
+    let state = new StateBuilder_()
     
     open Operators
     
@@ -443,7 +443,7 @@ module Reader =
     
     /// The reader monad.
     /// This monad comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/07/much-ado-about-monads-reader-edition.aspx.
-    type ReaderBuilder() =
+    type ReaderBuilder_() =
         member this.Return(a) : Reader_<'r,'a> = fun _ -> a
         member this.ReturnFrom(a:Reader_<'r,'a>) = a
         member this.Bind(m:Reader_<'r,'a>, k:'a -> Reader_<'r,'b>) : Reader_<'r,'b> = bind k m
@@ -464,7 +464,7 @@ module Reader =
         member this.For(sequence:seq<_>, body) =
             this.Using(sequence.GetEnumerator(),
                 (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current))))
-    let reader = new ReaderBuilder()
+    let reader = new ReaderBuilder_()
     
     let ask : Reader_<'r,'r> = id
     let asks f = reader {
@@ -566,7 +566,7 @@ module Writer =
     
     /// The writer monad.
     /// This monad comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.
-    type WriterBuilder<'w>(monoid: 'w Monoid_) =
+    type WriterBuilder_<'w>(monoid: 'w Monoid_) =
         member this.Return(a) : Writer_<'w,'a> = returnM monoid a
         member this.ReturnFrom(w:Writer_<'w,'a>) = w
         member this.Bind(writer, k) = bind monoid k writer
@@ -589,20 +589,20 @@ module Writer =
             this.Using(sequence.GetEnumerator(), 
                 fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current)))
 
-    let writer = WriterBuilder(Monoid.ListMonoid<string>())
+    let writer = WriterBuilder_(Monoid.ListMonoid<string>())
 
     let tell   w = fun () -> ((), w)
     let listen m = fun () -> let (a, w) = m() in ((a, w), w)
     let pass   m = fun () -> let ((a, f), w) = m() in (a, f w)
     
     let listens monoid f m = 
-        let writer = WriterBuilder(monoid)
+        let writer = WriterBuilder_(monoid)
         writer {
             let! (a, b) = m
             return (a, f b) }
     
     let censor monoid (f:'w1 -> 'w2) (m:Writer_<'w1,'a>) : Writer_<'w2,'a> =
-        let writer = WriterBuilder(monoid)
+        let writer = WriterBuilder_(monoid)
         writer { let! a = m
                  return (a, f)
                } |> pass
@@ -781,7 +781,7 @@ module Continuation =
         fun cont econt ->
             runCont comp1 (fun a -> protect f a (fun comp2 -> runCont comp2 cont econt) econt) econt     
 
-    type ContinuationBuilder() =
+    type ContinuationBuilder_() =
         member this.Return(a) : Cont<_,_> = fun cont econt -> cont a
         member this.ReturnFrom(comp:Cont<_,_>) = comp
         member this.Bind(comp1, f) = bind f comp1
@@ -804,7 +804,7 @@ module Continuation =
         member this.For(items:seq<_>, body) =
             this.Using(items.GetEnumerator(),
                 (fun enum -> this.While((fun () -> enum.MoveNext()), this.Delay(fun () -> body enum.Current))))
-    let cont = ContinuationBuilder()
+    let cont = ContinuationBuilder_()
     
     open Operators
     
