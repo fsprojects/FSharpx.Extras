@@ -372,16 +372,42 @@ module State =
     let get   = State (fun s -> (s , s))
     let put x = State (fun _ -> ((), x))
 
+    type StateBuilder() =
+        member this.Return(x) : State<'s,'a> = return' x
+        member this.Bind(p,rest) = p >>= rest
+        member this.Let (p,rest) = rest p
+        member this.ReturnFrom(expr) = expr
 
-    //
+        member this.Zero() = this.Return()
+        member this.Combine(r1:State<_,_>, r2) = r1 >>= fun () -> r2
+        member this.TryWith(m:State<'s,'a>, h:exn -> State<'s,'a>) : State<'s,'a> =
+            State(fun env -> try (runState m) env
+                             with e -> (runState(h e)) env)
+
+        member this.TryFinally(m:State<'s,'a>, compensation) : State<'s,'a> =
+            State(fun env -> try (runState m) env
+                             finally compensation())
+        member this.Using(res:#IDisposable, body) =
+            this.TryFinally(body res, (fun () -> match res with null -> () | disp -> disp.Dispose()))
+        member this.Delay(f) = this.Bind(this.Return (), f)
+        member this.While(guard, m) =
+            if not(guard()) then this.Zero() else
+                m >>= (fun () -> this.While(guard, m))
+        member this.For(sequence:seq<_>, body) =
+            this.Using(sequence.GetEnumerator(),
+                (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current))))
+
+    let state = new StateBuilder()
+
+
     type State_<'a, 's> = 's -> 'a * 's
     
-    let getState = fun s -> (s,s)
-    let putState s = fun _ -> ((),s)
-    let eval m s = m s |> fst
-    let exec m s = m s |> snd
-    let empty = fun s -> ((), s)
-    let bind k m = fun s -> let (a, s') = m s in (k a) s'
+    let getState = fun s -> (s,s)       // remove -> use get
+    let putState s = fun _ -> ((),s)    // remove -> use put
+    let eval m s = m s |> fst           // remove -> use evalState
+    let exec m s = m s |> snd           // remove -> use execState
+    let empty = fun s -> ((), s)        // adapt
+    let bind k m = fun s -> let (a, s') = m s in (k a) s'   // remove
     
     /// The state monad.
     /// The algorithm is adjusted from my original work off of Brian Beckman's http://channel9.msdn.com/shows/Going+Deep/Brian-Beckman-The-Zen-of-Expressing-State-The-State-Monad/.
@@ -407,18 +433,20 @@ module State =
         member this.For(sequence:seq<_>, body) =
             this.Using(sequence.GetEnumerator(),
                 (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current))))
-    let state = new StateBuilder_()
+                
+    let state_ = new StateBuilder_()
+    
     
     open Operators
     
-    let inline returnM x = returnM state x
-    let inline (>>=) m f = bindM state m f
-    let inline (=<<) f m = bindM state m f
+    let inline returnM x = returnM state_ x
+    let inline (>>=) m f = bindM state_ m f
+    let inline (=<<) f m = bindM state_ m f
     /// Sequential application
-    let inline (<*>) f m = applyM state state f m
+    let inline (<*>) f m = applyM state_ state_ f m
     /// Sequential application
     let inline ap m f = f <*> m
-    let inline map f m = liftM state f m
+    let inline map f m = liftM state_ f m
     let inline (<!>) f m = map f m
     let inline lift2 f a b = returnM f <*> a <*> b
     /// Sequence actions, discarding the value of the first argument.
@@ -426,14 +454,13 @@ module State =
     /// Sequence actions, discarding the value of the second argument.
     let inline ( <*) x y = lift2 (fun z _ -> z) x y
     /// Sequentially compose two state actions, discarding any value produced by the first
-    let inline (>>.) m f = bindM state m (fun _ -> f)
+    let inline (>>.) m f = bindM state_ m (fun _ -> f)
     /// Left-to-right Kleisli composition
     let inline (>=>) f g = fun x -> f x >>= g
     /// Right-to-left Kleisli composition
     let inline (<=<) x = flip (>=>) x
 
-    let foldM f s = 
-        Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
+    let inline foldM f s = Seq.fold (fun acc t -> acc >>= (flip f) t) (return' s)
 
 module Reader =
 
@@ -502,7 +529,7 @@ module Undo =
     // UndoMonad on top of StateMonad
     open State
     
-    let undoable = state
+    let undoable = state_
     
     type 'a History = { 
         Current:'a
