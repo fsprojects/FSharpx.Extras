@@ -622,6 +622,54 @@ module Undo =
             return true }
 
 module Writer =
+    
+    type Writer<'w,'a> = Writer of ('a * 'w) with
+        static member        (?<-) (_           , _Functor:Fmap  ,   Writer(a,w)) = fun f -> Writer(f a, w)
+
+    let runWriter (Writer x) = x
+    type Writer<'w,'a> with
+        static member inline (?<-) (_           , _Monad  :Return, _:Writer<_,_>) = fun a -> Writer(a, mempty())
+        static member inline (?<-) (Writer(a, w), _Monad  :Bind  , _:Writer<_,_>) = fun k -> Writer(let (b, w') = runWriter(k a) in (b, mappend w w'))
+
+    let mapWriter f (Writer m)   = Writer(f m)
+    let execWriter  (Writer m) s = snd m
+
+    let tell              w       = Writer((),     w)
+    let listen(Writer (a, w))     = Writer((a, w), w)
+    let pass  (Writer((a, f), w)) = Writer( a,   f w)
+
+    type WriterBuilder() =
+        member inline this.Return(x) :Writer<'w,'a> = return' x
+        member inline this.Bind(p:Writer<'w,'a>,rest:'a->Writer<'w,'b>) = p >>= rest
+        member this.Let (p,rest) = rest p
+        member this.ReturnFrom(expr) = expr
+
+        member inline this.Zero() = this.Return()
+        member inline this.Combine(r1:Writer<_,_>, r2) = r1 >>= fun () -> r2
+        member inline this.Delay(f) = this.Bind(this.Return (), f)
+        (* Does it makes sense? There is no underlying function.
+        member this.TryWith(m:Writer<'w,'a>, h:exn -> Writer<'w,'a>) : Writer<'w,'a> =
+            Writer(fun env -> try (runWriter m) env
+                              with e -> (runWriter(h e)) env)
+
+        member this.TryFinally(m:Writer<'w,'a>, compensation) : Writer<'w,'a> =
+            Writer(fun env -> try (runWriter m) env
+                              finally compensation()) 
+        member this.Using(res:#IDisposable, body) =
+            this.TryFinally(body res, (fun () -> match res with null -> () | disp -> disp.Dispose()))
+        
+        member this.While(guard, m) =
+            if not(guard()) then this.Zero() else
+                m >>= (fun () -> this.While(guard, m))
+        member this.For(sequence:seq<_>, body) =
+            this.Using(sequence.GetEnumerator(),
+                (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current)))) *)
+
+    let writer = new WriterBuilder()
+    
+
+
+
     open Monoid
         
     type Writer_<'w, 'a> = unit -> 'a * 'w
@@ -660,11 +708,11 @@ module Writer =
             this.Using(sequence.GetEnumerator(), 
                 fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current)))
 
-    let writer = WriterBuilder_(Monoid.ListMonoid<string>())
+    let writer_ = WriterBuilder_(Monoid.ListMonoid<string>())
 
-    let tell   w = fun () -> ((), w)
-    let listen m = fun () -> let (a, w) = m() in ((a, w), w)
-    let pass   m = fun () -> let ((a, f), w) = m() in (a, f w)
+    let tell_   w = fun () -> ((), w)
+    let listen_ m = fun () -> let (a, w) = m() in ((a, w), w)
+    let pass_   m = fun () -> let ((a, f), w) = m() in (a, f w)
     
     let listens monoid f m = 
         let writer = WriterBuilder_(monoid)
@@ -676,18 +724,18 @@ module Writer =
         let writer = WriterBuilder_(monoid)
         writer { let! a = m
                  return (a, f)
-               } |> pass
+               } |> pass_
 
     open Operators
     
-    let inline private ret x = returnM writer x
-    let inline (>>=) m f = bindM writer m f
-    let inline (=<<) f m = bindM writer m f
+    let inline private ret x = returnM writer_ x
+    let inline (>>=) m f = bindM writer_ m f
+    let inline (=<<) f m = bindM writer_ m f
     /// Sequential application
-    let inline (<*>) f m = applyM writer writer f m
+    let inline (<*>) f m = applyM writer_ writer_ f m
     /// Sequential application
     let inline ap m f = f <*> m
-    let inline map f m = liftM writer f m
+    let inline map f m = liftM writer_ f m
     let inline (<!>) f m = map f m
     let inline lift2 f a b = ret f <*> a <*> b
     /// Sequence actions, discarding the value of the first argument.
@@ -695,7 +743,7 @@ module Writer =
     /// Sequence actions, discarding the value of the second argument.
     let inline ( <*) x y = lift2 (fun z _ -> z) x y
     /// Sequentially compose two state actions, discarding any value produced by the first
-    let inline (>>.) m f = bindM writer m (fun _ -> f)
+    let inline (>>.) m f = bindM writer_ m (fun _ -> f)
     /// Left-to-right Kleisli composition
     let inline (>=>) f g = fun x -> f x >>= g
     /// Right-to-left Kleisli composition

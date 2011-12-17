@@ -5,9 +5,9 @@ open FSharpx.Writer
 open NUnit.Framework
 open FsUnit
 
-let logMsg (message:string) = tell [message]
+let logMsg (message:string) = tell_ [message]
 let processFile file = printfn "%s" file
-let processFiles files = writer {
+let processFiles files = writer_ {
   try
     do! logMsg "Begin processing files"
     for file in files do
