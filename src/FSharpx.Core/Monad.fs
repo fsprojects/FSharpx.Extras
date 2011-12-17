@@ -765,7 +765,7 @@ module Continuation =
     /// The algorithm is from Wes Dyer http://blogs.msdn.com/b/wesdyer/archive/2008/01/11/the-marvels-of-monads.aspx.
     /// The builder approach is from Matthew Podwysocki's excellent Creating Extended Builders series http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/18/much-ado-about-monads-creating-extended-builders.aspx.
     /// Current implementation from Matt's gist at https://gist.github.com/628956
-    type Cont<'a,'r> = ('a -> 'r) -> (exn -> 'r) -> 'r
+    type Cont_<'a,'r> = ('a -> 'r) -> (exn -> 'r) -> 'r
     
     let private protect f x cont econt =
         let res = try Choice1Of2 (f x) with err -> Choice2Of2 err
@@ -773,19 +773,19 @@ module Continuation =
         | Choice1Of2 v -> cont v
         | Choice2Of2 v -> econt v
     
-    let runCont (c:Cont<_,_>) cont econt = c cont econt
-    let throw exn : Cont<'a,'r> = fun cont econt -> econt exn
-    let callcc (f: ('a -> Cont<'b,'r>) -> Cont<'a,'r>) : Cont<'a,'r> =
+    let runCont (c:Cont_<_,_>) cont econt = c cont econt
+    let throw exn : Cont_<'a,'r> = fun cont econt -> econt exn
+    let callcc (f: ('a -> Cont_<'b,'r>) -> Cont_<'a,'r>) : Cont_<'a,'r> =
         fun cont econt -> runCont (f (fun a -> (fun _ _ -> cont a))) cont econt
     let bind f comp1 = 
         fun cont econt ->
             runCont comp1 (fun a -> protect f a (fun comp2 -> runCont comp2 cont econt) econt) econt     
 
     type ContinuationBuilder_() =
-        member this.Return(a) : Cont<_,_> = fun cont econt -> cont a
-        member this.ReturnFrom(comp:Cont<_,_>) = comp
+        member this.Return(a) : Cont_<_,_> = fun cont econt -> cont a
+        member this.ReturnFrom(comp:Cont_<_,_>) = comp
         member this.Bind(comp1, f) = bind f comp1
-        member this.Catch(comp:Cont<_,_>) : Cont<Choice<_, exn>, _> = fun cont econt ->
+        member this.Catch(comp:Cont_<_,_>) : Cont_<Choice<_, exn>, _> = fun cont econt ->
             runCont comp (fun v -> cont (Choice1Of2 v)) (fun err -> cont (Choice2Of2 err))
         member this.Zero() =
             this.Return ()
@@ -834,7 +834,7 @@ module Continuation =
 
     /// The coroutine type from http://fssnip.net/7M
     type Coroutine() =
-        let tasks = new Queue<Cont<unit,unit>>()
+        let tasks = new Queue<Cont_<unit,unit>>()
 
         member this.Put(task) =
             let withYield = cont {
