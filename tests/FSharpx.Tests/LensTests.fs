@@ -90,7 +90,7 @@ let stateMonad() =
     let modSalary = Lens.updateState Editor.salary
     let setSalary = Lens.setState Editor.salary
     let modify = 
-        State.state {
+        State.state_ {
             let! s = getSalary
             do! setSalary 1000
             do! modSalary ((+) 100)
@@ -105,7 +105,7 @@ open FSharpx.Lens.StateOperators
 [<Test>]
 let stateMonadOperators() =
     let modify = 
-        State.state {
+        State.state_ {
             do! Editor.salary =! 1000
             do! Editor.salary += 100
         }
@@ -115,7 +115,7 @@ let stateMonadOperators() =
 [<Test>]
 let stateMonadOperators2() =
     let modify =
-        State.state {
+        State.state_ {
             let! oldSalary = Lens.getState Editor.salary
             do! Editor.salary += 1000
             return oldSalary

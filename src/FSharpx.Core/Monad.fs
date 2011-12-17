@@ -374,7 +374,7 @@ module State =
 
     type StateBuilder() =
         member this.Return(x) : State<'s,'a> = return' x
-        member this.Bind(p,rest) = p >>= rest
+        member this.Bind(p: State<'s,'a>,rest:'a -> State<'s,'b>) = p >>= rest
         member this.Let (p,rest) = rest p
         member this.ReturnFrom(expr) = expr
 
@@ -433,6 +433,7 @@ module State =
         member this.For(sequence:seq<_>, body) =
             this.Using(sequence.GetEnumerator(),
                 (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current))))
+
                 
     let state_ = new StateBuilder_()
     
@@ -463,6 +464,49 @@ module State =
     let inline foldM f s = Seq.fold (fun acc t -> acc >>= (flip f) t) (return' s)
 
 module Reader =
+    
+    type Reader<'r,'a> = Reader of ('r->'a) with
+        static member (?<-) (_       , _Functor:Fmap  ,   Reader m   ) = fun f -> Reader(fun r -> f (m r))
+
+    let runReader (Reader x) = x
+    type Reader<'s,'a> with
+        static member (?<-) (_       , _Monad  :Return, _:Reader<_,_>) = fun a -> Reader(fun _ -> a)
+        static member (?<-) (Reader m, _Monad  :Bind  , _:Reader<_,_>) = fun k -> Reader(fun r -> runReader(k (m r)) r)
+
+
+    let mapReader  f (Reader m) = Reader(f << m)
+    let withReader f (Reader m) = Reader(m << f)
+    let ask                = Reader id
+    let local f (Reader m) = Reader(m << f)
+
+    type ReaderBuilder() =
+        member this.Return(x) :Reader<'r,'a> = return' x
+        member this.Bind(p:Reader<'r,'a>,rest:'a->Reader<'r,'b>) = p >>= rest
+        member this.Let (p,rest) = rest p
+        member this.ReturnFrom(expr) = expr
+
+        member this.Zero() = this.Return()
+        member this.Combine(r1:Reader<_,_>, r2) = r1 >>= fun () -> r2
+        member this.TryWith(m:Reader<'r,'a>, h:exn -> Reader<'r,'a>) : Reader<'r,'a> =
+            Reader(fun env -> try (runReader m) env
+                              with e -> (runReader(h e)) env)
+
+        member this.TryFinally(m:Reader<'r,'a>, compensation) : Reader<'r,'a> =
+            Reader(fun env -> try (runReader m) env
+                              finally compensation())
+        member this.Using(res:#IDisposable, body) =
+            this.TryFinally(body res, (fun () -> match res with null -> () | disp -> disp.Dispose()))
+        member this.Delay(f) = this.Bind(this.Return (), f)
+        member this.While(guard, m) =
+            if not(guard()) then this.Zero() else
+                m >>= (fun () -> this.While(guard, m))
+        member this.For(sequence:seq<_>, body) =
+            this.Using(sequence.GetEnumerator(),
+                (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current))))
+
+    let reader = new ReaderBuilder()
+
+
 
     type Reader_<'r,'a> = 'r -> 'a
 
@@ -491,24 +535,24 @@ module Reader =
         member this.For(sequence:seq<_>, body) =
             this.Using(sequence.GetEnumerator(),
                 (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current))))
-    let reader = new ReaderBuilder_()
+    let reader_ = new ReaderBuilder_()
     
-    let ask : Reader_<'r,'r> = id
-    let asks f = reader {
-        let! r = ask
+    let ask_ : Reader_<'r,'r> = id
+    let asks f = reader_ {
+        let! r = ask_
         return (f r) }
-    let local (f:'r1 -> 'r2) (m:Reader_<'r2,'a>) : Reader_<'r1, 'a> = f >> m
+    let local_ (f:'r1 -> 'r2) (m:Reader_<'r2,'a>) : Reader_<'r1, 'a> = f >> m
     
     open Operators
     
-    let inline returnM x = returnM reader x
-    let inline (>>=) m f = bindM reader m f
-    let inline (=<<) f m = bindM reader m f
+    let inline returnM x = returnM reader_ x
+    let inline (>>=) m f = bindM reader_ m f
+    let inline (=<<) f m = bindM reader_ m f
     /// Sequential application
-    let inline (<*>) f m = applyM reader reader f m
+    let inline (<*>) f m = applyM reader_ reader_ f m
     /// Sequential application
     let inline ap m f = f <*> m
-    let inline map f m = liftM reader f m
+    let inline map f m = liftM reader_ f m
     let inline (<!>) f m = map f m
     let inline lift2 f a b = returnM f <*> a <*> b
     /// Sequence actions, discarding the value of the first argument.
@@ -516,7 +560,7 @@ module Reader =
     /// Sequence actions, discarding the value of the second argument.
     let inline ( <*) x y = lift2 (fun z _ -> z) x y
     /// Sequentially compose two reader actions, discarding any value produced by the first
-    let inline (>>.) m f = bindM reader m (fun _ -> f)
+    let inline (>>.) m f = bindM reader_ m (fun _ -> f)
     /// Left-to-right Kleisli composition
     let inline (>=>) f g = fun x -> f x >>= g
     /// Right-to-left Kleisli composition

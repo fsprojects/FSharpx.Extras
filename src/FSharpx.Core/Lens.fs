@@ -51,7 +51,7 @@ module Lens =
 
     /// Modifies the state in a state monad and returns the original value.
     let getAndModifyState l f = 
-        State.state {
+        State.state_ {
             let! v = State.getState
             do! updateState l f
             return v
@@ -59,7 +59,7 @@ module Lens =
 
     /// Modifies the state in a state monad and returns the modified value.
     let modifyAndGetState l f = 
-        State.state {
+        State.state_ {
             do! updateState l f
             return! State.getState
         }

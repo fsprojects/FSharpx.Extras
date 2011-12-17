@@ -5,7 +5,7 @@ open NUnit.Framework
 open FsUnit
 
 // Simple example
-let tick = state {
+let tick = state_ {
   let! n = getState
   do! putState (n + 1)
   return n }
@@ -17,7 +17,7 @@ let ``When starting a ticker at 0, it should have a state of 0``() =
 
 [<Test>]
 let ``When starting a ticker at 0 and ticking twice, it should have a state of 2``() =
-  let test = state {
+  let test = state_ {
     let! _ = tick
     let! _ = tick
     return () }
@@ -28,7 +28,7 @@ let ``When starting a ticker at 0 and ticking twice, it should have a state of 2
 let enqueue a = fun s -> ((), s @ a::[])
 let dequeue = fun (hd::tl) -> (hd, tl)
 
-let workflow = state {
+let workflow = state_ {
   let! queue = getState
   do! enqueue 4
   let! hd = dequeue

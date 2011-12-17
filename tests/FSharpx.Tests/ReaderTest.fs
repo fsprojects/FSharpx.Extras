@@ -10,36 +10,36 @@ open FsUnit
 [<Test>]
 let ``Return should enable return``() =
   let expected = 1
-  let r = reader {
+  let r = reader_ {
     return expected }
   r 0 |> should equal expected
 
 [<Test>]
 let ``ReturnFrom should enable return!``() =
   let expected = 1
-  let r = reader {
-    return! ask }
+  let r = reader_ {
+    return! ask_ }
   r expected |> should equal expected
 
 [<Test>]
 let ``ReturnFrom should enable return! from asks``() =
   let expected = 1
-  let r = reader {
+  let r = reader_ {
     return! asks (fun i -> i + 1) }
   r 0 |> should equal expected
 
 [<Test>]
 let ``Bind should enable let!``() =
   let expected = 1
-  let r = reader {
-    let! env = ask
+  let r = reader_ {
+    let! env = ask_
     return env }
   r expected |> should equal expected
 
 [<Test>]
 let ``Zero should allow no else branch``() =
   let called = ref false
-  let r = reader {
+  let r = reader_ {
     if false then
       called := true }
   r 1
@@ -48,8 +48,8 @@ let ``Zero should allow no else branch``() =
 [<Test>]
 let ``Combine should combine if statement``() =
   let expected = 0
-  let r = reader {
-    let! x = ask
+  let r = reader_ {
+    let! x = ask_
     if true then ()
     return x }
   r expected |> should equal expected
@@ -57,7 +57,7 @@ let ``Combine should combine if statement``() =
 [<Test>]
 let ``TryWith should catch exception``() =
   let called = ref false
-  let r = reader {
+  let r = reader_ {
     try failwith "FAIL"
     with e -> called := true }
   r ()
@@ -66,7 +66,7 @@ let ``TryWith should catch exception``() =
 [<Test>]
 let ``TryFinally with exception should execute finally``() =
   let called = ref false
-  let r = reader {
+  let r = reader_ {
     try failwith "FAIL"
     finally called := true }
   try r ()
@@ -79,7 +79,7 @@ let ``Using should call Dispose``() =
   let disposable =
     { new IDisposable with
         member __.Dispose() = disposed := true }
-  let r = reader {
+  let r = reader_ {
     use d = disposable
     () }
   r ()
@@ -88,10 +88,10 @@ let ``Using should call Dispose``() =
 [<Test>]
 let ``use! should call Dispose``() =
   let disposed = ref false
-  let disposable = reader {
+  let disposable = reader_ {
     return { new IDisposable with
                member __.Dispose() = disposed := true } }
-  let r = reader {
+  let r = reader_ {
     use! d = disposable
     () }
   r ()
@@ -100,7 +100,7 @@ let ``use! should call Dispose``() =
 [<Test>]
 let ``while should increment count``() =
   let count = ref 0
-  let r = reader {
+  let r = reader_ {
     while !count < 3 do
       incr count }
   r ()
@@ -109,7 +109,7 @@ let ``while should increment count``() =
 [<Test>]
 let ``for should increment count``() =
   let count = ref 0
-  let r = reader {
+  let r = reader_ {
     for i = 0 to 1 do
       incr count }
   r ()
