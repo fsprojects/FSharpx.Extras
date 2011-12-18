@@ -50,12 +50,12 @@ module Monoid =
             override this.mempty = 0
             override this.mappend a b = a + b }
 
-    /// Monoid (int,1,*)
+    /// Monoid (int,1,* )
     let IntProductMonoid =
         { new Monoid_<int>() with
             override this.mempty = 1
             override this.mappend a b = a * b }
-
+    
 
     // Monoid instances
     type Dual<'a> = Dual of 'a with
@@ -682,93 +682,7 @@ module Writer =
                 fun enum -> this.While(enum.MoveNext, fun () -> body enum.Current))
 
     let writer = new WriterBuilder()
-    
 
-
-    (*
-    open Monoid
-        
-    type Writer_<'w, 'a> = unit -> 'a * 'w
-
-    let bind (m: _ Monoid_) (k:'a -> Writer_<'w,'b>) (writer:Writer_<'w,'a>) : Writer_<'w,'b> =
-        fun () ->
-            let (a, w) = writer()
-            let (a', w') = (k a)()
-            (a', m.mappend w w')
-
-    let returnM (monoid: _ Monoid_) a = 
-        fun () -> (a, monoid.mempty)
-    
-    /// The writer monad.
-    /// This monad comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.
-    type WriterBuilder_<'w>(monoid: 'w Monoid_) =
-        member this.Return(a) : Writer_<'w,'a> = returnM monoid a
-        member this.ReturnFrom(w:Writer_<'w,'a>) = w
-        member this.Bind(writer, k) = bind monoid k writer
-        member this.Zero() = this.Return ()
-        member this.TryWith(writer:Writer_<'w,'a>, handler:exn -> Writer_<'w,'a>) : Writer_<'w,'a> =
-            fun () -> try writer()
-                      with e -> (handler e)()
-        member this.TryFinally(writer, compensation) =
-            fun () -> try writer()
-                      finally compensation()
-        member this.Using<'d,'w,'a when 'd :> IDisposable and 'd : null>(resource : 'd, body : 'd -> Writer_<'w,'a>) : Writer_<'w,'a> =
-            this.TryFinally(body resource, fun () -> match resource with null -> () | disp -> disp.Dispose())
-        member this.Combine(comp1, comp2) = this.Bind(comp1, fun () -> comp2)
-        member this.Delay(f) = this.Bind(this.Return (), f)
-        member this.While(guard, m) =
-            match guard() with
-            | true -> this.Bind(m, (fun () -> this.While(guard, m))) 
-            | _        -> this.Zero()
-        member this.For(sequence:seq<'a>, body:'a -> Writer_<'w,unit>) =
-            this.Using(sequence.GetEnumerator(), 
-                fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current)))
-
-    let writer_ = WriterBuilder_(Monoid.ListMonoid<string>())
-
-    let tell_   w = fun () -> ((), w)
-    let listen_ m = fun () -> let (a, w) = m() in ((a, w), w)
-    let pass_   m = fun () -> let ((a, f), w) = m() in (a, f w)
-    
-    let listens_ monoid f m = 
-        let writer = WriterBuilder_(monoid)
-        writer {
-            let! (a, b) = m
-            return (a, f b) }
-    
-    let censor_ monoid (f:'w1 -> 'w2) (m:Writer_<'w1,'a>) : Writer_<'w2,'a> =
-        let writer = WriterBuilder_(monoid)
-        writer { let! a = m
-                 return (a, f)
-               } |> pass_
-
-    open Operators
-    
-    let inline private ret x = returnM writer_ x
-    let inline (>>=) m f = bindM writer_ m f
-    let inline (=<<) f m = bindM writer_ m f
-    /// Sequential application
-    let inline (<*>) f m = applyM writer_ writer_ f m
-    /// Sequential application
-    let inline ap m f = f <*> m
-    let inline map f m = liftM writer_ f m
-    let inline (<!>) f m = map f m
-    let inline lift2 f a b = ret f <*> a <*> b
-    /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) x y = lift2 (fun _ z -> z) x y
-    /// Sequence actions, discarding the value of the second argument.
-
-    let inline ( <* ) x y = lift2 (fun z _ -> z) x y
-    /// Sequentially compose two state actions, discarding any value produced by the first
-    let inline (>>.) m f = bindM writer_ m (fun _ -> f)
-    /// Left-to-right Kleisli composition
-    let inline (>=>) f g = fun x -> f x >>= g
-    /// Right-to-left Kleisli composition
-    let inline (<=<) x = flip (>=>) x
-
-    let foldM f s = 
-        Seq.fold (fun acc t -> acc >>= (flip f) t) (ret s)
-    *)
 module Choice =
     let returnM = Choice1Of2
 
@@ -888,8 +802,8 @@ module Validation =
     /// Sequence actions, discarding the value of the first argument.
     let ( *>) = stringListValidation.apr
     /// Sequence actions, discarding the value of the first argument.
-    let ( <*) = stringListValidation.apl
-
+    let ( <* ) = stringListValidation.apl
+    
     let seqValidator f = 
         let zero = returnM []
         Seq.map f >> Seq.fold (lift2 (flip FSharpx.List.cons)) zero
