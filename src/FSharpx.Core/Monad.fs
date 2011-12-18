@@ -684,7 +684,7 @@ module Writer =
     let writer = new WriterBuilder()
 
 module Choice =
-    let returnM = Choice1Of2
+    // let returnM = Choice1Of2
 
     let get =
         function
@@ -698,41 +698,43 @@ module Choice =
 
     let inline cast (o: obj) = protect unbox o
         
-    let ap x f =
-        match f,x with
-        | Choice1Of2 f, Choice1Of2 x -> Choice1Of2 (f x)
-        | Choice2Of2 e, _            -> Choice2Of2 e
-        | _           , Choice2Of2 e -> Choice2Of2 e
+    // let ap x f =
+    //     match f,x with
+    //     | Choice1Of2 f, Choice1Of2 x -> Choice1Of2 (f x)
+    //     | Choice2Of2 e, _            -> Choice2Of2 e
+    //     | _           , Choice2Of2 e -> Choice2Of2 e
 
     /// Sequential application
-    let inline (<*>) f x = ap x f
+    // let inline (<*>) f x = ap x f
 
-    let map f =
-        function
-        | Choice1Of2 x -> f x |> Choice1Of2
-        | Choice2Of2 x -> Choice2Of2 x
+    let map f x :Choice<_,_> = fmap f x
+    //    function
+    //    | Choice1Of2 x -> f x |> Choice1Of2
+    //    | Choice2Of2 x -> Choice2Of2 x
 
-    let inline (<!>) f x = map f x
-    let inline lift2 f a b = f <!> a <*> b
+    // let inline (<!>) f x = map f x
+    // let inline lift2 f a b = f <!> a <*> b
 
     /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) a b = lift2 (fun _ z -> z) a b
+    // let inline ( *>) a b = lift2 (fun _ z -> z) a b
     /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) a b = lift2 (fun z _ -> z) a b
+    // let inline ( <*) a b = lift2 (fun z _ -> z) a b
 
-    let bind f = 
-        function
-        | Choice1Of2 x -> f x
-        | Choice2Of2 x -> Choice2Of2 x
+    let bind f m : Choice<_,_> = m >>= f
+
+    // let bind f = 
+    //     function
+    //     | Choice1Of2 x -> f x
+    //     | Choice2Of2 x -> Choice2Of2 x
     
-    let inline (>>=) m f = bind f m
-    let inline (=<<) f m = bind f m
+    // let inline (>>=) m f = bind f m
+    // let inline (=<<) f m = bind f m
     /// Sequentially compose two either actions, discarding any value produced by the first
-    let inline (>>.) m1 m2 = m1 >>= (fun _ -> m2)
+    // let inline (>>.) m1 m2 = m1 >>= (fun _ -> m2)
     /// Left-to-right Kleisli composition
-    let inline (>=>) f g = fun x -> f x >>= g
+    // let inline (>=>) f g = fun x -> f x >>= g
     /// Right-to-left Kleisli composition
-    let inline (<=<) x = flip (>=>) x
+    // let inline (<=<) x = flip (>=>) x
 
     let inline bimap f1 f2 = 
         function
@@ -746,9 +748,9 @@ module Choice =
 
     let inline mapSecond f = bimap id f
 
-    type EitherBuilder() =
-        member this.Return a = returnM a
-        member this.Bind(m,f) = bind f m
+    // type EitherBuilder() =
+    //     member this.Return a = returnM a
+    //     member this.Bind(m,f) = bind f m
 
     let toOption = Option.fromChoice
     let fromOption o = 
@@ -756,10 +758,10 @@ module Choice =
         | Some a -> Choice1Of2 a
         | None -> Choice2Of2 o
 
-    let foldM f s = 
-        Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
-        // pointfree:
-        //Seq.fold (flip f >> bind |> flip) (returnM s)
+    //let foldM f s = 
+    //    Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
+    //    // pointfree:
+    //    //Seq.fold (flip f >> bind |> flip) (returnM s)
 
 module Validation =
     open Choice
@@ -784,7 +786,7 @@ module Validation =
     type CustomValidation<'a>(monoid: 'a Monoid_) =
         /// Sequential application
         member this.ap x = apm monoid x
-        member this.lift2 f a b = returnM f |> this.ap a |> this.ap b
+        member this.lift2 f a b = return' f |> this.ap a |> this.ap b
         /// Sequence actions, discarding the value of the first argument.
         member this.apr b a = this.lift2 (fun _ z -> z) a b
         /// Sequence actions, discarding the value of the second argument.
@@ -805,7 +807,7 @@ module Validation =
     let ( <* ) = stringListValidation.apl
     
     let seqValidator f = 
-        let zero = returnM []
+        let zero = return' []
         Seq.map f >> Seq.fold (lift2 (flip FSharpx.List.cons)) zero
 
 

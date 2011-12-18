@@ -227,7 +227,7 @@ type FSharpChoice =
 
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>, mapper: Func<_,_,_>) =
-        let mapper = Choice.lift2 (curry mapper.Invoke)
+        let mapper = liftM2 (curry mapper.Invoke)
         let v = Choice.bind f.Invoke o
         mapper o v
 
@@ -236,7 +236,7 @@ type FSharpChoice =
 
     [<Extension>]
     static member Join (c: Choice<'a, string list>, inner: Choice<'b, string list>, outerKeySelector: Func<'a,'c>, innerKeySelector: Func<'b,'c>, resultSelector: Func<'a,'b,'d>) =
-        Choice.returnM (curry resultSelector.Invoke) 
+        return' (curry resultSelector.Invoke) 
         |> Validation.ap c 
         |> Validation.ap inner 
 
@@ -244,7 +244,7 @@ type FSharpChoice =
     static member Ap (f: Choice<Func<_,_>, _>, x) =
         f
         |> Choice.map (fun a -> a.Invoke)
-        |> Choice.ap x
+        |> ap x
 
     [<Extension>]
     static member SelectSecond (o, f: Func<_,_>) = Choice.mapSecond f.Invoke o

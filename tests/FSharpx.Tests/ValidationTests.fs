@@ -26,7 +26,7 @@ let validateAddressLines =
         "Line1 is empty but Line2 is not"
 
 let validateAddress (a: Address) = 
-    returnM a
+    return' a
     <* nonNull "Post code can't be null" a.Postcode
     <* validateAddressLines a
 
@@ -60,7 +60,7 @@ let ValidateCustomer() =
                                     Order(ProductName = null , Cost = (-1m).n)
                      ]))
     let result = 
-        returnM customer
+        return' customer
         <* nonNull "Surname can't be null" customer.Surname
         <* notEqual "foo" "Surname can't be foo" customer.Surname
         <* validateAddress customer.Address
@@ -78,7 +78,7 @@ let ValidateCustomer() =
 let ``using ap``() =
   let customer = Customer()
   let result = 
-    returnM (konst2 customer)
+    return' (konst2 customer)
     |> Validation.ap (nonNull "Surname can't be null" customer.Surname)
     |> Validation.ap (notEqual "foo" "Surname can't be foo" customer.Surname)
   match result with
@@ -99,7 +99,7 @@ let ``validation with monoid``() =
   let notEqual a = validator ((<>) a)
   let lengthNotEquals l = validator (fun (x: string) -> x.Length <> l)
   let validateString x = 
-    Choice.returnM x
+    return' x
     |> v.apl (notEqual "hello" x)
     |> v.apl (lengthNotEquals 5 x)
   match validateString "hello" with
