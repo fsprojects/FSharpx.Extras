@@ -638,6 +638,14 @@ module Writer =
     let listen(Writer (a, w))     = Writer((a, w), w)
     let pass  (Writer((a, f), w)) = Writer( a,   f w)
 
+    let inline listens f m = do' {
+        let! (a, w) = listen m
+        return (a, f w)}
+
+    let inline censor f m = pass <| do' {
+        let! a = m
+        return (a, f)}
+
     type WriterBuilder() =
         member inline this.Return(x) :Writer<'w,'a> = return' x
         member inline this.Bind(p:Writer<'w,'a>,rest:'a->Writer<'w,'b>) = p >>= rest
@@ -647,29 +655,31 @@ module Writer =
         member inline this.Zero() = this.Return()
         member inline this.Combine(r1:Writer<_,_>, r2) = r1 >>= fun () -> r2
         member inline this.Delay(f) = this.Bind(this.Return (), f)
-        (* Does it makes sense? There is no underlying function.
+
         member this.TryWith(m:Writer<'w,'a>, h:exn -> Writer<'w,'a>) : Writer<'w,'a> =
-            Writer(fun env -> try (runWriter m) env
-                              with e -> (runWriter(h e)) env)
+            Writer(try (runWriter m)
+                   with e -> (runWriter(h e)))
 
         member this.TryFinally(m:Writer<'w,'a>, compensation) : Writer<'w,'a> =
-            Writer(fun env -> try (runWriter m) env
-                              finally compensation()) 
+            Writer(try (runWriter m)
+                   finally compensation()) 
         member this.Using(res:#IDisposable, body) =
             this.TryFinally(body res, (fun () -> match res with null -> () | disp -> disp.Dispose()))
         
-        member this.While(guard, m) =
-            if not(guard()) then this.Zero() else
-                m >>= (fun () -> this.While(guard, m))
-        member this.For(sequence:seq<_>, body) =
+        member inline this.While(guard, m) =
+            let rec f guard m =
+                if not(guard()) then this.Zero() else
+                    m() >>= (fun () -> f guard m)
+            f guard m
+        member inline this.For(sequence:seq<_>, body) =
             this.Using(sequence.GetEnumerator(),
-                (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current)))) *)
+                fun enum -> this.While(enum.MoveNext, fun () -> body enum.Current))
 
     let writer = new WriterBuilder()
     
 
 
-
+    (*
     open Monoid
         
     type Writer_<'w, 'a> = unit -> 'a * 'w
@@ -714,13 +724,13 @@ module Writer =
     let listen_ m = fun () -> let (a, w) = m() in ((a, w), w)
     let pass_   m = fun () -> let ((a, f), w) = m() in (a, f w)
     
-    let listens monoid f m = 
+    let listens_ monoid f m = 
         let writer = WriterBuilder_(monoid)
         writer {
             let! (a, b) = m
             return (a, f b) }
     
-    let censor monoid (f:'w1 -> 'w2) (m:Writer_<'w1,'a>) : Writer_<'w2,'a> =
+    let censor_ monoid (f:'w1 -> 'w2) (m:Writer_<'w1,'a>) : Writer_<'w2,'a> =
         let writer = WriterBuilder_(monoid)
         writer { let! a = m
                  return (a, f)
@@ -741,7 +751,8 @@ module Writer =
     /// Sequence actions, discarding the value of the first argument.
     let inline ( *>) x y = lift2 (fun _ z -> z) x y
     /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) x y = lift2 (fun z _ -> z) x y
+
+    let inline ( <* ) x y = lift2 (fun z _ -> z) x y
     /// Sequentially compose two state actions, discarding any value produced by the first
     let inline (>>.) m f = bindM writer_ m (fun _ -> f)
     /// Left-to-right Kleisli composition
@@ -751,7 +762,7 @@ module Writer =
 
     let foldM f s = 
         Seq.fold (fun acc t -> acc >>= (flip f) t) (ret s)
-
+    *)
 module Choice =
     let returnM = Choice1Of2
 
