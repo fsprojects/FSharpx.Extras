@@ -181,7 +181,38 @@ module Prelude =
     let inline unless p s     = when' (not p) s
     let inline ap     x y     = liftM2 id x y
 
+    
+
+
+
+    // let inline private ret x = returnM writer_ x  --> return' 
+    // let inline (>>=) m f = bindM writer_ m f
+    let inline (=<<) f m = m >>= f
+    /// Sequential application
+    //let inline (<*>) f m = applyM writer_ writer_ f m  --> define instances for applicative functor
+    /// Sequential application
+    // let inline ap m f = f <*> m   --> ap
+    // let inline map f m = liftM writer_ f m  --> fmap, define instances for functor
+    let inline (<!>) f m = fmap f m
+    // let inline lift2 f a b = ret f <*> a <*> b --> defined later
+    /// Sequence actions, discarding the value of the first argument.
+    // let inline ( *>) x y = lift2 (fun _ z -> z) x y --> defined later
+    /// Sequence actions, discarding the value of the second argument.
+
+    // let inline ( <* ) x y = lift2 (fun z _ -> z) x y --> defined later
+
+    /// Sequentially compose two state actions, discarding any value produced by the first
+    let inline (>>.) m f = m >>= (fun _ -> f)
+
+    /// Left-to-right Kleisli composition
     let inline (>=>)  f g x   = f x >>= g
+    /// Right-to-left Kleisli composition
+    let inline (<=<) x = flip (>=>) x
+
+    let inline foldM f s = 
+        Seq.fold (fun acc t -> acc >>= (flip f) t) (return' s) // todo -> define it in Seq module
+
+
 
 
     // Monoid
@@ -232,3 +263,11 @@ module Prelude =
         static member (?<-) (f:list<_>  , _Applicative:Ap, x:list<_>  ) = Ap.Ap.Base f x : list<_>
         static member (?<-) (f:_ -> _   , _Applicative:Ap, g: _ -> _  ) = fun x ->   f x (g x)
     let inline (<*>) x y : ^R = (x ? (Ap) <- y)
+
+    let inline lift2 f a b = pure' f <*> a <*> b     // Same as liftM2 but requires just Applicative Functor
+
+    /// Sequence actions, discarding the value of the first argument.    
+    let inline ( *>) x y = lift2 (fun _ z -> z) x y
+
+    /// Sequence actions, discarding the value of the second argument.
+    let inline ( <* ) x y = lift2 (fun z _ -> z) x y
