@@ -51,23 +51,16 @@ module Operators =
             bindM builder2 m <| fun m' ->
                 returnM builder2 (f' m') 
 
-module Async =
-        
+module Async =        
     let inline bind f m = async.Bind(m,f)
     let ap  m f : Async<_> = f <*> m
     let map f m : Async<_> = fmap f m
 
-module ZipList = 
-    let returnM v = Seq.initInfinite (fun _ -> v)
-    /// Sequential application
-    let (<*>) f a = Seq.zip f a |> Seq.map (fun (k,v) -> k v)
-    /// Sequential application
-    let inline ap m f = f <*> m
-    let inline lift2 f a b = returnM f <*> a <*> b
-    /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) x y = lift2 (fun _ z -> z) x y
-    /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) x y = lift2 (fun z _ -> z) x y
+module ZipList =
+    type ZipList<'a> = ZipList of 'a seq with
+        static member (?<-) (_        , _Functor    :Fmap,   ZipList x  ) = fun f -> ZipList (Seq.map f x)
+        static member (?<-) (_        , _Applicative:Pure, _:ZipList<'a>) = fun x -> ZipList (Seq.initInfinite (konst x))
+        static member (?<-) (ZipList f, _Applicative:Ap  ,   ZipList x  ) = ZipList (Seq.zip f x |> Seq.map (fun (f,x) -> f x)) 
 
 module Option =
 
