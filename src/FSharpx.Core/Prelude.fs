@@ -134,6 +134,8 @@ module Prelude =
     let (|Boolean|_|) = Boolean.parse
     let (|Int32|_|) = Int32.parse
     let (|Double|_|) = Double.parse
+    let (|Null|Value|) (x: _ Nullable) =
+        if x.HasValue then Value x.Value else Null
 
 
     // Typeclasses
@@ -146,9 +148,12 @@ module Prelude =
         static member (?<-) (_, _Functor:Fmap, x:list<_>    ) = fun f -> List.map   f x
         static member (?<-) (_, _Functor:Fmap, g:_->_       ) = (>>) g
         static member (?<-) (_, _Functor:Fmap, x:Async<_>   ) = fun f -> async.Bind(x,f >> async.Return)
+        static member (?<-) (_, _Functor:Fmap, x:Nullable<_>) = fun f -> match x with
+                                                                         | Null    -> Nullable()
+                                                                         | Value v -> Nullable(f v)
         static member (?<-) (_, _Functor:Fmap, x:Choice<_,_>) = fun f -> match x with
-                                                                           | Choice1Of2 x -> Choice1Of2 (f x)
-                                                                           | Choice2Of2 x -> Choice2Of2 x
+                                                                         | Choice1Of2 x -> Choice1Of2 (f x)
+                                                                         | Choice2Of2 x -> Choice2Of2 x
     let inline fmap f x = (() ? (Fmap) <- x) f
 
     // Monad
@@ -157,6 +162,7 @@ module Prelude =
         static member (?<-) (_, _Monad:Return, _:'a list       ) = fun (x:'a) -> [x]
         static member (?<-) (_, _Monad:Return, _: _ -> 'a      ) = fun (x:'a) -> konst x
         static member (?<-) (_, _Monad:Return, _:'a Async      ) = fun (x:'a) -> async.Return x
+        static member (?<-) (_, _Monad:Return, _:'a Nullable   ) = fun (x:'a) -> Nullable x
         static member (?<-) (_, _Monad:Return, _: Choice<'a,'e>) = fun (x:'a) -> Choice1Of2 x : Choice<'a,'b>
     let inline return' x : ^R = (() ? (Return) <- Unchecked.defaultof< ^R> ) x
 
@@ -165,6 +171,10 @@ module Prelude =
         static member (?<-) (x:list<_>      , _Monad:Bind, _:'b list      ) = fun f -> List.collect f x
         static member (?<-) (f:'e->'a       , _Monad:Bind, _:'e->'b       ) = fun (k:'a->'e->'b) r -> k (f r) r
         static member (?<-) (x:Async<_>     , _Monad:Bind, _:'b Async     ) = fun f -> async.Bind(x,f)
+        static member (?<-) (x:Nullable<_>  , _Monad:Bind, _:'b Nullable  ) = fun f -> 
+            match x with
+            | Null -> Nullable()
+            | Value v -> f v
         static member (?<-) (x:Choice<'a,'e>, _Monad:Bind, _:Choice<'b,'e>) = fun (k:_->Choice<'b,_>) ->
             match x with
             | Choice2Of2 l -> Choice2Of2 l
@@ -248,9 +258,10 @@ module Prelude =
         static member (?<-) (_, _Applicative:Pure, _:'a list          ) = fun (x:'a) -> Pure.Pure.Base x :'a list
         static member (?<-) (_, _Applicative:Pure, _: _ -> 'a         ) = konst
         static member (?<-) (_, _Applicative:Pure, _:'a Async         ) = fun (x:'a) -> Pure.Pure.Base x :'a Async
+        static member (?<-) (_, _Applicative:Pure, _:'a Nullable      ) = fun (x:'a) -> Pure.Pure.Base x :'a Nullable
         static member (?<-) (_, _Applicative:Pure, _: Choice<'a,'b>   ) = fun (x:'a) -> Pure.Pure.Base x :Choice<'a,'b>        
         static member (?<-) (_, _Applicative:Pure, _:Validation< _,'a>) = fun (x:'a) -> Right x
-    let inline pure' x : ^R = (() ? (Pure) <- Unchecked.defaultof< ^R> ) x
+    let inline pure' x : ^R = (() ? (Pure) <- Unchecked.defaultof< ^R>) x
 
 
     type Ap = Ap with
