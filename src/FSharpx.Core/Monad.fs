@@ -52,36 +52,10 @@ module Operators =
                 returnM builder2 (f' m') 
 
 module Async =
-    open Operators
         
     let inline bind f m = async.Bind(m,f)
-    let inline returnM x = returnM async x
-    let inline (>>=) m f = bindM async m f
-    let inline (=<<) f m = bindM async m f
-    /// Sequential application
-    let inline (<*>) f m = applyM async async f m
-    /// Sequential application
-    let inline ap m f = f <*> m
-    let inline pipe m f = liftM async f m
-    let inline pipe2 x y f = returnM f <*> x <*> y
-    let inline pipe3 x y z f = returnM f <*> x <*> y <*> z
-    let inline map f m = pipe m f
-    let inline lift2 f x y = returnM f <*> x <*> y
-    let inline (<!>) f m = pipe m f
-    /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) x y = pipe2 x y (fun _ z -> z)
-    /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) x y = pipe2 x y (fun z _ -> z)
-
-    /// Sequentially compose two async actions, discarding any value produced by the first
-    let inline (>>.) m f = bindM async m (fun _ -> f)
-    /// Left-to-right Kleisli composition
-    let inline (>=>) f g = fun x -> f x >>= g
-    /// Right-to-left Kleisli composition
-    let inline (<=<) x = flip (>=>) x
-
-    let foldM f s = 
-        Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
+    let ap  m f : Async<_> = f <*> m
+    let map f m : Async<_> = fmap f m
 
 module ZipList = 
     let returnM v = Seq.initInfinite (fun _ -> v)

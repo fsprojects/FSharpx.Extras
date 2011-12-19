@@ -340,7 +340,7 @@ type AsyncExtensions =
         
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>, mapper: Func<_,_,_>) =
-        let mapper = Async.lift2 (curry mapper.Invoke)
+        let mapper = liftM2 (curry mapper.Invoke)
         let v = Async.bind f.Invoke o
         mapper o v
 

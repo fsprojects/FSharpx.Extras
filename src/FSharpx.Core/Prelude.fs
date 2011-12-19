@@ -145,6 +145,7 @@ module Prelude =
         static member (?<-) (_, _Functor:Fmap, x:option<_>  ) = fun f -> Option.map f x
         static member (?<-) (_, _Functor:Fmap, x:list<_>    ) = fun f -> List.map   f x
         static member (?<-) (_, _Functor:Fmap, g:_->_       ) = (>>) g
+        static member (?<-) (_, _Functor:Fmap, x:Async<_>   ) = fun f -> async.Bind(x,f >> async.Return)
         static member (?<-) (_, _Functor:Fmap, x:Choice<_,_>) = fun f -> match x with
                                                                            | Choice1Of2 x -> Choice1Of2 (f x)
                                                                            | Choice2Of2 x -> Choice2Of2 x
@@ -152,9 +153,10 @@ module Prelude =
 
     // Monad
     type Return = Return with
-        static member (?<-) (_, _Monad:Return, _:'a option     ) = fun (x:'a) -> Some x        
+        static member (?<-) (_, _Monad:Return, _:'a option     ) = fun (x:'a) -> Some x
         static member (?<-) (_, _Monad:Return, _:'a list       ) = fun (x:'a) -> [x]
         static member (?<-) (_, _Monad:Return, _: _ -> 'a      ) = fun (x:'a) -> konst x
+        static member (?<-) (_, _Monad:Return, _:'a Async      ) = fun (x:'a) -> async.Return x
         static member (?<-) (_, _Monad:Return, _: Choice<'a,'e>) = fun (x:'a) -> Choice1Of2 x : Choice<'a,'b>
     let inline return' x : ^R = (() ? (Return) <- Unchecked.defaultof< ^R> ) x
 
@@ -162,6 +164,7 @@ module Prelude =
         static member (?<-) (x:option<_>    , _Monad:Bind, _:'b option    ) = fun f -> Option.bind  f x
         static member (?<-) (x:list<_>      , _Monad:Bind, _:'b list      ) = fun f -> List.collect f x
         static member (?<-) (f:'e->'a       , _Monad:Bind, _:'e->'b       ) = fun (k:'a->'e->'b) r -> k (f r) r
+        static member (?<-) (x:Async<_>     , _Monad:Bind, _:'b Async     ) = fun f -> async.Bind(x,f)
         static member (?<-) (x:Choice<'a,'e>, _Monad:Bind, _:Choice<'b,'e>) = fun (k:_->Choice<'b,_>) ->
             match x with
             | Choice2Of2 l -> Choice2Of2 l
@@ -244,6 +247,7 @@ module Prelude =
         static member (?<-) (_, _Applicative:Pure, _:'a option        ) = fun (x:'a) -> Pure.Pure.Base x :'a option
         static member (?<-) (_, _Applicative:Pure, _:'a list          ) = fun (x:'a) -> Pure.Pure.Base x :'a list
         static member (?<-) (_, _Applicative:Pure, _: _ -> 'a         ) = konst
+        static member (?<-) (_, _Applicative:Pure, _:'a Async         ) = fun (x:'a) -> Pure.Pure.Base x :'a Async
         static member (?<-) (_, _Applicative:Pure, _: Choice<'a,'b>   ) = fun (x:'a) -> Pure.Pure.Base x :Choice<'a,'b>        
         static member (?<-) (_, _Applicative:Pure, _:Validation< _,'a>) = fun (x:'a) -> Right x
     let inline pure' x : ^R = (() ? (Pure) <- Unchecked.defaultof< ^R> ) x
@@ -254,6 +258,7 @@ module Prelude =
         static member        (?<-) (f:option<_>        , _Applicative:Ap, x:option<_>        ) = Ap.Ap.Base f x
         static member        (?<-) (f:list<_>          , _Applicative:Ap, x:list<_>          ) = Ap.Ap.Base f x
         static member        (?<-) (f:_ -> _           , _Applicative:Ap, g: _ -> _          ) = fun x ->   f x (g x)
+        static member        (?<-) (f:Async<_>         , _Applicative:Ap, x:Async<_>         ) = Ap.Ap.Base f x
         static member        (?<-) (f:Choice<_,'e>     , _Applicative:Ap, x:Choice<_,'e>     ) = Ap.Ap.Base f x
         static member inline (?<-) (f:Validation< ^e,_>, _Applicative:Ap, x:Validation< ^e,_>) =         
             match f,x with
@@ -270,3 +275,7 @@ module Prelude =
 
     /// Sequence actions, discarding the value of the second argument.
     let inline (<* ) x y = pure' (fun z _ -> z) <*> x <*> y //lift2 (fun z _ -> z) x y
+
+    let inline pipe  m f     = liftM  f m
+    let inline pipe2 x y f   = pure'  f <*> x <*> y
+    let inline pipe3 x y z f = pure'  f <*> x <*> y <*> z
