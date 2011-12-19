@@ -237,8 +237,8 @@ type FSharpChoice =
     [<Extension>]
     static member Join (c: Choice<'a, string list>, inner: Choice<'b, string list>, outerKeySelector: Func<'a,'c>, innerKeySelector: Func<'b,'c>, resultSelector: Func<'a,'b,'d>) =
         pure' (curry resultSelector.Invoke) 
-        |> Validation.flippedAp (Choice.toValidation c)
-        |> Validation.flippedAp (Choice.toValidation inner) |> Validation.toChoice
+        |> Validation.ap (Choice.toValidation c)
+        |> Validation.ap (Choice.toValidation inner) |> Validation.toChoice
 
     [<Extension>]
     static member Ap (f: Choice<Func<_,_>, _>, x) =

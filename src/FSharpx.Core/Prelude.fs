@@ -192,16 +192,13 @@ module Prelude =
     let inline (=<<) f m = m >>= f
     let inline (<!>) f m = fmap f m
 
-    /// Sequentially compose two state actions, discarding any value produced by the first
+    /// Sequentially compose two actions, discarding any value produced by the first
     let inline (>>.) m f = m >>= (fun _ -> f)
 
     /// Left-to-right Kleisli composition
     let inline (>=>)  f g x   = f x >>= g
     /// Right-to-left Kleisli composition
-    let inline (<=<) x = flip (>=>) x
-
-    let inline foldM f s = 
-        Seq.fold (fun acc t -> acc >>= (flip f) t) (return' s) // todo -> define it in Seq module
+    let inline (<=<) f g x = g >=> f x
 
 
 

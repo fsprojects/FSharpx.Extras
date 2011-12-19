@@ -80,8 +80,8 @@ let ``using ap``() =
   let customer = Customer()
   let result = 
     pure' (konst2 customer)
-    |> flippedAp (nonNull "Surname can't be null" customer.Surname)
-    |> flippedAp (notEqual "foo" "Surname can't be foo" customer.Surname)
+    |> Validation.ap (nonNull "Surname can't be null" customer.Surname)
+    |> Validation.ap (notEqual "foo" "Surname can't be foo" customer.Surname)
   match result with
   | Success c -> failwithf "Valid customer: %A" c
   | Failure errors -> 

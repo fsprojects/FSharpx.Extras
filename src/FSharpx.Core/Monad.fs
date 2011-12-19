@@ -8,56 +8,7 @@ open System.Collections.Generic
 module Monoid =
     
     /// Monoid (associative binary operation with identity)
-    /// The monoid implementation comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.
-    [<AbstractClass>]
-    type Monoid_<'a>() =
-        /// <summary>
-        /// Identity
-        /// </summary>
-        abstract member mempty : 'a
-
-        /// <summary>
-        /// Associative operation
-        /// </summary>
-        abstract member mappend : 'a -> 'a -> 'a
-
-        /// <summary>
-        /// Fold a list using this monoid
-        /// </summary>
-        abstract member mconcat : 'a seq -> 'a
-        default x.mconcat a = Seq.fold x.mappend x.mempty a
-    
-    /// List monoid
-    type ListMonoid<'a>() =
-        inherit Monoid_<'a list>()
-            override this.mempty = []
-            override this.mappend a b = a @ b
-
-    /// Option wrapper monoid
-    type OptionMonoid<'a>(m: 'a Monoid_) =
-        inherit Monoid_<'a option>()
-            override this.mempty = None
-            override this.mappend a b = 
-                match a,b with
-                | Some a, Some b -> Some (m.mappend a b)
-                | Some a, None   -> Some a
-                | None, Some a   -> Some a
-                | None, None     -> None
-                
-    /// Monoid (int,0,+)
-    let IntSumMonoid = 
-        { new Monoid_<int>() with
-            override this.mempty = 0
-            override this.mappend a b = a + b }
-
-    /// Monoid (int,1,* )
-    let IntProductMonoid =
-        { new Monoid_<int>() with
-            override this.mempty = 1
-            override this.mappend a b = a * b }
-    
-
-    // Monoid instances
+    /// Instances
     type Dual<'a> = Dual of 'a with
         static member inline (?<-) (_     , _Monoid:Mempty , _:Dual<_>) = Dual (mempty()   )
         static member inline (?<-) (Dual x, _Monoid:Mappend,   Dual y ) = Dual (mappend y x)
@@ -473,11 +424,14 @@ module Reader =
         static member (?<-) (_       , _Monad  :Return, _:Reader<_,_>) = fun a -> Reader(fun _ -> a)
         static member (?<-) (Reader m, _Monad  :Bind  , _:Reader<_,_>) = fun k -> Reader(fun r -> runReader(k (m r)) r)
 
-
     let mapReader  f (Reader m) = Reader(f << m)
     let withReader f (Reader m) = Reader(m << f)
     let ask                = Reader id
     let local f (Reader m) = Reader(m << f)
+    let asks f = do' {
+        let! r = ask
+        return (f r) }
+    let bind k m :Reader<_,_> = k >>= m
 
     type ReaderBuilder() =
         member this.Return(x) :Reader<'r,'a> = return' x
@@ -506,69 +460,7 @@ module Reader =
 
     let reader = new ReaderBuilder()
 
-
-
-    type Reader_<'r,'a> = 'r -> 'a
-
-    let bind k m = fun r -> (k (m r)) r
     
-    /// The reader monad.
-    /// This monad comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/07/much-ado-about-monads-reader-edition.aspx.
-    type ReaderBuilder_() =
-        member this.Return(a) : Reader_<'r,'a> = fun _ -> a
-        member this.ReturnFrom(a:Reader_<'r,'a>) = a
-        member this.Bind(m:Reader_<'r,'a>, k:'a -> Reader_<'r,'b>) : Reader_<'r,'b> = bind k m
-        member this.Zero() = this.Return ()
-        member this.Combine(r1, r2) = this.Bind(r1, fun () -> r2)
-        member this.TryWith(m:Reader_<'r,'a>, h:exn -> Reader_<'r,'a>) : Reader_<'r,'a> =
-            fun env -> try m env
-                       with e -> (h e) env
-        member this.TryFinally(m:Reader_<'r,'a>, compensation) : Reader_<'r,'a> =
-            fun env -> try m env
-                       finally compensation()
-        member this.Using(res:#IDisposable, body) =
-            this.TryFinally(body res, (fun () -> match res with null -> () | disp -> disp.Dispose()))
-        member this.Delay(f) = this.Bind(this.Return (), f)
-        member this.While(guard, m) =
-            if not(guard()) then this.Zero() else
-                this.Bind(m, (fun () -> this.While(guard, m)))
-        member this.For(sequence:seq<_>, body) =
-            this.Using(sequence.GetEnumerator(),
-                (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current))))
-    let reader_ = new ReaderBuilder_()
-    
-    let ask_ : Reader_<'r,'r> = id
-    let asks f = reader_ {
-        let! r = ask_
-        return (f r) }
-    let local_ (f:'r1 -> 'r2) (m:Reader_<'r2,'a>) : Reader_<'r1, 'a> = f >> m
-    
-    open Operators
-    
-    let inline returnM x = returnM reader_ x
-    let inline (>>=) m f = bindM reader_ m f
-    let inline (=<<) f m = bindM reader_ m f
-    /// Sequential application
-    let inline (<*>) f m = applyM reader_ reader_ f m
-    /// Sequential application
-    let inline ap m f = f <*> m
-    let inline map f m = liftM reader_ f m
-    let inline (<!>) f m = map f m
-    let inline lift2 f a b = returnM f <*> a <*> b
-    /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) x y = lift2 (fun _ z -> z) x y
-    /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) x y = lift2 (fun z _ -> z) x y
-    /// Sequentially compose two reader actions, discarding any value produced by the first
-    let inline (>>.) m f = bindM reader_ m (fun _ -> f)
-    /// Left-to-right Kleisli composition
-    let inline (>=>) f g = fun x -> f x >>= g
-    /// Right-to-left Kleisli composition
-    let inline (<=<) x = flip (>=>) x
-
-    let foldM f s = 
-        Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
-
 module Undo =
     // UndoMonad on top of StateMonad
     open State
@@ -738,7 +630,7 @@ module Validation =
         let zero = pure' []
         Seq.map (f) >> Seq.fold (lift2 (flip FSharpx.List.cons)) zero
 
-    let inline flippedAp x f  :Validation<_,_> = f <*> x
+    let inline ap x f  :Validation<_,_> = f <*> x
 
 
 module Continuation =

@@ -189,6 +189,9 @@ module Seq =
             for i in l1 do
                 for j in l2 do
                     yield f i j }
+
+    let inline foldM f s = 
+        Seq.fold (fun acc t -> acc >>= (flip f) t) (return' s)
         
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
