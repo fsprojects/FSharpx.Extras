@@ -11,8 +11,8 @@ open NUnit.Framework
 
 let validator pred error value =
     if pred value
-        then Choice1Of2 value
-        else Choice2Of2 [error]
+        then Right value
+        else Left [error]
 
 let (==) = LanguagePrimitives.PhysicalEquality
 let inline (!=) a b = not (a == b)
@@ -25,8 +25,8 @@ let validateAddressLines =
         (fun (a: Address) -> a.Line1 != null || a.Line2 == null) 
         "Line1 is empty but Line2 is not"
 
-let validateAddress (a: Address) = 
-    return' a
+let validateAddress (a: Address) :Validation<_,_> = 
+    pure' a
     <* nonNull "Post code can't be null" a.Postcode
     <* validateAddressLines a
 
@@ -37,8 +37,7 @@ let greaterThan o = validator ((<?) o)
 let validateOrder (o: Order) =
     let nameNotNull = nonNull "Product name can't be null" o.ProductName
     let positiveCost n = greaterThan (0m).n (sprintf "Cost for product '%s' can't be negative" n) o.Cost
-    nameNotNull >>= positiveCost |> Choice.map (konst o)
-
+    (nameNotNull |> toChoice) >>= (positiveCost >> toChoice) |> Choice.map (konst o)
 (*    validation {
         let! name = nonNull "Product name can't be null" o.ProductName
         let! _ = greaterThan (0m).n (sprintf "Cost for product '%s' must be positive" name) o.Cost
@@ -46,8 +45,9 @@ let validateOrder (o: Order) =
     } *)
     
 
-let validateOrders c = seqValidator validateOrder c
-    
+let validateOrders c = seqValidator (validateOrder >> FSharpx.Choice.toValidation) c |> Validation.toChoice
+
+   
 [<Test>]
 let ValidateCustomer() = 
     let customer = 
@@ -60,11 +60,11 @@ let ValidateCustomer() =
                                     Order(ProductName = null , Cost = (-1m).n)
                      ]))
     let result = 
-        return' customer
+        pure' customer
         <* nonNull "Surname can't be null" customer.Surname
         <* notEqual "foo" "Surname can't be foo" customer.Surname
         <* validateAddress customer.Address
-        <* validateOrders customer.Orders
+        <* (validateOrders customer.Orders |> toValidation)
     match result with
     | Success c -> failwithf "Valid customer: %A" c
     | Failure errors -> 
@@ -74,13 +74,14 @@ let ValidateCustomer() =
         errors |> should contain "Product name can't be null"
         errors |> should contain "Surname can't be foo"
 
+
 [<Test>]
 let ``using ap``() =
   let customer = Customer()
   let result = 
-    return' (konst2 customer)
-    |> Validation.ap (nonNull "Surname can't be null" customer.Surname)
-    |> Validation.ap (notEqual "foo" "Surname can't be foo" customer.Surname)
+    pure' (konst2 customer)
+    |> flippedAp (nonNull "Surname can't be null" customer.Surname)
+    |> flippedAp (notEqual "foo" "Surname can't be foo" customer.Surname)
   match result with
   | Success c -> failwithf "Valid customer: %A" c
   | Failure errors -> 
@@ -88,21 +89,22 @@ let ``using ap``() =
       errors.Length |> should equal 1
       errors |> should contain "Surname can't be null"
 
+open Monoid
+
 [<Test>]
 let ``validation with monoid``() =
-  let v = Validation.CustomValidation(Monoid.IntSumMonoid)
+  // let v = Validation.CustomValidation(Monoid.IntSumMonoid)
   // count the number of broken rules
   let validator pred value =
       if pred value
-          then Choice1Of2 value
-          else Choice2Of2 1
+          then Right value
+          else Left (Sum 1)
   let notEqual a = validator ((<>) a)
   let lengthNotEquals l = validator (fun (x: string) -> x.Length <> l)
   let validateString x = 
-    return' x
-    |> v.apl (notEqual "hello" x)
-    |> v.apl (lengthNotEquals 5 x)
+    pure' x
+    |> (<* ) (notEqual "hello" x)
+    |> (<* ) (lengthNotEquals 5 x)
   match validateString "hello" with
   | Success c -> failwithf "Valid string: %s" c
-  | Failure e -> Assert.AreEqual(2, e)
-
+  | Failure (Sum e) -> Assert.AreEqual(2, e)

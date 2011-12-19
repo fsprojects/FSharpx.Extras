@@ -684,7 +684,6 @@ module Writer =
     let writer = new WriterBuilder()
 
 module Choice =
-    // let returnM = Choice1Of2
 
     let get =
         function
@@ -697,44 +696,10 @@ module Choice =
         with e -> Choice2Of2 e
 
     let inline cast (o: obj) = protect unbox o
-        
-    // let ap x f =
-    //     match f,x with
-    //     | Choice1Of2 f, Choice1Of2 x -> Choice1Of2 (f x)
-    //     | Choice2Of2 e, _            -> Choice2Of2 e
-    //     | _           , Choice2Of2 e -> Choice2Of2 e
-
-    /// Sequential application
-    // let inline (<*>) f x = ap x f
 
     let map f x :Choice<_,_> = fmap f x
-    //    function
-    //    | Choice1Of2 x -> f x |> Choice1Of2
-    //    | Choice2Of2 x -> Choice2Of2 x
-
-    // let inline (<!>) f x = map f x
-    // let inline lift2 f a b = f <!> a <*> b
-
-    /// Sequence actions, discarding the value of the first argument.
-    // let inline ( *>) a b = lift2 (fun _ z -> z) a b
-    /// Sequence actions, discarding the value of the second argument.
-    // let inline ( <*) a b = lift2 (fun z _ -> z) a b
 
     let bind f m : Choice<_,_> = m >>= f
-
-    // let bind f = 
-    //     function
-    //     | Choice1Of2 x -> f x
-    //     | Choice2Of2 x -> Choice2Of2 x
-    
-    // let inline (>>=) m f = bind f m
-    // let inline (=<<) f m = bind f m
-    /// Sequentially compose two either actions, discarding any value produced by the first
-    // let inline (>>.) m1 m2 = m1 >>= (fun _ -> m2)
-    /// Left-to-right Kleisli composition
-    // let inline (>=>) f g = fun x -> f x >>= g
-    /// Right-to-left Kleisli composition
-    // let inline (<=<) x = flip (>=>) x
 
     let inline bimap f1 f2 = 
         function
@@ -748,67 +713,32 @@ module Choice =
 
     let inline mapSecond f = bimap id f
 
-    // type EitherBuilder() =
-    //     member this.Return a = returnM a
-    //     member this.Bind(m,f) = bind f m
-
     let toOption = Option.fromChoice
     let fromOption o = 
         function
         | Some a -> Choice1Of2 a
         | None -> Choice2Of2 o
-
-    //let foldM f s = 
-    //    Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
-    //    // pointfree:
-    //    //Seq.fold (flip f >> bind |> flip) (returnM s)
+    
+    let toValidation = function
+                       | Choice1Of2 x -> Right x
+                       | Choice2Of2 x -> Left  x
 
 module Validation =
-    open Choice
-    open Monoid
+
+    let toChoice = function
+                   | Right x -> Choice1Of2 x
+                   | Left  x -> Choice2Of2 x    
 
     let (|Success|Failure|) = 
         function
-        | Choice1Of2 a -> Success a
-        | Choice2Of2 e -> Failure e
+        | Right a -> Success a
+        | Left  e -> Failure e
 
-    /// Sequential application, parameterized by append
-    let apa append x f = 
-        match f,x with
-        | Choice1Of2 f, Choice1Of2 x     -> Choice1Of2 (f x)
-        | Choice2Of2 e, Choice1Of2 x     -> Choice2Of2 e
-        | Choice1Of2 f, Choice2Of2 e     -> Choice2Of2 e
-        | Choice2Of2 e1, Choice2Of2 e2 -> Choice2Of2 (append e1 e2)
+    let inline seqValidator f = 
+        let zero = pure' []
+        Seq.map (f) >> Seq.fold (lift2 (flip FSharpx.List.cons)) zero
 
-    /// Sequential application, parameterized by monoid
-    let inline apm (m: _ Monoid_) = apa m.mappend
-
-    type CustomValidation<'a>(monoid: 'a Monoid_) =
-        /// Sequential application
-        member this.ap x = apm monoid x
-        member this.lift2 f a b = return' f |> this.ap a |> this.ap b
-        /// Sequence actions, discarding the value of the first argument.
-        member this.apr b a = this.lift2 (fun _ z -> z) a b
-        /// Sequence actions, discarding the value of the second argument.
-        member this.apl b a = this.lift2 (fun z _ -> z) a b
-
-    let private stringListValidation = CustomValidation(ListMonoid<string>())
-
-    /// Sequential application
-    let ap = stringListValidation.ap
-
-    /// Sequential application
-    let inline (<*>) f x = ap x f
-    let lift2 = stringListValidation.lift2
-
-    /// Sequence actions, discarding the value of the first argument.
-    let ( *>) = stringListValidation.apr
-    /// Sequence actions, discarding the value of the first argument.
-    let ( <* ) = stringListValidation.apl
-    
-    let seqValidator f = 
-        let zero = return' []
-        Seq.map f >> Seq.fold (lift2 (flip FSharpx.List.cons)) zero
+    let inline flippedAp x f  :Validation<_,_> = f <*> x
 
 
 module Continuation =

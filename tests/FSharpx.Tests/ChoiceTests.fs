@@ -57,9 +57,9 @@ let ChoiceFolding() =
         actions |> foldM folder startingPosition
 
     match finalPosition with
-    | Validation.Success (x,y) -> 
+    | Choice1Of2 (x,y) -> 
         printfn "final position: %f,%f" x y
-    | Validation.Failure error -> 
+    | Choice2Of2 error -> 
         printfn "error: %s" error
         Assert.Fail("should not have failed: {0}", error)
     

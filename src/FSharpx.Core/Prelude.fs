@@ -240,27 +240,36 @@ module Prelude =
 
 
     // Applicative
+    type Validation< 'err,'v> = Left of 'err | Right of 'v
+
     type Pure = Pure with
         member inline this.Base x = return' x
-        static member (?<-) (_, _Applicative:Pure, _:'a option     ) = fun (x:'a) -> Pure.Pure.Base x :'a option
-        static member (?<-) (_, _Applicative:Pure, _:'a list       ) = fun (x:'a) -> Pure.Pure.Base x :'a list
-        static member (?<-) (_, _Applicative:Pure, _: _ -> 'a      ) = konst
-        static member (?<-) (_, _Applicative:Pure, _: Choice<'a,'b>) = fun (x:'a) -> Pure.Pure.Base x :Choice<'a,'b>        
+        static member (?<-) (_, _Applicative:Pure, _:'a option        ) = fun (x:'a) -> Pure.Pure.Base x :'a option
+        static member (?<-) (_, _Applicative:Pure, _:'a list          ) = fun (x:'a) -> Pure.Pure.Base x :'a list
+        static member (?<-) (_, _Applicative:Pure, _: _ -> 'a         ) = konst
+        static member (?<-) (_, _Applicative:Pure, _: Choice<'a,'b>   ) = fun (x:'a) -> Pure.Pure.Base x :Choice<'a,'b>        
+        static member (?<-) (_, _Applicative:Pure, _:Validation< _,'a>) = fun (x:'a) -> Right x
     let inline pure' x : ^R = (() ? (Pure) <- Unchecked.defaultof< ^R> ) x
 
 
     type Ap = Ap with
         member inline this.Base f x = ap f x
-        static member (?<-) (f:option<_>  , _Applicative:Ap, x:option<_>  ) = Ap.Ap.Base f x
-        static member (?<-) (f:list<_>    , _Applicative:Ap, x:list<_>    ) = Ap.Ap.Base f x
-        static member (?<-) (f:_ -> _     , _Applicative:Ap, g: _ -> _    ) = fun x ->   f x (g x)
-        static member (?<-) (f:Choice<_,'e>, _Applicative:Ap, x:Choice<_,'e>) = Ap.Ap.Base f x
+        static member        (?<-) (f:option<_>        , _Applicative:Ap, x:option<_>        ) = Ap.Ap.Base f x
+        static member        (?<-) (f:list<_>          , _Applicative:Ap, x:list<_>          ) = Ap.Ap.Base f x
+        static member        (?<-) (f:_ -> _           , _Applicative:Ap, g: _ -> _          ) = fun x ->   f x (g x)
+        static member        (?<-) (f:Choice<_,'e>     , _Applicative:Ap, x:Choice<_,'e>     ) = Ap.Ap.Base f x
+        static member inline (?<-) (f:Validation< ^e,_>, _Applicative:Ap, x:Validation< ^e,_>) =         
+            match f,x with
+            | Right f, Right x -> Right (f x)
+            | Left  e, Right x -> Left e
+            | Right f, Left e  -> Left e
+            | Left e1, Left e2 -> Left (mappend e1 e2)
     let inline (<*>) x y : ^R = (x ? (Ap) <- y)
 
     let inline lift2 f a b = pure' f <*> a <*> b     // Same as liftM2 but requires just Applicative Functor
 
     /// Sequence actions, discarding the value of the first argument.    
-    let inline ( *>) x y = lift2 (fun _ z -> z) x y
+    let inline ( *>) x y = pure' (fun _ z -> z) <*> x <*> y //lift2 (fun _ z -> z) x y
 
     /// Sequence actions, discarding the value of the second argument.
-    let inline (<* ) x y = lift2 (fun z _ -> z) x y
+    let inline (<* ) x y = pure' (fun z _ -> z) <*> x <*> y //lift2 (fun z _ -> z) x y

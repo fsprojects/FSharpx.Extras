@@ -236,9 +236,9 @@ type FSharpChoice =
 
     [<Extension>]
     static member Join (c: Choice<'a, string list>, inner: Choice<'b, string list>, outerKeySelector: Func<'a,'c>, innerKeySelector: Func<'b,'c>, resultSelector: Func<'a,'b,'d>) =
-        return' (curry resultSelector.Invoke) 
-        |> Validation.ap c 
-        |> Validation.ap inner 
+        pure' (curry resultSelector.Invoke) 
+        |> Validation.flippedAp (Choice.toValidation c)
+        |> Validation.flippedAp (Choice.toValidation inner) |> Validation.toChoice
 
     [<Extension>]
     static member Ap (f: Choice<Func<_,_>, _>, x) =
@@ -263,16 +263,14 @@ type FSharpChoice =
         Func<_,_>(v)
 
     [<Extension>]
-    static member ApV (f: Choice<Func<_,_>, _>, x) =
-        f 
-        |> Choice.map (fun a -> a.Invoke)
-        |> Validation.ap x
+    static member ApV (f: Choice<Func<'a,'b>, 'e>, x:Choice<'a,'e>) =
+        (f |> Choice.map (fun a -> a.Invoke)) <*> x
 
     [<Extension>]
     static member PureValidate x : Choice<_, string list> = Choice1Of2 x
 
     static member EnumerableValidator (f: Func<'a, Choice<'a, string list>>) : Func<'a seq, Choice<'a seq, string list>> =
-        let ff = Validation.seqValidator f.Invoke >> Choice.map (fun a -> a :> _ seq)
+        let ff = Validation.seqValidator (f.Invoke  >> Choice.toValidation) >> Validation.toChoice >>  Choice.map (fun a -> a :> _ seq)
         Func<_,_>(ff)
 
     // constructors
