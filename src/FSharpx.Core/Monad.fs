@@ -87,29 +87,6 @@ module Option =
             this.Using(sequence.GetEnumerator(),
                                  fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current)))
     let maybe = MaybeBuilder()
-    
-    open Operators
-    
-    let inline returnM x = returnM maybe x
-    let inline (>>=) m f = bindM maybe m f
-    let inline (=<<) f m = bindM maybe m f
-    /// Sequential application
-    let inline (<*>) f m = applyM maybe maybe f m
-    /// Sequential application
-    let inline ap m f = f <*> m
-    let inline (<!>) f m = Option.map f m
-    let inline lift2 f a b = returnM f <*> a <*> b
-    /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) x y = lift2 (fun _ z -> z) x y
-    /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) x y = lift2 (fun z _ -> z) x y
-
-    /// Sequentially compose two maybe actions, discarding any value produced by the first
-    let inline (>>.) m f = bindM maybe m (fun _ -> f)
-    /// Left-to-right Kleisli composition
-    let inline (>=>) f g = fun x -> f x >>= g
-    /// Right-to-left Kleisli composition
-    let inline (<=<) x = flip (>=>) x
 
     let fromNullable (n: _ Nullable) = 
         if n.HasValue
@@ -167,9 +144,6 @@ module Option =
         try
             Some (unbox o)
         with _ -> None
-
-    let foldM f s = 
-        Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
 
 module Nullable =
     let (|Null|Value|) (x: _ Nullable) =
