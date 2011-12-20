@@ -278,69 +278,6 @@ module State =
     let state = new StateBuilder()
 
 
-    type State_<'a, 's> = 's -> 'a * 's
-    
-    let getState = fun s -> (s,s)       // remove -> use get
-    let putState s = fun _ -> ((),s)    // remove -> use put
-    let eval m s = m s |> fst           // remove -> use evalState
-    let exec m s = m s |> snd           // remove -> use execState
-    let empty = fun s -> ((), s)        // adapt
-    let bind k m = fun s -> let (a, s') = m s in (k a) s'   // remove
-    
-    /// The state monad.
-    /// The algorithm is adjusted from my original work off of Brian Beckman's http://channel9.msdn.com/shows/Going+Deep/Brian-Beckman-The-Zen-of-Expressing-State-The-State-Monad/.
-    /// The approach was adjusted from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2009/12/30/much-ado-about-monads-state-edition.aspx and mirrors his final result.
-    type StateBuilder_() =
-        member this.Return(a) : State_<'a,'s> = fun s -> (a,s)
-        member this.ReturnFrom(m:State_<'a,'s>) = m
-        member this.Bind(m:State_<'a,'s>, k:'a -> State_<'b,'s>) : State_<'b,'s> = bind k m
-        member this.Zero() = this.Return ()
-        member this.Combine(r1, r2) = this.Bind(r1, fun () -> r2)
-        member this.TryWith(m:State_<'a,'s>, h:exn -> State_<'a,'s>) : State_<'a,'s> =
-            fun env -> try m env
-                       with e -> (h e) env
-        member this.TryFinally(m:State_<'a,'s>, compensation) : State_<'a,'s> =
-            fun env -> try m env
-                       finally compensation()
-        member this.Using(res:#IDisposable, body) =
-            this.TryFinally(body res, (fun () -> match res with null -> () | disp -> disp.Dispose()))
-        member this.Delay(f) = this.Bind(this.Return (), f)
-        member this.While(guard, m) =
-            if not(guard()) then this.Zero() else
-                this.Bind(m, (fun () -> this.While(guard, m)))
-        member this.For(sequence:seq<_>, body) =
-            this.Using(sequence.GetEnumerator(),
-                (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current))))
-
-                
-    let state_ = new StateBuilder_()
-    
-    
-    open Operators
-    
-    let inline returnM x = returnM state_ x
-    let inline (>>=) m f = bindM state_ m f
-    let inline (=<<) f m = bindM state_ m f
-    /// Sequential application
-    let inline (<*>) f m = applyM state_ state_ f m
-    /// Sequential application
-    let inline ap m f = f <*> m
-    let inline map f m = liftM state_ f m
-    let inline (<!>) f m = map f m
-    let inline lift2 f a b = returnM f <*> a <*> b
-    /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) x y = lift2 (fun _ z -> z) x y
-    /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) x y = lift2 (fun z _ -> z) x y
-    /// Sequentially compose two state actions, discarding any value produced by the first
-    let inline (>>.) m f = bindM state_ m (fun _ -> f)
-    /// Left-to-right Kleisli composition
-    let inline (>=>) f g = fun x -> f x >>= g
-    /// Right-to-left Kleisli composition
-    let inline (<=<) x = flip (>=>) x
-
-    let inline foldM f s = Seq.fold (fun acc t -> acc >>= (flip f) t) (return' s)
-
 module Reader =
     
     type Reader<'r,'a> = Reader of ('r->'a) with
@@ -392,7 +329,7 @@ module Undo =
     // UndoMonad on top of StateMonad
     open State
     
-    let undoable = state_
+    let undoable = state
     
     type 'a History = { 
         Current:'a
@@ -402,18 +339,18 @@ module Undo =
     let newHistory x = { Current = x; Undos = [x]; Redos = [] }
     let current history = history.Current
     
-    let getHistory = getState
+    let getHistory = get
     
     let putToHistory x = undoable {
-        let! history = getState
-        do! putState  { Current = x; 
-                        Undos = history.Current :: history.Undos
-                        Redos = [] } }
+        let! history = get
+        do! put  { Current = x; 
+                   Undos = history.Current :: history.Undos
+                   Redos = [] } }
 
-    let exec m s = m s |> snd |> current
+    let exec (State m) s = m s |> snd |> current
     
     let getCurrent<'a> = undoable {
-        let! (history:'a History) = getState
+        let! (history:'a History) = get
         return current history}
 
     let combineWithCurrent f x = undoable {
@@ -421,23 +358,23 @@ module Undo =
         do! putToHistory (f currentVal x) }
     
     let undo<'a> = undoable {
-        let! (history:'a History) = getState
+        let! (history:'a History) = get
         match history.Undos with
         | [] -> return false
         | (x::rest) -> 
-            do! putState { Current = x;
-                           Undos = rest;
-                           Redos = history.Current :: history.Redos }
+            do! put { Current = x;
+                      Undos = rest;
+                      Redos = history.Current :: history.Redos }
             return true}
     
     let redo<'a> = undoable {
-        let! (history:'a History) = getState
+        let! (history:'a History) = get
         match history.Redos with
         | [] -> return false
         | (x::rest) -> 
-            do! putState { Current = x;
-                           Undos = history.Current :: history.Undos;
-                           Redos = rest }
+            do! put { Current = x;
+                      Undos = history.Current :: history.Undos;
+                      Redos = rest }
             return true }
 
 module Writer =

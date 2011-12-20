@@ -39,29 +39,29 @@ module Lens =
 
     /// Applies a lens in the 'get' direction within a state monad      
     let getState l = 
-        fun a -> get a l, a
+        State.State(fun a -> get a l, a)
 
     /// Applies a lens in the 'set' direction within a state monad
     let setState l v = 
-        fun a -> (), set v a l
+        State.State(fun a -> (), set v a l)
 
     /// Update through a lens within a state monad
     let updateState l f =
-        fun a -> (), update f l a
+        State.State(fun a -> (), update f l a)
 
     /// Modifies the state in a state monad and returns the original value.
     let getAndModifyState l f = 
-        State.state_ {
-            let! v = State.getState
+        State.state {
+            let! v = State.get
             do! updateState l f
             return v
         }
 
     /// Modifies the state in a state monad and returns the modified value.
     let modifyAndGetState l f = 
-        State.state_ {
+        State.state {
             do! updateState l f
-            return! State.getState
+            return! State.get
         }
 
     /// Gets/sets the fst element in a pair
