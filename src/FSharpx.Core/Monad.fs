@@ -562,30 +562,34 @@ module Distribution =
     type 'a Outcome = {
         Value: 'a
         Probability : BigRational    }
+
+    type Distribution<'a> = Distribution of 'a Outcome seq with
+        static member (?<-) (_     , _Functor:Fmap  ,   Distribution m    ) = fun f -> 
+            Distribution(Seq.map (fun o -> { Value = f o.Value; Probability = o.Probability }) m)
     
-    type 'a Distribution = 'a Outcome seq
+    let runDistribution (Distribution d) = d
+    type Distribution<'a> with
+        static member (?<-) (_             , _Monad  :Return, _:Distribution<'a>) = fun (n:'a) ->
+            Distribution(Seq.singleton { Value = n ; Probability = 1N/1N })
+        static member (?<-) (Distribution m, _Monad  :Bind  , _:Distribution<_> ) = fun  f     ->
+            m 
+            |> Seq.map (fun p1 -> 
+                f p1.Value
+                |> runDistribution |> Seq.map (fun (p2) -> 
+                    { Value = p2.Value; 
+                        Probability = 
+                            p1.Probability * p2.Probability}))
+            |> Seq.concat
+            |> Distribution
+
     
     // P(A AND B) = P(A | B) * P(B)
     let bind (f: 'a -> 'b Distribution) (dist:'a Distribution) =
-        dist 
-        |> Seq.map (fun p1 -> 
-            f p1.Value
-            |> Seq.map (fun p2 -> 
-                { Value = p2.Value; 
-                    Probability = 
-                        p1.Probability * p2.Probability}))
-        |> Seq.concat : 'b Distribution
-    
-    let inline (>>=) dist f = bind f dist
-    let inline (=<<) f dist = bind f dist
-    
-    let returnM (value:'a) =     
-        Seq.singleton { Value = value ; Probability = 1N/1N }
-            : 'a Distribution
+        dist >>= f : 'b Distribution
     
     type DistributionMonadBuilder() =
         member this.Bind (r, f) = bind f r
-        member this.Return x = returnM x
+        member this.Return x : Distribution<_> = return' x
         member this.ReturnFrom x = x
     
     let distribution = DistributionMonadBuilder()
@@ -597,13 +601,14 @@ module Distribution =
         |> Seq.map (fun e ->
             { Value = e; 
                 Probability = 1N / bignum.FromInt l })
+        |> Distribution
     
-    let probability (dist:'a Distribution) = 
+    let probability (Distribution dist:'a Distribution) = 
         dist
         |> Seq.map (fun o -> o.Probability)
         |> Seq.sum
     
-    let certainly = returnM
+    let certainly x : Distribution<_> = return' x
     let impossible<'a> :'a Distribution = toUniformDistribution []
     
     let fairDice sides = toUniformDistribution [1..sides]
@@ -614,16 +619,15 @@ module Distribution =
     
     let fairCoin = toUniformDistribution [Heads; Tails]
     
-    let filter predicate (dist:'a Distribution) : 'a Distribution =
-        dist |> Seq.filter (fun o -> predicate o.Value)
+    let filter predicate (Distribution dist:'a Distribution) : 'a Distribution =
+        dist |> Seq.filter (fun o -> predicate o.Value) |> Distribution
     
     let filterInAnyOrder items dist =
         items
         |> Seq.fold (fun d item -> filter (Seq.exists ((=) (item))) d) dist
     
     let map f (dist:'a Distribution) : 'b Distribution = 
-        dist 
-        |> Seq.map (fun o -> { Value = f o.Value; Probability = o.Probability })
+        fmap f dist
     
     let selectOne values =
         [for e in values -> e,values |> Seq.filter ((<>) e)] 
