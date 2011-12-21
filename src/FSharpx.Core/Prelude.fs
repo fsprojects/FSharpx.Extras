@@ -152,18 +152,18 @@ module Prelude =
                                                                          | Null    -> Nullable()
                                                                          | Value v -> Nullable(f v)
         static member (?<-) (_, _Functor:Fmap, x:Choice<_,_>) = fun f -> match x with
-                                                                         | Choice1Of2 x -> Choice1Of2 (f x)
+                                                                         | Choice1Of2 x -> Choice1Of2(f x)
                                                                          | Choice2Of2 x -> Choice2Of2 x
     let inline fmap f x = (() ? (Fmap) <- x) f
 
     // Monad
     type Return = Return with
-        static member (?<-) (_, _Monad:Return, _:'a option     ) = fun (x:'a) -> Some x
-        static member (?<-) (_, _Monad:Return, _:'a list       ) = fun (x:'a) -> [x]
-        static member (?<-) (_, _Monad:Return, _: _ -> 'a      ) = fun (x:'a) -> konst x
-        static member (?<-) (_, _Monad:Return, _:'a Async      ) = fun (x:'a) -> async.Return x
-        static member (?<-) (_, _Monad:Return, _:'a Nullable   ) = fun (x:'a) -> Nullable x
-        static member (?<-) (_, _Monad:Return, _: Choice<'a,'e>) = fun (x:'a) -> Choice1Of2 x : Choice<'a,'b>
+        static member (?<-) (_, _Monad:Return, _:'a option    ) = fun (x:'a) -> Some x
+        static member (?<-) (_, _Monad:Return, _:'a list      ) = fun (x:'a) -> [x]
+        static member (?<-) (_, _Monad:Return, _: _ -> 'a     ) = fun (x:'a) -> konst x
+        static member (?<-) (_, _Monad:Return, _:'a Async     ) = fun (x:'a) -> async.Return x
+        static member (?<-) (_, _Monad:Return, _:'a Nullable  ) = fun (x:'a) -> Nullable x
+        static member (?<-) (_, _Monad:Return, _:Choice<'a,'e>) = fun (x:'a) -> Choice1Of2 x : Choice<'a,'b>
     let inline return' x : ^R = (() ? (Return) <- Unchecked.defaultof< ^R> ) x
 
     type Bind = Bind with

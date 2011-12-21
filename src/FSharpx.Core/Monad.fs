@@ -500,85 +500,54 @@ module Validation =
 module Continuation =
 
     /// The continuation monad.
-    /// The algorithm is from Wes Dyer http://blogs.msdn.com/b/wesdyer/archive/2008/01/11/the-marvels-of-monads.aspx.
-    /// The builder approach is from Matthew Podwysocki's excellent Creating Extended Builders series http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/18/much-ado-about-monads-creating-extended-builders.aspx.
-    /// Current implementation from Matt's gist at https://gist.github.com/628956
-    type Cont_<'a,'r> = ('a -> 'r) -> (exn -> 'r) -> 'r
-    
-    let private protect f x cont econt =
-        let res = try Choice1Of2 (f x) with err -> Choice2Of2 err
-        match res with
-        | Choice1Of2 v -> cont v
-        | Choice2Of2 v -> econt v
-    
-    let runCont (c:Cont_<_,_>) cont econt = c cont econt
-    let throw exn : Cont_<'a,'r> = fun cont econt -> econt exn
-    let callcc (f: ('a -> Cont_<'b,'r>) -> Cont_<'a,'r>) : Cont_<'a,'r> =
-        fun cont econt -> runCont (f (fun a -> (fun _ _ -> cont a))) cont econt
-    let bind f comp1 = 
-        fun cont econt ->
-            runCont comp1 (fun a -> protect f a (fun comp2 -> runCont comp2 cont econt) econt) econt     
 
-    type ContinuationBuilder_() =
-        member this.Return(a) : Cont_<_,_> = fun cont econt -> cont a
-        member this.ReturnFrom(comp:Cont_<_,_>) = comp
-        member this.Bind(comp1, f) = bind f comp1
-        member this.Catch(comp:Cont_<_,_>) : Cont_<Choice<_, exn>, _> = fun cont econt ->
-            runCont comp (fun v -> cont (Choice1Of2 v)) (fun err -> cont (Choice2Of2 err))
-        member this.Zero() =
-            this.Return ()
-        member this.TryWith(tryBlock, catchBlock) =
-            this.Bind(this.Catch tryBlock, (function Choice1Of2 v -> this.Return v 
-                                                   | Choice2Of2 exn -> catchBlock exn))
-        member this.TryFinally(tryBlock, finallyBlock) =
-            this.Bind(this.Catch tryBlock, (function Choice1Of2 v -> finallyBlock(); this.Return v 
-                                                   | Choice2Of2 exn -> finallyBlock(); throw exn))
+    type Cont<'r,'a> = Cont of (('a->'r)->'r) with
+        static member (?<-) (_     , _Functor:Fmap  ,   Cont m    ) = fun f -> Cont(fun c -> m (c << f))
+    
+    let runCont (Cont x) = x
+    type Cont<'r,'a> with
+        static member (?<-) (_     , _Monad  :Return, _:Cont<_,'a>) = fun (n:'a) -> Cont(fun k -> k n)
+        static member (?<-) (Cont m, _Monad  :Bind  , _:Cont<_,_> ) = fun  f     -> Cont(fun k -> m (fun a -> runCont(f a) k))
+
+    let callCC f = Cont <| fun k -> runCont (f (fun a -> Cont(fun _ -> k a))) k
+
+    type ContinuationBuilder() =
+        member this.Return(x) :Cont<'r,'a> = return' x
+        member this.Bind(p:Cont<'r,'a>,rest:'a->Cont<'r,'b>) = p >>= rest
+        member this.Let (p,rest) = rest p
+        member this.ReturnFrom(expr) = expr
+
+        member this.Zero() = this.Return()
+        member this.Combine(r1:Cont<_,_>, r2) = r1 >>= fun () -> r2
+
+        member this.TryWith(m:Cont<'r,'a>, h:exn -> Cont<'r,'a>) : Cont<'r,'a> =
+            Cont(fun env -> try (runCont m) env
+                              with e -> (runCont(h e)) env)
+
+        member this.TryFinally(m:Cont<'r,'a>, compensation) : Cont<'r,'a> =
+            Cont(fun env -> try (runCont m) env
+                            finally compensation())
         member this.Using(res:#IDisposable, body) =
             this.TryFinally(body res, (fun () -> match res with null -> () | disp -> disp.Dispose()))
-        member this.Combine(comp1, comp2) = this.Bind(comp1, (fun () -> comp2))
         member this.Delay(f) = this.Bind(this.Return (), f)
-        member this.While(pred, body) =
-            if pred() then this.Bind(body, (fun () -> this.While(pred,body))) else this.Return ()
-        member this.For(items:seq<_>, body) =
-            this.Using(items.GetEnumerator(),
-                (fun enum -> this.While((fun () -> enum.MoveNext()), this.Delay(fun () -> body enum.Current))))
-    let cont = ContinuationBuilder_()
-    
-    open Operators
-    
-    let inline returnM x = returnM cont x
-    let inline (>>=) m f = bindM cont m f
-    let inline (=<<) f m = bindM cont m f
-    /// Sequential application
-    let inline (<*>) f m = applyM cont cont f m
-    /// Sequential application
-    let inline ap m f = f <*> m
-    let inline map f m = liftM cont f m
-    let inline (<!>) f m = map f m
-    let inline lift2 f a b = returnM f <*> a <*> b
-    /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) x y = lift2 (fun _ z -> z) x y
-    /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) x y = lift2 (fun z _ -> z) x y
-    /// Sequentially compose two continuation actions, discarding any value produced by the first
-    let inline (>>.) m f = bindM cont m (fun _ -> f)
-    /// Left-to-right Kleisli composition
-    let inline (>=>) f g = fun x -> f x >>= g
-    /// Right-to-left Kleisli composition
-    let inline (<=<) x = flip (>=>) x
+        member this.While(guard, m) =
+            if not(guard()) then this.Zero() else
+                m >>= (fun () -> this.While(guard, m))
+        member this.For(sequence:seq<_>, body) =
+            this.Using(sequence.GetEnumerator(),
+                (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current))))
 
-    let foldM f s = 
-        Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
+    let cont = ContinuationBuilder()
 
     /// The coroutine type from http://fssnip.net/7M
     type Coroutine() =
-        let tasks = new Queue<Cont_<unit,unit>>()
+        let tasks = new Queue<Cont<unit,unit>>()
 
         member this.Put(task) =
             let withYield = cont {
-                do! callcc <| fun exit ->
+                do! callCC <| fun exit ->
                     task <| fun () ->
-                    callcc <| fun c ->
+                    callCC <| fun c ->
                     tasks.Enqueue(c())
                     exit()
                 if tasks.Count <> 0 then
@@ -586,7 +555,7 @@ module Continuation =
             tasks.Enqueue(withYield)
             
         member this.Run() =
-            runCont (tasks.Dequeue()) ignore raise
+            runCont (tasks.Dequeue()) ignore
 
 module Distribution =
     
