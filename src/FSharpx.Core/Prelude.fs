@@ -163,18 +163,18 @@ module Prelude =
         static member (?<-) (_, _Monad:Return, _: _ -> 'a     ) = fun (x:'a) -> konst x
         static member (?<-) (_, _Monad:Return, _:'a Async     ) = fun (x:'a) -> async.Return x
         static member (?<-) (_, _Monad:Return, _:'a Nullable  ) = fun (x:'a) -> Nullable x
-        static member (?<-) (_, _Monad:Return, _:Choice<'a,'e>) = fun (x:'a) -> Choice1Of2 x : Choice<'a,'b>
+        static member (?<-) (_, _Monad:Return, _:Choice<'a,'e>) = fun (x:'a) -> Choice1Of2 x : Choice<'a,'e>
     let inline return' x : ^R = (() ? (Return) <- Unchecked.defaultof< ^R> ) x
 
     type Bind = Bind with
         static member (?<-) (x:option<_>    , _Monad:Bind, _:'b option    ) = fun f -> Option.bind  f x
         static member (?<-) (x:list<_>      , _Monad:Bind, _:'b list      ) = fun f -> List.collect f x
         static member (?<-) (f:'e->'a       , _Monad:Bind, _:'e->'b       ) = fun (k:'a->'e->'b) r -> k (f r) r
-        static member (?<-) (x:Async<_>     , _Monad:Bind, _:'b Async     ) = fun f -> async.Bind(x,f)
+        static member (?<-) (x:Async<'a>    , _Monad:Bind, _:'b Async     ) = fun f -> async.Bind(x,f) : Async<'b>
         static member (?<-) (x:Nullable<_>  , _Monad:Bind, _:'b Nullable  ) = fun f -> 
             match x with
             | Null -> Nullable()
-            | Value v -> f v
+            | Value v -> f v        : Nullable<'b>
         static member (?<-) (x:Choice<'a,'e>, _Monad:Bind, _:Choice<'b,'e>) = fun (k:_->Choice<'b,_>) ->
             match x with
             | Choice2Of2 l -> Choice2Of2 l
@@ -196,7 +196,7 @@ module Prelude =
 
     let inline mapM f as' = sequence (List.map f as')
 
-    let inline liftM  f m1    = m1 >>= (return' << f)
+    let inline liftM  f m1    = fmap f m1
     let inline liftM2 f m1 m2 = m1 >>= fun x1 -> m2 >>= fun x2 -> return' (f x1 x2)
     let inline when'  p s     = if p then s else return' ()
     let inline unless p s     = when' (not p) s
@@ -256,11 +256,11 @@ module Prelude =
         member inline this.Base x = return' x
         static member (?<-) (_, _Applicative:Pure, _:'a option        ) = fun (x:'a) -> Pure.Pure.Base x :'a option
         static member (?<-) (_, _Applicative:Pure, _:'a list          ) = fun (x:'a) -> Pure.Pure.Base x :'a list
-        static member (?<-) (_, _Applicative:Pure, _: _ -> 'a         ) = konst
+        static member (?<-) (_, _Applicative:Pure, _: _ -> 'a         ) = konst : 'a ->_->_ 
         static member (?<-) (_, _Applicative:Pure, _:'a Async         ) = fun (x:'a) -> Pure.Pure.Base x :'a Async
         static member (?<-) (_, _Applicative:Pure, _:'a Nullable      ) = fun (x:'a) -> Pure.Pure.Base x :'a Nullable
-        static member (?<-) (_, _Applicative:Pure, _: Choice<'a,'b>   ) = fun (x:'a) -> Pure.Pure.Base x :Choice<'a,'b>        
-        static member (?<-) (_, _Applicative:Pure, _:Validation< _,'a>) = fun (x:'a) -> Right x
+        static member (?<-) (_, _Applicative:Pure, _:Choice<'a,'b>    ) = fun (x:'a) -> Pure.Pure.Base x :Choice<'a,'b>        
+        static member (?<-) (_, _Applicative:Pure, _:Validation<'b,'a>) = fun (x:'a) -> Right x          :Validation<'b,'a>
     let inline pure' x : ^R = (() ? (Pure) <- Unchecked.defaultof< ^R>) x
 
 

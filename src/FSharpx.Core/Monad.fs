@@ -49,7 +49,7 @@ module Operators =
     let inline applyM (builder1:^M1) (builder2:^M2) f m =
         bindM builder1 f <| fun f' ->
             bindM builder2 m <| fun m' ->
-                returnM builder2 (f' m') 
+                returnM builder2 (f' m')
 
 module Async =        
     let inline bind f m = async.Bind(m,f)
@@ -58,8 +58,8 @@ module Async =
 
 module ZipList =
     type ZipList<'a> = ZipList of 'a seq with
-        static member (?<-) (_        , _Functor    :Fmap,   ZipList x  ) = fun f -> ZipList (Seq.map f x)
-        static member (?<-) (_        , _Applicative:Pure, _:ZipList<'a>) = fun x -> ZipList (Seq.initInfinite (konst x))
+        static member (?<-) (_        , _Functor    :Fmap,   ZipList x  ) = fun f      -> ZipList (Seq.map f x)
+        static member (?<-) (_        , _Applicative:Pure, _:ZipList<'b>) = fun (x:'b) -> ZipList (Seq.initInfinite (konst x))
         static member (?<-) (ZipList f, _Applicative:Ap  ,   ZipList x  ) = ZipList (Seq.zip f x |> Seq.map (fun (f,x) -> f x)) 
 
 module Option =
@@ -240,8 +240,10 @@ module State =
 
     let runState (State x) = x
     type State<'s,'a> with
-        static member (?<-) (_      , _Monad  :Return, _:State<_,_>) = fun a -> State(fun s -> (a, s))
-        static member (?<-) (State m, _Monad  :Bind  , _:State<_,_>) = fun k -> State(fun s -> let (a, s') = m s in runState(k a) s')
+        static member (?<-) (_           , _Monad  :Return  , _:State<'s,'a>) = fun a -> State(fun s -> (a, s)) : State<'s,'a>
+        static member (?<-) (State m     , _Monad  :Bind    , _:State<'s,'b>) = fun k -> State(fun (s:'s) -> let (a, s') = m s in runState(k a) s') :State<'s,'b>
+        static member (?<-) (_           , _Applicative:Pure, _:State<'s,'a>) = fun x -> Pure.Pure.Base x : State<'s,'a>
+        static member (?<-) (f:State<_,_>, _Applicative:Ap  , x:State<'s,_> ) = Ap.Ap.Base f x
 
     let mapState  f (State m)  = State(f << m)
     let withState f (State m)  = State(m << f)
@@ -285,8 +287,10 @@ module Reader =
 
     let runReader (Reader x) = x
     type Reader<'s,'a> with
-        static member (?<-) (_       , _Monad  :Return, _:Reader<_,_>) = fun a -> Reader(fun _ -> a)
-        static member (?<-) (Reader m, _Monad  :Bind  , _:Reader<_,_>) = fun k -> Reader(fun r -> runReader(k (m r)) r)
+        static member (?<-) (_            , _Monad  :Return  , _:Reader<'s,'a>) = fun a -> Reader(fun _ -> a) :Reader<'s,'a>
+        static member (?<-) (Reader m     , _Monad  :Bind    , _:Reader<'s,'b>  ) = fun k -> Reader(fun r -> runReader(k (m r)) r) :Reader<'s,'b>
+        static member (?<-) (_            , _Applicative:Pure, _:Reader<'s,'a>) = fun x -> Pure.Pure.Base x : Reader<'s,'a>
+        static member (?<-) (f:Reader<_,_>, _Applicative:Ap  , x:Reader<'s,_> ) = Ap.Ap.Base f x
 
     let mapReader  f (Reader m) = Reader(f << m)
     let withReader f (Reader m) = Reader(m << f)
@@ -382,16 +386,12 @@ module Writer =
     type Writer<'w,'a> = Writer of ('a * 'w) with
         static member        (?<-) (_           , _Functor:Fmap  ,   Writer(a,w)) = fun f -> Writer(f a, w)
 
-        
-
     let runWriter (Writer x) = x
     type Writer<'w,'a> with
-        static member inline (?<-) (_           , _Monad:Return, _:Writer<_,_>) = fun a -> Writer(a, mempty())
-        static member inline (?<-) (Writer(a, w), _Monad:Bind  , _:Writer<_,_>) = fun k -> Writer(let (b, w') = runWriter(k a) in (b, mappend w w'))
-
-        static member inline (?<-) (_      , _Applicative:Pure, _:Writer<_,'a>) = fun a -> Writer(a, mempty())
-        static member inline (?<-) (f:Writer<_,_>, _Applicative:Ap, x:Writer<_,_>) = Ap.Ap.Base f x : Writer<_,_>
-
+        static member inline (?<-) (_            , _Monad:Return    , _:Writer<'s,'a>) = fun a -> Writer(a, mempty()) :Writer<'s,'a>
+        static member inline (?<-) (Writer(a, w) , _Monad:Bind      , _:Writer<'s,'b>) = fun k -> Writer(let (b, w') = runWriter(k a) in (b, mappend w w')) :Writer<'s,'b>
+        static member inline (?<-) (_            , _Applicative:Pure, _:Writer<'s,'a>) = fun a -> Writer(a, mempty()) :Writer<'s,'a>
+        static member inline (?<-) (f:Writer<_,_>, _Applicative:Ap  , x:Writer<_,_>  ) = Ap.Ap.Base f x : Writer<_,_>
 
     let mapWriter f (Writer m)   = Writer(f m)
     let execWriter  (Writer m) s = snd m
@@ -506,8 +506,10 @@ module Continuation =
     
     let runCont (Cont x) = x
     type Cont<'r,'a> with
-        static member (?<-) (_     , _Monad  :Return, _:Cont<_,'a>) = fun (n:'a) -> Cont(fun k -> k n)
-        static member (?<-) (Cont m, _Monad  :Bind  , _:Cont<_,_> ) = fun  f     -> Cont(fun k -> m (fun a -> runCont(f a) k))
+        static member (?<-) (_          , _Monad  :Return  , _:Cont<'r,'a>) = fun (n:'a) -> Cont(fun k -> k n) :Cont<'r,'a>
+        static member (?<-) (Cont m     , _Monad  :Bind    , _:Cont<'r,'b>) = fun  f     -> Cont(fun k -> m (fun a -> runCont(f a) k)) :Cont<'r,'b>
+        static member (?<-) (_          , _Applicative:Pure, _:Cont<'r,'a>) = fun x -> Pure.Pure.Base x : Cont<'r,'a>
+        static member (?<-) (f:Cont<_,_>, _Applicative:Ap  , x:Cont<'r,_> ) = Ap.Ap.Base f x
 
     let callCC f = Cont <| fun k -> runCont (f (fun a -> Cont(fun _ -> k a))) k
 
@@ -581,7 +583,8 @@ module Distribution =
                             p1.Probability * p2.Probability}))
             |> Seq.concat
             |> Distribution
-
+        static member (?<-) (_                 , _Applicative:Pure, _:Distribution<'a>) = fun (x:'a) -> Pure.Pure.Base x :Distribution<'a>
+        static member (?<-) (f:Distribution<_> , _Applicative:Ap  , x:Distribution<_> ) = Ap.Ap.Base f x
     
     // P(A AND B) = P(A | B) * P(B)
     let bind (f: 'a -> 'b Distribution) (dist:'a Distribution) =
