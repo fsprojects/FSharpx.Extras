@@ -41,8 +41,8 @@
     <Compile Include="IO.fs" />
     <Compile Include="Collections.fs" />
     <Compile Include="Monad.fs" />
-    <Compile Include="Iteratee.fs" />
     <Compile Include="Lens.fs" />
+    <Compile Include="Iteratee.fs" />
     <Compile Include="CSharpCompat.fs" />
     <Compile Include="Regex.fs" />
     <Compile Include="TimeMeasurement.fs" />

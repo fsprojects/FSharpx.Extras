@@ -144,9 +144,16 @@ module Iteratee =
     /// The stream can be composed of chunks of 'a, empty blocks indicating a wait, or an EOF marker.
     /// Be aware that when using #seq<_> types, you will need to check for both Seq.empty ([]) and Empty.
     type Stream<'a> =
-        | Chunk of 'a
+        | Chunk of ArraySegment<'a>
         | Empty
         | EOF
+
+    module Stream =
+        let isEmpty stream =
+            match stream with
+            | Empty -> true
+            | Chunk x when ArraySegment.isEmpty x -> true
+            | _ -> false
     
     /// The iteratee is a stream consumer that will consume a stream of data until either 
     /// it receives an EOF or meets its own requirements for consuming data. The iteratee
@@ -265,333 +272,177 @@ module Iteratee =
     /// Right-to-left Kleisli composition
     let inline (<=<) x = flip (>=>) x
     
-    module List =
-        open Operators
-        
-        let fold step seed =
-            let f = Microsoft.FSharp.Collections.List.fold step
-            let rec loop acc = function
-                | Empty -> Continue (loop acc)
-                | Chunk [] -> Continue (loop acc)
-                | Chunk xs -> Continue (loop (f acc xs))
-                | EOF -> Done(acc, EOF)
-            Continue (loop seed)
-        
-        let length<'a> : Iteratee<'a list, int> =
-            let rec step n = function
-                | Empty | Chunk [] -> Continue (step n)
-                | Chunk x -> Continue (step (n + x.Length))
-                | EOF -> Done(n, EOF)
-            in Continue (step 0)
-        
-        let peek<'a> : Iteratee<'a list, 'a option> =
-            let rec inner =
-                let rec step = function
-                    | Empty | Chunk ([]:'a list) -> inner
-                    | Chunk(x::xs) as s -> Done(Some x, s)
-                    | EOF -> Done(None, EOF)
-                Continue step
-            in inner
-        
-        let head<'a> : Iteratee<'a list, 'a option> =
-            let rec inner =
-                let rec step = function
-                    | Empty | Chunk ([]:'a list) -> inner
-                    | Chunk(x::xs) -> Done(Some x, Chunk xs)
-                    | EOF -> Done(None, EOF)
-                Continue step
-            in inner
-        
-        let drop n =
-            let rec step n = function
-                | Empty | Chunk [] -> Continue <| step n
-                | Chunk str ->
-                    if str.Length < n then
-                        Continue <| step (n - str.Length)
-                    else let extra = List.skip n str in Done((), Chunk extra)
-                | EOF -> Done((), EOF)
-            in if n <= 0 then empty<_> else Continue (step n)
-        
-        let private dropWithPredicate pred listOp =
-            let rec step = function
-                | Empty | Chunk [] -> Continue step
-                | Chunk x ->
-                    match listOp pred x with
-                    | [] -> Continue step
-                    | x' -> Done((), Chunk x')
-                | EOF as s -> Done((), s)
-            in Continue step
+    (* ========= Iteratees ========= *)
 
-        let dropWhile pred = dropWithPredicate pred List.skipWhile
-        let dropUntil pred = dropWithPredicate pred List.skipUntil
-        
-        let take n =
-            let rec step before n = function
-                | Empty | Chunk [] -> Continue <| step before n
-                | Chunk str ->
-                    if str.Length < n then
-                        Continue <| step (before @ str) (n - str.Length)
-                    else let str', extra = List.splitAt n str in Done(before @ str', Chunk extra)
-                | EOF -> Done(before, EOF)
-            in if n <= 0 then Done([], Empty) else Continue (step [] n)
-        
-        let private takeWithPredicate (pred:'a -> bool) listOp =
-            let rec step before = function
-                | Empty | Chunk [] -> Continue (step before)
-                | Chunk str ->
-                    match listOp pred str with
-                    | str', [] -> Continue (step (before @ str'))
-                    | str', extra -> Done(before @ str', Chunk extra)
-                | EOF -> Done(before, EOF)
-            in Continue (step [])
-        
-        let takeWhile pred = takeWithPredicate pred List.span
-        let takeUntil pred = takeWithPredicate pred List.split
-        
-        let heads str =
-            let rec loop count str =
-                match count, str with
-                | (count, []) -> Done(count, Empty)
-                | (count, str) -> Continue (step count str)
-            and step count str s =
-                match str, s with
-                | str, Empty -> loop count str
-                | str, (Chunk []) -> loop count str
-                | c::t, (Chunk (c'::t')) ->
-                    if c = c' then step (count + 1) t (Chunk t') 
-                    else Done(count, Chunk (c'::t'))
-                | _, s -> Done(count, s)
-            loop 0 str
-        
-        let many i =
-            let rec inner cont = i >>= check cont
-            and check cont = function
-                | [] -> Done(cont [], Empty)
-                | xs -> inner (fun tail -> cont (xs::tail))
-            inner id
+    let fold step seed =
+        let f = ArraySegment.fold step
+        let rec loop acc = function
+            | Empty -> Continue (loop acc)
+            | Chunk xs when ArraySegment.isEmpty xs -> Continue (loop acc)
+            | Chunk xs -> Continue (loop (f acc xs))
+            | EOF -> Done(acc, EOF)
+        Continue (loop seed)
 
-        let skipNewline =
-            let crlf = ['\r';'\n']
-            let lf = ['\n']
-            heads crlf >>= fun n ->
-                if n = 0 then
-                    heads lf
-                else Done(n, Empty)
+    let length<'a> : Iteratee<'a,_> = 
+        let rec step n = function
+            | Empty -> Continue (step n)
+            | Chunk x when ArraySegment.isEmpty x -> Continue (step n)
+            | Chunk x -> Continue (step (n + x.Count))
+            | EOF as s -> Done(n, s)
+        Continue (step 0)
 
-        let readLine =
-            let isNewline c = c = '\r' || c = '\n'
-            takeUntil isNewline
+    let rec peek =
+        let rec step = function
+            | Empty -> peek
+            | Chunk x when ArraySegment.isEmpty x -> peek
+            | Chunk x as s -> Done(Some(ArraySegment.head x), s)
+            | s -> Done(None, s)
+        Continue step
 
-        let readLines =
-            let rec lines cont = readLine >>= fun xs -> skipNewline >>= check cont xs
-            and check cont xs count =
-                match xs, count with
-                | [], 0 -> Done(cont [] |> List.map (fun chars -> String(Array.ofList chars)), EOF)
-                | xs, 0 -> Done(cont [xs] |> List.map (fun chars -> String(Array.ofList chars)), EOF)
-                | _ -> lines (fun tail -> cont (xs::tail))
-            lines id
-        
-        (* ========= Enumerators ========= *)
-        
-        // val enumeratePure1Chunk :: 'a list -> Enumerator<'a list,'b>
-        let enumeratePure1Chunk str i =
-            match str, i with 
-            | [], _ -> i
-            | _, Done(_,_) -> i
-            | _::_, Continue k -> k (Chunk str)
+    let rec head =
+        let rec step = function
+            | Empty -> head 
+            | Chunk x when ArraySegment.isEmpty x -> head
+            | Chunk x -> Done(Some(ArraySegment.head x), Chunk(ArraySegment.tail x))
+            | s -> Done(None, s)
+        Continue step
+
+    let drop n =
+        let rec step n = function
+            | Empty -> Continue <| step n
+            | Chunk str when ArraySegment.isEmpty str -> Continue <| step n
+            | Chunk str ->
+                if ArraySegment.length str < n then
+                    Continue <| step (n - (ArraySegment.length str))
+                else let extra = ArraySegment.skip n str in Done((), Chunk extra)
+            | EOF -> Done((), EOF)
+        in if n <= 0 then empty<_> else Continue <| step n
+
+    let private dropWithPredicate pred byteStringOp =
+        let rec step = function
+            | Empty -> Continue step
+            | Chunk x when ArraySegment.isEmpty x -> Continue step
+            | Chunk x ->
+                let x' = byteStringOp pred x in
+                if ArraySegment.isEmpty x' then Continue step
+                else Done((), Chunk x')
+            | s -> Done((), s)
+        Continue step
+
+    let dropWhile pred = dropWithPredicate pred ArraySegment.skipWhile
+    let dropUntil pred = dropWithPredicate pred ArraySegment.skipUntil
+
+    let take n =
+        let rec step before n = function
+            | Empty -> Continue <| step before n
+            | Chunk str when ArraySegment.isEmpty str -> Continue <| step before n
+            | Chunk str ->
+                if ArraySegment.length str < n then
+                    Continue <| step (ArraySegment.append before str) (n - (ArraySegment.length str))
+                else let str', extra = ArraySegment.splitAt n str in Done(ArraySegment.append before str', Chunk extra)
+            | EOF -> Done(before, EOF)
+        in if n <= 0 then Done(ArraySegment.empty, Empty) else Continue (step ArraySegment.empty n)
+
+    let private takeWithPredicate (pred:'a -> bool) byteStringOp =
+        let rec step before = function
+            | Empty -> Continue <| step before
+            | Chunk str when ArraySegment.isEmpty str -> Continue <| step before
+            | Chunk str ->
+                match byteStringOp pred str with
+                | str', extra when ArraySegment.isEmpty extra -> Continue <| step (ArraySegment.append before str')
+                | str', extra -> Done(ArraySegment.append before str', Chunk extra)
+            | EOF -> Done(before, EOF)
+        Continue (step ArraySegment.empty)
+
+    let takeWhile pred = takeWithPredicate pred ArraySegment.span
+    let takeUntil pred = takeWithPredicate pred ArraySegment.split
+
+    let heads str =
+        let rec loop count str =
+            if ArraySegment.isEmpty str then Done(count, Empty)
+            else Continue (step count str)
+        and step count str = function
+            | Empty -> loop count str
+            | Chunk x when ArraySegment.isEmpty x -> loop count str
+            | Chunk x when not (ArraySegment.isEmpty str) ->
+                let c, t = ArraySegment.head str, ArraySegment.tail str
+                let c', t' = ArraySegment.head x, ArraySegment.tail x
+                if c = c' then step (count + 1) t (Chunk t') 
+                else Done(count, Chunk x)
+            | s -> Done(count, s)
+        loop 0 str
+
+    let many i =
+        let rec inner cont = i >>= check cont
+        and check cont bs =
+            if ArraySegment.isEmpty bs then
+                Done(cont [], Empty)
+            else inner <| fun tail -> cont <| bs::tail
+        inner id
+
+    let skipNewline<'a> : Iteratee<'a,_> =
+        let crlf = ArraySegment<_>("\r\n"B)
+        let lf = ArraySegment<_>("\n"B)
+        heads crlf >>= fun n ->
+            if n = 0 then
+                heads lf
+            else Done(n, Empty)
+
+    let readLine<'a> : Iteratee<'a,_> = 
+        let isNewline c = c = '\r'B || c = '\n'B
+        takeUntil isNewline
+
+    let readLines<'a> : Iteratee<'a,_> =
+        let rec lines cont = readLine >>= fun bs -> skipNewline >>= check cont bs
+        and check cont bs count =
+            match bs, count with
+            | bs, 0 when ArraySegment.isEmpty bs -> Done(cont [], EOF)
+            | bs, 0 -> Done(cont [bs], EOF)
+            | _ -> lines <| fun tail -> cont <| bs::tail
+        lines id
+
+    (* ========= Enumerators ========= *)
+
+    // val enumeratePure1Chunk :: ArraySegment<_> -> Enumerator<ArraySegment<_>,'b>
+    let enumeratePure1Chunk str i =
+        if ArraySegment.isEmpty str then i
+        else match i with
+             | Done(_,_) -> i
+             | Continue k -> k (Chunk str)
+             | _ -> i
+
+    // val enumeratePureNChunk :: ArraySegment<_> -> int -> Enumerator<ArraySegment<_>,'b>
+    let rec enumeratePureNChunk n str i =
+        if ArraySegment.isEmpty str then i
+        else match i with
+             | Done(_,_) -> i
+             | Continue k -> let s1, s2 = ArraySegment.splitAt n str in enumeratePureNChunk n s2 (k (Chunk s1))
+             | _ -> i
+
+    // val enumerate :: ArraySegment<_> -> Enumerator<ArraySegment<_>,'b>
+    let rec enumerate str i =
+        if ArraySegment.isEmpty str then i
+        else match i with
+             | Done(_,_) -> i
+             | Continue k -> let x, xs = ArraySegment.head str, ArraySegment.tail str in enumerate xs (k (Chunk (ArraySegment.singleton x)))
+             | _ -> i
+
+    let enumStream bufferSize (stream:#System.IO.Stream) i =
+        let buffer = Array.zeroCreate<byte> bufferSize
+        let rec step = function Continue k -> read k | i -> i
+        and read k =
+            let result = stream.Read(buffer, 0, bufferSize) in
+            if result = 0 then Continue k
+            else step (k (Chunk(ArraySegment<_>(buffer,0,buffer.Length))))
+        step i
+
+    let enumStreamReader (reader:#System.IO.TextReader) i =
+        let rec step i =
+            match i with
+            | Done(_,_) -> i
+            | Continue k ->
+                let line = reader.ReadLine()
+                if line = null then i
+                else step (k (Chunk(ArraySegment.ofString line)))
             | _ -> i
-        
-        // val enumeratePureNChunk :: 'a list -> int -> Enumerator<'a list,'b>
-        let rec enumeratePureNChunk n str i =
-            match str, i with
-            | [], _ -> i
-            | _, Done(_,_) -> i
-            | _::_, Continue k ->
-                let x, xs = List.splitAt n str in enumeratePureNChunk n xs (k (Chunk x))
-            | _ -> i
-
-        //val enumerate :: 'a list -> Enumerator<'a list,'b>
-        let rec enumerate str i = 
-            match str, i with
-            | [], _ -> i
-            | _, Done(_,_) -> i
-            | x::xs, Continue k -> enumerate xs (k (Chunk [x]))
-            | _ -> i
-
-    module Binary =
-        open Operators
-
-        (* ========= Iteratees ========= *)
-
-        let fold step seed =
-            let f = ByteString.fold step
-            let rec loop acc = function
-                | Empty -> Continue (loop acc)
-                | Chunk xs when ByteString.isEmpty xs -> Continue (loop acc)
-                | Chunk xs -> Continue (loop (f acc xs))
-                | EOF -> Done(acc, EOF)
-            Continue (loop seed)
-
-        let length = 
-            let rec step n = function
-                | Empty -> Continue (step n)
-                | Chunk x when ByteString.isEmpty x -> Continue (step n)
-                | Chunk x -> Continue (step (n + x.Count))
-                | EOF as s -> Done(n, s)
-            Continue (step 0)
-
-        let rec peek =
-            let rec step = function
-                | Empty -> peek
-                | Chunk x when ByteString.isEmpty x -> peek
-                | Chunk x as s -> Done(Some(ByteString.head x), s)
-                | s -> Done(None, s)
-            Continue step
-
-        let rec head =
-            let rec step = function
-                | Empty -> head 
-                | Chunk x when ByteString.isEmpty x -> head
-                | Chunk x -> Done(Some(ByteString.head x), Chunk(ByteString.tail x))
-                | s -> Done(None, s)
-            Continue step
-
-        let drop n =
-            let rec step n = function
-                | Empty -> Continue <| step n
-                | Chunk str when ByteString.isEmpty str -> Continue <| step n
-                | Chunk str ->
-                    if ByteString.length str < n then
-                        Continue <| step (n - (ByteString.length str))
-                    else let extra = ByteString.skip n str in Done((), Chunk extra)
-                | EOF -> Done((), EOF)
-            in if n <= 0 then empty<_> else Continue <| step n
-
-        let private dropWithPredicate pred byteStringOp =
-            let rec step = function
-                | Empty -> Continue step
-                | Chunk x when ByteString.isEmpty x -> Continue step
-                | Chunk x ->
-                    let x' = byteStringOp pred x in
-                    if ByteString.isEmpty x' then Continue step
-                    else Done((), Chunk x')
-                | s -> Done((), s)
-            Continue step
-
-        let dropWhile pred = dropWithPredicate pred ByteString.skipWhile
-        let dropUntil pred = dropWithPredicate pred ByteString.skipUntil
-
-        let take n =
-            let rec step before n = function
-                | Empty -> Continue <| step before n
-                | Chunk str when ByteString.isEmpty str -> Continue <| step before n
-                | Chunk str ->
-                    if ByteString.length str < n then
-                        Continue <| step (ByteString.append before str) (n - (ByteString.length str))
-                    else let str', extra = ByteString.splitAt n str in Done(ByteString.append before str', Chunk extra)
-                | EOF -> Done(before, EOF)
-            in if n <= 0 then Done(ByteString.empty, Empty) else Continue (step ByteString.empty n)
-
-        let private takeWithPredicate (pred:'a -> bool) byteStringOp =
-            let rec step before = function
-                | Empty -> Continue <| step before
-                | Chunk str when ByteString.isEmpty str -> Continue <| step before
-                | Chunk str ->
-                    match byteStringOp pred str with
-                    | str', extra when ByteString.isEmpty extra -> Continue <| step (ByteString.append before str')
-                    | str', extra -> Done(ByteString.append before str', Chunk extra)
-                | EOF -> Done(before, EOF)
-            Continue (step ByteString.empty)
-
-        let takeWhile pred = takeWithPredicate pred ByteString.span
-        let takeUntil pred = takeWithPredicate pred ByteString.split
-
-        let heads str =
-            let rec loop count str =
-                if ByteString.isEmpty str then Done(count, Empty)
-                else Continue (step count str)
-            and step count str = function
-                | Empty -> loop count str
-                | Chunk x when ByteString.isEmpty x -> loop count str
-                | Chunk x when not (ByteString.isEmpty str) ->
-                    let c, t = ByteString.head str, ByteString.tail str
-                    let c', t' = ByteString.head x, ByteString.tail x
-                    if c = c' then step (count + 1) t (Chunk t') 
-                    else Done(count, Chunk x)
-                | s -> Done(count, s)
-            loop 0 str
-
-        let many i =
-            let rec inner cont = i >>= check cont
-            and check cont bs =
-                if ByteString.isEmpty bs then
-                    Done(cont [], Empty)
-                else inner <| fun tail -> cont <| bs::tail
-            inner id
-
-        let skipNewline =
-            let crlf = BS"\r\n"B
-            let lf = BS"\n"B
-            heads crlf >>= fun n ->
-                if n = 0 then
-                    heads lf
-                else Done(n, Empty)
-
-        let readLine = 
-            let isNewline c = c = '\r'B || c = '\n'B
-            takeUntil isNewline
-
-        let readLines =
-            let rec lines cont = readLine >>= fun bs -> skipNewline >>= check cont bs
-            and check cont bs count =
-                match bs, count with
-                | bs, 0 when ByteString.isEmpty bs -> Done(cont [], EOF)
-                | bs, 0 -> Done(cont [bs], EOF)
-                | _ -> lines <| fun tail -> cont <| bs::tail
-            lines id
-
-        (* ========= Enumerators ========= *)
-
-        // val enumeratePure1Chunk :: ByteString -> Enumerator<ByteString,'b>
-        let enumeratePure1Chunk str i =
-            if ByteString.isEmpty str then i
-            else match i with
-                 | Done(_,_) -> i
-                 | Continue k -> k (Chunk str)
-                 | _ -> i
-
-        // val enumeratePureNChunk :: ByteString -> int -> Enumerator<ByteString,'b>
-        let rec enumeratePureNChunk n str i =
-            if ByteString.isEmpty str then i
-            else match i with
-                 | Done(_,_) -> i
-                 | Continue k -> let s1, s2 = ByteString.splitAt n str in enumeratePureNChunk n s2 (k (Chunk s1))
-                 | _ -> i
-
-        // val enumerate :: ByteString -> Enumerator<ByteString,'b>
-        let rec enumerate str i =
-            if ByteString.isEmpty str then i
-            else match i with
-                 | Done(_,_) -> i
-                 | Continue k -> let x, xs = ByteString.head str, ByteString.tail str in enumerate xs (k (Chunk (ByteString.singleton x)))
-                 | _ -> i
-
-        let enumStream bufferSize (stream:#System.IO.Stream) i =
-            let buffer = Array.zeroCreate<byte> bufferSize
-            let rec step = function Continue k -> read k | i -> i
-            and read k =
-                let result = stream.Read(buffer, 0, bufferSize) in
-                if result = 0 then Continue k
-                else step (k (Chunk(BS(buffer,0,buffer.Length))))
-            step i
-
-        let enumStreamReader (reader:#System.IO.TextReader) i =
-            let rec step i =
-                match i with
-                | Done(_,_) -> i
-                | Continue k ->
-                    let line = reader.ReadLine()
-                    if line = null then i
-                    else step (k (Chunk(ByteString.ofString line)))
-                | _ -> i
-            step i
+        step i

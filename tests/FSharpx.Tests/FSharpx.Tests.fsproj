@@ -50,8 +50,6 @@
     <Compile Include="DistributionTest.fs" />
     <Compile Include="PokerDistributionTest.fs" />
     <Compile Include="IterateeTest.fs" />
-    <Compile Include="ListIterateeTest.fs" />
-    <Compile Include="BinaryIterateeTest.fs" />
     <Compile Include="ValidationTests.fs" />
     <Compile Include="ZipListTests.fs" />
     <Compile Include="NameValueCollectionTests.fs" />
