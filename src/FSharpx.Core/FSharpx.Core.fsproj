@@ -43,6 +43,7 @@
     <Compile Include="Monad.fs" />
     <Compile Include="Lens.fs" />
     <Compile Include="CSharpCompat.fs" />
+    <Compile Include="Regex.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
