@@ -76,6 +76,14 @@ type Funcs =
     static member Untuple (f: Action<_ * _>) =
         Action<_,_>(fun a b -> f.Invoke(a,b))
 
+    [<Extension>]
+    static member Compose (f: Func<_,_>, g: Func<_,_>) =
+        Func<_,_>(fun x -> f.Invoke(g.Invoke(x)))
+
+    [<Extension>]
+    static member AndThen (f: Func<_,_>, g: Func<_,_>) =
+        Func<_,_>(fun x -> g.Invoke(f.Invoke(x)))
+
 [<Extension>]
 type FSharpOption =
     [<Extension>]
