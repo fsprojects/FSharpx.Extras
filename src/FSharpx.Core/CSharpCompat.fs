@@ -49,10 +49,7 @@ type FSharpFunc =
     static member FromFunc (f: Func<_,_,_>) =
         fun x y -> f.Invoke(x,y)
 
-    [<Extension>]
-    static member Curry (f: Func<_,_,_>) =
-        Func<_,Func<_,_>>(fun a -> Func<_,_>(fun b -> f.Invoke(a,b)))
-
+/// Extensions around Actions and Funcs
 [<Extension>]
 type Funcs =
     [<Extension>]
@@ -66,6 +63,10 @@ type Funcs =
     [<Extension>]
     static member ToFunc (f: Action<_,_,_>) =
         Func<_,_,_,_>(fun a b c -> f.Invoke(a,b,c))
+
+    [<Extension>]
+    static member Curry (f: Func<_,_,_>) =
+        Func<_,Func<_,_>>(fun a -> Func<_,_>(fun b -> f.Invoke(a,b)))
 
 [<Extension>]
 type FSharpOption =
