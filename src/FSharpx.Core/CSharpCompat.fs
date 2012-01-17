@@ -68,6 +68,14 @@ type Funcs =
     static member Curry (f: Func<_,_,_>) =
         Func<_,Func<_,_>>(fun a -> Func<_,_>(fun b -> f.Invoke(a,b)))
 
+    [<Extension>]
+    static member Tuple (f: Action<_,_>) =
+        Action<_>(fun (a,b) -> f.Invoke(a,b))
+
+    [<Extension>]
+    static member Untuple (f: Action<_ * _>) =
+        Action<_,_>(fun a b -> f.Invoke(a,b))
+
 [<Extension>]
 type FSharpOption =
     [<Extension>]

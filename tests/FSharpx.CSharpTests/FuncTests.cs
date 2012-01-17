@@ -21,5 +21,23 @@ namespace FSharpx.CSharpTests {
             Action[] actions = new[] {action,action};
             var functions = actions.Select(FSharpFunc.FromAction);
         }
+
+        [Test]
+        public void ActionTuple() {
+            int r = 0;
+            Action<int, int> f = (a, b) => r = a + b;
+            var g = f.Tuple();
+            g(Tuple.Create(1, 2));
+            Assert.AreEqual(3, r);
+        }
+
+        [Test]
+        public void ActionUntuple() {
+            int r = 0;
+            Action<Tuple<int, int>> f = t => r = t.Item1 + t.Item2;
+            var g = f.Untuple();
+            g(1, 2);
+            Assert.AreEqual(3, r);
+        }
     }
 }
