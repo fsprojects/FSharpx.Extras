@@ -6,9 +6,13 @@ open System.Collections.Generic
 open System.Runtime.CompilerServices
 open Microsoft.FSharp.Control.WebExtensions
 
+/// Helps the C# compiler with Func type inference.
 type L =
+    /// Helps the C# compiler with Func type inference.
     static member F (f: Func<_>) = f
+    /// Helps the C# compiler with Func type inference.
     static member F (f: Func<_,_>) = f
+    /// Helps the C# compiler with Func type inference.
     static member F (f: Func<_,_,_>) = f
 
 /// <summary>
@@ -17,24 +21,31 @@ type L =
 /// </summary>
 [<Extension>]
 type FSharpFunc =
+    /// Convert an Action into an F# function returning unit
     static member FromAction (f: Action) =
         fun () -> f.Invoke()
     
+    /// Convert an Action into an F# function returning unit
     static member FromAction (f: Action<_>) =
         fun x -> f.Invoke x
 
+    /// Convert an Action into an F# function returning unit
     static member FromAction (f: Action<_,_>) =
         fun x y -> f.Invoke(x,y)
 
+    /// Convert an Action into an F# function returning unit
     static member FromAction (f: Action<_,_,_>) =
         fun x y z -> f.Invoke(x,y,z)
 
+    /// Convert a Func into an F# function
     static member FromFunc (f: Func<_>) =
         fun () -> f.Invoke()
 
+    /// Convert a Func into an F# function
     static member FromFunc (f: Func<_,_>) =
         fun x -> f.Invoke x
 
+    /// Convert a Func into an F# function
     static member FromFunc (f: Func<_,_,_>) =
         fun x y -> f.Invoke(x,y)
 
