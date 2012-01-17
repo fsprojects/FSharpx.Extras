@@ -73,8 +73,24 @@ type Funcs =
         Action<_>(fun (a,b) -> f.Invoke(a,b))
 
     [<Extension>]
+    static member Tuple (f: Action<_,_,_>) =
+        Action<_>(fun (a,b,c) -> f.Invoke(a,b,c))
+
+    [<Extension>]
+    static member Tuple (f: Action<_,_,_,_>) =
+        Action<_>(fun (a,b,c,d) -> f.Invoke(a,b,c,d))
+
+    [<Extension>]
     static member Untuple (f: Action<_ * _>) =
         Action<_,_>(fun a b -> f.Invoke(a,b))
+
+    [<Extension>]
+    static member Untuple (f: Action<_ * _ * _>) =
+        Action<_,_,_>(fun a b c -> f.Invoke(a,b,c))
+
+    [<Extension>]
+    static member Untuple (f: Action<_ * _ * _ * _>) =
+        Action<_,_,_,_>(fun a b c d -> f.Invoke(a,b,c,d))
 
     [<Extension>]
     static member Compose (f: Func<_,_>, g: Func<_,_>) =
