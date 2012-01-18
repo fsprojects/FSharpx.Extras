@@ -58,6 +58,7 @@
     <Compile Include="PreludeTests.fs" />
     <Compile Include="LensTests.fs" />
     <Compile Include="LensExample.fs" />
+    <Compile Include="TimeMeasurementTests.fs" />
     <Compile Include="RegexTests.fs" />
   </ItemGroup>
   <ItemGroup>
