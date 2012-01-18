@@ -1,4 +1,4 @@
-﻿module LensExample
+﻿module FSharpx.Tests.LensExample
 
 // http://stackoverflow.com/questions/8179485/updating-nested-immutable-data-structures
 
