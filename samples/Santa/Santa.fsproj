@@ -49,6 +49,11 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\FSharpx.Stm\FSharpx.Stm.Core.csproj">
+      <Name>FSharpx.Stm.Core</Name>
+      <Project>{7c2f2110-6e08-42c6-93ef-5a1c90c78616}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\FSharpx.Stm\FSharpx.Stm.fsproj">
       <Name>FSharpx.Stm</Name>
       <Project>{ffdbaf72-7f9f-4de0-a8f3-83d0d21ebeb5}</Project>
