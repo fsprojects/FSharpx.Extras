@@ -49,11 +49,4 @@
     <Compile Include="arrayqueue.fs" />
     <Compile Include="listqueue.fs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FSharpx.Stm\FSharpx.Stm.Core.csproj">
-      <Name>FSharpx.Stm.Core</Name>
-      <Project>{7c2f2110-6e08-42c6-93ef-5a1c90c78616}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
 </Project>
