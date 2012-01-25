@@ -3,7 +3,7 @@ module FSharpx.Stm.ListQueue
 open System
 open System.Threading
 open System.Collections.Generic
-open Stm
+open FSharpx.Stm
 
 type Node<'a> = Cons of 'a * TVar<Node<'a> > | Nil
 
