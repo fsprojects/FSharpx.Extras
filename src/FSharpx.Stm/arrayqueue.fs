@@ -3,7 +3,7 @@ module FSharpx.Stm.ArrayQueue
 open System
 open System.Threading
 open System.Collections.Generic
-open Stm
+open FSharpx.Stm
 
 type Queue<'a> = {
     head : TVar<int>
