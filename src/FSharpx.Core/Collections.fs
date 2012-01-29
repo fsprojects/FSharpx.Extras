@@ -439,6 +439,8 @@ module ByteString =
     let empty = BS()
     let singleton c = BS(Array.create 1 c, 0, 1)
     let create arr = BS(arr, 0, arr.Length)
+    let findIndex pred (bs:BS) =
+        Array.FindIndex(bs.Array, bs.Offset, bs.Count, Predicate<_>(pred))
     let ofArraySegment (segment:ArraySegment<byte>) = BS(segment.Array, segment.Offset, segment.Count)
     let ofSeq s = let arr = Array.ofSeq s in BS(arr, 0, arr.Length)
     let ofList l = BS(Array.ofList l, 0, l.Length)
@@ -514,17 +516,15 @@ module ByteString =
                  loop tl (f acc hd)
         loop bs seed
   
-    let span pred (bs:BS) =
+    let split pred (bs:BS) =
         if isEmpty bs then empty, empty
-        else
-            let x,o,l = bs.Array, bs.Offset, bs.Count
-            let rec loop acc =
-                if l = acc + 1 && pred x.[o+acc] then bs, empty
-                elif not (pred x.[o+acc]) then BS(x,o,acc), BS(x,o+acc,l-acc)
-                else loop (acc+1)
-            loop 0
+        else let index = findIndex pred bs
+             if index = -1 then bs, empty
+             else let count = index - bs.Offset
+                  BS(bs.Array, bs.Offset, count),
+                  BS(bs.Array, index, bs.Count - count)
     
-    let split pred bs = span (not << pred) bs
+    let span pred bs = split (not << pred) bs
     
     let splitAt n (bs:BS) =
         #if NET40
