@@ -12,7 +12,7 @@
  *)
 
 #if INTERACTIVE
-#r @"..\src\FSharpx.Stm\bin\Debug\FSharpx.Stm.dll"
+#r @"..\src\FSharpx.Stm\bin\Debug\FSharpx.Core.dll"
 #endif
 
 open System
