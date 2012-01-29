@@ -36,11 +36,10 @@ type CircularBuffer<'a> (bufferSize: int) =
         dequeued
 
     member __.Enqueue(value: _[], offset, count) =
+        if count > bufferSize then invalidOp "Requested count is too large."
+
         let mutable offset = offset
 
-        // NOTE: We could save a lot by just pulling the last
-        // bufferSize elements, but we'll be converting to a
-        // blocking agent eventually.
         head <- (head + 1) % bufferSize
         for x, y in nextBuffer head count do
             Array.blit value offset buffer x y
@@ -141,7 +140,18 @@ queue.Enqueue([|1;2;3;4;5|])
 Debug.Assert([|1;2;3;4;5|] = queue.Dequeue(5))
 
 // Printing from a queue 1..8, twice
-queue.Enqueue([|1;2;3;4;5;6;7;8;1;2;3;4;5;6;7;8|])
+let error = ref Unchecked.defaultof<Exception>
+try
+  try
+    queue.Enqueue([|1;2;3;4;5;6;7;8;1;2;3;4;5;6;7;8|])
+  with e -> error := e
+finally
+  Debug.Assert(!error <> null)
+
+queue.Enqueue([|1;2;3;4;5|])
+queue.Enqueue([|6;7;8|])
+queue.Enqueue([|1;2;3;4;5|])
+queue.Enqueue([|6;7;8|])
 Debug.Assert([|4;5;6;7;8|] = queue.Dequeue(5))
 
 // Printing from a queue 1..5
@@ -156,7 +166,8 @@ queue.Enqueue([|1;2;3|])
 Debug.Assert([|1;2;3|] = queue.Dequeue(3))
 
 // Printing from a queue 1..8 and dequeue 5, then enqueue 1..3 and dequeue 3
-queue.Enqueue([|1;2;3;4;5;6;7;8|])
+queue.Enqueue([|1;2;3;4;5|])
+queue.Enqueue([|6;7;8|])
 Debug.Assert([|4;5;6;7;8|] = queue.Dequeue(5))
 queue.Enqueue([|1;2;3|])
 Debug.Assert([|1;2;3|] = queue.Dequeue(3))
@@ -178,15 +189,14 @@ let source =
 let incoming =
     let generator =
         seq { yield ArraySegment<_>(source,0,5)
-//              Threading.Thread.Sleep(1)
-              yield ArraySegment<_>(source,5,16)
-//              Threading.Thread.Sleep(2)
+              yield ArraySegment<_>(source,5,5)
+              yield ArraySegment<_>(source,10,3)
+              yield ArraySegment<_>(source,13,5)
+              yield ArraySegment<_>(source,18,3)
               yield ArraySegment<_>(source,21,5)
-//              Threading.Thread.Sleep(1)
               yield ArraySegment<_>(source,26,3)
-//              Threading.Thread.Sleep(1)
-              yield ArraySegment<_>(source,29,8)
-//              Threading.Thread.Sleep(1)
+              yield ArraySegment<_>(source,29,5)
+              yield ArraySegment<_>(source,34,3)
               yield ArraySegment<_>(source,37,3) } 
     in generator.GetEnumerator()
 
@@ -199,6 +209,9 @@ enqueueNext()
 Debug.Assert([|1;2;3;4;5|] = queue.Dequeue(5))
 
 // Printing from a queue 1..8, twice
+enqueueNext()
+enqueueNext()
+enqueueNext()
 enqueueNext()
 Debug.Assert([|4;5;6;7;8|] = queue.Dequeue(5))
 
@@ -214,6 +227,7 @@ enqueueNext()
 Debug.Assert([|1;2;3|] = queue.Dequeue(3))
 
 // Printing from a queue 1..8 and dequeue 5, then enqueue 1..3 and dequeue 3
+enqueueNext()
 enqueueNext()
 Debug.Assert([|4;5;6;7;8|] = queue.Dequeue(5))
 enqueueNext()
