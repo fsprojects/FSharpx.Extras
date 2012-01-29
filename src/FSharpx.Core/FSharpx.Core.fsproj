@@ -46,6 +46,7 @@
     <Compile Include="CSharpCompat.fs" />
     <Compile Include="Regex.fs" />
     <Compile Include="TimeMeasurement.fs" />
+    <Compile Include="Stm.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">

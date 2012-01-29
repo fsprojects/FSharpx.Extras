@@ -83,15 +83,6 @@ Target "BuildApp" (fun _ ->
         {p with 
             CodeLanguage = FSharp
             AssemblyVersion = version
-            AssemblyTitle = "FSharpx.Stm"
-            AssemblyDescription = "This library implements the Software Transactional Memory workflow in F#."
-            Guid = "FFDBAF72-7F9F-4DE0-A8F3-83D0D21EBEB5"
-            OutputFileName = "./src/FSharpx.Stm/AssemblyInfo.fs" })
-
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = version
             AssemblyTitle = "FSharpx.Async"
             AssemblyDescription = "This library implements various extensions for asynchronous programming using F# asynchronous workflows and F# agents."
             Guid = "ede1812b-5a62-410a-9553-02499cf29317"
@@ -155,12 +146,6 @@ Target "BuildNuGet" (fun _ ->
       buildDir + "FSharpx.Http.dll"
       buildDir + "FSharpx.Http.pdb"
       buildDir + "FSharpx.Http.xml"
-      buildDir + "FSharpx.Stm.Core.dll"
-      buildDir + "FSharpx.Stm.Core.pdb"
-      buildDir + "FSharpx.Stm.Core.xml"
-      buildDir + "FSharpx.Stm.dll"
-      buildDir + "FSharpx.Stm.pdb"
-      buildDir + "FSharpx.Stm.xml"
       buildDir + "FSharpx.Async.dll"
       buildDir + "FSharpx.Async.pdb"
       buildDir + "FSharpx.Async.xml"
