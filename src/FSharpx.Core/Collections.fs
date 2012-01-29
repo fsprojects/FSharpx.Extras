@@ -368,15 +368,14 @@ module DList =
 
 /// An ArraySegment with structural comparison and equality.
 [<CustomEquality; CustomComparison; SerializableAttribute; StructAttribute>]
-type ArraySegment<'a> =
+type BS =
     val Array: byte[]
     val Offset: int
     val Count: int
     new (array: byte[]) = { Array = array; Offset = 0; Count = array.Length }
     new (array: byte[], offset: int, count: int) = { Array = array; Offset = offset; Count = count }
-
     /// Compares two byte strings based on their structure.
-    static member Compare (a:ArraySegment<'a>, b:ArraySegment<'a>) =
+    static member Compare (a:BS, b:BS) =
         let x,o,l = a.Array, a.Offset, a.Count
         let x',o',l' = b.Array, b.Offset, b.Count
         if x = x' && o = o' && l = l' then 0
@@ -385,16 +384,13 @@ type ArraySegment<'a> =
             else if o < o' then -1 else 1 
         else let left, right = x.[o..(o+l-1)], x'.[o'..(o'+l'-1)] in
              if left = right then 0 elif left < right then -1 else 1
-
     /// Compares two objects for equality. When both are byte strings, structural equality is used.
     override x.Equals(other) = 
         match other with
-        | :? ArraySegment<'a> as other' -> ArraySegment<'a>.Compare(x, other') = 0
+        | :? BS as other' -> BS.Compare(x, other') = 0
         | _ -> false
-
     /// Gets the hash code for the byte string.
     override x.GetHashCode() = hash x
-
     /// Gets an enumerator for the bytes stored in the byte string.
     member x.GetEnumerator() =
         if x.Count = 0 then Enumerator.empty<_>
@@ -410,7 +406,6 @@ type ArraySegment<'a> =
                     elif !currentIndex > maxIndex then
                         invalidOp "Enumeration already finished."
                     else segment.[!currentIndex]
-
               interface System.Collections.IEnumerator with
                 member self.Current =
                     if !currentIndex < minIndex then
@@ -424,82 +419,80 @@ type ArraySegment<'a> =
                         true
                     else false
                 member self.Reset() = currentIndex := minIndex - 1
-
               interface System.IDisposable with 
                 member self.Dispose() = () }
-
     interface System.IComparable with
         member x.CompareTo(other) =
             match other with
-            | :? ArraySegment<'a> as other' -> ArraySegment<'a>.Compare(x, other')
+            | :? BS as other' -> BS.Compare(x, other')
             | _ -> invalidArg "other" "Cannot compare a value of another type."
-
     interface System.Collections.Generic.IEnumerable<byte> with
         /// Gets an enumerator for the bytes stored in the byte string.
         member x.GetEnumerator() = x.GetEnumerator()
         /// Gets an enumerator for the bytes stored in the byte string.
         member x.GetEnumerator() = x.GetEnumerator() :> IEnumerator
   
-module ArraySegment =
-    /// An active pattern for conveniently retrieving the properties of a ArraySegment<_>.
-    let (|Segment|) (x:ArraySegment<_>) = x.Array, x.Offset, x.Count
+module ByteString =
+    /// An active pattern for conveniently retrieving the properties of a BS.
+    let (|BS|) (x:BS) = x.Array, x.Offset, x.Count
     
-    let empty<'a> = ArraySegment<'a>()
-    let singleton c = ArraySegment<_>(Array.create 1 c, 0, 1)
-    let create arr = ArraySegment<_>(arr, 0, arr.Length)
-    let ofSeq s = let arr = Array.ofSeq s in ArraySegment<_>(arr, 0, arr.Length)
-    let ofList l = ArraySegment<_>(Array.ofList l, 0, l.Length)
+    let empty = BS()
+    let singleton c = BS(Array.create 1 c, 0, 1)
+    let create arr = BS(arr, 0, arr.Length)
+    let ofArraySegment (segment:ArraySegment<byte>) = BS(segment.Array, segment.Offset, segment.Count)
+    let ofSeq s = let arr = Array.ofSeq s in BS(arr, 0, arr.Length)
+    let ofList l = BS(Array.ofList l, 0, l.Length)
     let ofString (s:string) = s.ToCharArray() |> Array.map byte |> create
-    let toArray (segment:ArraySegment<_>) =
-        if segment.Count = 0 then Array.empty<_>
-        else segment.Array.[segment.Offset..(segment.Offset + segment.Count - 1)]
-    let toSeq (segment:ArraySegment<_>) = segment :> seq<byte>
-    let toList (segment:ArraySegment<_>) = List.ofSeq segment
-    let toString (segment:ArraySegment<_>) = System.Text.Encoding.ASCII.GetString(segment.Array, segment.Offset, segment.Count)
-    let isEmpty (segment:ArraySegment<_>) = 
+    let toArray (bs:BS) =
+        if bs.Count = 0 then Array.empty<_>
+        else bs.Array.[bs.Offset..(bs.Offset + bs.Count - 1)]
+    let toSeq (bs:BS) = bs :> seq<byte>
+    let toList (bs:BS) = List.ofSeq bs
+    let toString (bs:BS) = System.Text.Encoding.ASCII.GetString(bs.Array, bs.Offset, bs.Count)
+    let isEmpty (bs:BS) = 
         #if NET40
-        Contract.Requires(segment.Count >= 0)
+        Contract.Requires(bs.Count >= 0)
         #else
-        Debug.Assert(segment.Count >= 0)
+        Debug.Assert(bs.Count >= 0)
         #endif
-        segment.Count <= 0
-    let length (segment:ArraySegment<_>) = 
+        bs.Count <= 0
+    let length (bs:BS) = 
         #if NET40
-        Contract.Requires(segment.Count >= 0)
+        Contract.Requires(bs.Count >= 0)
         #else
-        Debug.Assert(segment.Count >= 0)
+        Debug.Assert(bs.Count >= 0)
         #endif
-        segment.Count
-    let index (segment:ArraySegment<_>) pos =
+        bs.Count
+    let index (bs:BS) pos =
         #if NET40
-        Contract.Requires(segment.Offset + pos <= segment.Count)
+        Contract.Requires(bs.Offset + pos <= bs.Count)
         #else
-        Debug.Assert(segment.Offset + pos <= segment.Count)
+        Debug.Assert(bs.Offset + pos <= bs.Count)
         #endif
-        segment.Array.[segment.Offset + pos]
-    let head (segment:ArraySegment<_>) =
-        if segment.Count <= 0 then
+        bs.Array.[bs.Offset + pos]
+    let head (bs:BS) =
+        if bs.Count <= 0 then
           failwith "Cannot take the head of an empty byte string."
-        else segment.Array.[segment.Offset]
-    let tail (segment:ArraySegment<_>) =
+        else bs.Array.[bs.Offset]
+    let tail (bs:BS) =
         #if NET40
-        Contract.Requires(segment.Count >= 1)
+        Contract.Requires(bs.Count >= 1)
         #else
-        Debug.Assert(segment.Count >= 1)
+        Debug.Assert(bs.Count >= 1)
         #endif
-        if segment.Count = 1 then empty
-        else ArraySegment<_>(segment.Array, segment.Offset+1, segment.Count-1)
+        if bs.Count = 1 then empty
+        else BS(bs.Array, bs.Offset+1, bs.Count-1)
     
     /// cons uses Buffer.SetByte and Buffer.BlockCopy for efficient array operations.
     /// Please note that a new array is created and both the head and tail are copied in,
     /// disregarding any additional bytes in the original tail array.
-    let cons hd (segment:ArraySegment<_>) =
-        let x,o,l = segment.Array, segment.Offset, segment.Count in
+    let cons hd (bs:BS) =
+        let x,o,l = bs.Array, bs.Offset, bs.Count in
         if l = 0 then singleton hd
         else let buffer = Array.zeroCreate<byte> (l + 1)
              Buffer.SetByte(buffer,0,hd)
              Buffer.BlockCopy(x,o,buffer,1,l)
-             ArraySegment<_>(buffer,0,l+1)
+             BS(buffer,0,l+1)
     
     /// append uses Buffer.BlockCopy for efficient array operations.
     /// Please note that a new array is created and both arrays are copied in,
@@ -512,44 +505,44 @@ module ArraySegment =
              let buffer = Array.zeroCreate<byte> (l + l')
              Buffer.BlockCopy(x,o,buffer,0,l)
              Buffer.BlockCopy(x',o',buffer,l,l')
-             ArraySegment<_>(buffer,0,l+l')
+             BS(buffer,0,l+l')
     
-    let fold f seed segment =
-        let rec loop segment acc =
-            if isEmpty segment then acc 
-            else let hd, tl = head segment, tail segment
+    let fold f seed bs =
+        let rec loop bs acc =
+            if isEmpty bs then acc 
+            else let hd, tl = head bs, tail bs
                  loop tl (f acc hd)
-        loop segment seed
+        loop bs seed
   
-    let span pred (segment:ArraySegment<_>) =
-        if isEmpty segment then empty, empty
+    let span pred (bs:BS) =
+        if isEmpty bs then empty, empty
         else
-            let x,o,l = segment.Array, segment.Offset, segment.Count
+            let x,o,l = bs.Array, bs.Offset, bs.Count
             let rec loop acc =
-                if l = acc + 1 && pred x.[o+acc] then segment, empty
-                elif not (pred x.[o+acc]) then ArraySegment<_>(x,o,acc), ArraySegment<_>(x,o+acc,l-acc)
+                if l = acc + 1 && pred x.[o+acc] then bs, empty
+                elif not (pred x.[o+acc]) then BS(x,o,acc), BS(x,o+acc,l-acc)
                 else loop (acc+1)
             loop 0
     
-    let split pred segment = span (not << pred) segment
+    let split pred bs = span (not << pred) bs
     
-    let splitAt n (segment:ArraySegment<_>) =
+    let splitAt n (bs:BS) =
         #if NET40
         Contract.Requires(n >= 0)
         #else
         Debug.Assert(n >= 0)
         #endif
-        if isEmpty segment then empty, empty
-        elif n = 0 then empty, segment
-        elif n >= segment.Count then segment, empty
-        else let x,o,l = segment.Array, segment.Offset, segment.Count in ArraySegment<_>(x,o,n), ArraySegment<_>(x,o+n,l-n)
+        if isEmpty bs then empty, empty
+        elif n = 0 then empty, bs
+        elif n >= bs.Count then bs, empty
+        else let x,o,l = bs.Array, bs.Offset, bs.Count in BS(x,o,n), BS(x,o+n,l-n)
     
-    let skip n segment = splitAt n segment |> snd
-    let skipWhile pred segment = span pred segment |> snd
-    let skipUntil pred segment = split pred segment |> snd
-    let take n segment = splitAt n segment |> fst 
-    let takeWhile pred segment = span pred segment |> fst
-    let takeUntil pred segment = split pred segment |> fst 
+    let skip n bs = splitAt n bs |> snd
+    let skipWhile pred bs = span pred bs |> snd
+    let skipUntil pred bs = split pred bs |> snd
+    let take n bs = splitAt n bs |> fst 
+    let takeWhile pred bs = span pred bs |> fst
+    let takeUntil pred bs = split pred bs |> fst 
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Dictionary =

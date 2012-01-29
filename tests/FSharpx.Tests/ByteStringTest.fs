@@ -1,8 +1,8 @@
-﻿module FSharpx.Tests.ArraySegmentTest
+﻿module FSharpx.Tests.ByteStringTest
 
 open System
 open FSharpx
-open FSharpx.ArraySegment
+open FSharpx.ByteString
 open NUnit.Framework
 open FsUnit
 
@@ -15,8 +15,8 @@ let comparisonTests = [|
   
 [<Test>]
 [<TestCaseSource("comparisonTests")>]
-let ``test ByteString comparison should correctly return -1, 0, or 1``(left:ArraySegment<_>, right:ArraySegment<_>, result:int) =
-  ArraySegment<_>.Compare(left, right) |> should equal result
+let ``test ByteString comparison should correctly return -1, 0, or 1``(left:BS, right:BS, result:int) =
+  BS.Compare(left, right) |> should equal result
 
 [<Test>]
 let ``test ByteString_length should return the length of the byte string``() =
@@ -35,7 +35,7 @@ let spanAndSplitTests = [|
 let ``test ByteString_span correctly breaks the ByteString on the specified predicate``(input:byte [], breakChar:byte, breakIndex:int) =
   let str = create input
   let expected = if input.Length = breakIndex then str, empty
-                 else ArraySegment<_>(input, 0, breakIndex), ArraySegment<_>(input, breakIndex, input.Length - breakIndex)
+                 else BS(input, 0, breakIndex), BS(input, breakIndex, input.Length - breakIndex)
   let actual = span ((<>) breakChar) str
   actual |> should equal expected
 
@@ -44,7 +44,7 @@ let ``test ByteString_span correctly breaks the ByteString on the specified pred
 let ``test ByteString_split correctly breaks the ByteString on the specified predicate``(input:byte [], breakChar:byte, breakIndex:int) =
   let str = create input
   let expected = if input.Length = breakIndex then str, empty
-                 else ArraySegment<_>(input, 0, breakIndex), ArraySegment<_>(input, breakIndex, input.Length - breakIndex)
+                 else BS(input, 0, breakIndex), BS(input, breakIndex, input.Length - breakIndex)
   let actual = split ((=) breakChar) str
   actual |> should equal expected
 
@@ -52,7 +52,7 @@ let ``test ByteString_split correctly breaks the ByteString on the specified pre
 let ``test ByteString_span correctly breaks the ByteString on \r``() =
   let input = "test\r\ntest"B
   let str = create input
-  let expected = ArraySegment<_>(input, 0, 4), ArraySegment<_>(input, 4, 6)
+  let expected = BS(input, 0, 4), BS(input, 4, 6)
   let actual = span (fun c -> c <> '\r'B && c <> '\n'B) str
   actual |> should equal expected
 
@@ -60,7 +60,7 @@ let ``test ByteString_span correctly breaks the ByteString on \r``() =
 let ``test ByteString_split correctly breaks the ByteString on \r``() =
   let input = "test\r\ntest"B
   let str = create input
-  let expected = ArraySegment<_>(input, 0, 4), ArraySegment<_>(input, 4, 6)
+  let expected = BS(input, 0, 4), BS(input, 4, 6)
   let actual = split (fun c -> c = '\r'B || c = '\n'B) str
   actual |> should equal expected
 
@@ -68,7 +68,7 @@ let ``test ByteString_split correctly breaks the ByteString on \r``() =
 let ``test ByteString_splitAt correctly breaks the ByteString on the specified index``() =
   let input = "Howdy! Want to play?"B
   let str = create input
-  let expected = ArraySegment<_>(input, 0, 6), ArraySegment<_>(input, 6, 14)
+  let expected = BS(input, 0, 6), BS(input, 6, 14)
   let actual = splitAt 6 str
   actual |> should equal expected
 
@@ -82,7 +82,7 @@ let ``test ByteString_fold should concatenate bytes into a string``() =
 let ``test ByteString_take correctly truncates the ByteString at the selected index``() =
   let input = "Howdy! Want to play?"B
   let str = create input
-  let expected = ArraySegment<_>(input, 0, 6)
+  let expected = BS(input, 0, 6)
   let actual = take 6 str
   actual |> should equal expected
 
@@ -91,7 +91,7 @@ let ``test ByteString_take correctly truncates the ByteString at the selected in
 let ``test drop should drop the first n items``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
   let input = "Howdy! Want to play?"B
   let actual = skip 7 (create input)
-  actual |> should equal (ArraySegment<_>(input,7,13))
+  actual |> should equal (BS(input,7,13))
 
 [<Test>]
 let ``test dropWhile should drop anything before the first space``() =
@@ -114,7 +114,7 @@ let ``test take should return an empty ArraySegment when given an empty ArraySeg
 [<Sequential>]
 let ``test take should take the first n items``([<Values(1,2,3,4,5,6,7,8,9,10)>] x) =
   let input = [|0uy..9uy|]
-  let expected = ArraySegment<_>(input,0,x)
+  let expected = BS(input,0,x)
   let actual = take x (create input)
   actual |> should equal expected
 
@@ -127,7 +127,7 @@ let ``test takeWhile should return an empty ArraySegment when given an empty Arr
 let ``test takeWhile should take anything before the first space``() =
   let input = "Hello world"B
   let actual = takeWhile ((<>) ' 'B) (create input)
-  actual |> should equal (ArraySegment<_>(input, 0, 5))
+  actual |> should equal (BS(input, 0, 5))
 
 [<Test>]
 let ``test takeUntil should return an empty ArraySegment when given an empty ArraySegment``() =
@@ -138,4 +138,4 @@ let ``test takeUntil should return an empty ArraySegment when given an empty Arr
 let ``test takeUntil should correctly split the input``() =
   let input = "abcde"B
   let actual = takeUntil ((=) 'c'B) (create input)
-  actual |> should equal (ArraySegment<_>(input, 0, 2))
+  actual |> should equal (BS(input, 0, 2))
