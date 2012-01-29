@@ -11,299 +11,244 @@
  * 
  *)
 
-[<AutoOpen>]
 /// <summary>The Software Transactional Memory monad.</summary>
 /// <see href="http://cs.hubfs.net/blogs/hell_is_other_languages/archive/2008/01/16/4565.aspx" />
-module FSharpx.Stm.Core
+namespace FSharpx.Stm
 
-open System
-open System.Collections.Generic
-open System.Threading
-
-//[<AbstractClass>]
-//type TVar internal() as this =
-//    static let nextId = ref 0
-//    [<DefaultValue>] val mutable internal id : int
-//    do incr nextId
-//    do this.id <- !nextId
-//    interface IComparable<TVar> with
-//        member this.CompareTo(other : TVar) = this.id.CompareTo(other.id)
-//
-//[<SealedAttribute>]
-//type TVar<'a>(value : 'a, cmp : IEqualityComparer<'a>) as this =
-//    inherit TVar()
-//    [<DefaultValue>] val mutable internal value : 'a
-//    [<DefaultValue>] val mutable internal cmp : IEqualityComparer<'a>
-//    do this.value <- value
-//    do this.cmp <- cmp
-//    member x.UnsafeRead() = value
-//
-//[<AbstractClass>]
-//type internal Entry() =
-//    abstract member Location : TVar
-//    abstract member IsValid : unit -> bool
-//    abstract member Commit : unit -> unit
-//    abstract member MergeNested : Entry -> unit
-//
-//[<SealedAttribute>]
-//type private Entry<'a> private (location : TVar<'a>, hasOldValue : bool, oldValue : 'a, newValue : 'a) as this =
-//    inherit Entry()
-//    let mutable location = location
-//    [<DefaultValue>] val mutable public hasOldValue : bool
-//    [<DefaultValue>] val mutable public oldValue : 'a
-//    [<DefaultValue>] val mutable public newValue : 'a
-//    do this.hasOldValue <- hasOldValue
-//    do this.oldValue <- oldValue
-//    do this.newValue <- newValue
-//
-//    // read
-//    public new(location : TVar<'a>) =
-//        Entry<'a>(location, true, location.value, location.value)
-//
-//    // write
-//    public new(location : TVar<'a>, value : 'a) =
-//        Entry<'a>(location, false, Unchecked.defaultof<'a>, value)
-//        
-//    override this.Location = location :> TVar
-//    override this.Commit() = location.value <- this.newValue
-//    override this.MergeNested(entry) =
-//        (entry :?> Entry<'a>).newValue <- this.newValue
-//    override this.IsValid() =
-//        not this.hasOldValue ||
-//        location.cmp.Equals(location.value, this.oldValue)
-//
-//[<SealedAttribute>]
-//type private ReferenceEqualityComparer<'a when 'a : equality and 'a : not struct>() =
-//    interface IEqualityComparer<'a> with
-//        member this.Equals(x, y) = Object.ReferenceEquals(x, y)
-//        member this.GetHashCode(obj) = obj.GetHashCode()
-//
-//[<SealedAttribute>]
-//type private EquatableEqualityComparer<'a when 'a : equality and 'a : struct and 'a :> IEquatable<'a>>() =
-//    interface IEqualityComparer<'a> with
-//        member this.Equals(x, y) = x.Equals(y)
-//        member this.GetHashCode(obj) = obj.GetHashCode()
-//
-//[<SealedAttribute>]
-//type private AnyEqualityComparer<'a when 'a : equality>() =
-//    interface IEqualityComparer<'a> with
-//        member this.Equals(x, y) = x.Equals(y)
-//        member this.GetHashCode(obj) = obj.GetHashCode()
-//
-//[<SealedAttribute>]
-//type private RetryException() = inherit Exception()
-//
-//[<SealedAttribute>]
-//type private CommitFailedException() = inherit Exception()
-//
-//[<SealedAttribute>]
-//type TLog() as this =
-//    static let mutable lock = obj()
-//    [<DefaultValue>] val mutable internal outer : TLog
-//    [<DefaultValue>] val mutable internal log : SortedDictionary<TVar, Entry>
-//    do this.outer <- Unchecked.defaultof<TLog>
-//    do this.log <- SortedDictionary<TVar, Entry>()
-//
-//    static member NewTVarClass<'a when 'a : equality and 'a : not struct>(value) =
-//        TVar<'a>(value, ReferenceEqualityComparer<'a>())
-//
-//    static member NewTVarStruct<'a when 'a : equality and 'a : struct and 'a :> IEquatable<'a>>(value) =
-//        TVar<'a>(value, EquatableEqualityComparer<'a>())
-//
-//    static member NewTVarBoxedStruct<'a when 'a : equality and 'a : struct>(value) =
-//        TVar<'a>(value, AnyEqualityComparer<'a>())
-//
-//    static member NewTVar<'a>(value) =
-//        let t = typeof<'a>
-//        let ect =
-//            if not t.IsValueType then
-//                typeof<ReferenceEqualityComparer<_>>.GetGenericTypeDefinition()
-//            elif typeof<IEquatable<'a>>.IsAssignableFrom(t) then
-//                typeof<EquatableEqualityComparer<_>>.GetGenericTypeDefinition()
-//            else typeof<AnyEqualityComparer<_>>.GetGenericTypeDefinition()
-//        let eci = Activator.CreateInstance(ect.MakeGenericType(t)) :?> IEqualityComparer<'a>
-//        TVar<'a>(value, eci)
-//
-//    member this.ReadTVar<'a>(location : TVar<'a>) =
-//        let trans = this
-//        let entry = ref Unchecked.defaultof<Entry>
-//        let rec readLoop (trans : TLog) =
-//            if trans.log.TryGetValue(location, entry) then true
-//            elif trans = Unchecked.defaultof<TLog> then false
-//            else readLoop trans.outer
-//
-//        if readLoop trans then
-//            (!entry :?> Entry<'a>).newValue
-//        else
-//            let entry' = Entry<'a>(location)
-//            this.log.Add(location, entry')
-//            entry'.oldValue
-//
-//    member this.WriteTVar<'a>(location : TVar<'a>, value) =
-//        let entry = ref Unchecked.defaultof<Entry>
-//        if this.log.TryGetValue(location, entry) then
-//            (!entry :?> Entry<'a>).newValue <- value
-//        else
-//            let entry' = Entry<'a>(location, value)
-//            this.log.Add(location, entry')
-//
-//    // requires lock
-//    member internal this.IsValid() =
-//        this.IsValidSingle() &&
-//        (this.outer = Unchecked.defaultof<TLog> || this.outer.IsValid())
-//
-//    // requires lock
-//    member private this.IsValidSingle() =
-//        Seq.forall (fun (entry : Entry) -> entry.IsValid()) this.log.Values
-//
-//    // requires lock
-//    member internal this.Commit() =
-//        if this.outer <> Unchecked.defaultof<TLog> then invalidOp "!"
-//        for entry in this.log.Values do entry.Commit()
-//        
-//    member internal this.StartNested() =
-//        let inner = TLog()
-//        inner.outer <- this
-//        inner
-//
-//    member internal this.MergeNested() =
-//        for innerEntry in this.log.Values do
-//            let outerEntry = ref Unchecked.defaultof<Entry>
-//            if this.outer.log.TryGetValue(innerEntry.Location, outerEntry) then
-//                innerEntry.MergeNested(!outerEntry)
-//            else this.outer.log.Add(innerEntry.Location, innerEntry)
-//
-//    member internal this.Wait() = ()
-//
-//    member internal this.Unwait() = ()
-//
-//    member internal this.Lock() = Monitor.Enter(lock)
-//
-//    member internal this.Unlock() = Monitor.Exit(lock)
-//
-//    member internal this.Block() = Monitor.Wait(lock) |> ignore
-//
-//    member internal this.Signal() = Monitor.PulseAll(lock)
-//
-//    static member Atomic(p : StmAction) : unit =
-//        TLog.Atomic<obj>(TLog.Ignore p) |> ignore
-//
-//    static member Atomic<'a>(p : StmAction<'a>) : 'a =
-//        let trans = TLog()
-//        let rec loop (trans : TLog) =
-//            let mutable retry = false
-//            try
-//                let result = p trans
-//                trans.Lock()
-//                let isValid = trans.IsValid()
-//                if isValid then
-//                    trans.Commit()
-//                    trans.Signal()
-//                trans.Unlock()
-//                if isValid then result
-//                else attemptRetry retry trans
-//            with
-//            | :? RetryException -> attemptRetry true trans
-//            | :? CommitFailedException -> attemptRetry retry trans
-//            // cannot receive ThreadInterruptedException in catch handler
-//            | :? ThreadInterruptedException as tie-> raise tie
-//            | e ->
-//                trans.Lock()
-//                let isValid = trans.IsValid()
-//                trans.Unlock()
-//                if isValid then raise e
-//                else attemptRetry retry trans
-//        and attemptRetry retry trans =
-//            if retry then
-//                trans.Lock()
-//                let isValid = trans.IsValid()
-//                if isValid then
-//                    let rec blockingLoop (trans : TLog) =
-//                        trans.Block()
-//                        if trans.IsValid() then
-//                            blockingLoop trans
-//                    trans.Wait()
-//                    try
-//                        blockingLoop trans
-//                    finally
-//                        trans.Unwait()
-//                        trans.Unlock()
-//                else trans.Unlock()
-//            trans.log.Clear()
-//            Thread.Sleep(0)
-//            loop trans
-//        loop trans
-//
-//    member this.Retry<'a>() : 'a = raise <| RetryException()
-//
-//    member this.OrElse(p : StmAction, q : StmAction) =
-//        this.OrElse(TLog.Ignore p, TLog.Ignore q) |> ignore
-//
-//    member this.OrElse<'a>(p : StmAction<'a>, q : StmAction<'a>) : 'a =
-//        let fst = this.StartNested()
-//        try
-//            let result = p fst
-//            fst.Lock()
-//            let isValid = fst.IsValid()
-//            fst.Unlock()
-//            if isValid then
-//                fst.MergeNested()
-//                result
-//            else raise <| CommitFailedException()
-//        with
-//        | :? RetryException ->
-//            let snd = this.StartNested()
-//            try
-//                let result = q snd
-//                snd.Lock()
-//                let isValid = snd.IsValid()
-//                snd.Unlock()
-//                if isValid then
-//                    snd.MergeNested()
-//                    result
-//                else raise <| CommitFailedException()
-//            with
-//            | :? RetryException as re ->
-//                this.Lock()
-//                let isValid = fst.IsValidSingle() && snd.IsValidSingle() && this.IsValid()
-//                this.Unlock()
-//                if isValid then
-//                    fst.MergeNested()
-//                    snd.MergeNested()
-//                    raise re
-//                else raise <| CommitFailedException()
-//            | :? CommitFailedException as cfe -> raise cfe
-//            | :? ThreadInterruptedException as tie -> raise tie
-//            | e ->
-//                snd.Lock()
-//                let isValid = snd.IsValid()
-//                snd.Unlock()
-//                if isValid then
-//                    snd.MergeNested()
-//                    raise e
-//                else raise <| new CommitFailedException()
-//        | :? CommitFailedException as cfe -> raise cfe
-//        | :? ThreadInterruptedException as tie -> raise tie
-//        | e ->
-//            fst.Lock()
-//            let isValid = fst.IsValid()
-//            fst.Unlock()
-//            if isValid then
-//                fst.MergeNested()
-//                raise e
-//            else raise <| new CommitFailedException()
-//
-//    static member Ignore(p : StmAction) : StmAction<obj> =
-//        fun trans -> p trans; null
-//        
-//and StmAction = TLog -> unit
-//and StmAction<'a> = TLog -> 'a
-
-type TVar<'a> = FSharpx.Stm.Core.TVar<'a>
-type TLog = FSharpx.Stm.Core.TLog
-type Stm<'a> = (TLog -> 'a)
-
-module Stm =
+[<AutoOpen>]
+module Core =
+    open System
+    open System.Collections.Generic
+    open System.Threading
+    
+    [<AbstractClass>]
+    type TVar() =
+        static let nextId = ref 0
+        let _id = Interlocked.Increment(nextId)
+        member private __.Id = _id
+        interface IComparable<TVar> with
+            member __.CompareTo(other) = _id.CompareTo(other.Id)
+    
+    [<Sealed>]
+    type TVar<'T> internal (value: 'T, cmp: IEqualityComparer<'T>) =
+        inherit TVar()
+        let mutable _value = value
+        member internal __.Value 
+            with get () = _value
+            and set value = _value <- value
+        member internal __.Comparer = cmp
+    
+    type private IEntry =
+        abstract Location : TVar
+        abstract IsValid : unit -> bool
+        abstract Commit : unit -> unit
+        abstract MergeNested : IEntry -> unit
+    
+    [<Sealed>]
+    type private Entry<'T> private (location: TVar<'T>, value: 'T, hasOldValue) =
+        let _oldValue = location.Value
+        let mutable _newValue = value
+        new (location, value) = Entry(location, value, false)
+        new (location) = Entry(location, location.Value, true)
+        member internal __.OldValue = _oldValue
+        member internal __.NewValue 
+            with get () = _newValue
+            and set value = _newValue <- value
+        interface IEntry with
+            member __.Location = location :> _
+            member __.Commit() = location.Value <- _newValue
+            member __.MergeNested(entry) = (entry :?> Entry<'T>).NewValue <- _newValue
+            member __.IsValid() = not hasOldValue || location.Comparer.Equals( location.Value, _oldValue)
+    
+    [<Sealed>]
+    type private ReferenceEqualityComparer<'T when 'T : not struct and 'T : equality>() =
+        interface IEqualityComparer<'T> with
+            member __.Equals(x, y) = obj.ReferenceEquals(x, y)
+            member __.GetHashCode(x) = x.GetHashCode()
+    
+    [<Sealed>]
+    type private EquatableEqualityComparer<'T when 'T :> IEquatable<'T> and 'T : struct and 'T : equality>() =
+        interface IEqualityComparer<'T> with
+            member __.Equals(x, y) = x.Equals(y)
+            member __.GetHashCode(x) = x.GetHashCode()
+    
+    [<Sealed>]
+    type private AnyEqualityComparer<'T when 'T : equality>() =
+        interface IEqualityComparer<'T> with
+            member __.Equals(x, y) = x.Equals(y)
+            member __.GetHashCode(x) = x.GetHashCode()
+            
+    type private RetryException() =
+        inherit Exception()
+    
+    type private CommitFailedException() =
+        inherit Exception()
+    
+    [<Sealed; AllowNullLiteral>]
+    type TLog private (outer) =
+        static let locker = obj()
+        let log = SortedDictionary<TVar,IEntry>()
+        private new () = TLog(null)
+        member private __.Log = log
+        member private __.Outer = outer
+        static member NewTVarClass(value) = TVar<_>(value, ReferenceEqualityComparer())
+        static member NewTVarStruct(value) = TVar<_>(value, EquatableEqualityComparer())
+        static member NewTVarBoxedStruct(value) = TVar<_>(value, AnyEqualityComparer())
+        static member NewTVar(value: 'T) =
+            let ty = typeof<'T>
+            let ect =
+                if not ty.IsValueType then typedefof<ReferenceEqualityComparer<_>>
+                elif typeof<IEquatable<'T>>.IsAssignableFrom(ty) then typedefof<EquatableEqualityComparer<_>>
+                else typedefof<AnyEqualityComparer<_>>
+            let cmp = Activator.CreateInstance(ect.MakeGenericType(ty)) :?> _
+            TVar<_>(value, cmp)
+        member this.ReadTVar(location) =
+            let rec loop (trans: TLog) =
+                match trans.Log.TryGetValue(location) with
+                | true, (:? Entry<_> as entry) -> entry.NewValue
+                | _ -> 
+                    match trans.Outer with 
+                    | null -> 
+                        let entry = Entry<_>(location)
+                        log.Add(location, entry)
+                        entry.OldValue
+                    | outer -> loop outer
+            loop this
+        member __.WriteTVar(location, value: 'T) =
+            match log.TryGetValue(location) with
+            | true, (:? Entry<'T> as entry) -> entry.NewValue <- value
+            | _ ->
+                let entry = Entry<_>(location, value)
+                log.Add(location, entry)
+        member private __.IsValidSingle() =
+            log.Values |> Seq.forall (fun entry -> entry.IsValid())
+        member internal this.IsValid() =
+            this.IsValidSingle() && (obj.ReferenceEquals(outer, null) || outer.IsValid())
+        member internal __.Commit() =
+            match outer with
+            | null -> for entry in log.Values do entry.Commit()
+            | _ -> raise (InvalidOperationException())
+        member internal this.StartNested() = TLog(this)
+        member internal __.MergeNested() =
+            for innerEntry in log.Values do
+                match outer.Log.TryGetValue(innerEntry.Location) with
+                | true, outerEntry -> innerEntry.MergeNested(outerEntry)
+                | _ -> outer.Log.Add(innerEntry.Location, innerEntry)
+        member internal __.Wait() = ()
+        member internal __.UnWait() = ()
+        member private __.Lock() = Monitor.Enter(locker)
+        member private __.UnLock() = Monitor.Exit(locker)
+        member private __.Block() = Monitor.Wait(locker) |> ignore
+        member private __.Signal() = Monitor.PulseAll(locker)
+        static member Atomic<'T>(p: TLog -> 'T) =
+            let trans = TLog()
+            let rec loop() =
+                try
+                    let result = p trans
+                    trans.Lock()
+                    let isValid = trans.IsValid()
+                    if isValid then
+                        trans.Commit()
+                        trans.Signal()
+                    trans.UnLock()
+                    if isValid then result
+                    else cont()
+                with
+                    | :? RetryException -> retry()
+                    | :? CommitFailedException
+                    | :? ThreadInterruptedException -> reraise()
+                    | _ ->
+                        trans.Lock()
+                        let isValid = trans.IsValid()
+                        trans.UnLock()
+                        if isValid then reraise()
+                        else cont()
+            and cont() =
+                trans.Log.Clear()
+                Thread.Sleep(0)
+                loop()
+            and retry() =
+                trans.Lock()
+                let isValid = trans.IsValid()
+                if isValid then
+                    trans.Wait()
+                    try
+                        let rec loop() =
+                            trans.Block()
+                            if trans.IsValid() then loop()
+                        loop()
+                    finally
+                        trans.UnWait()
+                        trans.UnLock()
+                else trans.UnLock()
+                cont()
+            loop()
+        static member Atomic(p: TLog -> unit) = TLog.Atomic<_>(p) |> ignore
+        member __.Retry() =
+            raise (RetryException())
+        member this.Retry() = this.Retry() |> ignore
+        member this.OrElse<'T>(p: TLog -> 'T, q: TLog -> 'T) =
+            let first = this.StartNested()
+            try
+                let result = p first
+                first.Lock()
+                let isValid = first.IsValid()
+                first.UnLock()
+                if isValid then 
+                    first.MergeNested()
+                    result
+                else
+                    raise (CommitFailedException())
+            with
+                | :? RetryException ->
+                    let second = this.StartNested()
+                    try
+                        let result = q second
+                        second.Lock()
+                        let isValid = second.IsValid()
+                        if isValid then 
+                            second.MergeNested()
+                            result
+                        else
+                            raise (CommitFailedException())
+                    with 
+                        | :? RetryException ->
+                            this.Lock()
+                            let isValid = first.IsValidSingle() && second.IsValidSingle() && this.IsValid()
+                            this.UnLock()
+                            if isValid then 
+                                first.MergeNested()
+                                second.MergeNested()
+                                reraise()
+                            else
+                                raise (CommitFailedException())
+                        | :? CommitFailedException 
+                        | :? ThreadInterruptedException ->
+                            reraise()
+                        | _ ->
+                            second.Lock()
+                            let isValid = second.IsValid()
+                            second.UnLock()
+                            if isValid then
+                                second.MergeNested()
+                                reraise()
+                            else
+                                raise (CommitFailedException())
+                | :? CommitFailedException
+                | :? ThreadInterruptedException ->
+                    reraise()
+                | _ ->
+                    first.Lock()
+                    let isValid = first.IsValid()
+                    first.UnLock()
+                    if isValid then
+                        first.MergeNested()
+                        reraise()
+                    else raise (CommitFailedException())
+        member this.OrElse(p: TLog -> unit, q: TLog -> unit) = this.OrElse<_>(p, q) |> ignore
+    
+    type Stm<'a> = (TLog -> 'a)
+    
     let newTVar (value : 'a) : TVar<'a> =
         TLog.NewTVar(value)
       

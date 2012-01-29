@@ -1,7 +1,6 @@
 ﻿open System
 open System.Threading
 open FSharpx.Stm
-open FSharpx.Stm.Core.Stm
 
 let check p =
   match p with
