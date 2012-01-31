@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows;
+using FSharpx;
 
 namespace TimeFliesLikeAnArrow.Silverlight
 {
