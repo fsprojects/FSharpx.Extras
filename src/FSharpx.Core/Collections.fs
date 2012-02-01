@@ -763,9 +763,12 @@ type CircularBuffer<'a> (bufferSize: int) =
     member this.Count = length
 
     member this.Dequeue(count) =
-        if length = 0 then invalidOp "Queue exhausted."
-        if count > length then invalidOp "Requested count is too large."
+        if length = 0 then
+            invalidOp "Queue exhausted."
+        if count > bufferSize then
+            raise <| new ArgumentOutOfRangeException("Requested count exceeds the buffer size.")
 
+        let count = min count length
         let dequeued = Array.concat [| for o, c in nextBuffer tail count -> buffer.[o..o+c-1] |]
 
         tail <- (tail + count) % bufferSize
