@@ -1,12 +1,21 @@
+// -------------------------------------------------------------------------------
+// F# async extensions (BlockingQueue.fsx)
+// (c) Tomas Petricek & Ryan Riley, 2011-2012, Available under Apache 2.0 license.
+// -------------------------------------------------------------------------------
+
+// This example demonstrates how to use `CircularBuffer` and `CircularBufferAgent`
+// The agent implements producer/consumer concurrent pattern.
+
 #r "System.dll"
-#load @"..\src\FSharpx.Core\Prelude.fs"
-#load @"..\src\FSharpx.Core\Collections.fs"
+#r @"..\build\FSharpx.Core.dll"
+#r @"..\build\FSharpx.Async.dll"
 
 open System
 open System.Diagnostics
+open FSharp.Control
 open FSharpx
 
-// [snippet: Usage]
+// [snippet: Using CircularBuffer]
 let queue = CircularBuffer(5)
 
 let stopwatch = Stopwatch.StartNew()
@@ -174,4 +183,31 @@ enqueueNext()
 Debug.Assert([|1;2;3|] = queue.Dequeue(3))
 
 printfn "Enqueue(array) tests passed in %d ms" stopwatch.ElapsedMilliseconds
+// [/snippet]
+
+// [snippet: Using CircularBufferAgent]
+let buffer = new CircularBufferAgent<int>(3)
+
+// The sample uses two workflows that add/take elements
+// from the buffer with the following timeouts. When the producer
+// timout is larger, consumer will be blocked. Otherwise, producer
+// will be blocked.
+let producerTimeout = 500
+let consumerTimeout = 1000
+
+async { 
+  for i in 0 .. 10 do 
+    // Sleep for some time and then add value
+    do! Async.Sleep(producerTimeout)
+    do! buffer.AsyncEnqueue([|i|])
+    printfn "Added %d" i }
+|> Async.Start
+
+async { 
+  while true do
+    // Sleep for some time and then get value
+    do! Async.Sleep(consumerTimeout)
+    let! v = buffer.AsyncDequeue(1)
+    printfn "Got %d" v.[0] }
+|> Async.Start
 // [/snippet]
