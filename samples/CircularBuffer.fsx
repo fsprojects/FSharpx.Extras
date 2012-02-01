@@ -1,70 +1,10 @@
 #r "System.dll"
+#load @"..\src\FSharpx.Core\Prelude.fs"
+#load @"..\src\FSharpx.Core\Collections.fs"
+
 open System
 open System.Diagnostics
-
-// NOTE: A special version for primitives would increase
-// performance for primitive types, especially for I/O,
-// byte-based operations.
-
-// [snippet: Circular Buffer]
-type CircularBuffer<'a> (bufferSize: int) =
-    do if bufferSize <= 0 then invalidArg "bufferSize" "The bufferSize must be greater than 0."
-
-    let buffer = Array.zeroCreate<'a> bufferSize
-    let mutable head = bufferSize - 1
-    let mutable tail = 0
-    let mutable length = 0
-
-    let rec nextBuffer offset count =
-        seq {
-            let overflow = count + offset - bufferSize
-            if overflow > 0 then
-                yield (offset, bufferSize - offset)
-                yield! nextBuffer 0 overflow
-            else
-                yield (offset, count)
-        }
-
-    member __.Dequeue(count) =
-        if length = 0 then invalidOp "Queue exhausted."
-        if count > length then invalidOp "Requested count is too large."
-
-        let dequeued = Array.concat [| for o, c in nextBuffer tail count -> buffer.[o..o+c-1] |]
-
-        tail <- (tail + count) % bufferSize
-        length <- length - count
-        dequeued
-
-    member __.Enqueue(value: _[], offset, count) =
-        if count > bufferSize then invalidOp "Requested count is too large."
-
-        let mutable offset = offset
-
-        head <- (head + 1) % bufferSize
-        for x, y in nextBuffer head count do
-            Array.blit value offset buffer x y
-            offset <- offset + y
-
-        if length = bufferSize then
-            tail <- (tail + count) % bufferSize
-        else
-            let overflow = length + count - bufferSize
-            if overflow > 0 then
-                tail <- (tail + overflow) % bufferSize
-            length <- min (length + count) bufferSize
-
-    member __.Enqueue(value: _[]) =
-        __.Enqueue(value, 0, value.Length)
-
-    member __.Enqueue(value: _[], offset) =
-        __.Enqueue(value, offset, value.Length - offset)
-
-    member __.Enqueue(value: ArraySegment<_>) =
-        __.Enqueue(value.Array, value.Offset, value.Count)
-
-    member __.Enqueue(value) =
-        __.Enqueue([|value|], 0, 1)
-// [/snippet]
+open FSharpx
 
 // [snippet: Usage]
 let queue = CircularBuffer(5)
