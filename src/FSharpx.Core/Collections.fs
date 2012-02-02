@@ -804,3 +804,14 @@ type CircularBuffer<'a> (bufferSize: int) =
 
     member this.Enqueue(value) =
         this.Enqueue([|value|], 0, 1)
+
+    member this.GetEnumerator() =
+        let rec loop() = seq {
+            if length > 0 then
+                yield this.Dequeue(1).[0]
+            yield! loop() }
+        loop().GetEnumerator()
+
+    interface IEnumerable<'a> with
+        member this.GetEnumerator() = this.GetEnumerator()
+        member this.GetEnumerator() = this.GetEnumerator() :> IEnumerator

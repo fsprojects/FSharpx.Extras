@@ -183,6 +183,13 @@ enqueueNext()
 Debug.Assert([|1;2;3|] = queue.Dequeue(3))
 
 printfn "Enqueue(array) tests passed in %d ms" stopwatch.ElapsedMilliseconds
+
+let data = [|1;2;3;4;5|]
+queue.Enqueue(data)
+Debug.Assert((data |> Array.toList) = (queue |> Seq.toList))    
+
+printfn "Seq.toList matches enqueued data."
+
 // [/snippet]
 
 // [snippet: Using CircularQueueAgent]
