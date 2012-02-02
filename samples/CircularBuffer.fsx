@@ -185,8 +185,8 @@ Debug.Assert([|1;2;3|] = queue.Dequeue(3))
 printfn "Enqueue(array) tests passed in %d ms" stopwatch.ElapsedMilliseconds
 // [/snippet]
 
-// [snippet: Using CircularBufferAgent]
-let buffer = new CircularBufferAgent<int>(3)
+// [snippet: Using CircularQueueAgent]
+let buffer = new CircularQueueAgent<int>(3)
 
 // The sample uses two workflows that add/take elements
 // from the buffer with the following timeouts. When the producer

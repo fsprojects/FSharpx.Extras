@@ -40,7 +40,7 @@
     <Compile Include="Agents\ConcurrentSetAgent.fs" />
     <Compile Include="Agents\BatchProcessingAgent.fs" />
     <Compile Include="Agents\BlockingQueueAgent.fs" />
-    <Compile Include="Agents\CircularBufferAgent.fs" />
+    <Compile Include="Agents\CircularQueueAgent.fs" />
     <Compile Include="Agents\SlidingWindowAgent.fs" />
     <Compile Include="Async.fs" />
     <Compile Include="Observable.fs" />

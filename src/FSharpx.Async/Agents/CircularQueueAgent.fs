@@ -1,5 +1,5 @@
 ﻿// -------------------------------------------------------------------------------
-// F# async extensions (CircularBufferAgent.fs)
+// F# async extensions (CircularQueueAgent.fs)
 // (c) Tomas Petricek & Ryan Riley, 2011-2012, Available under Apache 2.0 license.
 // -------------------------------------------------------------------------------
 namespace FSharp.Control
@@ -10,7 +10,7 @@ open FSharpx
 
 // ----------------------------------------------------------------------------
 
-type internal CircularBufferMessage<'T> = 
+type internal CircularQueueMessage<'T> = 
   | Enqueue of 'T[] * int * int * AsyncReplyChannel<unit> 
   | Dequeue of int * AsyncReplyChannel<'T[]>
 
@@ -18,12 +18,12 @@ type internal CircularBufferMessage<'T> =
 /// enqueue and blocking dequeue operation (this implements the producer-consumer 
 /// concurrent programming pattern). The constructor takes the maximal
 /// size of the buffer.
-type CircularBufferAgent<'T>(maxLength) =
+type CircularQueueAgent<'T>(maxLength) =
   [<VolatileField>]
   let mutable count = 0
   let agent = Agent.Start(fun agent ->
     
-    let queue = new CircularBuffer<_>(maxLength)
+    let queue = new CircularBuffer<'T>(maxLength)
 
     let rec emptyQueue() = 
       agent.Scan(fun msg ->
