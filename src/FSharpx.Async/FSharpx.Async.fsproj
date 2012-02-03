@@ -46,6 +46,7 @@
     <Compile Include="Observable.fs" />
     <Compile Include="AsyncSeq.fs" />
     <Compile Include="IO.fs" />
+    <Compile Include="CircularStream.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
