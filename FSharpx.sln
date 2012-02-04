@@ -27,6 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{EFB3
 		samples\BlockingQueue.fsx = samples\BlockingQueue.fsx
 		samples\Caching.fsx = samples\Caching.fsx
 		samples\ChatServer.fsx = samples\ChatServer.fsx
+		samples\CircularBuffer.fsx = samples\CircularBuffer.fsx
 		samples\Crawler.fsx = samples\Crawler.fsx
 		samples\MouseFollow.fsx = samples\MouseFollow.fsx
 		samples\StockStream.fsx = samples\StockStream.fsx
@@ -231,5 +232,7 @@ Global
 		{114263B8-7820-43BD-B596-5511D5205666} = {EFB3F0C2-10B4-4EF5-8FA7-CC39880067A1}
 		{3939EBF0-264F-480B-BFC4-25B21C8EEB1C} = {EFB3F0C2-10B4-4EF5-8FA7-CC39880067A1}
 		{330FD61A-B9FE-4AA7-9595-F7BDAB3DDC44} = {EFB3F0C2-10B4-4EF5-8FA7-CC39880067A1}
+		{FFDBAF72-7F9F-4DE0-A8F3-83D0D21EBEB5} = {6392A890-AE72-4BFB-B1EE-B1E5CBAAFB06}
+		{7C2F2110-6E08-42C6-93EF-5A1C90C78616} = {6392A890-AE72-4BFB-B1EE-B1E5CBAAFB06}
 	EndGlobalSection
 EndGlobal

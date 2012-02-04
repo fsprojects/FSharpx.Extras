@@ -40,11 +40,13 @@
     <Compile Include="Agents\ConcurrentSetAgent.fs" />
     <Compile Include="Agents\BatchProcessingAgent.fs" />
     <Compile Include="Agents\BlockingQueueAgent.fs" />
+    <Compile Include="Agents\CircularQueueAgent.fs" />
     <Compile Include="Agents\SlidingWindowAgent.fs" />
     <Compile Include="Async.fs" />
     <Compile Include="Observable.fs" />
     <Compile Include="AsyncSeq.fs" />
     <Compile Include="IO.fs" />
+    <Compile Include="CircularStream.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
@@ -54,5 +56,12 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" Condition="'$(TargetFrameworkVersion)' != 'v3.5'" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FSharpx.Core\FSharpx.Core.fsproj">
+      <Name>FSharpx.Core</Name>
+      <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
 </Project>
