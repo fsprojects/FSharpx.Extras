@@ -13,6 +13,7 @@
 open System
 open System.Diagnostics
 open FSharp.Control
+open FSharp.IO
 open FSharpx
 
 // [snippet: Using CircularBuffer]
@@ -216,5 +217,26 @@ async {
     do! Async.Sleep(consumerTimeout)
     let! v = buffer.AsyncDequeue(1)
     printfn "Got %d" v.[0] }
+|> Async.Start
+// [/snippet]
+
+// [snippet: Using CircularStream]
+let stream = new CircularStream(3)
+
+async { 
+  for i in 0uy .. 10uy do 
+    // Sleep for some time and then add value
+    do! Async.Sleep(producerTimeout)
+    do! stream.AsyncWrite([|i|], 0, 1)
+    printfn "Wrote %d" i }
+|> Async.Start
+
+async { 
+  let buffer = Array.zeroCreate<byte> 1
+  while true do
+    // Sleep for some time and then get value
+    do! Async.Sleep(consumerTimeout)
+    let! v = stream.AsyncRead(buffer, 0, 1)
+    printfn "Read %d bytes with value %A" v buffer.[0] }
 |> Async.Start
 // [/snippet]
