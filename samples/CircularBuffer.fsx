@@ -207,7 +207,7 @@ async {
   for i in 0 .. 10 do 
     // Sleep for some time and then add value
     do! Async.Sleep(producerTimeout)
-    do! buffer.AsyncEnqueue([|i|])
+    buffer.Enqueue([|i|])
     printfn "Added %d" i }
 |> Async.Start
 

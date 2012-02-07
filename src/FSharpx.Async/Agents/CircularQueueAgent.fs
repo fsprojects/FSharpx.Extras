@@ -11,7 +11,7 @@ open FSharpx
 // ----------------------------------------------------------------------------
 
 type internal CircularQueueMessage<'T> = 
-  | Enqueue of 'T[] * int * int * AsyncReplyChannel<unit> 
+  | Enqueue of 'T[] * int * int
   | Dequeue of int * AsyncReplyChannel<'T[]>
 
 /// Agent that implements an asynchronous circular buffer with blocking
@@ -28,7 +28,7 @@ type CircularQueueAgent<'T>(maxLength) =
     let rec emptyQueue() = 
       agent.Scan(fun msg ->
         match msg with 
-        | Enqueue(value, offset, count, reply) -> Some(enqueueAndContinue(value, offset, count, reply))
+        | Enqueue(value, offset, count) -> Some(enqueueAndContinue(value, offset, count))
         | _ -> None )
     and fullQueue() = 
       agent.Scan(fun msg ->
@@ -38,11 +38,10 @@ type CircularQueueAgent<'T>(maxLength) =
     and runningQueue() = async {
       let! msg = agent.Receive()
       match msg with 
-      | Enqueue(value, offset, count, reply) -> return! enqueueAndContinue(value, offset, count, reply)
+      | Enqueue(value, offset, count) -> return! enqueueAndContinue(value, offset, count)
       | Dequeue(n, reply) -> return! dequeueAndContinue(n, reply) }
 
-    and enqueueAndContinue (value, offset, length, reply) = async {
-      reply.Reply() 
+    and enqueueAndContinue (value, offset, length) = async {
       queue.Enqueue(value, offset, length)
       count <- queue.Count
       return! chooseState() }
@@ -58,46 +57,28 @@ type CircularQueueAgent<'T>(maxLength) =
     // Start with an empty queue
     emptyQueue() )
 
-  /// Asynchronously adds item to the queue. The operation ends when
+  /// Adds item to the queue. The operation ends when
   /// there is a place for the item. If the queue is full, the operation
   /// will block until some items are removed.
-  member x.AsyncEnqueue(value: 'T[], offset, count, ?timeout) = 
-    agent.PostAndAsyncReply((fun ch -> Enqueue(value, offset, count, ch)), ?timeout=timeout)
+  member x.Enqueue(value: 'T[], offset, count) = 
+    agent.Post(Enqueue(value, offset, count))
 
-  /// Asynchronously adds item to the queue. The operation ends when
+  /// Adds item to the queue. The operation ends when
   /// there is a place for the item. If the queue is full, the operation
   /// will block until some items are removed.
-  member x.AsyncEnqueue(segment: ArraySegment<'T>, ?timeout) = 
-    agent.PostAndAsyncReply((fun ch -> Enqueue(segment.Array, segment.Offset, segment.Count, ch)), ?timeout=timeout)
+  member x.Enqueue(segment: ArraySegment<'T>) = 
+    agent.Post(Enqueue(segment.Array, segment.Offset, segment.Count))
 
-  /// Asynchronously adds item to the queue. The operation ends when
+  /// Adds item to the queue. The operation ends when
   /// there is a place for the item. If the queue is full, the operation
   /// will block until some items are removed.
-  member x.AsyncEnqueue(value: 'T[], ?timeout) = 
-    agent.PostAndAsyncReply((fun ch -> Enqueue(value, 0, value.Length, ch)), ?timeout=timeout)
+  member x.Enqueue(value: 'T[]) = 
+    agent.Post(Enqueue(value, 0, value.Length))
 
   /// Asynchronously gets item from the queue. If there are no items
   /// in the queue, the operation will block until items are added.
   member x.AsyncDequeue(count, ?timeout) = 
     agent.PostAndAsyncReply((fun ch -> Dequeue(count, ch)), ?timeout=timeout)
-
-  /// Synchronously adds item to the queue. The operation ends when
-  /// there is a place for the item. If the queue is full, the operation
-  /// will block until some items are removed.
-  member x.Enqueue(value: 'T[], offset, count, ?timeout) = 
-    agent.PostAndReply((fun ch -> Enqueue(value, offset, count, ch)), ?timeout=timeout)
-
-  /// Synchronously adds item to the queue. The operation ends when
-  /// there is a place for the item. If the queue is full, the operation
-  /// will block until some items are removed.
-  member x.Enqueue(segment: ArraySegment<'T>, ?timeout) = 
-    agent.PostAndReply((fun ch -> Enqueue(segment.Array, segment.Offset, segment.Count, ch)), ?timeout=timeout)
-
-  /// Synchronously adds item to the queue. The operation ends when
-  /// there is a place for the item. If the queue is full, the operation
-  /// will block until some items are removed.
-  member x.Enqueue(value: 'T[], ?timeout) = 
-    agent.PostAndReply((fun ch -> Enqueue(value, 0, value.Length, ch)), ?timeout=timeout)
 
   /// Synchronously gets item from the queue. If there are no items
   /// in the queue, the operation will block until items are added.
