@@ -1,9 +1,11 @@
 ﻿// ----------------------------------------------------------------------------
-// F# async extensions (AsyncSeq.fs)
-// (c) Tomas Petricek, 2011, Available under Apache 2.0 license.
+// F# async extensions
+// (c) Tomas Petricek, David Thomas 2012, Available under Apache 2.0 license.
 // ----------------------------------------------------------------------------
 namespace FSharp.Control
 open System
+open System.Threading
+open System.Threading.Tasks
 
 // ----------------------------------------------------------------------------
 
@@ -34,3 +36,16 @@ module AsyncExtensions =
       Async.Start(op, ct.Token)
       { new IDisposable with 
           member x.Dispose() = ct.Cancel() }
+
+    /// Starts a Task<'a> with the timeout and cancellationToken and
+    /// returns a Async<a' option> containing the result.  If the Task does
+    /// not complete in the timeout interval, or is faulted None is returned.
+    static member TryAwaitTask(task:Task<_>, ?timeout, ?cancellationToken) =
+      let timeout = defaultArg timeout Timeout.Infinite
+      let cancel = defaultArg cancellationToken Async.DefaultCancellationToken
+      async {
+      if task.Wait(timeout, cancel) then
+          match task with
+          | x when x.IsCanceled || x.IsFaulted -> return None
+          | _ as x -> return Some x.Result
+      else return None }
