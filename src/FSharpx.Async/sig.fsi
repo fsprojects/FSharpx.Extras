@@ -102,6 +102,11 @@ namespace FSharp.Control
       static member Cache : input:Async<'T> -> Async<'T>
     type Async with
       static member StartDisposable : op:Async<unit> -> System.IDisposable
+    type Async with
+      static member
+        TryAwaitTask : task:System.Threading.Tasks.Task<'a> * ?timeout:int *
+                       ?cancellationToken:System.Threading.CancellationToken ->
+                         Async<'a option>
   end
 
 namespace FSharp.Control
