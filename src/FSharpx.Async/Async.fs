@@ -43,7 +43,8 @@ module AsyncExtensions =
     static member TryAwaitTask(task:Task<_>, ?timeout, ?cancellationToken) =
       let timeout = defaultArg timeout Timeout.Infinite
       let cancel = defaultArg cancellationToken Async.DefaultCancellationToken
-      if task.Wait(timeout, cancel) && not task.IsCanceled && not task.IsFaulted
-      then Some task.Result
-      else None
-      |> async.Return
+      async {
+        return
+          if task.Wait(timeout, cancel) && not task.IsCanceled && not task.IsFaulted
+          then Some task.Result
+          else None }
