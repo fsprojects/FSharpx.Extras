@@ -6,9 +6,13 @@ open System.Collections.Generic
 open System.Runtime.CompilerServices
 open Microsoft.FSharp.Control.WebExtensions
 
+/// Helps the C# compiler with Func type inference.
 type L =
+    /// Helps the C# compiler with Func type inference.
     static member F (f: Func<_>) = f
+    /// Helps the C# compiler with Func type inference.
     static member F (f: Func<_,_>) = f
+    /// Helps the C# compiler with Func type inference.
     static member F (f: Func<_,_,_>) = f
 
 /// <summary>
@@ -17,31 +21,35 @@ type L =
 /// </summary>
 [<Extension>]
 type FSharpFunc =
+    /// Convert an Action into an F# function returning unit
     static member FromAction (f: Action) =
         fun () -> f.Invoke()
     
+    /// Convert an Action into an F# function returning unit
     static member FromAction (f: Action<_>) =
         fun x -> f.Invoke x
 
+    /// Convert an Action into an F# function returning unit
     static member FromAction (f: Action<_,_>) =
         fun x y -> f.Invoke(x,y)
 
+    /// Convert an Action into an F# function returning unit
     static member FromAction (f: Action<_,_,_>) =
         fun x y z -> f.Invoke(x,y,z)
 
+    /// Convert a Func into an F# function
     static member FromFunc (f: Func<_>) =
         fun () -> f.Invoke()
 
+    /// Convert a Func into an F# function
     static member FromFunc (f: Func<_,_>) =
         fun x -> f.Invoke x
 
+    /// Convert a Func into an F# function
     static member FromFunc (f: Func<_,_,_>) =
         fun x y -> f.Invoke(x,y)
 
-    [<Extension>]
-    static member Curry (f: Func<_,_,_>) =
-        Func<_,Func<_,_>>(fun a -> Func<_,_>(fun b -> f.Invoke(a,b)))
-
+/// Extensions around Actions and Funcs
 [<Extension>]
 type Funcs =
     [<Extension>]
@@ -55,6 +63,26 @@ type Funcs =
     [<Extension>]
     static member ToFunc (f: Action<_,_,_>) =
         Func<_,_,_,_>(fun a b c -> f.Invoke(a,b,c))
+
+    [<Extension>]
+    static member Curry (f: Func<_,_,_>) =
+        Func<_,Func<_,_>>(fun a -> Func<_,_>(fun b -> f.Invoke(a,b)))
+
+    [<Extension>]
+    static member Tuple (f: Action<_,_>) =
+        Action<_>(fun (a,b) -> f.Invoke(a,b))
+
+    [<Extension>]
+    static member Untuple (f: Action<_ * _>) =
+        Action<_,_>(fun a b -> f.Invoke(a,b))
+
+    [<Extension>]
+    static member Compose (f: Func<_,_>, g: Func<_,_>) =
+        Func<_,_>(fun x -> f.Invoke(g.Invoke(x)))
+
+    [<Extension>]
+    static member AndThen (f: Func<_,_>, g: Func<_,_>) =
+        Func<_,_>(fun x -> g.Invoke(f.Invoke(x)))
 
 [<Extension>]
 type FSharpOption =

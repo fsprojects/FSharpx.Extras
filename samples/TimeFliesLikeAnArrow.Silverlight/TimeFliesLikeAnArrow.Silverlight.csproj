@@ -94,7 +94,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\FSharpx.Observable\FSharpx.Observable.Silverlight.fsproj">
       <Project>{4F64A8F5-E12E-4560-A326-6792CF77B1F9}</Project>
-      <Name>Observable.Linq.Silverlight</Name>
+      <Name>FSharpx.Observable.Silverlight</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />

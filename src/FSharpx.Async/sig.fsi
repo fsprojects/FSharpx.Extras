@@ -70,6 +70,21 @@ namespace FSharp.Control
     end
 
 namespace FSharp.Control
+  type internal CircularQueueMessage<'T> =
+    | Enqueue of 'T [] * int * int
+    | Dequeue of int * AsyncReplyChannel<'T []>
+  type CircularQueueAgent<'T> =
+    class
+      new : maxLength:int -> CircularQueueAgent<'T>
+      member AsyncDequeue : count:int * ?timeout:int -> Async<'T []>
+      member Dequeue : count:int * ?timeout:int -> 'T []
+      member Enqueue : segment:System.ArraySegment<'T> -> unit
+      member Enqueue : value:'T [] -> unit
+      member Enqueue : value:'T [] * offset:int * count:int -> unit
+      member Count : int
+    end
+
+namespace FSharp.Control
   type SlidingWindowAgent<'T> =
     class
       new : windowSize:int * ?cancelToken:System.Threading.CancellationToken ->
@@ -87,6 +102,11 @@ namespace FSharp.Control
       static member Cache : input:Async<'T> -> Async<'T>
     type Async with
       static member StartDisposable : op:Async<unit> -> System.IDisposable
+    type Async with
+      static member
+        TryAwaitTask : task:System.Threading.Tasks.Task<'a> * ?timeout:int *
+                       ?cancellationToken:System.Threading.CancellationToken ->
+                         Async<'a option>
   end
 
 namespace FSharp.Control
@@ -248,4 +268,26 @@ namespace FSharp.Net
     type HttpListenerResponse with
       member AsyncReply : typ:string * buffer:byte [] -> Async<unit>
   end
+
+namespace FSharp.IO
+  type CircularStream =
+    class
+      inherit System.IO.Stream
+      new : maxLength:int -> CircularStream
+      member
+        AsyncRead : buffer:byte [] * offset:int * count:int * ?timeout:int ->
+                      Async<int>
+      override Close : unit -> unit
+      override Flush : unit -> unit
+      override Read : buffer:byte [] * offset:int * count:int -> int
+      override Seek : offset:int64 * origin:System.IO.SeekOrigin -> int64
+      override SetLength : value:int64 -> unit
+      override Write : buffer:byte [] * offset:int * count:int -> unit
+      override CanRead : bool
+      override CanSeek : bool
+      override CanWrite : bool
+      override Length : int64
+      override Position : int64
+      override Position : int64 with set
+    end
 
