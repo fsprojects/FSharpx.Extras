@@ -91,7 +91,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\FSharpx.Observable\FSharpx.Observable.fsproj">
       <Project>{2E802F54-9CD0-4B0A-B834-5C5979403B50}</Project>
-      <Name>Observable.Linq</Name>
+      <Name>FSharpx.Observable</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

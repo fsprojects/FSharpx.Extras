@@ -49,6 +49,9 @@
     <Compile Include="ContinuationTest.fs" />
     <Compile Include="DistributionTest.fs" />
     <Compile Include="PokerDistributionTest.fs" />
+    <Compile Include="IterateeTest.fs" />
+    <Compile Include="ListIterateeTest.fs" />
+    <Compile Include="BinaryIterateeTest.fs" />
     <Compile Include="ValidationTests.fs" />
     <Compile Include="ZipListTests.fs" />
     <Compile Include="NameValueCollectionTests.fs" />
@@ -58,6 +61,8 @@
     <Compile Include="PreludeTests.fs" />
     <Compile Include="LensTests.fs" />
     <Compile Include="LensExample.fs" />
+    <Compile Include="TimeMeasurementTests.fs" />
+    <Compile Include="RegexTests.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FsCheck">
@@ -116,6 +121,10 @@
     <Reference Include="System.Numerics" Condition="'$(TargetFrameworkVersion)' != 'v3.5'" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="Unquote">
+      <HintPath>..\..\packages\Unquote.2.1.0\lib\net40\Unquote.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\FSharpx.Core\FSharpx.Core.fsproj">
