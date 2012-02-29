@@ -12,13 +12,12 @@
  *)
 
 #if INTERACTIVE
-#r @"..\src\FSharpx.Stm\bin\Debug\FSharpx.Stm.dll"
+#r @"..\src\FSharpx.Stm\bin\Debug\FSharpx.Core.dll"
 #endif
 
 open System
 open System.Threading
 open FSharpx.Stm
-open FSharpx.Stm.Core.Stm
 
 let check p =
   match p with
