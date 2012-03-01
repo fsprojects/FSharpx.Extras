@@ -2,7 +2,7 @@
 
 // originally from https://gist.github.com/1241061
 
-open Samples.FSharpPreviewRelease2011.ProvidedTypes
+open Samples.FSharp.ProvidedTypes
 open FSharpx.TypeProviders.Settings
 open FSharpx.TypeProviders.DSL
 open System.IO

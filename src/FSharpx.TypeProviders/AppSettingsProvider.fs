@@ -4,7 +4,7 @@ open FSharpx
 open FSharpx.TypeProviders.DSL
 open FSharpx.TypeProviders.Settings
 open Microsoft.FSharp.Core.CompilerServices
-open Samples.FSharpPreviewRelease2011.ProvidedTypes
+open Samples.FSharp.ProvidedTypes
 open System
 open System.Configuration
 open System.IO

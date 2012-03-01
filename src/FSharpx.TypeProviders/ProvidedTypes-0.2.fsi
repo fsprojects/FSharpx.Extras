@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation 2005-2011.
+﻿// Copyright (c) Microsoft Corporation 2005-2012.
 // This sample code is provided "as is" without warranty of any kind. 
 // We disclaim all warranties, either express or implied, including the 
 // warranties of merchantability and fitness for a particular purpose. 
@@ -9,19 +9,20 @@
 // This code is a sample for use in conjunction with the F# 3.0 Developer Preview release of September 2011.
 
 
-namespace Samples.FSharpPreviewRelease2011.ProvidedTypes
+namespace Samples.FSharp.ProvidedTypes
 
 open System
 open System.Reflection
 open System.Linq.Expressions
 open Microsoft.FSharp.Core.CompilerServices
 
-/// Represents a provided parameter.
+/// Represents an erased provided parameter
 type ProvidedParameter =
     inherit System.Reflection.ParameterInfo
     new : parameterName: string * parameterType: Type * ?isOut:bool * ?optionalValue:obj -> ProvidedParameter
     
-/// Represents a provided constructor.
+
+/// Represents an erased provided constructor.
 type ProvidedConstructor =    
     inherit System.Reflection.ConstructorInfo
 
@@ -40,14 +41,13 @@ type ProvidedConstructor =
     /// Set the quotation used to compute the implementation of invocations of this constructor.
     member InvokeCode         : (Quotations.Expr list -> Quotations.Expr) with set
 
-    /// An alternative to InvokeCode that uses LINQ expressions to describe the code that implements invocations of this constructor.
-    member InvokeCodeFromLinqExpression  : (ParameterExpression[] -> Expression) with get,set
+    /// Set the function used to compute the implementation of invocations of this constructor.
+    member InvokeCodeInternal         : (Quotations.Expr[] -> Quotations.Expr) with get,set
 
     /// Add definition location information to the provided constructor.
     member AddDefinitionLocation : line:int * column:int * filePath:string -> unit
     
 
-/// Represents a provided method.
 type ProvidedMethod = 
     inherit System.Reflection.MethodInfo
 
@@ -66,25 +66,30 @@ type ProvidedMethod =
     
     member AddMethodAttrs       : attributes:MethodAttributes -> unit
 
+    /// Set the method attributes of the method. By default these are simple 'MethodAttributes.Public'
+    member SetMethodAttrs       : attributes:MethodAttributes -> unit
+
     /// Get or set a flag indicating if the property is static.
     member IsStaticMethod       : bool with get, set
 
-    /// Set the quotation used to compute the implementation of invocations of this constructor.
+    /// Set the quotation used to compute the implementation of invocations of this method.
     member InvokeCode         : (Quotations.Expr list -> Quotations.Expr) with set
 
-    /// Set the function used to compute the implementation of invocations of this constructor.
-    member InvokeCodeFromLinqExpression         : (ParameterExpression[] -> Expression) with get,set
+    /// Set the function used to compute the implementation of invocations of this method.
+    member InvokeCodeInternal         : (Quotations.Expr[] -> Quotations.Expr) with get,set
+
 
     /// Add definition location information to the provided type definition.
     member AddDefinitionLocation : line:int * column:int * filePath:string -> unit
 
 
-/// Represents a provided property.
+
+/// Represents an erased provided property.
 type ProvidedProperty =
     inherit System.Reflection.PropertyInfo
 
     /// Create a new provided type. It is not initially associated with any specific provided type definition.
-    new  : propertyName: string * propertyType: Type * ?parameters : ProvidedParameter list -> ProvidedProperty
+    new  : propertyName: string * propertyType: Type * ?parameters:ProvidedParameter list -> ProvidedProperty
 
     /// Add XML documentation information to this provided constructor
     member AddXmlDoc            : xmlDoc: string -> unit    
@@ -99,23 +104,22 @@ type ProvidedProperty =
     /// Get or set a flag indicating if the property is static.
     member IsStatic             : bool with set
 
-    /// Set the function used to compute the implementation of invocations of the getter method of this property.
+    /// Set the quotation used to compute the implementation of gets of this property.
     member GetterCode           : (Quotations.Expr list -> Quotations.Expr) with set
 
-    /// Set the function used to compute the implementation of invocations of the getter method of this property, using LINQ expressions.
-    member GetterCodeFromLinqExpression         : (ParameterExpression[] -> Expression) with get,set
+    /// Set the function used to compute the implementation of gets of this property.
+    member GetterCodeInternal : (Quotations.Expr[] -> Quotations.Expr) with get,set
 
-    /// Set the function used to compute the implementation of invocations of the setter method of this property.
+    /// Set the function used to compute the implementation of sets of this property.
     member SetterCode           : (Quotations.Expr list -> Quotations.Expr) with set
 
-    /// Set the function used to compute the implementation of invocations of the setter method of this property, using LINQ expressions.
-    member SetterCodeFromLinqExpression         : (ParameterExpression[] -> Expression) with get,set
+    /// Set the function used to compute the implementation of sets of this property.
+    member SetterCodeInternal : (Quotations.Expr[] -> Quotations.Expr) with get,set
 
     /// Add definition location information to the provided type definition.
     member AddDefinitionLocation : line:int * column:int * filePath:string -> unit
 
-
-/// Represents a provided literal field.
+/// Represents an erased provided property.
 type ProvidedLiteralField =
     inherit System.Reflection.FieldInfo
 
@@ -136,7 +140,7 @@ type ProvidedLiteralField =
     member AddDefinitionLocation : line:int * column:int * filePath:string -> unit
 
 
-/// Represents a provided unit-of-measure annotation.
+/// Represents an erased provided property.
 [<Class>]
 type ProvidedMeasureBuilder =
     
@@ -146,15 +150,15 @@ type ProvidedMeasureBuilder =
     /// e.g. 1
     member One : System.Type
     /// e.g. m * kg
-    member Product : measure1:System.Type * measure2:System.Type  -> System.Type
+    member Product : measure1: System.Type * measure1: System.Type  -> System.Type
     /// e.g. 1 / kg
-    member Inverse : denominator:System.Type -> System.Type
+    member Inverse : denominator: System.Type -> System.Type
 
     /// e.g. kg / m
-    member Ratio : numerator:System.Type * denominator:System.Type -> System.Type
+    member Ratio : numerator: System.Type * denominator: System.Type -> System.Type
     
     /// e.g. m * m 
-    member Square : ``measure``:System.Type -> System.Type
+    member Square : ``measure``: System.Type -> System.Type
     
     /// the SI unit from the F# core library, where the string is in capitals and US spelling, e.g. Meter
     member SI : string -> System.Type
@@ -166,8 +170,6 @@ type ProvidedMeasureBuilder =
 /// Represents a provided static parameter.
 type internal ProvidedStaticParameter =
     inherit System.Reflection.ParameterInfo
-
-    /// Create a provided static parameter.
     new : parameterName: string * parameterType:Type * ?parameterDefaultValue:obj -> ProvidedStaticParameter
 
     /// Add XML documentation information to this provided constructor
@@ -181,22 +183,22 @@ type ProvidedTypeDefinition =
     inherit System.Type
 
     /// Create a new provided type definition in a namespace. 
-    new : assembly:Assembly * namespaceName:string * typeName:string * baseType:Type option -> ProvidedTypeDefinition
+    new : assembly: Assembly * namespaceName: string * className: string * baseType: Type option -> ProvidedTypeDefinition
 
     /// Create a new provided type definition, to be located as a nested type in some type definition.
-    new : typeName:string * baseType:Type option -> ProvidedTypeDefinition
+    new : className : string * baseType: Type option -> ProvidedTypeDefinition
 
-    /// Add the given type as an implemented or inherited interface.
-    member AddInterfaceImplementation : interfaceType:Type -> unit    
+    /// Add the given type as an implemented interface.
+    member AddInterfaceImplementation : interfaceType: Type -> unit    
 
     /// Specifies that the given method body implements the given method declaration.
-    member DefineMethodOverride : methodInfoBody:ProvidedMethod * methodInfoDeclaration:MethodInfo -> unit
+    member DefineMethodOverride : methodInfoBody: ProvidedMethod * methodInfoDeclaration: MethodInfo -> unit
 
     /// Add XML documentation information to this provided constructor
-    member AddXmlDoc             : xmlDoc:string -> unit    
+    member AddXmlDoc             : xmlDoc: string -> unit    
 
     /// Set the base type
-    member SetBaseType             : baseType:Type -> unit    
+    member SetBaseType             : Type -> unit    
 
     /// Add XML documentation information to this provided constructor, where the computation of the documentation is delayed until necessary.
     /// The documentation is only computed once.
@@ -211,7 +213,6 @@ type ProvidedTypeDefinition =
     
     /// Add a method, property, nested type or other member to a ProvidedTypeDefinition
     member AddMember         : memberInfo:MemberInfo      -> unit  
-
     /// Add a set of members to a ProvidedTypeDefinition
     member AddMembers        : memberInfos:list<#MemberInfo> -> unit
 
@@ -219,12 +220,12 @@ type ProvidedTypeDefinition =
     member AddMemberDelayed  : memberFunction:(unit -> #MemberInfo)      -> unit
 
     /// Add a set of members to a ProvidedTypeDefinition, delaying computation of the members until required by the compilation context.
-    member AddMembersDelayed : memberFunciton:(unit -> list<#MemberInfo>) -> unit    
+    member AddMembersDelayed : (unit -> list<#MemberInfo>) -> unit    
     
     /// Add the types of the generated assembly as generative types, where types in namespaces get hierarchically positioned as nested types.
     member AddAssemblyTypesAsNestedTypesDelayed : assemblyFunction:(unit -> System.Reflection.Assembly) -> unit
 
-    // Types with static parameters.
+    // Parametric types
     member DefineStaticParameters     : parameters: ProvidedStaticParameter list * instantiationFunction: (string -> obj[] -> ProvidedTypeDefinition) -> unit
 
     /// Add definition location information to the provided type definition.
@@ -234,11 +235,15 @@ type ProvidedTypeDefinition =
     member HideObjectMethods  : bool with set
 
     /// Emit the given provided type definition and its nested type definitions into an assembly 
-    /// and adjust the 'Assembly' property of all provided type definitions to return that assembly.
+    /// and adjust the 'Assembly' property of all provided type definitions to return that
+    /// assembly.
     ///
     /// The assembly is only emitted when the Assembly property on the root type is accessed for the first time.
     /// The host F# compiler does this when processing a generative type declaration for the type.
-    member ConvertToGenerated : assemblyFileName: string -> unit
+    member ConvertToGenerated : assemblyFileName: string  * ?reportAssembly: (Assembly * byte[] -> unit) -> unit
+
+    /// Register that a given file is a provided generated assembly
+    static member RegisterGenerated : fileName:string -> Assembly
 
     /// Get or set a flag indicating if the ProvidedTypeDefinition is erased
     member IsErased : bool  with get,set

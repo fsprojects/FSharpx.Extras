@@ -9,7 +9,7 @@ open FSharpx.TypeProviders.Settings
 open FSharpx.TypeProviders.DSL
 open System.Reflection
 open System.IO
-open Samples.FSharpPreviewRelease2011.ProvidedTypes
+open Samples.FSharp.ProvidedTypes
 open Microsoft.FSharp.Core.CompilerServices
 open System.Text.RegularExpressions
 

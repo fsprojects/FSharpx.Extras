@@ -1,7 +1,7 @@
 ﻿// Starting to implement a DSL on top of ProvidedTypes API
 module FSharpx.TypeProviders.DSL
 
-open Samples.FSharpPreviewRelease2011.ProvidedTypes
+open Samples.FSharp.ProvidedTypes
 open System.Reflection
 open Microsoft.FSharp.Quotations
 open FSharpx.Strings
@@ -30,8 +30,7 @@ let inline addDefinitionLocation (filePosition:FilePosition) (definition: ^a) =
     (^a : (member AddDefinitionLocation: int*int*string -> unit) (definition,filePosition.Line,filePosition.Column,filePosition.FileName))
     definition
 
-let runtimeType<'a> typeName = 
-    ProvidedTypeDefinition(typeName = cleanupTypeName typeName, baseType = Some typeof<'a>)
+let runtimeType<'a> typeName = ProvidedTypeDefinition(cleanupTypeName typeName, Some typeof<'a>)
 
 let eraseType assemblyName rootNamespace typeName toType = 
     ProvidedTypeDefinition(assemblyName, rootNamespace, cleanupTypeName typeName, Some toType)

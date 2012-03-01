@@ -1,6 +1,6 @@
 ﻿module FSharpx.TypeProviders.XamlProvider
 
-open Samples.FSharpPreviewRelease2011.ProvidedTypes
+open Samples.FSharp.ProvidedTypes
 open Microsoft.FSharp.Core.CompilerServices
 open Microsoft.FSharp.Quotations
 open System

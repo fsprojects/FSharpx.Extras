@@ -2,7 +2,7 @@
 
 open System.Reflection
 open Microsoft.FSharp.Core.CompilerServices
-open Samples.FSharpPreviewRelease2011.ProvidedTypes
+open Samples.FSharp.ProvidedTypes
 open System.Text.RegularExpressions
 
 [<TypeProvider>]

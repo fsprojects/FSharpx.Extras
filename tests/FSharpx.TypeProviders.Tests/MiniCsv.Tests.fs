@@ -3,7 +3,7 @@
 open NUnit.Framework
 open FsUnit
 open FSharpx
-open Data.UnitSystems.SI.UnitNames
+open Microsoft.FSharp.Data.UnitSystems.SI.UnitNames
 
 type smallCsv = MinCsv<"SmallTest.csv">
 

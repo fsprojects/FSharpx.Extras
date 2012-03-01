@@ -4,7 +4,7 @@ module FSharpx.TypeProviders.RegexTypeProvider
 
 open System.Reflection
 open Microsoft.FSharp.Core.CompilerServices
-open Samples.FSharpPreviewRelease2011.ProvidedTypes
+open Samples.FSharp.ProvidedTypes
 open System.Text.RegularExpressions
 open FSharpx.TypeProviders.Settings
 open FSharpx.TypeProviders.DSL

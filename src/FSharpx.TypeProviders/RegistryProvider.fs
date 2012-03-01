@@ -1,6 +1,6 @@
 ﻿module FSharpx.TypeProviders.RegistryProvider
 
-open Samples.FSharpPreviewRelease2011.ProvidedTypes
+open Samples.FSharp.ProvidedTypes
 open FSharpx.TypeProviders.Settings
 open FSharpx.TypeProviders.DSL
 open Microsoft.Win32
