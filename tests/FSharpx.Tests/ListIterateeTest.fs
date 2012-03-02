@@ -1,4 +1,4 @@
-﻿module FSharpx.Tests.ListIterateeTest
+module FSharpx.Tests.ListIterateeTest
 
 open System
 open FSharpx
