@@ -127,3 +127,5 @@ let watchPath invalidateF path =
     let watcher = new FileSystemWatcher(folder, file)
     watcher.Changed.Add (fun _ -> invalidateF())
     watcher.EnableRaisingEvents <- true
+
+let badargs() = failwith "Wrong type or number of arguments"

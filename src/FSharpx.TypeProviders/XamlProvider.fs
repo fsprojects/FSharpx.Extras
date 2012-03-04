@@ -17,8 +17,6 @@ open FSharpx.TypeProviders.Settings
 
 let wpfAssembly = typeof<System.Windows.Controls.Button>.Assembly
 
-let badargs() = failwith "Wrong type or number of arguments"
-
 [<RequireQualifiedAccess>]
 type XamlInfo = 
 | Path of string

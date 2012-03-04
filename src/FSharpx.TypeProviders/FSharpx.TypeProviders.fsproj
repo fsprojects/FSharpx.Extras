@@ -46,6 +46,7 @@
     <Compile Include="RegexProvider.fs" />
     <Compile Include="RegistryProvider.fs" />
     <Compile Include="FileSystemProvider.fs" />
+    <Compile Include="JsonProvider.fs" />
     <Compile Include="MiniCsvProvider.fs" />
     <Compile Include="AppSettingsProvider.fs" />
     <Compile Include="XamlProvider.fs" />
@@ -71,6 +72,11 @@
     <ProjectReference Include="..\FSharpx.Core\FSharpx.Core.fsproj">
       <Name>FSharpx.Core</Name>
       <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\FSharpx.Http\FSharpx.Http.fsproj">
+      <Name>FSharpx.Http</Name>
+      <Project>{60f3bb81-5449-45dd-a217-b6045327680c}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

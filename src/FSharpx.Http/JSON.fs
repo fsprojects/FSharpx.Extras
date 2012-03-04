@@ -166,4 +166,3 @@ let rec toJSON(value:obj) =
     | :? int as n -> Number (float n)
     | :? float as n -> Number n
     | :? bool as b -> Boolean b
-
