@@ -582,7 +582,7 @@ module Iteratee =
             and read k =
                 let result = stream.Read(buffer, 0, bufferSize) in
                 if result = 0 then Continue k
-                else step (k (Chunk(BS(buffer,0,buffer.Length))))
+                else step (k (Chunk(BS(buffer,0,result))))
             step i
 
         let enumStreamReader (reader:#System.IO.TextReader) i =
