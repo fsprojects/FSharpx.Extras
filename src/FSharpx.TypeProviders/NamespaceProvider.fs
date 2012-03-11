@@ -19,7 +19,8 @@ type public FSharpxProvider(cfg:TypeProviderConfig) as this =
          RegistryProvider.typedRegistry
          XamlProvider.xamlFileTypeUninstantiated makeInvalid cfg
          XamlProvider.xamlTextTypeUninstantiated cfg
-         AppSettingsTypeProvider.typedAppSettings cfg])
+         AppSettingsTypeProvider.typedAppSettings cfg
+         ExcelProvider.typExcel cfg ])
 
 [<TypeProviderAssembly>]
 do ()
