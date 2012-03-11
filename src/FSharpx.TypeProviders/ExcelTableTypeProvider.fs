@@ -70,7 +70,7 @@ type public ExcelProvider(cfg:TypeProviderConfig) as this =
 
    // Get the assembly and namespace used to house the provided types
    let asm = System.Reflection.Assembly.GetExecutingAssembly()
-   let ns = "Samples.FSharp.ExcelProvider"
+   let ns = "FSharpx.TypeProviders.ExcelProvider"
 
    // Create the main provided type
    let excTy = ProvidedTypeDefinition(asm, ns, "ExcelFile", Some(typeof<obj>))
