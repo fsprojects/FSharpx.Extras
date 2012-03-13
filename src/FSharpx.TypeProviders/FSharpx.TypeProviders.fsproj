@@ -50,10 +50,12 @@
     <Compile Include="MiniCsvProvider.fs" />
     <Compile Include="AppSettingsProvider.fs" />
     <Compile Include="XamlProvider.fs" />
+    <Compile Include="ExcelProvider.fs" />
     <Compile Include="NamespaceProvider.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Data.TypeProviders, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" />
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core" />
     <Reference Include="PresentationCore" />
