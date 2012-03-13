@@ -65,8 +65,14 @@ let sa = SimpleArray()
 
 [<Test>] 
 let ``Can parse simple arrays``() = 
-    sa.items.[0].id
+    let list = sa.items
+
+//    list
+//    |> List.length
+//    |> should equal 2
+
+    list.[0].id
     |> should equal "Open"
 
-    sa.items[1].id
+    list.[1].id
     |> should equal "Pause"

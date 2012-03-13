@@ -36,11 +36,12 @@ let rec annotateAsJson (json:JSON) (ownerTy:ProvidedTypeDefinition) =
                                 | Boolean b -> Some(provideProperty e.Key (b.GetType()) (fun args -> <@@ b @@>) :> MemberInfo)
                                 | JArray list ->
                                     let newType = annotateAsJson list.[0] (runtimeType<obj> (ownerTy.Name + "_" + e.Key))
+                                    let listType = typedefof<_ list>.MakeGenericType(newType)
                                     ownerTy.AddMember newType
                                     Some(provideProperty
                                             e.Key
-                                            newType // TODO: list
-                                            (fun args -> Expr.Coerce(<@@ (%%args.[0] : obj) @@>, newType))
+                                            listType
+                                            (fun args -> Expr.Coerce(<@@ (%%args.[0] : obj) @@>, listType))
                                             :> MemberInfo)
                                 | JObject map ->                                    
                                     let newType = annotateAsJson e.Value (runtimeType<obj> (ownerTy.Name + "_" + e.Key))
