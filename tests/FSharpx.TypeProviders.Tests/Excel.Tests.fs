@@ -7,10 +7,10 @@ open FsUnit
 
 type BookTest = FSharpx.ExcelFile<"BookTest.xls", "Sheet1", true>
 
+let file = BookTest()
+let row1 = file.Data |> Seq.head 
 
 [<Test>] 
-let ``Can call typed IsMatch function``() =    
-    let file =BookTest()
-    let row1 = file.Data |> Seq.head 
-
-    row1.SEC |> should equal "ASI" 
+let ``Can access first row in typed excel data``() =    
+    row1.SEC |> should equal "ASI"
+    row1.BROKER |> should equal "TFS Derivatives HK"
