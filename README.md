@@ -151,4 +151,4 @@ The nuget package is created by the following steps:
   [4]: http://stackoverflow.com/questions/3701861/wait-for-any-event-of-multiple-events-simultaneously-in-f
   [5]: http://fssnip.net/1k
   [6]: http://fssnip.net/1Y
-  [7]: https://github.com/tpetricek/FSharp.AsyncExtensions
+  [7]: http://github.com/fsharp/fsharpx/tree/master/samples
