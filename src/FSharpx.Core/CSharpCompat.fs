@@ -53,6 +53,10 @@ type FSharpFunc =
 [<Extension>]
 type Funcs =
     [<Extension>]
+    static member ToFunc (a: Action) =
+        Func<_>(a.Invoke)
+
+    [<Extension>]
     static member ToFunc (a: Action<_>) =
         Func<_,_>(a.Invoke)
   
