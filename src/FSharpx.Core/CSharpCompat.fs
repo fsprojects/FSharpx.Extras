@@ -403,11 +403,19 @@ type AsyncExtensions =
         Async.RunSynchronously a
 
     [<Extension>]
+    static member Start a = 
+        Async.Start a
+
+    [<Extension>]
     static member AsyncDownloadString (web: WebClient, address: Uri) =
         web.AsyncDownloadString address
 
     static member FromBeginEnd (abegin: Func<_,_,_>, aend: Func<_,_>) = 
         Async.FromBeginEnd(abegin.Invoke, aend.Invoke)
+
+    [<Extension>]
+    static member ToAsync (f: Func<_>) =
+        Async.FromBeginEnd(f.BeginInvoke, f.EndInvoke)
 
 type FSharpLazy = 
     static member Create (v: _ Func) = Lazy.Create v.Invoke

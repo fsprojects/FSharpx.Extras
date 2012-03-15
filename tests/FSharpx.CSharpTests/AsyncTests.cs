@@ -39,5 +39,12 @@ namespace FSharpx.CSharpTests {
             var rx = new Regex(@"<html");
             Assert.AreEqual(4, rx.Matches(result).Count);
         }
+
+        [Test]
+        public void FuncToAsync() {
+            FSharpAsync<int> a = L.F(() => 1).ToAsync();
+            FSharpAsync<Unit> b = a.Select(_ => (Unit) null);
+            //b.Start();
+        }
     }
 }
