@@ -1,6 +1,7 @@
 ﻿namespace FSharpx
 
 open System
+open System.IO
 open System.Net
 open System.Collections.Generic
 open System.Runtime.CompilerServices
@@ -383,7 +384,7 @@ type Dictionary =
   static member TryFind (d, key) = Dictionary.tryFind key d
 
 [<Extension>]
-type AsyncExtensions =
+type FSharpAsyncExtensions =
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>) = 
         Async.bind f.Invoke o
@@ -407,15 +408,23 @@ type AsyncExtensions =
         Async.Start a
 
     [<Extension>]
-    static member AsyncDownloadString (web: WebClient, address: Uri) =
+    static member FSharpAsyncDownloadString (web: WebClient, address: Uri) =
         web.AsyncDownloadString address
+
+    [<Extension>]
+    static member FSharpAsyncGetResponse (w: WebRequest) =
+        w.AsyncGetResponse()
 
     static member FromBeginEnd (abegin: Func<_,_,_>, aend: Func<_,_>) = 
         Async.FromBeginEnd(abegin.Invoke, aend.Invoke)
 
     [<Extension>]
-    static member ToAsync (f: Func<_>) =
+    static member ToFSharpAsync (f: Func<_>) =
         Async.FromBeginEnd(f.BeginInvoke, f.EndInvoke)
+
+    [<Extension>]
+    static member FSharpAsyncReadToEnd (s: StreamReader) =
+        s.AsyncReadToEnd()
 
 type FSharpLazy = 
     static member Create (v: _ Func) = Lazy.Create v.Invoke

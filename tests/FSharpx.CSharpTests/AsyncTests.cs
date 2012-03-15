@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -12,7 +15,7 @@ namespace FSharpx.CSharpTests {
     public class AsyncTests {
         static FSharpAsync<string> Get(string u) {
             var web = new WebClient();
-            return web.AsyncDownloadString(new Uri(u));
+            return web.FSharpAsyncDownloadString(new Uri(u));
         }
 
         [Test]
@@ -42,9 +45,34 @@ namespace FSharpx.CSharpTests {
 
         [Test]
         public void FuncToAsync() {
-            FSharpAsync<int> a = L.F(() => 1).ToAsync();
+            FSharpAsync<int> a = L.F(() => 1).ToFSharpAsync();
             FSharpAsync<Unit> b = a.Select(_ => (Unit) null);
             //b.Start();
+        }
+
+        // http://stackoverflow.com/questions/6893998/c-how-to-implement-as-async-and-in-f
+
+        [Test]
+        [Ignore("just an example")]
+        public void AsyncExample() {
+            var price = LoadPrices("MSFT").Run().First();
+            Assert.AreEqual(new DateTime(2008,10,30), price.Item1);
+            Assert.AreEqual(20.82m, price.Item2);
+        }
+
+        FSharpAsync<IEnumerable<Tuple<DateTime, decimal>>> LoadPrices(string ticker) {
+            var url = "http://ichart.finance.yahoo.com/table.csv?s=" + ticker + "&d=9&e=30&f=2008&g=d&a=2&b=13&c=1986&ignore=.csv";
+            var req = WebRequest.Create(url);
+            return
+                from resp in req.FSharpAsyncGetResponse()
+                let stream = resp.GetResponseStream()
+                let reader = new StreamReader(stream)
+                from csv in reader.FSharpAsyncReadToEnd()
+                select csv.Split('\n')
+                    .Skip(1)
+                    .Select(line => line.Split(','))
+                    .Where(values => values.Length == 7)
+                    .Select(values => Tuple.Create(DateTime.Parse(values[0]), decimal.Parse(values[6], CultureInfo.InvariantCulture)));
         }
     }
 }
