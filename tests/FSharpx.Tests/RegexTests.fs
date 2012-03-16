@@ -1,4 +1,4 @@
-﻿module FSharpx.Tests.RegexTests
+module FSharpx.Tests.RegexTests
 
 open FSharpx
 open NUnit.Framework

@@ -4,6 +4,7 @@
 // Simplyfied, added AST and fixed some minor bugs
 
 open System
+open System.Xml
 open System.Xml.Linq
 open System.Text
 open Microsoft.FSharp.Reflection
@@ -165,4 +166,3 @@ let rec toJSON(value:obj) =
     | :? int as n -> Number (float n)
     | :? float as n -> Number n
     | :? bool as b -> Boolean b
-

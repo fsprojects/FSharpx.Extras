@@ -1,4 +1,4 @@
-﻿namespace FSharp.IO
+namespace FSharp.IO
 
 open System
 #if NET40
