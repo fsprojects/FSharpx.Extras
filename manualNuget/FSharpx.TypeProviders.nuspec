@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <description>FSharpx.TypeProviders is a library for the .NET platform implementing common type providers on top of the FSharpx.Core. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.
+
+It currently implements type safe variants of:
+
+* Regex
+* FileSystem
+* Csv
+* AppSettings.</description>
+    <id>FSharpx.TypeProviders</id>
+    <version>1.4.111006</version>
+    <authors>Steffen Forkmann, Tomas Petricek, Ryan Riley, Mauricio Scheffer, Dan Mohl</authors>
+    <owners>Steffen Forkmann, Tomas Petricek, Ryan Riley, Mauricio Scheffer, Dan Mohl</owners>
+    <language>en-US</language>
+    <summary>FSharpx.TypeProviders is a library for the .NET platform implementing common type providers on top of the FSharpx. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.
+
+It currently implements type safe variants of:
+
+* Regex
+* FileSystem
+* Csv
+* AppSettings.</summary>
+    <projectUrl>http://github.com/fsharp/fsharpx</projectUrl>
+    <licenseUrl>http://github.com/fsharp/fsharpx/raw/master/License.txt</licenseUrl>
+    <tags>fsharp csharp interop monad iteratee validation bytestring testing typeproviders</tags>
+  </metadata>  
+   <files>
+	  <file src="lib\*.*" target="Lib" />
+	  <file src="tools\*.ps1" target="Tools" />
+  </files>
+</package>

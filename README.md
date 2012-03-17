@@ -121,6 +121,30 @@ For examples using this method see Chapter 16 of [Real World Functional Programm
 `Async.AwaitObservable` method should be used instead of `Async.AwaitEvent` to avoid 
 memory leaks (see also related [StackOverflow discussion][4])
 
+
+Type Providers
+---------------------
+
+FSharpx.TypeProviders is a library for the .NET platform implementing common type providers on top of the FSharpx.Core. 
+ main target is F# but it aims to be compatible with all .NET languages wherever possible.
+
+It currently implements type safe variants of:
+
+* Regex
+* FileSystem
+* Csv
+* AppSettings.
+
+Building the project
+-----------------------
+
+Due to missing fsc.exe and fsi.exe there is no automated build for the type providers project at the moment.
+The nuget package is created by the following steps:
+ * Build the application within Visual Studio 2011 Developer Preview
+ * Copy the created dlls into /manualNuget/
+ * Fix the version no. in /manualNuget/FSharpx.TypeProviders.nuspec 
+ * Run .\lib\NuGet\NuGet.exe pack "manualNuget\FSharpx.TypeProviders.nuspec"
+
   [1]: http://fssnip.net/64
   [2]: http://manning.com/petricek
   [3]: http://dotnetslackers.com/articles/net/Programming-user-interfaces-using-f-sharp-workflows.aspx

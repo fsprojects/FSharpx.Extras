@@ -175,6 +175,10 @@ module Option =
 
     let inline fromBool b = if b then Some() else None
 
+    let inline tryParseWith func = func >> function
+       | true, value -> Some value
+       | false, _ -> None
+
     let inline fromBoolAndValue b = 
         match b with
         | true,v -> Some v
