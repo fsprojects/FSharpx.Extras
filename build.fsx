@@ -42,13 +42,17 @@ let nunitPath = "./packages/NUnit.2.5.10.11092/Tools"
 
 // files
 let appReferences =
-    !+ "./src/**/*.*proj"
-      -- "./src/**/*.Silverlight.*proj"
-        |> Scan
+    let mutable refs = !+ "./src/**/*.*proj"
+                       -- "./src/**/*.Silverlight.*proj"
+    if frameworkVersion <> "v4.5" then
+        refs <- refs -- "./src/**/*.TypeProviders.*proj"
+    refs |> Scan
 
 let testReferences =
-    !+ "./tests/**/*.*proj"
-      |> Scan
+    let mutable refs = !+ "./tests/**/*.*proj"
+    if frameworkVersion <> "v4.5" then
+        refs <- refs -- "./tests/**/*.TypeProviders.*proj"
+    refs |> Scan
 
 let filesToZip =
     !+ (buildDir + "/**/*.*")
