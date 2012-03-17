@@ -12,6 +12,7 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <Name>FSharpx.Http.Tests</Name>
     <FscToolPath>..\..\lib\FSharp\</FscToolPath>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,6 +39,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\FSharpx.Http\FSharpx.Http.fsproj">
+      <Name>FSharpx.Http</Name>
+      <Project>{60f3bb81-5449-45dd-a217-b6045327680c}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\FSharpx.Tests\FSharpx.Tests.fsproj">
       <Name>FSharpx.Tests</Name>
       <Project>{26d9d3ee-e882-43e6-a79e-5d1d89e92c4f}</Project>
@@ -56,11 +62,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <ProjectReference Include="..\..\src\FSharpx.Http\FSharpx.Http.fsproj">
-      <Name>FsConneg</Name>
-      <Project>{60f3bb81-5449-45dd-a217-b6045327680c}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
