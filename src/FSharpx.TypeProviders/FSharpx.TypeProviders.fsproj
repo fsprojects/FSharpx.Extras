@@ -41,12 +41,12 @@
   <ItemGroup>
     <Compile Include="ProvidedTypes-0.2.fsi" />
     <Compile Include="ProvidedTypes-0.2.fs" />
+    <Compile Include="Strings.fs" />
     <Compile Include="TypeProviderDSL.fs" />
     <Compile Include="Settings.fs" />
     <Compile Include="RegexProvider.fs" />
     <Compile Include="RegistryProvider.fs" />
     <Compile Include="FileSystemProvider.fs" />
-    <Compile Include="XmlUtils.fs" />
     <Compile Include="XmlInference.fs" />
     <Compile Include="XmlProvider.fs" />
     <Compile Include="JsonProvider.fs" />

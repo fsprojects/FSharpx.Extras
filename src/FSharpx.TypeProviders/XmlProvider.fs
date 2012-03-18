@@ -1,4 +1,7 @@
-﻿// Original Xml type provider by Tomas Petricek - tomasP.net
+﻿// ----------------------------------------------------------------------------
+// Original Xml type provider
+// (c) Tomas Petricek - tomasP.net, Available under Apache 2.0 license.
+// ----------------------------------------------------------------------------
 module FSharpx.TypeProviders.XmlTypeProvider
 
 open System
@@ -49,20 +52,20 @@ let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
 
     // Generates type for an inferred XML element
     let rec generateType (ProvidedXElement(name, niceName, children, attributes)) =
-      let ty = ProvidedTypeDefinition(Utils.makeUniqueName niceName, Some(typeof<TypedXElement>))
+      let ty = ProvidedTypeDefinition(makeUniqueName niceName, Some(typeof<TypedXElement>))
       resTy.AddMember(ty)
 
       // Generate property for every inferred attribute of the element
       for ProvidedXAttribute(name, niceName, typ, opt) in attributes do 
         if opt then
           // For optional elements, we return Option value
-          ProvidedProperty(niceName, Utils.mkOptTy typ, GetterCode = fun [self] ->
+          ProvidedProperty(niceName, mkOptTy typ, GetterCode = fun [self] ->
             let accessExpr = 
               <@@  (%%self:TypedXElement).Element.
                       Attribute(XName.op_Implicit name).Value @@> 
-              |> Utils.convertExpr typ 
+              |> convertExpr typ 
 
-            let cases = Reflection.FSharpType.GetUnionCases(Utils.mkOptTy typ)
+            let cases = Reflection.FSharpType.GetUnionCases(mkOptTy typ)
             let some = cases |> Seq.find (fun c -> c.Name = "Some")
             let none = cases |> Seq.find (fun c -> c.Name = "None")
 
@@ -76,7 +79,7 @@ let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
           ProvidedProperty(niceName, typ, GetterCode = fun [self] ->
             <@@ (%%self:TypedXElement).Element.
                   Attribute(XName.op_Implicit name).Value @@>
-            |> Utils.convertExpr typ)
+            |> convertExpr typ)
           |> ty.AddMember
 
 
@@ -84,9 +87,9 @@ let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
       // and add member for accessing them to the parent.
       for (ProvidedXElement(name, niceName, _, _)) as child in children do
         let chty = generateType child
-        
-        ProvidedMethod("Get" + niceName + "Elements", [], Utils.mkSeqTy chty, InvokeCode = fun [self] ->
-          <@@ Utils.wrapElements ((%%self:TypedXElement).Element.Elements(XName.op_Implicit name)) @@>)
+
+        ProvidedMethod("Get" + niceName + "Elements", [], mkSeqTy chty, InvokeCode = fun [self] ->
+          <@@ seq { for e in ((%%self:TypedXElement).Element.Elements(XName.op_Implicit name)) -> TypedXElement(e) } @@>)
         |> ty.AddMember
 
       ty

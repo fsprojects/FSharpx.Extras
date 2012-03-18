@@ -3,7 +3,7 @@
 open NUnit.Framework
 open FSharpx
 open FsUnit
-open FSharpx.TypeProviders.Utils
+open FSharpx.TypeProviders.DSL
 
 [<Test>]
 let ``Can simplify the type names``() = 

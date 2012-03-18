@@ -1,8 +1,23 @@
-﻿// Original Xml type provider by Tomas Petricek - tomasP.net
+﻿// ----------------------------------------------------------------------------
+// Original Xml type provider
+// (c) Tomas Petricek - tomasP.net, Available under Apache 2.0 license.
+// ----------------------------------------------------------------------------
 namespace FSharpx.TypeProviders
 
 open System
 open System.Xml.Linq
+open FSharpx.TypeProviders.DSL
+open System.Collections.Generic
+
+// ------------------------------------------------------------------------------------------------
+// Runtime objects
+// ------------------------------------------------------------------------------------------------
+
+type TypedXElement(element:XElement) =
+  member x.Element = element
+
+type TypedXDocument(document:XDocument) =
+  member x.Document = document
 
 // ------------------------------------------------------------------------------------------------
 // Representation about inferred structure
@@ -38,7 +53,7 @@ module Inference =
 
   let rec provideElement name (elements:seq<XElement>) = 
     ProvidedXElement
-      ( name, Utils.niceName name,
+      ( name, niceName name,
         collectElements elements,
         collectAttributes elements )
 
@@ -49,7 +64,7 @@ module Inference =
     |> Seq.groupBy fst
     |> Seq.map (fun (name, attrs) -> 
         let typ = attrs |> Seq.map (fun (_, a) -> a.Value) |> inferType
-        ProvidedXAttribute(name, Utils.niceName name, typ, Seq.length attrs < Seq.length elements) )
+        ProvidedXAttribute(name, niceName name, typ, Seq.length attrs < Seq.length elements) )
 
   and collectElements (elements:seq<XElement>) =
     [ for el in elements do
