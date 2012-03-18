@@ -42,12 +42,16 @@
     <Compile Include="MiniCsv.Tests.fs" />
     <Compile Include="Registry.Tests.fs" />
     <Compile Include="FileSystem.Tests.fs" />
+    <Compile Include="Xml.Tests.fs" />
     <Compile Include="JSON.Tests.fs" />
     <Compile Include="Regex.Tests.fs" />
     <Compile Include="AppSettings.Tests.fs" />
     <Compile Include="Xaml.Tests.fs" />
     <Compile Include="Excel.Tests.fs" />
     <None Include="packages.config" />
+    <Content Include="Philosophy.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="SmallTest.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

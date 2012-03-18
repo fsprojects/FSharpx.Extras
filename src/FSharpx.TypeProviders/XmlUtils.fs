@@ -1,4 +1,5 @@
-﻿namespace Xml.TypeProvider
+﻿// Original Xml type provider by Tomas Petricek - tomasP.net
+namespace FSharpx.TypeProviders
 
 open System.Xml.Linq
 open System.Collections.Generic

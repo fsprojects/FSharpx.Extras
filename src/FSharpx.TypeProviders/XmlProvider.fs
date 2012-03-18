@@ -1,7 +1,10 @@
-﻿namespace Xml.TypeProvider
+﻿// Original Xml type provider by Tomas Petricek - tomasP.net
+module FSharpx.TypeProviders.XmlTypeProvider
 
 open System
 open System.IO
+open FSharpx.TypeProviders.Settings
+open FSharpx.TypeProviders.DSL
 open Microsoft.FSharp.Core.CompilerServices
 open Microsoft.FSharp.Quotations
 open Samples.FSharp.ProvidedTypes
@@ -11,25 +14,18 @@ open System.Xml.Linq
 // Type provider
 // ------------------------------------------------------------------------------------------------
     
-[<TypeProvider>]
-type public XmlProvider(cfg:TypeProviderConfig) as this =
-  inherit TypeProviderForNamespaces()
-
+let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
   // Implements invalidation of schema when the file changes
-  let watchForChanges (fileName:string) = 
+  let watchForChanges  (fileName:string) = 
     if not (fileName.StartsWith("http", StringComparison.InvariantCultureIgnoreCase)) then
       let path = Path.GetDirectoryName(fileName)
       let name = Path.GetFileName(fileName)
       let watcher = new FileSystemWatcher(Filter = name, Path = path)
-      watcher.Changed.Add(fun _ -> this.Invalidate()) 
+      watcher.Changed.Add(fun _ -> ownerType.Invalidate()) 
       watcher.EnableRaisingEvents <- true
-
-  // Get the assembly and namespace used to house the provided types
-  let asm = System.Reflection.Assembly.GetExecutingAssembly()
-  let ns = "XmlProvider"
-
+  
   // Create the main provided type
-  let xmlType = ProvidedTypeDefinition(asm, ns, "StructuredXml", Some(typeof<obj>))
+  let xmlType = ProvidedTypeDefinition(thisAssembly, rootNamespace, "StructuredXml", Some(typeof<obj>))
 
   // Parameterize the type by the file to use as a template
   let parameter = ProvidedStaticParameter("FileName", typeof<string>)
@@ -48,7 +44,7 @@ type public XmlProvider(cfg:TypeProviderConfig) as this =
     // Infer schema from the loaded data and generate type with properties
 
     let schema = Inference.provideElement doc.Root.Name.LocalName [doc.Root]      
-    let resTy = ProvidedTypeDefinition(asm, ns, typeName, Some typeof<TypedXDocument>)
+    let resTy = ProvidedTypeDefinition(thisAssembly, rootNamespace, typeName, Some typeof<TypedXDocument>)
 
 
     // Generates type for an inferred XML element
@@ -112,8 +108,4 @@ type public XmlProvider(cfg:TypeProviderConfig) as this =
     |> resTy.AddMember
 
     resTy)
- 
-  do this.AddNamespace(ns, [ xmlType ])
-
-[<assembly:TypeProviderAssembly>]
-do()
+  xmlType
