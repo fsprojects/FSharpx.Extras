@@ -93,20 +93,3 @@ module Utils =
         else 
           dict.[name] <- 0
           name)
-
-// ------------------------------------------------------------------------------------------------
-// Tests for the niceName function
-// ------------------------------------------------------------------------------------------------
-
-  let tests () = 
-    let (=!=) a b = if a <> b then failwithf "%s <> %s" a b
-    niceName "" =!= "" 
-    niceName "__hello__" =!= "Hello"
-    niceName "abc" =!= "Abc"
-    niceName "hello_world" =!= "HelloWorld"
-    niceName "HelloWorld" =!= "HelloWorld"
-    niceName "helloWorld" =!= "HelloWorld"
-    niceName "hello123" =!= "Hello123"
-    niceName "Hello123" =!= "Hello123"
-    niceName "hello!123" =!= "Hello123"
-    niceName "HelloWorld123_hello__@__omg" =!= "HelloWorld123HelloOmg"
