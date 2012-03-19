@@ -124,16 +124,9 @@ let findConfigFile resolutionFolder configFileName =
     else 
         Path.Combine(resolutionFolder, configFileName)
 
-let watchPath invalidateF path =
-    let folder = Path.GetDirectoryName path
-    let file = Path.GetFileName path
-    let watcher = new FileSystemWatcher(folder, file)
-    watcher.Changed.Add (fun _ -> invalidateF())
-    watcher.EnableRaisingEvents <- true
-
 let badargs() = failwith "Wrong type or number of arguments"
 
-// Implements invalidation of schema when the file changes
+/// Implements invalidation of schema when the file changes
 let watchForChanges (ownerType:TypeProviderForNamespaces) (fileName:string) = 
     if not (fileName.StartsWith("http", StringComparison.InvariantCultureIgnoreCase)) then
       let path = Path.GetDirectoryName(fileName)
