@@ -17,16 +17,7 @@ open System.Xml.Linq
 // Type provider
 // ------------------------------------------------------------------------------------------------
     
-let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
-  // Implements invalidation of schema when the file changes
-  let watchForChanges  (fileName:string) = 
-    if not (fileName.StartsWith("http", StringComparison.InvariantCultureIgnoreCase)) then
-      let path = Path.GetDirectoryName(fileName)
-      let name = Path.GetFileName(fileName)
-      let watcher = new FileSystemWatcher(Filter = name, Path = path)
-      watcher.Changed.Add(fun _ -> ownerType.Invalidate()) 
-      watcher.EnableRaisingEvents <- true
-  
+let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =  
   // Create the main provided type
   let xmlType = ProvidedTypeDefinition(thisAssembly, rootNamespace, "StructuredXml", Some(typeof<obj>))
 
@@ -41,7 +32,7 @@ let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
         Path.Combine(cfg.ResolutionFolder, fileName)
       else fileName
     let doc = XDocument.Load(resolvedFilename)
-    watchForChanges resolvedFilename
+    watchForChanges ownerType resolvedFilename
 
     // -------------------------------------------------------------------------------------------
     // Infer schema from the loaded data and generate type with properties

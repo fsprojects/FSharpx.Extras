@@ -133,6 +133,15 @@ let watchPath invalidateF path =
 
 let badargs() = failwith "Wrong type or number of arguments"
 
+// Implements invalidation of schema when the file changes
+let watchForChanges (ownerType:TypeProviderForNamespaces) (fileName:string) = 
+    if not (fileName.StartsWith("http", StringComparison.InvariantCultureIgnoreCase)) then
+      let path = Path.GetDirectoryName(fileName)
+      let name = Path.GetFileName(fileName)
+      let watcher = new FileSystemWatcher(Filter = name, Path = path)
+      watcher.Changed.Add(fun _ -> ownerType.Invalidate()) 
+      watcher.EnableRaisingEvents <- true
+
 // Turns a string into a nice PascalCase identifier
 let niceName (s:string) = 
     // Starting to parse a new segment 
