@@ -1,10 +1,13 @@
 ﻿// Starting to implement a DSL on top of ProvidedTypes API
 module FSharpx.TypeProviders.DSL
 
+open System
 open Samples.FSharp.ProvidedTypes
 open System.Reflection
 open Microsoft.FSharp.Quotations
 open FSharpx.Strings
+open System.Xml.Linq
+open System.Collections.Generic
 
 type FilePosition =  
    { Line: int; 
@@ -121,11 +124,71 @@ let findConfigFile resolutionFolder configFileName =
     else 
         Path.Combine(resolutionFolder, configFileName)
 
-let watchPath invalidateF path =
-    let folder = Path.GetDirectoryName path
-    let file = Path.GetFileName path
-    let watcher = new FileSystemWatcher(folder, file)
-    watcher.Changed.Add (fun _ -> invalidateF())
-    watcher.EnableRaisingEvents <- true
-
 let badargs() = failwith "Wrong type or number of arguments"
+
+/// Implements invalidation of schema when the file changes
+let watchForChanges (ownerType:TypeProviderForNamespaces) (fileName:string) = 
+    if not (fileName.StartsWith("http", StringComparison.InvariantCultureIgnoreCase)) then
+      let path = Path.GetDirectoryName(fileName)
+      let name = Path.GetFileName(fileName)
+      let watcher = new FileSystemWatcher(Filter = name, Path = path)
+      watcher.Changed.Add(fun _ -> ownerType.Invalidate()) 
+      watcher.EnableRaisingEvents <- true
+
+// Turns a string into a nice PascalCase identifier
+let niceName (s:string) = 
+    // Starting to parse a new segment 
+    let rec restart i = seq {
+      match s @? i with 
+      | EOF -> ()
+      | LetterDigit _ & Upper _ -> yield! upperStart i (i + 1)
+      | LetterDigit _ -> yield! consume i false (i + 1)
+      | _ -> yield! restart (i + 1) }
+    // Parsed first upper case letter, continue either all lower or all upper
+    and upperStart from i = seq {
+      match s @? i with 
+      | Upper _ -> yield! consume from true (i + 1) 
+      | Lower _ -> yield! consume from false (i + 1) 
+      | _ -> yield! restart (i + 1) }
+    // Consume are letters of the same kind (either all lower or all upper)
+    and consume from takeUpper i = seq {
+      match s @? i with
+      | Lower _ when not takeUpper -> yield! consume from takeUpper (i + 1)
+      | Upper _ when takeUpper -> yield! consume from takeUpper (i + 1)
+      | _ -> 
+          yield from, i
+          yield! restart i }
+    
+    // Split string into segments and turn them to PascalCase
+    seq { for i1, i2 in restart 0 do 
+            let sub = s.Substring(i1, i2 - i1) 
+            if Seq.forall Char.IsLetterOrDigit sub then
+              yield sub.[0].ToString().ToUpper() + sub.ToLower().Substring(1) }
+    |> String.concat ""
+
+let convertExpr typ expr = 
+    if typ = typeof<bool> then 
+      <@@ let (s:string) = %%expr
+          s.Equals("true", StringComparison.InvariantCultureIgnoreCase) ||
+          s.Equals("yes", StringComparison.InvariantCultureIgnoreCase) @@>
+    elif typ = typeof<int> then
+      <@@ Int32.Parse(%%expr : string) @@>
+    elif typ = typeof<float> then
+      <@@ Double.Parse(%%expr : string) @@>
+    elif typ = typeof<string> then
+      expr
+    else failwith "Unexpected type in convertExpr"      
+
+let seqType ty = typedefof<seq<_>>.MakeGenericType[| ty |]
+
+let optionType ty = typedefof<option<_>>.MakeGenericType[| ty |]
+
+let makeUniqueName =
+    let dict = new Dictionary<_, _>()
+    (fun name ->
+        if dict.ContainsKey(name) then
+          dict.[name] <- dict.[name] + 1
+          sprintf "%s%d" name (dict.[name])
+        else 
+          dict.[name] <- 0
+          name)

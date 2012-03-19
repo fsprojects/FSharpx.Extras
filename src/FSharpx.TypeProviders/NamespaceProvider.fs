@@ -9,15 +9,15 @@ open System.Text.RegularExpressions
 type public FSharpxProvider(cfg:TypeProviderConfig) as this =
     inherit TypeProviderForNamespaces()
 
-    let makeInvalid = this.Invalidate
     do this.AddNamespace(
         Settings.rootNamespace, 
         [RegexTypeProvider.regexTy
          MiniCsvProvider.csvType cfg
          FilesTypeProvider.typedFileSystem
+         XmlTypeProvider.xmlType this cfg
          JsonProvider.jsonType cfg
          RegistryProvider.typedRegistry
-         XamlProvider.xamlFileTypeUninstantiated makeInvalid cfg
+         XamlProvider.xamlFileTypeUninstantiated this cfg
          XamlProvider.xamlTextTypeUninstantiated cfg
          AppSettingsTypeProvider.typedAppSettings cfg
          ExcelProvider.typExcel cfg ])

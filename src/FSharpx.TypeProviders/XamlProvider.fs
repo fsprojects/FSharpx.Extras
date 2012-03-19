@@ -208,15 +208,15 @@ let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
 
     topType
         
-let xamlFileTypeUninstantiated invalidateF (cfg:TypeProviderConfig) =
+let xamlFileTypeUninstantiated (ownerType:TypeProviderForNamespaces)  (cfg:TypeProviderConfig) =
     erasedType<obj> thisAssembly rootNamespace "XamlFile"
       |> staticParameter "File" (fun typeName configFileName -> 
             let path = findConfigFile cfg.ResolutionFolder configFileName
 
             if File.Exists path |> not then
                 failwithf "the path '%s' does not exist" path
-
-            watchPath invalidateF path
+            
+            watchForChanges ownerType path
             
             use reader = new StreamReader(path)
             createTypeFromReader typeName (XamlInfo.Path path) reader)

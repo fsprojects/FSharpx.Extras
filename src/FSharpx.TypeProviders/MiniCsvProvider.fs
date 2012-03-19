@@ -27,7 +27,7 @@ let csvType (cfg:TypeProviderConfig) =
     erasedType<obj> thisAssembly rootNamespace "MinCsv"
     |> staticParameter "filename"
         (fun typeName fileName ->
-            let resolvedFileName = findConfigFile cfg.ResolutionFolder fileName            
+            let resolvedFileName = findConfigFile cfg.ResolutionFolder fileName
             let headerLine =
                 resolvedFileName
                     |> File.ReadLines
