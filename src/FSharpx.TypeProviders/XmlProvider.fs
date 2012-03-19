@@ -49,12 +49,21 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (ProvidedXElement(name, 
     // Iterate over all the XML elements, generate type for them
     // and add member for accessing them to the parent.
     for (ProvidedXElement(name, niceName, _, _)) as child in children do
-        let chty = generateType ownerType child
+        let newType =
+            child
+            |> generateType ownerType 
+            |> seqType
 
-        ProvidedMethod("Get" + niceName + "Elements", [], seqType chty, InvokeCode = fun [self] ->
-              <@@ seq { for e in ((%%self:TypedXElement).Element.Elements(XName.op_Implicit name)) -> TypedXElement(e) } @@>)
-          |> ty.AddMember
-
+        ty
+        |+!> (provideMethod
+                ("Get" + niceName + "Elements")
+                []
+                newType
+                (fun args -> 
+                    <@@ seq { for e in ((%%args.[0]:TypedXElement).Element.Elements(XName.op_Implicit name)) -> 
+                                 TypedXElement(e) } @@>)
+                |> addXmlDoc (sprintf @"Gets the ""%s"" elements" niceName))
+        |> ignore
     ty
 
 let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =  
