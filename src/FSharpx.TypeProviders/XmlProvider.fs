@@ -83,7 +83,7 @@ let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
         // -------------------------------------------------------------------------------------------
         // Infer schema from the loaded data and generate type with properties
 
-        let schema = Inference.provideElement doc.Root.Name.LocalName [doc.Root]      
+        let schema = XmlInference.provideElement doc.Root.Name.LocalName [doc.Root]      
         let resTy = erasedType<TypedXDocument> thisAssembly rootNamespace typeName
        
         // -------------------------------------------------------------------------------------------

@@ -36,7 +36,7 @@ type ProvidedXElement =
 // Infers the structure of XML file from data
 // ------------------------------------------------------------------------------------------------
 
-module Inference = 
+module XmlInference = 
   let rec provideElement name (elements:seq<XElement>) = 
     ProvidedXElement
       ( name, niceName name,
