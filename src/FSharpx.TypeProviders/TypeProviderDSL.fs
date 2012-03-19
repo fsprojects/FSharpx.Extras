@@ -177,13 +177,9 @@ let convertExpr typ expr =
       expr
     else failwith "Unexpected type in convertExpr"      
 
-let mkSeqTy = 
-    let seqTy = typedefof<seq<_>>
-    (fun ty -> seqTy.MakeGenericType[| ty |])
+let seqType ty = typedefof<seq<_>>.MakeGenericType[| ty |]
 
-let mkOptTy =
-    let optTy = typedefof<option<_>>
-    (fun ty -> optTy.MakeGenericType[| ty |])
+let optionType ty = typedefof<option<_>>.MakeGenericType[| ty |]
 
 let makeUniqueName =
     let dict = new Dictionary<_, _>()

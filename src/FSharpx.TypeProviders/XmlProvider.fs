@@ -59,13 +59,13 @@ let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
       for ProvidedXAttribute(name, niceName, typ, opt) in attributes do 
         if opt then
           // For optional elements, we return Option value
-          ProvidedProperty(niceName, mkOptTy typ, GetterCode = fun [self] ->
+          ProvidedProperty(niceName, optionType typ, GetterCode = fun [self] ->
             let accessExpr = 
               <@@  (%%self:TypedXElement).Element.
                       Attribute(XName.op_Implicit name).Value @@> 
               |> convertExpr typ 
 
-            let cases = Reflection.FSharpType.GetUnionCases(mkOptTy typ)
+            let cases = Reflection.FSharpType.GetUnionCases(optionType typ)
             let some = cases |> Seq.find (fun c -> c.Name = "Some")
             let none = cases |> Seq.find (fun c -> c.Name = "None")
 
@@ -88,7 +88,7 @@ let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
       for (ProvidedXElement(name, niceName, _, _)) as child in children do
         let chty = generateType child
 
-        ProvidedMethod("Get" + niceName + "Elements", [], mkSeqTy chty, InvokeCode = fun [self] ->
+        ProvidedMethod("Get" + niceName + "Elements", [], seqType chty, InvokeCode = fun [self] ->
           <@@ seq { for e in ((%%self:TypedXElement).Element.Elements(XName.op_Implicit name)) -> TypedXElement(e) } @@>)
         |> ty.AddMember
 
