@@ -42,16 +42,22 @@ let nunitPath = "./packages/NUnit.2.5.10.11092/Tools"
 
 // files
 let appReferences =
-    let mutable refs = !+ "./src/**/*.*proj"
-                       -- "./src/**/*.Silverlight.*proj"
-    if frameworkVersion <> "v4.5" then
-        refs <- refs -- "./src/**/*.TypeProviders.*proj"
+    let refs = !+ "./src/**/*.*proj"
+               -- "./src/**/*.Silverlight.*proj"
+
+    let refs = if frameworkVersion <> "v4.5"
+                then refs -- "./src/**/*.TypeProviders.*proj"
+                else refs
+    let refs = if frameworkVersion = "v3.5"
+                then refs -- "./src/FSharpx.Async/FSharpx.Async.fsproj"
+                else refs
     refs |> Scan
 
 let testReferences =
-    let mutable refs = !+ "./tests/**/*.*proj"
-    if frameworkVersion <> "v4.5" then
-        refs <- refs -- "./tests/**/*.TypeProviders.*proj"
+    let refs = !+ "./tests/**/*.*proj"
+    let refs = if frameworkVersion <> "v4.5"
+                then refs -- "./src/**/*.TypeProviders.*proj"
+                else refs
     refs |> Scan
 
 let filesToZip =
@@ -106,7 +112,7 @@ Target "BuildApp" (fun _ ->
 )
 
 Target "BuildTest" (fun _ ->
-    MSBuild testDir "Build" (["Configuration","Debug"] @ frameworkParams) testReferences
+    MSBuild testDir "Build" ["Configuration","Debug"] testReferences
         |> Log "TestBuild-Output: "
 )
 
@@ -144,19 +150,14 @@ Target "BuildNuGet" (fun _ ->
     CleanDirs [nugetDir; nugetLibDir; nugetDocsDir]
 
     XCopy (docsDir |> FullName) nugetDocsDir
-    [ buildDir + "FSharpx.Core.dll"
-      buildDir + "FSharpx.Core.pdb"
-      buildDir + "FSharpx.Core.xml"
-      buildDir + "FSharpx.Http.dll"
-      buildDir + "FSharpx.Http.pdb"
-      buildDir + "FSharpx.Http.xml"
-      buildDir + "FSharpx.Async.dll"
-      buildDir + "FSharpx.Async.pdb"
-      buildDir + "FSharpx.Async.xml"
-      buildDir + "FSharpx.Observable.dll"
-      buildDir + "FSharpx.Observable.pdb"
-      buildDir + "FSharpx.Observable.xml"]
-        |> CopyTo nugetLibDir
+    let libs = ["FSharpx.Core"; "FSharpx.Http"; "FSharpx.Observable"]
+    let libs = if frameworkVersion <> "v3.5"
+                then "FSharpx.Async"::libs
+                else libs
+    let libs = [ for l in libs do
+                 for e in ["dll";"pdb";"xml"] ->
+                    sprintf "%s%s.%s" buildDir l e ]
+    libs |> CopyTo nugetLibDir
 
     NuGet (fun p -> 
         {p with               

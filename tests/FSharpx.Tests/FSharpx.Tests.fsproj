@@ -70,10 +70,7 @@
       <HintPath>..\..\packages\FsCheck.0.7.1\lib\net35\FsCheck.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
-      <HintPath>..\..\lib\FSharp\Net20\FSharp.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v4.0'">
+    <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) != 'v4.5'">
       <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' == 'v4.5'">
@@ -122,7 +119,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" Condition="'$(TargetFrameworkVersion)' != 'v3.5'" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Unquote">
