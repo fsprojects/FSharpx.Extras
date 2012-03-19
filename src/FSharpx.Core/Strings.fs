@@ -19,4 +19,4 @@ module Strings =
     let inline separatedBy delimiter (items: string seq) = String.Join(delimiter, Array.ofSeq items)
 
     /// Returns if the string is null or empty
-    let inline isNullOrEmpty text = String.IsNullOrEmpty text    
+    let inline isNullOrEmpty text = String.IsNullOrEmpty text

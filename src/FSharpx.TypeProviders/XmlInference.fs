@@ -8,6 +8,7 @@ open System
 open System.Xml.Linq
 open FSharpx.TypeProviders.DSL
 open System.Collections.Generic
+open FSharpx.TypeProviders.Inference
 
 // ------------------------------------------------------------------------------------------------
 // Runtime objects
@@ -36,21 +37,6 @@ type ProvidedXElement =
 // ------------------------------------------------------------------------------------------------
 
 module Inference = 
-  let inferType strings =
-    let isBool (s:string) = 
-      s.Equals("true", StringComparison.InvariantCultureIgnoreCase) ||
-      s.Equals("false", StringComparison.InvariantCultureIgnoreCase) ||
-      s.Equals("yes", StringComparison.InvariantCultureIgnoreCase) ||
-      s.Equals("no", StringComparison.InvariantCultureIgnoreCase)
-    let isInt (s:string) = Int32.TryParse s |> fst
-    let isFloat (s:string) = 
-      Double.TryParse(s, Globalization.NumberStyles.Float, Globalization.CultureInfo.InvariantCulture) |> fst
-
-    if Seq.forall isBool strings then typeof<bool>
-    elif Seq.forall isInt strings then typeof<int>
-    elif Seq.forall isFloat strings then typeof<float>
-    else typeof<string>
-
   let rec provideElement name (elements:seq<XElement>) = 
     ProvidedXElement
       ( name, niceName name,
