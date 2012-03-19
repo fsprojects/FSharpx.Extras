@@ -20,31 +20,37 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (ProvidedXElement(name, 
 
     // Generate property for every inferred attribute of the element
     for ProvidedXAttribute(name, niceName, typ, opt) in attributes do 
-        if opt then
-            // For optional elements, we return Option value
-            ProvidedProperty(niceName, optionType typ, GetterCode = fun [self] ->
-                let accessExpr = 
-                  <@@  (%%self:TypedXElement).Element.
-                          Attribute(XName.op_Implicit name).Value @@> 
-                  |> convertExpr typ 
+        let accessExpr (args: Expr list) = 
+            <@@  (%%args.[0]:TypedXElement).Element.
+                    Attribute(XName.op_Implicit name).Value @@> 
+            |> convertExpr typ
 
-                let cases = Reflection.FSharpType.GetUnionCases(optionType typ)
+        let prop =
+            if opt then
+                let newType = optionType typ
+                // For optional elements, we return Option value
+                let cases = Reflection.FSharpType.GetUnionCases newType
                 let some = cases |> Seq.find (fun c -> c.Name = "Some")
                 let none = cases |> Seq.find (fun c -> c.Name = "None")
 
-                Expr.IfThenElse
-                  ( <@@ (%%self:TypedXElement).Element.
-                          Attribute(XName.op_Implicit name) <> null @@>,
-                    Expr.NewUnionCase(some, [accessExpr]),
-                    Expr.NewUnionCase(none, []) ) )
-              |> ty.AddMember
-        else
-            ProvidedProperty(niceName, typ, GetterCode = fun [self] ->
-                <@@ (%%self:TypedXElement).Element.
-                      Attribute(XName.op_Implicit name).Value @@>
-                |> convertExpr typ)
-              |> ty.AddMember
+                provideProperty 
+                    niceName
+                    newType
+                    (fun args ->
+                        Expr.IfThenElse
+                          (<@@ (%%args.[0]:TypedXElement).Element.
+                                  Attribute(XName.op_Implicit name) <> null @@>,
+                            Expr.NewUnionCase(some, [accessExpr args]),
+                            Expr.NewUnionCase(none, [])))
+            else
+                provideProperty 
+                    niceName
+                    typ
+                    accessExpr
 
+        prop
+          |> addXmlDoc (sprintf @"Gets the ""%s"" attribute" niceName)
+          |> ty.AddMember
 
     // Iterate over all the XML elements, generate type for them
     // and add member for accessing them to the parent.
