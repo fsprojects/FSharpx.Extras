@@ -25,3 +25,11 @@ let inferType values =
     elif Seq.forall isInt values then typeof<int>
     elif Seq.forall isFloat values then typeof<float>
     else typeof<string>
+
+// ------------------------------------------------------------------------------------------------
+// Representation about inferred structure
+// ------------------------------------------------------------------------------------------------
+
+type SimpleProperty = SimpleProperty of string * Type * bool
+
+type CompoundProperty = CompoundProperty of string * CompoundProperty seq * SimpleProperty seq

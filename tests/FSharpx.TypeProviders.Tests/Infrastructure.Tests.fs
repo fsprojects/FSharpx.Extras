@@ -19,3 +19,4 @@ let ``Can simplify the type names``() =
     niceName "Hello123" =!= "Hello123"
     niceName "hello!123" =!= "Hello123"
     niceName "HelloWorld123_hello__@__omg" =!= "HelloWorld123HelloOmg"
+    niceName "HKEY_CURRENT_USER" =!= "HKEY_CURRENT_USER"

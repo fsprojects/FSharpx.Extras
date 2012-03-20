@@ -21,27 +21,12 @@ type TypedXDocument(document:XDocument) =
   member x.Document = document
 
 // ------------------------------------------------------------------------------------------------
-// Representation about inferred structure
-// ------------------------------------------------------------------------------------------------
-
-type ProvidedXAttribute = 
-  ProvidedXAttribute of string * string * Type * bool
-
-type ProvidedXElement = 
-  ProvidedXElement 
-    of string * string * ProvidedXElement seq * 
-       ProvidedXAttribute seq
-
-// ------------------------------------------------------------------------------------------------
 // Infers the structure of XML file from data
 // ------------------------------------------------------------------------------------------------
 
 module XmlInference = 
   let rec provideElement name (elements:seq<XElement>) = 
-    ProvidedXElement
-      ( name, niceName name,
-        collectElements elements,
-        collectAttributes elements )
+    CompoundProperty(name,collectElements elements,collectAttributes elements)
 
   and collectAttributes (elements:seq<XElement>) = 
     [ for el in elements do
@@ -49,8 +34,10 @@ module XmlInference =
           yield attr.Name.LocalName, attr ]
     |> Seq.groupBy fst
     |> Seq.map (fun (name, attrs) -> 
-        let typ = attrs |> Seq.map (fun (_, a) -> a.Value) |> inferType
-        ProvidedXAttribute(name, niceName name, typ, Seq.length attrs < Seq.length elements) )
+        SimpleProperty(
+          name,
+          attrs |> Seq.map (fun (_, a) -> a.Value) |> inferType,
+          Seq.length attrs < Seq.length elements))
 
   and collectElements (elements:seq<XElement>) =
     [ for el in elements do

@@ -8,8 +8,8 @@ type T = AppSettingsTyped< @"Test.App.config">
 
 [<Test>] 
 let ``Can return a string from the config file``() =   
-    T.test2.GetType() |> should equal typeof<string>   
-    T.test2 |> should equal "Some Test Value 5"
+    T.Test2.GetType() |> should equal typeof<string>   
+    T.Test2 |> should equal "Some Test Value 5"
 
 [<Test>] 
 let ``Can return an integer from the config file``() =      

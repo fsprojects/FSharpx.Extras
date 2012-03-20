@@ -11,50 +11,51 @@ open FSharpx.TypeProviders.DSL
 open Microsoft.FSharp.Core.CompilerServices
 open Microsoft.FSharp.Quotations
 open Samples.FSharp.ProvidedTypes
+open FSharpx.TypeProviders.Inference
 open System.Xml.Linq
 
 // Generates type for an inferred XML element
-let rec generateType (ownerType:ProvidedTypeDefinition) (ProvidedXElement(name, niceName, children, attributes)) =
-    let ty = runtimeType<TypedXElement> (makeUniqueName niceName)
+let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elementName,elementChildren,elementProperties)) =
+    let ty = runtimeType<TypedXElement> elementName
     ownerType.AddMember(ty)
 
     // Generate property for every inferred attribute of the element
-    for ProvidedXAttribute(name, niceName, typ, opt) in attributes do 
+    for SimpleProperty(propertyName,propertyType,optional) in elementProperties do 
         let accessExpr (args: Expr list) = 
             <@@  (%%args.[0]:TypedXElement).Element.
-                    Attribute(XName.op_Implicit name).Value @@> 
-            |> convertExpr typ
+                    Attribute(XName.op_Implicit propertyName).Value @@> 
+            |> convertExpr propertyType
 
         let prop =
-            if opt then
-                let newType = optionType typ
+            if optional then
+                let newType = optionType propertyType
                 // For optional elements, we return Option value
                 let cases = Reflection.FSharpType.GetUnionCases newType
                 let some = cases |> Seq.find (fun c -> c.Name = "Some")
                 let none = cases |> Seq.find (fun c -> c.Name = "None")
 
                 provideProperty 
-                    niceName
+                    propertyName
                     newType
                     (fun args ->
                         Expr.IfThenElse
                           (<@@ (%%args.[0]:TypedXElement).Element.
-                                  Attribute(XName.op_Implicit name) <> null @@>,
+                                  Attribute(XName.op_Implicit propertyName) <> null @@>,
                             Expr.NewUnionCase(some, [accessExpr args]),
                             Expr.NewUnionCase(none, [])))
             else
                 provideProperty 
-                    niceName
-                    typ
+                    propertyName
+                    propertyType
                     accessExpr
 
         prop
-          |> addXmlDoc (sprintf @"Gets the ""%s"" attribute" niceName)
+          |> addXmlDoc (sprintf @"Gets the ""%s"" attribute" propertyName)
           |> ty.AddMember
 
     // Iterate over all the XML elements, generate type for them
     // and add member for accessing them to the parent.
-    for (ProvidedXElement(name, niceName, _, _)) as child in children do
+    for CompoundProperty(childName,_,_) as child in elementChildren do
         let newType =
             child
             |> generateType ownerType 
@@ -62,13 +63,13 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (ProvidedXElement(name, 
 
         ty
         |+!> (provideMethod
-                ("Get" + niceName + "Elements")
+                ("Get" + niceName childName + "Elements")
                 []
                 newType
                 (fun args -> 
-                    <@@ seq { for e in ((%%args.[0]:TypedXElement).Element.Elements(XName.op_Implicit name)) -> 
+                    <@@ seq { for e in ((%%args.[0]:TypedXElement).Element.Elements(XName.op_Implicit childName)) -> 
                                  TypedXElement(e) } @@>)
-                |> addXmlDoc (sprintf @"Gets the ""%s"" elements" niceName))
+                |> addXmlDoc (sprintf @"Gets the ""%s"" elements" childName))
         |> ignore
     ty
 
