@@ -17,8 +17,6 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.Core", "src\FSharpx
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders", "src\FSharpx.TypeProviders\FSharpx.TypeProviders.fsproj", "{72613558-B230-43F0-84D7-584030BF5316}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Tests", "tests\FSharpx.TypeProviders.Tests\FSharpx.TypeProviders.Tests.fsproj", "{7B3C99B0-E1B6-4BD8-81BC-3F62300A363F}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{EFB3F0C2-10B4-4EF5-8FA7-CC39880067A1}"
 	ProjectSection(SolutionItems) = preProject
 		samples\AsyncSeqObservable.fsx = samples\AsyncSeqObservable.fsx
@@ -193,15 +191,6 @@ Global
 		{72613558-B230-43F0-84D7-584030BF5316}.Release|Any CPU.Build.0 = Release|Any CPU
 		{72613558-B230-43F0-84D7-584030BF5316}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{72613558-B230-43F0-84D7-584030BF5316}.Release|x86.ActiveCfg = Release|Any CPU
-		{7B3C99B0-E1B6-4BD8-81BC-3F62300A363F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7B3C99B0-E1B6-4BD8-81BC-3F62300A363F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7B3C99B0-E1B6-4BD8-81BC-3F62300A363F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{7B3C99B0-E1B6-4BD8-81BC-3F62300A363F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{7B3C99B0-E1B6-4BD8-81BC-3F62300A363F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{7B3C99B0-E1B6-4BD8-81BC-3F62300A363F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7B3C99B0-E1B6-4BD8-81BC-3F62300A363F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7B3C99B0-E1B6-4BD8-81BC-3F62300A363F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{7B3C99B0-E1B6-4BD8-81BC-3F62300A363F}.Release|x86.ActiveCfg = Release|Any CPU
 		{EC2F35C2-6DC7-437B-9BD1-44DC1B6F7136}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{EC2F35C2-6DC7-437B-9BD1-44DC1B6F7136}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{EC2F35C2-6DC7-437B-9BD1-44DC1B6F7136}.Debug|Mixed Platforms.Build.0 = Debug|x86
