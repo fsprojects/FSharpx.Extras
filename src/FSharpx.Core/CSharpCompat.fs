@@ -406,6 +406,11 @@ type FSharpAsyncExtensions =
     [<Extension>]
     static member IgnoreResult a =
         Async.map ignore a
+
+    /// Encapsulates any possible exceptions during bind in a Choice
+    [<Extension>]
+    static member Protect a =
+        Async.protect a
     
     [<Extension>]
     static member Run a = 

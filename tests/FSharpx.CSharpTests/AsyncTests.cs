@@ -49,6 +49,13 @@ namespace FSharpx.CSharpTests {
             //b.Start();
         }
 
+        [Test]
+        public void Protect() {
+            Get("http://www.google.comco").Protect().Run()
+                .Match((string result) => Assert.Fail("request should have failed"),
+                       (Exception e) => { });
+        }
+
         // http://stackoverflow.com/questions/6893998/c-how-to-implement-as-async-and-in-f
 
         [Test]

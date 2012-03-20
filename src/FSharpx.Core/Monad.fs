@@ -109,6 +109,15 @@ module Async =
     /// Right-to-left Kleisli composition
     let inline (<=<) x = flip (>=>) x
 
+    /// Encapsulates any possible exceptions during bind in a Choice
+    let protect a =
+        async {
+            try
+                let! r = a
+                return r |> Choice1Of2
+            with e -> return Choice2Of2 e
+        }
+
     let foldM f s = 
         Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
 
