@@ -10,8 +10,7 @@
   <AnalyseExecutionTimes>true</AnalyseExecutionTimes>
   <IncludeStaticReferencesInWorkspace>true</IncludeStaticReferencesInWorkspace>
   <DefaultTestTimeout>60000</DefaultTestTimeout>
-  <UseBuildConfiguration></UseBuildConfiguration>
+  <UseBuildConfiguration />
   <ProxyProcessPath />
   <UseCPUArchitecture>AutoDetect</UseCPUArchitecture>
-  <AdditionalFilesToInclude>..\..\lib\FSharp\*.dll;..\..\lib\FSharp\*.exe</AdditionalFilesToInclude>
 </ProjectConfiguration>

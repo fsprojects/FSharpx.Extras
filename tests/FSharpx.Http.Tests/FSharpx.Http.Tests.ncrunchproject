@@ -11,7 +11,7 @@
   <IncludeStaticReferencesInWorkspace>true</IncludeStaticReferencesInWorkspace>
   <DefaultTestTimeout>60000</DefaultTestTimeout>
   <UseBuildConfiguration></UseBuildConfiguration>
-  <ProxyProcessPath />
+  <ProxyProcessPath></ProxyProcessPath>
   <UseCPUArchitecture>AutoDetect</UseCPUArchitecture>
   <AdditionalFilesToInclude>..\..\lib\FSharp\*.dll;..\..\lib\FSharp\*.exe</AdditionalFilesToInclude>
 </ProjectConfiguration>

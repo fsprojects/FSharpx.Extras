@@ -67,6 +67,9 @@
     <Reference Include="FSharp.Data.TypeProviders, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <HintPath>..\..\lib\FSharp\Net45\FSharp.Data.TypeProviders.dll</HintPath>
     </Reference>
+    <Reference Include="FSharpx.TypeProviders">
+      <HintPath>..\..\src\FSharpx.TypeProviders\bin\Debug\FSharpx.TypeProviders.dll</HintPath>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core">
       <HintPath>..\..\lib\FSharp\Net45\FSharp.Core.dll</HintPath>
@@ -92,18 +95,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\FSharpx.Core\FSharpx.Core.fsproj">
-      <Name>FSharpx.Core</Name>
-      <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\FSharpx.TypeProviders\FSharpx.TypeProviders.fsproj">
-      <Name>FSharpx.TypeProviders</Name>
-      <Project>{72613558-b230-43f0-84d7-584030bf5316}</Project>
-      <Private>True</Private>
-    </ProjectReference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
 	     Other similar extension points exist, see Microsoft.Common.targets.
