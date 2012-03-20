@@ -401,6 +401,11 @@ type FSharpAsyncExtensions =
     [<Extension>]
     static member Select (o, f: Func<_,_>) = 
         Async.map f.Invoke o
+
+    /// Ignores (discards) the result of the async computation
+    [<Extension>]
+    static member IgnoreResult a =
+        Async.map ignore a
     
     [<Extension>]
     static member Run a = 

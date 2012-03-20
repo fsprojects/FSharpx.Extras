@@ -20,12 +20,11 @@ namespace FSharpx.CSharpTests {
 
         [Test]
         public void LINQ() {
-            FSharpAsync<string> qq =
+            FSharpAsync<string> asyncGet =
                 from google in Get("http://www.google.com")
                 from bing in Get("http://www.bing.com")
                 select google + bing;
-            string result = FSharpAsync.RunSynchronously(qq, FSharpOption<int>.None,
-                FSharpOption<CancellationToken>.None);
+            string result = asyncGet.Run();
             var rx = new Regex(@"<html");
             Assert.AreEqual(2, rx.Matches(result).Count);
         }
@@ -46,7 +45,7 @@ namespace FSharpx.CSharpTests {
         [Test]
         public void FuncToAsync() {
             FSharpAsync<int> a = L.F(() => 1).ToFSharpAsync();
-            FSharpAsync<Unit> b = a.Select(_ => (Unit) null);
+            FSharpAsync<Unit> b = a.IgnoreResult();
             //b.Start();
         }
 
