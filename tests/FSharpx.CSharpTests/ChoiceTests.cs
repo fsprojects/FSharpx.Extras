@@ -137,14 +137,14 @@ namespace FSharpx.CSharpTests {
         [Test]
         public void Try_as_extension_method_creating_a_new_function() {
             Func<int, int> f = a => a + 2;
-            var v = Choice.get(f.Try()(5));
+            int v = f.Try()(5).Value();
             Assert.AreEqual(v,7);
         }
 
         [Test]
         public void Try_as_extension_method_applying_function() {
             Func<int, int> f = a => a + 2;
-            var v = Choice.get(f.Try(5));
+            int v = f.Try(5).Value();
             Assert.AreEqual(v, 7);
         }
     }

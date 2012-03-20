@@ -233,6 +233,9 @@ type FSharpOption =
 [<Extension>]
 type FSharpChoice =
 
+    [<Extension>]
+    static member Value (c: Choice<_,_>) = Choice.get c
+
     static member Cast (o: obj) = Choice.cast o
 
     [<Extension>]
