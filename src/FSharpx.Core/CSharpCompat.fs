@@ -405,12 +405,12 @@ type FSharpAsyncExtensions =
     /// Ignores (discards) the result of the async computation
     [<Extension>]
     static member IgnoreResult a =
-        Async.map ignore a
+        Async.Ignore a
 
     /// Encapsulates any possible exceptions during bind in a Choice
     [<Extension>]
     static member Protect a =
-        Async.protect a
+        Async.Catch a
     
     [<Extension>]
     static member Run a = 
