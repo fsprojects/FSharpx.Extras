@@ -59,6 +59,7 @@ module Monoid =
 /// Generic monadic operators    
 module Operators =
 
+    /// Inject a value into the monadic type
     let inline returnM builder x = (^M: (member Return: 'b -> 'c) (builder, x))
     let inline bindM builder m f = (^M: (member Bind: 'd -> ('e -> 'c) -> 'c) (builder, m, f))
     let inline liftM builder f m =
@@ -73,20 +74,28 @@ module Operators =
 
 module Async =
     open Operators
-        
+    
+    /// Sequentially compose two actions, passing any value produced by the second as an argument to the first.
     let inline bind f m = async.Bind(m,f)
+    /// Inject a value into the async type
     let inline returnM x = returnM async x
+    /// Sequentially compose two actions, passing any value produced by the first as an argument to the second.
     let inline (>>=) m f = bindM async m f
+    /// Flipped >>=
     let inline (=<<) f m = bindM async m f
     /// Sequential application
     let inline (<*>) f m = applyM async async f m
     /// Sequential application
     let inline ap m f = f <*> m
+    /// Flipped map
     let inline pipe m f = liftM async f m
     let inline pipe2 x y f = returnM f <*> x <*> y
     let inline pipe3 x y z f = returnM f <*> x <*> y <*> z
+    /// Transforms an async value by using a specified mapping function.
     let inline map f m = pipe m f
+    /// Promote a function to a monad/applicative, scanning the monadic/applicative arguments from left to right.
     let inline lift2 f x y = returnM f <*> x <*> y
+    /// Infix map
     let inline (<!>) f m = pipe m f
     /// Sequence actions, discarding the value of the first argument.
     let inline ( *>) x y = pipe2 x y (fun _ z -> z)
@@ -109,6 +118,7 @@ module ZipList =
     let (<*>) f a = Seq.zip f a |> Seq.map (fun (k,v) -> k v)
     /// Sequential application
     let inline ap m f = f <*> m
+    /// Promote a function to a monad/applicative, scanning the monadic/applicative arguments from left to right.
     let inline lift2 f a b = returnM f <*> a <*> b
     /// Sequence actions, discarding the value of the first argument.
     let inline ( *>) x y = lift2 (fun _ z -> z) x y
@@ -143,14 +153,19 @@ module Option =
     
     open Operators
     
+    /// Inject a value into the option type
     let inline returnM x = returnM maybe x
+    /// Sequentially compose two actions, passing any value produced by the first as an argument to the second.
     let inline (>>=) m f = bindM maybe m f
+    /// Flipped >>=
     let inline (=<<) f m = bindM maybe m f
     /// Sequential application
     let inline (<*>) f m = applyM maybe maybe f m
     /// Sequential application
     let inline ap m f = f <*> m
+    /// Infix map
     let inline (<!>) f m = Option.map f m
+    /// Promote a function to a monad/applicative, scanning the monadic/applicative arguments from left to right.
     let inline lift2 f a b = returnM f <*> a <*> b
     /// Sequence actions, discarding the value of the first argument.
     let inline ( *>) x y = lift2 (fun _ z -> z) x y
@@ -163,62 +178,76 @@ module Option =
     let inline (>=>) f g = fun x -> f x >>= g
     /// Right-to-left Kleisli composition
     let inline (<=<) x = flip (>=>) x
-
+    /// Maps a Nullable to Option
     let fromNullable (n: _ Nullable) = 
         if n.HasValue
             then Some n.Value
             else None
+    /// Maps an Option to Nullable
     let toNullable =
         function
         | None -> Nullable()
         | Some x -> Nullable(x)
 
+    /// True -> Some(), False -> None
     let inline fromBool b = if b then Some() else None
 
+    /// Converts a function returning bool,value to a function returning value option.
+    /// Useful to process TryXX style functions.
     let inline tryParseWith func = func >> function
        | true, value -> Some value
        | false, _ -> None
-
+    
+    /// If true,value then returns Some value. Otherwise returns None.
+    /// Useful to process TryXX style functions.
     let inline fromBoolAndValue b = 
         match b with
         | true,v -> Some v
         | _ -> None
 
+    /// Maps Choice 1Of2 to Some value, otherwise None.
     let fromChoice =
         function
         | Choice1Of2 a -> Some a
         | _ -> None
 
+    /// Gets the value associated with the option or the supplied default value.
     let inline getOrElse v =
         function
         | Some x -> x
         | None -> v
 
+    /// Gets the value associated with the option or the supplied default value.
     let inline getOrElseLazy (v: _ Lazy) =
         function
         | Some x -> x
         | None -> v.Value
 
+    /// Gets the value associated with the option or the supplied default value from a function.
     let inline getOrElseF v =
         function
         | Some x -> x
         | None -> v()
 
+    /// Gets the value associated with the option or the default value for the type.
     let getOrDefault =
         function
         | Some x -> x
         | None -> Unchecked.defaultof<_>
-        
+    
+    /// Gets the option if Some x, otherwise the supplied default value.
     let inline orElse v =
         function
         | Some x -> Some x
         | None -> v
 
+    /// Applies a predicate to the option. If the predicate returns true, returns Some x, otherwise None.
     let inline filter pred =
         function
         | Some x when pred x -> Some x
         | _ -> None
 
+    /// Attempts to cast an object. Returns None if unsuccessful.
     [<CompiledName("Cast")>]
     let inline cast (o: obj) =
         try
@@ -233,51 +262,70 @@ module Nullable =
         if x.HasValue then Value x.Value else Null
 
     let create x = Nullable x
+    /// Gets the value associated with the nullable or the supplied default value.
     let getOrDefault n v = match n with Value x -> x | _ -> v
+    /// Gets the value associated with the nullable or the supplied default value.
     let getOrElse (n: 'a Nullable) (v: 'a Lazy) = match n with Value x -> x | _ -> v.Force()
+    /// Gets the value associated with the Nullable.
+    /// If no value, throws.
     let get (x: _ Nullable) = x.Value
+    /// Converts option to nullable
     let fromOption = Option.toNullable
+    /// Converts nullable to option
     let toOption = Option.fromNullable
+    /// Monadic bind
     let bind f x =
         match x with
         | Null -> Nullable()
         | Value v -> f v
+    /// True if Nullable has value
     let hasValue (x: _ Nullable) = x.HasValue
+    /// True if Nullable does not have value
     let isNull (x: _ Nullable) = not x.HasValue
+    /// Returns 1 if Nullable has value, otherwise 0
     let count (x: _ Nullable) = if x.HasValue then 1 else 0
+    /// Evaluates the equivalent of List.fold for a nullable.
     let fold f state x =
         match x with
         | Null -> state
         | Value v -> f state v
+    /// Performs the equivalent of the List.foldBack operation on a nullable.
     let foldBack f x state =
         match x with
         | Null -> state
         | Value v -> f x state
+    /// Evaluates the equivalent of List.exists for a nullable.
     let exists p x =
         match x with
         | Null -> false
         | Value v -> p x
+    /// Evaluates the equivalent of List.forall for a nullable.
     let forall p x = 
         match x with
         | Null -> true
         | Value v -> p x
+    /// Executes a function for a nullable value.
     let iter f x =
         match x with
         | Null -> ()
         | Value v -> f v
+    /// Transforms a Nullable value by using a specified mapping function.
     let map f x =
         match x with
         | Null -> Nullable()
         | Value v -> Nullable(f v)
+    /// Convert the nullable to an array of length 0 or 1.
     let toArray x = 
         match x with
         | Null -> [||]
         | Value v -> [| v |]
+    /// Convert the nullable to a list of length 0 or 1.
     let toList x =
         match x with
         | Null -> []
         | Value v -> [v]
         
+    /// Promote a function to a monad/applicative, scanning the monadic/applicative arguments from left to right.
     let lift2 f (a: _ Nullable) (b: _ Nullable) =
         if a.HasValue && b.HasValue
             then Nullable(f a.Value b.Value)
@@ -368,16 +416,22 @@ module State =
     let state = new StateBuilder()
     
     open Operators
-    
+
+    /// Inject a value into the State type
     let inline returnM x = returnM state x
+    /// Sequentially compose two actions, passing any value produced by the first as an argument to the second.
     let inline (>>=) m f = bindM state m f
+    /// Flipped >>=
     let inline (=<<) f m = bindM state m f
     /// Sequential application
     let inline (<*>) f m = applyM state state f m
     /// Sequential application
     let inline ap m f = f <*> m
+    /// Transforms a State value by using a specified mapping function.
     let inline map f m = liftM state f m
+    /// Infix map
     let inline (<!>) f m = map f m
+    /// Promote a function to a monad/applicative, scanning the monadic/applicative arguments from left to right.
     let inline lift2 f a b = returnM f <*> a <*> b
     /// Sequence actions, discarding the value of the first argument.
     let inline ( *>) x y = lift2 (fun _ z -> z) x y
@@ -432,15 +486,21 @@ module Reader =
     
     open Operators
     
+    /// Inject a value into the Reader type
     let inline returnM x = returnM reader x
+    /// Sequentially compose two actions, passing any value produced by the first as an argument to the second.
     let inline (>>=) m f = bindM reader m f
+    /// Flipped >>=
     let inline (=<<) f m = bindM reader m f
     /// Sequential application
     let inline (<*>) f m = applyM reader reader f m
     /// Sequential application
     let inline ap m f = f <*> m
+    /// Transforms a Reader value by using a specified mapping function.
     let inline map f m = liftM reader f m
+    /// Infix map
     let inline (<!>) f m = map f m
+    /// Promote a function to a monad/applicative, scanning the monadic/applicative arguments from left to right.
     let inline lift2 f a b = returnM f <*> a <*> b
     /// Sequence actions, discarding the value of the first argument.
     let inline ( *>) x y = lift2 (fun _ z -> z) x y
@@ -519,6 +579,7 @@ module Writer =
             let (a', w') = (k a)()
             (a', m.mappend w w')
 
+    /// Inject a value into the Writer type
     let returnM (monoid: _ Monoid) a = 
         fun () -> (a, monoid.mempty)
     
@@ -568,14 +629,19 @@ module Writer =
     open Operators
     
     let inline private ret x = returnM writer x
+    /// Sequentially compose two actions, passing any value produced by the first as an argument to the second.
     let inline (>>=) m f = bindM writer m f
+    /// Flipped >>=
     let inline (=<<) f m = bindM writer m f
     /// Sequential application
     let inline (<*>) f m = applyM writer writer f m
     /// Sequential application
     let inline ap m f = f <*> m
+    /// Transforms a Writer value by using a specified mapping function.
     let inline map f m = liftM writer f m
+    /// Infix map
     let inline (<!>) f m = map f m
+    /// Promote a function to a monad/applicative, scanning the monadic/applicative arguments from left to right.
     let inline lift2 f a b = ret f <*> a <*> b
     /// Sequence actions, discarding the value of the first argument.
     let inline ( *>) x y = lift2 (fun _ z -> z) x y
@@ -592,20 +658,27 @@ module Writer =
         Seq.fold (fun acc t -> acc >>= (flip f) t) (ret s)
 
 module Choice =
+    /// Inject a value into the Choice type
     let returnM = Choice1Of2
 
+    /// If Choice is 1Of2, return its value.
+    /// Otherwise throw ArgumentException.
     let get =
         function
         | Choice1Of2 a -> a
         | Choice2Of2 e -> invalidArg "choice" (sprintf "The choice value was Choice2Of2 '%A'" e)
-
+    
+    /// Wraps a function, encapsulates any exception thrown within to a Choice
     let inline protect f x = 
         try
             Choice1Of2 (f x)
         with e -> Choice2Of2 e
 
+    /// Attempts to cast an object.
+    /// Stores the cast value in 1Of2 if successful, otherwise stores the exception in 2Of2
     let inline cast (o: obj) = protect unbox o
         
+    /// Sequential application
     let ap x f =
         match f,x with
         | Choice1Of2 f, Choice1Of2 x -> Choice1Of2 (f x)
@@ -615,12 +688,15 @@ module Choice =
     /// Sequential application
     let inline (<*>) f x = ap x f
 
+    /// Transforms a Choice's first value by using a specified mapping function.
     let map f =
         function
         | Choice1Of2 x -> f x |> Choice1Of2
         | Choice2Of2 x -> Choice2Of2 x
 
+    /// Infix map
     let inline (<!>) f x = map f x
+    /// Promote a function to a monad/applicative, scanning the monadic/applicative arguments from left to right.
     let inline lift2 f a b = f <!> a <*> b
 
     /// Sequence actions, discarding the value of the first argument.
@@ -628,12 +704,15 @@ module Choice =
     /// Sequence actions, discarding the value of the second argument.
     let inline ( <*) a b = lift2 (fun z _ -> z) a b
 
+    /// Monadic bind
     let bind f = 
         function
         | Choice1Of2 x -> f x
         | Choice2Of2 x -> Choice2Of2 x
     
+    /// Sequentially compose two actions, passing any value produced by the first as an argument to the second.
     let inline (>>=) m f = bind f m
+    /// Flipped >>=
     let inline (=<<) f m = bind f m
     /// Sequentially compose two either actions, discarding any value produced by the first
     let inline (>>.) m1 m2 = m1 >>= (fun _ -> m2)
@@ -642,23 +721,33 @@ module Choice =
     /// Right-to-left Kleisli composition
     let inline (<=<) x = flip (>=>) x
 
+    /// Maps both parts of a Choice.
+    /// Applies the first function if Choice is 1Of2.
+    /// Otherwise applies the second function
     let inline bimap f1 f2 = 
         function
         | Choice1Of2 x -> Choice1Of2 (f1 x)
         | Choice2Of2 x -> Choice2Of2 (f2 x)
 
+    /// Maps both parts of a Choice.
+    /// Applies the first function if Choice is 1Of2.
+    /// Otherwise applies the second function
     let inline choice f1 f2 = 
         function
         | Choice1Of2 x -> f1 x
         | Choice2Of2 x -> f2 x
 
+    /// Transforms a Choice's second value by using a specified mapping function.
     let inline mapSecond f = bimap id f
 
     type EitherBuilder() =
         member this.Return a = returnM a
         member this.Bind(m,f) = bind f m
 
+    /// If Choice is 1Of2, returns Some value. Otherwise, returns None.
     let toOption = Option.fromChoice
+
+    /// If Some value, returns Choice1Of2 value. Otherwise, returns the supplied default value.
     let fromOption o = 
         function
         | Some a -> Choice1Of2 a
@@ -692,6 +781,7 @@ module Validation =
     type CustomValidation<'a>(monoid: 'a Monoid) =
         /// Sequential application
         member this.ap x = apm monoid x
+        /// Promote a function to a monad/applicative, scanning the monadic/applicative arguments from left to right.
         member this.lift2 f a b = returnM f |> this.ap a |> this.ap b
         /// Sequence actions, discarding the value of the first argument.
         member this.apr b a = this.lift2 (fun _ z -> z) a b
@@ -705,6 +795,7 @@ module Validation =
 
     /// Sequential application
     let inline (<*>) f x = ap x f
+    /// Promote a function to a monad/applicative, scanning the monadic/applicative arguments from left to right.
     let lift2 = stringListValidation.lift2
 
     /// Sequence actions, discarding the value of the first argument.
@@ -766,15 +857,21 @@ module Continuation =
     
     open Operators
     
+    /// Inject a value into the Cont type
     let inline returnM x = returnM cont x
+    /// Sequentially compose two actions, passing any value produced by the first as an argument to the second.
     let inline (>>=) m f = bindM cont m f
+    /// Flipped >>=
     let inline (=<<) f m = bindM cont m f
     /// Sequential application
     let inline (<*>) f m = applyM cont cont f m
     /// Sequential application
     let inline ap m f = f <*> m
+    /// Transforms a Cont value by using a specified mapping function.
     let inline map f m = liftM cont f m
+    /// Infix map
     let inline (<!>) f m = map f m
+    /// Promote a function to a monad/applicative, scanning the monadic/applicative arguments from left to right.
     let inline lift2 f a b = returnM f <*> a <*> b
     /// Sequence actions, discarding the value of the first argument.
     let inline ( *>) x y = lift2 (fun _ z -> z) x y
@@ -827,9 +924,12 @@ module Distribution =
                         p1.Probability * p2.Probability}))
         |> Seq.concat : 'b Distribution
     
+    /// Sequentially compose two actions, passing any value produced by the first as an argument to the second.
     let inline (>>=) dist f = bind f dist
+    /// Flipped >>=
     let inline (=<<) f dist = bind f dist
     
+    /// Inject a value into the Distribution type
     let returnM (value:'a) =     
         Seq.singleton { Value = value ; Probability = 1N/1N }
             : 'a Distribution
@@ -871,7 +971,8 @@ module Distribution =
     let filterInAnyOrder items dist =
         items
         |> Seq.fold (fun d item -> filter (Seq.exists ((=) (item))) d) dist
-    
+
+    /// Transforms a Distribution value by using a specified mapping function.
     let map f (dist:'a Distribution) : 'b Distribution = 
         dist 
         |> Seq.map (fun o -> { Value = f o.Value; Probability = o.Probability })
