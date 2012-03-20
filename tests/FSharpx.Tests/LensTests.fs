@@ -96,7 +96,7 @@ let stateMonad() =
             do! modSalary ((+) 100)
             return s
         }
-    let r,tom1 = modify tom
+    let r,tom1 = State.runState modify tom
     Assert.AreEqual(tom.Salary, r)
     Assert.AreEqual(1100, tom1.Salary)
 
@@ -109,7 +109,7 @@ let stateMonadOperators() =
             do! Editor.salary =! 1000
             do! Editor.salary += 100
         }
-    let tom1 = modify tom |> snd
+    let tom1 = State.runState modify tom |> snd
     Assert.AreEqual(1100, tom1.Salary)
 
 [<Test>]
@@ -120,7 +120,7 @@ let stateMonadOperators2() =
             do! Editor.salary += 1000
             return oldSalary
         }
-    let oldSalary, promotedTom = modify tom
+    let oldSalary, promotedTom = State.runState modify tom
     printfn "Tom used to make %d, after promotion he now makes %d" oldSalary promotedTom.Salary
     Assert.AreEqual(4000, oldSalary)
     Assert.AreEqual(5000, promotedTom.Salary)

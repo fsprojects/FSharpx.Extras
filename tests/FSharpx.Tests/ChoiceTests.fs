@@ -7,7 +7,7 @@ open FsUnit
 
 [<Test>]
 let getChoice1Of2() =
-    let a = Choice.returnM 23
+    let a = return' 23
     Choice.get a |> should equal 23
 
 [<Test>]
@@ -54,12 +54,12 @@ let ChoiceFolding() =
     let finalPosition = 
         let inline folder a (f,message) = 
             Choice.protect f a |> Choice.mapSecond (konst message)
-        actions |> Choice.foldM folder startingPosition
+        actions |> Seq.foldM folder startingPosition
 
     match finalPosition with
-    | Validation.Success (x,y) -> 
+    | Choice1Of2 (x,y) -> 
         printfn "final position: %f,%f" x y
-    | Validation.Failure error -> 
+    | Choice2Of2 error -> 
         printfn "error: %s" error
         Assert.Fail("should not have failed: {0}", error)
     

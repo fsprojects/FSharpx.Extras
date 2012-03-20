@@ -8,112 +8,44 @@ open System.Collections.Generic
 module Monoid =
     
     /// Monoid (associative binary operation with identity)
-    /// The monoid implementation comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.
-    [<AbstractClass>]
-    type Monoid<'a>() =
-        /// <summary>
-        /// Identity
-        /// </summary>
-        abstract member mempty : 'a
+    /// Instances
+    type Dual<'a> = Dual of 'a with
+        static member inline (?<-) (_     , _Monoid:Mempty , _:Dual<_>) = Dual (mempty()   )
+        static member inline (?<-) (Dual x, _Monoid:Mappend,   Dual y ) = Dual (mappend y x)
+    let getDual (Dual x) = x
 
-        /// <summary>
-        /// Associative operation
-        /// </summary>
-        abstract member mappend : 'a -> 'a -> 'a
+    type Endo<'a> = Endo of ('a -> 'a) with
+        static member        (?<-) (_     , _Monoid:Mempty , _:Endo<_>) = Endo id
+        static member        (?<-) (Endo f, _Monoid:Mappend,   Endo g ) = Endo (f << g)
 
-        /// <summary>
-        /// Fold a list using this monoid
-        /// </summary>
-        abstract member mconcat : 'a seq -> 'a
-        default x.mconcat a = Seq.fold x.mappend x.mempty a
-    
-    /// List monoid
-    type ListMonoid<'a>() =
-        inherit Monoid<'a list>()
-            override this.mempty = []
-            override this.mappend a b = a @ b
+    let appEndo (Endo f) = f
 
-    /// Option wrapper monoid
-    type OptionMonoid<'a>(m: 'a Monoid) =
-        inherit Monoid<'a option>()
-            override this.mempty = None
-            override this.mappend a b = 
-                match a,b with
-                | Some a, Some b -> Some (m.mappend a b)
-                | Some a, None   -> Some a
-                | None, Some a   -> Some a
-                | None, None     -> None
-                
-    /// Monoid (int,0,+)
-    let IntSumMonoid = 
-        { new Monoid<int>() with
-            override this.mempty = 0
-            override this.mappend a b = a + b }
+    type All = All of bool with
+        static member (?<-) (_    , _Monoid:Mempty , _:All  ) = All true
+        static member (?<-) (All x, _Monoid:Mappend,   All y) = All (x && y)
 
-    /// Monoid (int,1,*)
-    let IntProductMonoid =
-        { new Monoid<int>() with
-            override this.mempty = 1
-            override this.mappend a b = a * b }
+    type Any = Any of bool with
+        static member (?<-) (_    , _Monoid:Mempty , _:Any  ) = Any false
+        static member (?<-) (Any x, _Monoid:Mappend,   Any y) = Any (x || y)
 
-/// Generic monadic operators    
-module Operators =
+    type Sum<'a> = Sum of 'a with
+        static member inline (?<-) (_    , _Monoid:Mempty , _:Sum<_>) = Sum LanguagePrimitives.GenericZero
+        static member inline (?<-) (Sum x, _Monoid:Mappend,   Sum y ) = Sum (x + y)
 
-    let inline returnM builder x = (^M: (member Return: 'b -> 'c) (builder, x))
-    let inline bindM builder m f = (^M: (member Bind: 'd -> ('e -> 'c) -> 'c) (builder, m, f))
-    let inline liftM builder f m =
-        let inline ret x = returnM builder (f x)
-        bindM builder m ret
+    type Product<'a> = Product of 'a with
+        static member inline (?<-) (_        , _Monoid:Mempty , _:Product<_>) = Product LanguagePrimitives.GenericOne
+        static member inline (?<-) (Product x, _Monoid:Mappend,   Product y ) = Product (x * y)
 
-    /// Sequential application
-    let inline applyM (builder1:^M1) (builder2:^M2) f m =
-        bindM builder1 f <| fun f' ->
-            bindM builder2 m <| fun m' ->
-                returnM builder2 (f' m') 
-
-module Async =
-    open Operators
-        
+module Async =        
     let inline bind f m = async.Bind(m,f)
-    let inline returnM x = returnM async x
-    let inline (>>=) m f = bindM async m f
-    let inline (=<<) f m = bindM async m f
-    /// Sequential application
-    let inline (<*>) f m = applyM async async f m
-    /// Sequential application
-    let inline ap m f = f <*> m
-    let inline pipe m f = liftM async f m
-    let inline pipe2 x y f = returnM f <*> x <*> y
-    let inline pipe3 x y z f = returnM f <*> x <*> y <*> z
-    let inline map f m = pipe m f
-    let inline lift2 f x y = returnM f <*> x <*> y
-    let inline (<!>) f m = pipe m f
-    /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) x y = pipe2 x y (fun _ z -> z)
-    /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) x y = pipe2 x y (fun z _ -> z)
+    let ap  m f : Async<_> = f <*> m
+    let map f m : Async<_> = fmap f m
 
-    /// Sequentially compose two async actions, discarding any value produced by the first
-    let inline (>>.) m f = bindM async m (fun _ -> f)
-    /// Left-to-right Kleisli composition
-    let inline (>=>) f g = fun x -> f x >>= g
-    /// Right-to-left Kleisli composition
-    let inline (<=<) x = flip (>=>) x
-
-    let foldM f s = 
-        Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
-
-module ZipList = 
-    let returnM v = Seq.initInfinite (fun _ -> v)
-    /// Sequential application
-    let (<*>) f a = Seq.zip f a |> Seq.map (fun (k,v) -> k v)
-    /// Sequential application
-    let inline ap m f = f <*> m
-    let inline lift2 f a b = returnM f <*> a <*> b
-    /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) x y = lift2 (fun _ z -> z) x y
-    /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) x y = lift2 (fun z _ -> z) x y
+module ZipList =
+    type ZipList<'a> = ZipList of 'a seq with
+        static member (?<-) (_        , _Functor    :Fmap,   ZipList x  ) = fun f      -> ZipList (Seq.map f x)
+        static member (?<-) (_        , _Applicative:Pure, _:ZipList<'b>) = fun (x:'b) -> ZipList (Seq.initInfinite (konst x))
+        static member (?<-) (ZipList f, _Applicative:Ap  ,   ZipList x  ) = ZipList (Seq.zip f x |> Seq.map (fun (f,x) -> f x)) 
 
 module Option =
 
@@ -140,29 +72,6 @@ module Option =
             this.Using(sequence.GetEnumerator(),
                                  fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current)))
     let maybe = MaybeBuilder()
-    
-    open Operators
-    
-    let inline returnM x = returnM maybe x
-    let inline (>>=) m f = bindM maybe m f
-    let inline (=<<) f m = bindM maybe m f
-    /// Sequential application
-    let inline (<*>) f m = applyM maybe maybe f m
-    /// Sequential application
-    let inline ap m f = f <*> m
-    let inline (<!>) f m = Option.map f m
-    let inline lift2 f a b = returnM f <*> a <*> b
-    /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) x y = lift2 (fun _ z -> z) x y
-    /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) x y = lift2 (fun z _ -> z) x y
-
-    /// Sequentially compose two maybe actions, discarding any value produced by the first
-    let inline (>>.) m f = bindM maybe m (fun _ -> f)
-    /// Left-to-right Kleisli composition
-    let inline (>=>) f g = fun x -> f x >>= g
-    /// Right-to-left Kleisli composition
-    let inline (<=<) x = flip (>=>) x
 
     let fromNullable (n: _ Nullable) = 
         if n.HasValue
@@ -225,23 +134,14 @@ module Option =
             Some (unbox o)
         with _ -> None
 
-    let foldM f s = 
-        Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
-
 module Nullable =
-    let (|Null|Value|) (x: _ Nullable) =
-        if x.HasValue then Value x.Value else Null
-
     let create x = Nullable x
     let getOrDefault n v = match n with Value x -> x | _ -> v
     let getOrElse (n: 'a Nullable) (v: 'a Lazy) = match n with Value x -> x | _ -> v.Force()
     let get (x: _ Nullable) = x.Value
     let fromOption = Option.toNullable
     let toOption = Option.fromNullable
-    let bind f x =
-        match x with
-        | Null -> Nullable()
-        | Value v -> f v
+    let bind f x : Nullable<_> = x >>= f
     let hasValue (x: _ Nullable) = x.HasValue
     let isNull (x: _ Nullable) = not x.HasValue
     let count (x: _ Nullable) = if x.HasValue then 1 else 0
@@ -265,10 +165,7 @@ module Nullable =
         match x with
         | Null -> ()
         | Value v -> f v
-    let map f x =
-        match x with
-        | Null -> Nullable()
-        | Value v -> Nullable(f v)
+    let map f x : Nullable<_> = fmap f x
     let toArray x = 
         match x with
         | Null -> [||]
@@ -278,11 +175,6 @@ module Nullable =
         | Null -> []
         | Value v -> [v]
         
-    let lift2 f (a: _ Nullable) (b: _ Nullable) =
-        if a.HasValue && b.HasValue
-            then Nullable(f a.Value b.Value)
-            else Nullable()
-
     let mapBool op a b =
         match a,b with
         | Value x, Value y -> op x y
@@ -332,130 +224,100 @@ module Nullable =
 
 module State =
 
-    type State<'a, 's> = 's -> 'a * 's
-    
-    let getState = fun s -> (s,s)
-    let putState s = fun _ -> ((),s)
-    let eval m s = m s |> fst
-    let exec m s = m s |> snd
-    let empty = fun s -> ((), s)
-    let bind k m = fun s -> let (a, s') = m s in (k a) s'
-    
-    /// The state monad.
-    /// The algorithm is adjusted from my original work off of Brian Beckman's http://channel9.msdn.com/shows/Going+Deep/Brian-Beckman-The-Zen-of-Expressing-State-The-State-Monad/.
-    /// The approach was adjusted from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2009/12/30/much-ado-about-monads-state-edition.aspx and mirrors his final result.
+    type State<'s,'a> = State of ('s->('a * 's)) with
+        static member (?<-) (_      , _Functor:Fmap  ,   State m   ) = fun f -> State(fun s -> let (a, s') = m s in (f a, s'))
+
+    let runState (State x) = x
+    type State<'s,'a> with
+        static member (?<-) (_           , _Monad  :Return  , _:State<'s,'a>) = fun a -> State(fun s -> (a, s)) : State<'s,'a>
+        static member (?<-) (State m     , _Monad  :Bind    , _:State<'s,'b>) = fun k -> State(fun (s:'s) -> let (a, s') = m s in runState(k a) s') :State<'s,'b>
+        static member (?<-) (_           , _Applicative:Pure, _:State<'s,'a>) = fun x -> Pure.Pure.Base x : State<'s,'a>
+        static member (?<-) (f:State<_,_>, _Applicative:Ap  , x:State<'s,_> ) = Ap.Ap.Base f x
+
+    let mapState  f (State m)  = State(f << m)
+    let withState f (State m)  = State(m << f)
+    let evalState (State sa) s = fst(sa s)
+    let execState (State sa) s = snd(sa s)
+    let get   = State (fun s -> (s , s))
+    let put x = State (fun _ -> ((), x))
+
     type StateBuilder() =
-        member this.Return(a) : State<'a,'s> = fun s -> (a,s)
-        member this.ReturnFrom(m:State<'a,'s>) = m
-        member this.Bind(m:State<'a,'s>, k:'a -> State<'b,'s>) : State<'b,'s> = bind k m
-        member this.Zero() = this.Return ()
-        member this.Combine(r1, r2) = this.Bind(r1, fun () -> r2)
-        member this.TryWith(m:State<'a,'s>, h:exn -> State<'a,'s>) : State<'a,'s> =
-            fun env -> try m env
-                       with e -> (h e) env
-        member this.TryFinally(m:State<'a,'s>, compensation) : State<'a,'s> =
-            fun env -> try m env
-                       finally compensation()
+        member this.Return(x) : State<'s,'a> = return' x
+        member this.Bind(p: State<'s,'a>,rest:'a -> State<'s,'b>) = p >>= rest
+        member this.Let (p,rest) = rest p
+        member this.ReturnFrom(expr) = expr
+
+        member this.Zero() = this.Return()
+        member this.Combine(r1:State<_,_>, r2) = r1 >>= fun () -> r2
+        member this.TryWith(m:State<'s,'a>, h:exn -> State<'s,'a>) : State<'s,'a> =
+            State(fun env -> try (runState m) env
+                             with e -> (runState(h e)) env)
+
+        member this.TryFinally(m:State<'s,'a>, compensation) : State<'s,'a> =
+            State(fun env -> try (runState m) env
+                             finally compensation())
         member this.Using(res:#IDisposable, body) =
             this.TryFinally(body res, (fun () -> match res with null -> () | disp -> disp.Dispose()))
         member this.Delay(f) = this.Bind(this.Return (), f)
         member this.While(guard, m) =
             if not(guard()) then this.Zero() else
-                this.Bind(m, (fun () -> this.While(guard, m)))
+                m >>= (fun () -> this.While(guard, m))
         member this.For(sequence:seq<_>, body) =
             this.Using(sequence.GetEnumerator(),
                 (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current))))
-    let state = new StateBuilder()
-    
-    open Operators
-    
-    let inline returnM x = returnM state x
-    let inline (>>=) m f = bindM state m f
-    let inline (=<<) f m = bindM state m f
-    /// Sequential application
-    let inline (<*>) f m = applyM state state f m
-    /// Sequential application
-    let inline ap m f = f <*> m
-    let inline map f m = liftM state f m
-    let inline (<!>) f m = map f m
-    let inline lift2 f a b = returnM f <*> a <*> b
-    /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) x y = lift2 (fun _ z -> z) x y
-    /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) x y = lift2 (fun z _ -> z) x y
-    /// Sequentially compose two state actions, discarding any value produced by the first
-    let inline (>>.) m f = bindM state m (fun _ -> f)
-    /// Left-to-right Kleisli composition
-    let inline (>=>) f g = fun x -> f x >>= g
-    /// Right-to-left Kleisli composition
-    let inline (<=<) x = flip (>=>) x
 
-    let foldM f s = 
-        Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
+    let state = new StateBuilder()
+
 
 module Reader =
-
-    type Reader<'r,'a> = 'r -> 'a
-
-    let bind k m = fun r -> (k (m r)) r
     
-    /// The reader monad.
-    /// This monad comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/07/much-ado-about-monads-reader-edition.aspx.
+    type Reader<'r,'a> = Reader of ('r->'a) with
+        static member (?<-) (_       , _Functor:Fmap  ,   Reader m   ) = fun f -> Reader(fun r -> f (m r))
+
+    let runReader (Reader x) = x
+    type Reader<'s,'a> with
+        static member (?<-) (_            , _Monad  :Return  , _:Reader<'s,'a>) = fun a -> Reader(fun _ -> a) :Reader<'s,'a>
+        static member (?<-) (Reader m     , _Monad  :Bind    , _:Reader<'s,'b>  ) = fun k -> Reader(fun r -> runReader(k (m r)) r) :Reader<'s,'b>
+        static member (?<-) (_            , _Applicative:Pure, _:Reader<'s,'a>) = fun x -> Pure.Pure.Base x : Reader<'s,'a>
+        static member (?<-) (f:Reader<_,_>, _Applicative:Ap  , x:Reader<'s,_> ) = Ap.Ap.Base f x
+
+    let mapReader  f (Reader m) = Reader(f << m)
+    let withReader f (Reader m) = Reader(m << f)
+    let ask                = Reader id
+    let local f (Reader m) = Reader(m << f)
+    let asks f = do' {
+        let! r = ask
+        return (f r) }
+    let bind k m :Reader<_,_> = k >>= m
+
     type ReaderBuilder() =
-        member this.Return(a) : Reader<'r,'a> = fun _ -> a
-        member this.ReturnFrom(a:Reader<'r,'a>) = a
-        member this.Bind(m:Reader<'r,'a>, k:'a -> Reader<'r,'b>) : Reader<'r,'b> = bind k m
-        member this.Zero() = this.Return ()
-        member this.Combine(r1, r2) = this.Bind(r1, fun () -> r2)
+        member this.Return(x) :Reader<'r,'a> = return' x
+        member this.Bind(p:Reader<'r,'a>,rest:'a->Reader<'r,'b>) = p >>= rest
+        member this.Let (p,rest) = rest p
+        member this.ReturnFrom(expr) = expr
+
+        member this.Zero() = this.Return()
+        member this.Combine(r1:Reader<_,_>, r2) = r1 >>= fun () -> r2
         member this.TryWith(m:Reader<'r,'a>, h:exn -> Reader<'r,'a>) : Reader<'r,'a> =
-            fun env -> try m env
-                       with e -> (h e) env
+            Reader(fun env -> try (runReader m) env
+                              with e -> (runReader(h e)) env)
+
         member this.TryFinally(m:Reader<'r,'a>, compensation) : Reader<'r,'a> =
-            fun env -> try m env
-                       finally compensation()
+            Reader(fun env -> try (runReader m) env
+                              finally compensation())
         member this.Using(res:#IDisposable, body) =
             this.TryFinally(body res, (fun () -> match res with null -> () | disp -> disp.Dispose()))
         member this.Delay(f) = this.Bind(this.Return (), f)
         member this.While(guard, m) =
             if not(guard()) then this.Zero() else
-                this.Bind(m, (fun () -> this.While(guard, m)))
+                m >>= (fun () -> this.While(guard, m))
         member this.For(sequence:seq<_>, body) =
             this.Using(sequence.GetEnumerator(),
                 (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current))))
+
     let reader = new ReaderBuilder()
-    
-    let ask : Reader<'r,'r> = id
-    let asks f = reader {
-        let! r = ask
-        return (f r) }
-    let local (f:'r1 -> 'r2) (m:Reader<'r2,'a>) : Reader<'r1, 'a> = f >> m
-    
-    open Operators
-    
-    let inline returnM x = returnM reader x
-    let inline (>>=) m f = bindM reader m f
-    let inline (=<<) f m = bindM reader m f
-    /// Sequential application
-    let inline (<*>) f m = applyM reader reader f m
-    /// Sequential application
-    let inline ap m f = f <*> m
-    let inline map f m = liftM reader f m
-    let inline (<!>) f m = map f m
-    let inline lift2 f a b = returnM f <*> a <*> b
-    /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) x y = lift2 (fun _ z -> z) x y
-    /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) x y = lift2 (fun z _ -> z) x y
-    /// Sequentially compose two reader actions, discarding any value produced by the first
-    let inline (>>.) m f = bindM reader m (fun _ -> f)
-    /// Left-to-right Kleisli composition
-    let inline (>=>) f g = fun x -> f x >>= g
-    /// Right-to-left Kleisli composition
-    let inline (<=<) x = flip (>=>) x
 
-    let foldM f s = 
-        Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
-
+    
 module Undo =
     // UndoMonad on top of StateMonad
     open State
@@ -470,18 +332,18 @@ module Undo =
     let newHistory x = { Current = x; Undos = [x]; Redos = [] }
     let current history = history.Current
     
-    let getHistory = getState
+    let getHistory = get
     
     let putToHistory x = undoable {
-        let! history = getState
-        do! putState  { Current = x; 
-                        Undos = history.Current :: history.Undos
-                        Redos = [] } }
+        let! history = get
+        do! put  { Current = x; 
+                   Undos = history.Current :: history.Undos
+                   Redos = [] } }
 
-    let exec m s = m s |> snd |> current
+    let exec (State m) s = m s |> snd |> current
     
     let getCurrent<'a> = undoable {
-        let! (history:'a History) = getState
+        let! (history:'a History) = get
         return current history}
 
     let combineWithCurrent f x = undoable {
@@ -489,110 +351,84 @@ module Undo =
         do! putToHistory (f currentVal x) }
     
     let undo<'a> = undoable {
-        let! (history:'a History) = getState
+        let! (history:'a History) = get
         match history.Undos with
         | [] -> return false
         | (x::rest) -> 
-            do! putState { Current = x;
-                           Undos = rest;
-                           Redos = history.Current :: history.Redos }
+            do! put { Current = x;
+                      Undos = rest;
+                      Redos = history.Current :: history.Redos }
             return true}
     
     let redo<'a> = undoable {
-        let! (history:'a History) = getState
+        let! (history:'a History) = get
         match history.Redos with
         | [] -> return false
         | (x::rest) -> 
-            do! putState { Current = x;
-                           Undos = history.Current :: history.Undos;
-                           Redos = rest }
+            do! put { Current = x;
+                      Undos = history.Current :: history.Undos;
+                      Redos = rest }
             return true }
 
 module Writer =
-    open Monoid
+    
+    type Writer<'w,'a> = Writer of ('a * 'w) with
+        static member        (?<-) (_           , _Functor:Fmap  ,   Writer(a,w)) = fun f -> Writer(f a, w)
+
+    let runWriter (Writer x) = x
+    type Writer<'w,'a> with
+        static member inline (?<-) (_            , _Monad:Return    , _:Writer<'s,'a>) = fun a -> Writer(a, mempty()) :Writer<'s,'a>
+        static member inline (?<-) (Writer(a, w) , _Monad:Bind      , _:Writer<'s,'b>) = fun k -> Writer(let (b, w') = runWriter(k a) in (b, mappend w w')) :Writer<'s,'b>
+        static member inline (?<-) (_            , _Applicative:Pure, _:Writer<'s,'a>) = fun a -> Writer(a, mempty()) :Writer<'s,'a>
+        static member inline (?<-) (f:Writer<_,_>, _Applicative:Ap  , x:Writer<_,_>  ) = Ap.Ap.Base f x : Writer<_,_>
+
+    let mapWriter f (Writer m)   = Writer(f m)
+    let execWriter  (Writer m) s = snd m
+
+    let tell              w       = Writer((),     w)
+    let listen(Writer (a, w))     = Writer((a, w), w)
+    let pass  (Writer((a, f), w)) = Writer( a,   f w)
+
+    let inline listens f m = do' {
+        let! (a, w) = listen m
+        return (a, f w)}
+
+    let inline censor f m = pass <| do' {
+        let! a = m
+        return (a, f)}
+
+    type WriterBuilder() =
+        member inline this.Return(x) :Writer<'w,'a> = return' x
+        member inline this.Bind(p:Writer<'w,'a>,rest:'a->Writer<'w,'b>) = p >>= rest
+        member this.Let (p,rest) = rest p
+        member this.ReturnFrom(expr) = expr
+
+        member inline this.Zero() = this.Return()
+        member inline this.Combine(r1:Writer<_,_>, r2) = r1 >>= fun () -> r2
+        member inline this.Delay(f) = this.Bind(this.Return (), f)
+
+        member this.TryWith(m:Writer<'w,'a>, h:exn -> Writer<'w,'a>) : Writer<'w,'a> =
+            Writer(try (runWriter m)
+                   with e -> (runWriter(h e)))
+
+        member this.TryFinally(m:Writer<'w,'a>, compensation) : Writer<'w,'a> =
+            Writer(try (runWriter m)
+                   finally compensation()) 
+        member this.Using(res:#IDisposable, body) =
+            this.TryFinally(body res, (fun () -> match res with null -> () | disp -> disp.Dispose()))
         
-    type Writer<'w, 'a> = unit -> 'a * 'w
+        member inline this.While(guard, m) =
+            let rec f guard m =
+                if not(guard()) then this.Zero() else
+                    m() >>= (fun () -> f guard m)
+            f guard m
+        member inline this.For(sequence:seq<_>, body) =
+            this.Using(sequence.GetEnumerator(),
+                fun enum -> this.While(enum.MoveNext, fun () -> body enum.Current))
 
-    let bind (m: _ Monoid) (k:'a -> Writer<'w,'b>) (writer:Writer<'w,'a>) : Writer<'w,'b> =
-        fun () ->
-            let (a, w) = writer()
-            let (a', w') = (k a)()
-            (a', m.mappend w w')
-
-    let returnM (monoid: _ Monoid) a = 
-        fun () -> (a, monoid.mempty)
-    
-    /// The writer monad.
-    /// This monad comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.
-    type WriterBuilder<'w>(monoid: 'w Monoid) =
-        member this.Return(a) : Writer<'w,'a> = returnM monoid a
-        member this.ReturnFrom(w:Writer<'w,'a>) = w
-        member this.Bind(writer, k) = bind monoid k writer
-        member this.Zero() = this.Return ()
-        member this.TryWith(writer:Writer<'w,'a>, handler:exn -> Writer<'w,'a>) : Writer<'w,'a> =
-            fun () -> try writer()
-                      with e -> (handler e)()
-        member this.TryFinally(writer, compensation) =
-            fun () -> try writer()
-                      finally compensation()
-        member this.Using<'d,'w,'a when 'd :> IDisposable and 'd : null>(resource : 'd, body : 'd -> Writer<'w,'a>) : Writer<'w,'a> =
-            this.TryFinally(body resource, fun () -> match resource with null -> () | disp -> disp.Dispose())
-        member this.Combine(comp1, comp2) = this.Bind(comp1, fun () -> comp2)
-        member this.Delay(f) = this.Bind(this.Return (), f)
-        member this.While(guard, m) =
-            match guard() with
-            | true -> this.Bind(m, (fun () -> this.While(guard, m))) 
-            | _        -> this.Zero()
-        member this.For(sequence:seq<'a>, body:'a -> Writer<'w,unit>) =
-            this.Using(sequence.GetEnumerator(), 
-                fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current)))
-
-    let writer = WriterBuilder(Monoid.ListMonoid<string>())
-
-    let tell   w = fun () -> ((), w)
-    let listen m = fun () -> let (a, w) = m() in ((a, w), w)
-    let pass   m = fun () -> let ((a, f), w) = m() in (a, f w)
-    
-    let listens monoid f m = 
-        let writer = WriterBuilder(monoid)
-        writer {
-            let! (a, b) = m
-            return (a, f b) }
-    
-    let censor monoid (f:'w1 -> 'w2) (m:Writer<'w1,'a>) : Writer<'w2,'a> =
-        let writer = WriterBuilder(monoid)
-        writer { let! a = m
-                 return (a, f)
-               } |> pass
-
-    open Operators
-    
-    let inline private ret x = returnM writer x
-    let inline (>>=) m f = bindM writer m f
-    let inline (=<<) f m = bindM writer m f
-    /// Sequential application
-    let inline (<*>) f m = applyM writer writer f m
-    /// Sequential application
-    let inline ap m f = f <*> m
-    let inline map f m = liftM writer f m
-    let inline (<!>) f m = map f m
-    let inline lift2 f a b = ret f <*> a <*> b
-    /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) x y = lift2 (fun _ z -> z) x y
-    /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) x y = lift2 (fun z _ -> z) x y
-    /// Sequentially compose two state actions, discarding any value produced by the first
-    let inline (>>.) m f = bindM writer m (fun _ -> f)
-    /// Left-to-right Kleisli composition
-    let inline (>=>) f g = fun x -> f x >>= g
-    /// Right-to-left Kleisli composition
-    let inline (<=<) x = flip (>=>) x
-
-    let foldM f s = 
-        Seq.fold (fun acc t -> acc >>= (flip f) t) (ret s)
+    let writer = new WriterBuilder()
 
 module Choice =
-    let returnM = Choice1Of2
 
     let get =
         function
@@ -605,42 +441,10 @@ module Choice =
         with e -> Choice2Of2 e
 
     let inline cast (o: obj) = protect unbox o
-        
-    let ap x f =
-        match f,x with
-        | Choice1Of2 f, Choice1Of2 x -> Choice1Of2 (f x)
-        | Choice2Of2 e, _            -> Choice2Of2 e
-        | _           , Choice2Of2 e -> Choice2Of2 e
 
-    /// Sequential application
-    let inline (<*>) f x = ap x f
+    let map f x :Choice<_,_> = fmap f x
 
-    let map f =
-        function
-        | Choice1Of2 x -> f x |> Choice1Of2
-        | Choice2Of2 x -> Choice2Of2 x
-
-    let inline (<!>) f x = map f x
-    let inline lift2 f a b = f <!> a <*> b
-
-    /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) a b = lift2 (fun _ z -> z) a b
-    /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) a b = lift2 (fun z _ -> z) a b
-
-    let bind f = 
-        function
-        | Choice1Of2 x -> f x
-        | Choice2Of2 x -> Choice2Of2 x
-    
-    let inline (>>=) m f = bind f m
-    let inline (=<<) f m = bind f m
-    /// Sequentially compose two either actions, discarding any value produced by the first
-    let inline (>>.) m1 m2 = m1 >>= (fun _ -> m2)
-    /// Left-to-right Kleisli composition
-    let inline (>=>) f g = fun x -> f x >>= g
-    /// Right-to-left Kleisli composition
-    let inline (<=<) x = flip (>=>) x
+    let bind f m : Choice<_,_> = m >>= f
 
     let inline bimap f1 f2 = 
         function
@@ -654,141 +458,77 @@ module Choice =
 
     let inline mapSecond f = bimap id f
 
-    type EitherBuilder() =
-        member this.Return a = returnM a
-        member this.Bind(m,f) = bind f m
-
     let toOption = Option.fromChoice
     let fromOption o = 
         function
         | Some a -> Choice1Of2 a
         | None -> Choice2Of2 o
-
-    let foldM f s = 
-        Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
-        // pointfree:
-        //Seq.fold (flip f >> bind |> flip) (returnM s)
+    
+    let toValidation = function
+                       | Choice1Of2 x -> Right x
+                       | Choice2Of2 x -> Left  x
 
 module Validation =
-    open Choice
-    open Monoid
+
+    let toChoice = function
+                   | Right x -> Choice1Of2 x
+                   | Left  x -> Choice2Of2 x    
 
     let (|Success|Failure|) = 
         function
-        | Choice1Of2 a -> Success a
-        | Choice2Of2 e -> Failure e
+        | Right a -> Success a
+        | Left  e -> Failure e
 
-    /// Sequential application, parameterized by append
-    let apa append x f = 
-        match f,x with
-        | Choice1Of2 f, Choice1Of2 x     -> Choice1Of2 (f x)
-        | Choice2Of2 e, Choice1Of2 x     -> Choice2Of2 e
-        | Choice1Of2 f, Choice2Of2 e     -> Choice2Of2 e
-        | Choice2Of2 e1, Choice2Of2 e2 -> Choice2Of2 (append e1 e2)
+    let inline seqValidator f = 
+        let zero = pure' []
+        Seq.map (f) >> Seq.fold (lift2 (flip FSharpx.List.cons)) zero
 
-    /// Sequential application, parameterized by monoid
-    let inline apm (m: _ Monoid) = apa m.mappend
-
-    type CustomValidation<'a>(monoid: 'a Monoid) =
-        /// Sequential application
-        member this.ap x = apm monoid x
-        member this.lift2 f a b = returnM f |> this.ap a |> this.ap b
-        /// Sequence actions, discarding the value of the first argument.
-        member this.apr b a = this.lift2 (fun _ z -> z) a b
-        /// Sequence actions, discarding the value of the second argument.
-        member this.apl b a = this.lift2 (fun z _ -> z) a b
-
-    let private stringListValidation = CustomValidation(ListMonoid<string>())
-
-    /// Sequential application
-    let ap = stringListValidation.ap
-
-    /// Sequential application
-    let inline (<*>) f x = ap x f
-    let lift2 = stringListValidation.lift2
-
-    /// Sequence actions, discarding the value of the first argument.
-    let ( *>) = stringListValidation.apr
-    /// Sequence actions, discarding the value of the first argument.
-    let ( <*) = stringListValidation.apl
-
-    let seqValidator f = 
-        let zero = returnM []
-        Seq.map f >> Seq.fold (lift2 (flip FSharpx.List.cons)) zero
+    let inline ap x f  :Validation<_,_> = f <*> x
 
 
 module Continuation =
 
     /// The continuation monad.
-    /// The algorithm is from Wes Dyer http://blogs.msdn.com/b/wesdyer/archive/2008/01/11/the-marvels-of-monads.aspx.
-    /// The builder approach is from Matthew Podwysocki's excellent Creating Extended Builders series http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/18/much-ado-about-monads-creating-extended-builders.aspx.
-    /// Current implementation from Matt's gist at https://gist.github.com/628956
-    type Cont<'a,'r> = ('a -> 'r) -> (exn -> 'r) -> 'r
+
+    type Cont<'r,'a> = Cont of (('a->'r)->'r) with
+        static member (?<-) (_     , _Functor:Fmap  ,   Cont m    ) = fun f -> Cont(fun c -> m (c << f))
     
-    let private protect f x cont econt =
-        let res = try Choice1Of2 (f x) with err -> Choice2Of2 err
-        match res with
-        | Choice1Of2 v -> cont v
-        | Choice2Of2 v -> econt v
-    
-    let runCont (c:Cont<_,_>) cont econt = c cont econt
-    let throw exn : Cont<'a,'r> = fun cont econt -> econt exn
-    let callcc (f: ('a -> Cont<'b,'r>) -> Cont<'a,'r>) : Cont<'a,'r> =
-        fun cont econt -> runCont (f (fun a -> (fun _ _ -> cont a))) cont econt
-    let bind f comp1 = 
-        fun cont econt ->
-            runCont comp1 (fun a -> protect f a (fun comp2 -> runCont comp2 cont econt) econt) econt     
+    let runCont (Cont x) = x
+    type Cont<'r,'a> with
+        static member (?<-) (_          , _Monad  :Return  , _:Cont<'r,'a>) = fun (n:'a) -> Cont(fun k -> k n) :Cont<'r,'a>
+        static member (?<-) (Cont m     , _Monad  :Bind    , _:Cont<'r,'b>) = fun  f     -> Cont(fun k -> m (fun a -> runCont(f a) k)) :Cont<'r,'b>
+        static member (?<-) (_          , _Applicative:Pure, _:Cont<'r,'a>) = fun x -> Pure.Pure.Base x : Cont<'r,'a>
+        static member (?<-) (f:Cont<_,_>, _Applicative:Ap  , x:Cont<'r,_> ) = Ap.Ap.Base f x
+
+    let callCC f = Cont <| fun k -> runCont (f (fun a -> Cont(fun _ -> k a))) k
 
     type ContinuationBuilder() =
-        member this.Return(a) : Cont<_,_> = fun cont econt -> cont a
-        member this.ReturnFrom(comp:Cont<_,_>) = comp
-        member this.Bind(comp1, f) = bind f comp1
-        member this.Catch(comp:Cont<_,_>) : Cont<Choice<_, exn>, _> = fun cont econt ->
-            runCont comp (fun v -> cont (Choice1Of2 v)) (fun err -> cont (Choice2Of2 err))
-        member this.Zero() =
-            this.Return ()
-        member this.TryWith(tryBlock, catchBlock) =
-            this.Bind(this.Catch tryBlock, (function Choice1Of2 v -> this.Return v 
-                                                   | Choice2Of2 exn -> catchBlock exn))
-        member this.TryFinally(tryBlock, finallyBlock) =
-            this.Bind(this.Catch tryBlock, (function Choice1Of2 v -> finallyBlock(); this.Return v 
-                                                   | Choice2Of2 exn -> finallyBlock(); throw exn))
+        member this.Return(x) :Cont<'r,'a> = return' x
+        member this.Bind(p:Cont<'r,'a>,rest:'a->Cont<'r,'b>) = p >>= rest
+        member this.Let (p,rest) = rest p
+        member this.ReturnFrom(expr) = expr
+
+        member this.Zero() = this.Return()
+        member this.Combine(r1:Cont<_,_>, r2) = r1 >>= fun () -> r2
+
+        member this.TryWith(m:Cont<'r,'a>, h:exn -> Cont<'r,'a>) : Cont<'r,'a> =
+            Cont(fun env -> try (runCont m) env
+                              with e -> (runCont(h e)) env)
+
+        member this.TryFinally(m:Cont<'r,'a>, compensation) : Cont<'r,'a> =
+            Cont(fun env -> try (runCont m) env
+                            finally compensation())
         member this.Using(res:#IDisposable, body) =
             this.TryFinally(body res, (fun () -> match res with null -> () | disp -> disp.Dispose()))
-        member this.Combine(comp1, comp2) = this.Bind(comp1, (fun () -> comp2))
         member this.Delay(f) = this.Bind(this.Return (), f)
-        member this.While(pred, body) =
-            if pred() then this.Bind(body, (fun () -> this.While(pred,body))) else this.Return ()
-        member this.For(items:seq<_>, body) =
-            this.Using(items.GetEnumerator(),
-                (fun enum -> this.While((fun () -> enum.MoveNext()), this.Delay(fun () -> body enum.Current))))
-    let cont = ContinuationBuilder()
-    
-    open Operators
-    
-    let inline returnM x = returnM cont x
-    let inline (>>=) m f = bindM cont m f
-    let inline (=<<) f m = bindM cont m f
-    /// Sequential application
-    let inline (<*>) f m = applyM cont cont f m
-    /// Sequential application
-    let inline ap m f = f <*> m
-    let inline map f m = liftM cont f m
-    let inline (<!>) f m = map f m
-    let inline lift2 f a b = returnM f <*> a <*> b
-    /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) x y = lift2 (fun _ z -> z) x y
-    /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) x y = lift2 (fun z _ -> z) x y
-    /// Sequentially compose two continuation actions, discarding any value produced by the first
-    let inline (>>.) m f = bindM cont m (fun _ -> f)
-    /// Left-to-right Kleisli composition
-    let inline (>=>) f g = fun x -> f x >>= g
-    /// Right-to-left Kleisli composition
-    let inline (<=<) x = flip (>=>) x
+        member this.While(guard, m) =
+            if not(guard()) then this.Zero() else
+                m >>= (fun () -> this.While(guard, m))
+        member this.For(sequence:seq<_>, body) =
+            this.Using(sequence.GetEnumerator(),
+                (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current))))
 
-    let foldM f s = 
-        Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
+    let cont = ContinuationBuilder()
 
     /// The coroutine type from http://fssnip.net/7M
     type Coroutine() =
@@ -796,9 +536,9 @@ module Continuation =
 
         member this.Put(task) =
             let withYield = cont {
-                do! callcc <| fun exit ->
+                do! callCC <| fun exit ->
                     task <| fun () ->
-                    callcc <| fun c ->
+                    callCC <| fun c ->
                     tasks.Enqueue(c())
                     exit()
                 if tasks.Count <> 0 then
@@ -806,37 +546,42 @@ module Continuation =
             tasks.Enqueue(withYield)
             
         member this.Run() =
-            runCont (tasks.Dequeue()) ignore raise
+            runCont (tasks.Dequeue()) ignore
 
 module Distribution =
     
     type 'a Outcome = {
         Value: 'a
         Probability : BigRational    }
+
+    type Distribution<'a> = Distribution of 'a Outcome seq with
+        static member (?<-) (_     , _Functor:Fmap  ,   Distribution m    ) = fun f -> 
+            Distribution(Seq.map (fun o -> { Value = f o.Value; Probability = o.Probability }) m)
     
-    type 'a Distribution = 'a Outcome seq
+    let runDistribution (Distribution d) = d
+    type Distribution<'a> with
+        static member (?<-) (_             , _Monad  :Return, _:Distribution<'a>) = fun (n:'a) ->
+            Distribution(Seq.singleton { Value = n ; Probability = 1N/1N })
+        static member (?<-) (Distribution m, _Monad  :Bind  , _:Distribution<_> ) = fun  f     ->
+            m 
+            |> Seq.map (fun p1 -> 
+                f p1.Value
+                |> runDistribution |> Seq.map (fun (p2) -> 
+                    { Value = p2.Value; 
+                        Probability = 
+                            p1.Probability * p2.Probability}))
+            |> Seq.concat
+            |> Distribution
+        static member (?<-) (_                 , _Applicative:Pure, _:Distribution<'a>) = fun (x:'a) -> Pure.Pure.Base x :Distribution<'a>
+        static member (?<-) (f:Distribution<_> , _Applicative:Ap  , x:Distribution<_> ) = Ap.Ap.Base f x
     
     // P(A AND B) = P(A | B) * P(B)
     let bind (f: 'a -> 'b Distribution) (dist:'a Distribution) =
-        dist 
-        |> Seq.map (fun p1 -> 
-            f p1.Value
-            |> Seq.map (fun p2 -> 
-                { Value = p2.Value; 
-                    Probability = 
-                        p1.Probability * p2.Probability}))
-        |> Seq.concat : 'b Distribution
-    
-    let inline (>>=) dist f = bind f dist
-    let inline (=<<) f dist = bind f dist
-    
-    let returnM (value:'a) =     
-        Seq.singleton { Value = value ; Probability = 1N/1N }
-            : 'a Distribution
+        dist >>= f : 'b Distribution
     
     type DistributionMonadBuilder() =
         member this.Bind (r, f) = bind f r
-        member this.Return x = returnM x
+        member this.Return x : Distribution<_> = return' x
         member this.ReturnFrom x = x
     
     let distribution = DistributionMonadBuilder()
@@ -848,13 +593,14 @@ module Distribution =
         |> Seq.map (fun e ->
             { Value = e; 
                 Probability = 1N / bignum.FromInt l })
+        |> Distribution
     
-    let probability (dist:'a Distribution) = 
+    let probability (Distribution dist:'a Distribution) = 
         dist
         |> Seq.map (fun o -> o.Probability)
         |> Seq.sum
     
-    let certainly = returnM
+    let certainly x : Distribution<_> = return' x
     let impossible<'a> :'a Distribution = toUniformDistribution []
     
     let fairDice sides = toUniformDistribution [1..sides]
@@ -865,16 +611,15 @@ module Distribution =
     
     let fairCoin = toUniformDistribution [Heads; Tails]
     
-    let filter predicate (dist:'a Distribution) : 'a Distribution =
-        dist |> Seq.filter (fun o -> predicate o.Value)
+    let filter predicate (Distribution dist:'a Distribution) : 'a Distribution =
+        dist |> Seq.filter (fun o -> predicate o.Value) |> Distribution
     
     let filterInAnyOrder items dist =
         items
         |> Seq.fold (fun d item -> filter (Seq.exists ((=) (item))) d) dist
     
     let map f (dist:'a Distribution) : 'b Distribution = 
-        dist 
-        |> Seq.map (fun o -> { Value = f o.Value; Probability = o.Probability })
+        fmap f dist
     
     let selectOne values =
         [for e in values -> e,values |> Seq.filter ((<>) e)] 

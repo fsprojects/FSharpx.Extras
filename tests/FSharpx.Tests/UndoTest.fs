@@ -3,14 +3,14 @@
 open FSharpx.Undo
 open NUnit.Framework
 open FsUnit
-
+open FSharpx.State
 // Simple "text editor" example
 let addText text = combineWithCurrent (+) text
 
 [<Test>]
-let ``When starting a text editior with empty string, it should have a empty string in history``() =
+let ``When starting a text editor with empty string, it should have an empty string in history``() =
   newHistory ""
-   |> addText ""
+   |> runState (addText "")
    |> snd 
    |> current 
    |> should equal ""
@@ -33,7 +33,7 @@ let ``When starting a text editor with "" and adding three strings and undoing t
     let! firstUndo = undo
     let! secondUndo = undo
     return firstUndo,secondUndo }
-  let actual = test (newHistory "")
+  let actual = runState test (newHistory "")
   actual |> snd |> current |> should equal "foo"
   actual |> fst |> should equal (true,true)
 
@@ -48,7 +48,7 @@ let ``When starting a text editor with "" and adding three strings and undoing t
     let! firstRedo = redo
     let! secondRedo = redo
     return firstRedo,secondRedo }
-  let actual = test (newHistory "")
+  let actual = runState test (newHistory "")
   actual |> snd |> current |> should equal "foobarbaz"
   actual |> fst |> should equal (true,true)
 
@@ -59,7 +59,7 @@ let ``When starting a text editor with "" and adding a string, it should allow t
     let! firstUndo = undo
     let! secondUndo = undo
     return firstUndo,secondUndo }
-  let actual = test (newHistory "")
+  let actual = runState test (newHistory "")
   actual |> snd |> current |> should equal ""
   actual |> fst |> should equal (true,true)
 
@@ -71,7 +71,7 @@ let ``When starting a text editor with "" and adding a string, it should not all
     let! secondUndo = undo
     let! thirdUndo = undo
     return firstUndo,secondUndo,thirdUndo }
-  let actual = test (newHistory "")
+  let actual = runState test (newHistory "")
   actual |> snd |> current |> should equal ""
   actual |> fst |> should equal (true,true,false)
 
@@ -81,6 +81,6 @@ let ``When starting a text editor with "" and adding a string, it should not all
     let! _ = addText "foo"    
     let! firstRedo = redo   
     return firstRedo }
-  let actual = test (newHistory "")
+  let actual = runState test (newHistory "")
   actual |> snd |> current |> should equal "foo"
   actual |> fst |> should equal false

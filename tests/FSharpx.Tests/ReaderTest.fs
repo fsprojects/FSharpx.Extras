@@ -12,21 +12,21 @@ let ``Return should enable return``() =
   let expected = 1
   let r = reader {
     return expected }
-  r 0 |> should equal expected
+  runReader r 0 |> should equal expected
 
 [<Test>]
 let ``ReturnFrom should enable return!``() =
   let expected = 1
   let r = reader {
     return! ask }
-  r expected |> should equal expected
+  runReader r expected |> should equal expected
 
 [<Test>]
 let ``ReturnFrom should enable return! from asks``() =
   let expected = 1
   let r = reader {
     return! asks (fun i -> i + 1) }
-  r 0 |> should equal expected
+  runReader r 0 |> should equal expected
 
 [<Test>]
 let ``Bind should enable let!``() =
@@ -34,7 +34,7 @@ let ``Bind should enable let!``() =
   let r = reader {
     let! env = ask
     return env }
-  r expected |> should equal expected
+  runReader r expected |> should equal expected
 
 [<Test>]
 let ``Zero should allow no else branch``() =
@@ -42,7 +42,7 @@ let ``Zero should allow no else branch``() =
   let r = reader {
     if false then
       called := true }
-  r 1
+  runReader r 1
   !called |> should be False
 
 [<Test>]
@@ -52,7 +52,7 @@ let ``Combine should combine if statement``() =
     let! x = ask
     if true then ()
     return x }
-  r expected |> should equal expected
+  runReader r expected |> should equal expected
 
 [<Test>]
 let ``TryWith should catch exception``() =
@@ -60,7 +60,7 @@ let ``TryWith should catch exception``() =
   let r = reader {
     try failwith "FAIL"
     with e -> called := true }
-  r ()
+  runReader r ()
   !called |> should be True
 
 [<Test>]
@@ -69,7 +69,7 @@ let ``TryFinally with exception should execute finally``() =
   let r = reader {
     try failwith "FAIL"
     finally called := true }
-  try r ()
+  try runReader r ()
   with e -> ()
   !called |> should be True
 
@@ -82,7 +82,7 @@ let ``Using should call Dispose``() =
   let r = reader {
     use d = disposable
     () }
-  r ()
+  runReader r ()
   !disposed |> should be True
 
 [<Test>]
@@ -94,7 +94,7 @@ let ``use! should call Dispose``() =
   let r = reader {
     use! d = disposable
     () }
-  r ()
+  runReader r ()
   !disposed |> should be True
 
 [<Test>]
@@ -103,7 +103,7 @@ let ``while should increment count``() =
   let r = reader {
     while !count < 3 do
       incr count }
-  r ()
+  runReader r ()
   !count |> should equal 3
 
 [<Test>]
@@ -112,5 +112,5 @@ let ``for should increment count``() =
   let r = reader {
     for i = 0 to 1 do
       incr count }
-  r ()
+  runReader r ()
   !count |> should equal 2
