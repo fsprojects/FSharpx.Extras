@@ -32,4 +32,4 @@ let inferType values =
 
 type SimpleProperty = SimpleProperty of string * Type * bool
 
-type CompoundProperty = CompoundProperty of string * CompoundProperty seq * SimpleProperty seq
+type CompoundProperty = CompoundProperty of string * bool * CompoundProperty seq * SimpleProperty seq

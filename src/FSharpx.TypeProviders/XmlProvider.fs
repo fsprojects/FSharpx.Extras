@@ -15,7 +15,7 @@ open FSharpx.TypeProviders.Inference
 open System.Xml.Linq
 
 // Generates type for an inferred XML element
-let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elementName,elementChildren,elementProperties)) =
+let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elementName,multi,elementChildren,elementProperties)) =
     let ty = runtimeType<TypedXElement> elementName
     ownerType.AddMember(ty)
 
@@ -55,7 +55,7 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
 
     // Iterate over all the XML elements, generate type for them
     // and add member for accessing them to the parent.
-    for CompoundProperty(childName,_,_) as child in elementChildren do
+    for CompoundProperty(childName,_,_,_) as child in elementChildren do
         let newType =
             child
             |> generateType ownerType 

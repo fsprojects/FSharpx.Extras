@@ -1,66 +1,123 @@
-﻿module FSharpx.TypeProviders.JsonProvider
+﻿module FSharpx.TypeProviders.JsonTypeProvider
 
+open System
+open System.IO
 open FSharpx.TypeProviders.Settings
 open FSharpx.TypeProviders.DSL
-open System.Reflection
-open System.IO
-open Samples.FSharp.ProvidedTypes
 open Microsoft.FSharp.Core.CompilerServices
-open System.Text.RegularExpressions
-open FSharpx.Http.JSON
 open Microsoft.FSharp.Quotations
+open Samples.FSharp.ProvidedTypes
+open FSharpx.TypeProviders.Inference
+open FSharpx.TypeProviders.JSONParser
 
-let rec annotateAsJson (json:JSON) (ownerTy:ProvidedTypeDefinition) =
-    let appendProperty name value = 
-        ownerTy
-            |> addXmlDoc (sprintf "Property %s" name)
-            |> hideOldMethods
-            |+> (fun () -> provideProperty name (value.GetType()) (fun args -> <@@ value @@>))
-    try        
-        match json with
-        | Text t -> appendProperty "Text" t
-        | Number n -> appendProperty "Number" n
-        | Boolean b -> appendProperty "Boolean" b
-        | Null -> ownerTy
-        | JArray list -> raise <| new System.NotImplementedException()
-        | JObject map -> 
-            ownerTy
-                |> addXmlDoc "JObject property type"
-                |> hideOldMethods
-                |++!> (
-                    map
-                        |> Seq.choose (fun e -> 
-                                match e.Value with
-                                | Text t -> Some(provideProperty e.Key (t.GetType()) (fun args -> <@@ t @@>) :> MemberInfo)
-                                | Number n -> Some(provideProperty e.Key (n.GetType()) (fun args -> <@@ n @@>) :> MemberInfo)
-                                | Boolean b -> Some(provideProperty e.Key (b.GetType()) (fun args -> <@@ b @@>) :> MemberInfo)
-                                | JArray list ->
-                                    let newType = annotateAsJson list.[0] (runtimeType<obj> (ownerTy.Name + "_" + e.Key))
-                                    let listType = typedefof<_ list>.MakeGenericType(newType)
-                                    ownerTy.AddMember newType
-                                    Some(provideProperty
-                                            e.Key
-                                            listType
-                                            (fun args -> Expr.Coerce(<@@ (%%args.[0] : obj) @@>, listType))
-                                            :> MemberInfo)
-                                | JObject map ->                                    
-                                    let newType = annotateAsJson e.Value (runtimeType<obj> (ownerTy.Name + "_" + e.Key))
-                                    ownerTy.AddMember newType
+let toString json =
+    match json with
+    | Text t -> t
+    | Number n -> n.ToString()
+    | Boolean b -> b.ToString()
 
-                                    Some(provideProperty
-                                        e.Key
-                                        newType
-                                        (fun args -> Expr.Coerce(<@@ (%%args.[0] : obj) @@>, newType))
-                                        :> MemberInfo)
-                                | _ -> None))
-    with
-    | exn -> ownerTy
 
-// Create the main provided type
-let jsonType (cfg:TypeProviderConfig) =
-    erasedType<obj> thisAssembly rootNamespace "JSON"
-     |> staticParameter "json" (fun typeName (json:string) -> 
-            annotateAsJson
-              (parse json)
-              (erasedType<obj> thisAssembly rootNamespace typeName)
-            |+!> (provideConstructor [] (fun args -> <@@ "The object data" :> obj @@>)))
+// Generates type for an inferred XML element
+let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elementName,multiProperty,elementChildren,elementProperties)) =
+    let ty = runtimeType<JSON> elementName
+    ownerType.AddMember(ty)
+       
+    // Generate property for every inferred property
+    for SimpleProperty(propertyName,propertyType,optional) in elementProperties do
+        let accessExpr (args: Expr list) = 
+            match propertyType with
+            | x when x = typeof<string> -> 
+                <@@ (%%args.[0]:JSON).GetProperty(propertyName).GetText() @@>
+            | x when x = typeof<bool> -> 
+                <@@ (%%args.[0]:JSON).GetProperty(propertyName).GetBoolean() @@>
+            | x when x = typeof<int> -> 
+                <@@ (%%args.[0]:JSON).GetProperty(propertyName).GetNumber() |> int @@>
+            | x when x = typeof<float> -> 
+                <@@ (%%args.[0]:JSON).GetProperty(propertyName).GetNumber() @@>
+
+        let prop =
+            if optional then
+                failwith "Not implemented"
+                let newType = optionType propertyType
+                // For optional elements, we return Option value
+                let cases = Reflection.FSharpType.GetUnionCases newType
+                let some = cases |> Seq.find (fun c -> c.Name = "Some")
+                let none = cases |> Seq.find (fun c -> c.Name = "None")
+
+                provideProperty 
+                    propertyName
+                    newType
+                    (fun args ->
+                        Expr.IfThenElse
+                          (<@@ (%%args.[0]:JSON).HasProperty propertyName @@>,
+                            Expr.NewUnionCase(some, [accessExpr args]),
+                            Expr.NewUnionCase(none, [])))
+            else
+                provideProperty 
+                    propertyName
+                    propertyType
+                    accessExpr
+
+        prop
+          |> addXmlDoc (sprintf @"Gets the ""%s"" attribute" propertyName)
+          |> ty.AddMember
+
+    // Iterate over all the JSON sub elements, generate type for them
+    // and add member for accessing them to the parent.
+    for CompoundProperty(childName,multi,_,_) as child in elementChildren do
+        let childType = generateType ownerType child
+
+        if not multi then            
+            provideProperty 
+                childName
+                childType
+                (fun args -> <@@ ((%%args.[0]:JSON).GetProperty childName) @@>)
+
+            |> addXmlDoc (sprintf @"Gets the ""%s"" attribute" childName)
+            |> ty.AddMember
+        else
+            let newType = seqType childType
+
+            ty
+            |+!> (provideMethod
+                    ("Get" + niceName childName + "Elements")
+                    []
+                    newType
+                    (fun args -> <@@ (%%args.[0]:JSON).GetProperty(childName).GetSubElements() @@>)
+                    |> addXmlDoc (sprintf @"Gets the ""%s"" elements" childName))
+            |> ignore
+    ty
+
+let jsonType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =  
+  erasedType<obj> thisAssembly rootNamespace "StructuredJSON"  
+  |> staticParameter "FileName"  // Parameterize the type by the file to use as a template
+      (fun typeName fileName ->        
+        let resolvedFileName = findConfigFile cfg.ResolutionFolder fileName
+        let doc = 
+            resolvedFileName
+            |> File.ReadAllText
+            |> parse
+
+        watchForChanges ownerType resolvedFileName
+
+        // -------------------------------------------------------------------------------------------
+        // Infer schema from the loaded data and generate type with properties
+
+        let schema = JSONInference.provideElement "Document" false [doc]      
+        let resTy = erasedType<JSON> thisAssembly rootNamespace typeName
+       
+        // -------------------------------------------------------------------------------------------
+        // Generate constructors for loading Json data and add type representing Root node        
+        resTy
+        |+!> (provideConstructor
+                [] 
+                (fun args -> <@@ resolvedFileName |> File.ReadAllText |> parse @@>)
+            |> addXmlDoc "Initializes the JSON document with the schema sample")
+        |+!> (provideConstructor
+                ["filename", typeof<string>] 
+                (fun args -> <@@ (%%args.[0] : string) |> File.ReadAllText |> parse  @@>)
+            |> addXmlDoc "Initializes a JSON document from the given path.")
+        |+!> provideProperty
+                "Root"
+                (generateType resTy schema)
+                (fun args -> <@@ (%%args.[0] : JSON) @@>))

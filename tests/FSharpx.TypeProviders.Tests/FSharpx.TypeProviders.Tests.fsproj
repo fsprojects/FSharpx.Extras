@@ -50,6 +50,18 @@
     <Compile Include="Xaml.Tests.fs" />
     <Compile Include="Excel.Tests.fs" />
     <None Include="packages.config" />
+    <Content Include="SimpleArrayJSON.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DoubleNestedJSON.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NestedJSON.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SimpleJSON.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Philosophy.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

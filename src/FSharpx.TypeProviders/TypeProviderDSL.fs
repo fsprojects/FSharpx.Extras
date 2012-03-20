@@ -18,6 +18,7 @@ let fileStart fileName = { Line = 1; Column = 1; FileName = fileName }
 
 /// Turns a string into a nice PascalCase identifier
 let niceName (s:string) = 
+    if s = s.ToUpper() then s else
     // Starting to parse a new segment 
     let rec restart i = seq {
       match s @? i with 

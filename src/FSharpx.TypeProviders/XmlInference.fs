@@ -26,7 +26,7 @@ type TypedXDocument(document:XDocument) =
 
 module XmlInference = 
   let rec provideElement name (elements:seq<XElement>) = 
-    CompoundProperty(name,collectElements elements,collectAttributes elements)
+    CompoundProperty(name,true,collectElements elements,collectAttributes elements)
 
   and collectAttributes (elements:seq<XElement>) = 
     [ for el in elements do

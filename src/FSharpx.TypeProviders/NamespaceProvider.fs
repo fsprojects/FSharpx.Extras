@@ -15,7 +15,7 @@ type public FSharpxProvider(cfg:TypeProviderConfig) as this =
          MiniCsvProvider.csvType cfg
          FilesTypeProvider.typedFileSystem
          XmlTypeProvider.xmlType this cfg
-         JsonProvider.jsonType cfg
+         JsonTypeProvider.jsonType this cfg
          RegistryProvider.typedRegistry
          XamlProvider.xamlFileTypeUninstantiated this cfg
          XamlProvider.xamlTextTypeUninstantiated cfg
