@@ -436,6 +436,9 @@ type FSharpAsyncExtensions =
         Async.FromBeginEnd(f.BeginInvoke, f.EndInvoke)
 
     [<Extension>]
+    static member AsyncReturn a = async.Return a
+
+    [<Extension>]
     static member FSharpAsyncReadToEnd (s: StreamReader) =
         s.AsyncReadToEnd()
 

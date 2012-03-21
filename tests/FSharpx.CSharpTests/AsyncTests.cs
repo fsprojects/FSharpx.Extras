@@ -43,10 +43,15 @@ namespace FSharpx.CSharpTests {
         }
 
         [Test]
-        public void FuncToAsync() {
+        public void ToAsync() {
             FSharpAsync<int> a = L.F(() => 1).ToFSharpAsync();
             FSharpAsync<Unit> b = a.IgnoreResult();
-            //b.Start();
+            
+            // super verbose return
+            FSharpAsync<int> i = ExtraTopLevelOperators.DefaultAsyncBuilder.Return(1);
+
+            FSharpAsync<int> x = 1.AsyncReturn();
+            FSharpAsync<Func<int>> fa = L.F(() => 1).AsyncReturn();
         }
 
         [Test]
