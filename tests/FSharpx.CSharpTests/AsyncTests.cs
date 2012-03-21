@@ -37,7 +37,9 @@ namespace FSharpx.CSharpTests {
                 , "http://www.yahoo.com"
                 , "http://www.microsoft.com"
                 );
-            var result = FSharpAsync.Parallel(urls.Select(Get)).Select(s => string.Join("", s)).Run();
+            var result = urls.Select(Get).Parallel()
+                .Select(s => string.Join("", s))
+                .Run();
             var rx = new Regex(@"<html");
             Assert.AreEqual(4, rx.Matches(result).Count);
         }

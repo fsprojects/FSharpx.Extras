@@ -439,6 +439,9 @@ type FSharpAsyncExtensions =
     static member AsyncReturn a = async.Return a
 
     [<Extension>]
+    static member Parallel a = Async.Parallel a
+
+    [<Extension>]
     static member FSharpAsyncReadToEnd (s: StreamReader) =
         s.AsyncReadToEnd()
 
