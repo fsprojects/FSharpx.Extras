@@ -2,14 +2,11 @@
 
 open System
 open System.IO
-open FSharpx.TypeProviders.Settings
 open FSharpx.TypeProviders.DSL
-open Microsoft.FSharp.Core.CompilerServices
 open Microsoft.FSharp.Quotations
 open Samples.FSharp.ProvidedTypes
 open FSharpx.TypeProviders.Inference
 open FSharpx.TypeProviders.JSONParser
-
 
 // Generates type for an inferred JSON document
 let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elementName,multiProperty,elementChildren,elementProperties)) =
@@ -39,8 +36,8 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
     generateSublements ty ownerType multiAccessExpr singleAccessExpr generateType elementChildren
 
 
-let jsonType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =  
-    /// Infer schema from the loaded data and generate type with properties
+/// Infer schema from the loaded data and generate type with properties
+let jsonType (ownerType:TypeProviderForNamespaces) cfg =      
     let createType typeName (jsonText:string) =        
         createParserType<JSON> 
             typeName 
@@ -50,4 +47,4 @@ let jsonType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
             (fun args -> <@@ (%%args.[0] : string) |> File.ReadAllText |> parse  @@>)
             (fun args -> <@@ (%%args.[0] : JSON) @@>)
 
-    createStructuredParser "StructuredJSON" cfg.ResolutionFolder ownerType createType
+    createStructuredParser "StructuredJSON" cfg ownerType createType

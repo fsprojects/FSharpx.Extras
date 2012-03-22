@@ -5,10 +5,7 @@
 module FSharpx.TypeProviders.XmlTypeProvider
 
 open System
-open System.IO
-open FSharpx.TypeProviders.Settings
 open FSharpx.TypeProviders.DSL
-open Microsoft.FSharp.Core.CompilerServices
 open Microsoft.FSharp.Quotations
 open Samples.FSharp.ProvidedTypes
 open FSharpx.TypeProviders.Inference
@@ -37,8 +34,8 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
 
     generateSublements ty ownerType multiAccessExpr singleAccessExpr generateType elementChildren   
 
-let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
 /// Infer schema from the loaded data and generate type with properties
+let xmlType (ownerType:TypeProviderForNamespaces) cfg =    
     let createType typeName (xmlText:string) =        
         let doc = XDocument.Parse xmlText
         createParserType<TypedXDocument> 
@@ -49,4 +46,4 @@ let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
             (fun args -> <@@ TypedXDocument(XDocument.Load(%%args.[0] : string)) @@>)
             (fun args -> <@@ TypedXElement((%%args.[0] : TypedXDocument).Document.Root) @@>)
     
-    createStructuredParser "StructuredXml" cfg.ResolutionFolder ownerType createType    
+    createStructuredParser "StructuredXml" cfg ownerType createType    
