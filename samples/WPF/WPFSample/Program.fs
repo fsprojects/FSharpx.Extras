@@ -3,7 +3,7 @@ open System.Windows
 open System.Windows.Controls
 open FSharpx
 
-type MainWindow = XamlFile< @"Window.xaml">
+type MainWindow = XamlFile<"Window.xaml">
 
 let loadWindow() =
    let window = MainWindow()
