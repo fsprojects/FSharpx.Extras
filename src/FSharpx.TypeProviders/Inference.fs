@@ -35,6 +35,29 @@ type SimpleProperty = SimpleProperty of string * Type * bool
 type CompoundProperty = CompoundProperty of string * bool * CompoundProperty seq * SimpleProperty seq
 
 open Settings
+open System.IO
+open Samples.FSharp.ProvidedTypes
+
+let createParserType<'a> typeName schema (generateTypeF: ProvidedTypeDefinition -> CompoundProperty -> ProvidedTypeDefinition)
+                           emptyConstructor fileNameConstructor rootPropertyGetter =
+    // -------------------------------------------------------------------------------------------
+    // Generate constructors for loading data and add type representing Root node        
+        
+    let parserType = erasedType<'a> thisAssembly rootNamespace typeName
+    parserType
+    |+!> (provideConstructor
+            []
+            emptyConstructor
+        |> addXmlDoc "Initializes the document from the schema sample.")
+    |+!> (provideConstructor
+            ["filename", typeof<string>] 
+            fileNameConstructor
+        |> addXmlDoc "Initializes a document from the given path.")
+    |+!> provideProperty
+            "Root"
+            (generateTypeF parserType schema)
+            rootPropertyGetter
+
 
 let createStructuredParser typeName resolutionFolder ownerType createTypeF =
     erasedType<obj> thisAssembly rootNamespace typeName
@@ -47,7 +70,7 @@ let createStructuredParser typeName resolutionFolder ownerType createTypeF =
                 let resolvedFileName = findConfigFile resolutionFolder fileName
                 watchForChanges ownerType resolvedFileName
 
-                let schema = System.IO.File.ReadAllText resolvedFileName
+                let schema = File.ReadAllText resolvedFileName
                 createTypeF typeName schema
             | [| :? string; :? string as schema |] when schema <> "@@@missingValue###" ->        
                 createTypeF typeName schema

@@ -74,28 +74,15 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
     ty
 
 let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
-    let createType typeName (xmlText:string) =
-        // -------------------------------------------------------------------------------------------
-        // Infer schema from the loaded data and generate type with properties
-
+/// Infer schema from the loaded data and generate type with properties
+    let createType typeName (xmlText:string) =        
         let doc = XDocument.Parse xmlText
-        let schema = XmlInference.provideElement doc.Root.Name.LocalName [doc.Root]      
-        let resTy = erasedType<TypedXDocument> thisAssembly rootNamespace typeName
-       
-        // -------------------------------------------------------------------------------------------
-        // Generate constructors for loading XML data and add type representing Root node        
-        resTy
-        |+!> (provideConstructor
-                [] 
-                (fun args -> <@@ TypedXDocument(XDocument.Parse xmlText) @@>)
-            |> addXmlDoc "Initializes the XML document with the schema sample")
-        |+!> (provideConstructor
-                ["filename", typeof<string>] 
-                (fun args -> <@@ TypedXDocument(XDocument.Load(%%args.[0] : string)) @@>)
-            |> addXmlDoc "Initializes a XML document from the given path.")
-        |+!> provideProperty
-                "Root"
-                (generateType resTy schema)
-                (fun args -> <@@ TypedXElement((%%args.[0] : TypedXDocument).Document.Root) @@>)
-                
+        createParserType<TypedXDocument> 
+            typeName 
+            (XmlInference.provideElement doc.Root.Name.LocalName [doc.Root])
+            generateType
+            (fun args -> <@@ TypedXDocument(XDocument.Parse xmlText) @@>)
+            (fun args -> <@@ TypedXDocument(XDocument.Load(%%args.[0] : string)) @@>)
+            (fun args -> <@@ TypedXElement((%%args.[0] : TypedXDocument).Document.Root) @@>)
+    
     createStructuredParser "StructuredXml" cfg.ResolutionFolder ownerType createType    

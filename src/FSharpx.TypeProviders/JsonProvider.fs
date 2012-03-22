@@ -83,28 +83,14 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
     ty
 
 let jsonType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =  
+    /// Infer schema from the loaded data and generate type with properties
     let createType typeName (jsonText:string) =        
-        // -------------------------------------------------------------------------------------------
-        // Infer schema from the loaded data and generate type with properties
-
-        let doc = parse jsonText
-        let schema = JSONInference.provideElement "Document" false [doc]      
-        let resTy = erasedType<JSON> thisAssembly rootNamespace typeName
-        let y = jsonText
-        // -------------------------------------------------------------------------------------------
-        // Generate constructors for loading Json data and add type representing Root node        
-        resTy
-        |+!> (provideConstructor
-                []
-                (fun args -> <@@ jsonText |> parse  @@>)
-            |> addXmlDoc "Initializes the JSON document with the schema sample")
-        |+!> (provideConstructor
-                ["filename", typeof<string>] 
-                (fun args -> <@@ (%%args.[0] : string) |> File.ReadAllText |> parse  @@>)
-            |> addXmlDoc "Initializes a JSON document from the given path.")
-        |+!> provideProperty
-                "Root"
-                (generateType resTy schema)
-                (fun args -> <@@ (%%args.[0] : JSON) @@>)
+        createParserType<JSON> 
+            typeName 
+            (JSONInference.provideElement "Document" false [parse jsonText])
+            generateType
+            (fun args -> <@@ jsonText |> parse  @@>)
+            (fun args -> <@@ (%%args.[0] : string) |> File.ReadAllText |> parse  @@>)
+            (fun args -> <@@ (%%args.[0] : JSON) @@>)
 
     createStructuredParser "StructuredJSON" cfg.ResolutionFolder ownerType createType
