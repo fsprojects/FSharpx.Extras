@@ -1,13 +1,15 @@
 ﻿open System
 open System.Windows
 open System.Windows.Controls
+open FSharpx
 
-let loadWindow() =    
-    let resourceLocator = new Uri("/WPFSample;component/Window.xaml", UriKind.Relative)
-    let window = Application.LoadComponent(resourceLocator) :?> Window
-    (window.FindName("Button1") :?> Button).Click.Add(
+type MainWindow = XamlFile< @"Window.xaml">
+
+let loadWindow() =
+   let window = MainWindow()
+   window.MainGrid.StackPanel1.Button1.Control.Click.Add(
         fun _ -> MessageBox.Show("Hello world!") |> ignore)
-    window
+   window.Control
 
 [<STAThread>]
 (new Application()).Run(loadWindow()) |> ignore
