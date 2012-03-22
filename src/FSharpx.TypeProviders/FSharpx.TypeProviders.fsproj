@@ -25,7 +25,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <StartAction>Program</StartAction>
     <StartProgram>C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\devenv.exe</StartProgram>
-    <StartArguments>"C:\data\fsharpx\FSharpx.TypeProviders.Tests.sln"</StartArguments>
+    <StartArguments>"C:\code\fsharpx\FSharpx.TypeProviders.Tests.sln"</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

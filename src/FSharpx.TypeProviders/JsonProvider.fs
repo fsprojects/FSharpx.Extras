@@ -31,7 +31,7 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
 
         let prop =
             if optional then
-                failwith "Not implemented"
+
                 let newType = optionType propertyType
                 // For optional elements, we return Option value
                 let cases = Reflection.FSharpType.GetUnionCases newType

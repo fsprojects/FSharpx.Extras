@@ -98,3 +98,22 @@ let ``Can parse simple arrays``() =
 
     items.[1].Id
     |> should equal "Pause"
+
+type OptionalValuesInJSON = StructuredJSON<"OptionValuesInJSON.txt">
+
+let optionalValuesInJSON = OptionalValuesInJSON().Root
+
+[<Test>]
+let ``Can parse optional values in arrays``() = 
+    let authors = optionalValuesInJSON.GetAuthorsElements() |> Seq.toList
+    authors.[0].Name
+    |> should equal "Steffen"
+
+    authors.[0].Age
+    |> should equal (Some 29)
+
+    authors.[1].Name
+    |> should equal "Tomas"
+
+    authors.[1].Age
+    |> should equal None

@@ -50,6 +50,7 @@
     <Compile Include="Xaml.Tests.fs" />
     <Compile Include="Excel.Tests.fs" />
     <None Include="packages.config" />
+    <Content Include="OptionValuesInJSON.txt" />
     <Content Include="SimpleArrayJSON.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
