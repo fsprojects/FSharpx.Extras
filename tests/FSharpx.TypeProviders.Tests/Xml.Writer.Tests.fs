@@ -3,14 +3,18 @@
 open NUnit.Framework
 open FSharpx
 open FsUnit
+open System.Xml
 open System.Xml.Linq
 
-let inlined = new StructuredXml<Schema="""<authors><author name="Ludwig" surname="Wittgenstein" age="29" isPhilosopher="True" size="30.3" /></authors>""">()
-let author = inlined.Root.GetAuthorElements() |> Seq.head
+type AuthorsXml = StructuredXml<Schema="""<authors><author name="Ludwig" surname="Wittgenstein" age="29" isPhilosopher="True" size="30.3" /></authors>""">
 
 [<Test>]
-let ``Can set properties in inlined xml``() = 
+let ``Can set properties in inlined xml``() =
+    let inlined = new AuthorsXml()
+    let author = inlined.Root.GetAuthorElements() |> Seq.head
+
     author.Name <- "John"
+
     author.Name |> should equal "John"
 
     author.Age <- 30
@@ -22,8 +26,23 @@ let ``Can set properties in inlined xml``() =
     author.Size <- 42.42
     author.Size |> should equal 42.42
 
+open FSharpx.TypeProviders
+
+[<Test>]
+let ``Can add author in inlined xml``() =
+    let inlined = new AuthorsXml()
+    let author = inlined.Root.GetAuthorElements() |> Seq.head
+    let x = (inlined.Root :> TypedXElement).Element   // TODO: This a temporary exploration
+    x.Add((author:> TypedXElement).Element)
+
+    let authors = inlined.Root.GetAuthorElements() |> Seq.toList
+    authors.Length |> should equal 2
+
 [<Test>]
 let ``Can export modified xml``() = 
+    let inlined = new AuthorsXml()
+    let author = inlined.Root.GetAuthorElements() |> Seq.head
+
     author.Name <- "John"
     author.Age <- 31
     author.IsPhilosopher <- false
