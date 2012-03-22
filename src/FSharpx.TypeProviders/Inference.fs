@@ -37,6 +37,37 @@ type CompoundProperty = CompoundProperty of string * bool * CompoundProperty seq
 open Settings
 open System.IO
 open Samples.FSharp.ProvidedTypes
+open Microsoft.FSharp.Quotations
+
+/// Generate property for every inferred property
+let generateProperties ownerType accessExpr checkIfOptional elementProperties =   
+    for SimpleProperty(propertyName,propertyType,optional) in elementProperties do
+        let prop =
+            if optional then
+                let newType = optionType propertyType
+                // For optional elements, we return Option value
+                let cases = Reflection.FSharpType.GetUnionCases newType
+                let some = cases |> Seq.find (fun c -> c.Name = "Some")
+                let none = cases |> Seq.find (fun c -> c.Name = "None")
+
+                provideProperty 
+                    propertyName
+                    newType
+                    (fun args ->
+                        Expr.IfThenElse
+                          (checkIfOptional propertyName args,
+                            Expr.NewUnionCase(some, [accessExpr propertyName propertyType args]),
+                            Expr.NewUnionCase(none, [])))
+            else
+                provideProperty 
+                    propertyName
+                    propertyType
+                    (accessExpr propertyName propertyType)
+        
+        ownerType
+          |+!> (prop |> addXmlDoc (sprintf "Gets the %s attribute" propertyName))
+          |> ignore
+
 
 let createParserType<'a> typeName schema (generateTypeF: ProvidedTypeDefinition -> CompoundProperty -> ProvidedTypeDefinition)
                            emptyConstructor fileNameConstructor rootPropertyGetter =

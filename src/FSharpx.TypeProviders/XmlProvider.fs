@@ -19,39 +19,15 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
     let ty = runtimeType<TypedXElement> elementName
     ownerType.AddMember(ty)
 
-    // Generate property for every inferred attribute of the element
-    for SimpleProperty(propertyName,propertyType,optional) in elementProperties do 
-        let accessExpr (args: Expr list) = 
-            <@@  (%%args.[0]:TypedXElement).Element.
-                    Attribute(XName.op_Implicit propertyName).Value @@> 
-            |> convertExpr propertyType
+    let accessExpr propertyName propertyType (args: Expr list) = 
+        <@@  (%%args.[0]:TypedXElement).Element.
+                Attribute(XName.op_Implicit propertyName).Value @@> 
+        |> convertExpr propertyType
 
-        let prop =
-            if optional then
-                let newType = optionType propertyType
-                // For optional elements, we return Option value
-                let cases = Reflection.FSharpType.GetUnionCases newType
-                let some = cases |> Seq.find (fun c -> c.Name = "Some")
-                let none = cases |> Seq.find (fun c -> c.Name = "None")
+    let checkIfOptional propertyName (args: Expr list) = 
+        <@@ (%%args.[0]:TypedXElement).Element.Attribute(XName.op_Implicit propertyName) <> null @@>
 
-                provideProperty 
-                    propertyName
-                    newType
-                    (fun args ->
-                        Expr.IfThenElse
-                          (<@@ (%%args.[0]:TypedXElement).Element.
-                                  Attribute(XName.op_Implicit propertyName) <> null @@>,
-                            Expr.NewUnionCase(some, [accessExpr args]),
-                            Expr.NewUnionCase(none, [])))
-            else
-                provideProperty 
-                    propertyName
-                    propertyType
-                    accessExpr
-
-        prop
-          |> addXmlDoc (sprintf @"Gets the ""%s"" attribute" propertyName)
-          |> ty.AddMember
+    generateProperties ty accessExpr checkIfOptional elementProperties
 
     // Iterate over all the XML elements, generate type for them
     // and add member for accessing them to the parent.

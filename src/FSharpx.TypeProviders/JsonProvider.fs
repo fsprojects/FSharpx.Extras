@@ -15,47 +15,24 @@ open FSharpx.TypeProviders.JSONParser
 let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elementName,multiProperty,elementChildren,elementProperties)) =
     let ty = runtimeType<JSON> elementName
     ownerType.AddMember(ty)
+
+    let accessExpr propertyName propertyType (args: Expr list) = 
+        match propertyType with
+        | x when x = typeof<string> -> 
+            <@@ (%%args.[0]:JSON).GetProperty(propertyName).GetText() @@>
+        | x when x = typeof<bool> -> 
+            <@@ (%%args.[0]:JSON).GetProperty(propertyName).GetBoolean() @@>
+        | x when x = typeof<int> -> 
+            <@@ (%%args.[0]:JSON).GetProperty(propertyName).GetNumber() |> int @@>
+        | x when x = typeof<float> -> 
+            <@@ (%%args.[0]:JSON).GetProperty(propertyName).GetNumber() @@>
+
+
+    let checkIfOptional propertyName (args: Expr list) = 
+        <@@ (%%args.[0]:JSON).HasProperty propertyName @@>
+
+    generateProperties ty accessExpr checkIfOptional elementProperties
        
-    // Generate property for every inferred property
-    for SimpleProperty(propertyName,propertyType,optional) in elementProperties do
-        let accessExpr (args: Expr list) = 
-            match propertyType with
-            | x when x = typeof<string> -> 
-                <@@ (%%args.[0]:JSON).GetProperty(propertyName).GetText() @@>
-            | x when x = typeof<bool> -> 
-                <@@ (%%args.[0]:JSON).GetProperty(propertyName).GetBoolean() @@>
-            | x when x = typeof<int> -> 
-                <@@ (%%args.[0]:JSON).GetProperty(propertyName).GetNumber() |> int @@>
-            | x when x = typeof<float> -> 
-                <@@ (%%args.[0]:JSON).GetProperty(propertyName).GetNumber() @@>
-
-        let prop =
-            if optional then
-
-                let newType = optionType propertyType
-                // For optional elements, we return Option value
-                let cases = Reflection.FSharpType.GetUnionCases newType
-                let some = cases |> Seq.find (fun c -> c.Name = "Some")
-                let none = cases |> Seq.find (fun c -> c.Name = "None")
-
-                provideProperty 
-                    propertyName
-                    newType
-                    (fun args ->
-                        Expr.IfThenElse
-                          (<@@ (%%args.[0]:JSON).HasProperty propertyName @@>,
-                            Expr.NewUnionCase(some, [accessExpr args]),
-                            Expr.NewUnionCase(none, [])))
-            else
-                provideProperty 
-                    propertyName
-                    propertyType
-                    accessExpr
-
-        prop
-          |> addXmlDoc (sprintf @"Gets the ""%s"" attribute" propertyName)
-          |> ty.AddMember
-
     // Iterate over all the JSON sub elements, generate type for them
     // and add member for accessing them to the parent.
     for CompoundProperty(childName,multi,_,_) as child in elementChildren do
