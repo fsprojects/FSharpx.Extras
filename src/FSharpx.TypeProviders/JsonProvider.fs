@@ -10,14 +10,8 @@ open Samples.FSharp.ProvidedTypes
 open FSharpx.TypeProviders.Inference
 open FSharpx.TypeProviders.JSONParser
 
-let toString json =
-    match json with
-    | Text t -> t
-    | Number n -> n.ToString()
-    | Boolean b -> b.ToString()
 
-
-// Generates type for an inferred XML element
+// Generates type for an inferred JSON document
 let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elementName,multiProperty,elementChildren,elementProperties)) =
     let ty = runtimeType<JSON> elementName
     ownerType.AddMember(ty)
