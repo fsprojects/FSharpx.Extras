@@ -68,6 +68,34 @@ let generateProperties ownerType accessExpr checkIfOptional elementProperties =
           |+!> (prop |> addXmlDoc (sprintf "Gets the %s attribute" propertyName))
           |> ignore
 
+let generateSublements ownerType parentType multiAccessExpr singleAccessExpr generateTypeF children =
+    // Iterate over all the JSON sub elements, generate type for them
+    // and add member for accessing them to the parent.
+    for CompoundProperty(childName,multi,_,_) as child in children do
+        let childType = generateTypeF parentType child
+
+        if multi then     
+            let newType = seqType childType
+
+            ownerType
+            |+!> (provideMethod
+                    ("Get" + niceName childName + "Elements")
+                    []
+                    newType
+                    (multiAccessExpr childName)
+                    |> addXmlDoc (sprintf @"Gets the %s elements" childName))
+            |> ignore               
+        else
+            provideProperty 
+                childName
+                childType
+                (singleAccessExpr childName)
+
+            |> addXmlDoc (sprintf @"Gets the %s attribute" childName)
+            |> ownerType.AddMember
+
+    ownerType
+
 
 let createParserType<'a> typeName schema (generateTypeF: ProvidedTypeDefinition -> CompoundProperty -> ProvidedTypeDefinition)
                            emptyConstructor fileNameConstructor rootPropertyGetter =

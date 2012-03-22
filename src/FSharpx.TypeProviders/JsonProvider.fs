@@ -32,32 +32,12 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
         <@@ (%%args.[0]:JSON).HasProperty propertyName @@>
 
     generateProperties ty accessExpr checkIfOptional elementProperties
-       
-    // Iterate over all the JSON sub elements, generate type for them
-    // and add member for accessing them to the parent.
-    for CompoundProperty(childName,multi,_,_) as child in elementChildren do
-        let childType = generateType ownerType child
+    
+    let multiAccessExpr childName (args: Expr list) = <@@ (%%args.[0]:JSON).GetProperty(childName).GetSubElements() @@>
+    let singleAccessExpr childName (args: Expr list) = <@@ ((%%args.[0]:JSON).GetProperty childName) @@>
 
-        if not multi then            
-            provideProperty 
-                childName
-                childType
-                (fun args -> <@@ ((%%args.[0]:JSON).GetProperty childName) @@>)
+    generateSublements ty ownerType multiAccessExpr singleAccessExpr generateType elementChildren
 
-            |> addXmlDoc (sprintf @"Gets the ""%s"" attribute" childName)
-            |> ty.AddMember
-        else
-            let newType = seqType childType
-
-            ty
-            |+!> (provideMethod
-                    ("Get" + niceName childName + "Elements")
-                    []
-                    newType
-                    (fun args -> <@@ (%%args.[0]:JSON).GetProperty(childName).GetSubElements() @@>)
-                    |> addXmlDoc (sprintf @"Gets the ""%s"" elements" childName))
-            |> ignore
-    ty
 
 let jsonType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =  
     /// Infer schema from the loaded data and generate type with properties

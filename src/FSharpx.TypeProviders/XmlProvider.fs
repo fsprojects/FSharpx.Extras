@@ -29,25 +29,13 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
 
     generateProperties ty accessExpr checkIfOptional elementProperties
 
-    // Iterate over all the XML elements, generate type for them
-    // and add member for accessing them to the parent.
-    for CompoundProperty(childName,_,_,_) as child in elementChildren do
-        let newType =
-            child
-            |> generateType ownerType 
-            |> seqType
+    let multiAccessExpr childName (args: Expr list) =
+        <@@ seq { for e in ((%%args.[0]:TypedXElement).Element.Elements(XName.op_Implicit childName)) -> 
+                                TypedXElement(e) } @@>
 
-        ty
-        |+!> (provideMethod
-                ("Get" + niceName childName + "Elements")
-                []
-                newType
-                (fun args -> 
-                    <@@ seq { for e in ((%%args.[0]:TypedXElement).Element.Elements(XName.op_Implicit childName)) -> 
-                                 TypedXElement(e) } @@>)
-                |> addXmlDoc (sprintf @"Gets the ""%s"" elements" childName))
-        |> ignore
-    ty
+    let singleAccessExpr childName (args: Expr list) = raise <| new NotImplementedException()
+
+    generateSublements ty ownerType multiAccessExpr singleAccessExpr generateType elementChildren   
 
 let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
 /// Infer schema from the loaded data and generate type with properties
