@@ -33,3 +33,22 @@ let inferType values =
 type SimpleProperty = SimpleProperty of string * Type * bool
 
 type CompoundProperty = CompoundProperty of string * bool * CompoundProperty seq * SimpleProperty seq
+
+open Settings
+
+let createStructuredParser typeName resolutionFolder ownerType createTypeF =
+    erasedType<obj> thisAssembly rootNamespace typeName
+    |> staticParameters 
+          ["FileName" , typeof<string>, Some("@@@missingValue###" :> obj)  // Parameterize the type by the file to use as a template
+           "Schema" , typeof<string>, Some("@@@missingValue###" :> obj)  ]    // Allows to specify inlined schema
+          (fun typeName parameterValues ->
+            match parameterValues with 
+            | [| :? string as fileName; :? string |] when fileName <> "@@@missingValue###" ->        
+                let resolvedFileName = findConfigFile resolutionFolder fileName
+                watchForChanges ownerType resolvedFileName
+
+                let schema = System.IO.File.ReadAllText resolvedFileName
+                createTypeF typeName schema
+            | [| :? string; :? string as schema |] when schema <> "@@@missingValue###" ->        
+                createTypeF typeName schema
+            | _ -> failwith "You have to specify a filename or inlined Schema")

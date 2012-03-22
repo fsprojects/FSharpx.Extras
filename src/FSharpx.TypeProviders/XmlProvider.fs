@@ -97,18 +97,5 @@ let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
                 "Root"
                 (generateType resTy schema)
                 (fun args -> <@@ TypedXElement((%%args.[0] : TypedXDocument).Document.Root) @@>)
-
-    erasedType<obj> thisAssembly rootNamespace "StructuredXml"  
-    |> staticParameters 
-          ["FileName" , typeof<string>, Some("@@@missingValue###" :> obj)  // Parameterize the type by the file to use as a template
-           "XML" , typeof<string>, Some("@@@missingValue###" :> obj)  ]   // Allows to specify XML inlined
-          (fun typeName parameterValues ->
-            match parameterValues with 
-            | [| :? string as fileName; :? string |] when fileName <> "@@@missingValue###" ->        
-                let resolvedFileName = findConfigFile cfg.ResolutionFolder fileName
-                watchForChanges ownerType resolvedFileName
-
-                createType typeName <| File.ReadAllText resolvedFileName
-            | [| :? string; :? string as xmlText |] when xmlText <> "@@@missingValue###" ->        
-                createType typeName xmlText
-            | _ -> failwith "You have to specify a filename or inlined XML text")
+                
+    createStructuredParser "StructuredXml" cfg.ResolutionFolder ownerType createType    

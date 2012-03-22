@@ -107,17 +107,4 @@ let jsonType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
                 (generateType resTy schema)
                 (fun args -> <@@ (%%args.[0] : JSON) @@>)
 
-    erasedType<obj> thisAssembly rootNamespace "StructuredJSON"  
-    |> staticParameters 
-          ["FileName" , typeof<string>, Some("@@@missingValue###" :> obj)  // Parameterize the type by the file to use as a template
-           "JSON" , typeof<string>, Some("@@@missingValue###" :> obj)  ]   // Allows to specify JSON inlined
-          (fun typeName parameterValues ->
-            match parameterValues with 
-            | [| :? string as fileName; :? string |] when fileName <> "@@@missingValue###" ->        
-                let resolvedFileName = findConfigFile cfg.ResolutionFolder fileName
-                watchForChanges ownerType resolvedFileName
-
-                createType typeName <| File.ReadAllText resolvedFileName
-            | [| :? string; :? string as jsonText |] when jsonText <> "@@@missingValue###" ->        
-                createType typeName jsonText
-            | _ -> failwith "You have to specify a filename or inlined JSON text")
+    createStructuredParser "StructuredJSON" cfg.ResolutionFolder ownerType createType

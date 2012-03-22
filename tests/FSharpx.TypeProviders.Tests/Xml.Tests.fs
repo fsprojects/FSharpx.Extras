@@ -4,7 +4,7 @@ open NUnit.Framework
 open FSharpx
 open FsUnit
 
-let inlined = new StructuredXml<XML="<authors><author name=\"Ludwig\" surname=\"Wittgenstein\" /></authors>">()
+let inlined = new StructuredXml<Schema="<authors><author name=\"Ludwig\" surname=\"Wittgenstein\" /></authors>">()
 
 [<Test>]
 let ``Can get author name in inlined xml``() = 

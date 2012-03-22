@@ -4,7 +4,7 @@ open NUnit.Framework
 open FSharpx
 open FsUnit
 
-type InlinedJSON = StructuredJSON<JSON="{ \"firstName\": \"Max\" \"lastName\": \"Mustermann\" \"age\": 26 \"isCool\": true }">
+type InlinedJSON = StructuredJSON<Schema="{ \"firstName\": \"Max\" \"lastName\": \"Mustermann\" \"age\": 26 \"isCool\": true }">
 
 let inlined = InlinedJSON().Root
 
