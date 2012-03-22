@@ -4,7 +4,26 @@ open NUnit.Framework
 open FSharpx
 open FsUnit
 
-type SimpleJSON = StructuredJSON< "SimpleJSON.txt">
+type InlinedJSON = StructuredJSON<JSON="{ \"firstName\": \"Max\" \"lastName\": \"Mustermann\" \"age\": 26 \"isCool\": true }">
+
+let inlined = InlinedJSON().Root
+
+[<Test>]
+let ``Can parse inlined properties``() = 
+    inlined.FirstName
+    |> should equal "Max"
+
+    inlined.LastName
+    |> should equal "Mustermann"
+
+    inlined.Age
+    |> should equal 26
+
+    inlined.IsCool
+    |> should equal true
+
+
+type SimpleJSON = StructuredJSON<"SimpleJSON.txt">
 
 let simple = SimpleJSON().Root
 
@@ -23,7 +42,7 @@ let ``Can parse properties``() =
     |> should equal true
 
 
-type NestedJSON = StructuredJSON< "NestedJSON.txt">
+type NestedJSON = StructuredJSON<"NestedJSON.txt">
 
 let nested = NestedJSON().Root
 
@@ -41,7 +60,7 @@ let ``Can parse nested properties``() =
     nested.Main.IsCool
     |> should equal true
 
-type DoubleNestedJSON = StructuredJSON< "DoubleNestedJSON.txt">
+type DoubleNestedJSON = StructuredJSON<"DoubleNestedJSON.txt">
 
 let doubleNested = DoubleNestedJSON().Root
 
@@ -53,7 +72,7 @@ let ``Can parse double nested properties``() =
     doubleNested.Main.Nested.NestedTitle
     |> should equal "sub"
 
-type SimpleArrayJSON = StructuredJSON< "SimpleArrayJSON.txt">
+type SimpleArrayJSON = StructuredJSON<"SimpleArrayJSON.txt">
 
 let simpleArray = SimpleArrayJSON().Root
 

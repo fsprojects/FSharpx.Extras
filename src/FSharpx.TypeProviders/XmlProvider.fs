@@ -73,17 +73,12 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
         |> ignore
     ty
 
-let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =  
-  erasedType<obj> thisAssembly rootNamespace "StructuredXml"  
-  |> staticParameter "FileName"  // Parameterize the type by the file to use as a template
-      (fun typeName fileName ->
-        let resolvedFileName = findConfigFile cfg.ResolutionFolder fileName
-        let doc = XDocument.Load resolvedFileName
-        watchForChanges ownerType resolvedFileName
-
+let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
+    let createType typeName (xmlText:string) =
         // -------------------------------------------------------------------------------------------
         // Infer schema from the loaded data and generate type with properties
 
+        let doc = XDocument.Parse xmlText
         let schema = XmlInference.provideElement doc.Root.Name.LocalName [doc.Root]      
         let resTy = erasedType<TypedXDocument> thisAssembly rootNamespace typeName
        
@@ -92,7 +87,7 @@ let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
         resTy
         |+!> (provideConstructor
                 [] 
-                (fun args -> <@@ TypedXDocument(XDocument.Load resolvedFileName) @@>)
+                (fun args -> <@@ TypedXDocument(XDocument.Parse xmlText) @@>)
             |> addXmlDoc "Initializes the XML document with the schema sample")
         |+!> (provideConstructor
                 ["filename", typeof<string>] 
@@ -101,4 +96,19 @@ let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
         |+!> provideProperty
                 "Root"
                 (generateType resTy schema)
-                (fun args -> <@@ TypedXElement((%%args.[0] : TypedXDocument).Document.Root) @@>))
+                (fun args -> <@@ TypedXElement((%%args.[0] : TypedXDocument).Document.Root) @@>)
+
+    erasedType<obj> thisAssembly rootNamespace "StructuredXml"  
+    |> staticParameters 
+          ["FileName" , typeof<string>, Some("@@@missingValue###" :> obj)  // Parameterize the type by the file to use as a template
+           "XML" , typeof<string>, Some("@@@missingValue###" :> obj)  ]   // Allows to specify XML inlined
+          (fun typeName parameterValues ->
+            match parameterValues with 
+            | [| :? string as fileName; :? string |] when fileName <> "@@@missingValue###" ->        
+                let resolvedFileName = findConfigFile cfg.ResolutionFolder fileName
+                watchForChanges ownerType resolvedFileName
+
+                createType typeName <| File.ReadAllText resolvedFileName
+            | [| :? string; :? string as xmlText |] when xmlText <> "@@@missingValue###" ->        
+                createType typeName xmlText
+            | _ -> failwith "You have to specify a filename or inlined XML text")

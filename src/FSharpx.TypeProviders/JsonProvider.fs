@@ -83,29 +83,20 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
     ty
 
 let jsonType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =  
-  erasedType<obj> thisAssembly rootNamespace "StructuredJSON"  
-  |> staticParameter "FileName"  // Parameterize the type by the file to use as a template
-      (fun typeName fileName ->        
-        let resolvedFileName = findConfigFile cfg.ResolutionFolder fileName
-        let doc = 
-            resolvedFileName
-            |> File.ReadAllText
-            |> parse
-
-        watchForChanges ownerType resolvedFileName
-
+    let createType typeName (jsonText:string) =        
         // -------------------------------------------------------------------------------------------
         // Infer schema from the loaded data and generate type with properties
 
+        let doc = parse jsonText
         let schema = JSONInference.provideElement "Document" false [doc]      
         let resTy = erasedType<JSON> thisAssembly rootNamespace typeName
-       
+        let y = jsonText
         // -------------------------------------------------------------------------------------------
         // Generate constructors for loading Json data and add type representing Root node        
         resTy
         |+!> (provideConstructor
-                [] 
-                (fun args -> <@@ resolvedFileName |> File.ReadAllText |> parse @@>)
+                []
+                (fun args -> <@@ jsonText |> parse  @@>)
             |> addXmlDoc "Initializes the JSON document with the schema sample")
         |+!> (provideConstructor
                 ["filename", typeof<string>] 
@@ -114,4 +105,19 @@ let jsonType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
         |+!> provideProperty
                 "Root"
                 (generateType resTy schema)
-                (fun args -> <@@ (%%args.[0] : JSON) @@>))
+                (fun args -> <@@ (%%args.[0] : JSON) @@>)
+
+    erasedType<obj> thisAssembly rootNamespace "StructuredJSON"  
+    |> staticParameters 
+          ["FileName" , typeof<string>, Some("@@@missingValue###" :> obj)  // Parameterize the type by the file to use as a template
+           "JSON" , typeof<string>, Some("@@@missingValue###" :> obj)  ]   // Allows to specify JSON inlined
+          (fun typeName parameterValues ->
+            match parameterValues with 
+            | [| :? string as fileName; :? string |] when fileName <> "@@@missingValue###" ->        
+                let resolvedFileName = findConfigFile cfg.ResolutionFolder fileName
+                watchForChanges ownerType resolvedFileName
+
+                createType typeName <| File.ReadAllText resolvedFileName
+            | [| :? string; :? string as jsonText |] when jsonText <> "@@@missingValue###" ->        
+                createType typeName jsonText
+            | _ -> failwith "You have to specify a filename or inlined JSON text")

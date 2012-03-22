@@ -4,9 +4,16 @@ open NUnit.Framework
 open FSharpx
 open FsUnit
 
-// Print data from XML file using inferred structure
-let test = new StructuredXml<"Philosophy.xml">()
-let authors = test.Root.GetAuthorElements() |> Seq.toList
+let inlined = new StructuredXml<XML="<authors><author name=\"Ludwig\" surname=\"Wittgenstein\" /></authors>">()
+
+[<Test>]
+let ``Can get author name in inlined xml``() = 
+    let author = inlined.Root.GetAuthorElements() |> Seq.head
+    author.Name |> should equal "Ludwig"
+    author.Surname |> should equal "Wittgenstein"
+
+let philosophy = new StructuredXml<"Philosophy.xml">()
+let authors = philosophy.Root.GetAuthorElements() |> Seq.toList
 
 [<Test>]
 let ``Can get author names in philosophy.xml``() = 

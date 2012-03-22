@@ -150,7 +150,7 @@ let staticParameters parameters instantiateFunction (typeDef:ProvidedTypeDefinit
                 |> Seq.map (fun (name,t,initValue) -> 
                         match initValue with
                         | None   -> ProvidedStaticParameter(name, t)
-                        | Some v -> ProvidedStaticParameter(name, t,v)) 
+                        | Some(v:obj) -> ProvidedStaticParameter(name, t, v)) 
                 |> Seq.toList), 
         instantiationFunction = instantiateFunction)
     typeDef
