@@ -6,10 +6,9 @@ open FsUnit
 
 type InlinedJSON = StructuredJSON<Schema="{ \"firstName\": \"Max\" \"lastName\": \"Mustermann\" \"age\": 26 \"isCool\": true }">
 
-let inlined = InlinedJSON().Root
-
 [<Test>]
 let ``Can parse inlined properties``() = 
+    let inlined = InlinedJSON().Root
     inlined.FirstName
     |> should equal "Max"
 
@@ -18,6 +17,21 @@ let ``Can parse inlined properties``() =
 
     inlined.Age
     |> should equal 26
+
+    inlined.IsCool
+    |> should equal true
+
+[<Test>]
+let ``Can parse inlined properties but read from file``() = 
+    let inlined = InlinedJSON("SimpleJSON.txt").Root
+    inlined.FirstName
+    |> should equal "John"
+
+    inlined.LastName
+    |> should equal "Doe"
+
+    inlined.Age
+    |> should equal 25
 
     inlined.IsCool
     |> should equal true
