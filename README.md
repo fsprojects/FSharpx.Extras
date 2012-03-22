@@ -126,13 +126,18 @@ Type Providers
 ---------------------
 
 FSharpx.TypeProviders is a library for the .NET platform implementing common type providers on top of the FSharpx.Core. 
- main target is F# but it aims to be compatible with all .NET languages wherever possible.
+ main target is F# 3.0 but it aims to be compatible with all .NET languages wherever possible.
 
 It currently implements type safe variants of:
 
 * Regex
 * FileSystem
 * Csv
+* Excel
+* JSON
+* XML
+* Registry
+* XAML
 * AppSettings.
 
 Building the project
@@ -140,7 +145,7 @@ Building the project
 
 Due to missing fsc.exe and fsi.exe there is no automated build for the type providers project at the moment.
 The nuget package is created by the following steps:
- * Build the application within Visual Studio 2011 Developer Preview
+ * Build the application within Visual Studio 2011 Beta
  * Copy the created dlls into /manualNuget/
  * Fix the version no. in /manualNuget/FSharpx.TypeProviders.nuspec 
  * Run .\lib\NuGet\NuGet.exe pack "manualNuget\FSharpx.TypeProviders.nuspec"
