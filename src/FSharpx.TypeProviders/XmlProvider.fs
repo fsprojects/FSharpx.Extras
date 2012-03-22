@@ -11,7 +11,7 @@ open Samples.FSharp.ProvidedTypes
 open FSharpx.TypeProviders.Inference
 open System.Xml.Linq
 
-// Generates type for an inferred XML element
+/// Generates type for an inferred XML element
 let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elementName,multi,elementChildren,elementProperties)) =
     let ty = runtimeType<TypedXElement> elementName
     ownerType.AddMember(ty)
@@ -24,7 +24,23 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
     let checkIfOptional propertyName (args: Expr list) = 
         <@@ (%%args.[0]:TypedXElement).Element.Attribute(XName.op_Implicit propertyName) <> null @@>
 
-    generateProperties ty accessExpr checkIfOptional elementProperties
+    let setterExpr propertyName propertyType (args: Expr list) = 
+        if propertyType = typeof<bool> then 
+            <@@  (%%args.[0]:TypedXElement).Element.
+                Attribute(XName.op_Implicit propertyName).Value <- (%%args.[1]:bool).ToString() @@>
+        elif propertyType = typeof<int> then
+            <@@  (%%args.[0]:TypedXElement).Element.
+                Attribute(XName.op_Implicit propertyName).Value <- (%%args.[1]:int).ToString() @@>
+        elif propertyType = typeof<float> then
+            <@@  (%%args.[0]:TypedXElement).Element.
+                Attribute(XName.op_Implicit propertyName).Value <- (%%args.[1]:float).ToString() @@>
+        elif propertyType = typeof<string> then
+            <@@  (%%args.[0]:TypedXElement).Element.
+                Attribute(XName.op_Implicit propertyName).Value <- (%%args.[1]:string) @@>
+        else failwith "Unexpected type in convertExpr"   
+        
+
+    generateProperties ty accessExpr checkIfOptional setterExpr elementProperties
 
     let multiAccessExpr childName (args: Expr list) =
         <@@ seq { for e in ((%%args.[0]:TypedXElement).Element.Elements(XName.op_Implicit childName)) -> 

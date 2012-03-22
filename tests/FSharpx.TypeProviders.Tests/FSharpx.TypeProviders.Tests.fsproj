@@ -43,8 +43,9 @@
     <Compile Include="MiniCsv.Tests.fs" />
     <Compile Include="Registry.Tests.fs" />
     <Compile Include="FileSystem.Tests.fs" />
-    <Compile Include="Xml.Tests.fs" />
-    <Compile Include="JSON.Tests.fs" />
+    <Compile Include="Xml.Reader.Tests.fs" />
+    <Compile Include="Xml.Writer.Tests.fs" />
+    <Compile Include="JSON.Reader.Tests.fs" />
     <Compile Include="Regex.Tests.fs" />
     <Compile Include="AppSettings.Tests.fs" />
     <Compile Include="Xaml.Tests.fs" />

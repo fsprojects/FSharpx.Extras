@@ -28,7 +28,10 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
     let checkIfOptional propertyName (args: Expr list) = 
         <@@ (%%args.[0]:JSON).HasProperty propertyName @@>
 
-    generateProperties ty accessExpr checkIfOptional elementProperties
+    let setterExpr propertyName propertyType (args: Expr list) = 
+        raise <| new NotImplementedException()
+
+    generateProperties ty accessExpr checkIfOptional setterExpr elementProperties
     
     let multiAccessExpr childName (args: Expr list) = <@@ (%%args.[0]:JSON).GetProperty(childName).GetSubElements() @@>
     let singleAccessExpr childName (args: Expr list) = <@@ ((%%args.[0]:JSON).GetProperty childName) @@>

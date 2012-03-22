@@ -45,7 +45,7 @@ open Microsoft.FSharp.Quotations
 open Microsoft.FSharp.Core.CompilerServices
 
 /// Generate property for every inferred property
-let generateProperties ownerType accessExpr checkIfOptional elementProperties =   
+let generateProperties ownerType accessExpr checkIfOptional setterExpr elementProperties =   
     for SimpleProperty(propertyName,propertyType,optional) in elementProperties do
         ownerType
           |+!> (if optional then
@@ -65,6 +65,7 @@ let generateProperties ownerType accessExpr checkIfOptional elementProperties =
                     provideProperty propertyName newType optionalAccessExpr                    
                 else
                     provideProperty propertyName propertyType (accessExpr propertyName propertyType)
+                      |> addSetter (setterExpr propertyName propertyType)
                 |> addXmlDoc (sprintf "Gets the %s attribute" propertyName))
           |> ignore
 
