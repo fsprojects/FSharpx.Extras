@@ -387,7 +387,7 @@ type Dictionary =
   static member TryFind (d, key) = Dictionary.tryFind key d
 
 [<Extension>]
-type FSharpAsyncExtensions =
+type FSharpAsyncEx =
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>) = 
         Async.bind f.Invoke o
