@@ -48,16 +48,6 @@ let niceName (s:string) =
               yield sub.[0].ToString().ToUpper() + sub.ToLower().Substring(1) }
     |> String.concat ""
 
-let makeUniqueName =
-    let dict = new Dictionary<_, _>()
-    (fun name ->
-        if dict.ContainsKey(name) then
-          dict.[name] <- dict.[name] + 1
-          sprintf "%s%d" name (dict.[name])
-        else 
-          dict.[name] <- 0
-          name)
-
 let hideOldMethods (typeDef:ProvidedTypeDefinition) = 
     typeDef.HideObjectMethods <- true
     typeDef
@@ -72,7 +62,7 @@ let inline addDefinitionLocation (filePosition:FilePosition) (definition: ^a) =
     (^a : (member AddDefinitionLocation: int*int*string -> unit) (definition,filePosition.Line,filePosition.Column,filePosition.FileName))
     definition
 
-let runtimeType<'a> typeName = ProvidedTypeDefinition(typeName |> niceName |> makeUniqueName, Some typeof<'a>)
+let runtimeType<'a> typeName = ProvidedTypeDefinition(typeName |> niceName, Some typeof<'a>)
 
 let eraseType assemblyName rootNamespace typeName toType = 
     ProvidedTypeDefinition(assemblyName, rootNamespace, typeName, Some toType)
@@ -171,7 +161,8 @@ let watchForChanges (ownerType:TypeProviderForNamespaces) (fileName:string) =
       let path = Path.GetDirectoryName(fileName)
       let name = Path.GetFileName(fileName)
       let watcher = new FileSystemWatcher(Filter = name, Path = path)
-      watcher.Changed.Add(fun _ -> ownerType.Invalidate()) 
+      watcher.Changed.Add(fun _ ->
+        ownerType.Invalidate()) 
       watcher.EnableRaisingEvents <- true   
 
 let seqType ty = typedefof<seq<_>>.MakeGenericType[| ty |]
