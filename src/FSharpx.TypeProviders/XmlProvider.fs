@@ -17,28 +17,37 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
     ownerType.AddMember(ty)
 
     let accessExpr propertyName propertyType (args: Expr list) = 
-        <@@  (%%args.[0]:TypedXElement).Element.
-                Attribute(XName.op_Implicit propertyName).Value @@> 
-        |> convertExpr propertyType
+        match propertyType with
+        | x when x = typeof<bool> ->
+            <@@  let (s:string) = (%%args.[0]:TypedXElement).Element.Attribute(XName.op_Implicit propertyName).Value
+                 s.Equals("true", StringComparison.InvariantCultureIgnoreCase) ||
+                 s.Equals("yes", StringComparison.InvariantCultureIgnoreCase)  @@> 
+        | x when x = typeof<int> ->
+            <@@  (%%args.[0]:TypedXElement).Element.Attribute(XName.op_Implicit propertyName).Value
+                    |> Int32.Parse @@> 
+        | x when x = typeof<float> ->
+            <@@  (%%args.[0]:TypedXElement).Element.Attribute(XName.op_Implicit propertyName).Value
+                    |> Double.Parse @@> 
+        | x when x = typeof<string> ->
+            <@@  (%%args.[0]:TypedXElement).Element.Attribute(XName.op_Implicit propertyName).Value @@> 
 
     let checkIfOptional propertyName (args: Expr list) = 
         <@@ (%%args.[0]:TypedXElement).Element.Attribute(XName.op_Implicit propertyName) <> null @@>
 
     let setterExpr propertyName propertyType (args: Expr list) = 
-        if propertyType = typeof<bool> then 
+        match propertyType with
+        | x when x = typeof<bool> ->
             <@@  (%%args.[0]:TypedXElement).Element.
                 Attribute(XName.op_Implicit propertyName).Value <- (%%args.[1]:bool).ToString() @@>
-        elif propertyType = typeof<int> then
+        | x when x = typeof<int> ->
             <@@  (%%args.[0]:TypedXElement).Element.
                 Attribute(XName.op_Implicit propertyName).Value <- (%%args.[1]:int).ToString() @@>
-        elif propertyType = typeof<float> then
+        | x when x = typeof<float> ->
             <@@  (%%args.[0]:TypedXElement).Element.
                 Attribute(XName.op_Implicit propertyName).Value <- (%%args.[1]:float).ToString() @@>
-        elif propertyType = typeof<string> then
+        | x when x = typeof<string> ->
             <@@  (%%args.[0]:TypedXElement).Element.
                 Attribute(XName.op_Implicit propertyName).Value <- (%%args.[1]:string) @@>
-        else failwith "Unexpected type in convertExpr"   
-        
 
     generateProperties ty accessExpr checkIfOptional setterExpr elementProperties
 

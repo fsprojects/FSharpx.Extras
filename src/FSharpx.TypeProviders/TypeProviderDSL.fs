@@ -172,20 +172,7 @@ let watchForChanges (ownerType:TypeProviderForNamespaces) (fileName:string) =
       let name = Path.GetFileName(fileName)
       let watcher = new FileSystemWatcher(Filter = name, Path = path)
       watcher.Changed.Add(fun _ -> ownerType.Invalidate()) 
-      watcher.EnableRaisingEvents <- true
-
-let convertExpr typ expr = 
-    if typ = typeof<bool> then 
-      <@@ let (s:string) = %%expr
-          s.Equals("true", StringComparison.InvariantCultureIgnoreCase) ||
-          s.Equals("yes", StringComparison.InvariantCultureIgnoreCase) @@>
-    elif typ = typeof<int> then
-      <@@ Int32.Parse(%%expr : string) @@>
-    elif typ = typeof<float> then
-      <@@ Double.Parse(%%expr : string) @@>
-    elif typ = typeof<string> then
-      expr
-    else failwith "Unexpected type in convertExpr"      
+      watcher.EnableRaisingEvents <- true   
 
 let seqType ty = typedefof<seq<_>>.MakeGenericType[| ty |]
 
