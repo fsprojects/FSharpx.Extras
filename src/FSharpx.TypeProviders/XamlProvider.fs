@@ -118,45 +118,24 @@ let createXmlReader(textReader:TextReader) =
     XmlReader.Create(textReader, XmlReaderSettings(IgnoreProcessingInstructions = true, IgnoreWhitespace = true))
 
 let rec createNestedType parent node =
-    let mkTypeName = sprintf "GraphOf%s"
     let name =
         match node.Data.Name with
         | Some name -> name            
         | None ->
             failwith "Cannot create a nested type without a name"
 
-    if name = "Control" then failwithf "'Control' at %A is reserved by this type provider and cannot be used for elements" node.Data.Position
-    
-    let nestedType =
-        runtimeType<obj> (mkTypeName name)
-        |+!> provideConstructor
-                [("control", node.NodeType)]
-                (function
-                 | [x] -> x
-                 | _ -> badargs())            
-        |+> fun () ->
-            provideProperty
-                "Control"
-                node.NodeType
-                (function
-                    | [this] -> Expr.Coerce(<@@ (%%this : obj) @@>, node.NodeType)
-                    | _ -> badargs())
-            |> addXmlDoc (sprintf "Access to the underlying %s" name)
+    (parent
+    |+> fun () ->
+       provideProperty
+             name
+             node.NodeType
+             (function
+                | [this] -> Expr.Coerce(<@@ ((%%this : obj) :?> FrameworkElement).FindName(name) @@>, node.NodeType)
+                | _ -> badargs())
+       |> addDefinitionLocation node.Data.Position) |> ignore
 
     node.Children
-    |> List.iter (createNestedType nestedType)
-
-    parent
-    |+!> nestedType
-    |+> fun () ->
-        provideProperty
-            name
-            nestedType
-            (function
-                | [this] -> Expr.Coerce(<@@ ((%%this : obj) :?> FrameworkElement).FindName(name) @@>, nestedType)
-                | _ -> badargs())
-        |> addDefinitionLocation node.Data.Position
-    |> ignore
+    |> List.iter (createNestedType parent)
 
 let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
     let root = 

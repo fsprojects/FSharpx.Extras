@@ -9,17 +9,17 @@ type T = XamlFile< @"StackPanel.xaml">
 [<Test>][<RequiresSTA>]
 let ``Can access the grid``() =      
    let window = T()
-   window.MainGrid.Control.Name |> should equal "MainGrid"
+   window.MainGrid.Name |> should equal "MainGrid"
 
 [<Test>][<RequiresSTA>]
 let ``Can access the stackpanel``() =      
    let window = T()
-   window.MainGrid.StackPanel1.Control.Name |> should equal "StackPanel1"
+   window.StackPanel1.Name |> should equal "StackPanel1"
 
 [<Test>][<RequiresSTA>]
 let ``Can access the first button``() =      
    let window = T()
-   window.MainGrid.StackPanel1.Button1.Control.Name |> should equal "Button1"
+   window.Button1.Name |> should equal "Button1"
 
 [<Test>][<RequiresSTA>]
 let ``The window should have the right type``() =
@@ -29,9 +29,9 @@ let ``The window should have the right type``() =
 [<Test>][<RequiresSTA>]
 let ``The grid should have the right type``() =
    let window = T()
-   window.MainGrid.Control.GetType() |> should equal typeof<System.Windows.Controls.Grid>
+   window.MainGrid.GetType() |> should equal typeof<System.Windows.Controls.Grid>
 
 [<Test>][<RequiresSTA>]
 let ``The button should have the right type``() =
    let window = T()
-   window.MainGrid.StackPanel1.Button2.Control.GetType() |> should equal typeof<System.Windows.Controls.Button>
+   window.Button2.GetType() |> should equal typeof<System.Windows.Controls.Button>

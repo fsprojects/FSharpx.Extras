@@ -7,7 +7,7 @@ type MainWindow = XamlFile<"Window.xaml">
 
 let loadWindow() =
    let window = MainWindow()
-   window.MainGrid.StackPanel1.Button1.Control.Click.Add(
+   window.Button1.Click.Add(
         fun _ -> MessageBox.Show("Hello world!") |> ignore)
    window.Control
 
