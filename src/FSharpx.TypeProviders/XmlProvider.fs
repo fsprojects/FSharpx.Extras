@@ -37,17 +37,13 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
     let setterExpr propertyName propertyType (args: Expr list) = 
         match propertyType with
         | x when x = typeof<bool> ->
-            <@@  (%%args.[0]:TypedXElement).Element.
-                Attribute(XName.op_Implicit propertyName).Value <- (%%args.[1]:bool).ToString() @@>
+            <@@  (%%args.[0]:TypedXElement).Element.SetAttributeValue(XName.op_Implicit propertyName, (%%args.[1]:bool).ToString()) @@>
         | x when x = typeof<int> ->
-            <@@  (%%args.[0]:TypedXElement).Element.
-                Attribute(XName.op_Implicit propertyName).Value <- (%%args.[1]:int).ToString() @@>
+            <@@  (%%args.[0]:TypedXElement).Element.SetAttributeValue(XName.op_Implicit propertyName, (%%args.[1]:int).ToString()) @@>
         | x when x = typeof<float> ->
-            <@@  (%%args.[0]:TypedXElement).Element.
-                Attribute(XName.op_Implicit propertyName).Value <- (%%args.[1]:float).ToString() @@>
+            <@@  (%%args.[0]:TypedXElement).Element.SetAttributeValue(XName.op_Implicit propertyName, (%%args.[1]:float).ToString()) @@>
         | x when x = typeof<string> ->
-            <@@  (%%args.[0]:TypedXElement).Element.
-                Attribute(XName.op_Implicit propertyName).Value <- (%%args.[1]:string) @@>
+            <@@  (%%args.[0]:TypedXElement).Element.SetAttributeValue(XName.op_Implicit propertyName, (%%args.[1]:string)) @@>
 
     generateProperties ty accessExpr checkIfOptional setterExpr elementProperties
 
@@ -55,9 +51,15 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
         <@@ seq { for e in ((%%args.[0]:TypedXElement).Element.Elements(XName.op_Implicit childName)) -> 
                                 TypedXElement(e) } @@>
 
+    let newChildExpr childName (args: Expr list) =
+        <@@ TypedXElement(new XElement(XName.op_Implicit childName)) @@>
+
+    let addChildExpr (args: Expr list) =
+        <@@ (%%args.[0]:TypedXElement).Element.Add((%%args.[1]:TypedXElement).Element) @@>
+
     let singleAccessExpr childName (args: Expr list) = raise <| new NotImplementedException()
 
-    generateSublements ty ownerType multiAccessExpr singleAccessExpr generateType elementChildren   
+    generateSublements ty ownerType multiAccessExpr addChildExpr newChildExpr singleAccessExpr generateType elementChildren   
 
 /// Infer schema from the loaded data and generate type with properties
 let xmlType (ownerType:TypeProviderForNamespaces) cfg =    

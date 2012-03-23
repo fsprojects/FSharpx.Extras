@@ -35,8 +35,10 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
     
     let multiAccessExpr childName (args: Expr list) = <@@ (%%args.[0]:JSON).GetProperty(childName).GetSubElements() @@>
     let singleAccessExpr childName (args: Expr list) = <@@ ((%%args.[0]:JSON).GetProperty childName) @@>
+    let newChildExpr childName (args: Expr list) = raise <| new NotImplementedException()
+    let addChildExpr (args: Expr list) = raise <| new NotImplementedException()
 
-    generateSublements ty ownerType multiAccessExpr singleAccessExpr generateType elementChildren
+    generateSublements ty ownerType multiAccessExpr addChildExpr newChildExpr singleAccessExpr generateType elementChildren
 
 
 /// Infer schema from the loaded data and generate type with properties

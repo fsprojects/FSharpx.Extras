@@ -71,18 +71,22 @@ let generateProperties ownerType accessExpr checkIfOptional setterExpr elementPr
 
 /// Iterates over all the sub elements, generates types for them
 /// and adds member for accessing them to the parent.
-let generateSublements ownerType parentType multiAccessExpr singleAccessExpr generateTypeF children =
+let generateSublements ownerType parentType multiAccessExpr addChildExpr newChildExpr singleAccessExpr generateTypeF children =
     for CompoundProperty(childName,multi,_,_) as child in children do
         let childType = generateTypeF parentType child
 
         if multi then     
             let newType = seqType childType
-            let methodName = "Get" + niceName childName + "Elements"
+            let niceChildName = niceName childName
 
             ownerType
-            |+!> (provideMethod methodName [] newType (multiAccessExpr childName)
+            |+!> (provideMethod ("Get" + niceChildName + "Elements") [] newType (multiAccessExpr childName)
                     |> addXmlDoc (sprintf @"Gets the %s elements" childName))
-            |> ignore               
+            |+!> (provideMethod ("New" + niceChildName) [] childType (newChildExpr childName)
+                    |> addXmlDoc (sprintf @"Creates a new %s element" childName))
+            |+!> (provideMethod ("Add" + niceChildName) ["element", childType] typeof<unit> addChildExpr
+                    |> addXmlDoc (sprintf @"Adds a %s element" childName))
+            |> ignore
         else
             ownerType
             |+!> (provideProperty childName childType (singleAccessExpr childName)

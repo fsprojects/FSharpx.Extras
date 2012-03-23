@@ -3,8 +3,6 @@
 open NUnit.Framework
 open FSharpx
 open FsUnit
-open System.Xml
-open System.Xml.Linq
 
 type AuthorsXml = StructuredXml<Schema="""<authors><author name="Ludwig" surname="Wittgenstein" age="29" isPhilosopher="True" size="30.3" /></authors>""">
 
@@ -14,7 +12,6 @@ let ``Can set properties in inlined xml``() =
     let author = inlined.Root.GetAuthorElements() |> Seq.head
 
     author.Name <- "John"
-
     author.Name |> should equal "John"
 
     author.Age <- 30
@@ -26,17 +23,28 @@ let ``Can set properties in inlined xml``() =
     author.Size <- 42.42
     author.Size |> should equal 42.42
 
-open FSharpx.TypeProviders
-
 [<Test>]
 let ``Can add author in inlined xml``() =
     let inlined = new AuthorsXml()
-    let author = inlined.Root.GetAuthorElements() |> Seq.head
-    let x = (inlined.Root :> TypedXElement).Element   // TODO: This a temporary exploration
-    x.Add((author:> TypedXElement).Element)
+
+    let author = inlined.Root.NewAuthor()
+    author.Name <- "John"
+    author.Age <- 31
+    author.IsPhilosopher <- false
+    author.Size <- 22.2
+
+    inlined.Root.AddAuthor author
 
     let authors = inlined.Root.GetAuthorElements() |> Seq.toList
     authors.Length |> should equal 2
+
+[<Test>]
+let ``Can use named parameters in author constructor``() =
+    let inlined = new AuthorsXml()
+
+    let author = inlined.Root.NewAuthor(Name="John", Age=31)
+    author.Name |> should equal "John"    
+    author.Age |> should equal 31
 
 [<Test>]
 let ``Can export modified xml``() = 
@@ -48,6 +56,6 @@ let ``Can export modified xml``() =
     author.IsPhilosopher <- false
     author.Size <- 22.2
 
-    inlined.Document.ToString(SaveOptions.DisableFormatting)
+    inlined.Document.ToString(System.Xml.Linq.SaveOptions.DisableFormatting)
       .Replace("22,2","22.2")  // TODO: Use  InvariantCulture 
     |> should equal """<authors><author name="John" surname="Wittgenstein" age="31" isPhilosopher="False" size="22.2" /></authors>"""
