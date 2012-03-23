@@ -52,8 +52,8 @@ namespace FSharpx.CSharpTests {
             // super verbose return
             FSharpAsync<int> i = ExtraTopLevelOperators.DefaultAsyncBuilder.Return(1);
 
-            FSharpAsync<int> x = 1.AsyncReturn();
-            FSharpAsync<Func<int>> fa = L.F(() => 1).AsyncReturn();
+            FSharpAsync<int> x = FSharpAsyncExtensions.Return(1);
+            FSharpAsync<Func<int>> fa = FSharpAsyncExtensions.Return(L.F(() => 1));
         }
 
         [Test]
@@ -72,7 +72,7 @@ namespace FSharpx.CSharpTests {
                 , "http://www.microsoft.com"
                 );
             var realJoinWebPages = JoinWebPages(url => Get(url).Protect());
-            var testJoinWebPages = JoinWebPages(_ => FSharpChoice.New1Of2<string, Exception>("hello").AsyncReturn());
+            var testJoinWebPages = JoinWebPages(_ => FSharpAsyncExtensions.Return(FSharpChoice.New1Of2<string, Exception>("hello")));
             var result = testJoinWebPages(urls);
             Assert.AreEqual("hellohellohellohello", result);
         }

@@ -435,8 +435,7 @@ type FSharpAsyncExtensions =
     static member ToFSharpAsync (f: Func<_>) =
         Async.FromBeginEnd(f.BeginInvoke, f.EndInvoke)
 
-    [<Extension>]
-    static member AsyncReturn a = async.Return a
+    static member Return a = async.Return a
 
     [<Extension>]
     static member Parallel a = Async.Parallel a
