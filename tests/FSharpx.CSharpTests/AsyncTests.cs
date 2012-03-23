@@ -63,11 +63,32 @@ namespace FSharpx.CSharpTests {
                        e => { });
         }
 
+        [Test]
+        public void Example() {
+            var urls = FSharpList.Create(
+                  "http://www.google.com"
+                , "http://www.bing.com"
+                , "http://www.yahoo.com"
+                , "http://www.microsoft.com"
+                );
+            var realJoinWebPages = JoinWebPages(url => Get(url).Protect());
+            var testJoinWebPages = JoinWebPages(_ => FSharpChoice.New1Of2<string, Exception>("hello").AsyncReturn());
+            var result = testJoinWebPages(urls);
+            Assert.AreEqual("hellohellohellohello", result);
+        }
+
+        Func<IEnumerable<string>, string> JoinWebPages(Func<string, FSharpAsync<FSharpChoice<string, Exception>>> fetch) {
+            return urls =>
+                urls.Select(fetch).Parallel()
+                    .Select(c => string.Join("", c.Select(s => s.Match(x => x, _ => "")))) // swallow exceptions!
+                    .Run();
+        }
+
         // http://stackoverflow.com/questions/6893998/c-how-to-implement-as-async-and-in-f
 
         [Test]
         [Ignore("just an example")]
-        public void AsyncExample() {
+        public void Example2() {
             var price = LoadPrices("MSFT").Run().First();
             Assert.AreEqual(new DateTime(2008,10,30), price.Item1);
             Assert.AreEqual(20.82m, price.Item2);
