@@ -31,40 +31,11 @@ type XamlFile(root:FrameworkElement) =
 
     member this.Root = root
 
-[<RequireQualifiedAccess>]
-type XamlInfo = 
-| Path of string
-| Text of string 
-    member this.FileName =
-        match this with 
-        | XamlInfo.Path p -> p
-        | _ -> null
-    
-type XamlId =  
-| Named of FilePosition * string
-| Unnamed of FilePosition
-    member this.Position =
-        match this with
-        | Named(pos, _) | Unnamed(pos) -> pos
-
-    member this.Name =
-        match this with
-        | Named(_, name) -> Some name
-        | Unnamed _ -> None
-
-type XamlElementInfo =
-| XamlElementInfo of XamlId * string
-
-type Tree<'Data> =
-    { Data : 'Data
-      Children : Tree<'Data> list }
-
 type XamlNode =
-    { IsRoot: bool
+    { Position: FilePosition
+      IsRoot: bool
       Name: string
-      NodeType : Type
-      Data : XamlId
-      Children : XamlNode list }
+      NodeType : Type }
 
 let posOfReader filename (xaml:XmlReader) = 
     let lineInfo = xaml :> obj :?> IXmlLineInfo
@@ -72,83 +43,62 @@ let posOfReader filename (xaml:XmlReader) =
       Column = lineInfo.LinePosition
       FileName = filename }
 
-let infoOfXamlElement filename (xaml:XmlReader) =
+let createXamlNode filename isRoot (xaml:XmlReader) =
+    let pos = posOfReader filename xaml
     try
-        let pos = posOfReader filename xaml
-        let name = 
+        let typeName = xaml.Name
+        let name =                        
             match xaml.GetAttribute("Name") with
-            | name when name <> null -> Named (pos, name)
+            | name when name <> null -> Some name
             | _ ->
                 match xaml.GetAttribute("x:Name") with
-                | name when name <> null -> Named (pos, name)
-                | _ -> Unnamed (pos)
-        
-        XamlElementInfo(name,xaml.Name) |> Some
+                | name when name <> null -> Some name
+                | _ -> None
+
+        let propertyName =
+            match name with
+            | Some name -> name
+            | None -> 
+                if isRoot then "Root" else
+                failwith "Cannot create a nested type without a name" // TODO: Generate one
+
+        let propertyType =
+            match typeName with
+            | "Window" -> typeof<Window>
+            | other ->
+                match wpfAssembly.GetType(sprintf "System.Windows.Controls.%s" other) with
+                | null -> typeof<obj>
+                | st -> st
+
+        { Position = pos
+          IsRoot = isRoot
+          Name = propertyName
+          NodeType = propertyType }
     with
-    | :? XmlException -> None
+    | :? XmlException -> failwithf "Error near %A" pos
 
-let typeOfXamlElement = function 
-| "Window" -> typeof<System.Windows.Window>
-| other ->
-    match wpfAssembly.GetType(sprintf "System.Windows.Controls.%s" other) with
-    | null -> typeof<obj>
-    | st -> st
-
-   
 let readXamlFile filename (xaml:XmlReader) =
-    let rec readNewElement isRoot skipUnnamed siblings =
-        match xaml.Read() with
-        | false -> siblings
-        | true ->
+    seq {
+        let isRoot = ref true
+        while xaml.Read() do
             match xaml.NodeType with
-            | XmlNodeType.Element ->
-                match infoOfXamlElement filename xaml with
-                | Some (XamlElementInfo(data, typeName)) ->
-                    let hasChildren = not xaml.IsEmptyElement
-                    match skipUnnamed, data with
-                    | _, Named _ | false, Unnamed _->
-                        { IsRoot = isRoot
-                          Name =
-                            match data.Name with
-                            | Some name -> name            
-                            | None -> 
-                                if isRoot then "Root" else
-                                failwith "Cannot create a nested type without a name" // TODO: Generate one
-                          NodeType = typeOfXamlElement typeName
-                          Data = data 
-                          Children = (if hasChildren then readNewElement false true [] else []) }
-                        :: siblings
-                        |> readNewElement false skipUnnamed
-                    | true, Unnamed _ ->
-                        readNewElement false true siblings
-                        |> readNewElement false true
-                | None -> failwithf "Error near %A" (posOfReader filename xaml)
-            | XmlNodeType.EndElement -> siblings
-            | XmlNodeType.Comment | XmlNodeType.Text -> readNewElement false skipUnnamed siblings
-            | unexpected -> failwithf "Unexpected node type %A at %A" unexpected (posOfReader filename xaml)
-
-    let dontSkipTop = false
-
-    match readNewElement true dontSkipTop [] with
-    | [root] -> root
-    | _ :: _ -> failwith "Multiple roots"
-    | [] -> failwith "No root"
+            | XmlNodeType.Element ->               
+                yield createXamlNode filename (!isRoot) xaml
+                isRoot := false
+            | XmlNodeType.EndElement | XmlNodeType.Comment | XmlNodeType.Text -> ()
+            | unexpected -> failwithf "Unexpected node type %A at %A" unexpected (posOfReader filename xaml) }
 
 let createXmlReader(textReader:TextReader) =
     XmlReader.Create(textReader, XmlReaderSettings(IgnoreProcessingInstructions = true, IgnoreWhitespace = true))
 
-let rec getAllSubElementsWithName (node:XamlNode) =      
-    seq { yield node
-          for child in node.Children do
-            yield! getAllSubElementsWithName child }
-
-let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
-    let root = 
+let createTypeFromReader typeName fileName (reader: TextReader) =
+    let elements = 
         reader
         |> createXmlReader 
-        |> readXamlFile xamlInfo.FileName
+        |> readXamlFile fileName
+        |> Seq.toList
 
-    let subElements = getAllSubElementsWithName root
+    let root = List.head elements
 
     let accessExpr node (args:Expr list) =
         let name = node.Name
@@ -156,32 +106,29 @@ let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
         Expr.Coerce(expr,node.NodeType)
 
     erasedType<XamlFile> thisAssembly rootNamespace typeName
-        |> addDefinitionLocation root.Data.Position
+        |> addDefinitionLocation root.Position
         |+!> (provideConstructor
                 [] 
-                (fun args -> 
-                    match xamlInfo with 
-                    | XamlInfo.Path path -> <@@ XamlFile(XamlReader.Parse(File.ReadAllText(path)) :?> FrameworkElement) @@>
-                    | XamlInfo.Text text -> <@@ XamlFile(XamlReader.Parse(text) :?> FrameworkElement) @@>)
-                |> addXmlDoc (sprintf "Initializes typed access to %s" xamlInfo.FileName)
-                |> addDefinitionLocation root.Data.Position)
+                (fun args -> <@@ XamlFile(XamlReader.Parse(File.ReadAllText fileName) :?> FrameworkElement) @@>)
+                |> addXmlDoc (sprintf "Initializes typed access to %s" fileName)
+                |> addDefinitionLocation root.Position)
     |++!> (
-        subElements
+        elements
         |> Seq.map (fun node ->
              provideProperty node.Name node.NodeType (accessExpr node)
              |> addXmlDoc (sprintf "Gets the %s element" node.Name)
-             |> addDefinitionLocation node.Data.Position))   
+             |> addDefinitionLocation node.Position))   
 
 /// Infer schema from the loaded data and generate type with properties     
 let xamlType (ownerType:TypeProviderForNamespaces)  (cfg:TypeProviderConfig) =
     erasedType<obj> thisAssembly rootNamespace "XAML"
       |> staticParameter "FileName" (fun typeName configFileName -> 
-            let path = findConfigFile cfg.ResolutionFolder configFileName
+            let fileName = findConfigFile cfg.ResolutionFolder configFileName
 
-            if File.Exists path |> not then
-                failwithf "the path '%s' does not exist" path
+            if File.Exists fileName |> not then
+                failwithf "The file '%s' does not exist" fileName
             
-            watchForChanges ownerType path
+            watchForChanges ownerType fileName
             
-            use reader = new StreamReader(path)
-            createTypeFromReader typeName (XamlInfo.Path path) reader)
+            use reader = new StreamReader(fileName)
+            createTypeFromReader typeName fileName reader)
