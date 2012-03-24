@@ -55,7 +55,7 @@ let tokenize source=
             let n, t' = token ("-" + d.ToString()) t
             tokenize' (Token.Number(n) :: acc) t'
         | '+' :: d :: t 
-        | d :: t when Char.IsDigit(d) -> // start of positive number
+        | d :: t when Char.IsDigit(d) || d = '.' -> // start of positive number
             let n, t' = token (d.ToString()) t
             tokenize' (Token.Number(n) :: acc) t'
         | [] -> List.rev acc // end of list terminates
@@ -74,6 +74,10 @@ type JSON =
     member json.HasProperty propertyName = 
         match json with
         | JObject map -> Map.containsKey propertyName !map
+
+    member json.RemoveProperty propertyName = 
+        match json with
+        | JObject map -> map := Map.remove propertyName !map
 
     member json.GetProperty propertyName = 
         match json with
@@ -94,6 +98,25 @@ type JSON =
     member json.GetSubElements() = 
         match json with
         | JArray childs -> !childs
+
+    member json.SetText(propertyName,text) = 
+        match json with
+        | JObject map -> map := Map.add propertyName (Text (ref text)) !map
+
+    member json.SetNumber(propertyName,number) = 
+        match json with
+        | JObject map -> map := Map.add propertyName (Number (ref number)) !map
+
+    member json.SetBoolean(propertyName,boolean) = 
+        match json with
+        | JObject map -> map := Map.add propertyName (Boolean (ref boolean)) !map
+
+    member json.AddSubElement(propertyName,child) =
+        match json with
+        | JObject map ->
+          match Map.tryFind propertyName !map with
+          | Some (JArray childs) -> map := Map.add propertyName (JArray (ref (child :: !childs))) !map
+          | _ -> map := Map.add propertyName (JArray (ref [])) !map
 
     member json.ToXml() =
         let rec toXml' json =

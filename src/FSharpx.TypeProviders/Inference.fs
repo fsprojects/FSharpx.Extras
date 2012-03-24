@@ -9,6 +9,7 @@ open System.Xml.Linq
 open FSharpx.TypeProviders.DSL
 open System.Collections.Generic
 open System.Globalization
+open FSharpx.TypeProviders.JSONParser
 
 /// Checks whether the string is a boolean value
 let isBool (s:string) =
@@ -45,7 +46,7 @@ open Microsoft.FSharp.Quotations
 open Microsoft.FSharp.Core.CompilerServices
 
 /// Generate property for every inferred property
-let generateProperties ownerType accessExpr checkIfOptional setterExpr elementProperties =   
+let generateProperties ownerType accessExpr checkIfOptional setterExpr optionalSetterExpr elementProperties =   
     for SimpleProperty(propertyName,propertyType,optional) in elementProperties do
         ownerType
           |+!> (if optional then
@@ -62,10 +63,11 @@ let generateProperties ownerType accessExpr checkIfOptional setterExpr elementPr
                                 Expr.NewUnionCase(some, [accessExpr propertyName propertyType args]),
                                 Expr.NewUnionCase(none, [])))
 
-                    provideProperty propertyName newType optionalAccessExpr                    
+                    provideProperty propertyName newType optionalAccessExpr
+                        |> addSetter (optionalSetterExpr propertyName propertyType)
                 else
                     provideProperty propertyName propertyType (accessExpr propertyName propertyType)
-                      |> addSetter (setterExpr propertyName propertyType)
+                        |> addSetter (setterExpr propertyName propertyType)
                 |> addXmlDoc (sprintf "Gets the %s attribute" propertyName))
           |> ignore
 
@@ -84,7 +86,7 @@ let generateSublements ownerType parentType multiAccessExpr addChildExpr newChil
                     |> addXmlDoc (sprintf @"Gets the %s elements" childName))
             |+!> (provideMethod ("New" + niceChildName) [] childType (newChildExpr childName)
                     |> addXmlDoc (sprintf @"Creates a new %s element" childName))
-            |+!> (provideMethod ("Add" + niceChildName) ["element", childType] typeof<unit> addChildExpr
+            |+!> (provideMethod ("Add" + niceChildName) ["element", childType] typeof<unit> (addChildExpr childName)
                     |> addXmlDoc (sprintf @"Adds a %s element" childName))
             |> ignore
         else

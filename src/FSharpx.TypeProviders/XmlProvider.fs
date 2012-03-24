@@ -46,7 +46,9 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
         | x when x = typeof<string> ->
             <@@  (%%args.[0]:TypedXElement).Element.SetAttributeValue(XName.op_Implicit propertyName, (%%args.[1]:string)) @@>
 
-    generateProperties ty accessExpr checkIfOptional setterExpr elementProperties
+    let optionalSetterExpr propertyName propertyType (args: Expr list) = raise <| new NotImplementedException()
+
+    generateProperties ty accessExpr checkIfOptional setterExpr optionalSetterExpr elementProperties
 
     let multiAccessExpr childName (args: Expr list) =
         <@@ seq { for e in ((%%args.[0]:TypedXElement).Element.Elements(XName.op_Implicit childName)) -> 
@@ -55,7 +57,7 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
     let newChildExpr childName (args: Expr list) =
         <@@ TypedXElement(new XElement(XName.op_Implicit childName)) @@>
 
-    let addChildExpr (args: Expr list) =
+    let addChildExpr childName (args: Expr list) =
         <@@ (%%args.[0]:TypedXElement).Element.Add((%%args.[1]:TypedXElement).Element) @@>
 
     let singleAccessExpr childName (args: Expr list) = raise <| new NotImplementedException()

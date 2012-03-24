@@ -44,13 +44,13 @@
     <Compile Include="Strings.fs" />
     <Compile Include="TypeProviderDSL.fs" />
     <Compile Include="Settings.fs" />
+    <Compile Include="JSON.fs" />
     <Compile Include="Inference.fs" />
     <Compile Include="RegexProvider.fs" />
     <Compile Include="RegistryProvider.fs" />
     <Compile Include="FileSystemProvider.fs" />
     <Compile Include="XmlInference.fs" />
     <Compile Include="XmlProvider.fs" />
-    <Compile Include="JSON.fs" />
     <Compile Include="JsonInference.fs" />
     <Compile Include="JsonProvider.fs" />
     <Compile Include="MiniCsvProvider.fs" />

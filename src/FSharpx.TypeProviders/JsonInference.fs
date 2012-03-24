@@ -21,9 +21,9 @@ module JSONInference =
         | JObject map -> 
             for prop in !map do   // TODO: Don't tostring here
                 match prop.Value with
-                | Text t -> yield prop.Key, !t
-                | Number n -> yield prop.Key, (!n).ToString()
-                | Boolean b -> yield prop.Key, (!b).ToString()
+                | Text t -> yield prop.Key, typeof<string>
+                | Number n -> yield prop.Key, if isInt ((!n).ToString()) then typeof<int> else typeof<float>
+                | Boolean b -> yield prop.Key, typeof<bool>
                 | _ -> ()              
         | _ -> ()]
     props
@@ -33,14 +33,14 @@ module JSONInference =
           name,
           attrs 
             |> Seq.map snd
-            |> inferType,
+            |> Seq.head,
           Seq.length attrs < Seq.length elements))
 
   and collectElements (elements:seq<JSON>)  =
     [ for el in elements do
         match el with
         | JObject map -> 
-            for prop in !map do   // TODO: Don't tostring here                
+            for prop in !map do            
                 match prop.Value with
                 | JObject child -> yield prop.Key, false, prop.Value
                 | JArray childs -> 

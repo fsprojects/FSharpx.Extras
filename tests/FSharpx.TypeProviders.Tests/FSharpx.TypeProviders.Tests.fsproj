@@ -45,7 +45,9 @@
     <Compile Include="FileSystem.Tests.fs" />
     <Compile Include="Xml.Reader.Tests.fs" />
     <Compile Include="Xml.Writer.Tests.fs" />
+    <Compile Include="JSON.Parser.Tests.fs" />
     <Compile Include="JSON.Reader.Tests.fs" />
+    <Compile Include="JSON.Writer.Tests.fs" />
     <Compile Include="Regex.Tests.fs" />
     <Compile Include="AppSettings.Tests.fs" />
     <Compile Include="Xaml.Tests.fs" />

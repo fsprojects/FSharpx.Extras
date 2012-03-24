@@ -34,8 +34,6 @@
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
     <Compile Include="ConnegTests.fs" />
-    <Compile Include="JSON.ParserTests.fs" />
-    <Compile Include="JSON.SerializationTests.fs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

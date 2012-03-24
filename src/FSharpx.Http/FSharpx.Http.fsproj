@@ -50,6 +50,5 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Conneg.fs" />
-    <Compile Include="JSON.fs" />
   </ItemGroup>
 </Project>
