@@ -17,6 +17,12 @@ let ``Can access the stackpanel``() =
    window.StackPanel1.Name |> should equal "StackPanel1"
 
 [<Test>][<RequiresSTA>]
+let ``Can access the stackpanel from cache``() =      
+   let window = T()
+   window.StackPanel1.Name |> should equal "StackPanel1"
+   window.StackPanel1.Name |> should equal "StackPanel1" // this goes through the cache
+
+[<Test>][<RequiresSTA>]
 let ``Can access the first button``() =      
    let window = T()
    window.Button1.Name |> should equal "Button1"

@@ -17,6 +17,20 @@ open FSharpx.TypeProviders.Settings
 
 let wpfAssembly = typeof<System.Windows.Controls.Button>.Assembly
 
+/// Simple type wrapping Xaml file
+type XamlFile(root:FrameworkElement) =
+    let dict = new Dictionary<_,_>()
+
+    member this.GetChild name = 
+        match dict.TryGetValue name with
+        | true,element -> element
+        | false,element -> 
+            let element = root.FindName name
+            dict.[name] <- element
+            element
+
+    member this.Root = root
+
 [<RequireQualifiedAccess>]
 type XamlInfo = 
 | Path of string
@@ -117,11 +131,11 @@ let rec createNestedType parent node =
     let name =
         match node.Data.Name with
         | Some name -> name            
-        | None -> failwith "Cannot create a nested type without a name"
+        | None -> failwith "Cannot create a nested type without a name" // TODO: Generate one
 
     (parent
     |+> fun () ->
-       provideProperty name node.NodeType (fun args -> Expr.Coerce(<@@ ((%%args.[0] : obj) :?> FrameworkElement).FindName(name) @@>, node.NodeType))
+       provideProperty name node.NodeType (fun args -> Expr.Coerce(<@@ (%%args.[0]  :> XamlFile).GetChild name @@>, node.NodeType))
        |> addDefinitionLocation node.Data.Position)
     |> ignore
 
@@ -161,18 +175,18 @@ let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
         | None -> "Root"
 
     let topType =
-        eraseType thisAssembly rootNamespace typeName typeof<obj>
+        eraseType thisAssembly rootNamespace typeName typeof<XamlFile>
             |> addDefinitionLocation root.Data.Position
             |+!> provideConstructor
                     [] 
                     (fun args -> 
                         match xamlInfo with 
-                        | XamlInfo.Path path -> <@@ XamlReader.Parse(File.ReadAllText(path)) @@>
-                        | XamlInfo.Text text -> <@@ XamlReader.Parse(text) @@>)
+                        | XamlInfo.Path path -> <@@ XamlFile(XamlReader.Parse(File.ReadAllText(path)) :?> FrameworkElement) @@>
+                        | XamlInfo.Text text -> <@@ XamlFile(XamlReader.Parse(text) :?> FrameworkElement) @@>)
                 |> addXmlDoc (sprintf "Initializes a wrapper over %s from Xaml" typeName)
                 |> addDefinitionLocation root.Data.Position
             |+> fun () ->
-                provideProperty rootName root.NodeType (fun args -> Expr.Coerce(args.[0], root.NodeType))
+                provideProperty rootName root.NodeType (fun args -> Expr.Coerce(<@@ (%%args.[0]  :> XamlFile).Root @@>, root.NodeType))
                   |> addXmlDoc (sprintf "Access to the underlying %s" typeName)
                   |> addDefinitionLocation root.Data.Position
 
