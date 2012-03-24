@@ -60,7 +60,9 @@ type Tree<'Data> =
       Children : Tree<'Data> list }
 
 type XamlNode =
-    { NodeType : Type
+    { IsRoot: bool
+      Name: string
+      NodeType : Type
       Data : XamlId
       Children : XamlNode list }
 
@@ -91,9 +93,10 @@ let typeOfXamlElement = function
     match wpfAssembly.GetType(sprintf "System.Windows.Controls.%s" other) with
     | null -> typeof<obj>
     | st -> st
+
    
 let readXamlFile filename (xaml:XmlReader) =
-    let rec readNewElement skipUnnamed siblings =
+    let rec readNewElement isRoot skipUnnamed siblings =
         match xaml.Read() with
         | false -> siblings
         | true ->
@@ -104,22 +107,29 @@ let readXamlFile filename (xaml:XmlReader) =
                     let hasChildren = not xaml.IsEmptyElement
                     match skipUnnamed, data with
                     | _, Named _ | false, Unnamed _->
-                        { NodeType = typeOfXamlElement typeName 
+                        { IsRoot = isRoot
+                          Name =
+                            match data.Name with
+                            | Some name -> name            
+                            | None -> 
+                                if isRoot then "Root" else
+                                failwith "Cannot create a nested type without a name" // TODO: Generate one
+                          NodeType = typeOfXamlElement typeName
                           Data = data 
-                          Children = (if hasChildren then readNewElement true [] else []) }
+                          Children = (if hasChildren then readNewElement false true [] else []) }
                         :: siblings
-                        |> readNewElement skipUnnamed
+                        |> readNewElement false skipUnnamed
                     | true, Unnamed _ ->
-                        readNewElement true siblings
-                        |> readNewElement true
+                        readNewElement false true siblings
+                        |> readNewElement false true
                 | None -> failwithf "Error near %A" (posOfReader filename xaml)
             | XmlNodeType.EndElement -> siblings
-            | XmlNodeType.Comment | XmlNodeType.Text -> readNewElement skipUnnamed siblings
+            | XmlNodeType.Comment | XmlNodeType.Text -> readNewElement false skipUnnamed siblings
             | unexpected -> failwithf "Unexpected node type %A at %A" unexpected (posOfReader filename xaml)
 
     let dontSkipTop = false
 
-    match readNewElement dontSkipTop [] with
+    match readNewElement true dontSkipTop [] with
     | [root] -> root
     | _ :: _ -> failwith "Multiple roots"
     | [] -> failwith "No root"
@@ -127,18 +137,10 @@ let readXamlFile filename (xaml:XmlReader) =
 let createXmlReader(textReader:TextReader) =
     XmlReader.Create(textReader, XmlReaderSettings(IgnoreProcessingInstructions = true, IgnoreWhitespace = true))
 
-
-let GetElementName isRoot node =
-    match node.Data.Name with
-    | Some name -> name            
-    | None -> 
-        if isRoot then "Root" else
-        failwith "Cannot create a nested type without a name" // TODO: Generate one
-
-let rec getAllSubElementsWithName isRoot (node:XamlNode) =      
-    seq { yield isRoot,GetElementName isRoot node,node
+let rec getAllSubElementsWithName (node:XamlNode) =      
+    seq { yield node
           for child in node.Children do
-            yield! getAllSubElementsWithName false child }
+            yield! getAllSubElementsWithName child }
 
 let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
     let root = 
@@ -146,10 +148,11 @@ let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
         |> createXmlReader 
         |> readXamlFile xamlInfo.FileName
 
-    let subElements = getAllSubElementsWithName true root
+    let subElements = getAllSubElementsWithName root
 
-    let accessExpr isRoot name node (args:Expr list) =
-        let expr = if isRoot then <@@ (%%args.[0] :> XamlFile).Root @@> else <@@ (%%args.[0] :> XamlFile).GetChild name @@>
+    let accessExpr node (args:Expr list) =
+        let name = node.Name
+        let expr = if node.IsRoot then <@@ (%%args.[0] :> XamlFile).Root @@> else <@@ (%%args.[0] :> XamlFile).GetChild name @@>
         Expr.Coerce(expr,node.NodeType)
 
     erasedType<XamlFile> thisAssembly rootNamespace typeName
@@ -164,9 +167,9 @@ let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
                 |> addDefinitionLocation root.Data.Position)
     |++!> (
         subElements
-        |> Seq.map (fun (isRoot,name,node) ->
-             provideProperty name node.NodeType (accessExpr isRoot name node)
-             |> addXmlDoc (sprintf "Gets the %s element" name)
+        |> Seq.map (fun node ->
+             provideProperty node.Name node.NodeType (accessExpr node)
+             |> addXmlDoc (sprintf "Gets the %s element" node.Name)
              |> addDefinitionLocation node.Data.Position))   
 
 /// Infer schema from the loaded data and generate type with properties     
