@@ -19,11 +19,11 @@ module JSONInference =
       [for el in elements do
         match el with
         | JObject map -> 
-            for prop in map do   // TODO: Don't tostring here
+            for prop in !map do   // TODO: Don't tostring here
                 match prop.Value with
-                | Text t -> yield prop.Key, t
-                | Number n -> yield prop.Key, n.ToString()
-                | Boolean b -> yield prop.Key, b.ToString()
+                | Text t -> yield prop.Key, !t
+                | Number n -> yield prop.Key, (!n).ToString()
+                | Boolean b -> yield prop.Key, (!b).ToString()
                 | _ -> ()              
         | _ -> ()]
     props
@@ -40,11 +40,11 @@ module JSONInference =
     [ for el in elements do
         match el with
         | JObject map -> 
-            for prop in map do   // TODO: Don't tostring here                
+            for prop in !map do   // TODO: Don't tostring here                
                 match prop.Value with
                 | JObject child -> yield prop.Key, false, prop.Value
                 | JArray childs -> 
-                    for child in childs do
+                    for child in !childs do
                         yield prop.Key, true, child
                 | _ -> ()              
         | _ -> ()]

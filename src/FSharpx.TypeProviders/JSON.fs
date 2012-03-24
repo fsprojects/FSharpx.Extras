@@ -65,59 +65,61 @@ let tokenize source=
 
 
 type JSON =
-| Text of string
-| Number of float
-| Boolean of bool
+| Text of string ref
+| Number of float ref
+| Boolean of bool ref
 | Null
-| JArray of JSON list
-| JObject of Map<string,JSON>
+| JArray of JSON list ref
+| JObject of Map<string,JSON> ref
     member json.HasProperty propertyName = 
         match json with
-        | JObject map -> Map.containsKey propertyName map
+        | JObject map -> Map.containsKey propertyName !map
 
     member json.GetProperty propertyName = 
         match json with
-        | JObject map -> Map.find propertyName map
+        | JObject map -> Map.find propertyName !map
 
     member json.GetText() = 
         match json with
-        | Text t -> t
+        | Text t -> !t
 
     member json.GetNumber() = 
         match json with
-        | Number n -> n
+        | Number n -> !n
 
     member json.GetBoolean() = 
         match json with
-        | Boolean b -> b
+        | Boolean b -> !b
 
     member json.GetSubElements() = 
         match json with
-        | JArray childs -> childs
+        | JArray childs -> !childs
 
     member json.ToXml() =
         let rec toXml' json =
             match json with
-            | Text(str) -> str :> obj
-            | Number(int) -> int :> obj
-            | Boolean(bool) -> bool :> obj
+            | Text t -> !t :> obj
+            | Number n -> !n :> obj
+            | Boolean b -> !b :> obj
             | Null -> null
-            | JArray(array) -> array |> Seq.map (fun item -> new XElement(XName.Get "item", toXml' item)) :> obj
-            | JObject(map) -> map |> Map.toSeq |> Seq.map (fun (k,v) -> new XElement(XName.Get k, toXml' v)) :> obj 
+            | JArray a -> !a |> Seq.map (fun item -> new XElement(XName.Get "item", toXml' item)) :> obj
+            | JObject map -> !map |> Map.toSeq |> Seq.map (fun (k,v) -> new XElement(XName.Get k, toXml' v)) :> obj 
         toXml' json :?> XElement seq
 
     override json.ToString() =
         let sb = new StringBuilder()
         let rec writeToStringBuilder = function
-        | Text t -> sb.AppendFormat("\"{0}\"",t)  |> ignore
-        | Number n -> sb.Append n |> ignore
-        | Boolean true -> sb.Append "true" |> ignore
-        | Boolean false -> sb.Append "false" |> ignore
+        | Text t -> sb.AppendFormat("\"{0}\"",!t)  |> ignore
+        | Number n -> sb.Append !n |> ignore
+        | Boolean b -> 
+            match !b with
+            | true -> sb.Append "true" |> ignore
+            | false -> sb.Append "false" |> ignore
         | Null -> sb.Append "null" |> ignore
-        | JArray list -> 
+        | JArray a -> 
             let isNotFirst = ref false
             sb.Append "[" |> ignore
-            list
+            !a
               |> List.iter 
                     (fun element -> 
                         if !isNotFirst then sb.Append "," |> ignore else isNotFirst := true
@@ -126,7 +128,7 @@ type JSON =
         | JObject map -> 
             let isNotFirst = ref false
             sb.Append "{"  |> ignore
-            map
+            !map
               |> Map.iter 
                     (fun key value -> 
                         if !isNotFirst then sb.Append "," |> ignore else isNotFirst := true
@@ -137,9 +139,9 @@ type JSON =
         writeToStringBuilder json
         sb.ToString()
 
-let emptyJObject = JObject Map.empty
+let emptyJObject = JObject (ref Map.empty)
 let addProperty key value = function
-| JObject(properties) -> JObject(Map.add key value properties)
+| JObject properties -> JObject(ref (Map.add key value !properties))
 | _ -> failwith "Malformed JSON object" 
 
 open System.Globalization
@@ -148,10 +150,10 @@ open System.Globalization
 let parse source =
     let map = function
     | Token.Number number -> 
-        Number (Double.Parse(number, CultureInfo.InvariantCulture))
-    | Token.String text -> Text text
+        Number (ref (Double.Parse(number, CultureInfo.InvariantCulture)))
+    | Token.String text -> Text (ref text)
     | Token.Null -> JSON.Null
-    | Token.Boolean(b) -> Boolean b
+    | Token.Boolean(b) -> Boolean (ref b)
     | v -> failwith "Syntax Error, unrecognized token in map()"
  
     let rec parseValue = function
@@ -162,11 +164,11 @@ let parse source =
  
     and parseArray = function
     | Comma :: t -> parseArray t
-    | CloseArray :: t -> JArray [], t
+    | CloseArray :: t -> JArray(ref []), t
     | t ->        
         let element, t' = parseValue t
         match parseArray t' with
-        | JArray(elements),t'' -> JArray (element :: elements),t''
+        | JArray(elements),t'' -> JArray (ref (element :: !elements)),t''
         | _ -> failwith "Malformed JSON array"
     and parseJObject = function
     | Comma :: t -> parseJObject t
@@ -185,7 +187,7 @@ let parse source =
 let rec toJSON(value:obj) = 
     match value with
     | x when x = null-> Null
-    | :? string as s -> Text s
-    | :? int as n -> Number (float n)
-    | :? float as n -> Number n
-    | :? bool as b -> Boolean b
+    | :? string as s -> Text (ref s)
+    | :? int as n -> Number (ref (float n))
+    | :? float as n -> Number (ref n)
+    | :? bool as b -> Boolean (ref b)
