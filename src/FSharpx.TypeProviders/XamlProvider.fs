@@ -11,7 +11,6 @@ open System.Windows
 open System.Windows.Markup
 open System.Xml
 open System.Linq.Expressions
-open FSharpx
 open FSharpx.TypeProviders.DSL
 open FSharpx.TypeProviders.Settings
 
@@ -121,14 +120,12 @@ let createTypeFromReader typeName fileName (reader: TextReader) =
 
 /// Infer schema from the loaded data and generate type with properties     
 let xamlType (ownerType:TypeProviderForNamespaces)  (cfg:TypeProviderConfig) =
-    erasedType<obj> thisAssembly rootNamespace "XAML"
-      |> staticParameter "FileName" (fun typeName configFileName -> 
-            let fileName = findConfigFile cfg.ResolutionFolder configFileName
+    let createTypeFromFileName typeName (fileName:string) =        
+        use reader = new StreamReader(fileName)
+        createTypeFromReader typeName fileName reader
 
-            if File.Exists fileName |> not then
-                failwithf "The file '%s' does not exist" fileName
-            
-            watchForChanges ownerType fileName
-            
-            use reader = new StreamReader(fileName)
-            createTypeFromReader typeName fileName reader)
+    let createTypeFromSchema typeName (schema:string) =        
+        use reader = new StringReader(schema)
+        createTypeFromReader typeName schema reader
+    
+    createStructuredParser thisAssembly rootNamespace "XAML" cfg ownerType createTypeFromFileName createTypeFromSchema

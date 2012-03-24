@@ -8,6 +8,7 @@ open Microsoft.FSharp.Quotations
 open FSharpx.Strings
 open System.Xml.Linq
 open System.Collections.Generic
+open Microsoft.FSharp.Core.CompilerServices
 
 type FilePosition =  
    { Line: int; 
@@ -168,3 +169,21 @@ let watchForChanges (ownerType:TypeProviderForNamespaces) (fileName:string) =
 let seqType ty = typedefof<seq<_>>.MakeGenericType[| ty |]
 
 let optionType ty = typedefof<option<_>>.MakeGenericType[| ty |]
+
+/// Generates a structured parser
+let createStructuredParser thisAssembly rootNamespace typeName (cfg:TypeProviderConfig) ownerType createTypeFromFileNameF createTypeFromSchemaF =
+    let missingValue = "@@@missingValue###"
+    erasedType<obj> thisAssembly rootNamespace typeName
+    |> staticParameters 
+          ["FileName" , typeof<string>, Some(missingValue :> obj)  // Parameterize the type by the file to use as a template
+           "Schema" , typeof<string>, Some(missingValue :> obj)  ] // Allows to specify inlined schema
+          (fun typeName parameterValues ->
+                match parameterValues with 
+                | [| :? string as fileName; :? string |] when fileName <> missingValue ->        
+                    let resolvedFileName = findConfigFile cfg.ResolutionFolder fileName
+                    watchForChanges ownerType resolvedFileName
+                
+                    createTypeFromFileNameF typeName resolvedFileName
+                | [| :? string; :? string as schema |] when schema <> missingValue ->        
+                    createTypeFromSchemaF typeName schema
+                | _ -> failwith "You have to specify a filename or inlined Schema")

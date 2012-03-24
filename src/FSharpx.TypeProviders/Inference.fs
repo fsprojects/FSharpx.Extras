@@ -106,22 +106,3 @@ let createParserType<'a> typeName schema (generateTypeF: ProvidedTypeDefinition 
            |> addXmlDoc "Initializes a document from the given path.")
     |+!> (provideProperty "Root" (generateTypeF parserType schema) rootPropertyGetter
            |> addXmlDoc "Gets the document root")
-
-
-/// Generates a structured parser
-let createStructuredParser typeName (cfg:TypeProviderConfig) ownerType createTypeF =
-    let missingValue = "@@@missingValue###"
-    erasedType<obj> thisAssembly rootNamespace typeName
-    |> staticParameters 
-          ["FileName" , typeof<string>, Some(missingValue :> obj)  // Parameterize the type by the file to use as a template
-           "Schema" , typeof<string>, Some(missingValue :> obj)  ] // Allows to specify inlined schema
-          (fun typeName parameterValues ->
-                match parameterValues with 
-                | [| :? string as fileName; :? string |] when fileName <> missingValue ->        
-                    let resolvedFileName = findConfigFile cfg.ResolutionFolder fileName
-                    watchForChanges ownerType resolvedFileName
-                
-                    createTypeF typeName <| File.ReadAllText resolvedFileName
-                | [| :? string; :? string as schema |] when schema <> missingValue ->        
-                    createTypeF typeName schema
-                | _ -> failwith "You have to specify a filename or inlined Schema")

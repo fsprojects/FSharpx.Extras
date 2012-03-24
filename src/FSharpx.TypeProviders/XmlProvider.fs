@@ -5,6 +5,7 @@
 module FSharpx.TypeProviders.XmlTypeProvider
 
 open System
+open FSharpx.TypeProviders.Settings
 open FSharpx.TypeProviders.DSL
 open Microsoft.FSharp.Quotations
 open Samples.FSharp.ProvidedTypes
@@ -63,7 +64,7 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
 
 /// Infer schema from the loaded data and generate type with properties
 let xmlType (ownerType:TypeProviderForNamespaces) cfg =    
-    let createType typeName (xmlText:string) =        
+    let createTypeFromSchema typeName (xmlText:string) =        
         let doc = XDocument.Parse xmlText
         createParserType<TypedXDocument> 
             typeName 
@@ -73,4 +74,8 @@ let xmlType (ownerType:TypeProviderForNamespaces) cfg =
             (fun args -> <@@ TypedXDocument(XDocument.Load(%%args.[0] : string)) @@>)
             (fun args -> <@@ TypedXElement((%%args.[0] : TypedXDocument).Document.Root) @@>)
     
-    createStructuredParser "StructuredXml" cfg ownerType createType    
+    let createTypeFromFileName typeName (fileName:string) =
+        System.IO.File.ReadAllText fileName
+        |> createTypeFromSchema typeName
+
+    createStructuredParser thisAssembly rootNamespace "StructuredXml" cfg ownerType createTypeFromFileName createTypeFromSchema
