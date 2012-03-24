@@ -5,7 +5,6 @@
         <StackPanel Name="StackPanel1">
             <Button Name="Button1">First Button</Button>
             <Button Name="Button2">Second Button</Button>
-            <!-- <Button Name="Control">An unfortunately named button</Button> -->
         </StackPanel>
     </Grid>
 </Window>
