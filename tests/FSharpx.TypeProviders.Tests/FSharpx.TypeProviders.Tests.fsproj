@@ -70,6 +70,7 @@
     <None Include="SmallTest.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="NamedRoot.xaml" />
     <None Include="StackPanel.xaml" />
     <None Include="SmallTest_SameStructure.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

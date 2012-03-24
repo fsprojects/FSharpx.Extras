@@ -24,7 +24,7 @@ let ``Can access the first button``() =
 [<Test>][<RequiresSTA>]
 let ``The window should have the right type``() =
    let window = T()
-   window.Control.GetType() |> should equal typeof<System.Windows.Window>
+   window.Root.GetType() |> should equal typeof<System.Windows.Window>
 
 [<Test>][<RequiresSTA>]
 let ``The grid should have the right type``() =
@@ -35,3 +35,10 @@ let ``The grid should have the right type``() =
 let ``The button should have the right type``() =
    let window = T()
    window.Button2.GetType() |> should equal typeof<System.Windows.Controls.Button>
+
+type NamedRoot = XAML< @"NamedRoot.xaml">
+
+[<Test>][<RequiresSTA>]
+let ``If the root has a name then just take this``() =
+   let window = NamedRoot()
+   window.MainWindow.Name |> should equal "MainWindow"

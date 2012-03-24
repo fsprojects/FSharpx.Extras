@@ -139,6 +139,7 @@ let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
             root.Children
             |> Seq.groupBy (fun node -> node.Data.Name)
             |> Seq.tryFind (fun (key, values) -> Seq.length values > 1)
+
         match dups with
         | Some (_, nodes) ->
             failwithf
@@ -153,6 +154,11 @@ let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
             |> Seq.iter checkConflictingNames
 
     checkConflictingNames root
+    
+    let rootName = 
+        match root.Data.Name with
+        | Some name -> name
+        | None -> "Root"
 
     let topType =
         eraseType thisAssembly rootNamespace typeName typeof<obj>
@@ -166,8 +172,9 @@ let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
                 |> addXmlDoc (sprintf "Initializes a wrapper over %s from Xaml" typeName)
                 |> addDefinitionLocation root.Data.Position
             |+> fun () ->
-                provideProperty "Control" root.NodeType (fun args -> Expr.Coerce(args.[0], root.NodeType))
+                provideProperty rootName root.NodeType (fun args -> Expr.Coerce(args.[0], root.NodeType))
                   |> addXmlDoc (sprintf "Access to the underlying %s" typeName)
+                  |> addDefinitionLocation root.Data.Position
 
     for child in root.Children do
         createNestedType topType child
