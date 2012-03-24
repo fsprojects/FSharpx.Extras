@@ -52,38 +52,38 @@ let createXamlNode filename isRoot (xaml:XmlReader) =
             | _ ->
                 match xaml.GetAttribute("x:Name") with
                 | name when name <> null -> Some name
-                | _ -> None
+                | _ -> if isRoot then Some "Root" else None
 
-        let propertyName =
-            match name with
-            | Some name -> name
-            | None -> 
-                if isRoot then "Root" else
-                failwith "Cannot create a nested type without a name" // TODO: Generate one
+        match name with
+        | None -> None
+        | Some name -> 
+            let propertyType =
+                match typeName with
+                | "Window" -> typeof<Window>
+                | other ->
+                    match wpfAssembly.GetType(sprintf "System.Windows.Controls.%s" other) with
+                    | null -> typeof<obj>
+                    | st -> st
 
-        let propertyType =
-            match typeName with
-            | "Window" -> typeof<Window>
-            | other ->
-                match wpfAssembly.GetType(sprintf "System.Windows.Controls.%s" other) with
-                | null -> typeof<obj>
-                | st -> st
-
-        { Position = pos
-          IsRoot = isRoot
-          Name = propertyName
-          NodeType = propertyType }
+            { Position = pos
+              IsRoot = isRoot
+              Name = name
+              NodeType = propertyType }
+            |> Some
     with
     | :? XmlException -> failwithf "Error near %A" pos
 
-let readXamlFile filename (xaml:XmlReader) =
+let readXamlFile filename (xaml:XmlReader) =    
     seq {
         let isRoot = ref true
         while xaml.Read() do
             match xaml.NodeType with
             | XmlNodeType.Element ->               
-                yield createXamlNode filename (!isRoot) xaml
-                isRoot := false
+                match createXamlNode filename (!isRoot) xaml with
+                | Some node ->
+                    yield node
+                    isRoot := false
+                | None -> ()
             | XmlNodeType.EndElement | XmlNodeType.Comment | XmlNodeType.Text -> ()
             | unexpected -> failwithf "Unexpected node type %A at %A" unexpected (posOfReader filename xaml) }
 

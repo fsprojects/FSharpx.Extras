@@ -60,3 +60,20 @@ type Inlined =
 let ``It should parse inlined xaml``() =
    let window = Inlined()
    window.MainWindow.Name |> should equal "MainWindow"
+
+type UnnamedControls = 
+    XAML<Schema =
+        """<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    Title="MainWindow" Height="350" Width="525">
+                <Grid Name="MainGrid">
+                    <StackPanel>
+                        <Button>First Button</Button>
+                        <Button Name="Button1">Second Button</Button>
+                    </StackPanel>
+                </Grid>
+            </Window>""">
+[<Test>][<RequiresSTA>]
+let ``It should allow to skip unnamed controls in xaml``() =
+   let window = UnnamedControls()
+   window.Button1.GetType() |> should equal typeof<System.Windows.Controls.Button>
