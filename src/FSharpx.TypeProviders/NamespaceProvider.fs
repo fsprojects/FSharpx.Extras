@@ -17,8 +17,7 @@ type public FSharpxProvider(cfg:TypeProviderConfig) as this =
          XmlTypeProvider.xmlType this cfg
          JsonTypeProvider.jsonType this cfg
          RegistryProvider.typedRegistry
-         XamlProvider.xamlFileTypeUninstantiated this cfg
-         XamlProvider.xamlTextTypeUninstantiated cfg
+         XamlProvider.xamlType this cfg
          AppSettingsTypeProvider.typedAppSettings cfg
          ExcelProvider.typExcel cfg ])
 

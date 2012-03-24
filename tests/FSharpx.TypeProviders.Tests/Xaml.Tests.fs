@@ -4,7 +4,7 @@ open NUnit.Framework
 open FSharpx
 open FsUnit
 
-type T = XamlFile< @"StackPanel.xaml">
+type T = XAML< @"StackPanel.xaml">
 
 [<Test>][<RequiresSTA>]
 let ``Can access the grid``() =      

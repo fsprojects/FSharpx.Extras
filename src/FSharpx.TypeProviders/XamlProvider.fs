@@ -173,9 +173,10 @@ let createTypeFromReader typeName (xamlInfo:XamlInfo) (reader: TextReader) =
         createNestedType topType child
 
     topType
-        
-let xamlFileTypeUninstantiated (ownerType:TypeProviderForNamespaces)  (cfg:TypeProviderConfig) =
-    erasedType<obj> thisAssembly rootNamespace "XamlFile"
+
+/// Infer schema from the loaded data and generate type with properties     
+let xamlType (ownerType:TypeProviderForNamespaces)  (cfg:TypeProviderConfig) =
+    erasedType<obj> thisAssembly rootNamespace "XAML"
       |> staticParameter "FileName" (fun typeName configFileName -> 
             let path = findConfigFile cfg.ResolutionFolder configFileName
 
@@ -186,9 +187,3 @@ let xamlFileTypeUninstantiated (ownerType:TypeProviderForNamespaces)  (cfg:TypeP
             
             use reader = new StreamReader(path)
             createTypeFromReader typeName (XamlInfo.Path path) reader)
-
-let xamlTextTypeUninstantiated (cfg:TypeProviderConfig) =
-    erasedType<obj> thisAssembly rootNamespace "XamlText"
-      |> staticParameter "FileName" (fun typeName text -> 
-            use reader = new StringReader(text)
-            createTypeFromReader typeName (XamlInfo.Text text) reader)
