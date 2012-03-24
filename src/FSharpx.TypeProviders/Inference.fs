@@ -101,10 +101,11 @@ let createParserType<'a> typeName schema (generateTypeF: ProvidedTypeDefinition 
     let parserType = erasedType<'a> thisAssembly rootNamespace typeName
     parserType
     |+!> (provideConstructor [] emptyConstructor
-        |> addXmlDoc "Initializes the document from the schema sample.")
+           |> addXmlDoc "Initializes the document from the schema sample.")
     |+!> (provideConstructor ["filename", typeof<string>] fileNameConstructor
-        |> addXmlDoc "Initializes a document from the given path.")
-    |+!> provideProperty "Root" (generateTypeF parserType schema) rootPropertyGetter
+           |> addXmlDoc "Initializes a document from the given path.")
+    |+!> (provideProperty "Root" (generateTypeF parserType schema) rootPropertyGetter
+           |> addXmlDoc "Gets the document root")
 
 
 /// Generates a structured parser

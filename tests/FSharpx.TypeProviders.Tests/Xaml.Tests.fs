@@ -4,7 +4,7 @@ open NUnit.Framework
 open FSharpx
 open FsUnit
 
-type T = XAML< @"StackPanel.xaml">
+type T = XAML<"StackPanel.xaml">
 
 [<Test>][<RequiresSTA>]
 let ``Can access the grid``() =      
@@ -42,7 +42,7 @@ let ``The button should have the right type``() =
    let window = T()
    window.Button2.GetType() |> should equal typeof<System.Windows.Controls.Button>
 
-type NamedRoot = XAML< @"NamedRoot.xaml">
+type NamedRoot = XAML<"NamedRoot.xaml">
 
 [<Test>][<RequiresSTA>]
 let ``If the root has a name then just take this``() =
