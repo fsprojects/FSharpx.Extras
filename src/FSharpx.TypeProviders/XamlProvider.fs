@@ -90,7 +90,7 @@ let readXamlFile filename (xaml:XmlReader) =
 let createXmlReader(textReader:TextReader) =
     XmlReader.Create(textReader, XmlReaderSettings(IgnoreProcessingInstructions = true, IgnoreWhitespace = true))
 
-let createTypeFromReader typeName fileName (reader: TextReader) =
+let createTypeFromReader typeName fileName schema (reader: TextReader) =
     let elements = 
         reader
         |> createXmlReader 
@@ -108,7 +108,7 @@ let createTypeFromReader typeName fileName (reader: TextReader) =
         |> addDefinitionLocation root.Position
         |+!> (provideConstructor
                 [] 
-                (fun args -> <@@ XamlFile(XamlReader.Parse(File.ReadAllText fileName) :?> FrameworkElement) @@>)
+                (fun args -> <@@ XamlFile(XamlReader.Parse(schema) :?> FrameworkElement) @@>)
                 |> addXmlDoc (sprintf "Initializes typed access to %s" fileName)
                 |> addDefinitionLocation root.Position)
     |++!> (
@@ -122,10 +122,10 @@ let createTypeFromReader typeName fileName (reader: TextReader) =
 let xamlType (ownerType:TypeProviderForNamespaces)  (cfg:TypeProviderConfig) =
     let createTypeFromFileName typeName (fileName:string) =        
         use reader = new StreamReader(fileName)
-        createTypeFromReader typeName fileName reader
+        createTypeFromReader typeName fileName (File.ReadAllText fileName) reader
 
     let createTypeFromSchema typeName (schema:string) =        
         use reader = new StringReader(schema)
-        createTypeFromReader typeName schema reader
+        createTypeFromReader typeName null schema reader
     
     createStructuredParser thisAssembly rootNamespace "XAML" cfg ownerType createTypeFromFileName createTypeFromSchema

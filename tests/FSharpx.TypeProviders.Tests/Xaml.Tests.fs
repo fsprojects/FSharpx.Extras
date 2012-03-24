@@ -48,3 +48,15 @@ type NamedRoot = XAML<"NamedRoot.xaml">
 let ``If the root has a name then just take this``() =
    let window = NamedRoot()
    window.MainWindow.Name |> should equal "MainWindow"
+
+type Inlined = 
+    XAML<Schema =
+        """<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+               Title="MainWindow" Height="350" Width="525" Name="MainWindow" >
+                <Button Name="Button1">First Button</Button>
+           </Window>""">
+[<Test>][<RequiresSTA>]
+let ``It should parse inlined xaml``() =
+   let window = Inlined()
+   window.MainWindow.Name |> should equal "MainWindow"
