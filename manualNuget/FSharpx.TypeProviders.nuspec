@@ -8,11 +8,16 @@ It currently implements type safe variants of:
 * Regex
 * FileSystem
 * Csv
+* Excel
+* JSON
+* XML
+* Registry
+* XAML
 * AppSettings.</description>
     <id>FSharpx.TypeProviders</id>
-    <version>1.4.111006</version>
-    <authors>Steffen Forkmann, Tomas Petricek, Ryan Riley, Mauricio Scheffer, Dan Mohl</authors>
-    <owners>Steffen Forkmann, Tomas Petricek, Ryan Riley, Mauricio Scheffer, Dan Mohl</owners>
+    <version>1.5.120324</version>
+    <authors>Steffen Forkmann, Tomas Petricek, Ryan Riley, Mauricio Scheffer, Dan Mohl, Johann Deneux</authors>
+    <owners>Steffen Forkmann, Mauricio Scheffer</owners>
     <language>en-US</language>
     <summary>FSharpx.TypeProviders is a library for the .NET platform implementing common type providers on top of the FSharpx. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.
 
@@ -21,6 +26,11 @@ It currently implements type safe variants of:
 * Regex
 * FileSystem
 * Csv
+* Excel
+* JSON
+* XML
+* Registry
+* XAML
 * AppSettings.</summary>
     <projectUrl>http://github.com/fsharp/fsharpx</projectUrl>
     <licenseUrl>http://github.com/fsharp/fsharpx/raw/master/License.txt</licenseUrl>
