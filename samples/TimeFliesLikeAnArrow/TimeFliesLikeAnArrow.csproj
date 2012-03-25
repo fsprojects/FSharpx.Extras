@@ -36,6 +36,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FSharp.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -89,6 +93,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\FSharpx.Async\FSharpx.Async.fsproj">
+      <Project>{ede1812b-5a62-410a-9553-02499cf29317}</Project>
+      <Name>FSharpx.Async</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\FSharpx.Observable\FSharpx.Observable.fsproj">
       <Project>{2E802F54-9CD0-4B0A-B834-5C5979403B50}</Project>
       <Name>FSharpx.Observable</Name>
