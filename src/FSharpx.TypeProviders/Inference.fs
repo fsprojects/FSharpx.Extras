@@ -86,7 +86,7 @@ let generateSublements ownerType parentType multiAccessExpr addChildExpr newChil
             |+!> (provideMethod ("New" + niceChildName) [] childType (newChildExpr childName)
                     |> addXmlDoc (sprintf @"Creates a new %s element" childName))
             |+!> (provideMethod ("Add" + niceChildName) ["element", childType] typeof<unit> (addChildExpr childName)
-                    |> addXmlDoc (sprintf @"Adds a %s element" childName))
+                    |> addXmlDoc (sprintf @"Adds a %s element" childName))            
             |> ignore
         else
             ownerType
@@ -98,7 +98,7 @@ let generateSublements ownerType parentType multiAccessExpr addChildExpr newChil
 
 /// Generates constructors for loading data and adds type representing Root node
 let createParserType<'a> typeName schema (generateTypeF: ProvidedTypeDefinition -> CompoundProperty -> ProvidedTypeDefinition)
-         emptyConstructor fileNameConstructor rootPropertyGetter =
+         emptyConstructor fileNameConstructor rootPropertyGetter toStringExpr =
     let parserType = erasedType<'a> thisAssembly rootNamespace typeName
     parserType
     |+!> (provideConstructor [] emptyConstructor
@@ -107,3 +107,5 @@ let createParserType<'a> typeName schema (generateTypeF: ProvidedTypeDefinition 
            |> addXmlDoc "Initializes a document from the given path.")
     |+!> (provideProperty "Root" (generateTypeF parserType schema) rootPropertyGetter
            |> addXmlDoc "Gets the document root")
+    |+!> (provideMethod ("ToString") [] typeof<string> toStringExpr
+           |> addXmlDoc "Gets the string representation")

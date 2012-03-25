@@ -78,6 +78,7 @@ let jsonType (ownerType:TypeProviderForNamespaces) cfg =
             (fun args -> <@@ jsonText |> parse  @@>)
             (fun args -> <@@ (%%args.[0] : string) |> File.ReadAllText |> parse  @@>)
             (fun args -> <@@ (%%args.[0] : Document) @@>)
+            (fun args -> <@@ (%%args.[0]: Document).ToString() @@>)
 
     let createTypeFromFileName typeName (fileName:string) =
         System.IO.File.ReadAllText fileName

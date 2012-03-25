@@ -67,3 +67,11 @@ let ``Can add author in inlined JSON``() =
     authors.[0].Name |> should equal "Steffen"
     authors.[1].Name |> should equal "Tomas"
     authors.[2].Name |> should equal "John"
+
+open System.Xml.Linq
+
+[<Test>]
+let ``Can serialize the json``() =
+    let inlined = new AuthorsJSON()
+    let json = inlined.ToString()
+    json |> should equal """{"authors":[{"name":"Steffen"},{"size":42.42,"isCool":true,"age":29,"name":"Tomas"}]}"""

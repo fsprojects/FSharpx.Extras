@@ -75,6 +75,7 @@ let xmlType (ownerType:TypeProviderForNamespaces) cfg =
             (fun args -> <@@ TypedXDocument(XDocument.Parse xmlText) @@>)
             (fun args -> <@@ TypedXDocument(XDocument.Load(%%args.[0] : string)) @@>)
             (fun args -> <@@ TypedXElement((%%args.[0] : TypedXDocument).Document.Root) @@>)
+            (fun args -> <@@ (%%args.[0]: TypedXDocument).Document.ToString() @@>)
     
     let createTypeFromFileName typeName (fileName:string) =
         System.IO.File.ReadAllText fileName

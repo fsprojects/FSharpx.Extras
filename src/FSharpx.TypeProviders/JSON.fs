@@ -98,7 +98,7 @@ type Number(number:float) =
 
     interface Document
     interface Infrastucture with
-        member this.Serialize sb = sb.Append(v)
+        member this.Serialize sb = sb.Append(v.ToString(System.Globalization.CultureInfo.InvariantCulture))
         member this.ToXml() = v :> obj
 
 type Boolean(boolean:bool) =
