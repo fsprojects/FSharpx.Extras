@@ -1,3 +1,8 @@
+// ----------------------------------------------------------------------------
+// F# async extensions (CircularStream.fs)
+// (c) Ryan Riley, 2012, Available under Apache 2.0 license.
+// ----------------------------------------------------------------------------
+
 namespace FSharp.IO
 
 open System
