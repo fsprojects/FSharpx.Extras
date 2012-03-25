@@ -105,6 +105,20 @@ type CircularStream(maxLength) =
             Buffer.BlockCopy(chunk, 0, buffer, offset, chunk.Length)
             return chunk.Length }
 
+    member x.AsyncWrite(buffer: byte[], offset, count, ?timeout) =
+        #if NET40
+        Contract.Requires(buffer <> null, "buffer cannot be null")
+        Contract.Requires(offset >= 0 && offset < buffer.Length, "offset is out of range")
+        Contract.Requires(count >= 0 && offset + count <= buffer.Length, "count is out of range")
+        #else
+        Debug.Assert(buffer <> null, "buffer cannot be null")
+        Debug.Assert(offset >= 0 && offset < buffer.Length, "offset is out of range")
+        Debug.Assert(count >= 0 && offset + count <= buffer.Length, "count is out of range")
+        #endif
+
+        if count = 0 then async.Zero() else
+        async { do! queue.AsyncEnqueue(buffer, offset, count, ?timeout=timeout) }
+
     override x.Close() =
         base.Close()
         // TODO: Close the queue agent.
