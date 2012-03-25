@@ -68,6 +68,9 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
 
     generateSublements ty ownerType multiAccessExpr addChildExpr newChildExpr singleAccessExpr generateType elementChildren
 
+open System.Xml
+open System.Xml.Linq
+
 /// Infer schema from the loaded data and generate type with properties
 let jsonType (ownerType:TypeProviderForNamespaces) cfg =      
     let createTypeFromSchema typeName (jsonText:string) =        
@@ -79,7 +82,8 @@ let jsonType (ownerType:TypeProviderForNamespaces) cfg =
             (fun args -> <@@ (%%args.[0] : string) |> File.ReadAllText |> parse  @@>)
             (fun args -> <@@ (%%args.[0] : Document) @@>)
             (fun args -> <@@ (%%args.[0]: Document).ToString() @@>)
-
+       |+!> (provideMethod ("ToXml") [] typeof<XElement seq> (fun args -> <@@ (%%args.[0]: Document).ToXml() @@>)
+           |> addXmlDoc "Gets the Xml representation")
     let createTypeFromFileName typeName (fileName:string) =
         System.IO.File.ReadAllText fileName
         |> createTypeFromSchema typeName

@@ -68,10 +68,17 @@ let ``Can add author in inlined JSON``() =
     authors.[1].Name |> should equal "Tomas"
     authors.[2].Name |> should equal "John"
 
-open System.Xml.Linq
-
 [<Test>]
 let ``Can serialize the json``() =
     let inlined = new AuthorsJSON()
     let json = inlined.ToString()
     json |> should equal """{"authors":[{"name":"Steffen"},{"size":42.42,"isCool":true,"age":29,"name":"Tomas"}]}"""
+
+open System.Xml.Linq
+
+[<Test>]
+let ``Can convert the json to xml``() =
+    let inlined = new AuthorsJSON()
+    let xml = inlined.ToXml() |> Seq.head 
+    let expectedXml = XElement.Parse("<authors><item><name>Steffen</name></item><item><size>42.42</size><isCool>true</isCool><age>29</age><name>Tomas</name></item></authors>")
+    xml.ToString() |> should equal (expectedXml.ToString())
