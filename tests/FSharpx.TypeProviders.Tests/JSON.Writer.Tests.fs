@@ -63,3 +63,7 @@ let ``Can add author in inlined JSON``() =
 
     let authors = inlined.Root.GetAuthorsElements() |> Seq.toList
     authors.Length |> should equal 3
+
+    authors.[0].Name |> should equal "Steffen"
+    authors.[1].Name |> should equal "Tomas"
+    authors.[2].Name |> should equal "John"

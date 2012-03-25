@@ -18,12 +18,12 @@ module JSONInference =
     let props =
       [for el in elements do
         match el with
-        | JObject map -> 
-            for prop in !map do   // TODO: Don't tostring here
+        | (:? JObject as jObject) -> 
+            for prop in jObject.Properties do
                 match prop.Value with
-                | Text t -> yield prop.Key, typeof<string>
-                | Number n -> yield prop.Key, if isInt ((!n).ToString()) then typeof<int> else typeof<float>
-                | Boolean b -> yield prop.Key, typeof<bool>
+                | :? Text -> yield prop.Key, typeof<string>
+                | (:? Number as n) -> yield prop.Key, if n.Value = Math.Round n.Value then typeof<int> else typeof<float>
+                | :? Boolean -> yield prop.Key, typeof<bool>
                 | _ -> ()              
         | _ -> ()]
     props
@@ -39,12 +39,12 @@ module JSONInference =
   and collectElements (elements:seq<JSON>)  =
     [ for el in elements do
         match el with
-        | JObject map -> 
-            for prop in !map do            
+        | (:? JObject as jObject) -> 
+            for prop in jObject.Properties do            
                 match prop.Value with
-                | JObject child -> yield prop.Key, false, prop.Value
-                | JArray childs -> 
-                    for child in !childs do
+                | :? JObject -> yield prop.Key, false, prop.Value
+                | (:? JArray as jArray) -> 
+                    for child in jArray.Elements do
                         yield prop.Key, true, child
                 | _ -> ()              
         | _ -> ()]

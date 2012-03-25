@@ -8,6 +8,7 @@ open System.Xml
 open System.Xml.Linq
 open System.Text
 open Microsoft.FSharp.Reflection
+open System.Collections.Generic
 
 type Token =
 | OpenBracket | CloseBracket
@@ -63,109 +64,87 @@ let tokenize source=
 
     tokenize' [] [for x in source -> x]
 
-
 type JSON =
-| Text of string ref
-| Number of float ref
-| Boolean of bool ref
-| Null
-| JArray of JSON list ref
-| JObject of Map<string,JSON> ref
-    member json.HasProperty propertyName = 
-        match json with
-        | JObject map -> Map.containsKey propertyName !map
+    abstract member Serialize : StringBuilder -> StringBuilder
+    abstract member ToXml: unit -> obj
 
-    member json.RemoveProperty propertyName = 
-        match json with
-        | JObject map -> map := Map.remove propertyName !map
+type Text(text:string) =
+    let mutable v = text
 
-    member json.GetProperty propertyName = 
-        match json with
-        | JObject map -> Map.find propertyName !map
+    member this.Value with get() = v and set (value) = v <- value
+    override this.ToString() = sprintf "\"%s\"" v
 
-    member json.GetText() = 
-        match json with
-        | Text t -> !t
+    interface JSON with
+        member this.Serialize sb = sb.AppendFormat("\"{0}\"",v)
+        member this.ToXml() = v :> obj
 
-    member json.GetNumber() = 
-        match json with
-        | Number n -> !n
+type Number(number:float) =
+    let mutable v = number
+    member this.Value with get() = v and set (value) = v <- value
+    override this.ToString() = v.ToString()
 
-    member json.GetBoolean() = 
-        match json with
-        | Boolean b -> !b
+    interface JSON with
+        member this.Serialize sb = sb.Append(v)
+        member this.ToXml() = v :> obj
 
-    member json.GetSubElements() = 
-        match json with
-        | JArray childs -> !childs
+type Boolean(boolean:bool) =
+    let mutable v = boolean
+    member this.Value with get() = v and set (value) = v <- value
+    override this.ToString() = v.ToString()
 
-    member json.SetText(propertyName,text) = 
-        match json with
-        | JObject map -> map := Map.add propertyName (Text (ref text)) !map
+    interface JSON with
+        member this.Serialize sb = sb.Append(v.ToString().ToLower())
+        member this.ToXml() = v :> obj
 
-    member json.SetNumber(propertyName,number) = 
-        match json with
-        | JObject map -> map := Map.add propertyName (Number (ref number)) !map
+type JSONNull() =
+    override this.ToString() = "null"
+    interface JSON with
+        member this.Serialize sb = sb.Append "null"
+        member this.ToXml() = null
 
-    member json.SetBoolean(propertyName,boolean) = 
-        match json with
-        | JObject map -> map := Map.add propertyName (Boolean (ref boolean)) !map
+type JArray(elements:List<JSON>) =
+    let mutable v = elements
+    let serialize(sb:StringBuilder) =
+        let isNotFirst = ref false
+        sb.Append "[" |> ignore
+        for element in v do
+            if !isNotFirst then sb.Append "," |> ignore else isNotFirst := true
+            element.Serialize(sb) |> ignore
+        sb.Append "]"
 
-    member json.AddSubElement(propertyName,child) =
-        match json with
-        | JObject map ->
-          match Map.tryFind propertyName !map with
-          | Some (JArray childs) -> map := Map.add propertyName (JArray (ref (child :: !childs))) !map
-          | _ -> map := Map.add propertyName (JArray (ref [])) !map
+    member this.Elements with get() = v
+    override this.ToString() = (new StringBuilder() |> serialize).ToString()
 
-    member json.ToXml() =
-        let rec toXml' json =
-            match json with
-            | Text t -> !t :> obj
-            | Number n -> !n :> obj
-            | Boolean b -> !b :> obj
-            | Null -> null
-            | JArray a -> !a |> Seq.map (fun item -> new XElement(XName.Get "item", toXml' item)) :> obj
-            | JObject map -> !map |> Map.toSeq |> Seq.map (fun (k,v) -> new XElement(XName.Get k, toXml' v)) :> obj 
-        toXml' json :?> XElement seq
+    static member New() = new JArray(new List<JSON>())
 
-    override json.ToString() =
-        let sb = new StringBuilder()
-        let rec writeToStringBuilder = function
-        | Text t -> sb.AppendFormat("\"{0}\"",!t)  |> ignore
-        | Number n -> sb.Append !n |> ignore
-        | Boolean b -> 
-            match !b with
-            | true -> sb.Append "true" |> ignore
-            | false -> sb.Append "false" |> ignore
-        | Null -> sb.Append "null" |> ignore
-        | JArray a -> 
-            let isNotFirst = ref false
-            sb.Append "[" |> ignore
-            !a
-              |> List.iter 
-                    (fun element -> 
-                        if !isNotFirst then sb.Append "," |> ignore else isNotFirst := true
-                        writeToStringBuilder element |> ignore)
-            sb.Append "]"  |> ignore
-        | JObject map -> 
-            let isNotFirst = ref false
-            sb.Append "{"  |> ignore
-            !map
-              |> Map.iter 
-                    (fun key value -> 
-                        if !isNotFirst then sb.Append "," |> ignore else isNotFirst := true
-                        sb.AppendFormat("\"{0}\":",key)  |> ignore
-                        writeToStringBuilder value |> ignore)
-            sb.Append "}"  |> ignore
+    interface JSON with
+        member this.Serialize sb = serialize sb
+        member this.ToXml() = v |> Seq.map (fun item -> new XElement(XName.Get "item", item.ToXml())) :> obj
 
-        writeToStringBuilder json
-        sb.ToString()
+type JObject(properties:Dictionary<string,JSON>) =
+    let mutable v = properties
+    let serialize(sb:StringBuilder) =
+        let isNotFirst = ref false
+        sb.Append "{"  |> ignore
+        for property in v do
+            if !isNotFirst then sb.Append "," |> ignore else isNotFirst := true
+            sb.AppendFormat("\"{0}\":",property.Key)  |> ignore
+            property.Value.Serialize(sb) |> ignore
+        sb.Append "}"
 
-let emptyJObject = JObject (ref Map.empty)
-let addProperty key value = function
-| JObject properties -> JObject(ref (Map.add key value !properties))
-| _ -> failwith "Malformed JSON object" 
+    member this.Properties with get() = v
+    member this.AddTextProperty(propertyName,text) = v.[propertyName] <- Text(text); this
+    member this.AddBoolProperty(propertyName,boolean) = v.[propertyName] <- Boolean(boolean); this
+    member this.AddNumberProperty(propertyName,number) = v.[propertyName] <- Number(number); this
+
+    override this.ToString() = (new StringBuilder() |> serialize).ToString()
+
+    static member New() = new JObject(new Dictionary<string,JSON>())
+
+    interface JSON with
+        member this.Serialize sb = serialize sb
+        member this.ToXml() = v |> Seq.map (fun kv -> new XElement(XName.Get kv.Key, kv.Value.ToXml())) :> obj
+
 
 open System.Globalization
 
@@ -173,10 +152,10 @@ open System.Globalization
 let parse source =
     let map = function
     | Token.Number number -> 
-        Number (ref (Double.Parse(number, CultureInfo.InvariantCulture)))
-    | Token.String text -> Text (ref text)
-    | Token.Null -> JSON.Null
-    | Token.Boolean(b) -> Boolean (ref b)
+        Number(Double.Parse(number, CultureInfo.InvariantCulture)) :> JSON
+    | Token.String text -> Text(text) :> JSON
+    | Token.Null -> JSONNull() :> JSON
+    | Token.Boolean(b) -> Boolean(b) :> JSON
     | v -> failwith "Syntax Error, unrecognized token in map()"
  
     let rec parseValue = function
@@ -187,30 +166,34 @@ let parse source =
  
     and parseArray = function
     | Comma :: t -> parseArray t
-    | CloseArray :: t -> JArray(ref []), t
+    | CloseArray :: t -> JArray.New() :> JSON, t
     | t ->        
         let element, t' = parseValue t
         match parseArray t' with
-        | JArray(elements),t'' -> JArray (ref (element :: !elements)),t''
+        | (:? JArray as jArray),t'' -> 
+            jArray.Elements.Insert(0,element)
+            jArray :> JSON,t''
         | _ -> failwith "Malformed JSON array"
     and parseJObject = function
     | Comma :: t -> parseJObject t
     | Token.String(name) :: Colon :: t -> 
         let value,t' = parseValue t
-        let jObject,t'' = parseJObject t'
-        addProperty name value jObject,t''
-    | CloseBracket :: t -> emptyJObject, t
+        match parseJObject t' with
+        | (:? JObject as jObject),t'' ->
+            jObject.Properties.[name] <- value
+            jObject :> JSON,t''
+        | _ -> failwith "Malformed JSON object" 
+    | CloseBracket :: t -> JObject.New() :> JSON, t
     | _ -> failwith "Malformed JSON object"
     
     tokenize source 
     |> parseValue
     |> fst
 
-
 let rec toJSON(value:obj) = 
     match value with
-    | x when x = null-> Null
-    | :? string as s -> Text (ref s)
-    | :? int as n -> Number (ref (float n))
-    | :? float as n -> Number (ref n)
-    | :? bool as b -> Boolean (ref b)
+    | x when x = null-> JSONNull() :> JSON
+    | :? string as s -> Text(s) :> JSON
+    | :? int as n -> Number(float n) :> JSON
+    | :? float as n -> Number(n) :> JSON
+    | :? bool as b -> Boolean(b) :> JSON

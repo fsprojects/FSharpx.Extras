@@ -17,54 +17,54 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
     let accessExpr propertyName propertyType (args: Expr list) = 
         match propertyType with
         | x when x = typeof<string> -> 
-            <@@ (%%args.[0]:JSON).GetProperty(propertyName).GetText() @@>
+            <@@ (((%%args.[0]: JSON) :?> JObject).Properties.[propertyName] :?> Text).Value @@>
         | x when x = typeof<bool> -> 
-            <@@ (%%args.[0]:JSON).GetProperty(propertyName).GetBoolean() @@>
+            <@@ (((%%args.[0]: JSON) :?> JObject).Properties.[propertyName] :?> Boolean).Value @@>
         | x when x = typeof<int> -> 
-            <@@ (%%args.[0]:JSON).GetProperty(propertyName).GetNumber() |> int @@>
+            <@@ (((%%args.[0]: JSON) :?> JObject).Properties.[propertyName] :?> Number).Value |> int @@>
         | x when x = typeof<float> -> 
-            <@@ (%%args.[0]:JSON).GetProperty(propertyName).GetNumber() @@>
+            <@@ (((%%args.[0]: JSON) :?> JObject).Properties.[propertyName] :?> Number).Value @@>
 
     let checkIfOptional propertyName (args: Expr list) = 
-        <@@ (%%args.[0]:JSON).HasProperty propertyName @@>
+        <@@ ((%%args.[0]: JSON) :?> JObject).Properties.ContainsKey propertyName @@>
 
     let setterExpr propertyName propertyType (args: Expr list) = 
         match propertyType with
         | x when x = typeof<string> -> 
-            <@@ (%%args.[0]:JSON).SetText(propertyName,(%%args.[1]:string)) @@>
+            <@@ ((%%args.[0]: JSON) :?> JObject).AddTextProperty(propertyName,(%%args.[1]:string)) |> ignore @@>
         | x when x = typeof<bool> -> 
-            <@@ (%%args.[0]:JSON).SetBoolean(propertyName,(%%args.[1]:bool)) @@>
-        | x when x = typeof<int> -> 
-            <@@ (%%args.[0]:JSON).SetNumber(propertyName,(%%args.[1]:int) |> float) @@>
-        | x when x = typeof<float> -> 
-            <@@ (%%args.[0]:JSON).SetNumber(propertyName,(%%args.[1]:float)) @@>
+            <@@ ((%%args.[0]: JSON) :?> JObject).AddBoolProperty(propertyName,(%%args.[1]:bool)) |> ignore @@>
+        | x when x = typeof<int> ->
+            <@@ ((%%args.[0]: JSON) :?> JObject).AddNumberProperty(propertyName,float (%%args.[1]:int)) |> ignore @@>
+        | x when x = typeof<float> ->
+            <@@ ((%%args.[0]: JSON) :?> JObject).AddNumberProperty(propertyName,(%%args.[1]:float)) |> ignore @@>
 
     let optionalSetterExpr propertyName propertyType (args: Expr list) = 
         match propertyType with
         | x when x = typeof<string> -> 
             <@@ match (%%args.[1]:string option) with
-                | Some text -> (%%args.[0]:JSON).SetText(propertyName,text)
-                | None -> (%%args.[0]:JSON).RemoveProperty(propertyName) @@>
+                | Some text -> ((%%args.[0]: JSON) :?> JObject).AddTextProperty(propertyName,text) |> ignore
+                | None -> ((%%args.[0]: JSON) :?> JObject).Properties.Remove(propertyName) |> ignore @@>
         | x when x = typeof<bool> -> 
             <@@ match (%%args.[1]:bool option) with
-                | Some boolean -> (%%args.[0]:JSON).SetBoolean(propertyName,boolean)
-                | None -> (%%args.[0]:JSON).RemoveProperty(propertyName) @@>
+                | Some boolean -> ((%%args.[0]: JSON) :?> JObject).AddBoolProperty(propertyName,boolean) |> ignore
+                | None -> ((%%args.[0]: JSON) :?> JObject).Properties.Remove(propertyName) |> ignore @@>
         | x when x = typeof<int> -> 
             <@@ match (%%args.[1]:int option) with
-                | Some number -> (%%args.[0]:JSON).SetNumber(propertyName,float number)
-                | None -> (%%args.[0]:JSON).RemoveProperty(propertyName) @@>
+                | Some number -> ((%%args.[0]: JSON) :?> JObject).AddNumberProperty(propertyName,float number) |> ignore
+                | None -> ((%%args.[0]: JSON) :?> JObject).Properties.Remove(propertyName) |> ignore @@>
         | x when x = typeof<float> -> 
             <@@ match (%%args.[1]:float option) with
-                | Some number -> (%%args.[0]:JSON).SetNumber(propertyName,number)
-                | None -> (%%args.[0]:JSON).RemoveProperty(propertyName) @@>
+                | Some number -> ((%%args.[0]: JSON) :?> JObject).AddNumberProperty(propertyName,number) |> ignore
+                | None -> ((%%args.[0]: JSON) :?> JObject).Properties.Remove(propertyName) |> ignore @@>
 
     generateProperties ty accessExpr checkIfOptional setterExpr optionalSetterExpr elementProperties
     
-    let multiAccessExpr childName (args: Expr list) = <@@ (%%args.[0]:JSON).GetProperty(childName).GetSubElements() @@>
-    let singleAccessExpr childName (args: Expr list) = <@@ ((%%args.[0]:JSON).GetProperty childName) @@>
-    let newChildExpr childName (args: Expr list) = <@@ JObject(ref Map.empty) @@>
+    let multiAccessExpr childName (args: Expr list) = <@@ (((%%args.[0]: JSON) :?> JObject).Properties.[childName] :?> JArray).Elements @@>
+    let singleAccessExpr childName (args: Expr list) = <@@ ((%%args.[0]: JSON) :?> JObject).Properties.[childName] @@>
+    let newChildExpr childName (args: Expr list) = <@@ JObject.New() @@>
 
-    let addChildExpr childName (args: Expr list) = <@@ (%%args.[0]:JSON).AddSubElement(childName,(%%args.[1]:JSON)) @@>
+    let addChildExpr childName (args: Expr list) = <@@ (((%%args.[0]: JSON) :?> JObject).Properties.[childName] :?> JArray).Elements.Add(%%args.[1]:JSON) @@>
 
     generateSublements ty ownerType multiAccessExpr addChildExpr newChildExpr singleAccessExpr generateType elementChildren
 
