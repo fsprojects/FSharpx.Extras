@@ -9,7 +9,6 @@ open System.Xml.Linq
 open FSharpx.TypeProviders.DSL
 open System.Collections.Generic
 open System.Globalization
-open FSharpx.TypeProviders.JSONParser
 
 /// Checks whether the string is a boolean value
 let isBool (s:string) =

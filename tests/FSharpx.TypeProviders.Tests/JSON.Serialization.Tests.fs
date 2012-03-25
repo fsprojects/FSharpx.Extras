@@ -1,9 +1,8 @@
 ﻿module FSharp.TypeProviders.Tests.JSON.SerializationTests
 
 open NUnit.Framework
-open FSharpx.TypeProviders.JSONParser
+open FSharpx.JSON
 open FsUnit
-
 
 [<Test>]
 let ``Can serialize empty document``() = 
@@ -39,6 +38,6 @@ open System.Xml.Linq
 let ``Can serialize document to XML``() =
     let text = """{"items": [{"id": "Open"}, null, {"id": 25}]}"""
     let json = parse text
-    let xml = json.ToXml() :?> XElement seq |> Seq.head 
+    let xml = json.ToXml() |> Seq.head 
     let expectedXml = XElement.Parse("<items><item><id>Open</id></item><item /><item><id>25</id></item></items>")
     xml.ToString() |> should equal (expectedXml.ToString())

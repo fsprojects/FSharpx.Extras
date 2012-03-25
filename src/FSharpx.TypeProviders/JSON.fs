@@ -1,7 +1,7 @@
-﻿module FSharpx.TypeProviders.JSONParser
+﻿module FSharpx.JSON
 
 // Initial version of the parser from http://blog.efvincent.com/parsing-json-using-f/
-// Simplyfied, added AST and fixed some minor bugs
+// Simplyfied and fixed some minor bugs
 
 open System
 open System.Xml
@@ -64,7 +64,9 @@ let tokenize source=
 
     tokenize' [] [for x in source -> x]
 
-type JSON =
+type Document = interface end
+
+type internal Infrastucture =
     abstract member Serialize : StringBuilder -> StringBuilder
     abstract member ToXml: unit -> obj
 
@@ -74,7 +76,8 @@ type Text(text:string) =
     member this.Value with get() = v and set (value) = v <- value
     override this.ToString() = sprintf "\"%s\"" v
 
-    interface JSON with
+    interface Document
+    interface Infrastucture with
         member this.Serialize sb = sb.AppendFormat("\"{0}\"",v)
         member this.ToXml() = v :> obj
 
@@ -83,7 +86,8 @@ type Number(number:float) =
     member this.Value with get() = v and set (value) = v <- value
     override this.ToString() = v.ToString()
 
-    interface JSON with
+    interface Document
+    interface Infrastucture with
         member this.Serialize sb = sb.Append(v)
         member this.ToXml() = v :> obj
 
@@ -92,36 +96,40 @@ type Boolean(boolean:bool) =
     member this.Value with get() = v and set (value) = v <- value
     override this.ToString() = v.ToString()
 
-    interface JSON with
+    interface Document
+    interface Infrastucture with
         member this.Serialize sb = sb.Append(v.ToString().ToLower())
         member this.ToXml() = v :> obj
 
 type JSONNull() =
     override this.ToString() = "null"
-    interface JSON with
+
+    interface Document
+    interface Infrastucture with
         member this.Serialize sb = sb.Append "null"
         member this.ToXml() = null
 
-type JArray(elements:List<JSON>) =
+type JArray(elements:List<Document>) =
     let mutable v = elements
     let serialize(sb:StringBuilder) =
         let isNotFirst = ref false
         sb.Append "[" |> ignore
         for element in v do
             if !isNotFirst then sb.Append "," |> ignore else isNotFirst := true
-            element.Serialize(sb) |> ignore
+            (element :?> Infrastucture).Serialize(sb) |> ignore
         sb.Append "]"
 
     member this.Elements with get() = v
     override this.ToString() = (new StringBuilder() |> serialize).ToString()
 
-    static member New() = new JArray(new List<JSON>())
+    static member New() = new JArray(new List<Document>())
 
-    interface JSON with
+    interface Document
+    interface Infrastucture with
         member this.Serialize sb = serialize sb
-        member this.ToXml() = v |> Seq.map (fun item -> new XElement(XName.Get "item", item.ToXml())) :> obj
+        member this.ToXml() = v |> Seq.map (fun item -> new XElement(XName.Get "item", (item:?> Infrastucture).ToXml())) :> obj
 
-type JObject(properties:Dictionary<string,JSON>) =
+type JObject(properties:Dictionary<string,Document>) =
     let mutable v = properties
     let serialize(sb:StringBuilder) =
         let isNotFirst = ref false
@@ -129,22 +137,19 @@ type JObject(properties:Dictionary<string,JSON>) =
         for property in v do
             if !isNotFirst then sb.Append "," |> ignore else isNotFirst := true
             sb.AppendFormat("\"{0}\":",property.Key)  |> ignore
-            property.Value.Serialize(sb) |> ignore
+            (property.Value:?> Infrastucture).Serialize(sb) |> ignore
         sb.Append "}"
 
     member this.Properties with get() = v
-    member this.AddTextProperty(propertyName,text) = v.[propertyName] <- Text(text); this
-    member this.AddBoolProperty(propertyName,boolean) = v.[propertyName] <- Boolean(boolean); this
-    member this.AddNumberProperty(propertyName,number) = v.[propertyName] <- Number(number); this
-
+    
     override this.ToString() = (new StringBuilder() |> serialize).ToString()
 
-    static member New() = new JObject(new Dictionary<string,JSON>())
+    static member New() = new JObject(new Dictionary<string,Document>())
 
-    interface JSON with
+    interface Document
+    interface Infrastucture with
         member this.Serialize sb = serialize sb
-        member this.ToXml() = v |> Seq.map (fun kv -> new XElement(XName.Get kv.Key, kv.Value.ToXml())) :> obj
-
+        member this.ToXml() = v |> Seq.map (fun kv -> new XElement(XName.Get kv.Key, (kv.Value :?> Infrastucture).ToXml())) :> obj
 
 open System.Globalization
 
@@ -152,10 +157,10 @@ open System.Globalization
 let parse source =
     let map = function
     | Token.Number number -> 
-        Number(Double.Parse(number, CultureInfo.InvariantCulture)) :> JSON
-    | Token.String text -> Text(text) :> JSON
-    | Token.Null -> JSONNull() :> JSON
-    | Token.Boolean(b) -> Boolean(b) :> JSON
+        Number(Double.Parse(number, CultureInfo.InvariantCulture)) :> Document
+    | Token.String text -> Text(text) :> Document
+    | Token.Null -> JSONNull() :> Document
+    | Token.Boolean(b) -> Boolean(b) :> Document
     | v -> failwith "Syntax Error, unrecognized token in map()"
  
     let rec parseValue = function
@@ -166,13 +171,13 @@ let parse source =
  
     and parseArray = function
     | Comma :: t -> parseArray t
-    | CloseArray :: t -> JArray.New() :> JSON, t
+    | CloseArray :: t -> JArray.New() :> Document, t
     | t ->        
         let element, t' = parseValue t
         match parseArray t' with
         | (:? JArray as jArray),t'' -> 
             jArray.Elements.Insert(0,element)
-            jArray :> JSON,t''
+            jArray :> Document,t''
         | _ -> failwith "Malformed JSON array"
     and parseJObject = function
     | Comma :: t -> parseJObject t
@@ -181,19 +186,30 @@ let parse source =
         match parseJObject t' with
         | (:? JObject as jObject),t'' ->
             jObject.Properties.[name] <- value
-            jObject :> JSON,t''
+            jObject :> Document,t''
         | _ -> failwith "Malformed JSON object" 
-    | CloseBracket :: t -> JObject.New() :> JSON, t
+    | CloseBracket :: t -> JObject.New() :> Document, t
     | _ -> failwith "Malformed JSON object"
     
     tokenize source 
     |> parseValue
     |> fst
 
-let rec toJSON(value:obj) = 
-    match value with
-    | x when x = null-> JSONNull() :> JSON
-    | :? string as s -> Text(s) :> JSON
-    | :? int as n -> Number(float n) :> JSON
-    | :? float as n -> Number(n) :> JSON
-    | :? bool as b -> Boolean(b) :> JSON
+[<AutoOpen>]
+module Extension =
+    type Document with 
+        member this.GetProperty propertyName = (this :?> JObject).Properties.[propertyName]
+        member this.HasProperty propertyName = (this :?> JObject).Properties.ContainsKey propertyName
+        member this.GetText propertyName = (this.GetProperty(propertyName) :?> Text).Value
+        member this.GetNumber propertyName = (this.GetProperty(propertyName) :?> Number).Value
+        member this.GetBoolean propertyName = (this.GetProperty(propertyName) :?> Boolean).Value
+        member this.GetJObject propertyName = this.GetProperty(propertyName) :?> JObject
+        member this.GetJArray propertyName = this.GetProperty(propertyName) :?> JArray        
+
+        member this.AddTextProperty(propertyName,text) = (this :?> JObject).Properties.[propertyName] <- Text(text); this
+        member this.AddBoolProperty(propertyName,boolean) = (this :?> JObject).Properties.[propertyName] <- Boolean(boolean); this
+        member this.AddNumberProperty(propertyName,number) = (this :?> JObject).Properties.[propertyName] <- Number(number); this
+
+        member this.RemoveProperty propertyName = (this :?> JObject).Properties.Remove propertyName |> ignore
+
+        member this.ToXml() = (this :?> Infrastucture).ToXml() :?> XElement seq

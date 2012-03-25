@@ -1,15 +1,8 @@
 ﻿module FSharp.TypeProviders.Tests.JSON.ParserTests
 
 open NUnit.Framework
-open FSharpx.TypeProviders.JSONParser
+open FSharpx.JSON
 open FsUnit
-
-
-let getText (json:JSON) propertyName = ((json :?> JObject).Properties.[propertyName] :?> Text).Value
-let getNumber (json:JSON) propertyName = ((json :?> JObject).Properties.[propertyName] :?> Number).Value
-let getBool (json:JSON) propertyName = ((json :?> JObject).Properties.[propertyName] :?> Boolean).Value
-let getJObject (json:JSON) propertyName = (json :?> JObject).Properties.[propertyName] :?> JObject
-let getJArray (json:JSON) propertyName = (json :?> JObject).Properties.[propertyName] :?> JArray
 
 [<Test>]
 let ``Can parse empty document``() = 
@@ -20,21 +13,19 @@ let ``Can parse empty document``() =
 [<Test>] 
 let ``Can parse document with single property``() =
     let j = parse """{"firstName": "John"}"""
-    getText j "firstName" |> should equal "John"
-
+    j.GetText "firstName" |> should equal "John"
 
 [<Test>] 
 let ``Can parse document with text and integer``() =
     let j = parse """{"firstName": "John", "lastName": "Smith", "age": 25}"""
-    getText j "firstName" |> should equal "John"
-    getText j "lastName" |> should equal "Smith"
-    getNumber j "age"  |> should equal 25
+    j.GetText "firstName" |> should equal "John"
+    j.GetText "lastName" |> should equal "Smith"
+    j.GetNumber "age"  |> should equal 25
 
 [<Test>] 
 let ``Can parse document with text and float``() =
     let j = parse """{"firstName": "John", "lastName": "Smith", "age": 25.25}"""
-    getNumber j "age"  |> should equal 25.25
-
+    j.GetNumber "age"  |> should equal 25.25
 
 open System.Globalization
 open System.Threading
@@ -45,7 +36,7 @@ let ``Can parse document with fractional numbers``() =
     Thread.CurrentThread.CurrentCulture <- new CultureInfo("pt-PT") // use a culture that uses ',' instead o '.' for decimal separators
     try 
         let j = parse """{ "age": 25.5}"""
-        getNumber j "age"  |> should equal 25.5
+        j.GetNumber "age" |> should equal 25.5
     finally
         Thread.CurrentThread.CurrentCulture <- originalCulture
 
@@ -61,35 +52,34 @@ let ``Can parse nested document`` () =
             }
         }"""
         |> parse
-    let main = getJObject j "main"
+    let main = j.GetJObject "main"
 
-    getText main "title" |> should equal "example"
-    let nested = getJObject main "nested" 
-    getText nested "nestedTitle" |> should equal "sub"
+    main.GetText "title" |> should equal "example"
+    let nested = main.GetJObject "nested" 
+    nested.GetText "nestedTitle" |> should equal "sub"
                 
-
 [<Test>] 
 let ``Can parse document with booleans``() =
     let j = parse """{ "hasTrue": true, "hasFalse": false }"""
-    getBool j "hasTrue" |> should equal true
-    getBool j "hasFalse" |> should equal false
+    j.GetBoolean "hasTrue" |> should equal true
+    j.GetBoolean "hasFalse" |> should equal false
 
 
 [<Test>] 
 let ``Can parse document with null``() =    
     let j = parse """{"items": [{"id": "Open"}, null, {"id": "Pause"}] }"""
-    let jArray = getJArray j "items"
-    getText jArray.Elements.[0] "id" |> should equal "Open"
+    let jArray = j.GetJArray "items"
+    jArray.Elements.[0].GetText "id" |> should equal "Open"
     jArray.Elements.[1].GetType() |> should equal typeof<JSONNull>
-    getText jArray.Elements.[2] "id" |> should equal "Pause"
+    jArray.Elements.[2].GetText "id" |> should equal "Pause"
 
 [<Test>] 
 let ``Can parse array in outermost scope``() =
     let jArray = parse """[{"id": "Open"}, null, {"id": "Pause"}]""" :?> JArray
 
-    getText jArray.Elements.[0] "id" |> should equal "Open"
+    jArray.Elements.[0].GetText "id" |> should equal "Open"
     jArray.Elements.[1].GetType() |> should equal typeof<JSONNull>
-    getText jArray.Elements.[2] "id" |> should equal "Pause"
+    jArray.Elements.[2].GetText "id" |> should equal "Pause"
 
 [<Test>]
 let ``Can parse a string from twitter api without throwing an error``() =

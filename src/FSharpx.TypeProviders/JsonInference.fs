@@ -1,7 +1,7 @@
 ﻿namespace FSharpx.TypeProviders
 
 open System
-open FSharpx.TypeProviders.JSONParser
+open FSharpx.JSON
 open FSharpx.TypeProviders.DSL
 open System.Collections.Generic
 open FSharpx.TypeProviders.Inference
@@ -11,10 +11,10 @@ open FSharpx.TypeProviders.Inference
 // ------------------------------------------------------------------------------------------------
 
 module JSONInference = 
-  let rec provideElement name multi (childs:seq<JSON>) = 
+  let rec provideElement name multi (childs:seq<Document>) = 
     CompoundProperty(name,multi,collectElements childs,collectProperties childs)
 
-  and collectProperties (elements:seq<JSON>) =
+  and collectProperties (elements:seq<Document>) =
     let props =
       [for el in elements do
         match el with
@@ -36,7 +36,7 @@ module JSONInference =
             |> Seq.head,
           Seq.length attrs < Seq.length elements))
 
-  and collectElements (elements:seq<JSON>)  =
+  and collectElements (elements:seq<Document>)  =
     [ for el in elements do
         match el with
         | (:? JObject as jObject) -> 
