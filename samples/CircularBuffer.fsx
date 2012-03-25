@@ -1,9 +1,9 @@
 // -------------------------------------------------------------------------------
-// F# async extensions (BlockingQueue.fsx)
+// F# async extensions (CircularBuffer.fsx)
 // (c) Tomas Petricek & Ryan Riley, 2011-2012, Available under Apache 2.0 license.
 // -------------------------------------------------------------------------------
 
-// This example demonstrates how to use `CircularBuffer` and `CircularBufferAgent`
+// This example demonstrates how to use `CircularBuffer`, `CircularQueueAgent`, and `CircularStream`.
 // The agent implements producer/consumer concurrent pattern.
 
 #r "System.dll"

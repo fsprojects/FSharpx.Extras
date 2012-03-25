@@ -1,16 +1,17 @@
 ﻿// ----------------------------------------------------------------------------
 // F# async extensions (IO.fs)
-// (c) Tomas Petricek, 2011, Available under Apache 2.0 license.
+// (c) Tomas Petricek and Ryan Riley, 2011-2012, Available under Apache 2.0 license.
 // ----------------------------------------------------------------------------
 
 namespace FSharp.IO
+open System.IO
 open FSharp.Control
 // ----------------------------------------------------------------------------
 // Extensions that simplify working with Stream using async sequences
 
 [<AutoOpen>]
 module IOExtensions = 
-  type System.IO.Stream with
+  type Stream with
     /// Asynchronously reads the stream in chunks of a specified size
     /// and returns the result as an asynchronous sequence.
     member x.AsyncReadSeq(?bufferSize) = 
@@ -29,64 +30,81 @@ module IOExtensions =
       for data in input do
         do! x.AsyncWrite(data) }
 
-// ----------------------------------------------------------------------------
-// Extensions that simplify working with HttpListener and related types
+open System
+#if NET40
+open System.Diagnostics.Contracts
+#else
+open System.Diagnostics
+#endif
 
-namespace FSharp.Net
-open System.IO
-open System.Net
-open System.Text
-open System.Threading
+// Loosely based on Stephen Toub's Stream Pipelines article in MSDN.
+// See http://msdn.microsoft.com/en-us/magazine/cc163290.aspx
+type CircularStream(maxLength) =
+    inherit Stream()
 
-open FSharp.IO
-open FSharp.Control
+    let queue = new CircularQueueAgent<byte>(maxLength)
 
-[<AutoOpen>]
-module HttpExtensions = 
+    override x.CanRead = true
+    override x.CanSeek = false
+    // We deviate from Toub's implementation in that we
+    // never prevent writes.
+    override x.CanWrite = true
+    
+    override x.Flush() = ()
+    override x.Length = raise <| new NotSupportedException()
+    override x.Position
+        with get() = raise <| new NotSupportedException()
+        and set(v) = raise <| new NotSupportedException()
+    override x.Seek(offset, origin) = raise <| new NotSupportedException()
+    override x.SetLength(value) = raise <| new NotSupportedException()
 
-  type System.Net.HttpListener with
-    /// Asynchronously waits for an incoming request and returns it.
-    member x.AsyncGetContext() = 
-      Async.FromBeginEnd(x.BeginGetContext, x.EndGetContext)
+    override x.Read(buffer, offset, count) =
+        #if NET40
+        Contract.Requires(buffer <> null, "buffer cannot be null")
+        Contract.Requires(offset >= 0 && offset < buffer.Length, "offset is out of range")
+        Contract.Requires(count >= 0 && offset + count <= buffer.Length, "count is out of range")
+        #else
+        Debug.Assert(buffer <> null, "buffer cannot be null")
+        Debug.Assert(offset >= 0 && offset < buffer.Length, "offset is out of range")
+        Debug.Assert(count >= 0 && offset + count <= buffer.Length, "count is out of range")
+        #endif
 
-    /// Starts HttpListener on the specified URL. The 'handler' function is
-    /// called (in a new thread pool thread) each time an HTTP request is received.
-    static member Start(url, handler, ?cancellationToken) =
-      let server = async { 
-        use listener = new HttpListener()
-        listener.Prefixes.Add(url)
-        listener.Start()
-        while true do 
-          let! context = listener.AsyncGetContext()
-          Async.Start
-            ( handler (context.Request, context.Response), 
-              ?cancellationToken = cancellationToken) }
-      Async.Start(server, ?cancellationToken = cancellationToken)
+        if count = 0 then 0 else
+        let chunk = queue.Dequeue(count)
+        Buffer.BlockCopy(chunk, 0, buffer, offset, chunk.Length)
+        chunk.Length
 
-  type System.Net.HttpListenerRequest with
-    /// Asynchronously reads the 'InputStream' of the request and converts it to a string
-    member request.AsyncInputString = async {
-      use tmp = new MemoryStream()
-      for data in request.InputStream.AsyncReadSeq(16 * 1024) do
-        tmp.Write(data, 0, data.Length) 
-      tmp.Seek(0L, SeekOrigin.Begin) |> ignore
-      use sr = new StreamReader(tmp)
-      return sr.ReadToEnd() }
+    override x.Write(buffer, offset, count) =
+        #if NET40
+        Contract.Requires(buffer <> null, "buffer cannot be null")
+        Contract.Requires(offset >= 0 && offset < buffer.Length, "offset is out of range")
+        Contract.Requires(count >= 0 && offset + count <= buffer.Length, "count is out of range")
+        #else
+        Debug.Assert(buffer <> null, "buffer cannot be null")
+        Debug.Assert(offset >= 0 && offset < buffer.Length, "offset is out of range")
+        Debug.Assert(count >= 0 && offset + count <= buffer.Length, "count is out of range")
+        #endif
 
+        if count = 0 then () else
+        queue.Enqueue(buffer, offset, count)
 
-  type System.Net.HttpListenerResponse with
-    /// Sends the specified string as a reply in UTF 8 encoding
-    member response.AsyncReply(s:string) = async {
-      let buffer = Encoding.UTF8.GetBytes(s)
-      response.ContentLength64 <- int64 buffer.Length
-      let output = response.OutputStream
-      do! output.AsyncWrite(buffer,0,buffer.Length)
-      output.Close() }
+    member x.AsyncRead(buffer: byte[], offset, count, ?timeout) =
+        #if NET40
+        Contract.Requires(buffer <> null, "buffer cannot be null")
+        Contract.Requires(offset >= 0 && offset < buffer.Length, "offset is out of range")
+        Contract.Requires(count >= 0 && offset + count <= buffer.Length, "count is out of range")
+        #else
+        Debug.Assert(buffer <> null, "buffer cannot be null")
+        Debug.Assert(offset >= 0 && offset < buffer.Length, "offset is out of range")
+        Debug.Assert(count >= 0 && offset + count <= buffer.Length, "count is out of range")
+        #endif
 
-    /// Sends the specified data as a reply with the specified content type
-    member response.AsyncReply(typ, buffer:byte[]) = async {
-      response.ContentLength64 <- int64 buffer.Length
-      let output = response.OutputStream
-      response.ContentType <- typ
-      do! output.AsyncWrite(buffer,0,buffer.Length)
-      output.Close() }
+        if count = 0 then async.Return(0) else
+        async {
+            let! chunk = queue.AsyncDequeue(count, ?timeout = timeout)
+            Buffer.BlockCopy(chunk, 0, buffer, offset, chunk.Length)
+            return chunk.Length }
+
+    override x.Close() =
+        base.Close()
+        // TODO: Close the queue agent.

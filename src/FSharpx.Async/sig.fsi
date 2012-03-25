@@ -408,25 +408,6 @@ namespace FSharp.IO
     type Stream with
       member AsyncWriteSeq : input:Control.AsyncSeq<byte []> -> Async<unit>
   end
-namespace FSharp.Net
-  module HttpExtensions = begin
-    type HttpListener with
-      member AsyncGetContext : unit -> Async<System.Net.HttpListenerContext>
-    type HttpListener with
-      static member
-        Start : url:string *
-                handler:(System.Net.HttpListenerRequest *
-                         System.Net.HttpListenerResponse -> Async<unit>) *
-                ?cancellationToken:System.Threading.CancellationToken -> unit
-    type HttpListenerRequest with
-      member AsyncInputString : Async<string>
-    type HttpListenerResponse with
-      member AsyncReply : s:string -> Async<unit>
-    type HttpListenerResponse with
-      member AsyncReply : typ:string * buffer:byte [] -> Async<unit>
-  end
-
-namespace FSharp.IO
   type CircularStream =
     class
       inherit System.IO.Stream
