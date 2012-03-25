@@ -117,6 +117,40 @@ let ``Can parse optional values in arrays``() =
     authors.[1].Age
     |> should equal None
 
+type WikiSample =
+    StructuredJSON<Schema=
+        """{  
+                 "firstName": "John",
+                 "lastName" : "Smith",
+                 "age"      : 25,
+                 "address"  :
+                 {
+                     "streetAddress": "21 2nd Street",
+                     "city"         : "New York",
+                     "state"        : "NY",
+                     "postalCode"   : "10021"
+                 },
+                 "phoneNumber":
+                 [
+                     {
+                       "type"  : "home",
+                       "number": "212 555-1234"
+                     },
+                     {
+                       "type"  : "fax",
+                       "number": "646 555-4567"
+                     }
+                 ]
+             }""">
+
+[<Test>]
+let ``Can parse wiki sample``() = 
+    let document = WikiSample().Root
+    document.FirstName |> should equal "John"
+
+    let phone = document.GetPhoneNumberElements() |> Seq.head
+    phone.Number |> should equal "212 555-1234"
+
 [<Test>]
 let ``Can compare typed JSON documents``() = 
     let simple1 = SimpleJSON().Root
