@@ -55,7 +55,6 @@ let ``Can parse properties``() =
     simple.IsCool
     |> should equal true
 
-
 type NestedJSON = StructuredJSON<"NestedJSON.txt">
 
 let nested = NestedJSON().Root
@@ -117,3 +116,12 @@ let ``Can parse optional values in arrays``() =
 
     authors.[1].Age
     |> should equal None
+
+[<Test>]
+let ``Can compare typed JSON documents``() = 
+    let simple1 = SimpleJSON().Root
+    let simple2 = SimpleJSON().Root
+    let nested = NestedJSON().Root
+
+    Assert.AreEqual(simple1,simple2)
+    Assert.AreNotEqual(nested,simple2)

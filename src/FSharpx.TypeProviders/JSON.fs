@@ -76,6 +76,11 @@ type Text(text:string) =
     member this.Value with get() = v and set (value) = v <- value
     override this.ToString() = sprintf "\"%s\"" v
 
+    override this.Equals other =
+        match other with
+        | (:? Text as y) -> this.Value = y.Value
+        | _ -> false
+
     interface Document
     interface Infrastucture with
         member this.Serialize sb = sb.AppendFormat("\"{0}\"",v)
@@ -85,6 +90,11 @@ type Number(number:float) =
     let mutable v = number
     member this.Value with get() = v and set (value) = v <- value
     override this.ToString() = v.ToString()
+
+    override this.Equals other =
+        match other with
+        | (:? Number as y) -> this.Value = y.Value
+        | _ -> false
 
     interface Document
     interface Infrastucture with
@@ -96,6 +106,11 @@ type Boolean(boolean:bool) =
     member this.Value with get() = v and set (value) = v <- value
     override this.ToString() = v.ToString()
 
+    override this.Equals other =
+        match other with
+        | (:? Boolean as y) -> this.Value = y.Value
+        | _ -> false
+
     interface Document
     interface Infrastucture with
         member this.Serialize sb = sb.Append(v.ToString().ToLower())
@@ -103,6 +118,11 @@ type Boolean(boolean:bool) =
 
 type JSONNull() =
     override this.ToString() = "null"
+
+    override this.Equals other =
+        match other with
+        | :? JSONNull -> true
+        | _ -> false
 
     interface Document
     interface Infrastucture with
@@ -121,6 +141,15 @@ type JArray(elements:List<Document>) =
 
     member this.Elements with get() = v
     override this.ToString() = (new StringBuilder() |> serialize).ToString()
+
+    override this.Equals other =
+        match other with
+        | (:? JArray as y) ->
+            if this.Elements.Count <> y.Elements.Count then false else
+            this.Elements
+              |> Seq.zip y.Elements
+              |> Seq.forall (fun (a,b) -> a.Equals b)
+        | _ -> false
 
     static member New() = new JArray(new List<Document>())
 
@@ -143,6 +172,15 @@ type JObject(properties:Dictionary<string,Document>) =
     member this.Properties with get() = v
     
     override this.ToString() = (new StringBuilder() |> serialize).ToString()
+
+    override this.Equals other =
+        match other with
+        | (:? JObject as y) ->
+            if this.Properties.Count <> y.Properties.Count then false else
+            this.Properties
+              |> Seq.zip y.Properties
+              |> Seq.forall (fun (a,b) -> a.Key = b.Key && a.Equals b)
+        | _ -> false
 
     static member New() = new JObject(new Dictionary<string,Document>())
 
@@ -206,10 +244,12 @@ module Extension =
         member this.GetJObject propertyName = this.GetProperty(propertyName) :?> JObject
         member this.GetJArray propertyName = this.GetProperty(propertyName) :?> JArray        
 
+        member this.AddProperty(propertyName,document) = (this :?> JObject).Properties.[propertyName] <- document; this
         member this.AddTextProperty(propertyName,text) = (this :?> JObject).Properties.[propertyName] <- Text(text); this
         member this.AddBoolProperty(propertyName,boolean) = (this :?> JObject).Properties.[propertyName] <- Boolean(boolean); this
         member this.AddNumberProperty(propertyName,number) = (this :?> JObject).Properties.[propertyName] <- Number(number); this
-
+        member this.AddElement element = (this :?> JArray).Elements.Add element; this
+        
         member this.RemoveProperty propertyName = (this :?> JObject).Properties.Remove propertyName |> ignore
 
         member this.ToXml() = (this :?> Infrastucture).ToXml() :?> XElement seq

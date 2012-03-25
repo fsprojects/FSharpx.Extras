@@ -46,6 +46,7 @@
     <Compile Include="Xml.Reader.Tests.fs" />
     <Compile Include="Xml.Writer.Tests.fs" />
     <Compile Include="JSON.Parser.Tests.fs" />
+    <Compile Include="JSON.Equality.Tests.fs" />
     <Compile Include="JSON.Serialization.Tests.fs" />
     <Compile Include="JSON.Reader.Tests.fs" />
     <Compile Include="JSON.Writer.Tests.fs" />
