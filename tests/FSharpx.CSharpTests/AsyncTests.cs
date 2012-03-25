@@ -37,30 +37,58 @@ namespace FSharpx.CSharpTests {
                 , "http://www.yahoo.com"
                 , "http://www.microsoft.com"
                 );
-            var result = FSharpAsync.Parallel(urls.Select(Get)).Select(s => string.Join("", s)).Run();
+            var result = urls.Select(Get).Parallel()
+                .Select(s => string.Join("", s))
+                .Run();
             var rx = new Regex(@"<html");
             Assert.AreEqual(4, rx.Matches(result).Count);
         }
 
         [Test]
-        public void FuncToAsync() {
+        public void ToAsync() {
             FSharpAsync<int> a = L.F(() => 1).ToFSharpAsync();
             FSharpAsync<Unit> b = a.IgnoreResult();
-            //b.Start();
+            
+            // super verbose return
+            FSharpAsync<int> i = ExtraTopLevelOperators.DefaultAsyncBuilder.Return(1);
+
+            FSharpAsync<int> x = FSharpAsyncEx.Return(1);
+            FSharpAsync<Func<int>> fa = FSharpAsyncEx.Return(L.F(() => 1));
         }
 
         [Test]
         public void Protect() {
             Get("http://www.google.comco").Protect().Run()
-                .Match((string result) => Assert.Fail("request should have failed"),
-                       (Exception e) => { });
+                .Match(result => Assert.Fail("request should have failed"),
+                       e => { });
+        }
+
+        [Test]
+        public void Example() {
+            var urls = FSharpList.Create(
+                  "http://www.google.com"
+                , "http://www.bing.com"
+                , "http://www.yahoo.com"
+                , "http://www.microsoft.com"
+                );
+            var realJoinWebPages = JoinWebPages(url => Get(url).Protect());
+            var testJoinWebPages = JoinWebPages(_ => FSharpAsyncEx.Return(FSharpChoice.New1Of2<string, Exception>("hello")));
+            var result = testJoinWebPages(urls);
+            Assert.AreEqual("hellohellohellohello", result);
+        }
+
+        Func<IEnumerable<string>, string> JoinWebPages(Func<string, FSharpAsync<FSharpChoice<string, Exception>>> fetch) {
+            return urls =>
+                urls.Select(fetch).Parallel()
+                    .Select(c => string.Join("", c.Select(s => s.Match(x => x, _ => "")))) // swallow exceptions!
+                    .Run();
         }
 
         // http://stackoverflow.com/questions/6893998/c-how-to-implement-as-async-and-in-f
 
         [Test]
         [Ignore("just an example")]
-        public void AsyncExample() {
+        public void Example2() {
             var price = LoadPrices("MSFT").Run().First();
             Assert.AreEqual(new DateTime(2008,10,30), price.Item1);
             Assert.AreEqual(20.82m, price.Item2);
