@@ -8,7 +8,7 @@ open FSharpx
 open FSharpx.Task
 open System.Threading.Tasks
 
-let task = TaskBuilder()
+let task = TaskBuilder(continuationOptions = TaskContinuationOptions.ExecuteSynchronously)
 
 type WebRequest with
     member x.GetResponseTask() =

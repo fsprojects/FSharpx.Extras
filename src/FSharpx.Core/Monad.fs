@@ -113,13 +113,19 @@ module Async =
         Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
 
 module Task =
+    open System.Threading
     open System.Threading.Tasks
 
-    let inline fromAsync x =
+    let inline fromAsyncWithOptions (creationOptions: TaskCreationOptions) x = 
         let abegin, aend, acancel = Async.AsBeginEnd (fun () -> x)
-        Task.Factory.FromAsync<_>((fun a b -> abegin((), a, b)), aend, null)
+        Task.Factory.FromAsync<_>((fun a b -> abegin((), a, b)), aend, null, creationOptions)
 
-    let bind (f: 'a -> Task<'b>) (m: Task<'a>) = 
+    let inline fromAsync x = fromAsyncWithOptions TaskCreationOptions.None x
+
+    let inline bindWithOptions (token: CancellationToken) (continuationOptions: TaskContinuationOptions) (scheduler: TaskScheduler) (f: 'a -> Task<'b>) (m: Task<'a>) =
+        m.ContinueWith((fun (x: Task<_>) -> f x.Result), token, continuationOptions, scheduler).Unwrap()
+
+    let inline bind (f: 'a -> Task<'b>) (m: Task<'a>) = 
         m.ContinueWith(fun (x: Task<_>) -> f x.Result).Unwrap()
 
     let inline returnM a = 
@@ -160,10 +166,12 @@ module Task =
     /// Sequence actions, discarding the value of the second argument.
     let inline ( <*) a b = lift2 (fun z _ -> z) a b
     
-    type TaskBuilder() =
+    type TaskBuilder(?continuationOptions: TaskContinuationOptions, ?scheduler: TaskScheduler) =
+        let contOptions = defaultArg continuationOptions TaskContinuationOptions.None
+        let scheduler = defaultArg scheduler TaskScheduler.Default
         member this.Return x = returnM x
         member this.ReturnFrom (a: 'a Task) = a
-        member this.Bind(m, f) = bind f m
+        member this.Bind(m, f) = bindWithOptions CancellationToken.None contOptions scheduler f m
         member this.Combine(comp1, comp2) = 
             this.Bind(comp1, fun () -> comp2)
         member this.TryFinally(m, compensation) =
