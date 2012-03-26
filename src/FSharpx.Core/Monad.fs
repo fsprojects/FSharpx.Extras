@@ -113,15 +113,28 @@ module Async =
         Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
 
 #if NET40
+    open System.Threading.Tasks
+
+    let inline toTaskWithOptions (creationOptions: TaskCreationOptions) x = 
+        let abegin, aend, acancel = Async.AsBeginEnd (fun () -> x)
+        Task.Factory.FromAsync<_>((fun a b -> abegin((), a, b)), aend, null, creationOptions)
+
+    let inline toTask x = toTaskWithOptions TaskCreationOptions.None x
+
 module Task =
     open System.Threading
     open System.Threading.Tasks
 
-    let inline fromAsyncWithOptions (creationOptions: TaskCreationOptions) x = 
-        let abegin, aend, acancel = Async.AsBeginEnd (fun () -> x)
-        Task.Factory.FromAsync<_>((fun a b -> abegin((), a, b)), aend, null, creationOptions)
-
-    let inline fromAsync x = fromAsyncWithOptions TaskCreationOptions.None x
+    let toAsync (t: Task<'a>): Async<'a> =
+        let abegin (cb: AsyncCallback, state: obj) : IAsyncResult = 
+            match cb with
+            | null -> upcast t
+            | cb -> 
+                t.ContinueWith(fun (_ : Task<_>) -> cb.Invoke t) |> ignore
+                upcast t
+        let aend (r: IAsyncResult) = 
+            (r :?> Task<'a>).Result
+        Async.FromBeginEnd(abegin, aend)
 
     /// Transforms a Task's first value by using a specified mapping function.
     let inline mapWithOptions (token: CancellationToken) (continuationOptions: TaskContinuationOptions) (scheduler: TaskScheduler) f (m: Task<_>) =

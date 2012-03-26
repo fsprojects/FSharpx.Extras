@@ -14,11 +14,11 @@ let task = Task.TaskBuilder(continuationOptions = TaskContinuationOptions.Execut
 type WebRequest with
     member x.GetResponseTask() =
         //Task.Factory.FromAsync((fun a b -> x.BeginGetResponse(a,b)), x.EndGetResponse, null)
-        x.AsyncGetResponse() |> Task.fromAsync
+        x.AsyncGetResponse() |> Async.toTask
 
 type StreamReader with
     member x.ReadToEndTask() = 
-        x.AsyncReadToEnd() |> Task.fromAsync
+        x.AsyncReadToEnd() |> Async.toTask
 
 [<Test>]
 let loadprices() =
