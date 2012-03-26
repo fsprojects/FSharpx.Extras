@@ -50,3 +50,13 @@ let ``Can load and manipulate wiki data``() =
     |> document.AddPhoneNumber
 
     document.GetPhoneNumberElements() |> Seq.length |> should equal 1
+
+[<Test>]
+let ``Can load empty json file and fails on property access``() = 
+    let document = WikiSample("Empty.json").Root
+    let failed = ref false
+    try
+        document.FirstName |> ignore
+    with
+    | _ -> failed := true
+    Assert.IsTrue !failed
