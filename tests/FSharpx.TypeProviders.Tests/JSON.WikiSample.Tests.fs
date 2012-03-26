@@ -42,6 +42,6 @@ let ``Can parse wiki sample``() =
 let ``Can load wiki data``() = 
     let document = WikiSample("WikiData.json").Root
     document.FirstName |> should equal "John"
+    document.LastName |> should equal "Doe"
 
-    let phone = document.GetPhoneNumberElements() |> Seq.head
-    phone.Number |> should equal "212 555-1234"
+    document.GetPhoneNumberElements() |> Seq.length |> should equal 0

@@ -249,7 +249,10 @@ module Extension =
         member this.GetNumber propertyName = (this.GetProperty(propertyName) :?> Number).Value
         member this.GetBoolean propertyName = (this.GetProperty(propertyName) :?> Boolean).Value
         member this.GetJObject propertyName = this.GetProperty(propertyName) :?> JObject
-        member this.GetJArray propertyName = this.GetProperty(propertyName) :?> JArray        
+        member this.GetJArray propertyName = 
+            match (this :?> JObject).Properties.TryGetValue propertyName with
+            | true,jArray -> jArray :?> JArray 
+            | _ -> JArray.New()       
 
         member this.AddProperty(propertyName,document) = (this :?> JObject).Properties.[propertyName] <- document; this
         member this.AddTextProperty(propertyName,text) = (this :?> JObject).Properties.[propertyName] <- Text(text); this
