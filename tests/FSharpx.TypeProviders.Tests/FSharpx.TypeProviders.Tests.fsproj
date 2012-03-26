@@ -48,6 +48,7 @@
     <Compile Include="JSON.Parser.Tests.fs" />
     <Compile Include="JSON.Equality.Tests.fs" />
     <Compile Include="JSON.Serialization.Tests.fs" />
+    <Compile Include="JSON.Xml.Conversion.Tests.fs" />
     <Compile Include="JSON.Reader.Tests.fs" />
     <Compile Include="JSON.Writer.Tests.fs" />
     <Compile Include="JSON.WikiSample.Tests.fs" />

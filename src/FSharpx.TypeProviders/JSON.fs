@@ -9,6 +9,7 @@ open System.Xml.Linq
 open System.Text
 open Microsoft.FSharp.Reflection
 open System.Collections.Generic
+open FSharpx.Strings
 
 type Token =
 | OpenBracket | CloseBracket
@@ -240,6 +241,28 @@ let parse source =
     |> parseValue
     |> fst
 
+let fromXml(xml:XDocument) =
+    let rec createJArray (elements:XElement seq) =
+        let jArray = JArray.New()
+        for element in elements do
+            createJObject element 
+            |> jArray.Elements.Add
+        jArray
+    and createJObject (element:XElement) =
+        let jObject = JObject.New()
+        for attribute in element.Attributes() do
+            jObject.Properties.[attribute.Name.LocalName] <- Text (attribute.Value)
+
+        element.Elements()
+        |> Seq.groupBy (fun x -> x.Name.LocalName)
+        |> Seq.iter (fun (key,childs) ->
+                match Seq.toList childs with
+                | child::[] -> jObject.Properties.[singularize key] <- createJObject child
+                | childs -> jObject.Properties.[pluralize key] <- createJArray childs)
+        jObject
+
+    createJObject xml.Root :> Document
+    
 [<AutoOpen>]
 module Extension =
     type Document with 
@@ -267,3 +290,6 @@ module Extension =
         member this.RemoveProperty propertyName = (this :?> JObject).Properties.Remove propertyName |> ignore
 
         member this.ToXml() = (this :?> Infrastucture).ToXml() :?> XObject seq
+
+    type System.Xml.Linq.XDocument with
+        member this.ToJson() = fromXml this

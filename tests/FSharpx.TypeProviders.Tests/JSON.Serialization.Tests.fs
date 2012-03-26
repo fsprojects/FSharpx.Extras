@@ -31,13 +31,3 @@ let ``Can serialize document with array, null and number``() =
     let text = """{"items":[{"id":"Open"},null,{"id":25}]}"""
     let json = parse text
     json.ToString() |> should equal text
-
-open System.Xml.Linq
-
-[<Test>]
-let ``Can serialize document to XML``() =
-    let text = """{"items": [{"id": "Open"}, null, {"id": 25}]}"""
-    let json = parse text
-    let xml = json.ToXml() |> Seq.head 
-    let expectedXml = XDocument.Parse("<items><item id=\"Open\" /><item /><item id=\"25\" /></items>")
-    xml.ToString() |> should equal (expectedXml.ToString())

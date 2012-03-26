@@ -65,3 +65,11 @@ let ``Can serialize the xml``() =
     let inlined = new AuthorsXml()
     let xml = inlined.ToString()
     xml |> should equal "<authors>\r\n  <author name=\"Ludwig\" surname=\"Wittgenstein\" age=\"29\" isPhilosopher=\"True\" size=\"30.3\" />\r\n</authors>"
+
+    
+[<Test>]
+let ``Can convert the xml to json``() =
+    let inlined = new AuthorsXml()
+    let json = inlined.ToJson()
+    let expectedJson = """{"author":{"name":"Ludwig","surname":"Wittgenstein","age":"29","isPhilosopher":"True","size":"30.3"}}"""
+    json.ToString() |> should equal expectedJson
