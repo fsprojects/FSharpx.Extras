@@ -82,7 +82,7 @@ let jsonType (ownerType:TypeProviderForNamespaces) cfg =
             (fun args -> <@@ (%%args.[0] : string) |> File.ReadAllText |> parse  @@>)
             (fun args -> <@@ (%%args.[0] : Document) @@>)
             (fun args -> <@@ (%%args.[0]: Document).ToString() @@>)
-       |+!> (provideMethod ("ToXml") [] typeof<XElement seq> (fun args -> <@@ (%%args.[0]: Document).ToXml() @@>)
+       |+!> (provideMethod ("ToXml") [] typeof<XObject seq> (fun args -> <@@ (%%args.[0]: Document).ToXml() @@>)
            |> addXmlDoc "Gets the Xml representation")
     let createTypeFromFileName typeName (fileName:string) =
         System.IO.File.ReadAllText fileName

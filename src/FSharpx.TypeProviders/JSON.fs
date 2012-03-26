@@ -187,7 +187,14 @@ type JObject(properties:Dictionary<string,Document>) =
     interface Document
     interface Infrastucture with
         member this.Serialize sb = serialize sb
-        member this.ToXml() = v |> Seq.map (fun kv -> new XElement(XName.Get kv.Key, (kv.Value :?> Infrastucture).ToXml())) :> obj
+        member this.ToXml() =
+            v 
+            |> Seq.map (fun kv -> 
+                    match kv.Value with
+                    | (:? Text as v) -> new XAttribute(XName.Get kv.Key, v.Value) :> XObject
+                    | (:? Boolean as v) -> new XAttribute(XName.Get kv.Key, v.Value) :> XObject
+                    | (:? Number as v) -> new XAttribute(XName.Get kv.Key, v.Value) :> XObject
+                    | _ -> new XElement(XName.Get kv.Key, (kv.Value :?> Infrastucture).ToXml()) :> XObject) :> obj
 
 open System.Globalization
 
@@ -252,4 +259,4 @@ module Extension =
         
         member this.RemoveProperty propertyName = (this :?> JObject).Properties.Remove propertyName |> ignore
 
-        member this.ToXml() = (this :?> Infrastucture).ToXml() :?> XElement seq
+        member this.ToXml() = (this :?> Infrastucture).ToXml() :?> XObject seq

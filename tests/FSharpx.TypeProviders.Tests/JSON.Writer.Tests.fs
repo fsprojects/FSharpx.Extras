@@ -80,5 +80,5 @@ open System.Xml.Linq
 let ``Can convert the json to xml``() =
     let inlined = new AuthorsJSON()
     let xml = inlined.ToXml() |> Seq.head 
-    let expectedXml = XElement.Parse("<authors><item><name>Steffen</name></item><item><size>42.42</size><isCool>true</isCool><age>29</age><name>Tomas</name></item></authors>")
+    let expectedXml = XDocument.Parse("<authors><item name=\"Steffen\" /><item size=\"42.42\" isCool=\"true\" age=\"29\" name=\"Tomas\" /></authors>")
     xml.ToString() |> should equal (expectedXml.ToString())
