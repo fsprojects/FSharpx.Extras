@@ -39,9 +39,14 @@ let ``Can parse wiki sample``() =
     phone.Number |> should equal "212 555-1234"
 
 [<Test>]
-let ``Can load wiki data``() = 
+let ``Can load and manipulate wiki data``() = 
     let document = WikiSample("WikiData.json").Root
     document.FirstName |> should equal "John"
     document.LastName |> should equal "Doe"
 
     document.GetPhoneNumberElements() |> Seq.length |> should equal 0
+
+    document.NewPhoneNumber(Type="home",Number="456 123-4567")
+    |> document.AddPhoneNumber
+
+    document.GetPhoneNumberElements() |> Seq.length |> should equal 1
