@@ -1,4 +1,5 @@
 ﻿module FSharpx.Tests.TaskTests
+#if NET40
 
 open System
 open System.IO
@@ -44,3 +45,5 @@ let loadprices() =
     let t,p = downloadTask.Result.[0]
     Assert.AreEqual(DateTime(2008,10,30), t)
     Assert.AreEqual(20.82m, p)
+
+#endif

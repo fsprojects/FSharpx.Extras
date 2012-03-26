@@ -112,6 +112,7 @@ module Async =
     let foldM f s = 
         Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
 
+#if NET40
 module Task =
     open System.Threading
     open System.Threading.Tasks
@@ -183,6 +184,8 @@ module Task =
             finally compensation()
         member this.Using(res:#IDisposable, body) =
             this.TryFinally(body res, fun () -> match res with null -> () | disp -> disp.Dispose())
+
+#endif
 
 module ZipList = 
     let returnM v = Seq.initInfinite (fun _ -> v)
