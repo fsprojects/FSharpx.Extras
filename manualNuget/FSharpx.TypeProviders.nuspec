@@ -15,7 +15,7 @@ It currently implements type safe variants of:
 * XAML
 * AppSettings.</description>
     <id>FSharpx.TypeProviders</id>
-    <version>1.5.3</version>
+    <version>1.5.4</version>
     <authors>Steffen Forkmann, Tomas Petricek, Ryan Riley, Mauricio Scheffer, Dan Mohl, Johann Deneux</authors>
     <owners>Steffen Forkmann, Mauricio Scheffer</owners>
     <language>en-US</language>
