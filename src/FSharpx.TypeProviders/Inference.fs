@@ -9,6 +9,7 @@ open System.Xml.Linq
 open FSharpx.TypeProviders.DSL
 open System.Collections.Generic
 open System.Globalization
+open FSharpx.Strings
 
 /// Checks whether the string is a boolean value
 let isBool (s:string) =
@@ -78,10 +79,10 @@ let generateSublements ownerType parentType multiAccessExpr addChildExpr newChil
 
         if multi then     
             let newType = seqType childType
-            let niceChildName = niceName childName
+            let niceChildName = childName |> niceName |> singularize 
 
             ownerType
-            |+!> (provideMethod ("Get" + niceChildName + "Elements") [] newType (multiAccessExpr childName)
+            |+!> (provideMethod ("Get" + pluralize niceChildName) [] newType (multiAccessExpr childName)
                     |> addXmlDoc (sprintf @"Gets the %s elements" childName))
             |+!> (provideMethod ("New" + niceChildName) [] childType (newChildExpr childName)
                     |> addXmlDoc (sprintf @"Creates a new %s element" childName))

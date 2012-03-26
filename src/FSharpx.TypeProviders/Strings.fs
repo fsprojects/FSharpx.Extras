@@ -11,3 +11,11 @@ module Strings =
     let (|LetterDigit|_|) = sat Char.IsLetterOrDigit
     let (|Upper|_|) = sat Char.IsUpper
     let (|Lower|_|) = sat Char.IsLower
+
+    let pluralize(name:string) =
+        if name.EndsWith("s") then name else
+        name + "s"
+
+    let singularize(name:string) =
+        if name.EndsWith("s") then name.Substring(0,name.Length-1) else
+        name

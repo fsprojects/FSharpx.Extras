@@ -9,7 +9,7 @@ type AuthorsXml = StructuredXml<Schema="""<authors><author name="Ludwig" surname
 [<Test>]
 let ``Can set properties in inlined xml``() =
     let inlined = new AuthorsXml()
-    let author = inlined.Root.GetAuthorElements() |> Seq.head
+    let author = inlined.Root.GetAuthors() |> Seq.head
 
     author.Name <- "John"
     author.Name |> should equal "John"
@@ -35,7 +35,7 @@ let ``Can add author in inlined xml``() =
 
     inlined.Root.AddAuthor author
 
-    let authors = inlined.Root.GetAuthorElements() |> Seq.toList
+    let authors = inlined.Root.GetAuthors() |> Seq.toList
     authors.Length |> should equal 2
 
 [<Test>]
@@ -49,7 +49,7 @@ let ``Can use named parameters in author constructor``() =
 [<Test>]
 let ``Can export modified xml``() = 
     let inlined = new AuthorsXml()
-    let author = inlined.Root.GetAuthorElements() |> Seq.head
+    let author = inlined.Root.GetAuthors() |> Seq.head
 
     author.Name <- "John"
     author.Age <- 31

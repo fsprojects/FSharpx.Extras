@@ -35,7 +35,7 @@ let ``Can parse wiki sample``() =
     let document = WikiSample().Root
     document.FirstName |> should equal "John"
 
-    let phone = document.GetPhoneNumberElements() |> Seq.head
+    let phone = document.GetPhoneNumbers() |> Seq.head
     phone.Number |> should equal "212 555-1234"
 
 [<Test>]
@@ -44,12 +44,12 @@ let ``Can load and manipulate wiki data``() =
     document.FirstName |> should equal "John"
     document.LastName |> should equal "Doe"
 
-    document.GetPhoneNumberElements() |> Seq.length |> should equal 0
+    document.GetPhoneNumbers() |> Seq.length |> should equal 0
 
     document.NewPhoneNumber(Type="home",Number="456 123-4567")
     |> document.AddPhoneNumber
 
-    document.GetPhoneNumberElements() |> Seq.length |> should equal 1
+    document.GetPhoneNumbers() |> Seq.length |> should equal 1
 
 [<Test>]
 let ``Can load empty json file and fails on property access``() = 

@@ -21,6 +21,22 @@ let ``Can simplify the type names``() =
     niceName "HelloWorld123_hello__@__omg" =!= "HelloWorld123HelloOmg"
     niceName "HKEY_CURRENT_USER" =!= "HKEY_CURRENT_USER"
 
+[<Test>]
+let ``Can pluralize names``() =
+    let check a b = Strings.pluralize a |> should equal b
+    check "Author" "Authors"
+    check "Authors" "Authors"
+    check "Item" "Items"
+    check "Items" "Items"
+
+[<Test>]
+let ``Can singularize names``() =
+    let check a b = Strings.singularize a |> should equal b
+    check "Author" "Author"
+    check "Authors" "Author"
+    check "Item" "Item"
+    check "Items" "Item"
+
 open FSharpx.TypeProviders.Inference
 
 [<Test>]

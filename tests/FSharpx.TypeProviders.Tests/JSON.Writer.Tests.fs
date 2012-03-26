@@ -32,7 +32,7 @@ type AuthorsJSON = StructuredJSON<Schema="""{ "authors": [{ "name": "Steffen" },
 let ``Can set optional properties in inlined JSON``() = 
     let inlined = new AuthorsJSON()
 
-    let author = inlined.Root.GetAuthorsElements() |> Seq.head
+    let author = inlined.Root.GetAuthors() |> Seq.head
 
     author.Age <- None
     author.Age |> should equal None
@@ -56,12 +56,12 @@ let ``Can set optional properties in inlined JSON``() =
 let ``Can add author in inlined JSON``() = 
     let inlined = new AuthorsJSON()
 
-    let author = inlined.Root.NewAuthors()
+    let author = inlined.Root.NewAuthor()
     author.Name <- "John"
     
-    inlined.Root.AddAuthors author
+    inlined.Root.AddAuthor author
 
-    let authors = inlined.Root.GetAuthorsElements() |> Seq.toList
+    let authors = inlined.Root.GetAuthors() |> Seq.toList
     authors.Length |> should equal 3
 
     authors.[0].Name |> should equal "Steffen"

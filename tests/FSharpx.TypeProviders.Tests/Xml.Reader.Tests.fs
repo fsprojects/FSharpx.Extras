@@ -8,12 +8,12 @@ let inlined = new StructuredXml<Schema="""<authors><author name="Ludwig" surname
 
 [<Test>]
 let ``Can get author name in inlined xml``() = 
-    let author = inlined.Root.GetAuthorElements() |> Seq.head
+    let author = inlined.Root.GetAuthors() |> Seq.head
     author.Name |> should equal "Ludwig"
     author.Surname |> should equal "Wittgenstein"
 
 let philosophy = new StructuredXml<"Philosophy.xml">()
-let authors = philosophy.Root.GetAuthorElements() |> Seq.toList
+let authors = philosophy.Root.GetAuthors() |> Seq.toList
 
 [<Test>]
 let ``Can get author names in philosophy.xml``() = 
@@ -32,6 +32,6 @@ let ``Can get the optional author birthday in philosophy.xml``() =
 
 [<Test>]
 let ``Can get Descartes books in philosophy.xml``() = 
-    let books = authors.[0].GetBookElements() |> Seq.toList
+    let books = authors.[0].GetBooks() |> Seq.toList
     books.[0].Title |> should equal "Tractatus Logico-Philosophicus"
     books.[1].Title |> should equal "Philosophical Investigations"

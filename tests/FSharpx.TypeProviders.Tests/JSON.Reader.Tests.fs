@@ -91,7 +91,7 @@ let simpleArray = SimpleArrayJSON().Root
 
 [<Test>]
 let ``Can parse simple arrays``() = 
-    let items = simpleArray.GetItemsElements() |> Seq.toList
+    let items = simpleArray.GetItems() |> Seq.toList
     items.[0].Id
     |> should equal "Open"
 
@@ -104,7 +104,7 @@ let optionalValuesInJSON = OptionalValuesInJSON().Root
 
 [<Test>]
 let ``Can parse optional values in arrays``() = 
-    let authors = optionalValuesInJSON.GetAuthorsElements() |> Seq.toList
+    let authors = optionalValuesInJSON.GetAuthors() |> Seq.toList
     authors.[0].Name
     |> should equal "Steffen"
 
