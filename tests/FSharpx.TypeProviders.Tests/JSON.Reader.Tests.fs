@@ -23,7 +23,7 @@ let ``Can parse inlined properties``() =
 
 [<Test>]
 let ``Can parse inlined properties but read from file``() = 
-    let inlined = InlinedJSON("SimpleJSON.txt").Root
+    let inlined = InlinedJSON("Simple.json").Root
     inlined.FirstName
     |> should equal "John"
 
@@ -37,7 +37,7 @@ let ``Can parse inlined properties but read from file``() =
     |> should equal true
 
 
-type SimpleJSON = StructuredJSON<"SimpleJSON.txt">
+type SimpleJSON = StructuredJSON<"Simple.json">
 
 let simple = SimpleJSON().Root
 
@@ -55,7 +55,7 @@ let ``Can parse properties``() =
     simple.IsCool
     |> should equal true
 
-type NestedJSON = StructuredJSON<"NestedJSON.txt">
+type NestedJSON = StructuredJSON<"Nested.json">
 
 let nested = NestedJSON().Root
 
@@ -73,7 +73,7 @@ let ``Can parse nested properties``() =
     nested.Main.IsCool
     |> should equal true
 
-type DoubleNestedJSON = StructuredJSON<"DoubleNestedJSON.txt">
+type DoubleNestedJSON = StructuredJSON<"DoubleNested.json">
 
 let doubleNested = DoubleNestedJSON().Root
 
@@ -85,7 +85,7 @@ let ``Can parse double nested properties``() =
     doubleNested.Main.Nested.NestedTitle
     |> should equal "sub"
 
-type SimpleArrayJSON = StructuredJSON<"SimpleArrayJSON.txt">
+type SimpleArrayJSON = StructuredJSON<"SimpleArray.json">
 
 let simpleArray = SimpleArrayJSON().Root
 
@@ -98,7 +98,7 @@ let ``Can parse simple arrays``() =
     items.[1].Id
     |> should equal "Pause"
 
-type OptionalValuesInJSON = StructuredJSON<"OptionValuesInJSON.txt">
+type OptionalValuesInJSON = StructuredJSON<"OptionValues.json">
 
 let optionalValuesInJSON = OptionalValuesInJSON().Root
 
@@ -116,40 +116,6 @@ let ``Can parse optional values in arrays``() =
 
     authors.[1].Age
     |> should equal None
-
-type WikiSample =
-    StructuredJSON<Schema=
-        """{  
-                 "firstName": "John",
-                 "lastName" : "Smith",
-                 "age"      : 25,
-                 "address"  :
-                 {
-                     "streetAddress": "21 2nd Street",
-                     "city"         : "New York",
-                     "state"        : "NY",
-                     "postalCode"   : "10021"
-                 },
-                 "phoneNumber":
-                 [
-                     {
-                       "type"  : "home",
-                       "number": "212 555-1234"
-                     },
-                     {
-                       "type"  : "fax",
-                       "number": "646 555-4567"
-                     }
-                 ]
-             }""">
-
-[<Test>]
-let ``Can parse wiki sample``() = 
-    let document = WikiSample().Root
-    document.FirstName |> should equal "John"
-
-    let phone = document.GetPhoneNumberElements() |> Seq.head
-    phone.Number |> should equal "212 555-1234"
 
 [<Test>]
 let ``Can compare typed JSON documents``() = 
