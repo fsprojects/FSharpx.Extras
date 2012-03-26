@@ -5,18 +5,19 @@ open System.IO
 open System.Net
 open NUnit.Framework
 open FSharpx
-open FSharpx.Task
 open System.Threading.Tasks
+open Microsoft.FSharp.Control.WebExtensions
 
-let task = TaskBuilder(continuationOptions = TaskContinuationOptions.ExecuteSynchronously)
+let task = Task.TaskBuilder(continuationOptions = TaskContinuationOptions.ExecuteSynchronously)
 
 type WebRequest with
     member x.GetResponseTask() =
-        Task.Factory.FromAsync((fun a b -> x.BeginGetResponse(a,b)), x.EndGetResponse, null)
+        //Task.Factory.FromAsync((fun a b -> x.BeginGetResponse(a,b)), x.EndGetResponse, null)
+        x.AsyncGetResponse() |> Task.fromAsync
 
 type StreamReader with
     member x.ReadToEndTask() = 
-        fromAsync (x.AsyncReadToEnd())
+        x.AsyncReadToEnd() |> Task.fromAsync
 
 [<Test>]
 let loadprices() =
@@ -25,8 +26,8 @@ let loadprices() =
     let downloadTask =
         task {
             let! resp = req.GetResponseTask()
-            let stream = resp.GetResponseStream()
-            let reader = new StreamReader(stream)
+            use stream = resp.GetResponseStream()
+            use reader = new StreamReader(stream)
             let! csv = reader.ReadToEndTask()
             let prices =
                 csv.Split([|'\n'|])

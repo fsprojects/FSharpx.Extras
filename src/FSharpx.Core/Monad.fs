@@ -122,6 +122,14 @@ module Task =
 
     let inline fromAsync x = fromAsyncWithOptions TaskCreationOptions.None x
 
+    /// Transforms a Task's first value by using a specified mapping function.
+    let inline mapWithOptions (token: CancellationToken) (continuationOptions: TaskContinuationOptions) (scheduler: TaskScheduler) f (m: Task<_>) =
+        m.ContinueWith((fun (t: Task<_>) -> f t.Result), token, continuationOptions, scheduler)
+
+    /// Transforms a Task's first value by using a specified mapping function.
+    let inline map f (m: Task<_>) =
+        m.ContinueWith(fun (t: Task<_>) -> f t.Result)
+
     let inline bindWithOptions (token: CancellationToken) (continuationOptions: TaskContinuationOptions) (scheduler: TaskScheduler) (f: 'a -> Task<'b>) (m: Task<'a>) =
         m.ContinueWith((fun (x: Task<_>) -> f x.Result), token, continuationOptions, scheduler).Unwrap()
 
@@ -153,10 +161,6 @@ module Task =
 
     /// Sequential application
     let inline (<*>) f x = ap x f
-
-    /// Transforms a Task's first value by using a specified mapping function.
-    let inline map f (m: Task<'a>) =
-        m.ContinueWith(fun (t: Task<_>) -> f t.Result)
 
     /// Infix map
     let inline (<!>) f x = map f x
