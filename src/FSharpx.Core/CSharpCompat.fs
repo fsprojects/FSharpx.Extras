@@ -387,6 +387,11 @@ type Dictionary =
   static member TryFind (d, key) = Dictionary.tryFind key d
 
 [<Extension>]
+type EnumerableEx =
+    [<Extension>]
+    static member FirstOrNone source = Seq.tryFind (konst true) source
+
+[<Extension>]
 type FSharpAsyncEx =
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>) = 
