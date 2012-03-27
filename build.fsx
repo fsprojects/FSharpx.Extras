@@ -171,8 +171,8 @@ Target "BuildNuGet" (fun _ ->
             Publish = nugetKey <> "" })
         "FSharpx.Core.nuspec"
 
-    [nugetDir + sprintf "FSharpx.Core.%s.nupkg" version]
-        |> CopyTo deployDir
+    !! (nugetDir + "FSharpx.Core.*.nupkg")
+      |> CopyTo deployDir
 )
 
 Target "Deploy" (fun _ ->
