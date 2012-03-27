@@ -50,6 +50,10 @@
     <Compile Include="ToObservableTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\FSharpx.Async\FSharpx.Async.fsproj">
+      <Project>{ede1812b-5a62-410a-9553-02499cf29317}</Project>
+      <Name>FSharpx.Async</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\FSharpx.Observable\FSharpx.Observable.fsproj">
       <Project>{2E802F54-9CD0-4B0A-B834-5C5979403B50}</Project>
       <Name>FSharpx.Observable</Name>

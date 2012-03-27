@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using FSharpx;
+using FSharp.Control;
 using NUnit.Framework;
 
 [TestFixture]

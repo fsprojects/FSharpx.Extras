@@ -52,11 +52,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AwaitObservable.fs" />
-    <Compile Include="BatchProcessor.fs" />
-    <Compile Include="Observable.fs" />
+    <Compile Include="..\FSharpx.Async\Agents\Agent.fs" />
+    <Compile Include="..\FSharpx.Async\Agents\BatchProcessingAgent.fs" />
+    <Compile Include="..\FSharpx.Async\Agents\SlidingWindowAgent.fs" />
+    <Compile Include="..\FSharpx.Async\Observable.fs" />
     <Compile Include="ObservableExtensions.fs" />
-    <Compile Include="Subject.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft F#\v4.5\Microsoft.FSharp.Targets" Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft F#\v4.5\Microsoft.FSharp.Targets')" />
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets" Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')" />

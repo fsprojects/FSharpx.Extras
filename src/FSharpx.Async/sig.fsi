@@ -48,7 +48,8 @@ namespace FSharp.Control
 namespace FSharp.Control
   type BatchProcessingAgent<'T> =
     class
-      new : bulkSize:int * timeout:int -> BatchProcessingAgent<'T>
+      interface System.IDisposable
+      new : batchSize:int * timeout:int -> BatchProcessingAgent<'T>
       member Enqueue : v:'T -> unit
       member add_BatchProduced : Handler<'T []> -> unit
       [<CLIEventAttribute ()>]
@@ -71,16 +72,24 @@ namespace FSharp.Control
 
 namespace FSharp.Control
   type internal CircularQueueMessage<'T> =
-    | Enqueue of 'T [] * int * int
+    | Enqueue of 'T [] * int * int * AsyncReplyChannel<unit>
     | Dequeue of int * AsyncReplyChannel<'T []>
   type CircularQueueAgent<'T> =
     class
       new : maxLength:int -> CircularQueueAgent<'T>
       member AsyncDequeue : count:int * ?timeout:int -> Async<'T []>
+      member
+        AsyncEnqueue : segment:System.ArraySegment<'T> * ?timeout:int ->
+                         Async<unit>
+      member AsyncEnqueue : value:'T [] * ?timeout:int -> Async<unit>
+      member
+        AsyncEnqueue : value:'T [] * offset:int * count:int * ?timeout:int ->
+                         Async<unit>
       member Dequeue : count:int * ?timeout:int -> 'T []
-      member Enqueue : segment:System.ArraySegment<'T> -> unit
-      member Enqueue : value:'T [] -> unit
-      member Enqueue : value:'T [] * offset:int * count:int -> unit
+      member Enqueue : segment:System.ArraySegment<'T> * ?timeout:int -> unit
+      member Enqueue : value:'T [] * ?timeout:int -> unit
+      member
+        Enqueue : value:'T [] * offset:int * count:int * ?timeout:int -> unit
       member Count : int
     end
 
@@ -120,9 +129,50 @@ namespace FSharp.Control
       (unit -> unit) -> System.IObservable<'Args> -> System.IObservable<'Args>
     val asUpdates :
       System.IObservable<'T> -> System.IObservable<ObservableUpdate<'T>>
-  end
-  module ObservableExtensions = begin
-    val internal synchronize : (((unit -> unit) -> unit) -> 'a) -> 'a
+    val create : 'a -> System.IObservable<'a>
+    val error : exn -> System.IObservable<'a>
+    val FromEventHandler<'TEventArgs when 'TEventArgs :> System.EventArgs> :
+      System.Action<System.EventHandler<System.EventArgs>> *
+      System.Action<System.EventHandler<System.EventArgs>> ->
+        System.IObservable<System.EventArgs>
+    val FromEvent :
+      System.Func<System.Action<'TEventArgs>,'TDelegate> *
+      System.Action<'TDelegate> * System.Action<'TDelegate> ->
+        System.IObservable<'TEventArgs> when 'TEventArgs :> System.EventArgs
+    val ofSeq : seq<'TItem> -> System.IObservable<'TItem>
+    val mapi :
+      (int -> 'TSource -> 'TResult) ->
+        System.IObservable<'TSource> -> System.IObservable<'TResult>
+    val takeWhile :
+      ('TSource -> bool) ->
+        System.IObservable<'TSource> -> System.IObservable<'TSource>
+    val combineLatest :
+      System.IObservable<'TLeft> ->
+        System.IObservable<'TRight> -> System.IObservable<'TLeft * 'TRight>
+    type LinkedList<'T> with
+      member pushBack : x:'T -> unit
+    type LinkedList<'T> with
+      member popFront : unit -> 'T
+    val zip :
+      System.IObservable<'TLeft> ->
+        System.IObservable<'TRight> -> System.IObservable<'TLeft * 'TRight>
+    val bufferWithTimeOrCount :
+      System.TimeSpan ->
+        int -> System.IObservable<'T> -> System.IObservable<seq<'T>>
+    [<AbstractClassAttribute ()>]
+    type internal BasicObserver<'a> =
+      class
+        interface System.IObserver<'a>
+        new : unit -> BasicObserver<'a>
+        abstract member Completed : unit -> unit
+        abstract member Error : error:exn -> unit
+        abstract member Next : value:'a -> unit
+      end
+    val invoke :
+      ((unit -> unit) -> unit) ->
+        System.IObservable<'a> -> System.IObservable<'a>
+    val delay : int -> System.IObservable<'a> -> System.IObservable<'a>
+    val synchronize : (((unit -> unit) -> unit) -> 'a) -> 'a
     type Async with
       static member
         GuardedAwaitObservable : ev1:System.IObservable<'T1> ->
@@ -146,7 +196,122 @@ namespace FSharp.Control
                           ev3:System.IObservable<'T3> *
                           ev4:System.IObservable<'T4> ->
                             Async<Choice<'T1,'T2,'T3,'T4>>
+    val throttle : int -> System.IObservable<'T> -> System.IObservable<'T>
   end
+  [<System.Runtime.CompilerServices.Extension ()>]
+  type ObservableExtensions =
+    class
+      private new : unit -> ObservableExtensions
+      [<System.Runtime.CompilerServices.Extension ()>]
+      static member
+        BufferWithTimeOrCount : source:System.IObservable<'TSource> *
+                                timeSpan:System.TimeSpan * count:int ->
+                                  System.IObservable<seq<'TSource>>
+      [<System.Runtime.CompilerServices.Extension ()>]
+      static member
+        CombineLatest : left:System.IObservable<'TLeft> *
+                        right:System.IObservable<'TRight> *
+                        selector:System.Func<'TLeft,'TRight,'TResult> ->
+                          System.IObservable<'TResult>
+      [<System.Runtime.CompilerServices.Extension ()>]
+      static member
+        Delay : source:System.IObservable<'TSource> * milliseconds:int ->
+                  System.IObservable<'TSource>
+      [<System.Runtime.CompilerServices.Extension ()>]
+      static member
+        Merge : source:System.IObservable<'TSource> *
+                sources:System.Collections.Generic.IEnumerable<System.IObservable<'TSource>> ->
+                  System.IObservable<'TSource>
+      [<System.Runtime.CompilerServices.Extension ()>]
+      static member
+        Merge : source:System.IObservable<'TSource> *
+                sources:System.IObservable<'TSource> [] ->
+                  System.IObservable<'TSource>
+      [<System.Runtime.CompilerServices.Extension ()>]
+      static member
+        Scan : source:System.IObservable<'TSource> * seed:'TAccumulate *
+               f:System.Func<'TAccumulate,'TSource,'TAccumulate> ->
+                 System.IObservable<'TAccumulate>
+      [<System.Runtime.CompilerServices.Extension ()>]
+      static member
+        Select : source:System.IObservable<'TSource> *
+                 selector:System.Func<'TSource,'TResult> ->
+                   System.IObservable<'TResult>
+      [<System.Runtime.CompilerServices.Extension ()>]
+      static member
+        Select : source:System.IObservable<'TSource> *
+                 selector:System.Func<'TSource,int,'TResult> ->
+                   System.IObservable<'TResult>
+      [<System.Runtime.CompilerServices.Extension ()>]
+      static member
+        SelectMany : source:System.IObservable<'TSource> *
+                     collectionSelector:System.Func<'TSource,
+                                                    System.Collections.Generic.IEnumerable<'TCollection>> *
+                     resultSelector:System.Func<'TSource,'TCollection,'TResult> ->
+                       System.IObservable<'TResult>
+      [<System.Runtime.CompilerServices.Extension ()>]
+      static member
+        Subscribe : source:System.IObservable<'TSource> *
+                    action:System.Action<'TSource> -> System.IDisposable
+      [<System.Runtime.CompilerServices.Extension ()>]
+      static member
+        TakeWhile : source:System.IObservable<'TSource> *
+                    f:System.Func<'TSource,bool> -> System.IObservable<'TSource>
+      [<System.Runtime.CompilerServices.Extension ()>]
+      static member
+        Throttle : source:System.IObservable<'TSource> * dueTime:System.TimeSpan ->
+                     System.IObservable<'TSource>
+      [<System.Runtime.CompilerServices.Extension ()>]
+      static member
+        ToObservable : source:System.Collections.Generic.IEnumerable<'TItem> ->
+                         System.IObservable<'TItem>
+      [<System.Runtime.CompilerServices.Extension ()>]
+      static member
+        Where : source:System.IObservable<'TSource> *
+                predicate:System.Func<'TSource,bool> ->
+                  System.IObservable<'TSource>
+      [<System.Runtime.CompilerServices.Extension ()>]
+      static member
+        Zip : left:System.IObservable<'TLeft> *
+              right:System.IObservable<'TRight> *
+              selector:System.Func<'TLeft,'TRight,'TResult> ->
+                System.IObservable<'TResult>
+    end
+  type private CircularBuffer<'T> =
+    class
+      new : bufferSize:int -> CircularBuffer<'T>
+      member Add : value:'T -> unit
+      member Iter : f:('T -> unit) -> unit
+    end
+  type private BufferAgentMessage<'T> =
+    | Add of System.IObserver<'T>
+    | Remove of System.IObserver<'T>
+    | Next of 'T
+    | Completed
+    | Error of exn
+  module private BufferAgent = begin
+    val start : int -> MailboxProcessor<BufferAgentMessage<'a>>
+  end
+  [<InterfaceAttribute ()>]
+  type ISubject<'TIn,'TOut> =
+    interface
+      inherit System.IObservable<'TOut>
+      inherit System.IObserver<'TIn>
+    end
+  type ReplaySubject<'T> =
+    class
+      interface ISubject<'T,'T>
+      new : bufferSize:int -> ReplaySubject<'T>
+      member OnCompleted : unit -> unit
+      member OnError : error:exn -> unit
+      member OnNext : value:'T -> unit
+      member Subscribe : observer:System.IObserver<'T> -> System.IDisposable
+    end
+  and Subject<'T> =
+    class
+      inherit ReplaySubject<'T>
+      new : unit -> Subject<'T>
+    end
 
 namespace FSharp.Control
   type AsyncSeq<'T> = Async<AsyncSeqInner<'T>>
@@ -251,25 +416,6 @@ namespace FSharp.IO
     type Stream with
       member AsyncWriteSeq : input:Control.AsyncSeq<byte []> -> Async<unit>
   end
-namespace FSharp.Net
-  module HttpExtensions = begin
-    type HttpListener with
-      member AsyncGetContext : unit -> Async<System.Net.HttpListenerContext>
-    type HttpListener with
-      static member
-        Start : url:string *
-                handler:(System.Net.HttpListenerRequest *
-                         System.Net.HttpListenerResponse -> Async<unit>) *
-                ?cancellationToken:System.Threading.CancellationToken -> unit
-    type HttpListenerRequest with
-      member AsyncInputString : Async<string>
-    type HttpListenerResponse with
-      member AsyncReply : s:string -> Async<unit>
-    type HttpListenerResponse with
-      member AsyncReply : typ:string * buffer:byte [] -> Async<unit>
-  end
-
-namespace FSharp.IO
   type CircularStream =
     class
       inherit System.IO.Stream
@@ -277,6 +423,9 @@ namespace FSharp.IO
       member
         AsyncRead : buffer:byte [] * offset:int * count:int * ?timeout:int ->
                       Async<int>
+      member
+        AsyncWrite : buffer:byte [] * offset:int * count:int * ?timeout:int ->
+                       Async<unit>
       override Close : unit -> unit
       override Flush : unit -> unit
       override Read : buffer:byte [] * offset:int * count:int -> int
