@@ -13,7 +13,6 @@ let projectDescription = "FSharpx is a library for the .NET platform implementin
 let authors = ["Steffen Forkmann"; "Daniel Mohl"; "Tomas Petricek"; "Ryan Riley"; "Mauricio Scheffer"; "Phil Trelford" ]
 let mail = "ryan.riley@panesofglass.org"
 let homepage = "http://github.com/fsharp/fsharpx"
-let nugetKey = if System.IO.File.Exists "./key.txt" then ReadFileAsString "./key.txt" else ""
 
 // directories
 let buildDir = "./build/"
@@ -166,9 +165,9 @@ Target "BuildNuGet" (fun _ ->
             Description = projectDescription
             Version = version
             OutputPath = nugetDir
-            AccessKey = nugetKey
             ToolPath = nugetPath
-            Publish = nugetKey <> "" })
+            AccessKey = getBuildParamOrDefault "nugetkey" ""
+            Publish = hasBuildParam "nugetkey" })
         "FSharpx.Core.nuspec"
 
     !! (nugetDir + "FSharpx.Core.*.nupkg")
