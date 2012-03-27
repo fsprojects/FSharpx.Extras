@@ -72,20 +72,17 @@ open System.Xml
 open System.Xml.Linq
 
 /// Infer schema from the loaded data and generate type with properties
-let jsonType (ownerType:TypeProviderForNamespaces) cfg =      
-    let createTypeFromSchema typeName (jsonText:string) =        
-        createParserType<Document> 
-            typeName 
-            (JSONInference.provideElement "Document" false [parse jsonText])
-            generateType
-            (fun args -> <@@ jsonText |> parse  @@>)
-            (fun args -> <@@ (%%args.[0] : string) |> File.ReadAllText |> parse  @@>)
-            (fun args -> <@@ (%%args.[0] : Document) @@>)
-            (fun args -> <@@ (%%args.[0]: Document).ToString() @@>)
-       |+!> (provideMethod ("ToXml") [] typeof<XObject seq> (fun args -> <@@ (%%args.[0]: Document).ToXml() @@>)
-           |> addXmlDoc "Gets the Xml representation")
-    let createTypeFromFileName typeName (fileName:string) =
-        System.IO.File.ReadAllText fileName
-        |> createTypeFromSchema typeName
+let jsonType (ownerType:TypeProviderForNamespaces) cfg =     
+    let createTypeFromSchema typeName (jsonText:string) =
+        { Schema = JSONInference.provideElement "Document" false [parse jsonText]
+          EmptyConstructor = fun args -> <@@ parse jsonText @@>
+          FileNameConstructor = fun args -> <@@ (%%args.[0] : string) |> File.ReadAllText |> parse  @@>
+          RootPropertyGetter = fun args -> <@@ (%%args.[0] : Document) @@>
+          ToStringExpr = fun args -> <@@ (%%args.[0]: Document).ToString() @@> }
+        |> createParserType<Document> typeName generateType            
+        |+!> (provideMethod ("ToXml") [] typeof<XObject seq> (fun args -> <@@ (%%args.[0]: Document).ToXml() @@>)
+                |> addXmlDoc "Gets the Xml representation")
+
+    let createTypeFromFileName typeName = File.ReadAllText >> createTypeFromSchema typeName
 
     createStructuredParser thisAssembly rootNamespace "StructuredJSON" cfg ownerType createTypeFromFileName createTypeFromSchema

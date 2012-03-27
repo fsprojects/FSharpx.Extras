@@ -5,6 +5,7 @@
 module FSharpx.TypeProviders.XmlTypeProvider
 
 open System
+open System.IO
 open FSharpx.TypeProviders.Settings
 open FSharpx.TypeProviders.DSL
 open Microsoft.FSharp.Quotations
@@ -67,22 +68,18 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
 open FSharpx.JSON
 
 /// Infer schema from the loaded data and generate type with properties
-let xmlType (ownerType:TypeProviderForNamespaces) cfg =    
+let xmlType (ownerType:TypeProviderForNamespaces) cfg =
     let createTypeFromSchema typeName (xmlText:string) =        
         let doc = XDocument.Parse xmlText
-        createParserType<TypedXDocument> 
-            typeName 
-            (XmlInference.provideElement doc.Root.Name.LocalName [doc.Root])
-            generateType
-            (fun args -> <@@ TypedXDocument(XDocument.Parse xmlText) @@>)
-            (fun args -> <@@ TypedXDocument(XDocument.Load(%%args.[0] : string)) @@>)
-            (fun args -> <@@ TypedXElement((%%args.[0] : TypedXDocument).Document.Root) @@>)
-            (fun args -> <@@ (%%args.[0]: TypedXDocument).Document.ToString() @@>)
+        { Schema = XmlInference.provideElement doc.Root.Name.LocalName [doc.Root]
+          EmptyConstructor = fun args -> <@@ TypedXDocument(XDocument.Parse xmlText) @@>
+          FileNameConstructor = fun args -> <@@ TypedXDocument(XDocument.Load(%%args.[0] : string)) @@>
+          RootPropertyGetter = fun args -> <@@ TypedXElement((%%args.[0] : TypedXDocument).Document.Root) @@>
+          ToStringExpr = fun args -> <@@ (%%args.[0]: TypedXDocument).Document.ToString() @@> }
+        |> createParserType<TypedXDocument> typeName generateType            
         |+!> (provideMethod ("ToJson") [] typeof<Document> (fun args -> <@@ (%%args.[0]: TypedXDocument).Document.ToJson() @@>)
-           |> addXmlDoc "Gets the Json representation")
+                |> addXmlDoc "Gets the Json representation")
     
-    let createTypeFromFileName typeName (fileName:string) =
-        System.IO.File.ReadAllText fileName
-        |> createTypeFromSchema typeName
+    let createTypeFromFileName typeName = File.ReadAllText >> createTypeFromSchema typeName
 
     createStructuredParser thisAssembly rootNamespace "StructuredXml" cfg ownerType createTypeFromFileName createTypeFromSchema

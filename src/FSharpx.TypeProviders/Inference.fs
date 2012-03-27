@@ -97,16 +97,24 @@ let generateSublements ownerType parentType multiAccessExpr addChildExpr newChil
 
     ownerType
 
+type ExprDef = Expr list -> Expr
+
+type GeneratedParserSettings = {
+    Schema: CompoundProperty
+    EmptyConstructor: ExprDef
+    FileNameConstructor: ExprDef
+    RootPropertyGetter: ExprDef
+    ToStringExpr: ExprDef }
+
 /// Generates constructors for loading data and adds type representing Root node
-let createParserType<'a> typeName schema (generateTypeF: ProvidedTypeDefinition -> CompoundProperty -> ProvidedTypeDefinition)
-         emptyConstructor fileNameConstructor rootPropertyGetter toStringExpr =
+let createParserType<'a> typeName (generateTypeF: ProvidedTypeDefinition -> CompoundProperty -> ProvidedTypeDefinition) settings =
     let parserType = erasedType<'a> thisAssembly rootNamespace typeName
     parserType
-    |+!> (provideConstructor [] emptyConstructor
+    |+!> (provideConstructor [] settings.EmptyConstructor
            |> addXmlDoc "Initializes the document from the schema sample.")
-    |+!> (provideConstructor ["filename", typeof<string>] fileNameConstructor
+    |+!> (provideConstructor ["filename", typeof<string>] settings.FileNameConstructor
            |> addXmlDoc "Initializes a document from the given path.")
-    |+!> (provideProperty "Root" (generateTypeF parserType schema) rootPropertyGetter
+    |+!> (provideProperty "Root" (generateTypeF parserType settings.Schema) settings.RootPropertyGetter
            |> addXmlDoc "Gets the document root")
-    |+!> (provideMethod ("ToString") [] typeof<string> toStringExpr
+    |+!> (provideMethod ("ToString") [] typeof<string> settings.ToStringExpr
            |> addXmlDoc "Gets the string representation")
