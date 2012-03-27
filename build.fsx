@@ -1,4 +1,4 @@
-#r "./packages/FAKE.1.56.6/tools/FakeLib.dll"
+#r "./packages/FAKE.1.64.5/tools/FakeLib.dll"
 
 open Fake 
 open System.IO
