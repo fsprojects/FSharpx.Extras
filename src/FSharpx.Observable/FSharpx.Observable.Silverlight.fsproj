@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\FSharpx.Async\Agents\Agent.fs" />
     <Compile Include="..\FSharpx.Async\Agents\BatchProcessingAgent.fs" />
     <Compile Include="..\FSharpx.Async\Agents\SlidingWindowAgent.fs" />
     <Compile Include="..\FSharpx.Async\Observable.fs" />
