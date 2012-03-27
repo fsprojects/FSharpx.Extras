@@ -1,3 +1,40 @@
+## 1.64.1.0
+
+* Fixed bug where FAKE didn't run the correct build script
+
+## 1.64.0.0
+
+* New conditional dependency operator =?>
+* BREAKING CHANGE: Some AssemblyInfo task parameters are now option types. See type hints.
+
+## 1.62.0.0
+
+* New RegAsm task, allows to create TLBs from a dll.
+* New MSI task, allows to install or uninstall msi files.
+* StringHelper.NormalizeVersion fixed for WiX.
+
+## 1.58.9.0
+
+* Allow to choose specific nunit-console runner.
+
+## 1.58.6.0
+
+* Using nuget packages for mspec.
+* FAKE tries to kill all MSBuild and FSI processes at the end of a build.
+
+## 1.58.1.0
+
+* Removed message system for build output. Back to simpler tracing.
+
+## 1.58.0.0
+
+* ReplaceAssemblyInfoVersions task allows to replace version info in AssemblyVersion-files
+* New task ConvertFileToWindowsLineBreaks
+
+## 1.56.10.0
+
+* Allows to build .sln files
+
 ## 1.56.0.0
 
 * Allows to publish symbols via nuget.exe
