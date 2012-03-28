@@ -201,6 +201,9 @@ type FSharpOption =
     static member Where (o: _ option, pred: _ Predicate) =
       Option.filter pred.Invoke o
 
+    [<Extension>]
+    static member Sequence o = Option.sequence o
+
     static member SomeUnit = Some()
 
     static member ParseInt s = Int32.parse s
@@ -301,6 +304,9 @@ type FSharpChoice =
     [<Extension>]
     static member SelectSecond (o, f: Func<_,_>) = Choice.mapSecond f.Invoke o
 
+    [<Extension>]
+    static member Sequence c = Choice.sequence c
+
     // validation
 
     static member Error (x: string) = Choice2Of2 [x]
@@ -319,6 +325,9 @@ type FSharpChoice =
         f 
         |> Choice.map (fun a -> a.Invoke)
         |> Validation.ap x
+
+    [<Extension>]
+    static member SequenceV s = Validation.sequence s
 
     [<Extension>]
     static member PureValidate x : Choice<_, string list> = Choice1Of2 x

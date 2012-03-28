@@ -2,6 +2,7 @@
 using System.Globalization;
 using Microsoft.FSharp.Core;
 using NUnit.Framework;
+using Microsoft.FSharp.Collections;
 
 namespace FSharpx.CSharpTests {
     [TestFixture]
@@ -221,6 +222,20 @@ namespace FSharpx.CSharpTests {
             var a = FSharpOption<int>.None;
             var b = a.GetOrElse(() => 9);
             Assert.AreEqual(9, b);
+        }
+
+        [Test]
+        public void Sequence_Some() {
+            var r = FSharpList.Create(1.Some(), 2.Some(), 3.Some()).Sequence();
+            Assert.AreEqual(FSharpList.Create(1,2,3).Some(), r);
+        }
+
+        [Test]
+        public void Sequence_None() {
+            var noInt = FSharpOption<int>.None;
+            var r = FSharpList.Create(1.Some(), 2.Some(), noInt).Sequence();
+            var noList = FSharpOption<FSharpList<int>>.None;
+            Assert.AreEqual(noList, r);
         }
 
     }
