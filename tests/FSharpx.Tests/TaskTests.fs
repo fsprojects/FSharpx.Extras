@@ -12,12 +12,12 @@ open Microsoft.FSharp.Control.WebExtensions
 let task = Task.TaskBuilder(continuationOptions = TaskContinuationOptions.ExecuteSynchronously)
 
 type WebRequest with
-    member x.GetResponseTask() =
+    member x.GetResponseAsync() =
         //Task.Factory.FromAsync((fun a b -> x.BeginGetResponse(a,b)), x.EndGetResponse, null)
         x.AsyncGetResponse() |> Async.toTask
 
 type StreamReader with
-    member x.ReadToEndTask() = 
+    member x.ReadToEndAsync() = 
         x.AsyncReadToEnd() |> Async.toTask
 
 [<Test>]
@@ -26,10 +26,10 @@ let loadprices() =
     let req = WebRequest.Create url
     let downloadTask =
         task {
-            let! resp = req.GetResponseTask()
+            let! resp = req.GetResponseAsync()
             use stream = resp.GetResponseStream()
             use reader = new StreamReader(stream)
-            let! csv = reader.ReadToEndTask()
+            let! csv = reader.ReadToEndAsync()
             let prices =
                 csv.Split([|'\n'|])
                 |> Seq.skip 1
