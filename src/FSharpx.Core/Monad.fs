@@ -112,6 +112,10 @@ module Async =
     let foldM f s = 
         Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
 
+    let inline sequence s =
+        let inline cons a b = lift2 List.cons a b
+        List.foldBack cons s (returnM [])
+
 module ZipList = 
     let returnM v = Seq.initInfinite (fun _ -> v)
     /// Sequential application
@@ -256,6 +260,10 @@ module Option =
 
     let foldM f s = 
         Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
+
+    let inline sequence s =
+        let inline cons a b = lift2 List.cons a b
+        List.foldBack cons s (returnM [])
 
 module Nullable =
     let (|Null|Value|) (x: _ Nullable) =
@@ -447,6 +455,10 @@ module State =
     let foldM f s = 
         Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
 
+    let inline sequence s =
+        let inline cons a b = lift2 List.cons a b
+        List.foldBack cons s (returnM [])
+
 module Reader =
 
     type Reader<'r,'a> = 'r -> 'a
@@ -515,6 +527,10 @@ module Reader =
 
     let foldM f s = 
         Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
+
+    let inline sequence s =
+        let inline cons a b = lift2 List.cons a b
+        List.foldBack cons s (returnM [])
 
 module Undo =
     // UndoMonad on top of StateMonad
@@ -657,6 +673,10 @@ module Writer =
     let foldM f s = 
         Seq.fold (fun acc t -> acc >>= (flip f) t) (ret s)
 
+    let inline sequence s =
+        let inline cons a b = lift2 List.cons a b
+        List.foldBack cons s (ret [])
+
 module Choice =
     /// Inject a value into the Choice type
     let returnM = Choice1Of2
@@ -758,6 +778,10 @@ module Choice =
         // pointfree:
         //Seq.fold (flip f >> bind |> flip) (returnM s)
 
+    let inline sequence s =
+        let inline cons a b = lift2 List.cons a b
+        List.foldBack cons s (returnM [])
+
 module Validation =
     open Choice
     open Monoid
@@ -804,9 +828,12 @@ module Validation =
     let ( <*) = stringListValidation.apl
 
     let seqValidator f = 
-        let zero = returnM []
-        Seq.map f >> Seq.fold (lift2 (flip FSharpx.List.cons)) zero
+        let inline cons a b = lift2 (flip List.cons) a b
+        Seq.map f >> Seq.fold cons (returnM [])
 
+    let inline sequence s =
+        let inline cons a b = lift2 List.cons a b
+        List.foldBack cons s (returnM [])
 
 module Continuation =
 
@@ -886,6 +913,10 @@ module Continuation =
 
     let foldM f s = 
         Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
+
+    let inline sequence s =
+        let inline cons a b = lift2 List.cons a b
+        List.foldBack cons s (returnM [])
 
     /// The coroutine type from http://fssnip.net/7M
     type Coroutine() =

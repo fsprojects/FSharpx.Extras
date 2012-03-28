@@ -19,7 +19,6 @@ let ``kleisli composition``() =
     let h = f >=> g
     Assert.AreEqual(Some 10, h 8)
     Assert.AreEqual(None, h 1)
-    ()
 
 [<Test>]
 let ``from bool and value``() =
@@ -41,3 +40,14 @@ let ``invalid cast``() =
     let a = box "a string"
     let r : int option = Option.cast a
     Assert.IsTrue(Option.isNone r)
+
+[<Test>]
+let ``sequence with Some``() =
+    let r = Option.sequence [Some 1; Some 2; Some 3]
+    Assert.AreEqual(Some [1;2;3], r)
+
+[<Test>]
+let ``sequence with None``() =
+    let r = Option.sequence [Some 1; Some 2; None]
+    Assert.AreEqual(None, r)
+    
