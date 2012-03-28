@@ -1,4 +1,4 @@
-﻿module FSharp.TypeProviders.Tests.RegexTests
+﻿module FSharpx.TypeProviders.Tests.RegexTests
 
 open NUnit.Framework
 open FSharpx

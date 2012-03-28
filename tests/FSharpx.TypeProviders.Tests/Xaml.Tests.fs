@@ -1,4 +1,4 @@
-﻿module FSharp.TypeProviders.Tests.XamlTests
+﻿module FSharpx.TypeProviders.Tests.XamlTests
 
 open NUnit.Framework
 open FSharpx

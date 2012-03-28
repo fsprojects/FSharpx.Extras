@@ -1,4 +1,4 @@
-﻿module FSharp.TypeProviders.Tests.JSON.XmlConversionTests
+﻿module FSharpx.TypeProviders.Tests.JSON.XmlConversionTests
 
 open NUnit.Framework
 open FSharpx.JSON

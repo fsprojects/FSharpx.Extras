@@ -1,4 +1,4 @@
-﻿module FSharp.TypeProviders.Tests.Xml.Reader.Tests
+﻿module FSharpx.TypeProviders.Tests.Xml.Reader.Tests
 
 open NUnit.Framework
 open FSharpx

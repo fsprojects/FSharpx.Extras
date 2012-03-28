@@ -1,4 +1,4 @@
-﻿module FSharp.TypeProviders.Tests.RegistryTests
+﻿module FSharpx.TypeProviders.Tests.RegistryTests
 
 open FSharpx
 open NUnit.Framework

@@ -1,4 +1,4 @@
-﻿module FSharp.TypeProviders.Tests.InfrastructureTests
+﻿module FSharpx.TypeProviders.Tests.InfrastructureTests
 
 open NUnit.Framework
 open FSharpx

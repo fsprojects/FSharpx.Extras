@@ -1,4 +1,4 @@
-﻿module FSharp.TypeProviders.Tests.MiniCsvTests
+﻿module FSharpx.TypeProviders.Tests.MiniCsvTests
 
 open NUnit.Framework
 open FsUnit

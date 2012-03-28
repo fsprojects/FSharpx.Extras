@@ -1,4 +1,4 @@
-﻿module FSharp.TypeProviders.Tests.ExcelTests
+﻿module FSharpx.TypeProviders.Tests.ExcelTests
 
 open NUnit.Framework
 open FSharpx

@@ -1,4 +1,4 @@
-﻿module FSharp.TypeProviders.Tests.JSON.SerializationTests
+﻿module FSharpx.TypeProviders.Tests.JSON.SerializationTests
 
 open NUnit.Framework
 open FSharpx.JSON

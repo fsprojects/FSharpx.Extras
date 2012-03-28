@@ -1,4 +1,4 @@
-﻿module FSharp.TypeProviders.Tests.FileSystemTests
+﻿module FSharpx.TypeProviders.Tests.FileSystemTests
 
 open FSharpx
 open NUnit.Framework

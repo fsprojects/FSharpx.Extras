@@ -1,4 +1,4 @@
-﻿module FSharp.TypeProviders.Tests.AppSettingsTests
+﻿module FSharpx.TypeProviders.Tests.AppSettingsTests
 
 open NUnit.Framework
 open FSharpx
