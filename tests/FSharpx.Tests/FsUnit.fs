@@ -12,7 +12,11 @@ let should (f : 'a -> #Constraint) x (y : obj) =
 
 let equal x = new EqualConstraint(x)
 
-let not x = new NotConstraint(x)
+// like "should equal", but validates same-type
+let shouldEqual (x: 'a) (y: 'a) = Assert.AreEqual(x, y, sprintf "Expected: %A\nActual: %A" x y)
+
+// overriding a standard language function is not cool
+//let not x = new NotConstraint(x)
 
 let contain x = new ContainsConstraint(x)
 
