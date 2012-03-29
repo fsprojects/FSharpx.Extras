@@ -116,6 +116,8 @@ module Async =
         let inline cons a b = lift2 List.cons a b
         List.foldBack cons s (returnM [])
 
+    let inline mapM f x = sequence (List.map f x)
+
 module ZipList = 
     let returnM v = Seq.initInfinite (fun _ -> v)
     /// Sequential application
@@ -264,6 +266,8 @@ module Option =
     let inline sequence s =
         let inline cons a b = lift2 List.cons a b
         List.foldBack cons s (returnM [])
+
+    let inline mapM f x = sequence (List.map f x)
 
 module Nullable =
     let (|Null|Value|) (x: _ Nullable) =
@@ -459,6 +463,8 @@ module State =
         let inline cons a b = lift2 List.cons a b
         List.foldBack cons s (returnM [])
 
+    let inline mapM f x = sequence (List.map f x)
+
 module Reader =
 
     type Reader<'r,'a> = 'r -> 'a
@@ -531,6 +537,8 @@ module Reader =
     let inline sequence s =
         let inline cons a b = lift2 List.cons a b
         List.foldBack cons s (returnM [])
+
+    let inline mapM f x = sequence (List.map f x)
 
 module Undo =
     // UndoMonad on top of StateMonad
@@ -677,6 +685,8 @@ module Writer =
         let inline cons a b = lift2 List.cons a b
         List.foldBack cons s (ret [])
 
+    let inline mapM f x = sequence (List.map f x)
+
 module Choice =
     /// Inject a value into the Choice type
     let returnM = Choice1Of2
@@ -782,6 +792,8 @@ module Choice =
         let inline cons a b = lift2 List.cons a b
         List.foldBack cons s (returnM [])
 
+    let inline mapM f x = sequence (List.map f x)
+
 module Validation =
     open Choice
     open Monoid
@@ -834,6 +846,8 @@ module Validation =
     let inline sequence s =
         let inline cons a b = lift2 List.cons a b
         List.foldBack cons s (returnM [])
+
+    let inline mapM f x = sequence (List.map f x)
 
 module Continuation =
 
@@ -917,6 +931,8 @@ module Continuation =
     let inline sequence s =
         let inline cons a b = lift2 List.cons a b
         List.foldBack cons s (returnM [])
+
+    let inline mapM f x = sequence (List.map f x)
 
     /// The coroutine type from http://fssnip.net/7M
     type Coroutine() =
