@@ -35,9 +35,11 @@ let frameworkParams =
     
 
 // tools
-let fakePath = "./packages/FAKE.1.64.5/tools"
+let fakeVersion = GetPackageVersion packagesDir "FAKE"
+let fakePath = sprintf "%sFAKE.%s/tools" packagesDir fakeVersion
 let nugetPath = "./lib/Nuget/nuget.exe"
-let nunitPath = "./packages/NUnit.2.5.10.11092/Tools"
+let nunitVersion = GetPackageVersion packagesDir "NUnit"
+let nunitPath = sprintf "%sNUnit.%s/Tools" packagesDir nunitVersion
 
 // files
 let appReferences =
