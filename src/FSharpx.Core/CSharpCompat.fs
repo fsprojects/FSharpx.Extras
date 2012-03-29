@@ -311,6 +311,7 @@ type FSharpChoice =
 
     static member Error (x: string) = Choice2Of2 [x]
     static member Errors x : Choice<_, string list> = Choice2Of2 x
+    static member Errors ([<ParamArray>] x) : Choice<_, string list> = Choice2Of2 (Array.toList x)
     static member Ok x : Choice<_, string list> = Choice1Of2 x
 
     static member Validator (p: _ Predicate, errorMsg: string) =
