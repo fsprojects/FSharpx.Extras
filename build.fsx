@@ -31,7 +31,7 @@ let net45 = "v4.5"
 
 // params
 let target = getBuildParamOrDefault "target" "All"
-let buildAll = hasBuildParam "v35" || hasBuildParam "v40" || hasBuildParam "v45" |> not
+let buildAll = not (hasBuildParam "v35" || hasBuildParam "v40" || hasBuildParam "v45")
 
 let normalizeFrameworkVersion frameworkVersion =
     let v = ("[^\\d]" >=> "") frameworkVersion
