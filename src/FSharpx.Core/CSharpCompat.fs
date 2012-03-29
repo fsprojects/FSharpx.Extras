@@ -74,6 +74,10 @@ type Funcs =
         Func<_,Func<_,_>>(fun a -> Func<_,_>(fun b -> f.Invoke(a,b)))
 
     [<Extension>]
+    static member Curry (f: Func<_,_,_,_>) =
+        Func<_,Func<_,Func<_,_>>>(fun a -> Func<_,Func<_,_>>(fun b -> Func<_,_>(fun c -> f.Invoke(a,b,c))))
+
+    [<Extension>]
     static member Tuple (f: Action<_,_>) =
         Action<_>(fun (a,b) -> f.Invoke(a,b))
 
