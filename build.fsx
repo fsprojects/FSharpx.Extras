@@ -31,7 +31,7 @@ let net45 = "v4.5"
 
 // params
 let target = getBuildParamOrDefault "target" "All"
-let buildAll = not (hasBuildParam "v35" || hasBuildParam "v40" || hasBuildParam "v45")
+let buildSpecific = hasBuildParam "v35" || hasBuildParam "v40" || hasBuildParam "v45"
 
 let normalizeFrameworkVersion frameworkVersion =
     let v = ("[^\\d]" >=> "") frameworkVersion
@@ -168,9 +168,9 @@ let prepareNugetTarget = TargetTemplate (fun frameworkVersion ->
 let buildFrameworkVersionTarget = TargetTemplate (fun frameworkVersion -> ())
 
 let generateTargets() =
-    [if hasBuildParam "v35" || buildAll then yield net35
-     if hasBuildParam "v40" || buildAll then yield net40
-     if (hasBuildParam "v45" || buildAll) && isLocalBuild then yield net45]
+    [if hasBuildParam "v35" then yield net35
+     if (hasBuildParam "v40") || (not buildSpecific) then yield net40
+     if hasBuildParam "v45" then yield net45]
     |> Seq.fold
         (fun dependency frameworkVersion -> 
             tracefn "Generating targets for .NET %s" frameworkVersion
