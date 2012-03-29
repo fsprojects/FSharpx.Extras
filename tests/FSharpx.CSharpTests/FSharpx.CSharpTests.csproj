@@ -66,6 +66,7 @@
     <Compile Include="DictionaryTests.cs" />
     <Compile Include="FuncTests.cs" />
     <Compile Include="NameValueCollectionTests.cs" />
+    <Compile Include="ValidationExample.cs" />
     <Compile Include="ValidationTests.cs" />
     <Compile Include="ListTests.cs" />
     <Compile Include="MapTests.cs" />
