@@ -1,5 +1,5 @@
 ﻿using System;
-using FSharpx;
+using FSharp.Control;
 using NUnit.Framework;
 
 [TestFixture]

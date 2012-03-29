@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// F# async extensions (AutoCancel.fsx)
+// F# async extensions (Caching.fsx)
 // (c) Tomas Petricek, 2011, Available under Apache 2.0 license.
 // ----------------------------------------------------------------------------
 
