@@ -330,6 +330,9 @@ type FSharpChoice =
     static member SequenceV s = Validation.sequence s
 
     [<Extension>]
+    static member SelectMV (x, f: Func<_,_>) = Validation.mapM f.Invoke x
+
+    [<Extension>]
     static member PureValidate x : Choice<_, string list> = Choice1Of2 x
 
     static member EnumerableValidator (f: Func<'a, Choice<'a, string list>>) : Func<'a seq, Choice<'a seq, string list>> =
