@@ -25,14 +25,19 @@ let targetPlatformDir = getTargetPlatformDir "4.0.30319"
 let nugetLibDir = nugetDir @@ "lib"
 let nugetDocsDir = nugetDir @@ "docs"
 
+let net35 = "v3.5"
+let net40 = "v4.0"
+let net45 = "v4.5"
+
 // params
 let target = getBuildParamOrDefault "target" "All"
-let frameworkVersion = getBuildParamOrDefault "frameworkVersion" "v4.0"
-let frameworkParams = 
+let buildAll = hasBuildParam "v35" || hasBuildParam "v40" || hasBuildParam "v45" |> not
+
+let normalizeFrameworkVersion frameworkVersion =
     let v = ("[^\\d]" >=> "") frameworkVersion
-    let v = v.Substring(0,2)
-    ["TargetFrameworkVersion", frameworkVersion; "DefineConstants", "NET" + v]
-    
+    v.Substring(0,2)
+
+let frameworkParams frameworkVersion = ["TargetFrameworkVersion", frameworkVersion; "DefineConstants", "NET" + normalizeFrameworkVersion frameworkVersion]
 
 // tools
 let fakeVersion = GetPackageVersion packagesDir "FAKE"
@@ -42,36 +47,29 @@ let nunitVersion = GetPackageVersion packagesDir "NUnit"
 let nunitPath = sprintf "%sNUnit.%s/Tools" packagesDir nunitVersion
 
 // files
-let appReferences =
-    let refs = !+ "./src/**/*.*proj"
-               -- "./src/**/*.Silverlight.*proj"
+let appReferences frameworkVersion =    
+    { (!+ "./src/**/*.*proj") with 
+        Excludes = 
+            [yield "./src/**/*.Silverlight.*proj"
+             if frameworkVersion <> net45 then yield "./src/**/*.TypeProviders.*proj"
+             if frameworkVersion = net35 then 
+                yield "./src/**/*.Async.fsproj"
+                yield "./src/**/*.Http.fsproj" // TODO: why is that?
+                yield "./src/**/*.Observable.fsproj" // TODO: why is that?
+                  ] }
+    |> Scan
 
-    let refs = if frameworkVersion <> "v4.5"
-                then refs -- "./src/**/*.TypeProviders.*proj"
-                else refs
-    let refs = if frameworkVersion = "v3.5"
-                then refs -- "./src/FSharpx.Async/FSharpx.Async.fsproj"
-                else refs
-    refs |> Scan
-
-let testReferences =
-    let refs = !+ "./tests/**/*.*proj"
-    let refs = if frameworkVersion <> "v4.5"
-                then refs -- "./src/**/*.TypeProviders.*proj"
-                else refs
-    refs |> Scan
-
-let filesToZip =
-    !+ (buildDir + "/**/*.*")
-        -- "*.zip"
-        |> Scan
+let testReferences frameworkVersion =
+    { (!+ "./tests/**/*.*proj") with 
+        Excludes = [if frameworkVersion <> net45 then yield "./tests/**/*.TypeProviders.*proj"] }
+    |> Scan
 
 // targets
 Target "Clean" (fun _ ->
-    CleanDirs [buildDir; testDir; deployDir; docsDir]
+    CleanDirs [buildDir; testDir; deployDir; docsDir; nugetDir; nugetLibDir; nugetDocsDir]
 )
 
-Target "BuildApp" (fun _ ->
+Target "AssemblyInfo" (fun _ ->
     AssemblyInfo (fun p ->
         {p with 
             CodeLanguage = FSharp
@@ -107,34 +105,36 @@ Target "BuildApp" (fun _ ->
             AssemblyDescription = "This library implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford."
             Guid = "2E802F54-9CD0-4B0A-B834-5C5979403B50"
             OutputFileName = "./src/FSharpx.Observable/AssemblyInfo.fs" })
-
-    MSBuild buildDir "Build" (["Configuration","Release"] @ frameworkParams) appReferences
-        |> Log "AppBuild-Output: "
 )
 
-Target "BuildTest" (fun _ ->
-    MSBuild testDir "Build" ["Configuration","Debug"] testReferences
-        |> Log "TestBuild-Output: "
+let buildAppTarget = TargetTemplate (fun frameworkVersion ->
+    appReferences frameworkVersion
+    |> MSBuild buildDir "Build" (["Configuration","Release"] @ frameworkParams frameworkVersion)
+    |> Log "AppBuild-Output: "
 )
 
-Target "Test" (fun _ ->
-    !+ (testDir + "/*.Tests.dll")
-        |> Scan
-        |> NUnit (fun p ->
-            {p with
-                ToolPath = nunitPath
-                DisableShadowCopy = true
-                OutputFile = testDir + "TestResults.xml" })
+let buildTestTarget = TargetTemplate (fun frameworkVersion ->
+    testReferences frameworkVersion
+    |> MSBuild testDir "Build" ["Configuration","Debug"] 
+    |> Log "TestBuild-Output: "
+)
+
+let testTarget = TargetTemplate (fun frameworkVersion ->
+    !! (testDir + "/*.Tests.dll")
+    |> NUnit (fun p ->
+        {p with
+            ToolPath = nunitPath
+            DisableShadowCopy = true
+            OutputFile = testDir + "TestResults.xml" })
 )
 
 Target "GenerateDocumentation" (fun _ ->
-    !+ (buildDir + "*.dll")
-        |> Scan
-        |> Docu (fun p ->
-            {p with
-                ToolPath = fakePath + "/docu.exe"
-                TemplatesPath = "./lib/templates"
-                OutputPath = docsDir })
+    !! (buildDir + "*.dll")
+    |> Docu (fun p ->
+        {p with
+            ToolPath = fakePath + "/docu.exe"
+            TemplatesPath = "./lib/templates"
+            OutputPath = docsDir })
 )
 
 Target "CopyLicense" (fun _ ->
@@ -142,24 +142,54 @@ Target "CopyLicense" (fun _ ->
 )
 
 Target "ZipDocumentation" (fun _ ->
-    !+ (docsDir + "/**/*.*")
-        |> Scan
-        |> Zip docsDir (deployDir + sprintf "Documentation-%s.zip" version)
+    !! (docsDir + "/**/*.*")
+    |> Zip docsDir (deployDir + sprintf "Documentation-%s.zip" version)
 )
 
+let prepareNugetTarget = TargetTemplate (fun frameworkVersion ->
+    let frameworkSubDir = nugetLibDir @@ normalizeFrameworkVersion frameworkVersion
+    CleanDirs [frameworkSubDir]
+    
+    let libs = 
+        [yield "FSharpx.Core"
+         if frameworkVersion <> net35  then 
+            yield "FSharpx.Observable"
+            yield "FSharpx.Http"
+            yield "FSharpx.Async"]
+
+    [ for lib in libs do
+      for ending in ["dll";"pdb";"xml"] ->
+        sprintf "%s%s.%s" buildDir lib ending ]
+    |> CopyTo frameworkSubDir
+)
+
+let buildFrameworkVersionTarget = TargetTemplate (fun frameworkVersion -> ())
+
+let generateTargets() =
+    [if hasBuildParam "v35" || buildAll then yield net35
+     if hasBuildParam "v40" || buildAll then yield net40
+     if (hasBuildParam "v45" || buildAll) && isLocalBuild then yield net45]
+    |> Seq.fold
+        (fun dependency frameworkVersion -> 
+            tracefn "Generating targets for .NET %s" frameworkVersion
+            let v = normalizeFrameworkVersion frameworkVersion
+            let buildApp = sprintf "BuildApp_%s" v
+            let buildTest = sprintf "BuildTest_%s" v
+            let test = sprintf "Test_%s" v
+            let prepareNuget = sprintf "PrepareNuget_%s" v
+            let buildFrameworkVersion = sprintf "Build_%s" v
+
+            buildAppTarget buildApp frameworkVersion
+            buildTestTarget buildTest frameworkVersion
+            testTarget test frameworkVersion
+            prepareNugetTarget prepareNuget frameworkVersion
+            buildFrameworkVersionTarget buildFrameworkVersion frameworkVersion
+
+            dependency ==> buildApp ==> buildTest ==> test ==> prepareNuget ==> buildFrameworkVersion)
+            "CopyLicense"
+
 Target "BuildNuGet" (fun _ ->
-    CleanDirs [nugetDir; nugetLibDir; nugetDocsDir]
-
     XCopy (docsDir |> FullName) nugetDocsDir
-    let libs = ["FSharpx.Core"; "FSharpx.Http"; "FSharpx.Observable"]
-    let libs = if frameworkVersion <> "v3.5"
-                then "FSharpx.Async"::libs
-                else libs
-    let libs = [ for l in libs do
-                 for e in ["dll";"pdb";"xml"] ->
-                    sprintf "%s%s.%s" buildDir l e ]
-    libs |> CopyTo nugetLibDir
-
     NuGet (fun p -> 
         {p with               
             Authors = authors
@@ -176,21 +206,23 @@ Target "BuildNuGet" (fun _ ->
       |> CopyTo deployDir
 )
 
-Target "Deploy" (fun _ ->
-    !+ (buildDir + "/**/*.*")
-        -- "*.zip"
-        |> Scan
-        |> Zip buildDir (deployDir + sprintf "%s-%s.zip" projectName version)
+Target "DeployZip" (fun _ ->
+    !! (buildDir + "/**/*.*")
+    |> Zip buildDir (deployDir + sprintf "%s-%s.zip" projectName version)
 )
 
+Target "Deploy" DoNothing
 Target "All" DoNothing
 
 // Build order
 "Clean"
-  ==> "BuildApp" <=> "BuildTest" <=> "CopyLicense"
-  ==> "Test" <=> "GenerateDocumentation"
+  ==> "AssemblyInfo"
+  ==> "CopyLicense"
+  ==> (generateTargets())
+  ==> "GenerateDocumentation"
   ==> "ZipDocumentation"
   ==> "BuildNuGet"
+  ==> "DeployZip"
   ==> "Deploy"
 
 "All" <== ["Deploy"]

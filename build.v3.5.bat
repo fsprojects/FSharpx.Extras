@@ -1,1 +1,1 @@
-call build.bat frameworkVersion=v3.5 %*
+call build.bat v35 %*
