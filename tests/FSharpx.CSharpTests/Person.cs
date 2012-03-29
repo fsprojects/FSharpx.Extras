@@ -24,9 +24,9 @@ namespace FSharpx.CSharpTests {
         private static readonly Func<string, int, Person> New = (name, age) => new Person(name, age);
 
         public static FSharpChoice<Person, Errors> TryNew(string name, int age) {
-            return New.Curry().PureValidate()
-                .ApV(Mandatory(name))
-                .ApV(Positive(age));
+            return New.Curry().ReturnValidation()
+                .ApValidation(Mandatory(name))
+                .ApValidation(Positive(age));
         }
 
         private static FSharpChoice<string, Errors> Mandatory(string s) {

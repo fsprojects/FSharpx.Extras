@@ -322,19 +322,19 @@ type FSharpChoice =
         Func<_,_>(v)
 
     [<Extension>]
-    static member ApV (f: Choice<Func<_,_>, _>, x) =
+    static member ApValidation (f: Choice<Func<_,_>, _>, x) =
         f 
         |> Choice.map (fun a -> a.Invoke)
         |> Validation.ap x
 
     [<Extension>]
-    static member SequenceV s = Validation.sequence s
+    static member SequenceValidation s = Validation.sequence s
 
     [<Extension>]
-    static member SelectMV (x, f: Func<_,_>) = Validation.mapM f.Invoke x
+    static member SelectMValidation (x, f: Func<_,_>) = Validation.mapM f.Invoke x
 
     [<Extension>]
-    static member PureValidate x : Choice<_, string list> = Choice1Of2 x
+    static member ReturnValidation x : Choice<_, string list> = Choice1Of2 x
 
     static member EnumerableValidator (f: Func<'a, Choice<'a, string list>>) : Func<'a seq, Choice<'a seq, string list>> =
         let ff = Validation.seqValidator f.Invoke >> Choice.map (fun a -> a :> _ seq)

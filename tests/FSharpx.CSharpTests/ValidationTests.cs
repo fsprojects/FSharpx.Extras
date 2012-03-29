@@ -101,9 +101,9 @@ namespace FSharpx.CSharpTests {
 
             var doSomethingFunc = L.F((int a, int b) => doSomething(a, b));
             var curriedDoSomething = doSomethingFunc.Curry();
-            var result = curriedDoSomething.PureValidate()
-                .ApV(userID)
-                .ApV(id);
+            var result = curriedDoSomething.ReturnValidation()
+                .ApValidation(userID)
+                .ApValidation(id);
 
             //var result = L.F((int a, int b) => doSomething(a,b))
             //    .Curry().PureValidate()
@@ -188,7 +188,7 @@ namespace FSharpx.CSharpTests {
         }
 
         static FSharpChoice<FSharpList<Order>, Errors> ValidateOrders(IEnumerable<Order> orders) {
-            var zero = ListModule.Empty<Order>().PureValidate();
+            var zero = ListModule.Empty<Order>().ReturnValidation();
             return orders
                 .Select(ValidateOrder)
                 .Aggregate(zero, (e, c) => from a in e
