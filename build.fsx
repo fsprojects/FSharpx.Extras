@@ -128,7 +128,7 @@ let testTarget = TargetTemplate (fun frameworkVersion ->
         {p with
             ToolPath = nunitPath
             DisableShadowCopy = true
-            OutputFile = testDir + "TestResults.xml" })
+            OutputFile = testDir + sprintf "TestResults.%s.xml" frameworkVersion })
 )
 
 Target "GenerateDocumentation" (fun _ ->
