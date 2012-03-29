@@ -72,24 +72,16 @@ namespace FSharp.Control
 
 namespace FSharp.Control
   type internal CircularQueueMessage<'T> =
-    | Enqueue of 'T [] * int * int * AsyncReplyChannel<unit>
+    | Enqueue of 'T [] * int * int
     | Dequeue of int * AsyncReplyChannel<'T []>
   type CircularQueueAgent<'T> =
     class
       new : maxLength:int -> CircularQueueAgent<'T>
       member AsyncDequeue : count:int * ?timeout:int -> Async<'T []>
-      member
-        AsyncEnqueue : segment:System.ArraySegment<'T> * ?timeout:int ->
-                         Async<unit>
-      member AsyncEnqueue : value:'T [] * ?timeout:int -> Async<unit>
-      member
-        AsyncEnqueue : value:'T [] * offset:int * count:int * ?timeout:int ->
-                         Async<unit>
       member Dequeue : count:int * ?timeout:int -> 'T []
-      member Enqueue : segment:System.ArraySegment<'T> * ?timeout:int -> unit
-      member Enqueue : value:'T [] * ?timeout:int -> unit
-      member
-        Enqueue : value:'T [] * offset:int * count:int * ?timeout:int -> unit
+      member Enqueue : segment:System.ArraySegment<'T> -> unit
+      member Enqueue : value:'T [] -> unit
+      member Enqueue : value:'T [] * offset:int * count:int -> unit
       member Count : int
     end
 
@@ -423,9 +415,6 @@ namespace FSharp.IO
       member
         AsyncRead : buffer:byte [] * offset:int * count:int * ?timeout:int ->
                       Async<int>
-      member
-        AsyncWrite : buffer:byte [] * offset:int * count:int * ?timeout:int ->
-                       Async<unit>
       override Close : unit -> unit
       override Flush : unit -> unit
       override Read : buffer:byte [] * offset:int * count:int -> int
