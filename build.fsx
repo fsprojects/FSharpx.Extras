@@ -108,7 +108,7 @@ Target "AssemblyInfo" (fun _ ->
 )
 
 let buildAppTarget = TargetTemplate (fun frameworkVersion ->
-    CleanDirs [buildDir; testDir]
+    CleanDir buildDir
 
     appReferences frameworkVersion
     |> MSBuild buildDir "Build" (["Configuration","Release"] @ frameworkParams frameworkVersion)
@@ -116,6 +116,7 @@ let buildAppTarget = TargetTemplate (fun frameworkVersion ->
 )
 
 let buildTestTarget = TargetTemplate (fun frameworkVersion ->
+    CleanDir testDir
     testReferences frameworkVersion
     |> MSBuild testDir "Build" ["Configuration","Debug"] 
     |> Log "TestBuild-Output: "
