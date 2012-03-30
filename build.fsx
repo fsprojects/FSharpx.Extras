@@ -24,10 +24,16 @@ let packagesDir = "./packages/"
 let testDir = "./test/"
 let deployDir = "./deploy/"
 let docsDir = "./docs/"
-let nugetDir = "./nuget/"
+
 let targetPlatformDir = getTargetPlatformDir "4.0.30319"
-let nugetLibDir = nugetDir @@ "lib"
-let nugetDocsDir = nugetDir @@ "docs"
+
+let nugetDir package = sprintf "./nuget/%s/" package
+let nugetLibDir package = nugetDir package @@ "lib"
+let nugetDocsDir package = nugetDir package @@ "docs"
+
+let nugetDirHttp = "./nuget/Http/"
+let nugetLibDirHttp = nugetDirHttp @@ "lib"
+let nugetDocsDirHttp = nugetDirHttp @@ "docs"
 
 let net35 = "v3.5"
 let net40 = "v4.0"
@@ -70,7 +76,7 @@ let testReferences frameworkVersion =
 
 // targets
 Target "Clean" (fun _ ->
-    CleanDirs [buildDir; testDir; deployDir; docsDir; nugetDir; nugetLibDir; nugetDocsDir]
+    CleanDirs [buildDir; testDir; deployDir; docsDir; nugetDir "Core"; nugetLibDir "Core"; nugetDocsDir "Core"; nugetDir "Http"; nugetLibDir "Http"; nugetDocsDir "Http"]
 )
 
 Target "AssemblyInfo" (fun _ ->
@@ -164,20 +170,25 @@ Target "ZipDocumentation" (fun _ ->
 )
 
 let prepareNugetTarget = TargetTemplate (fun frameworkVersion ->
-    let frameworkSubDir = nugetLibDir @@ normalizeFrameworkVersion frameworkVersion
-    CleanDirs [frameworkSubDir]
-    
-    let libs = 
-        [yield "FSharpx.Core"
-         if frameworkVersion <> net35  then 
-            yield "FSharpx.Observable"
-            yield "FSharpx.Http"
-            yield "FSharpx.Async"]
+    let frameworkSubDir package = nugetLibDir package @@ normalizeFrameworkVersion frameworkVersion
+    CleanDirs [frameworkSubDir "Core";frameworkSubDir "Http"]
 
-    [ for lib in libs do
-      for ending in ["dll";"pdb";"xml"] ->
-        sprintf "%s%s.%s" buildDir lib ending ]
-    |> CopyTo frameworkSubDir
+    let getFiles libs = 
+        [ for lib in libs do
+          for ending in ["dll";"pdb";"xml"] ->
+            sprintf "%s%s.%s" buildDir lib ending ]
+    
+    [yield "FSharpx.Core"
+     if frameworkVersion <> net35  then 
+        yield "FSharpx.Observable"
+        yield "FSharpx.Async"]
+    |> getFiles    
+    |> CopyTo (frameworkSubDir "Core")
+
+    if frameworkVersion <> net35  then
+        ["FSharpx.Http"]
+        |> getFiles    
+        |> CopyTo (frameworkSubDir "Http")
 )
 
 let buildFrameworkVersionTarget = TargetTemplate (fun frameworkVersion -> ())
@@ -205,21 +216,40 @@ let generateTargets() =
             dependency ==> buildApp ==> buildTest ==> test ==> prepareNuget ==> buildFrameworkVersion)
             "CopyLicense"
 
-Target "BuildNuGet" (fun _ ->
-    XCopy (docsDir |> FullName) nugetDocsDir
+Target "BuildNuGet.Core" (fun _ ->
+    XCopy (docsDir |> FullName) (nugetDocsDir "Core")
     NuGet (fun p -> 
         {p with               
             Authors = authors
             Project = projectName + ".Core"
             Description = projectDescription
             Version = version
-            OutputPath = nugetDir
+            OutputPath = nugetDir "Core"
             ToolPath = nugetPath
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Publish = hasBuildParam "nugetkey" })
         "FSharpx.Core.nuspec"
 
-    !! (nugetDir + "FSharpx.Core.*.nupkg")
+    !! (nugetDir "Core" + "FSharpx.Core.*.nupkg")
+      |> CopyTo deployDir
+)
+
+Target "BuildNuGet.Http" (fun _ ->
+    NuGet (fun p -> 
+        {p with               
+            Authors = authors
+            Project = projectName + ".Http"
+            Description = httpDesc
+            Version = version
+            OutputPath = nugetDir "Http"
+            ToolPath = nugetPath
+            Dependencies =
+                [projectName + ".Core",RequireExactly (NormalizeVersion version)]
+            AccessKey = getBuildParamOrDefault "nugetkey" ""
+            Publish = hasBuildParam "nugetkey" })
+        "FSharpx.Core.nuspec"
+
+    !! (nugetDir "Http" + "FSharpx.Http.*.nupkg")
       |> CopyTo deployDir
 )
 
@@ -242,7 +272,8 @@ Target "All" DoNothing
   ==> (generateTargets())
   ==> "GenerateDocumentation"
   ==> "ZipDocumentation"
-  ==> "BuildNuGet"
+  ==> "BuildNuGet.Core"
+  ==> "BuildNuGet.Http"
   ==> "DeployZip"
   ==> "Deploy"
 
