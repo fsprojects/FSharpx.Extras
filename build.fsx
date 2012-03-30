@@ -170,10 +170,6 @@ Target "GenerateDocumentation" (fun _ ->
             OutputPath = docsDir })
 )
 
-Target "CopyLicense" (fun _ ->
-    [ "LICENSE.md" ] |> CopyTo buildDir
-)
-
 Target "ZipDocumentation" (fun _ ->
     !! (docsDir + "/**/*.*")
     |> Zip docsDir (deployDir + sprintf "Documentation-%s.zip" version)
@@ -214,10 +210,11 @@ let generateTargets() =
             buildFrameworkVersionTarget buildFrameworkVersion frameworkVersion
 
             dependency ==> buildApp ==> buildTest ==> test ==> prepareNuget ==> buildFrameworkVersion)
-            "CopyLicense"
+            "AssemblyInfo"
 
 let nugetTarget = TargetTemplate (fun package ->
     XCopy (docsDir |> FullName) (nugetDocsDir package)
+    [ "LICENSE.md" ] |> CopyTo (nugetDir package)
     NuGet (fun p -> 
         {p with               
             Authors = authors
@@ -264,7 +261,6 @@ Target "All" DoNothing
 // Build order
 "Clean"
   ==> "AssemblyInfo"
-  ==> "CopyLicense"
   ==> (generateTargets())
   ==> "GenerateDocumentation"
   ==> "ZipDocumentation"
