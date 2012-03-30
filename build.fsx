@@ -10,6 +10,10 @@ let version = if isLocalBuild then "1.4." + currentDate.ToString("yMMdd") else b
 let coreSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let projectSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let projectDescription = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.\r\n\r\nIt currently implements:\r\n\r\n* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n* Iteratee\r\n* Validation applicative functor\r\n* General functions like flip\r\n* Additional functions around collections\r\n* Functions to make C# - F# interop easier."
+let httpDesc = "This library provides common features for working with HTTP applications."
+let asyncDesc = "This library implements various extensions for asynchronous programming using F# asynchronous workflows and F# agents."
+let observableDesc = "This library implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford."
+let typeProvidersDesc = "This library is for the .NET platform implementing common type providers on top of the FSharpx.Core."
 let authors = ["Steffen Forkmann"; "Daniel Mohl"; "Tomas Petricek"; "Ryan Riley"; "Mauricio Scheffer"; "Phil Trelford" ]
 let mail = "ryan.riley@panesofglass.org"
 let homepage = "http://github.com/fsharp/fsharpx"
@@ -84,7 +88,7 @@ Target "AssemblyInfo" (fun _ ->
             CodeLanguage = FSharp
             AssemblyVersion = version
             AssemblyTitle = "FSharpx.Http"
-            AssemblyDescription = "This library provides common features for working with HTTP applications."
+            AssemblyDescription = httpDesc
             Guid = "60F3BB81-5449-45DD-A217-B6045327680C"
             OutputFileName = "./src/FSharpx.Http/AssemblyInfo.fs" })
 
@@ -93,7 +97,7 @@ Target "AssemblyInfo" (fun _ ->
             CodeLanguage = FSharp
             AssemblyVersion = version
             AssemblyTitle = "FSharpx.Async"
-            AssemblyDescription = "This library implements various extensions for asynchronous programming using F# asynchronous workflows and F# agents."
+            AssemblyDescription = asyncDesc
             Guid = "ede1812b-5a62-410a-9553-02499cf29317"
             OutputFileName = "./src/FSharpx.Async/AssemblyInfo.fs" })
 
@@ -102,7 +106,7 @@ Target "AssemblyInfo" (fun _ ->
             CodeLanguage = FSharp
             AssemblyVersion = version
             AssemblyTitle = "FSharpx.Observable"
-            AssemblyDescription = "This library implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford."
+            AssemblyDescription = observableDesc
             Guid = "2E802F54-9CD0-4B0A-B834-5C5979403B50"
             OutputFileName = "./src/FSharpx.Observable/AssemblyInfo.fs" })
 
@@ -111,7 +115,7 @@ Target "AssemblyInfo" (fun _ ->
             CodeLanguage = FSharp
             AssemblyVersion = version
             AssemblyTitle = "FSharpx.TypeProviders"
-            AssemblyDescription = "This library is for the .NET platform implementing common type providers on top of the FSharpx.Core."
+            AssemblyDescription = typeProvidersDesc
             Guid = "89B6AF94-507D-4BE0-98FA-A5124884DBA8"
             OutputFileName = "./src/FSharpx.TypeProviders/AssemblyInfo.fs" })
 )
@@ -132,6 +136,7 @@ let buildTestTarget = TargetTemplate (fun frameworkVersion ->
 )
 
 let testTarget = TargetTemplate (fun frameworkVersion ->
+    ActivateFinalTarget "CloseTestRunner"
     !! (testDir + "/*.Tests.dll")
     |> NUnit (fun p ->
         {p with
@@ -221,6 +226,10 @@ Target "BuildNuGet" (fun _ ->
 Target "DeployZip" (fun _ ->
     !! (buildDir + "/**/*.*")
     |> Zip buildDir (deployDir + sprintf "%s-%s.zip" projectName version)
+)
+
+FinalTarget "CloseTestRunner" (fun _ ->  
+    ProcessHelper.killProcess "nunit-agent.exe"
 )
 
 Target "Deploy" DoNothing
