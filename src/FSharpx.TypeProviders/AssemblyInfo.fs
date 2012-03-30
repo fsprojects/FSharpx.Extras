@@ -1,4 +1,4 @@
-module FSharpx.Observable.AssemblyInfo
+module FSharpx.TypeProviders.AssemblyInfo
 #nowarn "49" // uppercase argument names
 #nowarn "67" // this type test or downcast will always hold
 #nowarn "66" // tis upast is unnecessary - the types are identical
@@ -16,13 +16,13 @@ exception ReturnNoneException183c26a427ae489c8fd92ec21a0c9a59
 
 [<assembly: CLSCompliant (false)>]
 
-[<assembly: Guid ("2E802F54-9CD0-4B0A-B834-5C5979403B50")>]
+[<assembly: Guid ("89B6AF94-507D-4BE0-98FA-A5124884DBA8")>]
 
-[<assembly: AssemblyTitle ("FSharpx.Observable")>]
+[<assembly: AssemblyTitle ("FSharpx.TypeProviders")>]
 
-[<assembly: AssemblyDescription ("This library implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford.")>]
+[<assembly: AssemblyDescription ("This library is for the .NET platform implementing common type providers on top of the FSharpx.Core.")>]
 
-[<assembly: AssemblyProduct ("FSharpx.Observable")>]
+[<assembly: AssemblyProduct ("FSharpx.TypeProviders")>]
 
 [<assembly: AssemblyVersion ("1.4.120330")>]
 

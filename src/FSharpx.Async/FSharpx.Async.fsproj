@@ -43,6 +43,7 @@
     <Compile Include="Agents\BlockingQueueAgent.fs" />
     <Compile Include="Agents\CircularQueueAgent.fs" />
     <Compile Include="Agents\SlidingWindowAgent.fs" />
+    <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Async.fs" />
     <Compile Include="Observable.fs" />
     <Compile Include="AsyncSeq.fs" />

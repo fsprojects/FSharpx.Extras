@@ -105,6 +105,15 @@ Target "AssemblyInfo" (fun _ ->
             AssemblyDescription = "This library implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford."
             Guid = "2E802F54-9CD0-4B0A-B834-5C5979403B50"
             OutputFileName = "./src/FSharpx.Observable/AssemblyInfo.fs" })
+
+    AssemblyInfo (fun p ->
+        {p with 
+            CodeLanguage = FSharp
+            AssemblyVersion = version
+            AssemblyTitle = "FSharpx.TypeProviders"
+            AssemblyDescription = "This library is for the .NET platform implementing common type providers on top of the FSharpx.Core."
+            Guid = "89B6AF94-507D-4BE0-98FA-A5124884DBA8"
+            OutputFileName = "./src/FSharpx.TypeProviders/AssemblyInfo.fs" })
 )
 
 let buildAppTarget = TargetTemplate (fun frameworkVersion ->

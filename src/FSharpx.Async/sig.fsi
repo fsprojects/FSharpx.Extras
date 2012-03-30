@@ -97,6 +97,12 @@ namespace FSharp.Control
       member remove_WindowProduced : Handler<'T []> -> unit
     end
 
+namespace FSharpx.Async
+  module AssemblyInfo = begin
+    exception ReturnException183c26a427ae489c8fd92ec21a0c9a59 of obj
+    exception ReturnNoneException183c26a427ae489c8fd92ec21a0c9a59
+  end
+
 namespace FSharp.Control
   module AsyncExtensions = begin
     type Async with
