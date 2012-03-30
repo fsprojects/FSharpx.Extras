@@ -45,7 +45,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ObservableExtensions.fs" />
+    <Compile Include="ObservableDispatcherExtensions.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FSharpx.Async\FSharpx.Async.fsproj">

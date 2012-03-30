@@ -250,7 +250,8 @@ module Observable =
                    member x.OnError(e) = finish econt e
                    member x.OnCompleted() = 
                       let msg = "Cancelling the workflow, because the Observable awaited using AwaitObservable has completed."
-                      finish ccont (new System.OperationCanceledException(msg)) }) 
+                      let exn = new OperationCanceledException(msg)
+                      finish ccont exn }) 
           guardFunction() )))
 
     /// Creates an asynchronous workflow that will be resumed when the 
@@ -269,7 +270,8 @@ module Observable =
                    member x.OnError(e) = finish econt e
                    member x.OnCompleted() = 
                       let msg = "Cancelling the workflow, because the Observable awaited using AwaitObservable has completed."
-                      finish ccont (new System.OperationCanceledException(msg)) }) 
+                      let exn = new OperationCanceledException(msg)
+                      finish ccont exn }) 
           () )))
   
     /// Creates an asynchronous workflow that will be resumed when the 

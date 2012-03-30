@@ -9,7 +9,7 @@ open FSharp.Control
 open System.Runtime.CompilerServices
 
 [<Extension>]
-type ObservableExtensions private () =
+type ObservableDispatcherExtensions private () =
 
     /// Execute Observer function on Dispatcher thread
     /// <Remarks>For WPF and Silverlight</remarks> 
