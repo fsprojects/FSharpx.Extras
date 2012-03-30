@@ -20,7 +20,9 @@ exception ReturnNoneException183c26a427ae489c8fd92ec21a0c9a59
 
 [<assembly: AssemblyTitle ("FSharpx.TypeProviders")>]
 
-[<assembly: AssemblyDescription ("This library is for the .NET platform implementing common type providers on top of the FSharpx.Core.")>]
+[<assembly: AssemblyDescription ("FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.
+
+This library is for the .NET platform implementing common type providers on top of the FSharpx.Core.")>]
 
 [<assembly: AssemblyProduct ("FSharpx.TypeProviders")>]
 

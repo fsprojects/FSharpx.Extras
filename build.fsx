@@ -37,12 +37,14 @@ let nugetDirHttp = "./nuget/Http/"
 let nugetLibDirHttp = nugetDirHttp @@ "lib"
 let nugetDocsDirHttp = nugetDirHttp @@ "docs"
 
-let getPackageDesc = function
-| "Http" ->  "This library provides common features for working with HTTP applications."
-| "Async" -> "This library implements various extensions for asynchronous programming using F# asynchronous workflows and F# agents."
-| "Observable" ->  "This library implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford."
-| "TypeProviders" -> "This library is for the .NET platform implementing common type providers on top of the FSharpx.Core."
-| _ -> "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.\r\n\r\nIt currently implements:\r\n\r\n* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n* Iteratee\r\n* Validation applicative functor\r\n* General functions like flip\r\n* Additional functions around collections\r\n* Functions to make C# - F# interop easier."
+let projectDesc = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible."
+
+let rec getPackageDesc = function
+| "Http" -> projectDesc + "\r\n\r\nThis library provides common features for working with HTTP applications."
+| "Async" -> projectDesc + "\r\n\r\nThis library implements various extensions for asynchronous programming using F# asynchronous workflows and F# agents."
+| "Observable" -> projectDesc + "\r\n\r\nThis library implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford."
+| "TypeProviders" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing common type providers on top of the FSharpx.Core."
+| _ -> projectDesc + "\r\n\r\nIt currently implements:\r\n\r\n* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n* Iteratee\r\n* Validation applicative functor\r\n* General functions like flip\r\n* Additional functions around collections\r\n* Functions to make C# - F# interop easier."
 
 // params
 let target = getBuildParamOrDefault "target" "All"
