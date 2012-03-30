@@ -9,14 +9,14 @@ let projectName = "FSharpx"
 let version = if isLocalBuild then "1.4." + currentDate.ToString("yMMdd") else buildVersion
 let coreSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let projectSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
-let projectDescription = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.\r\n\r\nIt currently implements:\r\n\r\n* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n* Iteratee\r\n* Validation applicative functor\r\n* General functions like flip\r\n* Additional functions around collections\r\n* Functions to make C# - F# interop easier."
-let httpDesc = "This library provides common features for working with HTTP applications."
-let asyncDesc = "This library implements various extensions for asynchronous programming using F# asynchronous workflows and F# agents."
-let observableDesc = "This library implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford."
-let typeProvidersDesc = "This library is for the .NET platform implementing common type providers on top of the FSharpx.Core."
 let authors = ["Steffen Forkmann"; "Daniel Mohl"; "Tomas Petricek"; "Ryan Riley"; "Mauricio Scheffer"; "Phil Trelford" ]
 let mail = "ryan.riley@panesofglass.org"
 let homepage = "http://github.com/fsharp/fsharpx"
+
+// .NET Frameworks
+let net35 = "v3.5"
+let net40 = "v4.0"
+let net45 = "v4.5"
 
 // directories
 let buildDir = "./build/"
@@ -31,13 +31,18 @@ let nugetDir package = sprintf "./nuget/%s/" package
 let nugetLibDir package = nugetDir package @@ "lib"
 let nugetDocsDir package = nugetDir package @@ "docs"
 
+let packages = ["Core"; "Http"; "Observable"; "Async"]
+
 let nugetDirHttp = "./nuget/Http/"
 let nugetLibDirHttp = nugetDirHttp @@ "lib"
 let nugetDocsDirHttp = nugetDirHttp @@ "docs"
 
-let net35 = "v3.5"
-let net40 = "v4.0"
-let net45 = "v4.5"
+let getPackageDesc = function
+| "Http" ->  "This library provides common features for working with HTTP applications."
+| "Async" -> "This library implements various extensions for asynchronous programming using F# asynchronous workflows and F# agents."
+| "Observable" ->  "This library implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford."
+| "TypeProviders" -> "This library is for the .NET platform implementing common type providers on top of the FSharpx.Core."
+| _ -> "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.\r\n\r\nIt currently implements:\r\n\r\n* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n* Iteratee\r\n* Validation applicative functor\r\n* General functions like flip\r\n* Additional functions around collections\r\n* Functions to make C# - F# interop easier."
 
 // params
 let target = getBuildParamOrDefault "target" "All"
@@ -76,7 +81,10 @@ let testReferences frameworkVersion =
 
 // targets
 Target "Clean" (fun _ ->
-    CleanDirs [buildDir; testDir; deployDir; docsDir; nugetDir "Core"; nugetLibDir "Core"; nugetDocsDir "Core"; nugetDir "Http"; nugetLibDir "Http"; nugetDocsDir "Http"]
+    CleanDirs [buildDir; testDir; deployDir; docsDir]
+
+    packages
+    |> Seq.iter (fun x -> CleanDirs [nugetDir x; nugetLibDir x; nugetDocsDir x])
 )
 
 Target "AssemblyInfo" (fun _ ->
@@ -85,7 +93,7 @@ Target "AssemblyInfo" (fun _ ->
             CodeLanguage = FSharp
             AssemblyVersion = version
             AssemblyTitle = projectName
-            AssemblyDescription = projectSummary
+            AssemblyDescription = getPackageDesc "Core"
             Guid = "1e95a279-c2a9-498b-bc72-6e7a0d6854ce"
             OutputFileName = "./src/FSharpx.Core/AssemblyInfo.fs" })
 
@@ -94,7 +102,7 @@ Target "AssemblyInfo" (fun _ ->
             CodeLanguage = FSharp
             AssemblyVersion = version
             AssemblyTitle = "FSharpx.Http"
-            AssemblyDescription = httpDesc
+            AssemblyDescription = getPackageDesc "Http"
             Guid = "60F3BB81-5449-45DD-A217-B6045327680C"
             OutputFileName = "./src/FSharpx.Http/AssemblyInfo.fs" })
 
@@ -103,7 +111,7 @@ Target "AssemblyInfo" (fun _ ->
             CodeLanguage = FSharp
             AssemblyVersion = version
             AssemblyTitle = "FSharpx.Async"
-            AssemblyDescription = asyncDesc
+            AssemblyDescription = getPackageDesc "Async"
             Guid = "ede1812b-5a62-410a-9553-02499cf29317"
             OutputFileName = "./src/FSharpx.Async/AssemblyInfo.fs" })
 
@@ -112,7 +120,7 @@ Target "AssemblyInfo" (fun _ ->
             CodeLanguage = FSharp
             AssemblyVersion = version
             AssemblyTitle = "FSharpx.Observable"
-            AssemblyDescription = observableDesc
+            AssemblyDescription = getPackageDesc "Observable"
             Guid = "2E802F54-9CD0-4B0A-B834-5C5979403B50"
             OutputFileName = "./src/FSharpx.Observable/AssemblyInfo.fs" })
 
@@ -121,7 +129,7 @@ Target "AssemblyInfo" (fun _ ->
             CodeLanguage = FSharp
             AssemblyVersion = version
             AssemblyTitle = "FSharpx.TypeProviders"
-            AssemblyDescription = typeProvidersDesc
+            AssemblyDescription = getPackageDesc "TypeProviders"
             Guid = "89B6AF94-507D-4BE0-98FA-A5124884DBA8"
             OutputFileName = "./src/FSharpx.TypeProviders/AssemblyInfo.fs" })
 )
@@ -170,25 +178,15 @@ Target "ZipDocumentation" (fun _ ->
 )
 
 let prepareNugetTarget = TargetTemplate (fun frameworkVersion ->
-    let frameworkSubDir package = nugetLibDir package @@ normalizeFrameworkVersion frameworkVersion
-    CleanDirs [frameworkSubDir "Core";frameworkSubDir "Http"]
+    packages
+    |> Seq.iter (fun package ->
+        let frameworkSubDir = nugetLibDir package @@ normalizeFrameworkVersion frameworkVersion
+        CleanDir frameworkSubDir 
 
-    let getFiles libs = 
-        [ for lib in libs do
-          for ending in ["dll";"pdb";"xml"] ->
-            sprintf "%s%s.%s" buildDir lib ending ]
-    
-    [yield "FSharpx.Core"
-     if frameworkVersion <> net35  then 
-        yield "FSharpx.Observable"
-        yield "FSharpx.Async"]
-    |> getFiles    
-    |> CopyTo (frameworkSubDir "Core")
-
-    if frameworkVersion <> net35  then
-        ["FSharpx.Http"]
-        |> getFiles    
-        |> CopyTo (frameworkSubDir "Http")
+        [for ending in ["dll";"pdb";"xml"] ->
+            sprintf "%sFsharpx.%s.%s" buildDir package ending]
+        |> Seq.filter (fun f -> File.Exists f)
+        |> CopyTo frameworkSubDir)
 )
 
 let buildFrameworkVersionTarget = TargetTemplate (fun frameworkVersion -> ())
@@ -216,42 +214,38 @@ let generateTargets() =
             dependency ==> buildApp ==> buildTest ==> test ==> prepareNuget ==> buildFrameworkVersion)
             "CopyLicense"
 
-Target "BuildNuGet.Core" (fun _ ->
-    XCopy (docsDir |> FullName) (nugetDocsDir "Core")
+let nugetTarget = TargetTemplate (fun package ->
+    XCopy (docsDir |> FullName) (nugetDocsDir package)
     NuGet (fun p -> 
         {p with               
             Authors = authors
-            Project = projectName + ".Core"
-            Description = projectDescription
+            Project = projectName + "." + package
+            Description = getPackageDesc package
             Version = version
-            OutputPath = nugetDir "Core"
+            OutputPath = nugetDir package
             ToolPath = nugetPath
             AccessKey = getBuildParamOrDefault "nugetkey" ""
-            Publish = hasBuildParam "nugetkey" })
-        "FSharpx.Core.nuspec"
-
-    !! (nugetDir "Core" + "FSharpx.Core.*.nupkg")
-      |> CopyTo deployDir
-)
-
-Target "BuildNuGet.Http" (fun _ ->
-    NuGet (fun p -> 
-        {p with               
-            Authors = authors
-            Project = projectName + ".Http"
-            Description = httpDesc
-            Version = version
-            OutputPath = nugetDir "Http"
-            ToolPath = nugetPath
             Dependencies =
-                [projectName + ".Core",RequireExactly (NormalizeVersion version)]
-            AccessKey = getBuildParamOrDefault "nugetkey" ""
+                if package = "Core" then p.Dependencies else
+                [projectName + ".Core", RequireExactly (NormalizeVersion version)]
             Publish = hasBuildParam "nugetkey" })
         "FSharpx.Core.nuspec"
 
-    !! (nugetDir "Http" + "FSharpx.Http.*.nupkg")
+    !! (nugetDir package + sprintf "FSharpx.%s.*.nupkg" package)
       |> CopyTo deployDir
 )
+
+let generateNugetTargets() =
+    packages 
+    |> Seq.fold
+        (fun dependency package -> 
+            tracefn "Generating nuget target for package %s" package
+            let buildPackage = sprintf "Nuget_%s" package
+            
+            nugetTarget buildPackage package
+
+            dependency ==> buildPackage)
+            "ZipDocumentation"
 
 Target "DeployZip" (fun _ ->
     !! (buildDir + "/**/*.*")
@@ -272,8 +266,7 @@ Target "All" DoNothing
   ==> (generateTargets())
   ==> "GenerateDocumentation"
   ==> "ZipDocumentation"
-  ==> "BuildNuGet.Core"
-  ==> "BuildNuGet.Http"
+  ==> (generateNugetTargets())  
   ==> "DeployZip"
   ==> "Deploy"
 
