@@ -11,7 +11,6 @@
 #r @"..\build\FSharpx.Async.dll"
 
 open System
-open System.Diagnostics
 open FSharp.Control
 open FSharp.IO
 open FSharpx
@@ -27,7 +26,7 @@ queue.Enqueue(2)
 queue.Enqueue(3)
 queue.Enqueue(4)
 queue.Enqueue(5)
-Debug.Assert([|1;2;3;4;5|] = queue.Dequeue(5))
+assert ([|1;2;3;4;5|] = queue.Dequeue(5))
 
 // Printing from a queue 1..8, twice
 queue.Enqueue(1)
@@ -46,7 +45,7 @@ queue.Enqueue(5)
 queue.Enqueue(6)
 queue.Enqueue(7) // <---
 queue.Enqueue(8)
-Debug.Assert([|4;5;6;7;8|] = queue.Dequeue(5))
+assert ([|4;5;6;7;8|] = queue.Dequeue(5))
 
 // Printing from a queue 1..5
 queue.Enqueue(1)
@@ -54,7 +53,7 @@ queue.Enqueue(2)
 queue.Enqueue(3)
 queue.Enqueue(4)
 queue.Enqueue(5)
-Debug.Assert([|1;2;3|] = queue.Dequeue(3))
+assert ([|1;2;3|] = queue.Dequeue(3))
 
 // Clear out the rest
 queue.Dequeue(2)
@@ -63,7 +62,7 @@ queue.Dequeue(2)
 queue.Enqueue(1)
 queue.Enqueue(2)
 queue.Enqueue(3)
-Debug.Assert([|1;2;3|] = queue.Dequeue(3))
+assert ([|1;2;3|] = queue.Dequeue(3))
 
 // Printing from a queue 1..8 and dequeue 5, then enqueue 1..3 and dequeue 3
 queue.Enqueue(1)
@@ -74,11 +73,11 @@ queue.Enqueue(5) // <---
 queue.Enqueue(6)
 queue.Enqueue(7)
 queue.Enqueue(8)
-Debug.Assert([|4;5;6;7;8|] = queue.Dequeue(5))
+assert ([|4;5;6;7;8|] = queue.Dequeue(5))
 queue.Enqueue(1)
 queue.Enqueue(2)
 queue.Enqueue(3)
-Debug.Assert([|1;2;3|] = queue.Dequeue(3))
+assert ([|1;2;3|] = queue.Dequeue(3))
 
 printfn "Enqueue(value) tests passed in %d ms" stopwatch.ElapsedMilliseconds
 
@@ -87,7 +86,7 @@ stopwatch.Start()
 
 // Printing from a queue 1..5
 queue.Enqueue([|1;2;3;4;5|])
-Debug.Assert([|1;2;3;4;5|] = queue.Dequeue(5))
+assert ([|1;2;3;4;5|] = queue.Dequeue(5))
 
 // Printing from a queue 1..8, twice
 let error = ref Unchecked.defaultof<Exception>
@@ -96,31 +95,31 @@ try
     queue.Enqueue([|1;2;3;4;5;6;7;8;1;2;3;4;5;6;7;8|])
   with e -> error := e
 finally
-  Debug.Assert(!error <> null)
+  assert (!error <> null)
 
 queue.Enqueue([|1;2;3;4;5|])
 queue.Enqueue([|6;7;8|])
 queue.Enqueue([|1;2;3;4;5|])
 queue.Enqueue([|6;7;8|])
-Debug.Assert([|4;5;6;7;8|] = queue.Dequeue(5))
+assert ([|4;5;6;7;8|] = queue.Dequeue(5))
 
 // Printing from a queue 1..5
 queue.Enqueue([|1;2;3;4;5|])
-Debug.Assert([|1;2;3|] = queue.Dequeue(3))
+assert ([|1;2;3|] = queue.Dequeue(3))
 
 // Clear out the rest
 queue.Dequeue(2)
 
 // Printing from a queue 1..3
 queue.Enqueue([|1;2;3|])
-Debug.Assert([|1;2;3|] = queue.Dequeue(3))
+assert ([|1;2;3|] = queue.Dequeue(3))
 
 // Printing from a queue 1..8 and dequeue 5, then enqueue 1..3 and dequeue 3
 queue.Enqueue([|1;2;3;4;5|])
 queue.Enqueue([|6;7;8|])
-Debug.Assert([|4;5;6;7;8|] = queue.Dequeue(5))
+assert ([|4;5;6;7;8|] = queue.Dequeue(5))
 queue.Enqueue([|1;2;3|])
-Debug.Assert([|1;2;3|] = queue.Dequeue(3))
+assert ([|1;2;3|] = queue.Dequeue(3))
 
 printfn "Enqueue(array) tests passed in %d ms" stopwatch.ElapsedMilliseconds
 
@@ -156,38 +155,38 @@ let enqueueNext() =
 
 // Printing from a queue 1..5
 enqueueNext()
-Debug.Assert([|1;2;3;4;5|] = queue.Dequeue(5))
+assert ([|1;2;3;4;5|] = queue.Dequeue(5))
 
 // Printing from a queue 1..8, twice
 enqueueNext()
 enqueueNext()
 enqueueNext()
 enqueueNext()
-Debug.Assert([|4;5;6;7;8|] = queue.Dequeue(5))
+assert ([|4;5;6;7;8|] = queue.Dequeue(5))
 
 // Printing from a queue 1..5
 enqueueNext()
-Debug.Assert([|1;2;3|] = queue.Dequeue(3))
+assert ([|1;2;3|] = queue.Dequeue(3))
 
 // Clear out the rest
 queue.Dequeue(2)
 
 // Printing from a queue 1..3
 enqueueNext()
-Debug.Assert([|1;2;3|] = queue.Dequeue(3))
+assert ([|1;2;3|] = queue.Dequeue(3))
 
 // Printing from a queue 1..8 and dequeue 5, then enqueue 1..3 and dequeue 3
 enqueueNext()
 enqueueNext()
-Debug.Assert([|4;5;6;7;8|] = queue.Dequeue(5))
+assert ([|4;5;6;7;8|] = queue.Dequeue(5))
 enqueueNext()
-Debug.Assert([|1;2;3|] = queue.Dequeue(3))
+assert ([|1;2;3|] = queue.Dequeue(3))
 
 printfn "Enqueue(array) tests passed in %d ms" stopwatch.ElapsedMilliseconds
 
 let data = [|1;2;3;4;5|]
 queue.Enqueue(data)
-Debug.Assert((data |> Array.toList) = (queue |> Seq.toList))    
+assert ((data |> Array.toList) = (queue |> Seq.toList))    
 
 printfn "Seq.toList matches enqueued data."
 

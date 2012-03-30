@@ -5,8 +5,6 @@ open System.Collections
 open System.Collections.Generic
 #if NET40
 open System.Diagnostics.Contracts
-#else
-open System.Diagnostics
 #endif
 open System.Runtime.CompilerServices
             
@@ -455,21 +453,21 @@ module ByteString =
         #if NET40
         Contract.Requires(bs.Count >= 0)
         #else
-        Debug.Assert(bs.Count >= 0)
+        assert (bs.Count >= 0)
         #endif
         bs.Count <= 0
     let length (bs:BS) = 
         #if NET40
         Contract.Requires(bs.Count >= 0)
         #else
-        Debug.Assert(bs.Count >= 0)
+        assert (bs.Count >= 0)
         #endif
         bs.Count
     let index (bs:BS) pos =
         #if NET40
         Contract.Requires(bs.Offset + pos <= bs.Count)
         #else
-        Debug.Assert(bs.Offset + pos <= bs.Count)
+        assert (bs.Offset + pos <= bs.Count)
         #endif
         bs.Array.[bs.Offset + pos]
     let head (bs:BS) =
@@ -480,7 +478,7 @@ module ByteString =
         #if NET40
         Contract.Requires(bs.Count >= 1)
         #else
-        Debug.Assert(bs.Count >= 1)
+        assert (bs.Count >= 1)
         #endif
         if bs.Count = 1 then empty
         else BS(bs.Array, bs.Offset+1, bs.Count-1)
@@ -530,7 +528,7 @@ module ByteString =
         #if NET40
         Contract.Requires(n >= 0)
         #else
-        Debug.Assert(n >= 0)
+        assert (n >= 0)
         #endif
         if isEmpty bs then empty, empty
         elif n = 0 then empty, bs
