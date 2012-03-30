@@ -26,9 +26,9 @@ This library implements a mini-Reactive Extensions (MiniRx) and was authored by 
 
 [<assembly: AssemblyProduct ("FSharpx.Observable")>]
 
-[<assembly: AssemblyVersion ("1.4.120330")>]
+[<assembly: AssemblyVersion ("1.5.28")>]
 
-[<assembly: AssemblyFileVersion ("1.4.120330")>]
+[<assembly: AssemblyFileVersion ("1.5.28")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 
