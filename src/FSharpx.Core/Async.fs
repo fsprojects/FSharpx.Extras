@@ -5,7 +5,6 @@
 namespace FSharp.Control
 open System
 open System.Threading
-open System.Threading.Tasks
 
 // ----------------------------------------------------------------------------
 
@@ -37,10 +36,13 @@ module AsyncExtensions =
       { new IDisposable with 
           member x.Dispose() = ct.Cancel() }
 
+
+#if NET40
+
     /// Starts a Task<'a> with the timeout and cancellationToken and
     /// returns a Async<a' option> containing the result.  If the Task does
     /// not complete in the timeout interval, or is faulted None is returned.
-    static member TryAwaitTask(task:Task<_>, ?timeout, ?cancellationToken) =
+    static member TryAwaitTask(task:Tasks.Task<_>, ?timeout, ?cancellationToken) =
       let timeout = defaultArg timeout Timeout.Infinite
       let cancel = defaultArg cancellationToken Async.DefaultCancellationToken
       async {
@@ -48,3 +50,5 @@ module AsyncExtensions =
           if task.Wait(timeout, cancel) && not task.IsCanceled && not task.IsFaulted
           then Some task.Result
           else None }
+
+#endif
