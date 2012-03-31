@@ -192,6 +192,8 @@ printfn "Seq.toList matches enqueued data."
 
 // [/snippet]
 
+stopwatch.Reset()
+stopwatch.Start()
 // [snippet: Using CircularQueueAgent]
 let buffer = new CircularQueueAgent<int>(3)
 
@@ -218,7 +220,31 @@ async {
     printfn "Got %d" v.[0] }
 |> Async.Start
 // [/snippet]
+printfn "CircularQueueAgent.Enqueue(array) tests passed in %d ms" stopwatch.ElapsedMilliseconds
 
+stopwatch.Reset()
+stopwatch.Start()
+// [snippet: Using CircularQueueAgent with AsyncEnqueue]
+async { 
+  for i in 0 .. 10 do 
+    // Sleep for some time and then add value
+    do! Async.Sleep(producerTimeout)
+    do! buffer.AsyncEnqueue([|i|])
+    printfn "Added %d" i }
+|> Async.Start
+
+async { 
+  while true do
+    // Sleep for some time and then get value
+    do! Async.Sleep(consumerTimeout)
+    let! v = buffer.AsyncDequeue(1)
+    printfn "Got %d" v.[0] }
+|> Async.Start
+// [/snippet]
+printfn "CircularQueueAgent.AsyncEnqueue(array) tests passed in %d ms" stopwatch.ElapsedMilliseconds
+
+stopwatch.Reset()
+stopwatch.Start()
 // [snippet: Using CircularStream]
 let stream = new CircularStream(3)
 
@@ -239,3 +265,4 @@ async {
     printfn "Read %d bytes with value %A" v buffer.[0] }
 |> Async.Start
 // [/snippet]
+printfn "CircularStream.AsyncWrite(array) tests passed in %d ms" stopwatch.ElapsedMilliseconds

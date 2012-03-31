@@ -11,8 +11,9 @@ open FSharpx
 // ----------------------------------------------------------------------------
 
 type internal CircularQueueMessage<'T> = 
+  | AsyncEnqueue of 'T[] * int * int * AsyncReplyChannel<unit>
   | Enqueue of 'T[] * int * int
-  | Dequeue of int * AsyncReplyChannel<'T[]>
+  | AsyncDequeue of int * AsyncReplyChannel<'T[]>
 
 /// Agent that implements an asynchronous circular buffer with blocking
 /// enqueue and blocking dequeue operation (this implements the producer-consumer 
@@ -28,19 +29,28 @@ type CircularQueueAgent<'T>(maxLength) =
     let rec emptyQueue() = 
       agent.Scan(fun msg ->
         match msg with 
+        | AsyncEnqueue(value, offset, count, reply) ->
+            Some(enqueueAndContinueWithReply(value, offset, count, reply))
         | Enqueue(value, offset, count) -> Some(enqueueAndContinue(value, offset, count))
         | _ -> None )
     and fullQueue() = 
       agent.Scan(fun msg ->
         match msg with 
-        | Dequeue(n, reply) -> Some(dequeueAndContinue(n, reply))
+        | AsyncDequeue(n, reply) -> Some(dequeueAndContinue(n, reply))
         | _ -> None )
     and runningQueue() = async {
       let! msg = agent.Receive()
       match msg with 
+      | AsyncEnqueue(value, offset, count, reply) ->
+          return! enqueueAndContinueWithReply(value, offset, count, reply)
       | Enqueue(value, offset, count) -> return! enqueueAndContinue(value, offset, count)
-      | Dequeue(n, reply) -> return! dequeueAndContinue(n, reply) }
+      | AsyncDequeue(n, reply) -> return! dequeueAndContinue(n, reply) }
 
+    and enqueueAndContinueWithReply (value, offset, length, reply) = async {
+      reply.Reply()
+      queue.Enqueue(value, offset, length)
+      count <- queue.Count
+      return! chooseState() }
     and enqueueAndContinue (value, offset, length) = async {
       queue.Enqueue(value, offset, length)
       count <- queue.Count
@@ -56,6 +66,24 @@ type CircularQueueAgent<'T>(maxLength) =
 
     // Start with an empty queue
     emptyQueue() )
+
+  /// Adds item to the queue. The operation ends when
+  /// there is a place for the item. If the queue is full, the operation
+  /// will block until some items are removed.
+  member x.AsyncEnqueue(value: 'T[], offset, count, ?timeout) = 
+    agent.PostAndAsyncReply((fun ch -> AsyncEnqueue(value, offset, count, ch)), ?timeout=timeout)
+
+  /// Adds item to the queue. The operation ends when
+  /// there is a place for the item. If the queue is full, the operation
+  /// will block until some items are removed.
+  member x.AsyncEnqueue(segment: ArraySegment<'T>, ?timeout) = 
+    agent.PostAndAsyncReply((fun ch -> AsyncEnqueue(segment.Array, segment.Offset, segment.Count, ch)), ?timeout=timeout)
+
+  /// Adds item to the queue. The operation ends when
+  /// there is a place for the item. If the queue is full, the operation
+  /// will block until some items are removed.
+  member x.AsyncEnqueue(value: 'T[], ?timeout) = 
+    agent.PostAndAsyncReply((fun ch -> AsyncEnqueue(value, 0, value.Length, ch)), ?timeout=timeout)
 
   /// Adds item to the queue. The operation ends when
   /// there is a place for the item. If the queue is full, the operation
@@ -78,13 +106,13 @@ type CircularQueueAgent<'T>(maxLength) =
   /// Asynchronously gets item from the queue. If there are no items
   /// in the queue, the operation will block until items are added.
   member x.AsyncDequeue(count, ?timeout) = 
-    agent.PostAndAsyncReply((fun ch -> Dequeue(count, ch)), ?timeout=timeout)
+    agent.PostAndAsyncReply((fun ch -> AsyncDequeue(count, ch)), ?timeout=timeout)
 
   /// Synchronously gets item from the queue. If there are no items
   /// in the queue, the operation will block until items are added.
   /// This method blocks until value is available!
   member x.Dequeue(count, ?timeout) = 
-    agent.PostAndReply((fun ch -> Dequeue(count, ch)), ?timeout=timeout)
+    agent.PostAndReply((fun ch -> AsyncDequeue(count, ch)), ?timeout=timeout)
 
   /// Gets the number of elements currently waiting in the queue.
   member x.Count = count
