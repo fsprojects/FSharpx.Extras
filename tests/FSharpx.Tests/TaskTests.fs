@@ -13,22 +13,24 @@ let task = Task.TaskBuilder(continuationOptions = TaskContinuationOptions.Execut
 
 type WebRequest with
     member x.GetResponseAsync() =
-        //Task.Factory.FromAsync((fun a b -> x.BeginGetResponse(a,b)), x.EndGetResponse, null)
         x.AsyncGetResponse() |> Async.toTask
 
 type StreamReader with
     member x.ReadToEndAsync() = 
         x.AsyncReadToEnd() |> Async.toTask
 
+type File with
+    static member OpenTextAsync path =
+        File.AsyncOpenText path |> Async.toTask
+
 [<Test>]
 let loadprices() =
-    let url = "http://ichart.finance.yahoo.com/table.csv?s=MSFT&d=9&e=30&f=2008&g=d&a=2&b=13&c=1986&ignore=.csv"
-    let req = WebRequest.Create url
-    let downloadTask =
+    let filename = @"..\..\table.csv"
+    let started = ref false
+    let processTask =
         task {
-            let! resp = req.GetResponseAsync()
-            use stream = resp.GetResponseStream()
-            use reader = new StreamReader(stream)
+            started := true
+            use! reader = File.OpenTextAsync filename
             let! csv = reader.ReadToEndAsync()
             let prices =
                 csv.Split([|'\n'|])
@@ -42,8 +44,10 @@ let loadprices() =
                 |> Seq.toList
             return prices
         }
-    let t,p = downloadTask.Result.[0]
+    Assert.False(!started)
+    let t,p = processTask().Result.[0]
     Assert.AreEqual(DateTime(2008,10,30), t)
     Assert.AreEqual(20.82m, p)
+    Assert.True(!started)
 
 #endif

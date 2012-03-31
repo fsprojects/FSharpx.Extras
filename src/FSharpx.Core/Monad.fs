@@ -197,6 +197,7 @@ module Task =
             finally compensation()
         member this.Using(res:#IDisposable, body) =
             this.TryFinally(body res, fun () -> match res with null -> () | disp -> disp.Dispose())
+        member this.Delay f = f
 
 #endif
 
