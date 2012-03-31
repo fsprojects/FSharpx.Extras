@@ -31,7 +31,7 @@ let nugetDir package = sprintf "./nuget/%s/" package
 let nugetLibDir package = nugetDir package @@ "lib"
 let nugetDocsDir package = nugetDir package @@ "docs"
 
-let packages = ["Core"; "Http"; "Observable"; "Async"; "TypeProviders"]
+let packages = ["Core"; "Http"; "Observable"; "TypeProviders"]
 
 let nugetDirHttp = "./nuget/Http/"
 let nugetLibDirHttp = nugetDirHttp @@ "lib"
@@ -41,7 +41,6 @@ let projectDesc = "FSharpx is a library for the .NET platform implementing gener
 
 let rec getPackageDesc = function
 | "Http" -> projectDesc + "\r\n\r\nThis library provides common features for working with HTTP applications."
-| "Async" -> projectDesc + "\r\n\r\nThis library implements various extensions for asynchronous programming using F# asynchronous workflows and F# agents."
 | "Observable" -> projectDesc + "\r\n\r\nThis library implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford."
 | "TypeProviders" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing common type providers on top of the FSharpx.Core."
 | _ -> projectDesc + "\r\n\r\nIt currently implements:\r\n\r\n* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n* Iteratee\r\n* Validation applicative functor\r\n* General functions like flip\r\n* Additional functions around collections\r\n* Functions to make C# - F# interop easier."
@@ -107,15 +106,6 @@ Target "AssemblyInfo" (fun _ ->
             AssemblyDescription = getPackageDesc "Http"
             Guid = "60F3BB81-5449-45DD-A217-B6045327680C"
             OutputFileName = "./src/FSharpx.Http/AssemblyInfo.fs" })
-
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = version
-            AssemblyTitle = "FSharpx.Async"
-            AssemblyDescription = getPackageDesc "Async"
-            Guid = "ede1812b-5a62-410a-9553-02499cf29317"
-            OutputFileName = "./src/FSharpx.Async/AssemblyInfo.fs" })
 
     AssemblyInfo (fun p ->
         {p with 

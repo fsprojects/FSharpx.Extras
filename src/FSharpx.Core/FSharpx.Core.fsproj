@@ -48,6 +48,17 @@
     <Compile Include="Regex.fs" />
     <Compile Include="TimeMeasurement.fs" />
     <Compile Include="Stm.fs" />
+	<Compile Include="Agents\Agent.fs" />
+    <Compile Include="Agents\AutoCancelAgent.fs" />
+    <Compile Include="Agents\BatchProcessingAgent.fs" />
+    <Compile Include="Agents\BlockingQueueAgent.fs" />
+    <Compile Include="Agents\CircularQueueAgent.fs" />
+    <Compile Include="Agents\ConcurrentSetAgent.fs" />
+    <Compile Include="Agents\SlidingWindowAgent.fs" />
+    <Compile Include="Async.fs" />
+    <Compile Include="Observable.fs" />
+    <Compile Include="AsyncSeq.fs" />
+    <Compile Include="Async.IO.fs" />	
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
