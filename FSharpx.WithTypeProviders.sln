@@ -32,8 +32,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{EFB3
 		samples\WebProxy.fsx = samples\WebProxy.fsx
 	EndProjectSection
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.Async", "src\FSharpx.Async\FSharpx.Async.fsproj", "{EDE1812B-5A62-410A-9553-02499CF29317}"
-EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Santa", "samples\Santa\Santa.fsproj", "{41D22552-BAFB-47D5-B20A-D81E18C3C1E8}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.Http", "src\FSharpx.Http\FSharpx.Http.fsproj", "{60F3BB81-5449-45DD-A217-B6045327680C}"
@@ -201,16 +199,6 @@ Global
 		{EC2F35C2-6DC7-437B-9BD1-44DC1B6F7136}.Release|Mixed Platforms.Build.0 = Release|x86
 		{EC2F35C2-6DC7-437B-9BD1-44DC1B6F7136}.Release|x86.ActiveCfg = Release|x86
 		{EC2F35C2-6DC7-437B-9BD1-44DC1B6F7136}.Release|x86.Build.0 = Release|x86
-		{EDE1812B-5A62-410A-9553-02499CF29317}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EDE1812B-5A62-410A-9553-02499CF29317}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EDE1812B-5A62-410A-9553-02499CF29317}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{EDE1812B-5A62-410A-9553-02499CF29317}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{EDE1812B-5A62-410A-9553-02499CF29317}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{EDE1812B-5A62-410A-9553-02499CF29317}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EDE1812B-5A62-410A-9553-02499CF29317}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EDE1812B-5A62-410A-9553-02499CF29317}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{EDE1812B-5A62-410A-9553-02499CF29317}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{EDE1812B-5A62-410A-9553-02499CF29317}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

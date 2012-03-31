@@ -49,9 +49,9 @@
     <Compile Include="ObservableDispatcherExtensions.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FSharpx.Async\FSharpx.Async.fsproj">
-      <Name>FSharpx.Async</Name>
-      <Project>{ede1812b-5a62-410a-9553-02499cf29317}</Project>
+    <ProjectReference Include="..\FSharpx.Core\FSharpx.Core.fsproj">
+      <Name>FSharpx.Core</Name>
+      <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
