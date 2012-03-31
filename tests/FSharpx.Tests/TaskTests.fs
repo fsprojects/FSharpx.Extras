@@ -12,16 +12,16 @@ open Microsoft.FSharp.Control.WebExtensions
 let task = Task.TaskBuilder(continuationOptions = TaskContinuationOptions.ExecuteSynchronously)
 
 type WebRequest with
-    member x.GetResponseAsync() =
-        x.AsyncGetResponse() |> Async.toTask
+    member x.GetResponseAsync() =        
+        x.AsyncGetResponse() |> Async.StartAsTask
 
 type StreamReader with
     member x.ReadToEndAsync() = 
-        x.AsyncReadToEnd() |> Async.toTask
+        x.AsyncReadToEnd() |> Async.StartAsTask
 
 type File with
     static member OpenTextAsync path =
-        File.AsyncOpenText path |> Async.toTask
+        File.AsyncOpenText path |> Async.StartAsTask
 
 [<Test>]
 let loadprices() =

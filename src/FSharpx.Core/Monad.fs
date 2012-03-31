@@ -113,13 +113,6 @@ module Async =
         Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
 
 #if NET40
-    open System.Threading.Tasks
-
-    let inline toTaskWithOptions (creationOptions: TaskCreationOptions) x = 
-        let abegin, aend, acancel = Async.AsBeginEnd (fun () -> x)
-        Task.Factory.FromAsync<_>((fun a b -> abegin((), a, b)), aend, null, creationOptions)
-
-    let inline toTask x = toTaskWithOptions TaskCreationOptions.None x
 
 module Task =
     open System.Threading
