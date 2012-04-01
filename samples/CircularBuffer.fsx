@@ -8,9 +8,9 @@
 
 #r "System.dll"
 #r @"..\build\FSharpx.Core.dll"
-#r @"..\build\FSharpx.Async.dll"
 
 open System
+open System.Diagnostics
 open FSharp.Control
 open FSharp.IO
 open FSharpx
