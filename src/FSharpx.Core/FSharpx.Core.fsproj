@@ -35,7 +35,6 @@
   </PropertyGroup>
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
-    <None Include="packages.config" />
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Prelude.fs" />
     <Compile Include="Strings.fs" />
@@ -48,7 +47,7 @@
     <Compile Include="Regex.fs" />
     <Compile Include="TimeMeasurement.fs" />
     <Compile Include="Stm.fs" />
-	<Compile Include="Agents\Agent.fs" />
+    <Compile Include="Agents\Agent.fs" />
     <Compile Include="Agents\AutoCancelAgent.fs" />
     <Compile Include="Agents\BatchProcessingAgent.fs" />
     <Compile Include="Agents\BlockingQueueAgent.fs" />
@@ -58,7 +57,8 @@
     <Compile Include="Async.fs" />
     <Compile Include="Observable.fs" />
     <Compile Include="AsyncSeq.fs" />
-    <Compile Include="Async.IO.fs" />	
+    <Compile Include="Async.IO.fs" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
@@ -70,32 +70,28 @@
     <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' == 'v4.5'">
       <HintPath>..\..\lib\FSharp\Net45\FSharp.Core.dll</HintPath>
     </Reference>
-    <Reference Include="FSharp.PowerPack" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
-      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="FSharp.PowerPack.Linq" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
-      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.Linq.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="FSharp.PowerPack.Metadata" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
-      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.Metadata.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="FSharp.PowerPack.Parallel.Seq" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
-      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.Parallel.Seq.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="FSharp.PowerPack" Condition="$(TargetFrameworkVersion) == 'v3.5'">
       <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net20\FSharp.PowerPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharp.PowerPack, Version=2.0.0.0, Culture=neutral, PublicKeyToken=a19089b1c74d0809">
       <Private>True</Private>
     </Reference>
     <Reference Include="FSharp.PowerPack.Linq" Condition="$(TargetFrameworkVersion) == 'v3.5'">
       <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net20\FSharp.PowerPack.Linq.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="FSharp.PowerPack.Linq, Version=2.0.0.0, Culture=neutral, PublicKeyToken=a19089b1c74d0809">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="FSharp.PowerPack.Metadata" Condition="$(TargetFrameworkVersion) == 'v3.5'">
       <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net20\FSharp.PowerPack.Metadata.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharp.PowerPack.Metadata, Version=2.0.0.0, Culture=neutral, PublicKeyToken=a19089b1c74d0809">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharp.PowerPack.Parallel.Seq, Version=2.0.0.0, Culture=neutral, PublicKeyToken=a19089b1c74d0809">
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
