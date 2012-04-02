@@ -143,12 +143,7 @@ It currently implements type safe variants of:
 Building the project
 -----------------------
 
-Due to missing fsc.exe and fsi.exe there is no automated build for the type providers project at the moment.
-The nuget package is created by the following steps:
-
-* Fix the version no. at the top of build.fsx
-* Run build.v4.5.bat
-* Upload the package from nuget/TypeProviders manually to nuget.org.
+Read the wiki page about [Build](https://github.com/fsharp/fsharpx/wiki/Build)
 
   [1]: http://fssnip.net/64
   [2]: http://manning.com/petricek
