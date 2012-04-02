@@ -59,7 +59,7 @@ let frameworkParams frameworkVersion = ["TargetFrameworkVersion", frameworkVersi
 let fakeVersion = GetPackageVersion packagesDir "FAKE"
 let fakePath = sprintf "%sFAKE.%s/tools" packagesDir fakeVersion
 let nugetPath = "./lib/Nuget/nuget.exe"
-let nunitVersion = GetPackageVersion packagesDir "NUnit"
+let nunitVersion = GetPackageVersion packagesDir "NUnit.Runners"
 let nunitPath = sprintf "%sNUnit.%s/Tools" packagesDir nunitVersion
 
 // files
