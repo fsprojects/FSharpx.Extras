@@ -16,6 +16,7 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.Core", "src\FSharpx
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{EFB3F0C2-10B4-4EF5-8FA7-CC39880067A1}"
 	ProjectSection(SolutionItems) = preProject
+		samples\AsyncExtensions.fsx = samples\AsyncExtensions.fsx
 		samples\AsyncSeqObservable.fsx = samples\AsyncSeqObservable.fsx
 		samples\AutoCancel.fsx = samples\AutoCancel.fsx
 		samples\BatchProcessing.fsx = samples\BatchProcessing.fsx
