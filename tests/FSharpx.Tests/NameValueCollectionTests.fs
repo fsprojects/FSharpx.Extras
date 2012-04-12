@@ -24,6 +24,20 @@ let toSeq() =
   Assert.AreEqual(r,s)
 
 [<Test>]
+let toArray() =
+  let r = [|"1","uno"; "1","one"; "2","two"|]
+  let a = NameValueCollection.fromSeq r
+  let s = NameValueCollection.toArray a
+  Assert.AreEqual(r,s)
+  
+[<Test>]
+let toList() =
+  let r = ["1","uno"; "1","one"; "2","two"]
+  let a = NameValueCollection.fromSeq r
+  let s = NameValueCollection.toList a
+  Assert.AreEqual(r,s)
+
+[<Test>]
 let concat() =
   let a = NameValueCollection()
   a.Add("1", "uno")
