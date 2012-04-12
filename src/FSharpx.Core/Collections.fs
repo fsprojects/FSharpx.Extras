@@ -583,6 +583,17 @@ module NameValueCollection =
         r
 
     /// <summary>
+    /// Returns a <see cref="NameValueCollection"/> as an array of key-value pairs.
+    /// Note that keys may be duplicated.
+    /// </summary>
+    /// <param name="a"></param>
+    [<Extension>]
+    [<CompiledName("ToArray")>]
+    let toArray (a: NameValueCollection) =
+        a.AllKeys
+        |> Array.collect (fun k -> a.GetValues k |> Array.map (fun v -> k,v))
+
+    /// <summary>
     /// Returns a <see cref="NameValueCollection"/> as a sequence of key-value pairs.
     /// Note that keys may be duplicated.
     /// </summary>
