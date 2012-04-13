@@ -46,19 +46,17 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DListTest.fs" />
+    <Compile Include="ImplicitQueueTest.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\FSharpx.Core\FSharpx.Core.fsproj">
       <Name>FSharpx.Core</Name>
       <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\FSharpx.DataStructures\FSharpx.DataStructures.fsproj">
-      <Name>FSharpx.DataStructures</Name>
-      <Project>{f783ce24-5051-4efc-8069-881ce9b061de}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\FSharpx.Tests\FSharpx.Tests.fsproj">

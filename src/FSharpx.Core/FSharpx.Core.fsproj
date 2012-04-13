@@ -42,6 +42,7 @@
     <Compile Include="IO.fs" />
     <Compile Include="Collections.fs" />
     <Compile Include="DataStructures\DList.fs" />
+    <Compile Include="DataStructures\ImplicitQueue.fs" />
     <Compile Include="Monad.fs" />
     <Compile Include="Iteratee.fs" />
     <Compile Include="Lens.fs" />
@@ -49,7 +50,7 @@
     <Compile Include="Regex.fs" />
     <Compile Include="TimeMeasurement.fs" />
     <Compile Include="Stm.fs" />
-	<Compile Include="Agents\Agent.fs" />
+    <Compile Include="Agents\Agent.fs" />
     <Compile Include="Agents\AutoCancelAgent.fs" />
     <Compile Include="Agents\BatchProcessingAgent.fs" />
     <Compile Include="Agents\BlockingQueueAgent.fs" />
@@ -59,7 +60,7 @@
     <Compile Include="Async.fs" />
     <Compile Include="Observable.fs" />
     <Compile Include="AsyncSeq.fs" />
-    <Compile Include="Async.IO.fs" />	
+    <Compile Include="Async.IO.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
