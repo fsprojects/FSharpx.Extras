@@ -44,6 +44,34 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\NUnit.2.6.0.12054\lib\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="FSharp.PowerPack" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
+      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharp.PowerPack.Linq" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
+      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.Linq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharp.PowerPack.Metadata" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
+      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.Metadata.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharp.PowerPack.Parallel.Seq" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
+      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.Parallel.Seq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharp.PowerPack" Condition="$(TargetFrameworkVersion) == 'v3.5'">
+      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net20\FSharp.PowerPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharp.PowerPack.Linq" Condition="$(TargetFrameworkVersion) == 'v3.5'">
+      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net20\FSharp.PowerPack.Linq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharp.PowerPack.Metadata" Condition="$(TargetFrameworkVersion) == 'v3.5'">
+      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net20\FSharp.PowerPack.Metadata.dll</HintPath>
+      <Private>True</Private>
+    </Reference>	
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -52,6 +80,7 @@
   <ItemGroup>
     <Compile Include="DListTest.fs" />
     <Compile Include="ImplicitQueueTest.fs" />
+	<Compile Include="RealTimeQueueTest.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\FSharpx.Core\FSharpx.Core.fsproj">
