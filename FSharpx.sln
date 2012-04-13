@@ -49,6 +49,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "UndoSample", "samples\UndoS
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "DiningPhilosophers", "samples\DiningPhilosophers\DiningPhilosophers.fsproj", "{330FD61A-B9FE-4AA7-9595-F7BDAB3DDC44}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.DataStructures.Tests", "tests\FSharpx.DataStructures.Tests\FSharpx.DataStructures.Tests.fsproj", "{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -177,6 +179,16 @@ Global
 		{60F3BB81-5449-45DD-A217-B6045327680C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{60F3BB81-5449-45DD-A217-B6045327680C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{60F3BB81-5449-45DD-A217-B6045327680C}.Release|x86.ActiveCfg = Release|Any CPU
+		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.Release|x86.ActiveCfg = Release|Any CPU
 		{EC2F35C2-6DC7-437B-9BD1-44DC1B6F7136}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{EC2F35C2-6DC7-437B-9BD1-44DC1B6F7136}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{EC2F35C2-6DC7-437B-9BD1-44DC1B6F7136}.Debug|Mixed Platforms.Build.0 = Debug|x86
