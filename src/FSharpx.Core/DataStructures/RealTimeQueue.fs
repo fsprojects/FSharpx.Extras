@@ -5,39 +5,40 @@ namespace FSharpx.DataStructures
 open FSharpx
 
 module RealTimeQueue =
-    type t<'a> = LazyList<'a> * Lazy<list<'a>> * LazyList<'a>
+    type RealTimeQueue<'a> = {
+        F: LazyList<'a> 
+        R: Lazy<list<'a>>
+        S: LazyList<'a> }
 
-    let empty<'a> : t<'a> = LazyList.empty, lazy [], LazyList.empty
+    let empty<'a> : RealTimeQueue<'a> = { F = LazyList.empty; R = lazy []; S = LazyList.empty }
 
-    let isEmpty (x, _, _) = LazyList.isEmpty x
+    let isEmpty queue = LazyList.isEmpty queue.F
 
-    let rec rotate (a, x, b) =
-        match a with
-        | LazyList.Nil -> LazyList.cons (Lazy.force x |> List.head) b
+    let rec rotate queue =
+        match queue.F with
+        | LazyList.Nil -> LazyList.cons (Lazy.force queue.R |> List.head) queue.S
         | LazyList.Cons (hd, tl) ->
-            let x = Lazy.force x
+            let x = Lazy.force queue.R
             let y = List.head x
             let ys = List.tail x
-            let right = LazyList.cons y b
-            LazyList.cons hd (rotate (tl, lazy ys, right))
+            let right = LazyList.cons y queue.S
+            LazyList.cons hd (rotate { F = tl; R = lazy ys; S = right })
 
-    let rec exec (f, r, right) =
-        match right with
+    let rec exec queue =
+        match queue.S with
         | LazyList.Nil ->
-            let f' = rotate (f, r, LazyList.empty)
-            f', lazy [], f'
-        | LazyList.Cons (hd, tl) -> f, r, tl
+            let f' = rotate {queue with S = LazyList.empty}
+            { F = f'; R = lazy []; S = f' }
+        | LazyList.Cons (hd, tl) -> {queue with S = tl}
 
-    let singleton x = LazyList.empty, lazy [x], LazyList.empty
+    let snoc x queue = exec {queue with R = lazy (x::Lazy.force queue.R) }
 
-    let snoc x (f, r, s) = exec (f, lazy (x::Lazy.force r), s)
-
-    let head ((a, x, b):t<'a>) =
-        match a with
+    let head queue=
+        match queue.F with
         | LazyList.Nil -> raise Exceptions.Empty
         | LazyList.Cons (hd, tl) -> hd
 
-    let tail ((a, x, b):t<'a>) =
-        match a with
+    let tail queue =
+        match queue.F with
         | LazyList.Nil -> raise Exceptions.Empty
-        | LazyList.Cons (hd, tl) -> exec (tl, x, b)
+        | LazyList.Cons (hd, tl) -> exec {queue with F = tl }
