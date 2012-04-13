@@ -33,6 +33,13 @@ type ImplicitQueue<'a> with
         | Deep(Two(x, y), m, r) -> x
         | _ -> failwith "should not get there"
 
+    static member tryGetHead : ImplicitQueue<'a> -> 'a option = function
+        | Shallow Zero -> None
+        | Shallow (One x) -> Some x
+        | Deep(One x, m, r) -> Some x
+        | Deep(Two(x, y), m, r) -> Some x
+        | _ -> failwith "should not get there"
+
     static member tail : ImplicitQueue<'a> -> ImplicitQueue<'a> = function
         | Shallow Zero -> raise Exceptions.Empty
         | Shallow (One x) -> empty
@@ -44,6 +51,19 @@ type ImplicitQueue<'a> with
             Deep(Two(y, z), lazy ImplicitQueue.tail q', r)
         | _ -> failwith "should not get there"
 
+    static member tryGetTail : ImplicitQueue<'a> -> ImplicitQueue<'a> option = function
+        | Shallow Zero -> None
+        | Shallow (One x) -> Some empty
+        | Deep(Two(x, y), m, r) -> Some(Deep(One y, m, r))
+        | Deep(One x, q, r) ->
+            let q' = Lazy.force q
+            if isEmpty q' then Some(Shallow r) else
+            let y, z = ImplicitQueue.head q'
+            Some(Deep(Two(y, z), lazy ImplicitQueue.tail q', r))
+        | _ -> failwith "should not get there"
+
 let inline snoc x queue = ImplicitQueue.snoc x queue
 let inline head queue = ImplicitQueue<'a>.head queue
+let inline tryGetHead queue = ImplicitQueue<'a>.tryGetHead queue
 let inline tail queue = ImplicitQueue<'a>.tail queue
+let inline tryGetTail queue = ImplicitQueue<'a>.tryGetTail queue

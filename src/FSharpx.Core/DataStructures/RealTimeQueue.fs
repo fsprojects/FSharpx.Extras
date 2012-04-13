@@ -32,12 +32,22 @@ let rec exec queue =
 
 let snoc x queue = exec {queue with R = lazy (x::Lazy.force queue.R) }
 
-let head queue=
+let head queue =
     match queue.F with
     | LazyList.Nil -> raise Exceptions.Empty
     | LazyList.Cons (hd, tl) -> hd
+
+let tryGetHead queue = 
+    match queue.F with
+    | LazyList.Nil -> None
+    | LazyList.Cons (hd, tl) -> Some hd
 
 let tail queue =
     match queue.F with
     | LazyList.Nil -> raise Exceptions.Empty
     | LazyList.Cons (hd, tl) -> exec {queue with F = tl }
+
+let tryGetTail queue = 
+    match queue.F with
+    | LazyList.Nil -> None
+    | LazyList.Cons (hd, tl) -> Some(exec {queue with F = tl })
