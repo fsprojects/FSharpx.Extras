@@ -48,6 +48,6 @@ module ImplicitQueue =
                 Deep(Two(y, z), lazy ImplicitQueue.tail q', r)
             | _ -> failwith "should not get there"
 
-    let snoc x q = ImplicitQueue.snoc x q
-    let head q = ImplicitQueue.head q
-    let tail q = ImplicitQueue.tail q
+    let snoc = ImplicitQueue.snoc
+    let head<'a> = ImplicitQueue<'a>.head
+    let tail<'a> = ImplicitQueue<'a>.tail
