@@ -118,6 +118,27 @@ module Task =
     open System.Threading
     open System.Threading.Tasks
 
+    /// Task result
+    type 'a Result = 
+    /// Task was canceled
+    | Canceled
+    /// Unhandled exception in task
+    | Error of exn 
+    /// Task completed successfully
+    | Successful of 'a
+
+    let run (t: unit -> Task<_>) = 
+        try
+            let task = t()
+            task.Result |> Result.Successful
+        with 
+        | :? OperationCanceledException -> Result.Canceled
+        | :? AggregateException as e ->
+            match e.InnerException with
+            | :? TaskCanceledException -> Result.Canceled
+            | _ -> Result.Error e
+        | e -> Result.Error e
+
     let toAsync (t: Task<'a>): Async<'a> =
         let abegin (cb: AsyncCallback, state: obj) : IAsyncResult = 
             match cb with
@@ -177,12 +198,14 @@ module Task =
     /// Sequence actions, discarding the value of the second argument.
     let inline ( <*) a b = lift2 (fun z _ -> z) a b
     
-    type TaskBuilder(?continuationOptions: TaskContinuationOptions, ?scheduler: TaskScheduler) =
+    type TaskBuilder(?continuationOptions, ?scheduler, ?cancellationToken) =
         let contOptions = defaultArg continuationOptions TaskContinuationOptions.None
         let scheduler = defaultArg scheduler TaskScheduler.Default
+        let cancellationToken = defaultArg cancellationToken CancellationToken.None
         member this.Return x = returnM x
+        member this.Zero() = returnM ()
         member this.ReturnFrom (a: 'a Task) = a
-        member this.Bind(m, f) = bindWithOptions CancellationToken.None contOptions scheduler f m
+        member this.Bind(m, f) = bindWithOptions cancellationToken contOptions scheduler f m
         member this.Combine(comp1, comp2) = 
             this.Bind(comp1, fun () -> comp2)
         member this.TryFinally(m, compensation) =
