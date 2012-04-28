@@ -91,4 +91,10 @@ let ``canceled task 2``() =
     | Task.Error e -> Assert.Fail("Task should have been canceled, but errored with exception {0}", e)
     | Task.Successful a -> Assert.Fail("Task should have been canceled, but succeeded with result {0}", a)
 
+open FsCheck.NUnit
+
+[<Test>]
+let ``run delay law``() =
+    fsCheck "run delay law" (fun a -> (task.Run << task.Delay << konst) a = a)
+
 #endif
