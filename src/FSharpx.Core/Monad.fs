@@ -206,14 +206,15 @@ module Task =
         member this.Zero() = returnM ()
         member this.ReturnFrom (a: 'a Task) = a
         member this.Bind(m, f) = bindWithOptions cancellationToken contOptions scheduler f m
-        member this.Combine(comp1, comp2) = 
-            this.Bind(comp1, fun () -> comp2)
+        member this.Combine(comp1, comp2) =
+            this.Bind(comp1, comp2)
         member this.TryFinally(m, compensation) =
             try this.ReturnFrom m
             finally compensation()
         member this.Using(res:#IDisposable, body) =
             this.TryFinally(body res, fun () -> match res with null -> () | disp -> disp.Dispose())
         member this.Delay f = f
+        member this.Run f = f()
 
 #endif
 

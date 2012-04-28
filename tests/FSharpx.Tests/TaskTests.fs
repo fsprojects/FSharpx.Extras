@@ -25,11 +25,14 @@ let filename = @"..\..\table.csv"
 [<Test>]
 let loadprices() =
     let started = ref false
-    let processTask =
+    let dummy = ref false
+    let processTask() =
         task {
             started := true
             use! reader = File.OpenTextAsync filename
             let! csv = reader.ReadToEndAsync()
+            if !started 
+                then dummy := true
             let prices =
                 csv.Split([|'\n'|])
                 |> Seq.skip 1
@@ -42,15 +45,16 @@ let loadprices() =
                 |> Seq.toList
             return prices
         }
-    Assert.False(!started)
+    Assert.False !started
     let t,p = processTask().Result.[0]
+    Assert.True !dummy
     Assert.AreEqual(DateTime(2008,10,30), t)
     Assert.AreEqual(20.82m, p)
-    Assert.True(!started)
+    Assert.True !started
 
 [<Test>]
 let ``exception in task``() =
-    let t = 
+    let t() = 
         task {
             failwith "error"
         }
@@ -62,7 +66,7 @@ let ``exception in task``() =
 let ``canceled task``() =
     use cts = new CancellationTokenSource()
     let task = Task.TaskBuilder(cancellationToken = cts.Token)
-    let t = 
+    let t() = 
         task {
             cts.Token.ThrowIfCancellationRequested()
         }
@@ -76,7 +80,7 @@ let ``canceled task``() =
 let ``canceled task 2``() =
     use cts = new CancellationTokenSource()
     let task = Task.TaskBuilder(cancellationToken = cts.Token)
-    let t = 
+    let t() = 
         task {
             use! reader = File.OpenTextAsync filename // just something to do a bind
             return ()
