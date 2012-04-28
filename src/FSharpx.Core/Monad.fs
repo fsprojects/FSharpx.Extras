@@ -208,13 +208,19 @@ module Task =
         member this.Bind(m, f) = bindWithOptions cancellationToken contOptions scheduler f m
         member this.Combine(comp1, comp2) =
             this.Bind(comp1, comp2)
+        member this.While(guard, m) =
+            if not(guard()) then this.Zero() else
+                this.Bind(m(), fun () -> this.While(guard, m))
         member this.TryFinally(m, compensation) =
             try this.ReturnFrom m
             finally compensation()
-        member this.Using(res:#IDisposable, body) =
+        member this.Using(res: #IDisposable, body: #IDisposable -> _ Task) =
             this.TryFinally(body res, fun () -> match res with null -> () | disp -> disp.Dispose())
-        member this.Delay f = f
-        member this.Run f = f()
+        member this.For(sequence: seq<_>, body) =
+            this.Using(sequence.GetEnumerator(),
+                                 fun enum -> this.While(enum.MoveNext, fun () -> body enum.Current))
+        member this.Delay (f: unit -> 'a Task) = f
+        member this.Run (f: unit -> 'a Task) = f()
 
 #endif
 

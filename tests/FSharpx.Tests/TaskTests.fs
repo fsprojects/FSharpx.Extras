@@ -91,6 +91,18 @@ let ``canceled task 2``() =
     | Task.Error e -> Assert.Fail("Task should have been canceled, but errored with exception {0}", e)
     | Task.Successful a -> Assert.Fail("Task should have been canceled, but succeeded with result {0}", a)
 
+[<Test>]
+let ``while``() = 
+    let i = ref 10
+    let t() =
+        task {
+            while !i > 0 do
+                decr i
+                do! Task.Factory.StartNew ignore
+        }
+    Task.run t |> ignore
+    Assert.AreEqual(0, !i)
+
 open FsCheck.NUnit
 
 [<Test>]
