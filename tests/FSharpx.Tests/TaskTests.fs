@@ -82,7 +82,7 @@ let ``canceled task 2``() =
     let task = Task.TaskBuilder(cancellationToken = cts.Token)
     let t() = 
         task {
-            use! reader = File.OpenTextAsync filename // just something to do a bind
+            let! v = Task.Factory.StartNew(fun () -> 0)
             return ()
         }
     cts.Cancel()
