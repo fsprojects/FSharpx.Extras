@@ -140,18 +140,21 @@ module Option =
         member this.Return(x) = Some x
         member this.ReturnFrom(m: 'a option) = m
         member this.Bind(m, f) = Option.bind f m
-        member this.Zero() = None
-        member this.Combine(comp1, comp2) = this.Bind(comp1, fun () -> comp2)
-        member this.Delay(f) = this.Bind(this.Return(), f)
-        member this.TryWith(m, h) = this.ReturnFrom(m)
+        member this.Zero() = Some()
+        member this.Combine(m, f: unit -> _) = Option.bind f m
+        member this.Delay(f: unit -> _) = f
+        member this.Run(f) = f()
+        member this.TryWith(m, h) =
+            try this.ReturnFrom(m)
+            with e -> h e
         member this.TryFinally(m, compensation) =
             try this.ReturnFrom(m)
             finally compensation()
         member this.Using(res:#IDisposable, body) =
             this.TryFinally(body res, fun () -> match res with null -> () | disp -> disp.Dispose())
-        member this.While(guard, m) =
-            if not(guard()) then this.Zero() else
-                this.Bind(m, fun () -> this.While(guard, m))
+        member this.While(guard, f) =
+            if not (guard()) then this.Zero() else
+            this.Bind(f(), fun _ -> this.While(guard, f))
         member this.For(sequence:seq<_>, body) =
             this.Using(sequence.GetEnumerator(),
                                  fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current)))
