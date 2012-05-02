@@ -75,3 +75,17 @@ let ``Can detect that vectors are not equal``() =
     let v2 = Vector2D(1.,-5.)
 
     v1.Equals(v2) |> should equal false
+
+[<Test>] 
+let ``Can use = on equal vectors``() = 
+    let v1 = Vector2D(1.,-5.4)
+    let v2 = Vector2D(1.,-5.4)
+
+    v1 = v2 |> should equal true
+
+[<Test>]
+let ``Can use = on vectors that are not equal``() = 
+    let v1 = Vector2D(1.,-5.4)
+    let v2 = Vector2D(1.,-5.)
+
+    v1 = v2 |> should equal false
