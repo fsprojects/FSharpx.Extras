@@ -58,6 +58,7 @@
     <Compile Include="AppSettingsProvider.fs" />
     <Compile Include="XamlProvider.fs" />
     <Compile Include="ExcelProvider.fs" />
+    <Compile Include="VectorProvider.fs" />
     <Compile Include="NamespaceProvider.fs" />
   </ItemGroup>
   <ItemGroup>
