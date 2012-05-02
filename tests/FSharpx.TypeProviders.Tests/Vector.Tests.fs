@@ -54,3 +54,10 @@ let ``Can calc the typed difference for the 2D vector``() =
 
     sum.X |> should equal -3.
     sum.Y |> should equal -2.8
+
+[<Test>] 
+let ``Can scale the 2D vector``() =      
+    let v = Vector2D(1.,-5.).Scale(1.1)
+
+    v.X |> should equal 1.1
+    v.Y |> should equal -5.5

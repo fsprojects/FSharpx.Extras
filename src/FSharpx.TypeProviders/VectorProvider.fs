@@ -12,6 +12,7 @@ open FSharpx.TypeProviders.DSL
 
 let dotProduct = Array.fold2 (fun acc x y -> acc + x * y) 0.
 let add = Array.map2 (fun x y -> x + y)
+let scale a factor = Array.map (fun x -> factor * x) a
 let subtract = Array.map2 (fun x y -> x - y)
     
 let vectorTy =
@@ -45,6 +46,12 @@ let vectorTy =
                             typeof<float>
                             (fun args -> <@@ dotProduct (%%args.[0]:float array) (%%args.[1]:float array) @@>)
                            |> addXmlDoc "Calculates the dot product with the given factor.")
+                    |+!> (provideMethod
+                            "Scale"
+                            ["factor", typeof<float>]
+                            newType
+                            (fun args -> <@@ scale (%%args.[0]:float array) (%%args.[1]:float) @@>)
+                           |> addXmlDoc "Calculates the scalar multiplication with the given factor.")
                     |+!> (provideMethod
                             "Add"
                             ["summand", newType]
