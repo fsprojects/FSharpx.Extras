@@ -14,6 +14,7 @@ let dotProduct = Array.fold2 (fun acc x y -> acc + x * y) 0.
 let add = Array.map2 (fun x y -> x + y)
 let scale a factor = Array.map (fun x -> factor * x) a
 let subtract = Array.map2 (fun x y -> x - y)
+let equals x y = Array.fold2 (fun acc x y -> acc && x = y) true x y
     
 let vectorTy =
     let missingValue = "@@@missingValue###"
@@ -64,6 +65,12 @@ let vectorTy =
                             newType
                             (fun args -> <@@ subtract (%%args.[0]:float array) (%%args.[1]:float array) @@>)
                            |> addXmlDoc "Calculates the difference with the given subtrahend.")
+                    |+!> (provideMethod
+                            "Equals"
+                            ["other", newType]
+                            typeof<bool>
+                            (fun args -> <@@ equals (%%args.[0]:float array) (%%args.[1]:float array) @@>)
+                           |> addXmlDoc "Returns wether the given objects are equal.")
                     |++!> (parameters
                             |> Seq.mapi (fun i name ->
                                     provideProperty 

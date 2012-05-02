@@ -56,8 +56,22 @@ let ``Can calc the typed difference for the 2D vector``() =
     sum.Y |> should equal -2.8
 
 [<Test>] 
-let ``Can scale the 2D vector``() =      
+let ``Can scale the 2D vector``() = 
     let v = Vector2D(1.,-5.).Scale(1.1)
 
     v.X |> should equal 1.1
     v.Y |> should equal -5.5
+
+[<Test>] 
+let ``Can detect that vectors are equals``() = 
+    let v1 = Vector2D(1.,-5.4)
+    let v2 = Vector2D(1.,-5.4)
+
+    v1.Equals(v2) |> should equal true
+
+[<Test>] 
+let ``Can detect that vectors are not equal``() = 
+    let v1 = Vector2D(1.,-5.4)
+    let v2 = Vector2D(1.,-5.)
+
+    v1.Equals(v2) |> should equal false
