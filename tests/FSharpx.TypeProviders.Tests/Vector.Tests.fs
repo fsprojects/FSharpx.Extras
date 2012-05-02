@@ -23,15 +23,25 @@ let ``Can get the typed vector axis from the 3D vector``() =
     v.C |> should equal 3.1
 
 [<Test>] 
-let ``Can call the typed dot product for the 2D vector``() =      
+let ``Can calc the typed dot product for the 2D vector``() =      
     let v1 = Vector2D(1.,2.)
     let v2 = Vector2D(12.,6.)    
  
     v1.DotProduct(v2) |> should equal 24.
 
 [<Test>] 
-let ``Can call the typed dot product for the 3D vector``() =      
+let ``Can calc the typed dot product for the 3D vector``() =      
     let v1 = Vector3D(1.,3.,-5.)
     let v2 = Vector3D(4.,-2.,-1.)    
  
     v1.DotProduct(v2) |> should equal 3.
+
+[<Test>] 
+let ``Can calc the typed sum for the 3D vector``() =      
+    let v1 = Vector3D(1.,3.,-5.)
+    let v2 = Vector3D(4.,-2.,-1.)    
+    let sum = v1.Add(v2)
+
+    sum.A |> should equal 5.
+    sum.B |> should equal 1.
+    sum.C |> should equal -6.
