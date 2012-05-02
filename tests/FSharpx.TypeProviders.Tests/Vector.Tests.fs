@@ -78,14 +78,20 @@ let ``Can detect that vectors are not equal``() =
 
 [<Test>] 
 let ``Can use = on equal vectors``() = 
-    let v1 = Vector2D(1.,-5.4)
-    let v2 = Vector2D(1.,-5.4)
-
-    v1 = v2 |> should equal true
+    Vector2D(1.,-5.4) = Vector2D(1.,-5.4) 
+      |> should equal true
 
 [<Test>]
 let ``Can use = on vectors that are not equal``() = 
-    let v1 = Vector2D(1.,-5.4)
-    let v2 = Vector2D(1.,-5.)
+    Vector2D(1.,-5.4) = Vector2D(1.,-5.) 
+      |> should equal false
 
-    v1 = v2 |> should equal false
+[<Test>] 
+let ``Can use <> on equal vectors``() = 
+    Vector2D(1.,-5.4) <> Vector2D(1.,-5.4) 
+      |> should equal false
+
+[<Test>]
+let ``Can use <> on vectors that are not equal``() = 
+    Vector2D(1.,-5.4) <> Vector2D(1.,-5.) 
+      |> should equal true
