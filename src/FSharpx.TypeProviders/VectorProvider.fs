@@ -12,6 +12,7 @@ open FSharpx.TypeProviders.DSL
 
 let dotProduct = Array.fold2 (fun acc x y -> acc + x * y) 0.
 let add = Array.map2 (fun x y -> x + y)
+let subtract = Array.map2 (fun x y -> x - y)
     
 let vectorTy =
     let missingValue = "@@@missingValue###"
@@ -50,6 +51,12 @@ let vectorTy =
                             newType
                             (fun args -> <@@ add (%%args.[0]:float array) (%%args.[1]:float array) @@>)
                            |> addXmlDoc "Calculates the sum with the given summand.")
+                    |+!> (provideMethod
+                            "Subtract"
+                            ["subtrahend", newType]
+                            newType
+                            (fun args -> <@@ subtract (%%args.[0]:float array) (%%args.[1]:float array) @@>)
+                           |> addXmlDoc "Calculates the difference with the given subtrahend.")
                     |++!> (parameters
                             |> Seq.mapi (fun i name ->
                                     provideProperty 

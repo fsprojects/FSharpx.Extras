@@ -39,9 +39,18 @@ let ``Can calc the typed dot product for the 3D vector``() =
 [<Test>] 
 let ``Can calc the typed sum for the 3D vector``() =      
     let v1 = Vector3D(1.,3.,-5.)
-    let v2 = Vector3D(4.,-2.,-1.)    
+    let v2 = Vector3D(4.,-2.,-1.)
     let sum = v1.Add(v2)
 
     sum.A |> should equal 5.
     sum.B |> should equal 1.
     sum.C |> should equal -6.
+
+[<Test>] 
+let ``Can calc the typed difference for the 2D vector``() =      
+    let v1 = Vector2D(1.,-5.)
+    let v2 = Vector2D(4.,-2.2)
+    let sum = v1.Subtract(v2)
+
+    sum.X |> should equal -3.
+    sum.Y |> should equal -2.8
