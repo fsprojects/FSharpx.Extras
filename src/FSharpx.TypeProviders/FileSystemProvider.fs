@@ -30,7 +30,7 @@ let rec annotateAsFileSystemInfo (fileSystemInfo:FileSystemInfo) (ownerTy:Provid
     | exn -> ownerTy
 
 let typedFileSystem =
-    erasedType<obj> thisAssembly rootNamespace "FileSystemTyped"
+    erasedType<obj> thisAssembly rootNamespace "FileSystem"
       |> staticParameter "path" (fun typeName path -> 
             annotateAsFileSystemInfo 
               (new DirectoryInfo(path))

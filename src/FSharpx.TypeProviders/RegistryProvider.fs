@@ -53,5 +53,5 @@ let subNodes =
        |> Seq.map (fun key -> key,key.Name)
 
 let typedRegistry =
-    erasedType<obj> thisAssembly rootNamespace "RegistryTyped"
+    erasedType<obj> thisAssembly rootNamespace "Registry"
       |++> (Seq.map createRegistryNode subNodes)

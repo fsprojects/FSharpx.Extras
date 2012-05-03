@@ -4,7 +4,7 @@ open NUnit.Framework
 open FSharpx
 open FsUnit
 
-type Settings = AppSettingsTyped<"Test.App.config">
+type Settings = AppSettings<"Test.App.config">
 
 [<Test>] 
 let ``Can return a string from the config file``() =   
@@ -12,7 +12,7 @@ let ``Can return a string from the config file``() =
     Settings.Test2 |> should equal "Some Test Value 5"
 
 [<Test>] 
-let ``Can return an integer from the config file``() =      
+let ``Can return an integer from the config file``() =
     Settings.TestInt.GetType() |> should equal typeof<int>
     Settings.TestInt |> should equal 102
 

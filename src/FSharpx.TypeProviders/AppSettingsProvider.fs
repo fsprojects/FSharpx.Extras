@@ -40,7 +40,7 @@ let addTypedAppSettings (cfg:TypeProviderConfig) (configFileName:string) (tyDef:
     | exn -> tyDef
     
 let typedAppSettings (cfg:TypeProviderConfig) =
-    erasedType<obj> thisAssembly rootNamespace "AppSettingsTyped"
+    erasedType<obj> thisAssembly rootNamespace "AppSettings"
       |> staticParameter "configFileName" (fun typeName configFileName -> 
             erasedType<obj> thisAssembly rootNamespace typeName
                 |> addTypedAppSettings cfg configFileName )

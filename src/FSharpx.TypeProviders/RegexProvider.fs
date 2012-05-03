@@ -10,7 +10,7 @@ open FSharpx.TypeProviders.Settings
 open FSharpx.TypeProviders.DSL
 
 let regexTy = 
-    erasedType<Regex> thisAssembly rootNamespace "RegexTyped"
+    erasedType<Regex> thisAssembly rootNamespace "Regex"
     |> staticParameters
         ["pattern", typeof<string>, None]
         (fun typeName parameterValues ->
