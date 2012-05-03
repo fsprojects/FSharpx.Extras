@@ -4,43 +4,37 @@ open NUnit.Framework
 open FSharpx
 open FsUnit
 
-type T = XAML<"StackPanel.xaml">
+type StackPanel = XAML<"StackPanel.xaml">
 
 [<Test>][<RequiresSTA>]
 let ``Can access the grid``() =      
-   let window = T()
-   window.MainGrid.Name |> should equal "MainGrid"
+   StackPanel().MainGrid.Name |> should equal "MainGrid"
 
 [<Test>][<RequiresSTA>]
 let ``Can access the stackpanel``() =      
-   let window = T()
-   window.StackPanel1.Name |> should equal "StackPanel1"
+   StackPanel().StackPanel1.Name |> should equal "StackPanel1"
 
 [<Test>][<RequiresSTA>]
 let ``Can access the stackpanel from cache``() =      
-   let window = T()
+   let window = StackPanel()
    window.StackPanel1.Name |> should equal "StackPanel1"
    window.StackPanel1.Name |> should equal "StackPanel1" // this goes through the cache
 
 [<Test>][<RequiresSTA>]
 let ``Can access the first button``() =      
-   let window = T()
-   window.Button1.Name |> should equal "Button1"
+   StackPanel().Button1.Name |> should equal "Button1"
 
 [<Test>][<RequiresSTA>]
 let ``The window should have the right type``() =
-   let window = T()
-   window.Root.GetType() |> should equal typeof<System.Windows.Window>
+   StackPanel().Root.GetType() |> should equal typeof<System.Windows.Window>
 
 [<Test>][<RequiresSTA>]
 let ``The grid should have the right type``() =
-   let window = T()
-   window.MainGrid.GetType() |> should equal typeof<System.Windows.Controls.Grid>
+   StackPanel().MainGrid.GetType() |> should equal typeof<System.Windows.Controls.Grid>
 
 [<Test>][<RequiresSTA>]
 let ``The button should have the right type``() =
-   let window = T()
-   window.Button2.GetType() |> should equal typeof<System.Windows.Controls.Button>
+   StackPanel().Button2.GetType() |> should equal typeof<System.Windows.Controls.Button>
 
 type NamedRoot = XAML<"NamedRoot.xaml">
 
@@ -56,6 +50,7 @@ type Inlined =
                Title="MainWindow" Height="350" Width="525" Name="MainWindow" >
                 <Button Name="Button1">First Button</Button>
            </Window>""">
+
 [<Test>][<RequiresSTA>]
 let ``It should parse inlined xaml``() =
    let window = Inlined()
@@ -73,6 +68,7 @@ type UnnamedControls =
                     </StackPanel>
                 </Grid>
             </Window>""">
+
 [<Test>][<RequiresSTA>]
 let ``It should allow to skip unnamed controls in xaml``() =
    let window = UnnamedControls()

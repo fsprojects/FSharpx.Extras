@@ -4,8 +4,7 @@ open NUnit.Framework
 open FSharpx
 open FsUnit
 
-
-type BookTest = FSharpx.ExcelFile<"BookTest.xls", "Sheet1", true>
+type BookTest = ExcelFile<"BookTest.xls", "Sheet1", true>
 
 let file = BookTest()
 let row1 = file.Data |> Seq.head 
