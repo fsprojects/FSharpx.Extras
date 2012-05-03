@@ -15,7 +15,7 @@ let add = Array.map2 (fun x y -> x + y)
 let scale a factor = Array.map (fun x -> factor * x) a
 let subtract = Array.map2 (fun x y -> x - y)
 let equals x y = Array.fold2 (fun acc x y -> acc && x = y) true x y
-    
+   
 let vectorTy =
     let missingValue = "@@@missingValue###"
     erasedType<obj> thisAssembly rootNamespace "Vector"
@@ -30,16 +30,7 @@ let vectorTy =
                 newType
                     |+!> (provideConstructor
                             (parameters |> List.map (fun p -> p, typeof<float>))
-                            (fun args ->              
-                                match dimensions with
-                                | 0 -> <@@ [||] @@>
-                                | 1 -> <@@ [|(%%args.[0]:float)|] @@>
-                                | 2 -> <@@ [|(%%args.[0]:float);(%%args.[1]:float)|] @@>
-                                | 3 -> <@@ [|(%%args.[0]:float);(%%args.[1]:float);(%%args.[2]:float)|] @@>
-                                | 4 -> <@@ [|(%%args.[0]:float);(%%args.[1]:float);(%%args.[2]:float);(%%args.[3]:float)|] @@>
-                                | 5 -> <@@ [|(%%args.[0]:float);(%%args.[1]:float);(%%args.[2]:float);(%%args.[3]:float);(%%args.[4]:float)|] @@>
-                                | 6 -> <@@ [|(%%args.[0]:float);(%%args.[1]:float);(%%args.[2]:float);(%%args.[3]:float);(%%args.[4]:float);(%%args.[5]:float)|] @@>
-                                | _ -> <@@ [|(%%args.[0]:float);(%%args.[1]:float);(%%args.[2]:float);(%%args.[3]:float);(%%args.[4]:float);(%%args.[5]:float);(%%args.[6]:float)|] @@>)
+                            (fun args -> Quotations.Expr.NewArray(typeof<float>,args))
                            |> addXmlDoc "Initializes a vector instance")
                     |+!> (provideMethod
                             "DotProduct"
