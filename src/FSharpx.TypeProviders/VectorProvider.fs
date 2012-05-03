@@ -10,11 +10,11 @@ open System.Text.RegularExpressions
 open FSharpx.TypeProviders.Settings
 open FSharpx.TypeProviders.DSL
 
-let dotProduct = Array.fold2 (fun acc x y -> acc + x * y) 0.
-let add = Array.map2 (fun x y -> x + y)
-let scale a factor = Array.map (fun x -> factor * x) a
-let subtract = Array.map2 (fun x y -> x - y)
-let equals x y = Array.fold2 (fun acc x y -> acc && x = y) true x y
+let dotProduct (x) y = Array.map2 (*) x y |> Array.sum
+let add x y = Array.map2 (+) x y
+let scale x factor = Array.map ((*) factor) x
+let subtract x y = Array.map2 (-) x y
+let equals x y = Array.forall2 (=) x y
    
 let vectorTy =
     let missingValue = "@@@missingValue###"
