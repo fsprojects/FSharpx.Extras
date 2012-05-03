@@ -116,10 +116,6 @@
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Unquote">
-      <HintPath>..\..\packages\Unquote.2.1.0\lib\net40\Unquote.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\FSharpx.Core\FSharpx.Core.fsproj">
