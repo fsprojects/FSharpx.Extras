@@ -20,7 +20,7 @@ type public FSharpxProvider(cfg:TypeProviderConfig) as this =
          XamlProvider.xamlType this cfg
          AppSettingsTypeProvider.typedAppSettings cfg
          ExcelProvider.typExcel cfg
-         VectorTypeProvider.vectorTy])
+         VectorTypeProvider.vectorTypeProvider])
 
 [<TypeProviderAssembly>]
 do ()

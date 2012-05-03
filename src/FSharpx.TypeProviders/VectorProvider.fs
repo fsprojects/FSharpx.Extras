@@ -16,7 +16,7 @@ let scale x factor = Array.map ((*) factor) x
 let subtract x y = Array.map2 (-) x y
 let equals x y = Array.forall2 (=) x y
    
-let vectorTy =
+let vectorTypeProvider =
     let missingValue = "@@@missingValue###"
     erasedType<obj> thisAssembly rootNamespace "Vector"
     |> staticParameters 
@@ -24,41 +24,42 @@ let vectorTy =
           (fun typeName parameterValues ->
                 let parameters = parameterValues |> Seq.map string |> Seq.filter ((<>) missingValue) |> List.ofSeq
                 let dimensions = parameters |> List.length
-                let newType = 
+                let vectorType = 
                     erasedType<float array> thisAssembly rootNamespace typeName
                     |> hideOldMethods
-                newType
+
+                vectorType
                     |+!> (provideConstructor
                             (parameters |> List.map (fun p -> p, typeof<float>))
                             (fun args -> Quotations.Expr.NewArray(typeof<float>,args))
                            |> addXmlDoc "Initializes a vector instance")
                     |+!> (provideMethod
                             "DotProduct"
-                            ["factor", newType]
+                            ["factor", vectorType]
                             typeof<float>
                             (fun args -> <@@ dotProduct (%%args.[0]:float array) (%%args.[1]:float array) @@>)
                            |> addXmlDoc "Calculates the dot product with the given factor.")
                     |+!> (provideMethod
                             "Scale"
                             ["factor", typeof<float>]
-                            newType
+                            vectorType
                             (fun args -> <@@ scale (%%args.[0]:float array) (%%args.[1]:float) @@>)
                            |> addXmlDoc "Calculates the scalar multiplication with the given factor.")
                     |+!> (provideMethod
                             "Add"
-                            ["summand", newType]
-                            newType
+                            ["summand", vectorType]
+                            vectorType
                             (fun args -> <@@ add (%%args.[0]:float array) (%%args.[1]:float array) @@>)
                            |> addXmlDoc "Calculates the sum with the given summand.")
                     |+!> (provideMethod
                             "Subtract"
-                            ["subtrahend", newType]
-                            newType
+                            ["subtrahend", vectorType]
+                            vectorType
                             (fun args -> <@@ subtract (%%args.[0]:float array) (%%args.[1]:float array) @@>)
                            |> addXmlDoc "Calculates the difference with the given subtrahend.")
                     |+!> (provideMethod
                             "Equals"
-                            ["other", newType]
+                            ["other", vectorType]
                             typeof<bool>
                             (fun args -> <@@ equals (%%args.[0]:float array) (%%args.[1]:float array) @@>)
                            |> addXmlDoc "Returns wether the given objects are equal.")
