@@ -42,7 +42,6 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="ProvidedTypes-0.2.fsi" />
     <Compile Include="ProvidedTypes-0.2.fs" />
-    <Compile Include="Strings.fs" />
     <Compile Include="TypeProviderDSL.fs" />
     <Compile Include="Settings.fs" />
     <Compile Include="JSON.fs" />

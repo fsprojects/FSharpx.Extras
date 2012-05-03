@@ -36,6 +36,7 @@
     <None Include="packages.config" />
     <Compile Include="FsUnit.fs" />
     <Compile Include="FsCheckRunner.fs" />
+    <Compile Include="StringsTest.fs" />
     <Compile Include="ListExtensionsTest.fs" />
     <Compile Include="DictionaryExtensionsTests.fs" />
     <Compile Include="DListTest.fs" />
