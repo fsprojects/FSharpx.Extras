@@ -10,11 +10,10 @@ open System.Text.RegularExpressions
 open FSharpx.TypeProviders.Settings
 open FSharpx.TypeProviders.DSL
 
-let dotProduct (x) y = Array.map2 (*) x y |> Array.sum
-let add x y = Array.map2 (+) x y
-let scale x factor = Array.map ((*) factor) x
-let subtract x y = Array.map2 (-) x y
-let equals x y = Array.forall2 (=) x y
+let dotProduct x y : float = Array.map2 (*) x y |> Array.sum
+let add x y : float[] = Array.map2 (+) x y
+let scale x factor : float[] = Array.map ((*) factor) x
+let subtract x y : float[] = Array.map2 (-) x y
    
 let vectorTypeProvider =
     let missingValue = "@@@missingValue###"
@@ -37,31 +36,31 @@ let vectorTypeProvider =
                             "DotProduct"
                             ["factor", vectorType]
                             typeof<float>
-                            (fun args -> <@@ dotProduct (%%args.[0]:float array) (%%args.[1]:float array) @@>)
+                            (fun [this; other] -> <@@ dotProduct %%this %%other @@>)
                            |> addXmlDoc "Calculates the dot product with the given factor.")
                     |+!> (provideMethod
                             "Scale"
                             ["factor", typeof<float>]
                             vectorType
-                            (fun args -> <@@ scale (%%args.[0]:float array) (%%args.[1]:float) @@>)
+                            (fun [this; factor] -> <@@ scale %%this %%factor @@>)
                            |> addXmlDoc "Calculates the scalar multiplication with the given factor.")
                     |+!> (provideMethod
                             "Add"
                             ["summand", vectorType]
                             vectorType
-                            (fun args -> <@@ add (%%args.[0]:float array) (%%args.[1]:float array) @@>)
+                            (fun [this; other] -> <@@ add %%this %%other @@>)
                            |> addXmlDoc "Calculates the sum with the given summand.")
                     |+!> (provideMethod
                             "Subtract"
                             ["subtrahend", vectorType]
                             vectorType
-                            (fun args -> <@@ subtract (%%args.[0]:float array) (%%args.[1]:float array) @@>)
+                            (fun [this; other] -> <@@ subtract %%this %%other @@>)
                            |> addXmlDoc "Calculates the difference with the given subtrahend.")
                     |+!> (provideMethod
                             "Equals"
                             ["other", vectorType]
                             typeof<bool>
-                            (fun args -> <@@ equals (%%args.[0]:float array) (%%args.[1]:float array) @@>)
+                            (fun [this; other] -> <@@ (%%this:float[]) = %%other @@>)
                            |> addXmlDoc "Returns wether the given objects are equal.")
                     |++!> (parameters
                             |> Seq.mapi (fun i name ->
