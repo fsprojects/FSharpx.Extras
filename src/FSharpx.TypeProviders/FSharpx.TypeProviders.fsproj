@@ -44,7 +44,6 @@
     <Compile Include="ProvidedTypes-0.2.fs" />
     <Compile Include="TypeProviderDSL.fs" />
     <Compile Include="Settings.fs" />
-    <Compile Include="JSON.fs" />
     <Compile Include="Inference.fs" />
     <Compile Include="RegexProvider.fs" />
     <Compile Include="RegistryProvider.fs" />
