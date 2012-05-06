@@ -33,10 +33,6 @@ let nugetDocsDir package = nugetDir package @@ "docs"
 
 let packages = ["Core"; "Http"; "Observable"; "TypeProviders"]
 
-let nugetDirHttp = "./nuget/Http/"
-let nugetLibDirHttp = nugetDirHttp @@ "lib"
-let nugetDocsDirHttp = nugetDirHttp @@ "docs"
-
 let projectDesc = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible."
 
 let rec getPackageDesc = function
@@ -215,7 +211,7 @@ let nugetTarget = TargetTemplate (fun package ->
             ToolPath = nugetPath
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Dependencies =
-                if package = "Core" || package = "TypeProviders" then p.Dependencies else
+                if package = "Core" then p.Dependencies else
                 [projectName + ".Core", RequireExactly (NormalizeVersion version)]
             Publish = hasBuildParam "nugetkey" })
         "FSharpx.Core.nuspec"
