@@ -98,6 +98,9 @@
     <Reference Include="FSharpx.TypeProviders">
       <HintPath>..\..\src\FSharpx.TypeProviders\bin\Debug\FSharpx.TypeProviders.dll</HintPath>
     </Reference>
+    <Reference Include="FSharpx.Core">
+      <HintPath>..\..\src\FSharpx.Core\bin\Debug\FSharpx.Core.dll</HintPath>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core">
       <HintPath>..\..\lib\FSharp\Net45\FSharp.Core.dll</HintPath>
