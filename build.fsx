@@ -217,7 +217,7 @@ let nugetTarget = TargetTemplate (fun package ->
             Dependencies =
                 if package = "Core" || package = "TypeProviders" then p.Dependencies else
                 [projectName + ".Core", RequireExactly (NormalizeVersion version)]
-            Publish = hasBuildParam "nugetkey" })
+            Publish = hasBuildParam "nugetkey" && package <> "TypeProviders" })
         "FSharpx.Core.nuspec"
 
     !! (nugetDir package + sprintf "FSharpx.%s.*.nupkg" package)
