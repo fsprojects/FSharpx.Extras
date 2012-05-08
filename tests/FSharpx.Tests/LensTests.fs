@@ -196,12 +196,34 @@ let LensCond() = checkLens "cond" productPrice
 
 [<Test>]
 let LensListMap() = 
+    let carGen =
+        gen {
+            let! make = Arb.generate<string>
+            let! model = Arb.generate<string>
+            let! mileage = Arb.generate<int>
+            return { Car.Make = make; Model = model; Mileage = mileage }
+        }
+    let listsOfCarsGen = Gen.listOf carGen
+    let listsOfCars = Arb.fromGen listsOfCarsGen
+    let listsOfLengthGen n = Gen.listOfLength n Arb.generate
+    let carsAndIntsGen : Gen<Car list * int list> =
+        gen {
+            let! cars = listsOfCarsGen
+            let! ints = listsOfLengthGen cars.Length
+            return cars, ints
+        }
+    let carsAndInts = Arb.fromGen carsAndIntsGen
+    let carsAndIntsAndInts : Arbitrary<Car list * int list * int list> = 
+        gen {
+            let! cars, ints1 = carsAndIntsGen
+            let! ints2 = listsOfLengthGen cars.Length
+            return cars, ints1, ints2
+        } |> Arb.fromGen
+    
     let l = Lens.listMap Car.mileage
-    // can't test with FsCheck, it passes lists of different lenghts.
-    // checkLens "listMap" l
-    let cars = [hondaAccura; bmwE90]
-    let getSet = LensProperties.GetSet l cars
-    let setGet = LensProperties.SetGet l cars [2000;3000]
-    let setSet = LensProperties.SetSet l [2000;3000] [3000;4000] cars
-    for p in [getSet; setGet; setSet] do
-        Assert.True p
+    fsCheck "list map getset" 
+        (Prop.forAll listsOfCars (LensProperties.GetSet l))
+    fsCheck "list map setget" 
+        (Prop.forAll carsAndInts (fun (cars, mileages) -> LensProperties.SetGet l cars mileages))
+    fsCheck "list map setset" 
+        (Prop.forAll carsAndIntsAndInts (fun (cars, mileages1, mileages2) -> LensProperties.SetSet l mileages1 mileages2 cars))
