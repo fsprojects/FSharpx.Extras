@@ -827,20 +827,18 @@ module Validation =
         /// Sequence actions, discarding the value of the second argument.
         member this.apl b a = this.lift2 (fun z _ -> z) a b
 
-    let private stringListValidation = CustomValidation(ListMonoid<string>())
-
     /// Sequential application
-    let ap = stringListValidation.ap
+    let inline ap x = apa List.append x
 
     /// Sequential application
     let inline (<*>) f x = ap x f
     /// Promote a function to a monad/applicative, scanning the monadic/applicative arguments from left to right.
-    let lift2 = stringListValidation.lift2
+    let inline lift2 f a b = returnM f <*> a <*> b
 
     /// Sequence actions, discarding the value of the first argument.
-    let ( *>) = stringListValidation.apr
-    /// Sequence actions, discarding the value of the first argument.
-    let ( <*) = stringListValidation.apl
+    let inline ( *>) x y = lift2 (fun _ z -> z) x y
+    /// Sequence actions, discarding the value of the second argument.
+    let inline ( <*) x y = lift2 (fun z _ -> z) x y
 
     let seqValidator f = 
         let inline cons a b = lift2 (flip List.cons) a b
