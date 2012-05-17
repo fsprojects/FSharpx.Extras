@@ -124,7 +124,7 @@ module ClubTropicana =
 // And the use? Dave tried the second nightclub after a few more drinks in the pub
 [<Test>]
 let part2() =
-    ClubTropicana.costToEnter { Dave with Sobriety = Paralytic } |> shouldEqual (Choice2Of2 ["Sober up!"; "Too old!"])
+    ClubTropicana.costToEnter { Dave with Sobriety = Paralytic } |> shouldEqual (Choice2Of2 ["Too old!"; "Sober up!"])
     ClubTropicana.costToEnter Ruby |> shouldEqual (Choice1Of2 0m)
 
 (**
