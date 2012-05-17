@@ -22,28 +22,31 @@ type Person = {
     Sobriety: Sobriety
 }
 
+let Success = Choice1Of2
+let Failure = Choice2Of2
+
 // Let's define the checks that *all* nightclubs make!
 module Club =
     let checkAge (p: Person) =
         if p.Age < 18 then 
-            Choice2Of2 "Too young!"
+            Failure "Too young!"
         elif p.Age > 40 then
-            Choice2Of2 "Too old!"
+            Failure "Too old!"
         else
-            Choice1Of2 p
+            Success p
 
     let checkClothes (p: Person) =
         if p.Gender = Male && not (p.Clothes.Contains "Tie") then
-            Choice2Of2 "Smarten up!"
+            Failure "Smarten up!"
         elif p.Gender = Female && p.Clothes.Contains "Trainers" then
-            Choice2Of2 "Wear high heels"
+            Failure "Wear high heels"
         else
-            Choice1Of2 p
+            Success p
 
     let checkSobriety (p: Person) =
         match p.Sobriety with
-        | Drunk | Paralytic | Unconscious -> Choice2Of2 "Sober up!"
-        | _ -> Choice1Of2 p
+        | Drunk | Paralytic | Unconscious -> Failure "Sober up!"
+        | _ -> Success p
 
 // Now let's compose some validation checks
 
@@ -82,11 +85,11 @@ let Ruby = { Person.Gender = Female; Age = 25; Clothes = set ["High heels"]; Sob
 
 [<Test>]
 let part1() =
-    ClubbedToDeath.costToEnter Dave |> shouldEqual (Choice2Of2 "Too old!")
-    ClubbedToDeath.costToEnter Ken |> shouldEqual (Choice1Of2 5m)
-    ClubbedToDeath.costToEnter Ruby |> shouldEqual (Choice1Of2 0m)
-    ClubbedToDeath.costToEnter { Ruby with Age = 17 } |> shouldEqual (Choice2Of2 "Too young!")
-    ClubbedToDeath.costToEnter { Ken with Sobriety = Unconscious } |> shouldEqual (Choice2Of2 "Sober up!")
+    ClubbedToDeath.costToEnter Dave |> shouldEqual (Failure "Too old!")
+    ClubbedToDeath.costToEnter Ken |> shouldEqual (Success 5m)
+    ClubbedToDeath.costToEnter Ruby |> shouldEqual (Success 0m)
+    ClubbedToDeath.costToEnter { Ruby with Age = 17 } |> shouldEqual (Failure "Too young!")
+    ClubbedToDeath.costToEnter { Ken with Sobriety = Unconscious } |> shouldEqual (Failure "Sober up!")
 
 (**
  * The thing to note here is how the Validations can be composed together in a computation expression.
@@ -124,8 +127,8 @@ module ClubTropicana =
 // And the use? Dave tried the second nightclub after a few more drinks in the pub
 [<Test>]
 let part2() =
-    ClubTropicana.costToEnter { Dave with Sobriety = Paralytic } |> shouldEqual (Choice2Of2 ["Too old!"; "Sober up!"])
-    ClubTropicana.costToEnter Ruby |> shouldEqual (Choice1Of2 0m)
+    ClubTropicana.costToEnter { Dave with Sobriety = Paralytic } |> shouldEqual (Failure ["Too old!"; "Sober up!"])
+    ClubTropicana.costToEnter Ruby |> shouldEqual (Success 0m)
 
 (**
  *
@@ -147,8 +150,8 @@ module GayBar =
     open Club
     let checkGender (p: Person) =
         match p.Gender with
-        | Male -> Choice1Of2 p
-        | _ -> Choice2Of2 "Men only"
+        | Male -> Success p
+        | _ -> Failure "Men only"
 
     let costToEnter p =
         [checkAge; checkClothes; checkSobriety; checkGender]
@@ -157,6 +160,6 @@ module GayBar =
 
 [<Test>]
 let part3() =
-    GayBar.costToEnter { Person.Gender = Male; Age = 59; Clothes = set ["Jeans"]; Sobriety = Paralytic } |> shouldEqual (Choice2Of2 ["Too old!"; "Smarten up!"; "Sober up!"])
-    GayBar.costToEnter { Person.Gender = Male; Age = 25; Clothes = set ["Tie"]; Sobriety = Sober } |> shouldEqual (Choice1Of2 26.5m)
+    GayBar.costToEnter { Person.Gender = Male; Age = 59; Clothes = set ["Jeans"]; Sobriety = Paralytic } |> shouldEqual (Failure ["Too old!"; "Smarten up!"; "Sober up!"])
+    GayBar.costToEnter { Person.Gender = Male; Age = 25; Clothes = set ["Tie"]; Sobriety = Sober } |> shouldEqual (Success 26.5m)
 
