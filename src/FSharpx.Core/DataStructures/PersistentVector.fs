@@ -112,3 +112,20 @@ let assocN<'a> i (x:'a) (vector:PersistentVector<'a>) : PersistentVector<'a> =
     elif i = vector.Count then
         cons x vector
     else raise Exceptions.OutOfBounds
+
+let rangedIterator<'a> startIndex endIndex (vector:PersistentVector<'a>) : 'a seq =
+    let i = ref startIndex
+    let b = ref (!i - (!i % 32))
+    let array = if startIndex < vector.Count then ref (arrayFor !i vector) else ref null
+
+    seq {
+        while !i < endIndex do
+            if !i - !b = 32 then
+                array := arrayFor !i vector
+                b := !b + 32
+
+            yield (!array).[!i &&& 0x01f] :?> 'a
+            i := !i + 1 
+       }
+
+let toSeq vector = rangedIterator 0 vector.Count vector

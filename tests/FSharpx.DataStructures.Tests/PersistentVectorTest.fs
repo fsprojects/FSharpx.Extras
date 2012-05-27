@@ -24,8 +24,7 @@ let ``multiple cons to an empty vector should create a vector``() =
     empty |> cons 1 |> cons 4 |> cons 25 |> nth 1 |> should equal 4
 
 [<Test>]
-let ``more than 200 cons to an empty vector should create a vector``() =
-    let xs = [1..256]
+let ``300 cons to an empty vector should create a vector``() =
     let vector = ref empty
     for i in 1..300 do
         vector := cons i (!vector)
@@ -39,3 +38,15 @@ let ``assoc an element to a nonempty vector should not change the original vecto
 
     v |> assocN 2 "5" |> nth 2 |> should equal "5"
     v |> nth 2 |> should equal "25"
+
+[<Test>]
+let ``vector should should be convertable to a seq``() =
+    empty |> cons 1 |> cons 4 |> cons 25 |> toSeq |> Seq.toList |> should equal [1;4;25]
+
+[<Test>]
+let ``vector with more 300 elements should be convertable to a seq``() =
+    let vector = ref empty
+    for i in 1..300 do
+        vector := cons i (!vector)
+
+    !vector |> toSeq |> Seq.toList |> should equal [1..300]
