@@ -28,3 +28,10 @@ let ``more than 200 cons to an empty vector should create a vector``() =
 
     !vector |> nth 100 |> should equal 101
     !vector |> nth 200 |> should equal 201
+
+[<Test>]
+let ``assoc an element to a nonempty vector should not change the original vector``() =
+    let v = empty |> cons "1" |> cons "4" |> cons "25" 
+
+    v |> assocN 2 "5" |> nth 2 |> should equal "5"
+    v |> nth 2 |> should equal "25"

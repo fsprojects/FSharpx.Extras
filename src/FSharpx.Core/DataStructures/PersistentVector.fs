@@ -64,7 +64,7 @@ let inline arrayFor<'a> i (vector:PersistentVector<'a>) =
                 level := !level - 5
 
             (!node).Array
-    else failwith "IndexOutOfbounds"
+    else raise Exceptions.OutOfBounds
 
 let nth<'a> i (vector:PersistentVector<'a>) : 'a =
     let node = arrayFor i vector
@@ -88,3 +88,25 @@ let cons<'a> (x:'a) (vector:PersistentVector<'a>) =
         else
             let newRoot = pushTail(vector,vector.Shift,vector.Root,tailNode)
             persistentVector<'a>(vector.Count + 1,vector.Shift,newRoot,[| x |])
+
+
+let rec doAssoc(level,node:Node,i,x) =
+    let ret = Node(Array.copy node.Array)
+    if level = 0 then 
+        ret.Array.[i &&& 0x01f] <- x :> obj 
+    else
+        let subidx = (i >>> level) &&& 0x01f
+        ret.Array.[subidx] <- doAssoc(level - 5, node.Array.[subidx] :?> Node, i, x) :> obj
+    ret
+
+let assocN<'a> i (x:'a) (vector:PersistentVector<'a>) : PersistentVector<'a> =
+    if i >= 0 && i < vector.Count then
+        if i >= vector.TailOff then
+            let newTail = Array.copy vector.Tail
+            newTail.[i &&& 0x01f] <- x :> obj
+            persistentVector(vector.Count, vector.Shift, vector.Root, newTail)
+        else
+            persistentVector(vector.Count, vector.Shift, doAssoc(vector.Shift, vector.Root, i, x), vector.Tail)
+    elif i = vector.Count then
+        cons x vector
+    else raise Exceptions.OutOfBounds
