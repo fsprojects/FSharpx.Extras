@@ -39,7 +39,6 @@
     <Compile Include="StringsTest.fs" />
     <Compile Include="ListExtensionsTest.fs" />
     <Compile Include="DictionaryExtensionsTests.fs" />
-    <Compile Include="DListTest.fs" />
     <Compile Include="ByteStringTest.fs" />
     <Compile Include="OperatorsTest.fs" />
     <Compile Include="AsyncOperatorsTest.fs" />
