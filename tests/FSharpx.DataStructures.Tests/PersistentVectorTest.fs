@@ -9,7 +9,11 @@ open FsUnit
 [<Test>]
 let ``empty vector should be empty``() =
     let x = empty<int>
-    x.Count |> should equal 0
+    x |> count |> should equal 0
+
+[<Test>]
+let ``multiple cons to an empty vector should increase the count``() =
+    empty |> cons 1 |> cons 4 |> cons 25 |> count |> should equal 3
 
 [<Test>]
 let ``cons to an empty vector should create a singleton vector``() =

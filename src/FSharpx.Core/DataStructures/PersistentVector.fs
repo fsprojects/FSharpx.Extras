@@ -16,6 +16,8 @@ type PersistentVector<'a> =  {
     Tail : obj[]
     TailOff: int }
 
+let inline count vector = vector.Count
+
 let inline persistentVector<'a>(count,shift,root,tail) : PersistentVector<'a> = {
     Count = count
     Shift = shift
