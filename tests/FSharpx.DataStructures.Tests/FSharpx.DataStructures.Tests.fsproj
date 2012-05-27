@@ -71,7 +71,7 @@
     <Reference Include="FSharp.PowerPack.Metadata" Condition="$(TargetFrameworkVersion) == 'v3.5'">
       <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net20\FSharp.PowerPack.Metadata.dll</HintPath>
       <Private>True</Private>
-    </Reference>	
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -79,8 +79,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DListTest.fs" />
+    <Compile Include="BootstrappedQueueTest.fs" />
     <Compile Include="ImplicitQueueTest.fs" />
-	<Compile Include="RealTimeQueueTest.fs" />
+    <Compile Include="RealTimeQueueTest.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\FSharpx.Core\FSharpx.Core.fsproj">

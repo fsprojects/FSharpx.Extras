@@ -41,8 +41,9 @@
     <Compile Include="Strings.fs" />
     <Compile Include="IO.fs" />
     <Compile Include="Collections.fs" />
-    <Compile Include="DataStructures\Infrastructure.fs" />	
+    <Compile Include="DataStructures\Infrastructure.fs" />
     <Compile Include="DataStructures\DList.fs" />
+    <Compile Include="DataStructures\BootStrappedQueue.fs" />
     <Compile Include="DataStructures\ImplicitQueue.fs" />
     <Compile Include="DataStructures\RealTimeQueue.fs" />
     <Compile Include="Monad.fs" />
