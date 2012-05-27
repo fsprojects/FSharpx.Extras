@@ -4,10 +4,10 @@ module FSharpx.DataStructures.BootstrappedQueue
 
 open FSharpx
 
-type nonempty_t<'a> = {
+type NonEmptyBootstrappedQueue<'a> = {
     FrontAndSuspensionsLength : int
     Front : list<'a>
-    Suspensions : t<Lazy<list<'a>>>
+    Suspensions : BootstrappedQueue<Lazy<list<'a>>>
     RBackLength : int
     RBack : list<'a>
 } with
@@ -19,69 +19,63 @@ type nonempty_t<'a> = {
         RBack = r
     }  
 
-and t<'a> = E | Q of nonempty_t<'a> with
-    //polymorphic recursion cannot be achieved through let-bound functions
-    //hence we use static member methods 
+and BootstrappedQueue<'a> = Empty | NonEmpty of NonEmptyBootstrappedQueue<'a> with
+    // polymorphic recursion cannot be achieved through let-bound functions
+    // hence we use static member methods 
 
-    static member checkQ (q:nonempty_t<'a>) =
-        if q.RBackLength <= q.FrontAndSuspensionsLength then
-        t.checkF q
-        else
-        let susp = t.snoc (lazy List.rev q.RBack) q.Suspensions
-        nonempty_t<'a>.create (q.FrontAndSuspensionsLength + q.RBackLength) q.Front susp 0 []
-        |> t.checkF 
+    static member checkQ (q:NonEmptyBootstrappedQueue<'a>) =
+        if q.RBackLength <= q.FrontAndSuspensionsLength then BootstrappedQueue.checkF q else
+        let susp = BootstrappedQueue.snoc (lazy List.rev q.RBack) q.Suspensions
+        NonEmptyBootstrappedQueue<'a>.create (q.FrontAndSuspensionsLength + q.RBackLength) q.Front susp 0 []
+        |> BootstrappedQueue.checkF 
 
-    static member checkF (q:nonempty_t<'a>) : t<'a> =
+    static member checkF (q:NonEmptyBootstrappedQueue<'a>) : BootstrappedQueue<'a> =
         match q.Front, q.Suspensions with
-        | [], E -> E
+        | [], Empty -> Empty
         | [], m ->
-            let f = t.head m |> Lazy.force
-            let susp = t.tail m
-            Q <| nonempty_t<'a>.create q.FrontAndSuspensionsLength f susp q.RBackLength q.RBack
-        | _ -> Q q
+            let f = BootstrappedQueue.head m |> Lazy.force
+            let susp = BootstrappedQueue.tail m
+            NonEmpty <| NonEmptyBootstrappedQueue<'a>.create q.FrontAndSuspensionsLength f susp q.RBackLength q.RBack
+        | _ -> NonEmpty q
 
-    static member snoc (x:'a) : t<'a> -> t<'a> = function
-        | E -> Q <| nonempty_t<'a>.create 1 [x] E 0 []
-        | Q q ->
+    static member snoc (x:'a) : BootstrappedQueue<'a> -> BootstrappedQueue<'a> = function
+        | Empty -> NonEmpty <| NonEmptyBootstrappedQueue<'a>.create 1 [x] Empty 0 []
+        | NonEmpty q ->
             let lenr = q.RBackLength+1
             let r = x::q.RBack
-            nonempty_t<'a>.create q.FrontAndSuspensionsLength q.Front q.Suspensions lenr r
-            |> t<'a>.checkQ 
+            NonEmptyBootstrappedQueue<'a>.create q.FrontAndSuspensionsLength q.Front q.Suspensions lenr r
+            |> BootstrappedQueue<'a>.checkQ 
 
-    static member head : t<'a> -> 'a = function
-        | E -> raise Exceptions.Empty
-        | Q q -> List.head q.Front
+    static member head : BootstrappedQueue<'a> -> 'a = function
+        | Empty -> raise Exceptions.Empty
+        | NonEmpty q -> List.head q.Front
 
-    static member tryGetHead : t<'a> -> 'a option = function
-        | E -> None
-        | Q q -> Some (List.head q.Front)
+    static member tryGetHead : BootstrappedQueue<'a> -> 'a option = function
+        | Empty -> None
+        | NonEmpty q -> Some (List.head q.Front)
 
-    static member tail : t<'a> -> t<'a> = function
-        | E -> raise Exceptions.Empty
-        | Q q ->
+    static member tail : BootstrappedQueue<'a> -> BootstrappedQueue<'a> = function
+        | Empty -> raise Exceptions.Empty
+        | NonEmpty q ->
             let lenfm = q.FrontAndSuspensionsLength - 1
             let f' = List.tail q.Front
-            nonempty_t<'a>.create lenfm f' q.Suspensions q.RBackLength q.RBack
-            |> t<'a>.checkQ
+            NonEmptyBootstrappedQueue<'a>.create lenfm f' q.Suspensions q.RBackLength q.RBack
+            |> BootstrappedQueue<'a>.checkQ
 
-    static member tryGetTail : t<'a> -> t<'a> option = function
-        | E -> None
-        | Q q ->
+    static member tryGetTail : BootstrappedQueue<'a> -> BootstrappedQueue<'a> option = function
+        | Empty -> None
+        | NonEmpty q ->
             let lenfm = q.FrontAndSuspensionsLength - 1
             let f' = List.tail q.Front
-            nonempty_t<'a>.create lenfm f' q.Suspensions q.RBackLength q.RBack
-            |> t<'a>.checkQ
+            NonEmptyBootstrappedQueue<'a>.create lenfm f' q.Suspensions q.RBackLength q.RBack
+            |> BootstrappedQueue<'a>.checkQ
             |> Some
 
-let empty = E
+let empty = Empty
+let isEmpty = function Empty -> true | _ -> false
 
-let isEmpty = function E -> true | _ -> false
-
-let head q = t.head q
-
-let tail q = t.tail q
-
-let snoc = t.snoc
-
-let inline tryGetHead queue = t<'a>.tryGetHead queue
-let inline tryGetTail queue = t<'a>.tryGetTail queue
+let inline snoc x queue = BootstrappedQueue.snoc x queue
+let inline head queue = BootstrappedQueue<'a>.head queue
+let inline tryGetHead queue = BootstrappedQueue<'a>.tryGetHead queue
+let inline tail queue = BootstrappedQueue<'a>.tail queue
+let inline tryGetTail queue = BootstrappedQueue<'a>.tryGetTail queue
