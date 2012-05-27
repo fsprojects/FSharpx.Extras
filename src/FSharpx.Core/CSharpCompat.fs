@@ -294,7 +294,7 @@ type FSharpChoice =
     static member Select (o, f: Func<_,_>) = Choice.map f.Invoke o
 
     [<Extension>]
-    static member Join (c: Choice<'a, string list>, inner: Choice<'b, string list>, outerKeySelector: Func<'a,'c>, innerKeySelector: Func<'b,'c>, resultSelector: Func<'a,'b,'d>) =
+    static member Join (c: Choice<'a, 'e list>, inner: Choice<'b, 'e list>, outerKeySelector: Func<'a,'c>, innerKeySelector: Func<'b,'c>, resultSelector: Func<'a,'b,'d>) =
         Choice.returnM (curry resultSelector.Invoke) 
         |> Validation.ap c 
         |> Validation.ap inner 
@@ -340,7 +340,7 @@ type FSharpChoice =
     [<Extension>]
     static member ReturnValidation x : Choice<_, string list> = Choice1Of2 x
 
-    static member EnumerableValidator (f: Func<'a, Choice<'a, string list>>) : Func<'a seq, Choice<'a seq, string list>> =
+    static member EnumerableValidator (f: Func<'a, Choice<'a, _ list>>) : Func<'a seq, Choice<'a seq, _ list>> =
         let ff = Validation.seqValidator f.Invoke >> Choice.map (fun a -> a :> _ seq)
         Func<_,_>(ff)
 
