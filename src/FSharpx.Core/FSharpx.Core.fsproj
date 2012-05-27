@@ -43,9 +43,10 @@
     <Compile Include="Collections.fs" />
     <Compile Include="DataStructures\Infrastructure.fs" />
     <Compile Include="DataStructures\DList.fs" />
-    <Compile Include="DataStructures\BootStrappedQueue.fs" />
+    <Compile Include="DataStructures\BootstrappedQueue.fs" />
     <Compile Include="DataStructures\ImplicitQueue.fs" />
     <Compile Include="DataStructures\RealTimeQueue.fs" />
+    <Compile Include="DataStructures\BottomUpMergeSort.fs" />
     <Compile Include="Monad.fs" />
     <Compile Include="Iteratee.fs" />
     <Compile Include="Lens.fs" />
