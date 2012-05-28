@@ -2,23 +2,11 @@
 module FSharpx.DataStructures.PersistentVector
 
 open FSharpx
-
-type Node = obj[]
+open FSharpx.DataStructures.Vector
 
 let newNode() = Array.create 32 null    
 
 let emptyNode = newNode()
-
-type PersistentVector<'a> (count,shift,root,tail) = 
-    let tailOff = 
-        if count < 32 then 0 else
-        ((count - 1) >>> 5) <<< 5
-    with
-        member this.Count = count
-        member internal this.Shift = shift
-        member internal this.Root = root
-        member internal this.Tail = tail
-        member internal this.TailOff = tailOff
 
 let inline count (vector:PersistentVector<'a>) = vector.Count
 
@@ -53,14 +41,14 @@ let rec pushTail(vector:PersistentVector<'a>,level,parent:Node,tailnode) =
 let inline internal arrayFor<'a> i (vector:PersistentVector<'a>) =
     if i >= 0 && i < vector.Count then
         if i >= vector.TailOff then vector.Tail else
-            let node = ref vector.Root
-            let level = ref vector.Shift
-            while !level > 0 do
-                let pos = (i >>> !level) &&& 0x01f
-                node := (!node).[pos] :?> Node
-                level := !level - 5
+            let mutable node = vector.Root
+            let mutable level = vector.Shift
+            while level > 0 do
+                let pos = (i >>> level) &&& 0x01f
+                node <- node.[pos] :?> Node
+                level <- level - 5
 
-            !node
+            node
     else raise Exceptions.OutOfBounds
 
 let nth<'a> i (vector:PersistentVector<'a>) : 'a =
@@ -124,3 +112,11 @@ let rangedIterator<'a> startIndex endIndex (vector:PersistentVector<'a>) : 'a se
        }
 
 let toSeq (vector:PersistentVector<'a>) = rangedIterator 0 vector.Count vector
+
+open FSharpx.DataStructures.TransientVector
+
+let ofSeq (items:'a seq) =
+    let mutable ret = TransientVector.empty
+    for item in items do
+        ret <- conj item ret
+    persistent ret

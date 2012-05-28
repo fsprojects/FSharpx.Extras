@@ -19,6 +19,14 @@ let initArrayAndVector n =
         "  Array" (fun () -> array n)
         "  PersistentVector" (fun () -> vector n)
 
+let initArrayAndVectorFromList n =
+    printfn "Init from seq with n = %d" n
+    let list = [ for i in 1..n -> r.Next() ]
+
+    compareTwoRuntimes c
+        "  Array" (fun () -> Array.ofSeq list)
+        "  PersistentVector" (fun () -> ofSeq list)
+
 let lookupInArrayAndVector n count =
     printfn "%d Lookups in size n = %d" count n
     let array = array n
@@ -41,6 +49,10 @@ let replaceInArrayAndVector n count =
 initArrayAndVector 10000
 initArrayAndVector 100000
 initArrayAndVector 1000000
+
+initArrayAndVectorFromList 10000
+initArrayAndVectorFromList 100000
+initArrayAndVectorFromList 1000000
 
 lookupInArrayAndVector 10000 10000
 lookupInArrayAndVector 100000 10000

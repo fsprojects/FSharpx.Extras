@@ -50,3 +50,8 @@ let ``vector with more 300 elements should be convertable to a seq``() =
         vector := cons i (!vector)
 
     !vector |> toSeq |> Seq.toList |> should equal [1..300]
+
+[<Test>]
+let ``vector can be created from a seq``() =
+    let xs = [7;88;1;4;25;30] 
+    ofSeq xs |> toSeq |> Seq.toList |> should equal xs

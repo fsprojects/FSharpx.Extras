@@ -2,33 +2,12 @@
 module FSharpx.DataStructures.TransientVector
 
 open FSharpx
-
-type Node = obj[]
+open FSharpx.DataStructures.Vector
 
 let newNode() = Array.create 32 null    
 
 let emptyNode = newNode()
 
-type TransientVector<'a> (count,shift,root,tail) =
-    let mutable count = count
-    let mutable root = root
-    let mutable tail = tail
-    let mutable shift = shift
-    
-    with
-        member internal this.EnsureEditable() = ()
-        member this.Count = this.EnsureEditable(); count
-        member internal this.Shift = shift
-        member internal this.Root = root
-        member internal this.Tail = tail
-        member internal this.TailOff =
-            if count < 32 then 0 else
-            ((count - 1) >>> 5) <<< 5
-
-        member internal this.IncCount() = count <- count + 1
-        member internal this.SetRoot r = root <- r
-        member internal this.SetTail t = tail <- t
-        member internal this.SetShift s = shift <- s
 
 let inline count (vector:TransientVector<'a>) = vector.Count
 
@@ -45,6 +24,7 @@ let rec pushTail(vector:TransientVector<'a>,level,parent:Node,tailnode) =
     // else does it map to an existing child? -> nodeToInsert = pushNode one more level
     // else alloc new path
     //return  nodeToInsert placed in copy of parent
+    
     let subidx = ((vector.Count - 1) >>> level) &&& 0x01f
     let ret = Array.copy parent
 
@@ -63,21 +43,22 @@ let rec pushTail(vector:TransientVector<'a>,level,parent:Node,tailnode) =
 let inline internal arrayFor<'a> i (vector:TransientVector<'a>) =
     if i >= 0 && i < vector.Count then
         if i >= vector.TailOff then vector.Tail else
-            let node = ref vector.Root
-            let level = ref vector.Shift
-            while !level > 0 do
-                let pos = (i >>> !level) &&& 0x01f
-                node := (!node).[pos] :?> Node
-                level := !level - 5
+            let mutable node = vector.Root
+            let mutable level = vector.Shift
+            while level > 0 do
+                let pos = (i >>> level) &&& 0x01f
+                node <- node.[pos] :?> Node
+                level <- level - 5
 
-            !node
+            node
     else raise Exceptions.OutOfBounds
 
 let nth<'a> i (vector:TransientVector<'a>) : 'a =
+    vector.EnsureEditable()
     let node = arrayFor i vector
     node.[i &&& 0x01f] :?> 'a
 
-let cons<'a> (x:'a) (vector:TransientVector<'a>) =
+let conj<'a> (x:'a) (vector:TransientVector<'a>) =
     vector.EnsureEditable()
 
     //room in tail?
@@ -110,7 +91,7 @@ let cons<'a> (x:'a) (vector:TransientVector<'a>) =
 
 
 let rec doAssoc(level,node:Node,i,x) =
-    let ret = Array.copy node
+    let ret = node
     if level = 0 then 
         ret.[i &&& 0x01f] <- x :> obj 
     else
@@ -119,15 +100,16 @@ let rec doAssoc(level,node:Node,i,x) =
     ret
 
 let assocN<'a> i (x:'a) (vector:TransientVector<'a>) : TransientVector<'a> =
+    vector.EnsureEditable()
     if i >= 0 && i < vector.Count then
         if i >= vector.TailOff then
-            let newTail = Array.copy vector.Tail
-            newTail.[i &&& 0x01f] <- x :> obj
-            TransientVector(vector.Count, vector.Shift, vector.Root, newTail)
+            vector.Tail.[i &&& 0x01f] <- x :> obj
+            vector
         else
-            TransientVector(vector.Count, vector.Shift, doAssoc(vector.Shift, vector.Root, i, x), vector.Tail)
+            vector.SetRoot(doAssoc(vector.Shift, vector.Root, i, x))
+            vector
     elif i = vector.Count then
-        cons x vector
+        conj x vector
     else raise Exceptions.OutOfBounds
 
 let rangedIterator<'a> startIndex endIndex (vector:TransientVector<'a>) : 'a seq =
@@ -146,3 +128,10 @@ let rangedIterator<'a> startIndex endIndex (vector:TransientVector<'a>) : 'a seq
        }
 
 let toSeq (vector:TransientVector<'a>) = rangedIterator 0 vector.Count vector
+
+let persistent (vector:TransientVector<'a>) =
+    vector.EnsureEditable()
+    // TODO: root.edit.set(null)
+    let l = vector.Count - vector.TailOff
+    let trimmedTail = Array.init l (fun i -> vector.Tail.[i])
+    PersistentVector(vector.Count, vector.Shift, vector.Root, trimmedTail)
