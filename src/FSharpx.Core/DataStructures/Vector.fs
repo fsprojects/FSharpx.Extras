@@ -1,4 +1,5 @@
-﻿module FSharpx.DataStructures.Vector
+﻿/// vector implementation ported from https://github.com/clojure/clojure/blob/master/src/jvm/clojure/lang/PersistentVector.java
+module FSharpx.DataStructures.Vector
 
 open FSharpx
 

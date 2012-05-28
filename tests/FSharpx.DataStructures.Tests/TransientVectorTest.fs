@@ -50,3 +50,15 @@ let ``vector with 30000 elements should be convertable to a seq``() =
         vector := conj i (!vector)
 
     !vector |> Seq.toList |> should equal [1..30000]
+
+
+[<Test>]
+let ``vector with 30000 elements should allow assocN``() =
+    let vector = ref empty
+    for i in 1..30000 do
+        vector := conj i (!vector)
+
+    for i in 1..30000 do
+        vector := assocN (i-1) (i*2) (!vector)
+
+    !vector |> Seq.toList |> should equal [for i in 1..30000 -> i*2]

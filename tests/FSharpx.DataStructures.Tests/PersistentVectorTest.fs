@@ -55,3 +55,14 @@ let ``vector with 30000 elements should be convertable to a seq``() =
 let ``vector can be created from a seq``() =
     let xs = [7;88;1;4;25;30] 
     ofSeq xs |> toSeq |> Seq.toList |> should equal xs
+
+[<Test>]
+let ``vector with 30000 elements should allow assocN``() =
+    let vector = ref empty
+    for i in 1..30000 do
+        vector := cons i (!vector)
+
+    for i in 1..30000 do
+        vector := assocN (i-1) (i*2) (!vector)
+
+    !vector |> toSeq |> Seq.toList |> should equal [for i in 1..30000 -> i*2]
