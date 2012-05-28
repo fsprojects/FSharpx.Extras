@@ -41,7 +41,7 @@ let ``assoc an element to a nonempty transient vector should also the original v
 
 [<Test>]
 let ``vector should should be convertable to a seq``() =
-    empty |> conj 1 |> conj 4 |> conj 25 |> toSeq |> Seq.toList |> should equal [1;4;25]
+    empty |> conj 1 |> conj 4 |> conj 25 |> Seq.toList |> should equal [1;4;25]
 
 [<Test>]
 let ``vector with 30000 elements should be convertable to a seq``() =
@@ -49,4 +49,4 @@ let ``vector with 30000 elements should be convertable to a seq``() =
     for i in 1..30000 do
         vector := conj i (!vector)
 
-    !vector |> toSeq |> Seq.toList |> should equal [1..30000]
+    !vector |> Seq.toList |> should equal [1..30000]

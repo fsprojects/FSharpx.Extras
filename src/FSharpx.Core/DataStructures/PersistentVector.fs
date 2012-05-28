@@ -119,4 +119,4 @@ let ofSeq (items:'a seq) =
     let mutable ret = TransientVector.empty
     for item in items do
         ret <- conj item ret
-    persistent ret
+    ret.persistent()
