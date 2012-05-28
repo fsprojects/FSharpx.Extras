@@ -4,7 +4,7 @@ module FSharpx.DataStructures.PersistentVector
 open FSharpx
 open FSharpx.DataStructures.Vector
 
-let inline count (vector:PersistentVector<'a>) = vector.Count
+let inline count (vector:PersistentVector<'a>) : int = (vector :> IVector<'a>).Count()
 
 let empty<'a> = PersistentVector<'a>()
 

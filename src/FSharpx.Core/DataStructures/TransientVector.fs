@@ -4,7 +4,7 @@ module FSharpx.DataStructures.TransientVector
 open FSharpx
 open FSharpx.DataStructures.Vector
 
-let inline count (vector:TransientVector<'a>) = vector.Count
+let inline count (vector:TransientVector<'a>) : int  = (vector :> IVector<'a>).Count()
 
 let empty<'a> = TransientVector<'a>()
 

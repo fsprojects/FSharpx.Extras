@@ -134,7 +134,6 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             PersistentVector(count, shift, root, trimmedTail)
 
         member internal this.EnsureEditable() = () // TODO:
-        member this.Count = this.EnsureEditable(); count
         member internal this.TailOff() =
             if count < 32 then 0 else
             ((count - 1) >>> 5) <<< 5
@@ -150,6 +149,8 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
 
         interface IVector<'a> with
             member this.Conj x = this.conj x :> IVector<'a>
+            member this.Count() = this.EnsureEditable(); count
+            member this.AssocN(i,x) = this.assocN i x :> IVector<'a>
 
 and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
     let tailOff = 
@@ -274,5 +275,5 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
 
         interface IVector<'a> with
             member this.Conj x = this.cons x :> IVector<'a>
-
-        member this.Count = count
+            member this.Count() = count
+            member this.AssocN(i,x) = this.assocN i x :> IVector<'a>
