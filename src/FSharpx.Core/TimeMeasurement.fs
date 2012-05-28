@@ -16,3 +16,18 @@ let stopAverageTime count f =
     let results = List.map (fun _ -> f()) list
     sw.Stop()
     results,float sw.ElapsedMilliseconds / float count
+
+/// Stops the average runtime for a given function and applies it the given count
+/// Afterwards it reports it with the given description
+let stopAndReportAvarageTime count desc f =
+    let results,time = stopAverageTime count f
+    printfn "%s %Ams" desc time
+    results,time
+
+/// Stops the average runtime for the given functions
+/// Afterwards it reports it with the given descriptions
+let compareTwoRuntimes count desc1 f1 desc2 f2 =
+    let _,time1 = stopAndReportAvarageTime count desc1 f1
+    let _,time2 = stopAndReportAvarageTime count desc2 f2
+
+    printfn "  Ratio:  %A" (time1 / time2)
