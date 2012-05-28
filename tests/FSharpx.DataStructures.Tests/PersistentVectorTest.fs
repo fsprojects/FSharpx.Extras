@@ -44,9 +44,14 @@ let ``vector should should be convertable to a seq``() =
     empty |> cons 1 |> cons 4 |> cons 25 |> toSeq |> Seq.toList |> should equal [1;4;25]
 
 [<Test>]
-let ``vector with more 300 elements should be convertable to a seq``() =
+let ``vector with 30000 elements should be convertable to a seq``() =
     let vector = ref empty
-    for i in 1..300 do
+    for i in 1..30000 do
         vector := cons i (!vector)
 
-    !vector |> toSeq |> Seq.toList |> should equal [1..300]
+    !vector |> toSeq |> Seq.toList |> should equal [1..30000]
+
+[<Test>]
+let ``vector can be created from a seq``() =
+    let xs = [7;88;1;4;25;30] 
+    ofSeq xs |> toSeq |> Seq.toList |> should equal xs
