@@ -148,11 +148,15 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
               (this.rangedIterator(0,count).GetEnumerator())
                 :> System.Collections.IEnumerator
 
+        interface IVector<'a> with
+            member this.Conj x = this.conj x :> IVector<'a>
+
 and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
     let tailOff = 
         if count < 32 then 0 else
         ((count - 1) >>> 5) <<< 5
 
+    new() = PersistentVector<'a>(0,5,Array.create 32 null,[||])
 
     with
         static member ofSeq(items:'a seq) =
@@ -268,5 +272,7 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
               (this.rangedIterator(0,count).GetEnumerator())
                 :> System.Collections.IEnumerator
 
+        interface IVector<'a> with
+            member this.Conj x = this.cons x :> IVector<'a>
 
         member this.Count = count

@@ -1,5 +1,5 @@
 ﻿[<AutoOpen>]
 module FSharpx.DataStructures.Interfaces
 
-type IVector =
-   abstract member Conj : 'a -> IVector
+type IVector<'a> =
+   abstract member Conj : 'a -> IVector<'a>
