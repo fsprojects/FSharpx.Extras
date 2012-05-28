@@ -3,11 +3,11 @@ module FSharpx.DataStructures.PersistentVector
 
 open FSharpx
 
-type Node(array: obj[])=
-    new() = Node(Array.create 32 null)
-    member this.Array = array
+type Node = obj[]
 
-let emptyNode = Node()
+let newNode() = Array.create 32 null    
+
+let emptyNode = newNode()
 
 type PersistentVector<'a> =  {
     Count : int
@@ -31,8 +31,8 @@ let empty<'a> = persistentVector<'a>(0,5,emptyNode,[||])
 
 let rec newPath(level,node:Node) =
     if level = 0 then node else
-    let ret = Node()
-    ret.Array.[0] <- newPath(level - 5,node) :> obj
+    let ret = newNode()
+    ret.[0] <- newPath(level - 5,node) :> obj
     ret
 
 let rec pushTail(vector,level,parent:Node,tailnode) =
@@ -41,18 +41,18 @@ let rec pushTail(vector,level,parent:Node,tailnode) =
     // else alloc new path
     //return  nodeToInsert placed in copy of parent
     let subidx = ((vector.Count - 1) >>> level) &&& 0x01f
-    let ret = Node(Array.copy parent.Array)
+    let ret = Array.copy parent
 
     let nodeToInsert =
         if level = 5 then tailnode else
 
-        let child = parent.Array.[subidx]
+        let child = parent.[subidx]
         if child <> null then
             pushTail(vector,level-5,child :?> Node,tailnode)
         else
             newPath(level-5,tailnode)
 
-    ret.Array.[subidx] <- nodeToInsert :> obj
+    ret.[subidx] <- nodeToInsert :> obj
     ret
 
 let inline arrayFor<'a> i (vector:PersistentVector<'a>) =
@@ -62,10 +62,10 @@ let inline arrayFor<'a> i (vector:PersistentVector<'a>) =
             let level = ref vector.Shift
             while !level > 0 do
                 let pos = (i >>> !level) &&& 0x01f
-                node := (!node).Array.[pos] :?> Node
+                node := (!node).[pos] :?> Node
                 level := !level - 5
 
-            (!node).Array
+            !node
     else raise Exceptions.OutOfBounds
 
 let nth<'a> i (vector:PersistentVector<'a>) : 'a =
@@ -78,14 +78,14 @@ let cons<'a> (x:'a) (vector:PersistentVector<'a>) =
         persistentVector<'a>(vector.Count + 1,vector.Shift,vector.Root,newTail)
     else
         //full tail, push into tree
-        let tailNode = Node(vector.Tail)
+        let tailNode = vector.Tail
         let newShift = vector.Shift
 
         //overflow root?
         if (vector.Count >>> 5) > (1 <<< vector.Shift) then
-            let newRoot = Node()
-            newRoot.Array.[0] <- vector.Root :> obj
-            newRoot.Array.[1] <- newPath(vector.Shift,tailNode) :> obj
+            let newRoot = newNode()
+            newRoot.[0] <- vector.Root :> obj
+            newRoot.[1] <- newPath(vector.Shift,tailNode) :> obj
             persistentVector<'a>(vector.Count + 1,vector.Shift + 5,newRoot,[| x |])
         else
             let newRoot = pushTail(vector,vector.Shift,vector.Root,tailNode)
@@ -93,12 +93,12 @@ let cons<'a> (x:'a) (vector:PersistentVector<'a>) =
 
 
 let rec doAssoc(level,node:Node,i,x) =
-    let ret = Node(Array.copy node.Array)
+    let ret = Array.copy node
     if level = 0 then 
-        ret.Array.[i &&& 0x01f] <- x :> obj 
+        ret.[i &&& 0x01f] <- x :> obj 
     else
         let subidx = (i >>> level) &&& 0x01f
-        ret.Array.[subidx] <- doAssoc(level - 5, node.Array.[subidx] :?> Node, i, x) :> obj
+        ret.[subidx] <- doAssoc(level - 5, node.[subidx] :?> Node, i, x) :> obj
     ret
 
 let assocN<'a> i (x:'a) (vector:PersistentVector<'a>) : PersistentVector<'a> =
