@@ -33,6 +33,16 @@
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>bin\Release\FSharpx.Observable.XML</DocumentationFile>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DataStructures|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <Tailcalls>false</Tailcalls>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <WarningLevel>3</WarningLevel>
+    <DocumentationFile>bin\Debug\FSharpx.Observable.XML</DocumentationFile>
+    <OutputPath>bin\DataStructures\</OutputPath>
+  </PropertyGroup>
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
     <Reference Include="mscorlib" />
