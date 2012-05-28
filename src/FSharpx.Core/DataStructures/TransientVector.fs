@@ -9,20 +9,30 @@ let newNode() = Array.create 32 null
 
 let emptyNode = newNode()
 
-type TransientVector<'a> (count,shift,root,tail) = 
-    let tailOff = 
-        if count < 32 then 0 else
-        ((count - 1) >>> 5) <<< 5
+type TransientVector<'a> (count,shift,root,tail) =
+    let mutable count = count
+    let mutable root = root
+    let mutable tail = tail
+    let mutable shift = shift
+    
     with
-        member this.Count = count
+        member internal this.EnsureEditable() = ()
+        member this.Count = this.EnsureEditable(); count
         member internal this.Shift = shift
         member internal this.Root = root
         member internal this.Tail = tail
-        member internal this.TailOff = tailOff
+        member internal this.TailOff =
+            if count < 32 then 0 else
+            ((count - 1) >>> 5) <<< 5
+
+        member internal this.IncCount() = count <- count + 1
+        member internal this.SetRoot r = root <- r
+        member internal this.SetTail t = tail <- t
+        member internal this.SetShift s = shift <- s
 
 let inline count (vector:TransientVector<'a>) = vector.Count
 
-let empty<'a> = TransientVector<'a>(0,5,emptyNode,[||])
+let empty<'a> = TransientVector<'a>(0,5,emptyNode,Array.create 32 null)
 
 let rec newPath(level,node:Node) =
     if level = 0 then node else
@@ -50,7 +60,7 @@ let rec pushTail(vector:TransientVector<'a>,level,parent:Node,tailnode) =
     ret.[subidx] <- nodeToInsert :> obj
     ret
 
-let inline arrayFor<'a> i (vector:TransientVector<'a>) =
+let inline internal arrayFor<'a> i (vector:TransientVector<'a>) =
     if i >= 0 && i < vector.Count then
         if i >= vector.TailOff then vector.Tail else
             let node = ref vector.Root
@@ -68,23 +78,35 @@ let nth<'a> i (vector:TransientVector<'a>) : 'a =
     node.[i &&& 0x01f] :?> 'a
 
 let cons<'a> (x:'a) (vector:TransientVector<'a>) =
+    vector.EnsureEditable()
+
+    //room in tail?
     if vector.Count - vector.TailOff < 32 then
-        let newTail = Array.append vector.Tail [|x:>obj|]
-        TransientVector<'a>(vector.Count + 1,vector.Shift,vector.Root,newTail)
+        vector.Tail.[vector.Count &&& 0x01f] <- x :> obj
+        vector.IncCount()
+        vector
     else
         //full tail, push into tree
         let tailNode = vector.Tail
         let newShift = vector.Shift
+        let tail = Array.create 32 null
+        tail.[0] <- x :> obj
 
         //overflow root?
-        if (vector.Count >>> 5) > (1 <<< vector.Shift) then
-            let newRoot = newNode()
-            newRoot.[0] <- vector.Root :> obj
-            newRoot.[1] <- newPath(vector.Shift,tailNode) :> obj
-            TransientVector<'a>(vector.Count + 1,vector.Shift + 5,newRoot,[| x |])
-        else
-            let newRoot = pushTail(vector,vector.Shift,vector.Root,tailNode)
-            TransientVector<'a>(vector.Count + 1,vector.Shift,newRoot,[| x |])
+        let newRoot = 
+            if (vector.Count >>> 5) > (1 <<< vector.Shift) then
+                let newRoot = newNode()
+                newRoot.[0] <- vector.Root :> obj
+                newRoot.[1] <- newPath(vector.Shift,tailNode) :> obj
+                vector.SetShift(vector.Shift + 5)
+                newRoot
+            else
+                pushTail(vector,vector.Shift,vector.Root,tailNode)
+
+        vector.SetTail tail
+        vector.SetRoot newRoot
+        vector.IncCount()
+        vector
 
 
 let rec doAssoc(level,node:Node,i,x) =
