@@ -4,14 +4,9 @@ module FSharpx.DataStructures.TransientVector
 open FSharpx
 open FSharpx.DataStructures.Vector
 
-let newNode() = Array.create 32 null    
-
-let emptyNode = newNode()
-
-
 let inline count (vector:TransientVector<'a>) = vector.Count
 
-let empty<'a> = TransientVector<'a>(0,5,emptyNode,Array.create 32 null)
+let empty<'a> = TransientVector<'a>()
 
 let inline nth<'a> i (vector:TransientVector<'a>) : 'a = vector.nth i
 
