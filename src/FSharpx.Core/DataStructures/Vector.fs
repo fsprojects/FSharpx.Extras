@@ -233,19 +233,39 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             member this.Count() = this.EnsureEditable(); count
             member this.AssocN(i,x) = this.assocN(i,x) :> IVector<'a>
 
-and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
+and PersistentVector<[<EqualityConditionalOn>]'a> (count,shift:int,root:Node,tail:obj[])  =
+    let hashCode = ref None
     let tailOff = 
         if count < blockSize then 0 else
         ((count - 1) >>> blockSizeShift) <<< blockSizeShift
 
-    new() = PersistentVector<'a>(0,blockSizeShift,Node(),[||])
-
     with
+        static member Empty() = PersistentVector<'a>(0,blockSizeShift,Node(),[||])
+
         static member ofSeq(items:'a seq) =
             let mutable ret = TransientVector()
             for item in items do
                 ret <- ret.conj item
             ret.persistent()
+
+        override this.GetHashCode() =
+            match !hashCode with
+            | None ->
+                let mutable hash = 1
+                for x in this.rangedIterator(0,count) do
+                    hash <- 31 * hash + Unchecked.hash x
+                hashCode := Some hash
+                hash
+            | Some hash -> hash
+
+        override this.Equals(other) =
+            let v = this :> IVector<'a>
+            match other with
+            | :? IVector<'a> as y -> 
+                if v.Count() <> y.Count() then false else
+                if v.GetHashCode() <> y.GetHashCode() then false else
+                Seq.forall2 (Unchecked.equals) this y
+            | _ -> false
 
         member internal this.NewPath(level,node:Node) =
             if level = 0 then node else
@@ -347,7 +367,7 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
 
         member this.pop() =
             if count = 0 then failwith "Can't pop empty vector" else
-            if count = 1 then PersistentVector<'a>() else
+            if count = 1 then PersistentVector<'a>.Empty() else
 
             //if(tail.length > 1)
             if count - tailOff > 1 then PersistentVector(count - 1, shift, root, tail.[0..(tail.Length-1)]) else
@@ -398,26 +418,26 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
 
             member this.AssocN(i,x) = this.assocN(i,x) :> IVector<'a>
 
-type 'a vector = PersistentVector<'a>
+type 'a vector = IVector<'a>
 
 /// Returns the number of items in the collection.
-let inline count (vector:'a vector) : int = (vector :> IVector<'a>).Count()
+let inline count (vector:'a vector) : int = vector.Count()
 
-let empty<'a> = PersistentVector<'a>()
+let empty<'a> = PersistentVector<'a>.Empty() :> IVector<'a>
 
 /// Returns the value at the index. If the index is out of bounds it throws an exception.
-let inline nth<'a> i (vector:'a vector) : 'a = vector.nth i
+let inline nth<'a> i (vector:'a vector) : 'a = vector.[i]
  
 /// Returns a new vector with the element 'added' at the end.   
-let inline cons<'a> (x:'a) (vector:'a vector) = vector.cons x
+let inline cons<'a> (x:'a) (vector:'a vector) = vector.Conj x
 
 /// Returns the last element in the vector. If the vector is empty it throws an exception.
-let inline peek<'a> (vector:'a vector) = (vector :> IVector<'a>).Peek()
+let inline peek<'a> (vector:'a vector) = vector.Peek()
 
 /// Returns a new vector without the last item. If the collection is empty it throws an exception.
-let inline pop<'a> (vector:'a vector) = vector.pop()
+let inline pop<'a> (vector:'a vector) = vector.Pop()
 
 /// Returns a new vector that contains the given value at the index. Note - index must be <= vector.Count.
-let inline assocN<'a> i (x:'a) (vector:'a vector) : 'a vector = vector.assocN(i,x)
+let inline assocN<'a> i (x:'a) (vector:'a vector) : 'a vector = vector.AssocN(i,x)
 
-let inline ofSeq (items:'a seq) = PersistentVector.ofSeq items
+let inline ofSeq (items:'a seq) = PersistentVector.ofSeq items :> IVector<'a>

@@ -93,3 +93,39 @@ let ``vector with 30000 elements should allow pop``() =
         vector := pop (!vector)
 
     !vector |> Seq.toList |> should equal []
+
+[<Test>]
+let ``vector with 3 elements can compute hashcodes``() =
+    let vector1 = ref empty
+    for i in 1..3 do
+        vector1 := cons i (!vector1)
+
+    let vector2 = ref empty
+    for i in 1..3 do
+        vector2 := cons i (!vector2)
+
+    let vector3 = ref empty
+    for i in 1..3 do
+        vector3 := cons (2*i) (!vector3)
+
+    vector1.GetHashCode() |> should equal (vector2.GetHashCode())
+    vector1.GetHashCode() |> should equal (vector2.GetHashCode())
+
+[<Test>]
+let ``vector with 3 elements can be compared``() =
+    let vector1 = ref empty
+    for i in 1..3 do
+        vector1 := cons i (!vector1)
+
+    let vector2 = ref empty
+    for i in 1..3 do
+        vector2 := cons i (!vector2)
+
+    let vector3 = ref empty
+    for i in 1..3 do
+        vector3 := cons (2*i) (!vector3)
+
+
+    vector1 = vector1 |> should equal true
+    vector1 = vector2 |> should equal true
+    vector1 = vector3 |> should equal false
