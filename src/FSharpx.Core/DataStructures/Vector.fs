@@ -2,8 +2,18 @@
 module FSharpx.DataStructures.Vector
 
 open FSharpx
+open System.Threading
 
-type Node = obj[]
+type Node(thread,array:obj[]) =
+    let thread = thread
+    
+    with
+        member this.Array = array
+        member this.Thread = thread
+        member this.SetThread t = thread := t
+
+let newNode() = Node(ref Thread.CurrentThread,Array.create 32 null)
+let emptyNode() = Node(ref null,Array.create 32 null)
 
 type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
     let mutable count = count
@@ -11,34 +21,38 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
     let mutable tail = tail
     let mutable shift = shift
 
-    new() = TransientVector<'a>(0,5,Array.create 32 null,Array.create 32 null)
+    new() = TransientVector<'a>(0,5,newNode(),Array.create 32 null)
     
     with
+        member internal this.EnsureEditable(node:Node) =
+            if node.Thread = root.Thread then node else
+            Node(root.Thread,Array.copy node.Array)
+
         member internal this.NewPath(level,node:Node) =
             if level = 0 then node else
             let ret = Array.create 32 null
             ret.[0] <- this.NewPath(level - 5,node) :> obj
-            ret
+            Node(node.Thread,ret)
 
         member internal this.PushTail(level,parent:Node,tailnode) =
             //if parent is leaf, insert node,
             // else does it map to an existing child? -> nodeToInsert = pushNode one more level
             // else alloc new path
             //return  nodeToInsert placed in copy of parent
-    
+            let parent = this.EnsureEditable parent
             let subidx = ((count - 1) >>> level) &&& 0x01f
-            let ret = Array.copy parent
+            let ret = parent
 
             let nodeToInsert =
                 if level = 5 then tailnode else
 
-                let child = parent.[subidx]
+                let child = parent.Array.[subidx]
                 if child <> null then
                     this.PushTail(level-5,child :?> Node,tailnode)
                 else
                     this.NewPath(level-5,tailnode)
 
-            ret.[subidx] <- nodeToInsert :> obj
+            ret.Array.[subidx] <- nodeToInsert :> obj
             ret
 
         member internal this.ArrayFor<'a> i =
@@ -48,10 +62,10 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
                     let mutable level = shift
                     while level > 0 do
                         let pos = (i >>> level) &&& 0x01f
-                        node <- node.[pos] :?> Node
+                        node <- node.Array.[pos] :?> Node
                         level <- level - 5
 
-                    node
+                    node.Array
             else raise Exceptions.OutOfBounds
 
         member this.nth i =
@@ -67,7 +81,7 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
                 tail.[count &&& 0x01f] <- x :> obj
             else
                 //full tail, push into tree
-                let tailNode = tail
+                let tailNode = Node(root.Thread,tail)
                 let newShift = shift
                 let newTail = Array.create 32 null
                 newTail.[0] <- x :> obj
@@ -75,9 +89,9 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
                 //overflow root?
                 let newRoot = 
                     if (count >>> 5) > (1 <<< shift) then
-                        let newRoot = Array.create 32 null
-                        newRoot.[0] <- root :> obj
-                        newRoot.[1] <- this.NewPath(shift,tailNode) :> obj
+                        let newRoot = Node(root.Thread,Array.create 32 null)
+                        newRoot.Array.[0] <- root :> obj
+                        newRoot.Array.[1] <- this.NewPath(shift,tailNode) :> obj
                         shift <- shift + 5
                         newRoot
                     else
@@ -90,12 +104,13 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             this
 
         member internal this.doAssoc(level,node:Node,i,x) =
+            let node = this.EnsureEditable(node)
             let ret = node
             if level = 0 then 
-                ret.[i &&& 0x01f] <- x :> obj 
+                ret.Array.[i &&& 0x01f] <- x :> obj 
             else
                 let subidx = (i >>> level) &&& 0x01f
-                ret.[subidx] <- this.doAssoc(level - 5, node.[subidx] :?> Node, i, x) :> obj
+                ret.Array.[subidx] <- this.doAssoc(level - 5, node.Array.[subidx] :?> Node, i, x) :> obj
             ret
 
         member this.assocN<'a> i (x:'a) : TransientVector<'a> =
@@ -128,12 +143,17 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
 
         member this.persistent() : PersistentVector<'a> =
             this.EnsureEditable()
-            // TODO: root.edit.set(null)
+            root.SetThread null
             let l = count - this.TailOff()
             let trimmedTail = Array.init l (fun i -> tail.[i])
             PersistentVector(count, shift, root, trimmedTail)
 
-        member internal this.EnsureEditable() = () // TODO:
+        member internal this.EnsureEditable() =
+            if !root.Thread = Thread.CurrentThread then () else
+            if !root.Thread <> null then
+                failwith "Transient used by non-owner thread"
+            failwith "Transient used after persistent! call"
+
         member internal this.TailOff() =
             if count < 32 then 0 else
             ((count - 1) >>> 5) <<< 5
@@ -157,7 +177,7 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
         if count < 32 then 0 else
         ((count - 1) >>> 5) <<< 5
 
-    new() = PersistentVector<'a>(0,5,Array.create 32 null,[||])
+    new() = PersistentVector<'a>(0,5,emptyNode(),[||])
 
     with
         static member ofSeq(items:'a seq) =
@@ -168,8 +188,8 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
 
         member internal this.NewPath(level,node:Node) =
             if level = 0 then node else
-            let ret = Array.create 32 null   
-            ret.[0] <- this.NewPath(level - 5,node) :> obj
+            let ret = Node(root.Thread,Array.create 32 null)
+            ret.Array.[0] <- this.NewPath(level - 5,node) :> obj
             ret
 
         member internal this.PushTail(level,parent:Node,tailnode) =
@@ -178,18 +198,18 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             // else alloc new path
             //return  nodeToInsert placed in copy of parent
             let subidx = ((count - 1) >>> level) &&& 0x01f
-            let ret = Array.copy parent
+            let ret = Node(parent.Thread,Array.copy parent.Array)
 
             let nodeToInsert =
                 if level = 5 then tailnode else
 
-                let child = parent.[subidx]
+                let child = parent.Array.[subidx]
                 if child <> null then
                     this.PushTail(level-5,child :?> Node,tailnode)
                 else
                     this.NewPath(level-5,tailnode)
 
-            ret.[subidx] <- nodeToInsert :> obj
+            ret.Array.[subidx] <- nodeToInsert :> obj
             ret
 
         member internal this.ArrayFor<'a> i =
@@ -199,10 +219,10 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
                     let mutable level = shift
                     while level > 0 do
                         let pos = (i >>> level) &&& 0x01f
-                        node <- node.[pos] :?> Node
+                        node <- node.Array.[pos] :?> Node
                         level <- level - 5
 
-                    node
+                    node.Array
             else raise Exceptions.OutOfBounds
 
         member this.nth<'a> i : 'a =
@@ -215,26 +235,26 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
                 PersistentVector<'a>(count + 1,shift,root,newTail)
             else
                 //full tail, push into tree
-                let tailNode = tail
+                let tailNode = Node(root.Thread,tail)
                 let newShift = shift
 
                 //overflow root?
                 if (count >>> 5) > (1 <<< shift) then
-                    let newRoot = Array.create 32 null    
-                    newRoot.[0] <- root :> obj
-                    newRoot.[1] <- this.NewPath(shift,tailNode) :> obj
+                    let newRoot = Node(root.Thread,Array.create 32 null)
+                    newRoot.Array.[0] <- root :> obj
+                    newRoot.Array.[1] <- this.NewPath(shift,tailNode) :> obj
                     PersistentVector<'a>(count + 1,shift + 5,newRoot,[| x |])
                 else
                     let newRoot = this.PushTail(shift,root,tailNode)
                     PersistentVector<'a>(count + 1,shift,newRoot,[| x |])
 
         member internal this.doAssoc(level,node:Node,i,x) =
-            let ret = Array.copy node
+            let ret = Node(root.Thread,Array.copy node.Array)
             if level = 0 then 
-                ret.[i &&& 0x01f] <- x :> obj 
+                ret.Array.[i &&& 0x01f] <- x :> obj 
             else
                 let subidx = (i >>> level) &&& 0x01f
-                ret.[subidx] <- this.doAssoc(level - 5, node.[subidx] :?> Node, i, x) :> obj
+                ret.Array.[subidx] <- this.doAssoc(level - 5, node.Array.[subidx] :?> Node, i, x) :> obj
             ret
 
         member this.assocN<'a> i (x:'a) : PersistentVector<'a> =
