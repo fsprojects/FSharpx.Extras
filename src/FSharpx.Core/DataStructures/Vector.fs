@@ -204,7 +204,7 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             root.SetThread null
             let l = count - this.TailOff()
             let trimmedTail = Array.init l (fun i -> tail.[i])
-            PersistentVector(count, shift, root, trimmedTail)
+            PersistentVector(count, shift, root, trimmedTail,None)
 
         member internal this.EnsureEditable() =
             if !root.Thread = Thread.CurrentThread then () else
@@ -233,14 +233,14 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             member this.Count() = this.EnsureEditable(); count
             member this.AssocN(i,x) = this.assocN(i,x) :> IVector<'a>
 
-and PersistentVector<[<EqualityConditionalOn>]'a> (count,shift:int,root:Node,tail:obj[])  =
-    let hashCode = ref None
+and PersistentVector<[<EqualityConditionalOn>]'a> (count,shift:int,root:Node,tail:obj[],hashCode)  =
+    let hashCode = ref hashCode
     let tailOff = 
         if count < blockSize then 0 else
         ((count - 1) >>> blockSizeShift) <<< blockSizeShift
 
     with
-        static member Empty() = PersistentVector<'a>(0,blockSizeShift,Node(),[||])
+        static member Empty() = PersistentVector<'a>(0,blockSizeShift,Node(),[||],None)
 
         static member ofSeq(items:'a seq) =
             let mutable ret = TransientVector()
@@ -266,6 +266,8 @@ and PersistentVector<[<EqualityConditionalOn>]'a> (count,shift:int,root:Node,tai
                 if v.GetHashCode() <> y.GetHashCode() then false else
                 Seq.forall2 (Unchecked.equals) this y
             | _ -> false
+
+        member internal this.SetHash hash = hashCode := hash; this
 
         member internal this.NewPath(level,node:Node) =
             if level = 0 then node else
@@ -311,9 +313,10 @@ and PersistentVector<[<EqualityConditionalOn>]'a> (count,shift:int,root:Node,tai
             node.[i &&& blockIndexMask] :?> 'a
 
         member this.cons<'a> (x:'a) =
+            let newHash = Some(31 * Unchecked.hash this + Unchecked.hash x)
             if count - tailOff < blockSize then
                 let newTail = Array.append tail [|x:>obj|]
-                PersistentVector<'a>(count + 1,shift,root,newTail)
+                PersistentVector<'a>(count + 1,shift,root,newTail,newHash )
             else
                 //full tail, push into tree
                 let tailNode = Node(root.Thread,tail)
@@ -324,10 +327,10 @@ and PersistentVector<[<EqualityConditionalOn>]'a> (count,shift:int,root:Node,tai
                     let newRoot = Node(root.Thread,Array.create blockSize null)
                     newRoot.Array.[0] <- root :> obj
                     newRoot.Array.[1] <- this.NewPath(shift,tailNode) :> obj
-                    PersistentVector<'a>(count + 1,shift + blockSizeShift,newRoot,[| x |])
+                    PersistentVector<'a>(count + 1,shift + blockSizeShift,newRoot,[| x |],newHash)
                 else
                     let newRoot = this.PushTail(shift,root,tailNode)
-                    PersistentVector<'a>(count + 1,shift,newRoot,[| x |])
+                    PersistentVector<'a>(count + 1,shift,newRoot,[| x |],newHash)
 
         member internal this.doAssoc(level,node:Node,i,x) =
             let ret = Node(root.Thread,Array.copy node.Array)
@@ -343,9 +346,9 @@ and PersistentVector<[<EqualityConditionalOn>]'a> (count,shift:int,root:Node,tai
                 if i >= tailOff then
                     let newTail = Array.copy tail
                     newTail.[i &&& blockIndexMask] <- x :> obj
-                    PersistentVector(count, shift, root, newTail)
+                    PersistentVector(count, shift, root, newTail,None)
                 else
-                    PersistentVector(count, shift, this.doAssoc(shift, root, i, x), tail)
+                    PersistentVector(count, shift, this.doAssoc(shift, root, i, x),tail,None)
             elif i = count then
                 this.cons x
             else raise Exceptions.OutOfBounds
@@ -370,7 +373,7 @@ and PersistentVector<[<EqualityConditionalOn>]'a> (count,shift:int,root:Node,tai
             if count = 1 then PersistentVector<'a>.Empty() else
 
             //if(tail.length > 1)
-            if count - tailOff > 1 then PersistentVector(count - 1, shift, root, tail.[0..(tail.Length-1)]) else
+            if count - tailOff > 1 then PersistentVector(count - 1, shift, root, tail.[0..(tail.Length-1)],None) else
 
             let newtail = this.ArrayFor(count - 2)
 
@@ -383,7 +386,7 @@ and PersistentVector<[<EqualityConditionalOn>]'a> (count,shift:int,root:Node,tai
                 newroot <- newroot.Array.[0] :?> Node
                 newshift <- newshift - blockSizeShift
 
-            PersistentVector(count - 1, newshift, newroot, newtail)
+            PersistentVector(count - 1, newshift, newroot, newtail,None)
 
         member this.rangedIterator<'a>(startIndex,endIndex) : 'a seq =
             let i = ref startIndex
