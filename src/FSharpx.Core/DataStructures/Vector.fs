@@ -226,6 +226,7 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
                 :> System.Collections.IEnumerator
 
         interface IVector<'a> with
+            member this.Item with get i = this.nth i
             member this.Conj x = this.conj x :> IVector<'a>
             member this.Pop() = this.pop() :> IVector<'a>
             member this.Peek() = if count > 0 then this.nth(count - 1) else failwith "Can't peek empty vector"
@@ -389,6 +390,7 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
                 :> System.Collections.IEnumerator
 
         interface IVector<'a> with
+            member this.Item with get i = this.nth i
             member this.Conj x = this.cons x :> IVector<'a>
             member this.Pop() = this.pop() :> IVector<'a>
             member this.Count() = count
