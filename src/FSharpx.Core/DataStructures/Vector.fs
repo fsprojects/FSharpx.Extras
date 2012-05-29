@@ -5,7 +5,7 @@ open FSharpx
 open System.Threading
 
 let is64BitProcess = System.IntPtr.Size = 8
-let blockSizeShift = if is64BitProcess then 6 else 5
+let blockSizeShift = 5 // TODO: what can we do in 64Bit case?
 let blockSize = 1 <<< blockSizeShift
 let blockIndexMask = blockSize - 1
 
