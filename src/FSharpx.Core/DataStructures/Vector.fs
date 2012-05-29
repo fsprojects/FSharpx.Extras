@@ -450,3 +450,9 @@ let inline map (f:'a -> 'b) (vector:'a vector) : 'b vector =
     for item in vector do
         ret <- ret.conj(f item)
     ret.persistent() :> 'b vector
+
+let inline init count (f: int -> 'a) : 'a vector =
+    let mutable ret = TransientVector()
+    for i in 0..(count-1) do
+        ret <- ret.conj(f i)
+    ret.persistent() :> 'a vector

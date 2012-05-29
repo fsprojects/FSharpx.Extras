@@ -139,3 +139,11 @@ let ``vector should allow map``() =
     let vector2 = map (fun x -> x * 2) (!vector)
 
     vector2 |> Seq.toList |> should equal [for i in 1..30000 -> i * 2]
+
+[<Test>]
+let ``vector should allow init``() =
+    let vector = init 5 (fun x -> x * 2) 
+    let s = Seq.init 5 (fun x -> x * 2)
+
+    s |> Seq.toList |> should equal [0;2;4;6;8]
+    vector |> Seq.toList |> should equal [0;2;4;6;8]
