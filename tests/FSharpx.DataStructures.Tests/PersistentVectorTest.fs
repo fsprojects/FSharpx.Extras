@@ -129,3 +129,13 @@ let ``vector with 3 elements can be compared``() =
     vector1 = vector1 |> should equal true
     vector1 = vector2 |> should equal true
     vector1 = vector3 |> should equal false
+
+[<Test>]
+let ``vector should allow map``() =
+    let vector = ref empty
+    for i in 1..30000 do
+        vector := cons i (!vector)
+
+    let vector2 = map (fun x -> x * 2) (!vector)
+
+    vector2 |> Seq.toList |> should equal [for i in 1..30000 -> i * 2]

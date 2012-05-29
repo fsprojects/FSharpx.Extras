@@ -429,18 +429,24 @@ let inline count (vector:'a vector) : int = vector.Count()
 let empty<'a> = PersistentVector<'a>.Empty() :> IVector<'a>
 
 /// Returns the value at the index. If the index is out of bounds it throws an exception.
-let inline nth<'a> i (vector:'a vector) : 'a = vector.[i]
+let inline nth i (vector:'a vector) : 'a = vector.[i]
  
 /// Returns a new vector with the element 'added' at the end.   
-let inline cons<'a> (x:'a) (vector:'a vector) = vector.Conj x
+let inline cons (x:'a) (vector:'a vector) = vector.Conj x
 
 /// Returns the last element in the vector. If the vector is empty it throws an exception.
-let inline peek<'a> (vector:'a vector) = vector.Peek()
+let inline peek (vector:'a vector) = vector.Peek()
 
 /// Returns a new vector without the last item. If the collection is empty it throws an exception.
-let inline pop<'a> (vector:'a vector) = vector.Pop()
+let inline pop (vector:'a vector) = vector.Pop()
 
 /// Returns a new vector that contains the given value at the index. Note - index must be <= vector.Count.
-let inline assocN<'a> i (x:'a) (vector:'a vector) : 'a vector = vector.AssocN(i,x)
+let inline assocN i (x:'a) (vector:'a vector) : 'a vector = vector.AssocN(i,x)
 
-let inline ofSeq (items:'a seq) = PersistentVector.ofSeq items :> IVector<'a>
+let inline ofSeq (items:'a seq) = PersistentVector.ofSeq items :> 'a vector
+ 
+let inline map (f:'a -> 'b) (vector:'a vector) : 'b vector = 
+    let mutable ret = TransientVector()
+    for item in vector do
+        ret <- ret.conj(f item)
+    ret.persistent() :> 'b vector
