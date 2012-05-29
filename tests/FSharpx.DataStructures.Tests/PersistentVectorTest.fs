@@ -2,7 +2,7 @@
 
 open System
 open FSharpx.DataStructures
-open FSharpx.DataStructures.PersistentVector
+open FSharpx.DataStructures.Vector
 open NUnit.Framework
 open FsUnit
 

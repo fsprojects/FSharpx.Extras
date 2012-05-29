@@ -2,7 +2,7 @@
 let r = new System.Random()
 
 open FSharpx.TimeMeasurement
-open FSharpx.DataStructures.PersistentVector
+open FSharpx.DataStructures.Vector
 
 let array n = [|for i in 1..n -> r.Next()|]
 

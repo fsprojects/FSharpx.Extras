@@ -397,3 +397,27 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             member this.Peek() = if count > 0 then this.nth(count - 1) else failwith "Can't peek empty vector"
 
             member this.AssocN(i,x) = this.assocN(i,x) :> IVector<'a>
+
+type 'a vector = PersistentVector<'a>
+
+/// Returns the number of items in the collection.
+let inline count (vector:'a vector) : int = (vector :> IVector<'a>).Count()
+
+let empty<'a> = PersistentVector<'a>()
+
+/// Returns the value at the index. If the index is out of bounds it throws an exception.
+let inline nth<'a> i (vector:'a vector) : 'a = vector.nth i
+ 
+/// Returns a new vector with the element 'added' at the end.   
+let inline cons<'a> (x:'a) (vector:'a vector) = vector.cons x
+
+/// Returns the last element in the vector. If the vector is empty it throws an exception.
+let inline peek<'a> (vector:'a vector) = (vector :> IVector<'a>).Peek()
+
+/// Returns a new vector without the last item. If the collection is empty it throws an exception.
+let inline pop<'a> (vector:'a vector) = vector.pop()
+
+/// Returns a new vector that contains the given value at the index. Note - index must be <= vector.Count.
+let inline assocN<'a> i (x:'a) (vector:'a vector) : 'a vector = vector.assocN(i,x)
+
+let inline ofSeq (items:'a seq) = PersistentVector.ofSeq items

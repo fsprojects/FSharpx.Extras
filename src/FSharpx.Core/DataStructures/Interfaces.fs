@@ -2,6 +2,9 @@
 module FSharpx.DataStructures.Interfaces
 
 type IVector<'a> =
+    inherit System.Collections.IEnumerable
+    inherit System.Collections.Generic.IEnumerable<'a>
+
     /// Returns the value at the index. If the index is out of bounds it throws an exception.
     abstract member Item  : int -> 'a with get
 
