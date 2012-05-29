@@ -228,6 +228,7 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
         interface IVector<'a> with
             member this.Conj x = this.conj x :> IVector<'a>
             member this.Pop() = this.pop() :> IVector<'a>
+            member this.Peek() = if count > 0 then this.nth(count - 1) else failwith "Can't peek empty vector"
             member this.Count() = this.EnsureEditable(); count
             member this.AssocN(i,x) = this.assocN(i,x) :> IVector<'a>
 
@@ -348,7 +349,7 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             if count = 1 then PersistentVector<'a>() else
 
             //if(tail.length > 1)
-            if count - tailOff > 1 then PersistentVector(count - 1, shift, root, tail.[1..]) else
+            if count - tailOff > 1 then PersistentVector(count - 1, shift, root, tail.[0..(tail.Length-1)]) else
 
             let newtail = this.ArrayFor(count - 2)
 
@@ -391,4 +392,6 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             member this.Conj x = this.cons x :> IVector<'a>
             member this.Pop() = this.pop() :> IVector<'a>
             member this.Count() = count
+            member this.Peek() = if count > 0 then this.nth(count - 1) else failwith "Can't peek empty vector"
+
             member this.AssocN(i,x) = this.assocN(i,x) :> IVector<'a>

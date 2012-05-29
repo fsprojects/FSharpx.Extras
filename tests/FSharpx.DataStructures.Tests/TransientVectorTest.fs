@@ -63,7 +63,26 @@ let ``vector with 30000 elements should allow assocN``() =
     !vector |> Seq.toList |> should equal [for i in 1..30000 -> i*2]
 
 [<Test>]
+let ``can peek elements from a vector``() =
+    let vector = empty |> conj 1 |> conj 4 |> conj 25 
+    vector |> peek |> should equal 25
+
+[<Test>]
 let ``can pop elements from a vector``() =
     let vector = empty |> conj 1 |> conj 4 |> conj 25 
     vector |> count |> should equal 3
-    vector |> pop |> pop |> count |> should equal 1
+    vector |> pop  |> count |> should equal 2
+    vector |> peek |> should equal 4
+    vector |> pop |> count |> should equal 1
+    vector |> peek |> should equal 1
+
+[<Test>]
+let ``vector with 30000 elements should allow pop``() =
+    let vector = ref empty
+    for i in 1..30000 do
+        vector := conj i (!vector)
+
+    for i in 1..30000 do
+        vector := pop (!vector)
+
+    !vector |> Seq.toList |> should equal []
