@@ -6,14 +6,12 @@ open System.Threading
 
 type Node(thread,array:obj[]) =
     let thread = thread
-    
+    new() = Node(ref null,Array.create 32 null)
     with
+        static member InCurrentThread() = Node(ref Thread.CurrentThread,Array.create 32 null)
         member this.Array = array
         member this.Thread = thread
         member this.SetThread t = thread := t
-
-let newNode() = Node(ref Thread.CurrentThread,Array.create 32 null)
-let emptyNode() = Node(ref null,Array.create 32 null)
 
 type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
     let mutable count = count
@@ -21,7 +19,7 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
     let mutable tail = tail
     let mutable shift = shift
 
-    new() = TransientVector<'a>(0,5,newNode(),Array.create 32 null)
+    new() = TransientVector<'a>(0,5,Node.InCurrentThread(),Array.create 32 null)
     
     with
         member internal this.EnsureEditable(node:Node) =
@@ -233,7 +231,7 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
         if count < 32 then 0 else
         ((count - 1) >>> 5) <<< 5
 
-    new() = PersistentVector<'a>(0,5,emptyNode(),[||])
+    new() = PersistentVector<'a>(0,5,Node(),[||])
 
     with
         static member ofSeq(items:'a seq) =
@@ -352,7 +350,7 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             let mutable newroot = this.PopTail(shift, root)
             let mutable newshift = shift
             if newroot = Unchecked.defaultof<Node> then
-                newroot <- emptyNode()
+                newroot <- Node()
 
             if shift > 5 && newroot.Array.[1] = null then
                 newroot <- newroot.Array.[0] :?> Node
