@@ -66,3 +66,10 @@ let ``vector with 30000 elements should allow assocN``() =
         vector := assocN (i-1) (i*2) (!vector)
 
     !vector |> Seq.toList |> should equal [for i in 1..30000 -> i*2]
+
+[<Test>]
+let ``can pop elements from a vector``() =
+    let vector = empty |> cons 1 |> cons 4 |> cons 25 
+    vector |> count |> should equal 3
+    vector |> pop |> count |> should equal 2
+    vector |> pop |> pop |> count |> should equal 1

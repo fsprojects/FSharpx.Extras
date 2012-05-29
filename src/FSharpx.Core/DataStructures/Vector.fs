@@ -68,6 +68,20 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
                     node.Array
             else raise Exceptions.OutOfBounds
 
+
+        member internal this.EditableArrayFor<'a> i =
+            if i >= 0 && i < count then
+                if i >= this.TailOff() then tail else
+                    let mutable node = root
+                    let mutable level = shift
+                    while level > 0 do
+                        let pos = (i >>> level) &&& 0x01f
+                        node <- this.EnsureEditable(node.Array.[pos] :?> Node)
+                        level <- level - 5
+
+                    node.Array
+            else raise Exceptions.OutOfBounds
+
         member this.nth i =
                 this.EnsureEditable()
                 let node = this.ArrayFor i
@@ -126,6 +140,47 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
                 this.conj x
             else raise Exceptions.OutOfBounds
 
+        member internal this.PopTail(level,node:Node) : Node =
+            let node = this.EnsureEditable(node)
+            let subidx = ((count-2) >>> level) &&& 0x01f
+            if level > 5 then
+                let newchild = this.PopTail(level - 5, node.Array.[subidx] :?> Node)
+                if newchild = Unchecked.defaultof<Node> && subidx = 0 then Unchecked.defaultof<Node> else
+                let ret = node
+                ret.Array.[subidx] <- newchild  :> obj
+                ret
+
+            elif subidx = 0 then Unchecked.defaultof<Node> else
+
+            let ret = node
+            ret.Array.[subidx] <- null
+            ret
+
+        member this.pop() =
+            this.EnsureEditable()
+            if count = 0 then failwith "Can't pop empty vector" else
+            if count = 1 then count <- 0; this else
+
+            let i = count - 1
+            if (i &&& 0x01f) > 0 then count <- count - 1; this else
+
+            let newtail = this.EditableArrayFor(count - 2)
+
+            let mutable newroot = this.PopTail(shift, root)
+            let mutable newshift = shift
+            if newroot = Unchecked.defaultof<Node> then
+                newroot <- Node(root.Thread,Array.create 32 null)
+
+            if shift > 5 && newroot.Array.[1] = null then
+                newroot <- this.EnsureEditable(newroot.Array.[0] :?> Node)
+                newshift <- newshift - 5
+
+            root <- newroot
+            shift <- newshift
+            count <- count - 1
+            tail <- newtail
+            this
+
         member this.rangedIterator<'a>(startIndex,endIndex) : 'a seq =
             let i = ref startIndex
             let b = ref (!i - (!i % 32))
@@ -169,6 +224,7 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
 
         interface IVector<'a> with
             member this.Conj x = this.conj x :> IVector<'a>
+            member this.Pop() = this.pop() :> IVector<'a>
             member this.Count() = this.EnsureEditable(); count
             member this.AssocN(i,x) = this.assocN i x :> IVector<'a>
 
@@ -269,6 +325,41 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
                 this.cons x
             else raise Exceptions.OutOfBounds
 
+        member internal this.PopTail(level,node:Node) : Node =
+            let subidx = ((count-2) >>> level) &&& 0x01f
+            if level > 5 then
+                let newchild = this.PopTail(level - 5, node.Array.[subidx] :?> Node)
+                if newchild = Unchecked.defaultof<Node> && subidx = 0 then Unchecked.defaultof<Node> else
+                let ret = Node(root.Thread, Array.copy node.Array);
+                ret.Array.[subidx] <- newchild  :> obj
+                ret
+
+            elif subidx = 0 then Unchecked.defaultof<Node> else
+
+            let ret = new Node(root.Thread, Array.copy node.Array)
+            ret.Array.[subidx] <- null
+            ret
+
+        member this.pop() =
+            if count = 0 then failwith "Can't pop empty vector" else
+            if count = 1 then PersistentVector<'a>() else
+
+            //if(tail.length > 1)
+            if count - tailOff > 1 then PersistentVector(count - 1, shift, root, tail.[1..]) else
+
+            let newtail = this.ArrayFor(count - 2)
+
+            let mutable newroot = this.PopTail(shift, root)
+            let mutable newshift = shift
+            if newroot = Unchecked.defaultof<Node> then
+                newroot <- emptyNode()
+
+            if shift > 5 && newroot.Array.[1] = null then
+                newroot <- newroot.Array.[0] :?> Node
+                newshift <- newshift - 5
+
+            PersistentVector(count - 1, newshift, newroot, newtail)
+
         member this.rangedIterator<'a>(startIndex,endIndex) : 'a seq =
             let i = ref startIndex
             let b = ref (!i - (!i % 32))
@@ -295,5 +386,6 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
 
         interface IVector<'a> with
             member this.Conj x = this.cons x :> IVector<'a>
+            member this.Pop() = this.pop() :> IVector<'a>
             member this.Count() = count
             member this.AssocN(i,x) = this.assocN i x :> IVector<'a>
