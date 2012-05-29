@@ -14,4 +14,4 @@ let inline conj<'a> (x:'a) (vector:TransientVector<'a>) = vector.conj x
 
 let inline pop<'a> (vector:TransientVector<'a>) = vector.pop()
 
-let inline assocN<'a> i (x:'a) (vector:TransientVector<'a>) : TransientVector<'a> = vector.assocN i x
+let inline assocN<'a> i (x:'a) (vector:TransientVector<'a>) : TransientVector<'a> = vector.assocN(i,x)

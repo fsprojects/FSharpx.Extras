@@ -14,7 +14,7 @@ let inline cons<'a> (x:'a) (vector:PersistentVector<'a>) = vector.cons x
 
 let inline pop<'a> (vector:PersistentVector<'a>) = vector.pop()
 
-let inline assocN<'a> i (x:'a) (vector:PersistentVector<'a>) : PersistentVector<'a> = vector.assocN i x
+let inline assocN<'a> i (x:'a) (vector:PersistentVector<'a>) : PersistentVector<'a> = vector.assocN(i,x)
 
 open FSharpx.DataStructures.TransientVector
 

@@ -4,11 +4,16 @@ module FSharpx.DataStructures.Vector
 open FSharpx
 open System.Threading
 
+let is64BitProcess = System.IntPtr.Size = 8
+let blockSizeShift = if is64BitProcess then 6 else 5
+let blockSize = 1 <<< blockSizeShift
+let blockIndexMask = blockSize - 1
+
 type Node(thread,array:obj[]) =
     let thread = thread
-    new() = Node(ref null,Array.create 32 null)
+    new() = Node(ref null,Array.create blockSize null)
     with
-        static member InCurrentThread() = Node(ref Thread.CurrentThread,Array.create 32 null)
+        static member InCurrentThread() = Node(ref Thread.CurrentThread,Array.create blockSize null)
         member this.Array = array
         member this.Thread = thread
         member this.SetThread t = thread := t
@@ -19,7 +24,7 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
     let mutable tail = tail
     let mutable shift = shift
 
-    new() = TransientVector<'a>(0,5,Node.InCurrentThread(),Array.create 32 null)
+    new() = TransientVector<'a>(0,blockSizeShift,Node.InCurrentThread(),Array.create blockSize null)
     
     with
         member internal this.EnsureEditable(node:Node) =
@@ -28,8 +33,8 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
 
         member internal this.NewPath(level,node:Node) =
             if level = 0 then node else
-            let ret = Array.create 32 null
-            ret.[0] <- this.NewPath(level - 5,node) :> obj
+            let ret = Array.create blockSize null
+            ret.[0] <- this.NewPath(level - blockSizeShift,node) :> obj
             Node(node.Thread,ret)
 
         member internal this.PushTail(level,parent:Node,tailnode) =
@@ -38,17 +43,17 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             // else alloc new path
             //return  nodeToInsert placed in copy of parent
             let parent = this.EnsureEditable parent
-            let subidx = ((count - 1) >>> level) &&& 0x01f
+            let subidx = ((count - 1) >>> level) &&& blockIndexMask
             let ret = parent
 
             let nodeToInsert =
-                if level = 5 then tailnode else
+                if level = blockSizeShift then tailnode else
 
                 let child = parent.Array.[subidx]
                 if child <> null then
-                    this.PushTail(level-5,child :?> Node,tailnode)
+                    this.PushTail(level-blockSizeShift,child :?> Node,tailnode)
                 else
-                    this.NewPath(level-5,tailnode)
+                    this.NewPath(level-blockSizeShift,tailnode)
 
             ret.Array.[subidx] <- nodeToInsert :> obj
             ret
@@ -59,9 +64,9 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
                     let mutable node = root
                     let mutable level = shift
                     while level > 0 do
-                        let pos = (i >>> level) &&& 0x01f
+                        let pos = (i >>> level) &&& blockIndexMask
                         node <- node.Array.[pos] :?> Node
-                        level <- level - 5
+                        level <- level - blockSizeShift
 
                     node.Array
             else raise Exceptions.OutOfBounds
@@ -73,9 +78,9 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
                     let mutable node = root
                     let mutable level = shift
                     while level > 0 do
-                        let pos = (i >>> level) &&& 0x01f
+                        let pos = (i >>> level) &&& blockIndexMask
                         node <- this.EnsureEditable(node.Array.[pos] :?> Node)
-                        level <- level - 5
+                        level <- level - blockSizeShift
 
                     node.Array
             else raise Exceptions.OutOfBounds
@@ -83,28 +88,28 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
         member this.nth i =
                 this.EnsureEditable()
                 let node = this.ArrayFor i
-                node.[i &&& 0x01f] :?> 'a
+                node.[i &&& blockIndexMask] :?> 'a
 
         member this.conj<'a> (x:'a) =
             this.EnsureEditable()
 
             //room in tail?
-            if count - this.TailOff() < 32 then
-                tail.[count &&& 0x01f] <- x :> obj
+            if count - this.TailOff() < blockSize then
+                tail.[count &&& blockIndexMask] <- x :> obj
             else
                 //full tail, push into tree
                 let tailNode = Node(root.Thread,tail)
                 let newShift = shift
-                let newTail = Array.create 32 null
+                let newTail = Array.create blockSize null
                 newTail.[0] <- x :> obj
 
                 //overflow root?
                 let newRoot = 
-                    if (count >>> 5) > (1 <<< shift) then
-                        let newRoot = Node(root.Thread,Array.create 32 null)
+                    if (count >>> blockSizeShift) > (1 <<< shift) then
+                        let newRoot = Node(root.Thread,Array.create blockSize null)
                         newRoot.Array.[0] <- root :> obj
                         newRoot.Array.[1] <- this.NewPath(shift,tailNode) :> obj
-                        shift <- shift + 5
+                        shift <- shift + blockSizeShift
                         newRoot
                     else
                         this.PushTail(shift,root,tailNode)
@@ -119,17 +124,17 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             let node = this.EnsureEditable(node)
             let ret = node
             if level = 0 then 
-                ret.Array.[i &&& 0x01f] <- x :> obj 
+                ret.Array.[i &&& blockIndexMask] <- x :> obj 
             else
-                let subidx = (i >>> level) &&& 0x01f
-                ret.Array.[subidx] <- this.doAssoc(level - 5, node.Array.[subidx] :?> Node, i, x) :> obj
+                let subidx = (i >>> level) &&& blockIndexMask
+                ret.Array.[subidx] <- this.doAssoc(level - blockSizeShift, node.Array.[subidx] :?> Node, i, x) :> obj
             ret
 
-        member this.assocN<'a> i (x:'a) : TransientVector<'a> =
+        member this.assocN<'a>(i,x:'a) : TransientVector<'a> =
             this.EnsureEditable()
             if i >= 0 && i < count then
                 if i >= this.TailOff() then
-                    tail.[i &&& 0x01f] <- x :> obj
+                    tail.[i &&& blockIndexMask] <- x :> obj
                     this
                 else
                     root <- this.doAssoc(shift, root, i, x)
@@ -140,9 +145,9 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
 
         member internal this.PopTail(level,node:Node) : Node =
             let node = this.EnsureEditable(node)
-            let subidx = ((count-2) >>> level) &&& 0x01f
-            if level > 5 then
-                let newchild = this.PopTail(level - 5, node.Array.[subidx] :?> Node)
+            let subidx = ((count-2) >>> level) &&& blockIndexMask
+            if level > blockSizeShift then
+                let newchild = this.PopTail(level - blockSizeShift, node.Array.[subidx] :?> Node)
                 if newchild = Unchecked.defaultof<Node> && subidx = 0 then Unchecked.defaultof<Node> else
                 let ret = node
                 ret.Array.[subidx] <- newchild  :> obj
@@ -160,18 +165,18 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             if count = 1 then count <- 0; this else
 
             let i = count - 1
-            if (i &&& 0x01f) > 0 then count <- count - 1; this else
+            if (i &&& blockIndexMask) > 0 then count <- count - 1; this else
 
             let newtail = this.EditableArrayFor(count - 2)
 
             let mutable newroot = this.PopTail(shift, root)
             let mutable newshift = shift
             if newroot = Unchecked.defaultof<Node> then
-                newroot <- Node(root.Thread,Array.create 32 null)
+                newroot <- Node(root.Thread,Array.create blockSize null)
 
-            if shift > 5 && newroot.Array.[1] = null then
+            if shift > blockSizeShift && newroot.Array.[1] = null then
                 newroot <- this.EnsureEditable(newroot.Array.[0] :?> Node)
-                newshift <- newshift - 5
+                newshift <- newshift - blockSizeShift
 
             root <- newroot
             shift <- newshift
@@ -181,16 +186,16 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
 
         member this.rangedIterator<'a>(startIndex,endIndex) : 'a seq =
             let i = ref startIndex
-            let b = ref (!i - (!i % 32))
+            let b = ref (!i - (!i % blockSize))
             let array = if startIndex < count then ref (this.ArrayFor !i) else ref null
 
             seq {
                 while !i < endIndex do
-                    if !i - !b = 32 then
+                    if !i - !b = blockSize then
                         array := this.ArrayFor !i
-                        b := !b + 32
+                        b := !b + blockSize
 
-                    yield (!array).[!i &&& 0x01f] :?> 'a
+                    yield (!array).[!i &&& blockIndexMask] :?> 'a
                     i := !i + 1 
                }
 
@@ -208,8 +213,8 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             failwith "Transient used after persistent! call"
 
         member internal this.TailOff() =
-            if count < 32 then 0 else
-            ((count - 1) >>> 5) <<< 5
+            if count < blockSize then 0 else
+            ((count - 1) >>> blockSizeShift) <<< blockSizeShift
         
         interface System.Collections.Generic.IEnumerable<'a> with
             member this.GetEnumerator () =
@@ -224,14 +229,14 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             member this.Conj x = this.conj x :> IVector<'a>
             member this.Pop() = this.pop() :> IVector<'a>
             member this.Count() = this.EnsureEditable(); count
-            member this.AssocN(i,x) = this.assocN i x :> IVector<'a>
+            member this.AssocN(i,x) = this.assocN(i,x) :> IVector<'a>
 
 and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
     let tailOff = 
-        if count < 32 then 0 else
-        ((count - 1) >>> 5) <<< 5
+        if count < blockSize then 0 else
+        ((count - 1) >>> blockSizeShift) <<< blockSizeShift
 
-    new() = PersistentVector<'a>(0,5,Node(),[||])
+    new() = PersistentVector<'a>(0,blockSizeShift,Node(),[||])
 
     with
         static member ofSeq(items:'a seq) =
@@ -242,8 +247,8 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
 
         member internal this.NewPath(level,node:Node) =
             if level = 0 then node else
-            let ret = Node(root.Thread,Array.create 32 null)
-            ret.Array.[0] <- this.NewPath(level - 5,node) :> obj
+            let ret = Node(root.Thread,Array.create blockSize null)
+            ret.Array.[0] <- this.NewPath(level - blockSizeShift,node) :> obj
             ret
 
         member internal this.PushTail(level,parent:Node,tailnode) =
@@ -251,17 +256,17 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             // else does it map to an existing child? -> nodeToInsert = pushNode one more level
             // else alloc new path
             //return  nodeToInsert placed in copy of parent
-            let subidx = ((count - 1) >>> level) &&& 0x01f
+            let subidx = ((count - 1) >>> level) &&& blockIndexMask
             let ret = Node(parent.Thread,Array.copy parent.Array)
 
             let nodeToInsert =
-                if level = 5 then tailnode else
+                if level = blockSizeShift then tailnode else
 
                 let child = parent.Array.[subidx]
                 if child <> null then
-                    this.PushTail(level-5,child :?> Node,tailnode)
+                    this.PushTail(level-blockSizeShift,child :?> Node,tailnode)
                 else
-                    this.NewPath(level-5,tailnode)
+                    this.NewPath(level-blockSizeShift,tailnode)
 
             ret.Array.[subidx] <- nodeToInsert :> obj
             ret
@@ -272,19 +277,19 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
                     let mutable node = root
                     let mutable level = shift
                     while level > 0 do
-                        let pos = (i >>> level) &&& 0x01f
+                        let pos = (i >>> level) &&& blockIndexMask
                         node <- node.Array.[pos] :?> Node
-                        level <- level - 5
+                        level <- level - blockSizeShift
 
                     node.Array
             else raise Exceptions.OutOfBounds
 
         member this.nth<'a> i : 'a =
             let node = this.ArrayFor i
-            node.[i &&& 0x01f] :?> 'a
+            node.[i &&& blockIndexMask] :?> 'a
 
         member this.cons<'a> (x:'a) =
-            if count - tailOff < 32 then
+            if count - tailOff < blockSize then
                 let newTail = Array.append tail [|x:>obj|]
                 PersistentVector<'a>(count + 1,shift,root,newTail)
             else
@@ -293,11 +298,11 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
                 let newShift = shift
 
                 //overflow root?
-                if (count >>> 5) > (1 <<< shift) then
-                    let newRoot = Node(root.Thread,Array.create 32 null)
+                if (count >>> blockSizeShift) > (1 <<< shift) then
+                    let newRoot = Node(root.Thread,Array.create blockSize null)
                     newRoot.Array.[0] <- root :> obj
                     newRoot.Array.[1] <- this.NewPath(shift,tailNode) :> obj
-                    PersistentVector<'a>(count + 1,shift + 5,newRoot,[| x |])
+                    PersistentVector<'a>(count + 1,shift + blockSizeShift,newRoot,[| x |])
                 else
                     let newRoot = this.PushTail(shift,root,tailNode)
                     PersistentVector<'a>(count + 1,shift,newRoot,[| x |])
@@ -305,17 +310,17 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
         member internal this.doAssoc(level,node:Node,i,x) =
             let ret = Node(root.Thread,Array.copy node.Array)
             if level = 0 then 
-                ret.Array.[i &&& 0x01f] <- x :> obj 
+                ret.Array.[i &&& blockIndexMask] <- x :> obj 
             else
-                let subidx = (i >>> level) &&& 0x01f
-                ret.Array.[subidx] <- this.doAssoc(level - 5, node.Array.[subidx] :?> Node, i, x) :> obj
+                let subidx = (i >>> level) &&& blockIndexMask
+                ret.Array.[subidx] <- this.doAssoc(level - blockSizeShift, node.Array.[subidx] :?> Node, i, x) :> obj
             ret
 
-        member this.assocN<'a> i (x:'a) : PersistentVector<'a> =
+        member this.assocN<'a>(i,x:'a) : PersistentVector<'a> =
             if i >= 0 && i < count then
                 if i >= tailOff then
                     let newTail = Array.copy tail
-                    newTail.[i &&& 0x01f] <- x :> obj
+                    newTail.[i &&& blockIndexMask] <- x :> obj
                     PersistentVector(count, shift, root, newTail)
                 else
                     PersistentVector(count, shift, this.doAssoc(shift, root, i, x), tail)
@@ -324,9 +329,9 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             else raise Exceptions.OutOfBounds
 
         member internal this.PopTail(level,node:Node) : Node =
-            let subidx = ((count-2) >>> level) &&& 0x01f
-            if level > 5 then
-                let newchild = this.PopTail(level - 5, node.Array.[subidx] :?> Node)
+            let subidx = ((count-2) >>> level) &&& blockIndexMask
+            if level > blockSizeShift then
+                let newchild = this.PopTail(level - blockSizeShift, node.Array.[subidx] :?> Node)
                 if newchild = Unchecked.defaultof<Node> && subidx = 0 then Unchecked.defaultof<Node> else
                 let ret = Node(root.Thread, Array.copy node.Array);
                 ret.Array.[subidx] <- newchild  :> obj
@@ -352,24 +357,24 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             if newroot = Unchecked.defaultof<Node> then
                 newroot <- Node()
 
-            if shift > 5 && newroot.Array.[1] = null then
+            if shift > blockSizeShift && newroot.Array.[1] = null then
                 newroot <- newroot.Array.[0] :?> Node
-                newshift <- newshift - 5
+                newshift <- newshift - blockSizeShift
 
             PersistentVector(count - 1, newshift, newroot, newtail)
 
         member this.rangedIterator<'a>(startIndex,endIndex) : 'a seq =
             let i = ref startIndex
-            let b = ref (!i - (!i % 32))
+            let b = ref (!i - (!i % blockSize))
             let array = if startIndex < count then ref (this.ArrayFor !i) else ref null
 
             seq {
                 while !i < endIndex do
-                    if !i - !b = 32 then
+                    if !i - !b = blockSize then
                         array := this.ArrayFor !i
-                        b := !b + 32
+                        b := !b + blockSize
 
-                    yield (!array).[!i &&& 0x01f] :?> 'a
+                    yield (!array).[!i &&& blockIndexMask] :?> 'a
                     i := !i + 1 
                }
 
@@ -386,4 +391,4 @@ and PersistentVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             member this.Conj x = this.cons x :> IVector<'a>
             member this.Pop() = this.pop() :> IVector<'a>
             member this.Count() = count
-            member this.AssocN(i,x) = this.assocN i x :> IVector<'a>
+            member this.AssocN(i,x) = this.assocN(i,x) :> IVector<'a>
