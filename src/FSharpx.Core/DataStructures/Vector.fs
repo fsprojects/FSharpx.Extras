@@ -141,31 +141,6 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             ret.Array.[subidx] <- null
             ret
 
-        member this.pop() =
-            this.EnsureEditable()
-            if count = 0 then failwith "Can't pop empty vector" else
-            if count = 1 then count <- 0; this else
-
-            let i = count - 1
-            if (i &&& blockIndexMask) > 0 then count <- count - 1; this else
-
-            let newtail = this.EditableArrayFor(count - 2)
-
-            let mutable newroot = this.PopTail(shift, root)
-            let mutable newshift = shift
-            if newroot = Unchecked.defaultof<Node> then
-                newroot <- Node(root.Thread,Array.create blockSize null)
-
-            if shift > blockSizeShift && newroot.Array.[1] = null then
-                newroot <- this.EnsureEditable(newroot.Array.[0] :?> Node)
-                newshift <- newshift - blockSizeShift
-
-            root <- newroot
-            shift <- newshift
-            count <- count - 1
-            tail <- newtail
-            this
-
         member this.rangedIterator<'a>(startIndex,endIndex) : 'a seq =
             let i = ref startIndex
             let b = ref (!i - (!i % blockSize))
@@ -215,7 +190,32 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
                     node.[i &&& blockIndexMask] :?> 'a
 
             member this.Conj x = this.conj x :> IVector<'a>
-            member this.Pop() = this.pop() :> IVector<'a>
+
+            member this.Pop() =
+                this.EnsureEditable()
+                if count = 0 then failwith "Can't pop empty vector" else
+                if count = 1 then count <- 0; this :> IVector<'a> else
+
+                let i = count - 1
+                if (i &&& blockIndexMask) > 0 then count <- count - 1; this :> IVector<'a> else
+
+                let newtail = this.EditableArrayFor(count - 2)
+
+                let mutable newroot = this.PopTail(shift, root)
+                let mutable newshift = shift
+                if newroot = Unchecked.defaultof<Node> then
+                    newroot <- Node(root.Thread,Array.create blockSize null)
+
+                if shift > blockSizeShift && newroot.Array.[1] = null then
+                    newroot <- this.EnsureEditable(newroot.Array.[0] :?> Node)
+                    newshift <- newshift - blockSizeShift
+
+                root <- newroot
+                shift <- newshift
+                count <- count - 1
+                tail <- newtail
+                this :> IVector<'a>
+
             member this.Peek() = if count > 0 then (this :> IVector<'a>).[count - 1] else failwith "Can't peek empty vector"
             member this.Count() = this.EnsureEditable(); count
             member this.AssocN(i,x) =
@@ -329,26 +329,6 @@ and PersistentVector<[<EqualityConditionalOn>]'a> (count,shift:int,root:Node,tai
             ret.Array.[subidx] <- null
             ret
 
-        member this.pop() =
-            if count = 0 then failwith "Can't pop empty vector" else
-            if count = 1 then PersistentVector<'a>.Empty() else
-
-            //if(tail.length > 1)
-            if count - tailOff > 1 then PersistentVector(count - 1, shift, root, tail.[0..(tail.Length-1)]) else
-
-            let newtail = this.ArrayFor(count - 2)
-
-            let mutable newroot = this.PopTail(shift, root)
-            let mutable newshift = shift
-            if newroot = Unchecked.defaultof<Node> then
-                newroot <- Node()
-
-            if shift > blockSizeShift && newroot.Array.[1] = null then
-                newroot <- newroot.Array.[0] :?> Node
-                newshift <- newshift - blockSizeShift
-
-            PersistentVector(count - 1, newshift, newroot, newtail)
-
         member this.rangedIterator<'a>(startIndex,endIndex) : 'a seq =
             let i = ref startIndex
             let b = ref (!i - (!i % blockSize))
@@ -398,7 +378,25 @@ and PersistentVector<[<EqualityConditionalOn>]'a> (count,shift:int,root:Node,tai
                         let newRoot = this.PushTail(shift,root,tailNode)
                         PersistentVector<'a>(count + 1,shift,newRoot,[| x |]) :> IVector<'a>
 
-            member this.Pop() = this.pop() :> IVector<'a>
+            member this.Pop() =
+                if count = 0 then failwith "Can't pop empty vector" else
+                if count = 1 then PersistentVector<'a>.Empty() :> IVector<'a> else
+
+                if count - tailOff > 1 then PersistentVector(count - 1, shift, root, tail.[0..(tail.Length-1)])  :> IVector<'a> else
+
+                let newtail = this.ArrayFor(count - 2)
+
+                let mutable newroot = this.PopTail(shift, root)
+                let mutable newshift = shift
+                if newroot = Unchecked.defaultof<Node> then
+                    newroot <- Node()
+
+                if shift > blockSizeShift && newroot.Array.[1] = null then
+                    newroot <- newroot.Array.[0] :?> Node
+                    newshift <- newshift - blockSizeShift
+
+                PersistentVector(count - 1, newshift, newroot, newtail) :> IVector<'a>
+
             member this.Count() = count
             member this.Peek() = if count > 0 then (this :> IVector<'a>).[count - 1] else failwith "Can't peek empty vector"
 
