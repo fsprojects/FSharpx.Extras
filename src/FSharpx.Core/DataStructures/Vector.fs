@@ -4,10 +4,15 @@ module FSharpx.DataStructures.Vector
 open FSharpx
 open System.Threading
 
-let is64BitProcess = System.IntPtr.Size = 8
+
+[<Literal>]
 let blockSizeShift = 5 // TODO: what can we do in 64Bit case?
-let blockSize = 1 <<< blockSizeShift
-let blockIndexMask = blockSize - 1
+
+[<Literal>]
+let blockSize = 32
+
+[<Literal>]
+let blockIndexMask = 0x01f
 
 type Node(thread,array:obj[]) =
     let thread = thread
