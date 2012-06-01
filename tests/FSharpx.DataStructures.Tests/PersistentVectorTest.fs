@@ -24,6 +24,13 @@ let ``multiple cons to an empty vector should create a vector``() =
     empty |> cons 1 |> cons 4 |> cons 25 |> nth 1 |> should equal 4
 
 [<Test>]
+let ``multiple assoc to the end should work like cons and create a vector``() =
+    let v = empty |> assocN 0 1 |> assocN 1 4 |> assocN 2 25 
+    v |> nth 0 |> should equal 1
+    v |> nth 1 |> should equal 4
+    v |> nth 2 |> should equal 25
+
+[<Test>]
 let ``300 cons to an empty vector should create a vector``() =
     let vector = ref empty
     for i in 1..300 do

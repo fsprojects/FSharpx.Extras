@@ -125,19 +125,6 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
                 ret.Array.[subidx] <- this.doAssoc(level - blockSizeShift, node.Array.[subidx] :?> Node, i, x) :> obj
             ret
 
-        member this.assocN<'a>(i,x:'a) : TransientVector<'a> =
-            this.EnsureEditable()
-            if i >= 0 && i < count then
-                if i >= this.TailOff() then
-                    tail.[i &&& blockIndexMask] <- x :> obj
-                    this
-                else
-                    root <- this.doAssoc(shift, root, i, x)
-                    this
-            elif i = count then
-                this.conj x
-            else raise Exceptions.OutOfBounds
-
         member internal this.PopTail(level,node:Node) : Node =
             let node = this.EnsureEditable(node)
             let subidx = ((count-2) >>> level) &&& blockIndexMask
@@ -231,7 +218,17 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             member this.Pop() = this.pop() :> IVector<'a>
             member this.Peek() = if count > 0 then (this :> IVector<'a>).[count - 1] else failwith "Can't peek empty vector"
             member this.Count() = this.EnsureEditable(); count
-            member this.AssocN(i,x) = this.assocN(i,x) :> IVector<'a>
+            member this.AssocN(i,x) =
+                this.EnsureEditable()
+                if i >= 0 && i < count then
+                    if i >= this.TailOff() then
+                        tail.[i &&& blockIndexMask] <- x :> obj
+                        this :> IVector<'a>
+                    else
+                        root <- this.doAssoc(shift, root, i, x)
+                        this :> IVector<'a>
+                elif i = count then this.conj x :> IVector<'a>
+                else raise Exceptions.OutOfBounds
 
 and PersistentVector<[<EqualityConditionalOn>]'a> (count,shift:int,root:Node,tail:obj[])  =
     let hashCode = ref None
@@ -308,25 +305,6 @@ and PersistentVector<[<EqualityConditionalOn>]'a> (count,shift:int,root:Node,tai
                     node.Array
             else raise Exceptions.OutOfBounds
 
-        member this.cons<'a> (x:'a) =
-            if count - tailOff < blockSize then
-                let newTail = Array.append tail [|x:>obj|]
-                PersistentVector<'a>(count + 1,shift,root,newTail)
-            else
-                //full tail, push into tree
-                let tailNode = Node(root.Thread,tail)
-                let newShift = shift
-
-                //overflow root?
-                if (count >>> blockSizeShift) > (1 <<< shift) then
-                    let newRoot = Node(root.Thread,Array.create blockSize null)
-                    newRoot.Array.[0] <- root :> obj
-                    newRoot.Array.[1] <- this.NewPath(shift,tailNode) :> obj
-                    PersistentVector<'a>(count + 1,shift + blockSizeShift,newRoot,[| x |])
-                else
-                    let newRoot = this.PushTail(shift,root,tailNode)
-                    PersistentVector<'a>(count + 1,shift,newRoot,[| x |])
-
         member internal this.doAssoc(level,node:Node,i,x) =
             let ret = Node(root.Thread,Array.copy node.Array)
             if level = 0 then 
@@ -335,18 +313,6 @@ and PersistentVector<[<EqualityConditionalOn>]'a> (count,shift:int,root:Node,tai
                 let subidx = (i >>> level) &&& blockIndexMask
                 ret.Array.[subidx] <- this.doAssoc(level - blockSizeShift, node.Array.[subidx] :?> Node, i, x) :> obj
             ret
-
-        member this.assocN<'a>(i,x:'a) : PersistentVector<'a> =
-            if i >= 0 && i < count then
-                if i >= tailOff then
-                    let newTail = Array.copy tail
-                    newTail.[i &&& blockIndexMask] <- x :> obj
-                    PersistentVector(count, shift, root, newTail)
-                else
-                    PersistentVector(count, shift, this.doAssoc(shift, root, i, x),tail)
-            elif i = count then
-                this.cons x
-            else raise Exceptions.OutOfBounds
 
         member internal this.PopTail(level,node:Node) : Node =
             let subidx = ((count-2) >>> level) &&& blockIndexMask
@@ -413,12 +379,39 @@ and PersistentVector<[<EqualityConditionalOn>]'a> (count,shift:int,root:Node,tai
                     let node = this.ArrayFor i
                     node.[i &&& blockIndexMask] :?> 'a
 
-            member this.Conj x = this.cons x :> IVector<'a>
+            member this.Conj x = 
+                if count - tailOff < blockSize then
+                    let newTail = Array.append tail [|x:>obj|]
+                    PersistentVector<'a>(count + 1,shift,root,newTail) :> IVector<'a>
+                else
+                    //full tail, push into tree
+                    let tailNode = Node(root.Thread,tail)
+                    let newShift = shift
+
+                    //overflow root?
+                    if (count >>> blockSizeShift) > (1 <<< shift) then
+                        let newRoot = Node(root.Thread,Array.create blockSize null)
+                        newRoot.Array.[0] <- root :> obj
+                        newRoot.Array.[1] <- this.NewPath(shift,tailNode) :> obj
+                        PersistentVector<'a>(count + 1,shift + blockSizeShift,newRoot,[| x |]) :> IVector<'a>
+                    else
+                        let newRoot = this.PushTail(shift,root,tailNode)
+                        PersistentVector<'a>(count + 1,shift,newRoot,[| x |]) :> IVector<'a>
+
             member this.Pop() = this.pop() :> IVector<'a>
             member this.Count() = count
             member this.Peek() = if count > 0 then (this :> IVector<'a>).[count - 1] else failwith "Can't peek empty vector"
 
-            member this.AssocN(i,x) = this.assocN(i,x) :> IVector<'a>
+            member this.AssocN(i,x) = 
+                if i >= 0 && i < count then
+                    if i >= tailOff then
+                        let newTail = Array.copy tail
+                        newTail.[i &&& blockIndexMask] <- x :> obj
+                        PersistentVector(count, shift, root, newTail) :> IVector<'a>
+                    else
+                        PersistentVector(count, shift, this.doAssoc(shift, root, i, x),tail) :> IVector<'a>
+                elif i = count then (this :> IVector<'a>).Conj x 
+                else raise Exceptions.OutOfBounds
 
 type 'a vector = IVector<'a>
 
