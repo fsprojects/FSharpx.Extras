@@ -370,7 +370,7 @@ and PersistentVector<[<EqualityConditionalOn>]'a> (count,shift:int,root:Node,tai
 
                     //overflow root?
                     if (count >>> blockSizeShift) > (1 <<< shift) then
-                        let newRoot = Node(root.Thread,Array.create blockSize null)
+                        let newRoot = Node()
                         newRoot.Array.[0] <- root :> obj
                         newRoot.Array.[1] <- this.NewPath(shift,tailNode) :> obj
                         PersistentVector<'a>(count + 1,shift + blockSizeShift,newRoot,[| x |]) :> IVector<'a>
