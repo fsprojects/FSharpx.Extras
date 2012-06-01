@@ -58,7 +58,7 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             ret.Array.[subidx] <- nodeToInsert :> obj
             ret
 
-        member internal this.ArrayFor<'a> i =
+        member internal this.ArrayFor i =
             if i >= 0 && i < count then
                 if i >= this.TailOff() then tail else
                     let mutable node = root
@@ -72,7 +72,7 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
             else raise Exceptions.OutOfBounds
 
 
-        member internal this.EditableArrayFor<'a> i =
+        member internal this.EditableArrayFor i =
             if i >= 0 && i < count then
                 if i >= this.TailOff() then tail else
                     let mutable node = root
@@ -292,7 +292,7 @@ and PersistentVector<[<EqualityConditionalOn>]'a> (count,shift:int,root:Node,tai
             ret.Array.[subidx] <- nodeToInsert :> obj
             ret
 
-        member internal this.ArrayFor<'a> i =
+        member internal this.ArrayFor i =
             if i >= 0 && i < count then
                 if i >= tailOff then tail else
                     let mutable node = root
