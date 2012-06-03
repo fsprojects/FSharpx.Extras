@@ -74,6 +74,7 @@ let xmlType (ownerType:TypeProviderForNamespaces) cfg =
         { Schema = XmlInference.provideElement doc.Root.Name.LocalName [doc.Root]
           EmptyConstructor = fun args -> <@@ TypedXDocument(XDocument.Parse xmlText) @@>
           FileNameConstructor = fun args -> <@@ TypedXDocument(XDocument.Load(%%args.[0] : string)) @@>
+          DocumentContentConstructor = fun args -> <@@ TypedXDocument(XDocument.Parse(%%args.[0] : string)) @@>
           RootPropertyGetter = fun args -> <@@ TypedXElement((%%args.[0] : TypedXDocument).Document.Root) @@>
           ToStringExpr = fun args -> <@@ (%%args.[0]: TypedXDocument).Document.ToString() @@> }
         |> createParserType<TypedXDocument> typeName generateType            

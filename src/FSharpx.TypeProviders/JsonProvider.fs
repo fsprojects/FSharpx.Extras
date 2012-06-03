@@ -77,6 +77,7 @@ let jsonType (ownerType:TypeProviderForNamespaces) cfg =
         { Schema = JSONInference.provideElement "Document" false [parse jsonText]
           EmptyConstructor = fun args -> <@@ parse jsonText @@>
           FileNameConstructor = fun args -> <@@ (%%args.[0] : string) |> File.ReadAllText |> parse  @@>
+          DocumentContentConstructor = fun args -> <@@ (%%args.[0] : string) |> parse  @@>
           RootPropertyGetter = fun args -> <@@ (%%args.[0] : Document) @@>
           ToStringExpr = fun args -> <@@ (%%args.[0]: Document).ToString() @@> }
         |> createParserType<Document> typeName generateType            
