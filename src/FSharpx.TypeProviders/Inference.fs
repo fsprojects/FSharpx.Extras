@@ -5,6 +5,7 @@
 module FSharpx.TypeProviders.Inference
 
 open System
+open System.Xml
 open System.Xml.Linq
 open FSharpx.TypeProviders.DSL
 open System.Collections.Generic
@@ -103,6 +104,7 @@ type GeneratedParserSettings = {
     Schema: CompoundProperty
     EmptyConstructor: ExprDef
     FileNameConstructor: ExprDef
+    DocumentContentConstructor : ExprDef
     RootPropertyGetter: ExprDef
     ToStringExpr: ExprDef }
 
@@ -114,6 +116,8 @@ let createParserType<'a> typeName (generateTypeF: ProvidedTypeDefinition -> Comp
            |> addXmlDoc "Initializes the document from the schema sample.")
     |+!> (provideConstructor ["filename", typeof<string>] settings.FileNameConstructor
            |> addXmlDoc "Initializes a document from the given path.")
+    |+!> (provideConstructor ["documentContent", typeof<string>] settings.DocumentContentConstructor
+           |> addXmlDoc "Initializes a document from the given JSON string.")
     |+!> (provideProperty "Root" (generateTypeF parserType settings.Schema) settings.RootPropertyGetter
            |> addXmlDoc "Gets the document root")
     |+!> (provideMethod ("ToString") [] typeof<string> settings.ToStringExpr

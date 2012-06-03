@@ -23,7 +23,7 @@ let ``Can parse inlined properties``() =
 
 [<Test>]
 let ``Can parse inlined properties but read from file``() = 
-    let inlined = InlinedJSON("Simple.json").Root
+    let inlined = InlinedJSON(filename="Simple.json").Root
     inlined.FirstName
     |> should equal "John"
 
