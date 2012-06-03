@@ -40,7 +40,7 @@ let ``Can parse wiki sample``() =
 
 [<Test>]
 let ``Can load and manipulate wiki data``() = 
-    let document = WikiSample("WikiData.json").Root
+    let document = WikiSample(filename="WikiData.json").Root
     document.FirstName |> should equal "John"
     document.LastName |> should equal "Doe"
 
@@ -53,7 +53,7 @@ let ``Can load and manipulate wiki data``() =
 
 [<Test>]
 let ``Can load empty json file and fails on property access``() = 
-    let document = WikiSample("Empty.json").Root
+    let document = WikiSample(filename="Empty.json").Root
     let failed = ref false
     try
         document.FirstName |> ignore
