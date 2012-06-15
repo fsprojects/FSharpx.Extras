@@ -143,11 +143,13 @@ module Observable =
       Observable.merge left right
       |> Observable.scan (fun (_,(l',r')) (l,r) ->
           match l,r,l',r' with
-          | Some lv, None, _, Some rv ->
-              Some(lv,rv), (l,r')
-          | None, Some rv, Some lv, _ ->
-              Some(lv,rv), (l',r)
-          | _, _, _,_ -> invalidOp "Invalid state"
+          | Some lv, None,    _,       Some rv -> Some(lv,rv), (l,r')
+          | None,    Some rv, Some lv, _       -> Some(lv,rv), (l',r)
+          | Some _,  _,       _,       None    -> None,        (l, r')
+          | _,       Some _,  None,    _       -> None,        (l', r)
+          | None,    None,    _,       _       -> None,        (l', r')
+          | Some _,  Some _,  _,       _ -> 
+                invalidOp "Should not receive both left and right"
       ) (None, (None,None))
       |> Observable.choose fst
 
