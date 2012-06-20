@@ -50,7 +50,6 @@
     <Compile Include="DataStructures\RealTimeQueue.fs" />
     <Compile Include="DataStructures\BottomUpMergeSort.fs" />
     <Compile Include="Monad.fs" />
-    <Compile Include="Iteratee.fs" />
     <Compile Include="Lens.fs" />
     <Compile Include="CSharpCompat.fs" />
     <Compile Include="Regex.fs" />
@@ -67,6 +66,7 @@
     <Compile Include="Observable.fs" />
     <Compile Include="AsyncSeq.fs" />
     <Compile Include="Async.IO.fs" />
+    <Compile Include="Iteratee.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
