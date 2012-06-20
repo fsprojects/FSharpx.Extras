@@ -43,6 +43,8 @@
     <Compile Include="Collections\Collections.fs" />
     <Compile Include="Collections\ByteString.fs" />
     <Compile Include="Collections\CircularBuffer.fs" />
+    <Compile Include="ComputationExpressions\Monad.fs" />
+    <Compile Include="ComputationExpressions\Enumerator.fs" />
     <Compile Include="DataStructures\Interfaces.fs" />
     <Compile Include="DataStructures\Infrastructure.fs" />
     <Compile Include="DataStructures\DList.fs" />
@@ -51,7 +53,6 @@
     <Compile Include="DataStructures\ImplicitQueue.fs" />
     <Compile Include="DataStructures\RealTimeQueue.fs" />
     <Compile Include="DataStructures\BottomUpMergeSort.fs" />
-    <Compile Include="Monad.fs" />
     <Compile Include="Lens.fs" />
     <Compile Include="CSharpCompat.fs" />
     <Compile Include="Regex.fs" />

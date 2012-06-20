@@ -35,7 +35,15 @@ type BS =
     override x.GetHashCode() = hash x
     /// Gets an enumerator for the bytes stored in the byte string.
     member x.GetEnumerator() =
-        if x.Count = 0 then Enumerator.empty<_>
+        if x.Count = 0 then
+            { new IEnumerator<_> with 
+                member self.Current = invalidOp "!"
+              interface System.Collections.IEnumerator with
+                member self.Current = invalidOp "!"
+                member self.MoveNext() = false
+                member self.Reset() = ()
+              interface System.IDisposable with 
+                member self.Dispose() = () }
         else
             let segment = x.Array
             let minIndex = x.Offset
