@@ -421,6 +421,8 @@ module Iteratee =
     module Binary =
         open Operators
 
+        type BS = ByteString
+
         (* ========= Iteratees ========= *)
 
         let fold step seed =
