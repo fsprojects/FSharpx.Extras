@@ -41,6 +41,7 @@
     <Compile Include="Strings.fs" />
     <Compile Include="IO.fs" />
     <Compile Include="Collections\Collections.fs" />
+    <Compile Include="Collections\CircularBuffer.fs" />
     <Compile Include="DataStructures\Interfaces.fs" />
     <Compile Include="DataStructures\Infrastructure.fs" />
     <Compile Include="DataStructures\DList.fs" />
