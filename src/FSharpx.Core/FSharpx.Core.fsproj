@@ -44,6 +44,7 @@
     <Compile Include="Collections\ByteString.fs" />
     <Compile Include="Collections\CircularBuffer.fs" />
     <Compile Include="ComputationExpressions\Monad.fs" />
+    <Compile Include="ComputationExpressions\Continuation.fs" />
     <Compile Include="ComputationExpressions\Enumerator.fs" />
     <Compile Include="DataStructures\Interfaces.fs" />
     <Compile Include="DataStructures\Infrastructure.fs" />
