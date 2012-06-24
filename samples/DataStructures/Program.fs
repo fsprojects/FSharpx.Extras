@@ -1,8 +1,51 @@
-﻿let c = 5
-let r = new System.Random()
-
+﻿
 open FSharpx.TimeMeasurement
 open FSharpx.DataStructures.Vector
+open FSharpx.DataStructures
+
+open System
+let c = 5
+let r = new System.Random()
+
+let getResultAndTime run =
+    System.GC.Collect(9)
+    System.GC.Collect(9)
+    let start = DateTime.Now
+    let r = run()
+    (r, (DateTime.Now - start).TotalMilliseconds)
+
+// **************************************************************************************************************
+let runSomeTest() =
+    let reps = 1000000
+    let fromRep x = (x % 6713, x)
+    let times =
+        [
+         ("TrieMap", snd (getResultAndTime (fun () -> Seq.init reps fromRep |> TrieMap.ofSeq)))
+         ("Packed", snd (getResultAndTime (fun () -> Seq.init reps fromRep |> Experimental.TrieMap_Packed.ofSeq)))
+         
+         ("TrieMap", snd (getResultAndTime (fun () -> Seq.init reps fromRep |> TrieMap.ofSeq)))
+         ("Packed", snd (getResultAndTime (fun () -> Seq.init reps fromRep |> Experimental.TrieMap_Packed.ofSeq)))
+         ("TrieMap", snd (getResultAndTime (fun () -> Seq.init reps fromRep |> TrieMap.ofSeq)))
+         ("Packed", snd (getResultAndTime (fun () -> Seq.init reps fromRep |> Experimental.TrieMap_Packed.ofSeq)))
+         
+         ]
+
+         (*
+    System.GC.Collect(9)
+    let (map, mapTime) = getResultAndTime (fun () -> Seq.init reps (fun x -> (x, x)) |> TrieMap.ofSeq)
+    System.GC.Collect(9)
+    let (map, mapTime_secondary) = getResultAndTime (fun () -> Seq.init reps (fun x -> (x, x)) |> TrieMap.ofSeq)
+    System.GC.Collect(9)
+    let (map, mapTime_tertiary) = getResultAndTime (fun () -> Seq.init reps (fun x -> (x, x)) |> TrieMap.ofSeq)
+    System.GC.Collect(9)
+    let (map2, map2time) = getResultAndTime (fun () -> Seq.init reps (fun x -> (x, x)) |> Experimental.TrieMap_Packed.ofSeq)
+    let something = map.[533]
+    Console.WriteLine(mapTime.ToString() + " " + mapTime_secondary.ToString() + " " + mapTime_tertiary.ToString() + " " + map2time.ToString())
+    *)
+    times |> List.iter (fun x -> Console.WriteLine(x.ToString()))
+    ()
+runSomeTest()
+// **************************************************************************************************************
 
 let array n = [|for i in 1..n -> r.Next()|]
 
