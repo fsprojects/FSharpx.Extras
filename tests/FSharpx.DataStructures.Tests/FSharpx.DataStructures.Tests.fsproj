@@ -91,6 +91,7 @@
     <Compile Include="DListTest.fs" />
     <Compile Include="TransientVectorTest.fs" />
     <Compile Include="PersistentVectorTest.fs" />
+    <Compile Include="TrieMapTests.fs" />
     <Compile Include="BootstrappedQueueTest.fs" />
     <Compile Include="ImplicitQueueTest.fs" />
     <Compile Include="RealTimeQueueTest.fs" />
