@@ -1,9 +1,9 @@
-// ----------------------------------------------------------------------------
-// F# TrieMap implementation (TrieMap.fs)
+﻿// ----------------------------------------------------------------------------
+// F# TrieMap_Packed implementation (TrieMap_Packed.fs)
 // (c) Matthew Lamari, 2012, Available under Apache 2.0 license.
 // ----------------------------------------------------------------------------
 
-namespace FSharpx.DataStructures
+namespace FSharpx.DataStructures.Experimental
 
 open FSharpx
 open System
@@ -19,9 +19,9 @@ open System.Collections.Generic
 // Tends to get a speed advantage over Map when comparison has a cost, or the table gets huge with more additions
 // than replacements (replacements don't push heavy rebalancing onto Map's tree)
 
-// Current TrieMap implementation is as a struct of 2 elements, trying limiting allocation on the outer node creation.
+// Current TrieMap_Packed implementation is as a struct of 2 elements, trying limiting allocation on the outer node creation.
 
-module TrieMapConstants =
+module TMUtil =
     let getHashCode x = x.GetHashCode()
     let bucketCountShift = 4 // this seems the sweet spot for performance, 16 (2 ^ 4) buckets
     let shiftAtWhichYouHitBottom = (32 / bucketCountShift) * bucketCountShift
@@ -29,8 +29,88 @@ module TrieMapConstants =
     let omBucketCount = bucketCount - 1
     let bucketMask = (1 <<< bucketCountShift) - 1
 
+    let byteToBitCount =
+        Array.init
+            256
+            (fun n ->
+                let mutable current = n &&& 255
+                let mutable count = 0
+                while current <> 0 do
+                    if (current &&& 1) = 1 then count <- count + 1
+                    current <- current >>> 1
+                count)
 
-type TrieMap<'Key, 'T when 'Key : equality> =
+    let inline getBitCount bits =
+        let mutable count = 0
+        let mutable current = bits
+        while current <> 0 do
+            count <- count + (byteToBitCount.[current &&& 255])
+            current <- current >>> 8
+        count
+
+    let maskForBeforeLogicalIndex = (Array.init 32 (fun n -> if n = 0 then 0 else (int) (0xffffffffu >>> (32 - n))))
+    let boxedNumbers = Array.init (1 <<< bucketCount) (fun n -> box n)
+
+    let inline singleElementArrayCreate (logicalIndex : int) (element : Object) : Object array =
+        let arr = Array.create 2 null
+        arr.[0] <- boxedNumbers.[1 <<< logicalIndex]
+        arr.[1] <- element
+        arr
+
+    let inline dualElementArrayCreate (logicalIndex0 : int) element0 (logicalIndex1 : int) element1 : Object array =
+        let arr = Array.create 3 null
+        arr.[0] <- boxedNumbers.[(1 <<< logicalIndex0) ||| (1 <<< logicalIndex1)]
+        if (logicalIndex0 < logicalIndex1) then
+            arr.[1] <- element0 :> Object
+            arr.[2] <- element1 :> Object
+        else
+            arr.[1] <- element1 :> Object
+            arr.[2] <- element0 :> Object
+        arr
+
+    type ArrayTargetData =
+        struct
+            //val OriginalArray : Object array
+            val Bits : int
+            val NumBefore : int
+            val SomethingAlreadyPresent : bool
+            new (bits, numBefore, somethingAlreadyPresent)  = { Bits = bits; NumBefore = numBefore; SomethingAlreadyPresent = somethingAlreadyPresent }
+        end
+
+    let inline getArrayTargetData (originalArray : Object array) (logicalIndex : int) : ArrayTargetData =
+        let (bits : int) = unbox originalArray.[0]
+        let logicalIndexMask = 1 <<< logicalIndex
+        new ArrayTargetData(bits, getBitCount (bits &&& maskForBeforeLogicalIndex.[logicalIndex]), (bits &&& logicalIndexMask) <> 0)
+
+    let inline arrayWithLogicalInsertion (arrayTargetData : ArrayTargetData) (originalArray : Object array) (insertionPointLogicalIndex : int) (element : Object) : Object array =
+        let cloned = Array.create (originalArray.Length + 1) null
+        let logicalIndexMask = 1 <<< insertionPointLogicalIndex
+        cloned.[0] <- boxedNumbers.[arrayTargetData.Bits ||| logicalIndexMask]
+        let numBefore = arrayTargetData.NumBefore
+        Array.Copy(originalArray, 1, cloned, 1, numBefore)
+        cloned.[numBefore + 1] <- element
+        Array.Copy(originalArray, numBefore + 1, cloned, numBefore + 2, originalArray.Length - numBefore - 1)
+        cloned
+
+    // an optimization that we return the info rather than take a closure.
+    type ReplacementArrayInfo =
+        struct
+            val NewArray : Object array
+            val TargetPhysicalIndex : int
+            val ExistingElement : Object
+            new (newArray : Object array, targetPhysicalIndex, existingElement) = { NewArray = newArray; TargetPhysicalIndex = targetPhysicalIndex; ExistingElement = existingElement }
+        end
+
+    let inline getReplacementInfo (arrayTargetData : ArrayTargetData) (originalArray : Object array) : ReplacementArrayInfo =
+        let physicalIndex = arrayTargetData.NumBefore + 1 // the + 1 is to get us beyond the bit-map
+        new ReplacementArrayInfo(Array.copy originalArray, physicalIndex, originalArray.[physicalIndex])
+
+
+
+
+
+
+type TrieMap_Packed<'Key, 'T when 'Key : equality> =
     struct
         val private count : int
         val private rootNode : Object
@@ -46,7 +126,7 @@ type TrieMap<'Key, 'T when 'Key : equality> =
             new Flagged<Object>(newNode :> Object, false)
         else
             let rec run originalNode newNode bucketShift = // bit of a speed boost here, can inline outer function, and not repeat the first (check for equal) clause.
-                if bucketShift = TrieMapConstants.shiftAtWhichYouHitBottom then
+                if bucketShift = TMUtil.shiftAtWhichYouHitBottom then
                     // hit bottom - sort it out, find if already exists and rebuild accordingly
 
                     // going for speed here
@@ -80,57 +160,52 @@ type TrieMap<'Key, 'T when 'Key : equality> =
                             current <- current.Next
                         new Flagged<Object>(rl :> Object, false) // no net add
                 else
-                    // make a new array - the "node" is just a single
-                    let arr = Array.create<Object> TrieMapConstants.bucketCount null
-                    let originalsIndex = (originalNode.Hash >>> bucketShift) &&& TrieMapConstants.bucketMask
-                    let newItemIndex = (newNode.Hash >>> bucketShift) &&& TrieMapConstants.bucketMask
-                    if originalsIndex = newItemIndex then
+                    let originalsLogicalIndex = (originalNode.Hash >>> bucketShift) &&& TMUtil.bucketMask
+                    let newItemLogicalIndex = (newNode.Hash >>> bucketShift) &&& TMUtil.bucketMask
+                    if originalsLogicalIndex = newItemLogicalIndex then
                         // they've collided, recurse
-                        let result = run originalNode newNode (bucketShift + TrieMapConstants.bucketCountShift)
-                        arr.[originalsIndex] <- result.Value
-                        new Flagged<Object>(arr :> Object, result.Flag)
+                        let result = run originalNode newNode (bucketShift + TMUtil.bucketCountShift)
+                        new Flagged<Object>(TMUtil.singleElementArrayCreate originalsLogicalIndex result.Value, result.Flag)
                     else
                         // they can coexist in the new array
-                        arr.[originalsIndex] <- originalNode :> Object
-                        // null that's default in "newNode" is fine
-                        arr.[newItemIndex] <- newNode :> Object
-                        new Flagged<Object>(arr :> Object, true)
+                        new Flagged<Object>(TMUtil.dualElementArrayCreate originalsLogicalIndex originalNode newItemLogicalIndex newNode, true)
             run originalNode newNode bucketShift
 
     // flag returns True if there was a net new node added, false if (overwrite) keeps count constant
     static member inline private augmentedArray(originalArray : Object array) (newNode : HKVNode<'Key, 'T>) bucketShift : Flagged<Object array> =
         let rec run (originalArray : Object array) newNode bucketShift = // this inner recursive, plus the inline on the outer that it allowed, gave a speed boost
-            let index = (newNode.Hash >>> bucketShift) &&& TrieMapConstants.bucketMask
-            let existing = originalArray.[index]
-            let cloned = Array.copy originalArray
-
-            // in attempted order of likelihood
-            match existing with
-            | null -> cloned.[index] <- newNode :> Object; new Flagged<Object array>(cloned, true)
-            | :? (Object array) as subArray ->
-                let result = run subArray newNode (bucketShift + TrieMapConstants.bucketCountShift)
-                cloned.[index] <- result.Value :> Object
-                new Flagged<Object array>(cloned, result.Flag)
-            | :? HKVNode<'Key, 'T> as node ->
-                let result = TrieMap<'Key, 'T>.settleCollision node newNode (bucketShift + TrieMapConstants.bucketCountShift)
-                cloned.[index] <- result.Value
-                new Flagged<Object array>(cloned, result.Flag)
-            | _ -> failwith "unknown type"
+            let logicalIndex = (newNode.Hash >>> bucketShift) &&& TMUtil.bucketMask
+            let arrayTargetData = TMUtil.getArrayTargetData originalArray logicalIndex
+            if (not arrayTargetData.SomethingAlreadyPresent) then // nothing in that spot
+                new Flagged<Object array>(TMUtil.arrayWithLogicalInsertion arrayTargetData originalArray logicalIndex newNode, true)
+            else
+                let replacementArrayInfo = TMUtil.getReplacementInfo arrayTargetData originalArray
+                // in attempted order of likelihood
+                match replacementArrayInfo.ExistingElement with
+                | :? (Object array) as subArray ->
+                    let result = run subArray newNode (bucketShift + TMUtil.bucketCountShift)
+                    replacementArrayInfo.NewArray.[replacementArrayInfo.TargetPhysicalIndex] <- result.Value :> Object
+                    new Flagged<Object array>(replacementArrayInfo.NewArray, result.Flag)
+                | :? HKVNode<'Key, 'T> as node ->
+                    let result = TrieMap_Packed<'Key, 'T>.settleCollision node newNode (bucketShift + TMUtil.bucketCountShift)
+                    replacementArrayInfo.NewArray.[replacementArrayInfo.TargetPhysicalIndex] <- result.Value
+                    new Flagged<Object array>(replacementArrayInfo.NewArray, result.Flag)
+                | _ -> failwith "unknown type"
         run originalArray newNode bucketShift
 
-    member inline private this.withAddition(k : 'Key, v : 'T) : TrieMap<'Key, 'T> =
-        let h = TrieMapConstants.getHashCode k
+    member inline private this.withAddition(k : 'Key, v : 'T) : TrieMap_Packed<'Key, 'T> =
+        let h = TMUtil.getHashCode k
         //let hkv = new HKV<'Key, 'T>(k, v, h)
         let newNode = { Key = k; Value = v; Hash = h; Next = Unchecked.defaultof<HKVNode<'Key, 'T>> }
         match this.rootNode with
         | :? (Object array) as arr ->
-            let result = TrieMap.augmentedArray arr newNode 0
-            TrieMap((if result.Flag then this.count + 1 else this.count), result.Value)
+            let result = TrieMap_Packed.augmentedArray arr newNode 0
+            TrieMap_Packed((if result.Flag then this.count + 1 else this.count), result.Value)
         | null -> // first node
-            new TrieMap<'Key, 'T>(1, (newNode :> Object))
+            new TrieMap_Packed<'Key, 'T>(1, (newNode :> Object))
         | :? HKVNode<'Key, 'T> as node ->
-            let result = TrieMap.settleCollision node newNode 0
-            TrieMap((if result.Flag then this.count + 1 else this.count), result.Value)
+            let result = TrieMap_Packed.settleCollision node newNode 0
+            TrieMap_Packed((if result.Flag then this.count + 1 else this.count), result.Value)
         | _ -> failwith "unknown type"
 
     member inline private this.findInTHash (k : 'Key) : 'T option =
@@ -151,14 +226,20 @@ type TrieMap<'Key, 'T when 'Key : equality> =
                             current <- current.Next
                     if found then Some current.Value else None
             | :? (Object array) as arr ->
-                let index = (keyHash >>> bucketShift) &&& TrieMapConstants.bucketMask
-                match arr.[index] with
-                | null -> None
-                | item -> find k keyHash (bucketShift + TrieMapConstants.bucketCountShift) item
+                let logicalIndex = (keyHash >>> bucketShift) &&& TMUtil.bucketMask
+                let (bits : int) = unbox arr.[0]
+                let logicalIndexMask = 1 <<< logicalIndex
+                match (bits &&& logicalIndexMask) <> 0 with
+                | false -> None
+                | true ->
+                    let foo = TMUtil.maskForBeforeLogicalIndex
+                    let physicalIndex = (TMUtil.getBitCount (bits &&& TMUtil.maskForBeforeLogicalIndex.[logicalIndex])) + 1
+                    let item = arr.[physicalIndex]
+                    find k keyHash (bucketShift + TMUtil.bucketCountShift) item
             | _ -> failwith "Unknown type on find"
         match this.rootNode with
         | null -> None
-        | item -> find k (TrieMapConstants.getHashCode k) 0 item
+        | item -> find k (TMUtil.getHashCode k) 0 item
 
     static member inline private deleteFromNodeList nodeList (k : 'Key) : Flagged<Object> =
         let mutable found = false
@@ -187,20 +268,20 @@ type TrieMap<'Key, 'T when 'Key : equality> =
 
     static member inline private getOriginalArrayElementCount (originalArray : Object array) : int =
         let mutable originalArrayElementCount = 0
-        for i = 0 to TrieMapConstants.omBucketCount do
+        for i = 0 to TMUtil.omBucketCount do
             if originalArray.[i] <> null then
                 originalArrayElementCount <- originalArrayElementCount + 1
         originalArrayElementCount
 
     static member inline private getArrayDeleteResultWithIndexRemoved(originalArray : Object array) (index : int) =
-        let originalArrayElementCount = TrieMap<'Key, 'T>.getOriginalArrayElementCount originalArray
+        let originalArrayElementCount = TrieMap_Packed<'Key, 'T>.getOriginalArrayElementCount originalArray
         if (originalArrayElementCount = 1) then
             new Flagged<Object>(null, true) // deletion produced nothing, and it was the only thing in the array.
         else
             if originalArrayElementCount = 2 then // for the case when there's only one other thing; but it's a Node not an array
                 let mutable (somethingInArrayOtherThanDeleted : Object) = null
                 let mutable indexInArrayOtherThanDeleted = -1
-                for i = 0 to TrieMapConstants.omBucketCount do
+                for i = 0 to TMUtil.omBucketCount do
                     let element = originalArray.[i]
                     if (element <> null) && (i <> index) then
                         indexInArrayOtherThanDeleted <- i
@@ -210,7 +291,7 @@ type TrieMap<'Key, 'T when 'Key : equality> =
                 | :? (HKVNode<'Key, 'T>) as node when System.Object.ReferenceEquals(node.Next, null) ->
                         new Flagged<Object>(node, true) // return the node instead of the array, proliferate a loner back up the chain
                 | _ -> // must be a sub-array, or multiple nodes at bottom level, either being there for a reason for a reason - keep this an array.
-                    let arr = Array.create<Object> TrieMapConstants.bucketCount null
+                    let arr = Array.create<Object> TMUtil.bucketCount null
                     arr.[indexInArrayOtherThanDeleted] <- somethingInArrayOtherThanDeleted
                     new Flagged<Object>(arr, true)
             else // > 1 other item in array, so we copy the array up MINUS index = index
@@ -220,26 +301,26 @@ type TrieMap<'Key, 'T when 'Key : equality> =
 
     // returns true only if something was actually deleted
     static member private deletedFromArray(originalArray : Object array) (k : 'Key) (h : int) bucketShift : Flagged<Object>  =
-        let index = (h >>> bucketShift) &&& TrieMapConstants.bucketMask
+        let index = (h >>> bucketShift) &&& TMUtil.bucketMask
         let existing = originalArray.[index]
 
         match existing with
         | null -> new Flagged<Object>(originalArray, false)
         | :? (Object array) as subArray ->
-            let result = TrieMap<'Key, 'T>.deletedFromArray subArray k h (bucketShift + TrieMapConstants.bucketCountShift)
+            let result = TrieMap_Packed<'Key, 'T>.deletedFromArray subArray k h (bucketShift + TMUtil.bucketCountShift)
             if result.Flag then
                 // there was a deletion.  Several cases.
                 // If it's sending up a Node, it's a lone node
                 // If it's null, we have to check if this results in this array being empty.
                 match result.Value with
                 | null -> // see if there's only one
-                    TrieMap<'Key, 'T>.getArrayDeleteResultWithIndexRemoved originalArray index
+                    TrieMap_Packed<'Key, 'T>.getArrayDeleteResultWithIndexRemoved originalArray index
                 | :? (Object array) as newSubArray -> // pretty simple, sub this in, return as a delete
                     let arr = Array.copy originalArray
                     arr.[index] <- null
                     new Flagged<Object>(arr, true)
                 | :? (HKVNode<'Key, 'T>) as node -> // array delete returned a kvnode - only reason could be is if a lower list went to length of 1 and we're floating it up.
-                    if (TrieMap<'Key, 'T>.getOriginalArrayElementCount originalArray) = 1 then
+                    if (TrieMap_Packed<'Key, 'T>.getOriginalArrayElementCount originalArray) = 1 then
                         new Flagged<Object>(node, true)
                     else
                         let arr = Array.copy originalArray
@@ -249,12 +330,12 @@ type TrieMap<'Key, 'T when 'Key : equality> =
             else
                 new Flagged<Object>(originalArray, false)
         | :? HKVNode<'Key, 'T> as node ->
-            let result = TrieMap<'Key, 'T>.deleteFromNodeList node k
+            let result = TrieMap_Packed<'Key, 'T>.deleteFromNodeList node k
             if result.Flag then // something was deleted
                 match result.Value with
-                | null -> TrieMap<'Key, 'T>.getArrayDeleteResultWithIndexRemoved originalArray index
+                | null -> TrieMap_Packed<'Key, 'T>.getArrayDeleteResultWithIndexRemoved originalArray index
                 | :? (HKVNode<'Key, 'T>) as node ->
-                    if ((TrieMap<'Key, 'T>.getOriginalArrayElementCount originalArray) = 1) && (System.Object.ReferenceEquals(node.Next, null)) then // solo solo - return it
+                    if ((TrieMap_Packed<'Key, 'T>.getOriginalArrayElementCount originalArray) = 1) && (System.Object.ReferenceEquals(node.Next, null)) then // solo solo - return it
                         new Flagged<Object>(node, true)
                     else
                         let arr = Array.copy originalArray
@@ -268,13 +349,13 @@ type TrieMap<'Key, 'T when 'Key : equality> =
 
     member inline private this.withRemoval(key : 'Key)  =
         match this.rootNode with
-        | null -> TrieMap(0, Unchecked.defaultof<HKVNode<'Key, 'T>>) // already empty
+        | null -> TrieMap_Packed(0, Unchecked.defaultof<HKVNode<'Key, 'T>>) // already empty
         | :? (Object array) as arr ->
-            let result = TrieMap<'Key, 'T>.deletedFromArray arr key (TrieMapConstants.getHashCode key) 0
-            if result.Flag then TrieMap(this.count - 1, result.Value) else this
+            let result = TrieMap_Packed<'Key, 'T>.deletedFromArray arr key (TMUtil.getHashCode key) 0
+            if result.Flag then TrieMap_Packed(this.Count - 1, result.Value) else this
         | :? HKVNode<'Key, 'T> as node ->
             assert System.Object.ReferenceEquals(node.Next, null)
-            if node.Key = key then TrieMap(0, null) else this
+            if node.Key = key then TrieMap_Packed(0, null) else this
         | _ -> failwith "Unknown type on delete"
 
     member inline private this.getTHashKVPairs () : ('Key * 'T) seq =
@@ -284,22 +365,22 @@ type TrieMap<'Key, 'T when 'Key : equality> =
             | :? HKVNode<'Key, 'T> as node ->
                 seq { yield (node.Key, node.Value); yield! getItems node.Next }
             | :? (Object array) as arr ->
-                arr |> Seq.map getItems |> Seq.concat
+                arr |> Seq.skip 1 |> Seq.map getItems |> Seq.concat
             | _ -> failwith "unknown type"
         getItems this.rootNode
 
 
 
     // Public Map-style accessors
-    member public this.Add((key : 'Key, value : 'T) as keyValue) : TrieMap<'Key, 'T> = this.withAddition keyValue
+    member public this.Add((key : 'Key, value : 'T) as keyValue) : TrieMap_Packed<'Key, 'T> = this.withAddition keyValue
     member public this.ContainsKey(key : 'Key) : bool = match this.findInTHash(key) with | None -> false | Some _ -> true
     member public this.Count = this.count
-    member public this.IsEmpty : bool = this.count = 0
+    member public this.IsEmpty : bool = this.Count = 0
     member public this.Item(key : 'Key) : 'T = match this.findInTHash(key) with | None -> raise (KeyNotFoundException(key.ToString())) | Some value -> value
     member public this.Remove(key : 'Key) = this.withRemoval key
     member public this.TryFind(key : 'Key) : 'T option = this.findInTHash key
 
-    static member Empty = new TrieMap<'Key, 'T>()
+    static member Empty = new TrieMap_Packed<'Key, 'T>()
 
     interface IEnumerable<'Key * 'T> with
         member this.GetEnumerator() = (this.getTHashKVPairs()).GetEnumerator()
@@ -332,24 +413,23 @@ and
 
 
 
-module TrieMap =
+module TrieMap_Packed =
     // these attempt to mimic the behavior of the Map module equivalents
 
-    let add key value (table : TrieMap<'Key, 'T>) = table.Add(key, value)
-    let containsKey key (table : TrieMap<'Key, 'T>) = table.ContainsKey
-    let empty<'Key, 'T when 'Key : equality> : TrieMap<'Key, 'T> = TrieMap<'Key, 'T>.Empty //new TrieMap<'Key, 'T>()
-    let find<'Key, 'T when 'Key : equality> key (table : TrieMap<'Key, 'T>) = table.[key]
-    let tryFind<'Key, 'T when 'Key : equality> key (table : TrieMap<'Key, 'T>) = table.TryFind key
+    let add key value (table : TrieMap_Packed<'Key, 'T>) = table.Add(key, value)
+    let containsKey key (table : TrieMap_Packed<'Key, 'T>) = table.ContainsKey
+    let empty<'Key, 'T when 'Key : equality> : TrieMap_Packed<'Key, 'T> = TrieMap_Packed<'Key, 'T>.Empty //new TrieMap_Packed<'Key, 'T>()
+    let find<'Key, 'T when 'Key : equality> key (table : TrieMap_Packed<'Key, 'T>) = table.[key]
+    let tryFind<'Key, 'T when 'Key : equality> key (table : TrieMap_Packed<'Key, 'T>) = table.TryFind key
 
     // These need more optimization within the Trie, it's not too difficult; but would speed things up, to create the arrays one at a time
     // Currently implemented in terms of a fold
-    let ofSeq<'Key, 'T when 'Key : equality> (elements : ('Key * 'T) seq) = elements |> Seq.fold (fun (table : TrieMap<'Key, 'T>) newKV -> table.Add newKV ) empty<'Key, 'T>
-    let ofList<'Key, 'T when 'Key : equality> (elements : ('Key * 'T) list) = elements |> List.fold (fun (table : TrieMap<'Key, 'T>) newKV -> table.Add newKV ) empty<'Key, 'T>
-    let ofArray<'Key, 'T when 'Key : equality> (elements : ('Key * 'T) array) = elements |> Array.fold (fun (table : TrieMap<'Key, 'T>) newKV -> table.Add newKV ) empty<'Key, 'T>
+    let ofSeq<'Key, 'T when 'Key : equality> (elements : ('Key * 'T) seq) = elements |> Seq.fold (fun (table : TrieMap_Packed<'Key, 'T>) newKV -> table.Add newKV ) empty<'Key, 'T>
+    let ofList<'Key, 'T when 'Key : equality> (elements : ('Key * 'T) list) = elements |> List.fold (fun (table : TrieMap_Packed<'Key, 'T>) newKV -> table.Add newKV ) empty<'Key, 'T>
+    let ofArray<'Key, 'T when 'Key : equality> (elements : ('Key * 'T) array) = elements |> Array.fold (fun (table : TrieMap_Packed<'Key, 'T>) newKV -> table.Add newKV ) empty<'Key, 'T>
 
-    let toSeq<'Key, 'T when 'Key : equality> (table : TrieMap<'Key, 'T>) : ('Key * 'T) seq = table :> IEnumerable<'Key * 'T>
-    let toList<'Key, 'T when 'Key : equality> (table : TrieMap<'Key, 'T>) : ('Key * 'T) list = table |> Seq.toList
-    let toArray<'Key, 'T when 'Key : equality> (table : TrieMap<'Key, 'T>) : ('Key * 'T) array = table |> Seq.toArray
-
+    let toSeq<'Key, 'T when 'Key : equality> (table : TrieMap_Packed<'Key, 'T>) : ('Key * 'T) seq = table :> IEnumerable<'Key * 'T>
+    let toList<'Key, 'T when 'Key : equality> (table : TrieMap_Packed<'Key, 'T>) : ('Key * 'T) list = table |> Seq.toList
+    let toArray<'Key, 'T when 'Key : equality> (table : TrieMap_Packed<'Key, 'T>) : ('Key * 'T) array = table |> Seq.toArray
 
 

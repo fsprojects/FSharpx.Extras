@@ -74,6 +74,7 @@
     <Compile Include="LensExample.fs" />
     <Compile Include="TimeMeasurementTests.fs" />
     <Compile Include="RegexTests.fs" />
+    <Compile Include="TrieMapTests.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FsCheck">

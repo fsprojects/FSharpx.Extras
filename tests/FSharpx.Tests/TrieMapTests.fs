@@ -1,22 +1,22 @@
 ﻿module FSharpx.DataStructures.Tests.TrieMapTests
 
 open System
-open FSharpx.DataStructures
-open FSharpx.DataStructures.TrieMap
+open FSharpx.DataStructures.Experimental
+open FSharpx.DataStructures.Experimental.TrieMap_Packed
 open NUnit.Framework
 open FsUnit
 
 // Tests predicated on the assumption that standard F# Map container is good, and is used as a reference.
 
 type TwinMaps<'Key, 'T when 'Key : equality and 'Key : comparison> = {
-    TrieMap : TrieMap<'Key, 'T>
+    TrieMap : TrieMap_Packed<'Key, 'T>
     Map : Map<'Key, 'T> }
 
 let addToMaps key value twinMaps =
-    { TrieMap = twinMaps.TrieMap |> TrieMap.add key value
+    { TrieMap = twinMaps.TrieMap |> TrieMap_Packed.add key value
       Map = twinMaps.Map |> Map.add key value }
 
-let emptyMaps = { TrieMap = TrieMap.empty; Map = Map.empty }
+let emptyMaps = { TrieMap = TrieMap_Packed.empty; Map = Map.empty }
 
 let mapsInSynch twinMaps =
     Seq.map2 (=) (twinMaps.TrieMap |> Seq.sortBy fst) (twinMaps.Map |> Map.toSeq |> Seq.sortBy fst) |> Seq.filter (fun x -> x) |> Seq.length = twinMaps.Map.Count
