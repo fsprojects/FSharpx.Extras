@@ -71,12 +71,24 @@ module Observable =
                 member x.OnCompleted() = observer.OnNext(Completed) 
                 member x.OnError(e) = observer.OnNext(Error e) }) }
 
-  let create x =
+  let result x =
       { new IObservable<_> with
           member this.Subscribe(observer:IObserver<_>) =
               observer.OnNext x
               observer.OnCompleted()
               { new IDisposable with member this.Dispose() = () }
+      }
+
+  let create f =
+      { new IObservable<_> with
+          member this.Subscribe(observer:IObserver<_>) =
+              let dispose = f observer
+              { new IDisposable with member this.Dispose() = dispose() }
+      }
+
+  let createWithDisposable f =
+      { new IObservable<_> with
+          member this.Subscribe(observer:IObserver<_>) = f observer
       }
 
   let error e =

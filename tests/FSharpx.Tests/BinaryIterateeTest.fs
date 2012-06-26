@@ -8,6 +8,8 @@ open FSharpx.Iteratee.Binary
 open NUnit.Framework
 open FsUnit
 
+type BS = ByteString
+
 [<Test>]
 let ``test length should calculate the length of the list without modification``() =
   let actual = enumerate (create [|1uy;2uy;3uy|]) length |> run 
