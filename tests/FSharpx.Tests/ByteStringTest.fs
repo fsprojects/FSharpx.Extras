@@ -6,6 +6,8 @@ open FSharpx.ByteString
 open NUnit.Framework
 open FsUnit
 
+type BS = ByteString
+
 let comparisonTests = [|
   [| box (create ""B); box (create ""B); box 0 |]
   [| box (create "a"B); box (create "a"B); box 0 |]

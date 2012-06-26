@@ -83,6 +83,7 @@ type DList<'a> =
                     yield! y :> seq<'a> }
             enumerable.GetEnumerator() :> IEnumerator
 
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module DList =
     let empty<'a> : DList<'a> = Nil
 
