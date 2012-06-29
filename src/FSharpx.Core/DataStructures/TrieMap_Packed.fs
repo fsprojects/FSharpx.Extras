@@ -73,14 +73,21 @@ module TMUtil =
             //val OriginalArray : Object array
             val Bits : int
             val NumBefore : int
-            val SomethingAlreadyPresent : bool
+            val SomethingAlreadyPresent : Object
             new (bits, numBefore, somethingAlreadyPresent)  = { Bits = bits; NumBefore = numBefore; SomethingAlreadyPresent = somethingAlreadyPresent }
         end
 
+    // used for efficient replacement
     let inline getArrayTargetData (originalArray : Object array) (logicalIndex : int) : ArrayTargetData =
         let (bits : int) = unbox originalArray.[0]
         let logicalIndexMask = 1 <<< logicalIndex
-        new ArrayTargetData(bits, getBitCount (bits &&& maskForBeforeLogicalIndex.[logicalIndex]), (bits &&& logicalIndexMask) <> 0)
+        let numBefore = getBitCount (bits &&& maskForBeforeLogicalIndex.[logicalIndex])
+        new ArrayTargetData(
+            bits,
+            numBefore,
+            if (bits &&& logicalIndexMask) <> 0 then
+                originalArray.[1 + numBefore]
+            else null)
 
     let inline arrayWithLogicalInsertion (arrayTargetData : ArrayTargetData) (originalArray : Object array) (insertionPointLogicalIndex : int) (element : Object) : Object array =
         let cloned = Array.create (originalArray.Length + 1) null
@@ -90,6 +97,15 @@ module TMUtil =
         Array.Copy(originalArray, 1, cloned, 1, numBefore)
         cloned.[numBefore + 1] <- element
         Array.Copy(originalArray, numBefore + 1, cloned, numBefore + 2, originalArray.Length - numBefore - 1)
+        cloned
+
+    let inline arrayWithLogicalRemoval (arrayTargetData : ArrayTargetData) (originalArray : Object array) (removalPointLogicalIndex : int) : Object array =
+        let cloned = Array.create (originalArray.Length - 1) null
+        let logicalIndexMask = 1 <<< removalPointLogicalIndex
+        cloned.[0] <- boxedNumbers.[arrayTargetData.Bits - logicalIndexMask]
+        let numBefore = arrayTargetData.NumBefore
+        Array.Copy(originalArray, 1, cloned, 1, numBefore)
+        Array.Copy(originalArray, numBefore + 1, cloned, numBefore + 1, originalArray.Length - numBefore - 1)
         cloned
 
     // an optimization that we return the info rather than take a closure.
@@ -105,7 +121,8 @@ module TMUtil =
         let physicalIndex = arrayTargetData.NumBefore + 1 // the + 1 is to get us beyond the bit-map
         new ReplacementArrayInfo(Array.copy originalArray, physicalIndex, originalArray.[physicalIndex])
 
-
+    let inline getOriginalArrayElementCount (originalArray : Object array) : int =
+        originalArray.Length - 1
 
 
 
@@ -176,9 +193,9 @@ type TrieMap_Packed<'Key, 'T when 'Key : equality> =
         let rec run (originalArray : Object array) newNode bucketShift = // this inner recursive, plus the inline on the outer that it allowed, gave a speed boost
             let logicalIndex = (newNode.Hash >>> bucketShift) &&& TMUtil.bucketMask
             let arrayTargetData = TMUtil.getArrayTargetData originalArray logicalIndex
-            if (not arrayTargetData.SomethingAlreadyPresent) then // nothing in that spot
-                new Flagged<Object array>(TMUtil.arrayWithLogicalInsertion arrayTargetData originalArray logicalIndex newNode, true)
-            else
+            match arrayTargetData.SomethingAlreadyPresent with
+            | null -> new Flagged<Object array>(TMUtil.arrayWithLogicalInsertion arrayTargetData originalArray logicalIndex newNode, true)
+            | elt ->
                 let replacementArrayInfo = TMUtil.getReplacementInfo arrayTargetData originalArray
                 // in attempted order of likelihood
                 match replacementArrayInfo.ExistingElement with
@@ -227,14 +244,13 @@ type TrieMap_Packed<'Key, 'T when 'Key : equality> =
                     if found then Some current.Value else None
             | :? (Object array) as arr ->
                 let logicalIndex = (keyHash >>> bucketShift) &&& TMUtil.bucketMask
-                let (bits : int) = unbox arr.[0]
-                let logicalIndexMask = 1 <<< logicalIndex
-                match (bits &&& logicalIndexMask) <> 0 with
-                | false -> None
-                | true ->
-                    let foo = TMUtil.maskForBeforeLogicalIndex
-                    let physicalIndex = (TMUtil.getBitCount (bits &&& TMUtil.maskForBeforeLogicalIndex.[logicalIndex])) + 1
-                    let item = arr.[physicalIndex]
+                let arrayTargetData = TMUtil.getArrayTargetData arr logicalIndex
+                match (arrayTargetData.SomethingAlreadyPresent) with
+                | null -> None
+                | item ->
+                    //let foo = TMUtil.maskForBeforeLogicalIndex
+                    //let physicalIndex = arrayTargetData.NumBefore + 1
+                    //let item = arr.[physicalIndex]
                     find k keyHash (bucketShift + TMUtil.bucketCountShift) item
             | _ -> failwith "Unknown type on find"
         match this.rootNode with
@@ -266,43 +282,31 @@ type TrieMap_Packed<'Key, 'T when 'Key : equality> =
         else
             new Flagged<Object>(nodeList, false)
 
-    static member inline private getOriginalArrayElementCount (originalArray : Object array) : int =
-        let mutable originalArrayElementCount = 0
-        for i = 0 to TMUtil.omBucketCount do
-            if originalArray.[i] <> null then
-                originalArrayElementCount <- originalArrayElementCount + 1
-        originalArrayElementCount
 
-    static member inline private getArrayDeleteResultWithIndexRemoved(originalArray : Object array) (index : int) =
-        let originalArrayElementCount = TrieMap_Packed<'Key, 'T>.getOriginalArrayElementCount originalArray
+
+    static member inline private getArrayDeleteResultWithIndexRemoved(originalArray : Object array) (logicalIndex : int) =
+        let originalArrayElementCount = TMUtil.getOriginalArrayElementCount originalArray
         if (originalArrayElementCount = 1) then
             new Flagged<Object>(null, true) // deletion produced nothing, and it was the only thing in the array.
         else
+            let arrayTargetData = TMUtil.getArrayTargetData originalArray logicalIndex
             if originalArrayElementCount = 2 then // for the case when there's only one other thing; but it's a Node not an array
-                let mutable (somethingInArrayOtherThanDeleted : Object) = null
-                let mutable indexInArrayOtherThanDeleted = -1
-                for i = 0 to TMUtil.omBucketCount do
-                    let element = originalArray.[i]
-                    if (element <> null) && (i <> index) then
-                        indexInArrayOtherThanDeleted <- i
-                        somethingInArrayOtherThanDeleted <- element
-
-                match somethingInArrayOtherThanDeleted with
+                // this could be a candidate for factoring, as it assumes details about the array implementation
+                let logicalIndexOfOther = arrayTargetData.Bits - (1 <<< logicalIndex)
+                let otherInArray = if arrayTargetData.NumBefore > 0 then originalArray.[1] else originalArray.[2] // this works because there are only 2
+                match otherInArray with
                 | :? (HKVNode<'Key, 'T>) as node when System.Object.ReferenceEquals(node.Next, null) ->
                         new Flagged<Object>(node, true) // return the node instead of the array, proliferate a loner back up the chain
                 | _ -> // must be a sub-array, or multiple nodes at bottom level, either being there for a reason for a reason - keep this an array.
-                    let arr = Array.create<Object> TMUtil.bucketCount null
-                    arr.[indexInArrayOtherThanDeleted] <- somethingInArrayOtherThanDeleted
-                    new Flagged<Object>(arr, true)
+                    new Flagged<Object>(TMUtil.singleElementArrayCreate logicalIndexOfOther otherInArray, true)
             else // > 1 other item in array, so we copy the array up MINUS index = index
-                let arr = Array.copy originalArray
-                arr.[index] <- null
-                new Flagged<Object>(arr, true)
+                new Flagged<Object>(TMUtil.arrayWithLogicalRemoval arrayTargetData originalArray logicalIndex, true)
 
     // returns true only if something was actually deleted
     static member private deletedFromArray(originalArray : Object array) (k : 'Key) (h : int) bucketShift : Flagged<Object>  =
-        let index = (h >>> bucketShift) &&& TMUtil.bucketMask
-        let existing = originalArray.[index]
+        let logicalIndex = (h >>> bucketShift) &&& TMUtil.bucketMask
+        let arrayTargetData = TMUtil.getArrayTargetData originalArray logicalIndex
+        let existing = originalArray.[logicalIndex]
 
         match existing with
         | null -> new Flagged<Object>(originalArray, false)
@@ -314,18 +318,29 @@ type TrieMap_Packed<'Key, 'T when 'Key : equality> =
                 // If it's null, we have to check if this results in this array being empty.
                 match result.Value with
                 | null -> // see if there's only one
-                    TrieMap_Packed<'Key, 'T>.getArrayDeleteResultWithIndexRemoved originalArray index
+                    match TMUtil.getOriginalArrayElementCount originalArray with
+                    | 1 -> result // proliferate the true-delete-null-result array
+                    | n ->
+                        assert (n <> 0)
+                        let newArray = TMUtil.arrayWithLogicalRemoval arrayTargetData originalArray logicalIndex
+                        if n = 2 then
+                            match newArray.[1] with // if result . .  here. . . would be a single-array with a single, proliferate it up.
+                            | :? (HKVNode<'Key, 'T>) as node
+                                when (match (node.Next :> Object) with | null -> true | _ -> false) -> new Flagged<Object>(node, true)
+                            | _ -> new Flagged<Object>(newArray, true)
+                        else
+                            new Flagged<Object>(newArray, true)
                 | :? (Object array) as newSubArray -> // pretty simple, sub this in, return as a delete
-                    let arr = Array.copy originalArray
-                    arr.[index] <- null
-                    new Flagged<Object>(arr, true)
+                    let replacementArrayInfo = TMUtil.getReplacementInfo arrayTargetData originalArray
+                    replacementArrayInfo.NewArray.[replacementArrayInfo.TargetPhysicalIndex] <- newSubArray :> Object
+                    new Flagged<Object>(replacementArrayInfo.NewArray, true)
                 | :? (HKVNode<'Key, 'T>) as node -> // array delete returned a kvnode - only reason could be is if a lower list went to length of 1 and we're floating it up.
-                    if (TrieMap_Packed<'Key, 'T>.getOriginalArrayElementCount originalArray) = 1 then
+                    if (TMUtil.getOriginalArrayElementCount originalArray) = 1 then
                         new Flagged<Object>(node, true)
                     else
-                        let arr = Array.copy originalArray
-                        arr.[index] <- node :> Object
-                        new Flagged<Object>(arr, true)
+                        let replacementArrayInfo = TMUtil.getReplacementInfo arrayTargetData originalArray
+                        replacementArrayInfo.NewArray.[replacementArrayInfo.TargetPhysicalIndex] <- node :> Object
+                        new Flagged<Object>(replacementArrayInfo.NewArray, true)
                 | _ -> failwith "unknown returned type"
             else
                 new Flagged<Object>(originalArray, false)
@@ -333,17 +348,17 @@ type TrieMap_Packed<'Key, 'T when 'Key : equality> =
             let result = TrieMap_Packed<'Key, 'T>.deleteFromNodeList node k
             if result.Flag then // something was deleted
                 match result.Value with
-                | null -> TrieMap_Packed<'Key, 'T>.getArrayDeleteResultWithIndexRemoved originalArray index
+                | null -> TrieMap_Packed<'Key, 'T>.getArrayDeleteResultWithIndexRemoved originalArray logicalIndex
                 | :? (HKVNode<'Key, 'T>) as node ->
-                    if ((TrieMap_Packed<'Key, 'T>.getOriginalArrayElementCount originalArray) = 1) && (System.Object.ReferenceEquals(node.Next, null)) then // solo solo - return it
+                    if ((TMUtil.getOriginalArrayElementCount originalArray) = 1) && (System.Object.ReferenceEquals(node.Next, null)) then // solo solo - return it
                         new Flagged<Object>(node, true)
                     else
-                        let arr = Array.copy originalArray
-                        arr.[index] <- node :> Object
-                        new Flagged<Object>(arr, true)
+                        let replacementArrayInfo = TMUtil.getReplacementInfo arrayTargetData originalArray
+                        replacementArrayInfo.NewArray.[replacementArrayInfo.TargetPhysicalIndex] <- node :> Object
+                        new Flagged<Object>(replacementArrayInfo.NewArray, true)
                 | _ -> failwith "Delete of a node shouldn't return anything but null or a node"
             else
-                new Flagged<Object>(originalArray, false)
+                new Flagged<Object>(originalArray, false) // nothing deleted
         | _ -> failwith "Unknown type on delete from array"
 
 
@@ -417,6 +432,7 @@ module TrieMap_Packed =
     // these attempt to mimic the behavior of the Map module equivalents
 
     let add key value (table : TrieMap_Packed<'Key, 'T>) = table.Add(key, value)
+    let remove key (table : TrieMap_Packed<'Key, 'T>) = table.Remove key
     let containsKey key (table : TrieMap_Packed<'Key, 'T>) = table.ContainsKey
     let empty<'Key, 'T when 'Key : equality> : TrieMap_Packed<'Key, 'T> = TrieMap_Packed<'Key, 'T>.Empty //new TrieMap_Packed<'Key, 'T>()
     let find<'Key, 'T when 'Key : equality> key (table : TrieMap_Packed<'Key, 'T>) = table.[key]

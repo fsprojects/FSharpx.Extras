@@ -336,6 +336,7 @@ module TrieMap =
     // these attempt to mimic the behavior of the Map module equivalents
 
     let add key value (table : TrieMap<'Key, 'T>) = table.Add(key, value)
+    let remove key (table : TrieMap<'Key, 'T>) = table.Remove key
     let containsKey key (table : TrieMap<'Key, 'T>) = table.ContainsKey
     let empty<'Key, 'T when 'Key : equality> : TrieMap<'Key, 'T> = TrieMap<'Key, 'T>.Empty //new TrieMap<'Key, 'T>()
     let find<'Key, 'T when 'Key : equality> key (table : TrieMap<'Key, 'T>) = table.[key]
