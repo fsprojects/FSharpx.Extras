@@ -65,8 +65,8 @@ let mapsInSynch twinMaps =
 // The deletion test here is far from complete - neither of the tests really exhaustively attacks every deletion case.
 [<Test>]
 let ``a big bunch of distinct Adds and deletes that should result in contents stored properly``() =
-    let numElements = 1000 // 5
-    let entries = List.init numElements (fun n -> (Guid.NewGuid().ToString() (* n.ToString() *) , Guid.NewGuid().ToString()))
+    let numElements = 1777 // 1000 // 5
+    let entries = List.init numElements (fun n -> (Guid.NewGuid().ToString() (* n.ToString() *), Guid.NewGuid().ToString()))
     let maps = entries |> List.fold (fun maps (k, v) -> addToMaps k v maps) emptyMaps
     maps |> mapsInSynch |> should equal true
 

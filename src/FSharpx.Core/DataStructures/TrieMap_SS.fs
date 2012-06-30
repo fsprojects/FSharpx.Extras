@@ -33,256 +33,254 @@ module TrieMapConstants =
 type TrieMap<'Key, 'T when 'Key : equality> =
     struct
         val private count : int
-        val private rootNode : Object
-        private new(count : int, rootNode : Object) = { count = count; rootNode = rootNode }
+        val private rootNode : Entry<'Key, 'T>
+        private new(count : int, rootNode : Entry<'Key, 'T>) = { count = count; rootNode = rootNode }
     end
 
     // flag returns True if there was a net new node added, false if (overwrite) keeps count constant
     // can return a new node OR an array
-    static member inline private settleCollision(originalNode : HKVNode<'Key, 'T>) (newNode : HKVNode<'Key, 'T>) bucketShift : Flagged<Object> =
+    static member (*inline*) private settleCollision(originalNode : HKVNode<'Key, 'T>) (newNode : HKVNode<'Key, 'T>) bucketShift : Flagged<Entry<'Key, 'T>> =
         if newNode.Key = originalNode.Key then // this takes care of the singleton on singleton AND the head of the list
             newNode.Next <- originalNode.Next
-            new Flagged<Object>(newNode :> Object, false)
+            Flagged<Entry<'Key, 'T>>(HKVNode newNode, false)
         else
-            let rec run originalNode newNode bucketShift = // bit of a speed boost here, can inline outer function, and not repeat the first (check for equal) clause.
+            let rec run originalNode newNode bucketShift = // bit of a speed boost here, can (*inline*) outer function, and not repeat the first (check for equal) clause.
                 if bucketShift = TrieMapConstants.shiftAtWhichYouHitBottom then
                     // hit bottom - sort it out, find if already exists and rebuild accordingly
 
                     // going for speed here
-                    let mutable amDone = false
-                    let mutable wasFound = false
-                    let mutable (afterFound : HKVNode<'Key, 'T>) = originalNode // whatever - can't nicely assign it to null, we depend on the flag WasFound
                     let mutable current = originalNode.Next // remember - we've checked for the match of hkv being at the TOP at the beginning of the outer function
-                    if Object.ReferenceEquals(current, null) then
-                        amDone <- true
+                    let mutable amDone = current.IsNone
+                    let mutable wasFound = false
+                    let mutable (afterFound : HKVNode<'Key, 'T> option) = None // whatever - can't nicely assign it to null, we depend on the flag WasFound
                     while not amDone do
-                        if current.Key = newNode.Key then
+                        let cv = current.Value
+                        if cv.Key = newNode.Key then
                             // found own key
                             wasFound <- true
-                            afterFound <- current.Next
+                            afterFound <- cv.Next
                             amDone <- true
                         else
-                            if System.Object.ReferenceEquals(current.Next, null) then
+                            if cv.Next.IsNone then
                                 amDone <- true
-                            else current <- current.Next
+                            else current <- cv.Next
 
                     match wasFound with
                     | false->
-                        newNode.Next <- originalNode
-                        new Flagged<Object>(newNode :> Object, true)
+                        newNode.Next <- Some originalNode
+                        Flagged<Entry<'Key, 'T>>(HKVNode newNode, true)
                     | true -> // found ourselves, have to overwrite.  Trust afterFound now.
                         newNode.Next <- afterFound
                         let mutable rl = newNode
                         let mutable current = originalNode
                         while (not (current.Key = newNode.Key)) do
-                            rl <- { current with Next = rl }
-                            current <- current.Next
-                        new Flagged<Object>(rl :> Object, false) // no net add
+                            rl <- { current with Next = Some rl }
+                            current <- current.Next.Value // assumed value as we found our key in there, so we won't hit end
+                        Flagged<Entry<'Key, 'T>>(HKVNode rl, false) // no net add
                 else
                     // make a new array - the "node" is just a single
-                    let arr = Array.create<Object> TrieMapConstants.bucketCount null
+                    let arr = Array.create<Entry<'Key, 'T>> TrieMapConstants.bucketCount Null
                     let originalsIndex = (originalNode.Hash >>> bucketShift) &&& TrieMapConstants.bucketMask
                     let newItemIndex = (newNode.Hash >>> bucketShift) &&& TrieMapConstants.bucketMask
                     if originalsIndex = newItemIndex then
                         // they've collided, recurse
                         let result = run originalNode newNode (bucketShift + TrieMapConstants.bucketCountShift)
                         arr.[originalsIndex] <- result.Value
-                        new Flagged<Object>(arr :> Object, result.Flag)
+                        Flagged<Entry<'Key, 'T>>(Buckets arr, result.Flag)
                     else
                         // they can coexist in the new array
-                        arr.[originalsIndex] <- originalNode :> Object
+                        arr.[originalsIndex] <- HKVNode originalNode
                         // null that's default in "newNode" is fine
-                        arr.[newItemIndex] <- newNode :> Object
-                        new Flagged<Object>(arr :> Object, true)
+                        arr.[newItemIndex] <- HKVNode newNode
+                        Flagged<Entry<'Key, 'T>>(Buckets arr, true)
             run originalNode newNode bucketShift
 
     // flag returns True if there was a net new node added, false if (overwrite) keeps count constant
-    static member inline private augmentedArray(originalArray : Object array) (newNode : HKVNode<'Key, 'T>) bucketShift : Flagged<Object array> =
-        let rec run (originalArray : Object array) newNode bucketShift = // this inner recursive, plus the inline on the outer that it allowed, gave a speed boost
+    static member (*inline*) private augmentedArray(originalArray : Entry<'Key, 'T> array) (newNode : HKVNode<'Key, 'T>) bucketShift : Flagged<Entry<'Key, 'T> array> =
+        let rec run (originalArray : Entry<'Key, 'T> array) newNode bucketShift = // this inner recursive, plus the (*inline*) on the outer that it allowed, gave a speed boost
             let index = (newNode.Hash >>> bucketShift) &&& TrieMapConstants.bucketMask
             let existing = originalArray.[index]
             let cloned = Array.copy originalArray
 
             // in attempted order of likelihood
             match existing with
-            | null -> cloned.[index] <- newNode :> Object; new Flagged<Object array>(cloned, true)
-            | :? (Object array) as subArray ->
+            | Null -> cloned.[index] <- HKVNode newNode; Flagged<Entry<'Key, 'T> array>(cloned, true)
+            | Buckets subArray ->
                 let result = run subArray newNode (bucketShift + TrieMapConstants.bucketCountShift)
-                cloned.[index] <- result.Value :> Object
-                new Flagged<Object array>(cloned, result.Flag)
-            | :? HKVNode<'Key, 'T> as node ->
+                cloned.[index] <- Buckets result.Value
+                Flagged<Entry<'Key, 'T> array>(cloned, result.Flag)
+            | HKVNode node ->
                 let result = TrieMap<'Key, 'T>.settleCollision node newNode (bucketShift + TrieMapConstants.bucketCountShift)
                 cloned.[index] <- result.Value
-                new Flagged<Object array>(cloned, result.Flag)
+                Flagged<Entry<'Key, 'T> array>(cloned, result.Flag)
             | _ -> failwith "unknown type"
         run originalArray newNode bucketShift
 
-    member inline private this.withAddition(k : 'Key, v : 'T) : TrieMap<'Key, 'T> =
+    member (*inline*) private this.withAddition(k : 'Key, v : 'T) : TrieMap<'Key, 'T> =
         let h = TrieMapConstants.getHashCode k
         //let hkv = new HKV<'Key, 'T>(k, v, h)
-        let newNode = { Key = k; Value = v; Hash = h; Next = Unchecked.defaultof<HKVNode<'Key, 'T>> }
+        let newNode = { Key = k; Value = v; Hash = h; Next = None }
         match this.rootNode with
-        | :? (Object array) as arr ->
+        | Buckets arr ->
             let result = TrieMap.augmentedArray arr newNode 0
-            TrieMap((if result.Flag then this.count + 1 else this.count), result.Value)
-        | null -> // first node
-            new TrieMap<'Key, 'T>(1, (newNode :> Object))
-        | :? HKVNode<'Key, 'T> as node ->
+            TrieMap((if result.Flag then this.count + 1 else this.count), Buckets result.Value)
+        | Null -> // first node
+            new TrieMap<'Key, 'T>(1, HKVNode newNode)
+        | HKVNode node ->
             let result = TrieMap.settleCollision node newNode 0
             TrieMap((if result.Flag then this.count + 1 else this.count), result.Value)
         | _ -> failwith "unknown type"
 
-    member inline private this.findInTHash (k : 'Key) : 'T option =
-        let rec find k (keyHash : int) (bucketShift : int) (node : Object) = // deliberately don't let null in
+    member (*inline*) private this.findInTHash (k : 'Key) : 'T option =
+        let rec find k (keyHash : int) (bucketShift : int) node = // deliberately don't let null in
             match node with
-            | :? HKVNode<'Key, 'T> as node ->
+            | HKVNode node ->
                 let mutable found = false
                 let mutable foundAt = node.Next
                 if node.Key = k then
                     Some node.Value
                 else
                     let mutable current = node.Next
-                    while (not found) && (not (Object.ReferenceEquals(current, null))) do
-                        if current.Key = k then
+                    while (not found) && (current.IsSome) do
+                        let cv = current.Value
+                        if cv.Key = k then
                             found <- true
                             foundAt <- current
                         else
-                            current <- current.Next
-                    if found then Some current.Value else None
-            | :? (Object array) as arr ->
+                            current <- cv.Next
+                    if found then Some current.Value.Value else None
+            | Buckets arr ->
                 let index = (keyHash >>> bucketShift) &&& TrieMapConstants.bucketMask
-                match arr.[index] with
-                | null -> None
-                | item -> find k keyHash (bucketShift + TrieMapConstants.bucketCountShift) item
-            | _ -> failwith "Unknown type on find"
-        match this.rootNode with
-        | null -> None
-        | item -> find k (TrieMapConstants.getHashCode k) 0 item
+                find k keyHash (bucketShift + TrieMapConstants.bucketCountShift) arr.[index]
+            | Null -> None
+        find k (TrieMapConstants.getHashCode k) 0 this.rootNode
 
-    static member inline private deleteFromNodeList nodeList (k : 'Key) : Flagged<Object> =
+    static member (*inline*) private deleteFromNodeList (nodeList : HKVNode<'Key, 'T>) (k : 'Key) : Flagged<HKVNode<'Key, 'T> option> =
         let mutable found = false
-        let mutable (afterFound : HKVNode<'Key, 'T>) = nodeList // whatever - can't nicely assign it to null, we depend on the flag WasFound
+        let mutable (afterFound : HKVNode<'Key, 'T> option) = None // whatever - can't nicely assign it to null, we depend on the flag WasFound
         let mutable current = nodeList
         let mutable amDone = false
         while not amDone do
-            if current.Key = k then
-                afterFound <- current.Next
+            let cv = current
+            if cv.Key = k then
+                afterFound <- cv.Next
                 amDone <- true
                 found <- true
             else
-                if System.Object.ReferenceEquals(current.Next, null) then
+                if cv.Next.IsNone then
                     amDone <- true
                 else
-                    current <- current.Next
+                    current <- cv.Next.Value
         if found then
             let mutable rl = afterFound
             let mutable current = nodeList
             while (not (current.Key = k)) do
-                rl <- { current with Next = rl }
-                current <- current.Next
-            new Flagged<Object>(rl :> Object, true)
+                rl <- Some { current with Next = rl }
+                current <- current.Next.Value // assumed value as we found our key in there, so we won't hit end
+            Flagged<HKVNode<'Key, 'T> option>(rl, true)
         else
-            new Flagged<Object>(nodeList, false)
+            Flagged<HKVNode<'Key, 'T> option>(Some nodeList, false) // not found
 
-    static member inline private getOriginalArrayElementCount (originalArray : Object array) : int =
+    static member (*inline*) private getOriginalArrayElementCount (originalArray : Entry<'Key, 'T> array) : int =
         let mutable originalArrayElementCount = 0
         for i = 0 to TrieMapConstants.omBucketCount do
-            if originalArray.[i] <> null then
-                originalArrayElementCount <- originalArrayElementCount + 1
+            match originalArray.[i] with
+            | Null -> ()
+            | _ -> originalArrayElementCount <- originalArrayElementCount + 1
         originalArrayElementCount
 
-    static member inline private getArrayDeleteResultWithIndexRemoved(originalArray : Object array) (index : int) =
+    static member (*inline*) private getArrayDeleteResultWithIndexRemoved(originalArray : Entry<'Key, 'T> array) (index : int) : Flagged<Entry<'Key, 'T>> =
         let originalArrayElementCount = TrieMap<'Key, 'T>.getOriginalArrayElementCount originalArray
         if (originalArrayElementCount = 1) then
-            new Flagged<Object>(null, true) // deletion produced nothing, and it was the only thing in the array.
+            Flagged<Entry<'Key, 'T>>(Null, true) // deletion produced nothing, and it was the only thing in the array.
         else
             if originalArrayElementCount = 2 then // for the case when there's only one other thing; but it's a Node not an array
-                let mutable (somethingInArrayOtherThanDeleted : Object) = null
+                let mutable somethingInArrayOtherThanDeleted = Null
                 let mutable indexInArrayOtherThanDeleted = -1
                 for i = 0 to TrieMapConstants.omBucketCount do
                     let element = originalArray.[i]
-                    if (element <> null) && (i <> index) then
-                        indexInArrayOtherThanDeleted <- i
-                        somethingInArrayOtherThanDeleted <- element
+                    match element with
+                    | Null -> ()
+                    | _ when i <> index -> indexInArrayOtherThanDeleted <- i; somethingInArrayOtherThanDeleted <- element
+                    | _ -> ()
 
                 match somethingInArrayOtherThanDeleted with
-                | :? (HKVNode<'Key, 'T>) as node when System.Object.ReferenceEquals(node.Next, null) ->
-                        new Flagged<Object>(node, true) // return the node instead of the array, proliferate a loner back up the chain
+                | HKVNode node when node.Next.IsNone ->
+                        Flagged<Entry<'Key, 'T>>(somethingInArrayOtherThanDeleted, true) // return the node instead of the array, proliferate a loner back up the chain
                 | _ -> // must be a sub-array, or multiple nodes at bottom level, either being there for a reason for a reason - keep this an array.
-                    let arr = Array.create<Object> TrieMapConstants.bucketCount null
+                    let arr = Array.create<Entry<'Key, 'T>> TrieMapConstants.bucketCount Null
                     arr.[indexInArrayOtherThanDeleted] <- somethingInArrayOtherThanDeleted
-                    new Flagged<Object>(arr, true)
+                    Flagged<Entry<'Key, 'T>>(Buckets arr, true)
             else // > 1 other item in array, so we copy the array up MINUS index = index
                 let arr = Array.copy originalArray
-                arr.[index] <- null
-                new Flagged<Object>(arr, true)
+                arr.[index] <- Null
+                Flagged<Entry<'Key, 'T>>(Buckets arr, true)
 
     // returns true only if something was actually deleted
-    static member private deletedFromArray(originalArray : Object array) (k : 'Key) (h : int) bucketShift : Flagged<Object>  =
+    static member private deletedFromArray(originalArray : Entry<'Key, 'T> array) (k : 'Key) (h : int) bucketShift : Flagged<Entry<'Key, 'T>>  =
         let index = (h >>> bucketShift) &&& TrieMapConstants.bucketMask
         let existing = originalArray.[index]
 
         match existing with
-        | null -> new Flagged<Object>(originalArray, false)
-        | :? (Object array) as subArray ->
+        | Null -> Flagged<Entry<'Key, 'T>>(Buckets originalArray, false)
+        | Buckets subArray ->
             let result = TrieMap<'Key, 'T>.deletedFromArray subArray k h (bucketShift + TrieMapConstants.bucketCountShift)
             if result.Flag then
                 // there was a deletion.  Several cases.
                 // If it's sending up a Node, it's a lone node
                 // If it's null, we have to check if this results in this array being empty.
                 match result.Value with
-                | null -> // see if there's only one
+                | Null -> // see if there's only one
                     TrieMap<'Key, 'T>.getArrayDeleteResultWithIndexRemoved originalArray index
-                | :? (Object array) as newSubArray -> // pretty simple, sub this in, return as a delete
+                | Buckets newSubArray -> // pretty simple, sub this in, return as a delete
                     let arr = Array.copy originalArray
-                    arr.[index] <- newSubArray :> Object
-                    new Flagged<Object>(arr, true)
-                | :? (HKVNode<'Key, 'T>) as node -> // array delete returned a kvnode - only reason could be is if a lower list went to length of 1 and we're floating it up.
+                    arr.[index] <- Buckets newSubArray
+                    Flagged<Entry<'Key, 'T>>(Buckets arr, true)
+                | HKVNode node -> // array delete returned a kvnode - only reason could be is if a lower list went to length of 1 and we're floating it up.
                     if (TrieMap<'Key, 'T>.getOriginalArrayElementCount originalArray) = 1 then
-                        new Flagged<Object>(node, true)
+                        Flagged<Entry<'Key, 'T>>(result.Value, true)
                     else
                         let arr = Array.copy originalArray
-                        arr.[index] <- node :> Object
-                        new Flagged<Object>(arr, true)
+                        arr.[index] <- HKVNode node
+                        Flagged<Entry<'Key, 'T>>(Buckets arr, true)
                 | _ -> failwith "unknown returned type"
             else
-                new Flagged<Object>(originalArray, false)
-        | :? HKVNode<'Key, 'T> as node ->
+                Flagged<Entry<'Key, 'T>>(Buckets originalArray, false)
+        | HKVNode node ->
             let result = TrieMap<'Key, 'T>.deleteFromNodeList node k
             if result.Flag then // something was deleted
                 match result.Value with
-                | null -> TrieMap<'Key, 'T>.getArrayDeleteResultWithIndexRemoved originalArray index
-                | :? (HKVNode<'Key, 'T>) as node ->
-                    if ((TrieMap<'Key, 'T>.getOriginalArrayElementCount originalArray) = 1) && (System.Object.ReferenceEquals(node.Next, null)) then // solo solo - return it
-                        new Flagged<Object>(node, true)
+                | None -> TrieMap<'Key, 'T>.getArrayDeleteResultWithIndexRemoved originalArray index // a loner was wiped
+                | Some node ->
+                    if ((TrieMap<'Key, 'T>.getOriginalArrayElementCount originalArray) = 1) && node.Next.IsNone then // solo solo - return it
+                        Flagged<Entry<'Key, 'T>>(HKVNode node, true)
                     else
                         let arr = Array.copy originalArray
-                        arr.[index] <- node :> Object
-                        new Flagged<Object>(arr, true)
-                | _ -> failwith "Delete of a node shouldn't return anything but null or a node"
+                        arr.[index] <- HKVNode node
+                        Flagged<Entry<'Key, 'T>>(Buckets arr, true)
             else
-                new Flagged<Object>(originalArray, false)
-        | _ -> failwith "Unknown type on delete from array"
+                Flagged<Entry<'Key, 'T>>(Buckets originalArray, false)
 
 
-    member inline private this.withRemoval(key : 'Key)  =
+    member (*inline*) private this.withRemoval(key : 'Key)  =
         match this.rootNode with
-        | null -> TrieMap(0, Unchecked.defaultof<HKVNode<'Key, 'T>>) // already empty
-        | :? (Object array) as arr ->
+        | Null -> this // already empty
+        | Buckets arr ->
             let result = TrieMap<'Key, 'T>.deletedFromArray arr key (TrieMapConstants.getHashCode key) 0
             if result.Flag then TrieMap(this.count - 1, result.Value) else this
-        | :? HKVNode<'Key, 'T> as node ->
-            assert System.Object.ReferenceEquals(node.Next, null)
-            if node.Key = key then TrieMap(0, null) else this
-        | _ -> failwith "Unknown type on delete"
+        | HKVNode node ->
+            assert node.Next.IsNone
+            if node.Key = key then TrieMap(0, Null) else this
 
-    member inline private this.getTHashKVPairs () : ('Key * 'T) seq =
-        let rec getItems (node : Object) : ('Key * 'T) seq =
+    member (*inline*) private this.getTHashKVPairs () : ('Key * 'T) seq =
+        let rec getItems (node : Entry<'Key, 'T>) : ('Key * 'T) seq =
             match node with
-            | null -> Seq.empty
-            | :? HKVNode<'Key, 'T> as node ->
-                seq { yield (node.Key, node.Value); yield! getItems node.Next }
-            | :? (Object array) as arr ->
+            | Null -> Seq.empty
+            | HKVNode node ->
+                let rec run current =
+                    seq { yield (current.Key, current.Value); if current.Next.IsSome then run current.Next.Value }
+                run node
+            | Buckets arr ->
                 arr |> Seq.map getItems |> Seq.concat
             | _ -> failwith "unknown type"
         getItems this.rootNode
@@ -298,7 +296,7 @@ type TrieMap<'Key, 'T when 'Key : equality> =
     member public this.Remove(key : 'Key) = this.withRemoval key
     member public this.TryFind(key : 'Key) : 'T option = this.findInTHash key
 
-    static member Empty = new TrieMap<'Key, 'T>()
+    static member Empty = new TrieMap<'Key, 'T>(0, Null)
 
     interface IEnumerable<'Key * 'T> with
         member this.GetEnumerator() = (this.getTHashKVPairs()).GetEnumerator()
@@ -316,8 +314,14 @@ and
     Key : 'Key
     Value : 'T
     Hash : int
-    mutable Next : HKVNode<'Key, 'T> // this lets HKVNode perform double-duty, being mutated when put in place after being passed down a chain.  Never mutated once placed
+    mutable Next : HKVNode<'Key, 'T> option // this lets HKVNode perform double-duty, being mutated when put in place after being passed down a chain.  Never mutated once placed
     }
+and
+ private Entry<'Key, 'T when 'Key : equality> =
+    | Buckets of Entry<'Key, 'T> array
+    | HKVNode of HKVNode<'Key, 'T>
+    | Null
+
 
 
 
@@ -326,7 +330,6 @@ module TrieMap =
     // these attempt to mimic the behavior of the Map module equivalents
 
     let add key value (table : TrieMap<'Key, 'T>) = table.Add(key, value)
-    let remove key (table : TrieMap<'Key, 'T>) = table.Remove key
     let containsKey key (table : TrieMap<'Key, 'T>) = table.ContainsKey
     let empty<'Key, 'T when 'Key : equality> : TrieMap<'Key, 'T> = TrieMap<'Key, 'T>.Empty //new TrieMap<'Key, 'T>()
     let find<'Key, 'T when 'Key : equality> key (table : TrieMap<'Key, 'T>) = table.[key]
@@ -342,5 +345,15 @@ module TrieMap =
     let toList<'Key, 'T when 'Key : equality> (table : TrieMap<'Key, 'T>) : ('Key * 'T) list = table |> Seq.toList
     let toArray<'Key, 'T when 'Key : equality> (table : TrieMap<'Key, 'T>) : ('Key * 'T) array = table |> Seq.toArray
 
+
+    let remove key (table : TrieMap<'Key, 'T>) =
+        let withRemoval = table.Remove key
+        let missing = table |> toSeq |> Seq.map fst |> Seq.filter (fun x -> not (withRemoval.ContainsKey x)) |> List.ofSeq
+        if missing |> Seq.filter (fun x -> x <> key) |> (Seq.isEmpty >> not) then
+            table.Remove key |> ignore
+            table.Remove key |> ignore
+            table.Remove key |> ignore
+            Console.WriteLine "Problem"
+        withRemoval
 
 
