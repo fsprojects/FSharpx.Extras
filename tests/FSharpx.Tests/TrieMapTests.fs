@@ -2,31 +2,29 @@
 
 open System
 open FSharpx.DataStructures
-open FSharpx.DataStructures.TrieMap_SU
-open FSharpx.DataStructures.TrieMap_PU
 open NUnit.Framework
 open FsUnit
 
 // Tests predicated on the assumption that standard F# Map container is good, and is used as a reference.
 
 type TwinMaps<'Key, 'T when 'Key : equality and 'Key : comparison> = {
-    TrieMap_SU : TrieMap_SU<'Key, 'T>
-    PTrieMap : TrieMap_PU<'Key, 'T>
+    TrieMap_SU : TrieMap_SU.TrieMap<'Key, 'T>
+    PTrieMap : TrieMap_PU.TrieMap<'Key, 'T>
     Map : Map<'Key, 'T> }
 
 let addToMaps key value twinMaps =
     {
-      TrieMap_SU = twinMaps.TrieMap_SU |> TrieMap_SU.add key value
-      PTrieMap = twinMaps.PTrieMap |> TrieMap_PU.add key value
+      TrieMap_SU = twinMaps.TrieMap_SU |> TrieMap_SU.TrieMap.add key value
+      PTrieMap = twinMaps.PTrieMap |> TrieMap_PU.TrieMap.add key value
       Map = twinMaps.Map |> Map.add key value }
 
 let removeFromMaps key twinMaps =
     {
-      TrieMap_SU = twinMaps.TrieMap_SU |> TrieMap_SU.remove key 
-      PTrieMap = twinMaps.PTrieMap |> TrieMap_PU.remove key
+      TrieMap_SU = twinMaps.TrieMap_SU |> TrieMap_SU.TrieMap.remove key 
+      PTrieMap = twinMaps.PTrieMap |> TrieMap_PU.TrieMap.remove key
       Map = twinMaps.Map |> Map.remove key }
 
-let emptyMaps = { TrieMap_SU = TrieMap_SU.empty; PTrieMap = TrieMap_PU.empty; Map = Map.empty }
+let emptyMaps = { TrieMap_SU = TrieMap_SU.TrieMap.empty; PTrieMap = TrieMap_PU.TrieMap.empty; Map = Map.empty }
 
 type AssignedHashTestKey (keyValue : int, keyHash : int) =
     member this.GetKey() = keyValue
@@ -53,8 +51,8 @@ let mapsInSynch twinMaps =
                 (fromRef = fromTM) && (fromRef = fromPTM))
         |> Seq.filter (fun x -> x) |> Seq.length
     (matchCount = twinMaps.Map.Count) && (matchCount = twinMaps.TrieMap_SU.Count) && (matchCount = twinMaps.PTrieMap.Count) && (getMatchCount = twinMaps.Map.Count)
-    && (matchCount = (twinMaps.TrieMap_SU |> TrieMap_SU.toSeq |> Seq.length))
-    && (matchCount = (twinMaps.PTrieMap |> TrieMap_PU.toSeq |> Seq.length))
+    && (matchCount = (twinMaps.TrieMap_SU |> TrieMap_SU.TrieMap.toSeq |> Seq.length))
+    && (matchCount = (twinMaps.PTrieMap |> TrieMap_PU.TrieMap.toSeq |> Seq.length))
 
 
 [<Test>]

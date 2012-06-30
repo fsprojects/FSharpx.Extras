@@ -3,7 +3,7 @@
 // (c) Matthew Lamari, 2012, Available under Apache 2.0 license.
 // ----------------------------------------------------------------------------
 
-namespace FSharpx.DataStructures.TrieMap_SU
+namespace FSharpx.DataStructures.TrieMap_SS
 
 open FSharpx
 open System
