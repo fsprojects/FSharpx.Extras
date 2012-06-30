@@ -45,8 +45,8 @@
     <Compile Include="DataStructures\Infrastructure.fs" />
     <Compile Include="DataStructures\DList.fs" />
     <Compile Include="DataStructures\Vector.fs" />
-    <Compile Include="DataStructures\TrieMap.fs" />
-    <Compile Include="DataStructures\TrieMap_Packed.fs" />
+    <Compile Include="DataStructures\TrieMap_SU.fs" />
+    <Compile Include="DataStructures\TrieMap_PU.fs" />
     <Compile Include="DataStructures\BootstrappedQueue.fs" />
     <Compile Include="DataStructures\ImplicitQueue.fs" />
     <Compile Include="DataStructures\RealTimeQueue.fs" />

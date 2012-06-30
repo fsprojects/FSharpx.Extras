@@ -2,32 +2,31 @@
 
 open System
 open FSharpx.DataStructures
-open FSharpx.DataStructures.TrieMap
-open FSharpx.DataStructures.Experimental
-open FSharpx.DataStructures.Experimental.TrieMap_Packed
+open FSharpx.DataStructures.TrieMap_SU
+open FSharpx.DataStructures.TrieMap_PU
 open NUnit.Framework
 open FsUnit
 
 // Tests predicated on the assumption that standard F# Map container is good, and is used as a reference.
 
 type TwinMaps<'Key, 'T when 'Key : equality and 'Key : comparison> = {
-    TrieMap : TrieMap<'Key, 'T>
-    PTrieMap : TrieMap_Packed<'Key, 'T>
+    TrieMap_SU : TrieMap_SU<'Key, 'T>
+    PTrieMap : TrieMap_PU<'Key, 'T>
     Map : Map<'Key, 'T> }
 
 let addToMaps key value twinMaps =
     {
-      TrieMap = twinMaps.TrieMap |> TrieMap.add key value
-      PTrieMap = twinMaps.PTrieMap |> TrieMap_Packed.add key value
+      TrieMap_SU = twinMaps.TrieMap_SU |> TrieMap_SU.add key value
+      PTrieMap = twinMaps.PTrieMap |> TrieMap_PU.add key value
       Map = twinMaps.Map |> Map.add key value }
 
 let removeFromMaps key twinMaps =
     {
-      TrieMap = twinMaps.TrieMap |> TrieMap.remove key 
-      PTrieMap = twinMaps.PTrieMap |> TrieMap_Packed.remove key
+      TrieMap_SU = twinMaps.TrieMap_SU |> TrieMap_SU.remove key 
+      PTrieMap = twinMaps.PTrieMap |> TrieMap_PU.remove key
       Map = twinMaps.Map |> Map.remove key }
 
-let emptyMaps = { TrieMap = TrieMap.empty; PTrieMap = TrieMap_Packed.empty; Map = Map.empty }
+let emptyMaps = { TrieMap_SU = TrieMap_SU.empty; PTrieMap = TrieMap_PU.empty; Map = Map.empty }
 
 type AssignedHashTestKey (keyValue : int, keyHash : int) =
     member this.GetKey() = keyValue
@@ -40,7 +39,7 @@ type AssignedHashTestKey (keyValue : int, keyHash : int) =
 let mapsInSynch twinMaps =
     let matchCount =
         Seq.map2 (&&)
-            (Seq.map2 (=) (twinMaps.TrieMap |> Seq.sortBy fst) (twinMaps.Map |> Map.toSeq |> Seq.sortBy fst))
+            (Seq.map2 (=) (twinMaps.TrieMap_SU |> Seq.sortBy fst) (twinMaps.Map |> Map.toSeq |> Seq.sortBy fst))
             (Seq.map2 (=) (twinMaps.PTrieMap |> Seq.sortBy fst) (twinMaps.Map |> Map.toSeq |> Seq.sortBy fst))
          |> Seq.filter (fun x -> x) |> Seq.length
     let keys = twinMaps.Map |> Map.toSeq |> Seq.map fst
@@ -49,13 +48,13 @@ let mapsInSynch twinMaps =
         |> Seq.map
             (fun key ->
                 let fromRef = twinMaps.Map.[key]
-                let fromTM = twinMaps.TrieMap.[key]
+                let fromTM = twinMaps.TrieMap_SU.[key]
                 let fromPTM = twinMaps.PTrieMap.[key]
                 (fromRef = fromTM) && (fromRef = fromPTM))
         |> Seq.filter (fun x -> x) |> Seq.length
-    (matchCount = twinMaps.Map.Count) && (matchCount = twinMaps.TrieMap.Count) && (matchCount = twinMaps.PTrieMap.Count) && (getMatchCount = twinMaps.Map.Count)
-    && (matchCount = (twinMaps.TrieMap |> TrieMap.toSeq |> Seq.length))
-    && (matchCount = (twinMaps.PTrieMap |> TrieMap_Packed.toSeq |> Seq.length))
+    (matchCount = twinMaps.Map.Count) && (matchCount = twinMaps.TrieMap_SU.Count) && (matchCount = twinMaps.PTrieMap.Count) && (getMatchCount = twinMaps.Map.Count)
+    && (matchCount = (twinMaps.TrieMap_SU |> TrieMap_SU.toSeq |> Seq.length))
+    && (matchCount = (twinMaps.PTrieMap |> TrieMap_PU.toSeq |> Seq.length))
 
 
 [<Test>]
