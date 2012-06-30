@@ -39,12 +39,12 @@ type TrieMap<'Key, 'T when 'Key : equality> =
 
     // flag returns True if there was a net new node added, false if (overwrite) keeps count constant
     // can return a new node OR an array
-    static member (*inline*) private settleCollision(originalNode : HKVNode<'Key, 'T>) (newNode : HKVNode<'Key, 'T>) bucketShift : Flagged<Entry<'Key, 'T>> =
+    static member inline private settleCollision(originalNode : HKVNode<'Key, 'T>) (newNode : HKVNode<'Key, 'T>) bucketShift : Flagged<Entry<'Key, 'T>> =
         if newNode.Key = originalNode.Key then // this takes care of the singleton on singleton AND the head of the list
             newNode.Next <- originalNode.Next
             Flagged<Entry<'Key, 'T>>(HKVNode newNode, false)
         else
-            let rec run originalNode newNode bucketShift = // bit of a speed boost here, can (*inline*) outer function, and not repeat the first (check for equal) clause.
+            let rec run originalNode newNode bucketShift = // bit of a speed boost here, can inline outer function, and not repeat the first (check for equal) clause.
                 if bucketShift = TrieMapConstants.shiftAtWhichYouHitBottom then
                     // hit bottom - sort it out, find if already exists and rebuild accordingly
 
@@ -96,8 +96,8 @@ type TrieMap<'Key, 'T when 'Key : equality> =
             run originalNode newNode bucketShift
 
     // flag returns True if there was a net new node added, false if (overwrite) keeps count constant
-    static member (*inline*) private augmentedArray(originalArray : Entry<'Key, 'T> array) (newNode : HKVNode<'Key, 'T>) bucketShift : Flagged<Entry<'Key, 'T> array> =
-        let rec run (originalArray : Entry<'Key, 'T> array) newNode bucketShift = // this inner recursive, plus the (*inline*) on the outer that it allowed, gave a speed boost
+    static member inline private augmentedArray(originalArray : Entry<'Key, 'T> array) (newNode : HKVNode<'Key, 'T>) bucketShift : Flagged<Entry<'Key, 'T> array> =
+        let rec run (originalArray : Entry<'Key, 'T> array) newNode bucketShift = // this inner recursive, plus the inline on the outer that it allowed, gave a speed boost
             let index = (newNode.Hash >>> bucketShift) &&& TrieMapConstants.bucketMask
             let existing = originalArray.[index]
             let cloned = Array.copy originalArray
@@ -116,7 +116,7 @@ type TrieMap<'Key, 'T when 'Key : equality> =
             | _ -> failwith "unknown type"
         run originalArray newNode bucketShift
 
-    member (*inline*) private this.withAddition(k : 'Key, v : 'T) : TrieMap<'Key, 'T> =
+    member inline private this.withAddition(k : 'Key, v : 'T) : TrieMap<'Key, 'T> =
         let h = TrieMapConstants.getHashCode k
         //let hkv = new HKV<'Key, 'T>(k, v, h)
         let newNode = { Key = k; Value = v; Hash = h; Next = None }
@@ -131,7 +131,7 @@ type TrieMap<'Key, 'T when 'Key : equality> =
             TrieMap((if result.Flag then this.count + 1 else this.count), result.Value)
         | _ -> failwith "unknown type"
 
-    member (*inline*) private this.findInTHash (k : 'Key) : 'T option =
+    member inline private this.findInTHash (k : 'Key) : 'T option =
         let rec find k (keyHash : int) (bucketShift : int) node = // deliberately don't let null in
             match node with
             | HKVNode node ->
@@ -155,7 +155,7 @@ type TrieMap<'Key, 'T when 'Key : equality> =
             | Null -> None
         find k (TrieMapConstants.getHashCode k) 0 this.rootNode
 
-    static member (*inline*) private deleteFromNodeList (nodeList : HKVNode<'Key, 'T>) (k : 'Key) : Flagged<HKVNode<'Key, 'T> option> =
+    static member inline private deleteFromNodeList (nodeList : HKVNode<'Key, 'T>) (k : 'Key) : Flagged<HKVNode<'Key, 'T> option> =
         let mutable found = false
         let mutable (afterFound : HKVNode<'Key, 'T> option) = None // whatever - can't nicely assign it to null, we depend on the flag WasFound
         let mutable current = nodeList
@@ -181,7 +181,7 @@ type TrieMap<'Key, 'T when 'Key : equality> =
         else
             Flagged<HKVNode<'Key, 'T> option>(Some nodeList, false) // not found
 
-    static member (*inline*) private getOriginalArrayElementCount (originalArray : Entry<'Key, 'T> array) : int =
+    static member inline private getOriginalArrayElementCount (originalArray : Entry<'Key, 'T> array) : int =
         let mutable originalArrayElementCount = 0
         for i = 0 to TrieMapConstants.omBucketCount do
             match originalArray.[i] with
@@ -189,7 +189,7 @@ type TrieMap<'Key, 'T when 'Key : equality> =
             | _ -> originalArrayElementCount <- originalArrayElementCount + 1
         originalArrayElementCount
 
-    static member (*inline*) private getArrayDeleteResultWithIndexRemoved(originalArray : Entry<'Key, 'T> array) (index : int) : Flagged<Entry<'Key, 'T>> =
+    static member inline private getArrayDeleteResultWithIndexRemoved(originalArray : Entry<'Key, 'T> array) (index : int) : Flagged<Entry<'Key, 'T>> =
         let originalArrayElementCount = TrieMap<'Key, 'T>.getOriginalArrayElementCount originalArray
         if (originalArrayElementCount = 1) then
             Flagged<Entry<'Key, 'T>>(Null, true) // deletion produced nothing, and it was the only thing in the array.
@@ -262,7 +262,7 @@ type TrieMap<'Key, 'T when 'Key : equality> =
                 Flagged<Entry<'Key, 'T>>(Buckets originalArray, false)
 
 
-    member (*inline*) private this.withRemoval(key : 'Key)  =
+    member inline private this.withRemoval(key : 'Key)  =
         match this.rootNode with
         | Null -> this // already empty
         | Buckets arr ->
@@ -272,7 +272,7 @@ type TrieMap<'Key, 'T when 'Key : equality> =
             assert node.Next.IsNone
             if node.Key = key then TrieMap(0, Null) else this
 
-    member (*inline*) private this.getTHashKVPairs () : ('Key * 'T) seq =
+    member inline private this.getTHashKVPairs () : ('Key * 'T) seq =
         let rec getItems (node : Entry<'Key, 'T>) : ('Key * 'T) seq =
             match node with
             | Null -> Seq.empty
