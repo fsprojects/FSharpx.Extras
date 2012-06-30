@@ -236,7 +236,7 @@ type TrieMap<'Key, 'T when 'Key : equality> =
                     TrieMap<'Key, 'T>.getArrayDeleteResultWithIndexRemoved originalArray index
                 | :? (Object array) as newSubArray -> // pretty simple, sub this in, return as a delete
                     let arr = Array.copy originalArray
-                    arr.[index] <- null
+                    arr.[index] <- newSubArray :> Object
                     new Flagged<Object>(arr, true)
                 | :? (HKVNode<'Key, 'T>) as node -> // array delete returned a kvnode - only reason could be is if a lower list went to length of 1 and we're floating it up.
                     if (TrieMap<'Key, 'T>.getOriginalArrayElementCount originalArray) = 1 then
@@ -304,8 +304,6 @@ type TrieMap<'Key, 'T when 'Key : equality> =
     interface IEnumerable<'Key * 'T> with
         member this.GetEnumerator() = (this.getTHashKVPairs()).GetEnumerator()
         member this.GetEnumerator() = (this.getTHashKVPairs()).GetEnumerator() :> IEnumerator
-
-            
 
 and
  private Flagged<'fv> =

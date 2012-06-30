@@ -51,11 +51,14 @@ module TMUtil =
     let maskForBeforeLogicalIndex = (Array.init 32 (fun n -> if n = 0 then 0 else (int) (0xffffffffu >>> (32 - n))))
     let boxedNumbers = Array.init (1 <<< bucketCount) (fun n -> box n)
 
-    let inline singleElementArrayCreate (logicalIndex : int) (element : Object) : Object array =
+    let inline singleElementArrayCreateFromSingleBitMask (singleBitMask : int) (element : Object) : Object array =
         let arr = Array.create 2 null
-        arr.[0] <- boxedNumbers.[1 <<< logicalIndex]
+        arr.[0] <- boxedNumbers.[singleBitMask]
         arr.[1] <- element
         arr
+
+    let inline singleElementArrayCreateFromLogicalIndex (logicalIndex : int) (element : Object) : Object array =
+        singleElementArrayCreateFromSingleBitMask (1 <<< logicalIndex) element
 
     let inline dualElementArrayCreate (logicalIndex0 : int) element0 (logicalIndex1 : int) element1 : Object array =
         let arr = Array.create 3 null
@@ -105,7 +108,7 @@ module TMUtil =
         cloned.[0] <- boxedNumbers.[arrayTargetData.Bits - logicalIndexMask]
         let numBefore = arrayTargetData.NumBefore
         Array.Copy(originalArray, 1, cloned, 1, numBefore)
-        Array.Copy(originalArray, numBefore + 1, cloned, numBefore + 1, originalArray.Length - numBefore - 1)
+        Array.Copy(originalArray, numBefore + 2, cloned, numBefore + 1, originalArray.Length - numBefore - 2)
         cloned
 
     // an optimization that we return the info rather than take a closure.
@@ -182,7 +185,7 @@ type TrieMap_Packed<'Key, 'T when 'Key : equality> =
                     if originalsLogicalIndex = newItemLogicalIndex then
                         // they've collided, recurse
                         let result = run originalNode newNode (bucketShift + TMUtil.bucketCountShift)
-                        new Flagged<Object>(TMUtil.singleElementArrayCreate originalsLogicalIndex result.Value, result.Flag)
+                        new Flagged<Object>(TMUtil.singleElementArrayCreateFromLogicalIndex originalsLogicalIndex result.Value, result.Flag)
                     else
                         // they can coexist in the new array
                         new Flagged<Object>(TMUtil.dualElementArrayCreate originalsLogicalIndex originalNode newItemLogicalIndex newNode, true)
@@ -292,13 +295,13 @@ type TrieMap_Packed<'Key, 'T when 'Key : equality> =
             let arrayTargetData = TMUtil.getArrayTargetData originalArray logicalIndex
             if originalArrayElementCount = 2 then // for the case when there's only one other thing; but it's a Node not an array
                 // this could be a candidate for factoring, as it assumes details about the array implementation
-                let logicalIndexOfOther = arrayTargetData.Bits - (1 <<< logicalIndex)
+                let bitMaskOfOther = arrayTargetData.Bits - (1 <<< logicalIndex)
                 let otherInArray = if arrayTargetData.NumBefore > 0 then originalArray.[1] else originalArray.[2] // this works because there are only 2
                 match otherInArray with
                 | :? (HKVNode<'Key, 'T>) as node when System.Object.ReferenceEquals(node.Next, null) ->
                         new Flagged<Object>(node, true) // return the node instead of the array, proliferate a loner back up the chain
                 | _ -> // must be a sub-array, or multiple nodes at bottom level, either being there for a reason for a reason - keep this an array.
-                    new Flagged<Object>(TMUtil.singleElementArrayCreate logicalIndexOfOther otherInArray, true)
+                    new Flagged<Object>(TMUtil.singleElementArrayCreateFromSingleBitMask bitMaskOfOther otherInArray, true)
             else // > 1 other item in array, so we copy the array up MINUS index = index
                 new Flagged<Object>(TMUtil.arrayWithLogicalRemoval arrayTargetData originalArray logicalIndex, true)
 
@@ -306,9 +309,8 @@ type TrieMap_Packed<'Key, 'T when 'Key : equality> =
     static member private deletedFromArray(originalArray : Object array) (k : 'Key) (h : int) bucketShift : Flagged<Object>  =
         let logicalIndex = (h >>> bucketShift) &&& TMUtil.bucketMask
         let arrayTargetData = TMUtil.getArrayTargetData originalArray logicalIndex
-        let existing = originalArray.[logicalIndex]
 
-        match existing with
+        match arrayTargetData.SomethingAlreadyPresent with
         | null -> new Flagged<Object>(originalArray, false)
         | :? (Object array) as subArray ->
             let result = TrieMap_Packed<'Key, 'T>.deletedFromArray subArray k h (bucketShift + TMUtil.bucketCountShift)
@@ -391,7 +393,7 @@ type TrieMap_Packed<'Key, 'T when 'Key : equality> =
     member public this.ContainsKey(key : 'Key) : bool = match this.findInTHash(key) with | None -> false | Some _ -> true
     member public this.Count = this.count
     member public this.IsEmpty : bool = this.Count = 0
-    member public this.Item(key : 'Key) : 'T = match this.findInTHash(key) with | None -> raise (KeyNotFoundException(key.ToString())) | Some value -> value
+    member public this.Item(key : 'Key) : 'T = match this.findInTHash(key) with | None -> this.findInTHash(key) |> ignore; raise (KeyNotFoundException(key.ToString())) | Some value -> value
     member public this.Remove(key : 'Key) = this.withRemoval key
     member public this.TryFind(key : 'Key) : 'T option = this.findInTHash key
 

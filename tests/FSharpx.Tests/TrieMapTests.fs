@@ -54,11 +54,25 @@ let mapsInSynch twinMaps =
                 (fromRef = fromTM) && (fromRef = fromPTM))
         |> Seq.filter (fun x -> x) |> Seq.length
     (matchCount = twinMaps.Map.Count) && (matchCount = twinMaps.TrieMap.Count) && (matchCount = twinMaps.PTrieMap.Count) && (getMatchCount = twinMaps.Map.Count)
+    && (matchCount = (twinMaps.TrieMap |> TrieMap.toSeq |> Seq.length))
+    && (matchCount = (twinMaps.PTrieMap |> TrieMap_Packed.toSeq |> Seq.length))
 
 
 [<Test>]
-let ``a big bunch of distinct Adds should result in contents stored properly``() =
-    let entries = List.init 10000 (fun _ -> (Guid.NewGuid().ToString(), Guid.NewGuid().ToString()))
+let ``a big bunch of distinct Adds and deletes that should result in contents stored properly``() =
+    let numElements = 1000 // 5
+    let entries = List.init numElements (fun n -> (Guid.NewGuid().ToString() (* n.ToString() *) , Guid.NewGuid().ToString()))
     let maps = entries |> List.fold (fun maps (k, v) -> addToMaps k v maps) emptyMaps
     maps |> mapsInSynch |> should equal true
 
+    let allKeysRemaining = maps.Map |> Map.toSeq |> Seq.map fst |> Seq.toList
+
+    let mapsAfterDelete =
+        allKeysRemaining
+        |> Seq.fold
+            (fun maps k ->
+                let newMaps = removeFromMaps k maps
+                newMaps |> mapsInSynch |> should equal true
+                newMaps)
+           maps
+    mapsAfterDelete |> mapsInSynch |> should equal true
