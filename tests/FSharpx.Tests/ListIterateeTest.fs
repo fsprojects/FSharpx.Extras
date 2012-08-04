@@ -311,6 +311,128 @@ let ``test readLines should return the lines from the input when chunked``(input
   let actual = enumeratePureNChunk 5 input readLines |> run
   actual |> should equal expected
 
+[<Test>]
+[<Sequential>]
+let ``test consume should consume all items``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
+  let actual = enumerate [ 0..x ] consume |> run
+  actual |> should equal [ 0..x ]
+
+[<Test>]
+[<Sequential>]
+let ``test consume should consume all items at once``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
+  let actual = enumeratePure1Chunk [ 0..x ] consume |> run
+  actual |> should equal [ 0..x ]
+
+[<Test>]
+[<Sequential>]
+let ``test consume should consume all items when enumerating in chunks``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
+  let actual = enumeratePureNChunk 5 [ 0..x ] consume |> run
+  actual |> should equal [ 0..x ]
+
+[<Test>]
+[<Sequential>]
+let ``test isolate and consume should take the first n items from the stream``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
+  let input = [ 0..9 ]
+  let expected = FSharpx.List.take x input
+  let actual = enumerate input (joinI (isolate x consume)) |> run
+  actual |> should equal expected
+
+[<Test>]
+[<Sequential>]
+let ``test isolate and consume should take the first n items from the stream at once``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
+  let input = [ 0..9 ]
+  let expected = FSharpx.List.take x input
+  let actual = enumeratePure1Chunk input (joinI (isolate x consume)) |> run
+  actual |> should equal expected
+
+[<Test>]
+[<Sequential>]
+let ``test isolate and consume should take the first n items when chunked``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
+  let input = [ 0..9 ]
+  let expected = FSharpx.List.take x input
+  let actual = enumeratePureNChunk 5 input (joinI (isolate x consume)) |> run
+  actual |> should equal expected
+
+[<Test>]
+let ``test isolateWhile and consume should take anything before the first space``() =
+  let input = "Hello world".ToCharArray() |> Array.toList
+  let expected = "Hello".ToCharArray() |> Array.toList
+  let actual = enumerate input (joinI (isolateWhile ((<>) ' ') consume)) |> run
+  actual |> should equal expected
+
+[<Test>]
+let ``test isolateWhile and consume should take anything before the first space at once``() =
+  let input = "Hello world".ToCharArray() |> Array.toList
+  let expected = "Hello".ToCharArray() |> Array.toList
+  let actual = enumeratePure1Chunk input (joinI (isolateWhile ((<>) ' ') consume)) |> run
+  actual |> should equal expected
+
+[<Test>]
+let ``test isolateWhile and consume should take anything before the first space when enumerating in chunks``() =
+  let input = "Hello world".ToCharArray() |> Array.toList
+  let expected = "Hello".ToCharArray() |> Array.toList
+  let actual = enumeratePureNChunk 5 input (joinI (isolateWhile ((<>) ' ') consume)) |> run
+  actual |> should equal expected
+
+[<Test>]
+let ``test isolateUntil and consume should correctly split the input``() =
+  let input = "abcde".ToCharArray() |> Array.toList
+  let expected = "ab".ToCharArray() |> Array.toList
+  let actual = enumerate input (joinI (isolateUntil ((=) 'c') consume)) |> run
+  actual |> should equal expected
+
+[<Test>]
+let ``test isolateUntil and consume should correctly split the input at once``() =
+  let input = "abcde".ToCharArray() |> Array.toList
+  let expected = "ab".ToCharArray() |> Array.toList
+  let actual = enumeratePure1Chunk input (joinI (isolateUntil ((=) 'c') consume)) |> run
+  actual |> should equal expected
+
+[<Test>]
+let ``test isolateUntil and consume should correctly split the input when enumerating in chunks``() =
+  let input = "abcde".ToCharArray() |> Array.toList
+  let expected = "ab".ToCharArray() |> Array.toList
+  let actual = enumeratePureNChunk 2 input (joinI (isolateUntil ((=) 'c') consume)) |> run
+  actual |> should equal expected
+
+[<Test>]
+let ``test map should map to uppercase letters to lowercase``() =
+  let lower = joinI (map Char.ToLower consume)
+  let actual = enumerate ['A'; 'B'; 'C'; 'D'; 'E'] lower |> run
+  actual |> should equal ['a'; 'b'; 'c'; 'd'; 'e']
+
+[<Test>]
+let ``test map should map to uppercase letters to lowercase at once``() =
+  let lower = joinI (map Char.ToLower consume)
+  let actual = enumeratePure1Chunk ['A'; 'B'; 'C'; 'D'; 'E'] lower |> run
+  actual |> should equal ['a'; 'b'; 'c'; 'd'; 'e']
+
+[<Test>]
+let ``test map should map to uppercase letters to lowercase when enumerating in chunks``() =
+  let lower = joinI (map Char.ToLower consume)
+  let actual = enumeratePureNChunk 2 ['A'; 'B'; 'C'; 'D'; 'E'] lower |> run
+  actual |> should equal ['a'; 'b'; 'c'; 'd'; 'e']
+
+[<Test>]
+let ``test filter should filter filter the value for which the given predicate returns false``() =
+  let input = "Hello world".ToCharArray() |> Array.toList
+  let expected = "Heo word".ToCharArray() |> Array.toList
+  let actual = enumerate input (joinI (filter ((<>) 'l') consume)) |> run
+  actual |> should equal expected
+
+[<Test>]
+let ``test filter should filter the value for which the given predicate returns false at once``() =
+  let input = "Hello world".ToCharArray() |> Array.toList
+  let expected = "Heo word".ToCharArray() |> Array.toList
+  let actual = enumeratePure1Chunk input (joinI (filter ((<>) 'l') consume)) |> run
+  actual |> should equal expected
+
+[<Test>]
+let ``test filter should filter the value for which the given predicate returns false when enumerating in chunks``() =
+  let input = "Hello world".ToCharArray() |> Array.toList
+  let expected = "Heo word".ToCharArray() |> Array.toList
+  let actual = enumeratePureNChunk 5 input (joinI (filter ((<>) 'l') consume)) |> run
+  actual |> should equal expected
 
 (* CSV Parser *)
 
