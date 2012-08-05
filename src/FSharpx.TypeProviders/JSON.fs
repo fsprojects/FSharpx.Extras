@@ -33,6 +33,7 @@ let tokenize source=
     let rec token acc = function
         | (')' :: _) as t -> acc, t // closing paren terminates
         | ('}' :: _) as t -> acc, t // closing paren terminates
+        | (']' :: _) as t -> acc, t // closing paren terminates
         | (':' :: _) as t -> acc, t // colon terminates
         | (',' :: _) as t -> acc, t // comma terminates
         | w :: t when Char.IsWhiteSpace(w) -> acc, t // whitespace terminates
