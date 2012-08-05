@@ -75,6 +75,7 @@
     <Compile Include="LensExample.fs" />
     <Compile Include="TimeMeasurementTests.fs" />
     <Compile Include="RegexTests.fs" />
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FsCheck, Version=0.8.2.0, Culture=neutral, PublicKeyToken=null">
