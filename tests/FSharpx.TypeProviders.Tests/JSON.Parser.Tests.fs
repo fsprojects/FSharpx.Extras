@@ -95,3 +95,9 @@ let ``Can parse array of numbers``() =
     j.Elements.[0] |> should equal (Number 1.)
     j.Elements.[1] |> should equal (Number 2.)
     j.Elements.[2] |> should equal (Number 3.)
+
+[<Test>]
+let ``Quotes in strings are property escaped``() = 
+    let jsonStr = "{\"short_description\":\"This a string with \\\"quotes\\\"\"}"
+    let j = parse jsonStr
+    j.ToString() |> should equal jsonStr
