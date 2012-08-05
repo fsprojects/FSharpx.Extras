@@ -59,6 +59,7 @@
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\FSharpx.Core\FSharpx.Core.fsproj">
