@@ -75,8 +75,11 @@ type internal Infrastucture =
 type Text(text:string) =
     let mutable v = text
 
+    let escape s = 
+        s|> replace "\"" "\\\""
+
     member this.Value with get() = v and set (value) = v <- value
-    override this.ToString() = sprintf "\"%s\"" v
+    override this.ToString() = sprintf "\"%s\"" (escape v)
 
     override this.Equals other =
         match other with
@@ -85,7 +88,7 @@ type Text(text:string) =
 
     interface Document
     interface Infrastucture with
-        member this.Serialize sb = sb.AppendFormat("\"{0}\"",v)
+        member this.Serialize sb = sb.AppendFormat("\"{0}\"", escape v)
         member this.ToXml() = v :> obj
 
 type Number(number:float) =
