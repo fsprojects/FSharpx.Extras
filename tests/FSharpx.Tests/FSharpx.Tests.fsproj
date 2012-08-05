@@ -77,8 +77,8 @@
     <Compile Include="RegexTests.fs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="FsCheck">
-      <HintPath>..\..\packages\FsCheck.0.7.1\lib\net35\FsCheck.dll</HintPath>
+    <Reference Include="FsCheck, Version=0.8.2.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\packages\FsCheck.0.8.2.0\Lib\Net40-Client\FsCheck.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="FSharp.Core">

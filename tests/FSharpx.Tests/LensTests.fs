@@ -2,9 +2,9 @@
 
 open System
 open NUnit.Framework
-open FSharpx.Lens.Operators
 open FsCheck
 open FsCheck.NUnit
+open FSharpx.Lens.Operators
 
 type Car = {
     Make: string
