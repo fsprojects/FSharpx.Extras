@@ -31,7 +31,13 @@ Copyright (C) Microsoft Corporation. All rights reserved.
         <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
         <DefaultLanguageSourceExtension>.fs</DefaultLanguageSourceExtension>
         <Language>F#</Language>
+        <TargetRuntime>Managed</TargetRuntime>
         <Tailcalls Condition="'$(Tailcalls)'==''">$(Optimize)</Tailcalls>
+        <FrameworkRegistryBase Condition="'$(TargetFrameworkIdentifier)'=='Silverlight'">Software\Microsoft\Microsoft SDKs\$(TargetFrameworkIdentifier)</FrameworkRegistryBase>
+        <!-- Visual studio requires a non-empty RootNamespace value for "Add New Item" to work. -->
+        <RootNamespace Condition="'$(RootNamespace)'==''">RootNamespace</RootNamespace>
+        <Actual32Bit Condition="'$(TargetFrameworkVersion)'=='v2.0' or '$(TargetFrameworkVersion)'=='v3.0' or '$(TargetFrameworkVersion)'=='v3.5' or '$(TargetFrameworkVersion)'=='v4.0'">false</Actual32Bit>
+        <Actual32Bit Condition="!('$(TargetFrameworkVersion)'=='v2.0' or '$(TargetFrameworkVersion)'=='v3.0' or '$(TargetFrameworkVersion)'=='v3.5' or '$(TargetFrameworkVersion)'=='v4.0')">$(Prefer32Bit)</Actual32Bit>    
     </PropertyGroup>
 
     <!--
@@ -136,8 +142,8 @@ Copyright (C) Microsoft Corporation. All rights reserved.
     >
 
         <Error
-            Condition="'$(SilverlightVersion)' != '' and !(Exists('$(ProgramFiles)\Microsoft F#\Silverlight\Libraries\Client\$(SilverlightVersion)\FSharp.Core.dll'))"
-            Text="F# runtime for Silverlight version $(SilverlightVersion) is not installed. Please go to http://go.microsoft.com/fwlink/?LinkId=177463 to download and install matching F# runtime"
+            Condition="'$(SilverlightVersion)' != '' and '$(SilverlightVersion)' != 'v5.0'"
+            Text="In this version of Visual Studio, F# for Silverlight can only target Silverlight v5.0. Use a prior version of Visual Studio to target previous versions of Silverlight with F#."
         />
 
         <Warning
@@ -163,6 +169,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
               OutputAssembly="@(IntermediateAssembly)"
               PdbFile="$(PdbFile)"
               Platform="$(PlatformTarget)"
+              Prefer32Bit="$(Actual32Bit)"
               References="@(ReferencePath)"
               ReferencePath="$(ReferencePath)"
               Resources="@(_CoreCompileResourceInputs);@(CompiledLicenseFile);@(AdditionalEmbeddedResource)"
@@ -173,12 +180,15 @@ Copyright (C) Microsoft Corporation. All rights reserved.
               ToolPath="$(FscToolPath)"
               TreatWarningsAsErrors="$(TreatWarningsAsErrors)"
               Utf8Output="$(Utf8Output)"
+              ValidateTypeProviders="$(ValidateTypeProviders)"
               VersionFile="$(VersionFile)"
               VisualStudioStyleErrors="$(VisualStudioStyleErrors)"
               WarningLevel="$(WarningLevel)"
               WarningsAsErrors="$(WarningsAsErrors)"
               Win32ManifestFile="$(Win32Manifest)"
               Win32ResourceFile="$(Win32Resource)"
+              SubsystemVersion="$(SubsystemVersion)"
+              HighEntropyVA="$(HighEntropyVA)"
         />
 
         <ItemGroup>
@@ -190,7 +200,7 @@ Copyright (C) Microsoft Corporation. All rights reserved.
 
     <Import Project="$(MSBuildBinPath)\Microsoft.Common.targets"/>
 
-    <!--
+  <!--
       ============================================================
                                           GenerateTargetFrameworkMonikerAttribute
 
@@ -225,6 +235,16 @@ Copyright (C) Microsoft Corporation. All rights reserved.
         </ItemGroup>
 
     </Target>
+
+    <!-- provide help if VS2012 was installed without the F# 2.0 runtime -->
+    <PropertyGroup>
+      <_FSharp20InstallSuccess>$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\FSharp\3.0\Runtime\v2.0\Install', 'InstallSuccess', '', RegistryView.Registry32))</_FSharp20InstallSuccess>
+    </PropertyGroup>
+    <Target Name="CheckFSharp20Install" BeforeTargets="BeforeCompile" DependsOnTargets="PrepareForBuild;GetReferenceAssemblyPaths">
+      <Warning Condition="('$(_FSharp20InstallSuccess)' == '') and ('$(TargetFrameworkIdentifier)' == '.NETFramework') and ('$(TargetFrameworkVersion)' == 'v2.0' or '$(TargetFrameworkVersion)' == 'v3.0' or '$(TargetFrameworkVersion)' == 'v3.5')" 
+               Text="This F# project requires the F# 2.0 runtime, but that runtime is not installed.  For more information, see http://go.microsoft.com/fwlink/?LinkId=254223" />
+    </Target>
+
 
     <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\$(MSBuildThisFile)\ImportAfter\*" Condition="'$(ImportByWildcardAfterMicrosoftFSharpTargets)' == 'true' and exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\$(MSBuildThisFile)\ImportAfter')"/>
 

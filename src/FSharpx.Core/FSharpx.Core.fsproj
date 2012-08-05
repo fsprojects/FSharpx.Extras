@@ -77,11 +77,8 @@
     <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
       <HintPath>..\..\lib\FSharp\Net20\FSharp.Core.dll</HintPath>
     </Reference>
-    <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
+    <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
       <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' == 'v4.5'">
-      <HintPath>..\..\lib\FSharp\Net45\FSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="FSharp.PowerPack" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
       <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.dll</HintPath>

@@ -12,7 +12,8 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <Name>FSharpx.Tests</Name>
     <FscToolPath>..\..\lib\FSharp\</FscToolPath>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -80,11 +81,8 @@
       <HintPath>..\..\packages\FsCheck.0.7.1\lib\net35\FsCheck.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) != 'v4.5'">
+    <Reference Include="FSharp.Core">
       <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' == 'v4.5'">
-      <HintPath>..\..\lib\FSharp\Net45\FSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="FSharp.PowerPack" Condition="$(TargetFrameworkVersion) != 'v3.5'">
       <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.dll</HintPath>
@@ -132,7 +130,7 @@
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\FSharpx.CSharpTests\FSharpx.CSharpTests.csproj">
-      <Name>FSharp.Core.CS.Tests</Name>
+      <Name>FSharpx.CSharpTests</Name>
       <Project>{4354a199-6acf-4db5-a8fa-bad638d1d0e3}</Project>
       <Private>True</Private>
     </ProjectReference>
