@@ -91,7 +91,6 @@
     <Compile Include="PersistentVectorTest.fs" />
     <Compile Include="BootstrappedQueueTest.fs" />
     <Compile Include="ImplicitQueueTest.fs" />
-    <Compile Include="RealTimeQueueTest.fs" />
     <Compile Include="BottomUpMergeSortTest.fs" />
   </ItemGroup>
   <ItemGroup>
