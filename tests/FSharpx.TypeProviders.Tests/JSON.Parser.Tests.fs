@@ -101,3 +101,29 @@ let ``Quotes in strings are property escaped``() =
     let jsonStr = "{\"short_description\":\"This a string with \\\"quotes\\\"\"}"
     let j = parse jsonStr
     j.ToString() |> should equal jsonStr
+
+[<Test>]
+let ``Can parse simple array``() = 
+    let j = parse """["Adam","Eve","Bonnie","Clyde","Donald","Daisy","Han","Leia"]"""
+    j.GetType() |> should equal typeof<JArray>
+    let j x = (j :?> JArray).Elements.[x]
+    j 0  |> should equal (Text "Adam")
+    j 1 |> should equal (Text "Eve")
+    j 2 |> should equal (Text "Bonnie")
+    j 3 |> should equal (Text "Clyde")
+
+[<Test>]
+let ``Can parse nested array``() = 
+    let j = parse 
+                """[
+                    ["Adam", "Eve"],
+                    ["Bonnie", "Clyde"],
+                    ["Donald", "Daisy"],
+                    ["Han", "Leia"]
+                  ]"""
+    j.GetType() |> should equal typeof<JArray>
+    let j x y = ((j :?> JArray).Elements.[x] :?> JArray).Elements.[y]
+    j 0 0 |> should equal (Text "Adam")
+    j 0 1 |> should equal (Text "Eve")
+    j 1 0 |> should equal (Text "Bonnie")
+    j 1 1 |> should equal (Text "Clyde")

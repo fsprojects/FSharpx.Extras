@@ -125,3 +125,19 @@ let ``Can compare typed JSON documents``() =
 
     Assert.AreEqual(simple1,simple2)
     Assert.AreNotEqual(nested,simple2)
+
+type JsonArray = StructuredJSON<Schema="""["Adam","Eve","Bonnie","Clyde","Donald","Daisy","Han","Leia"]""">
+
+[<Test>]
+let ``Can parse simple array``() = 
+    let inlined = JsonArray().Root    
+    inlined.ToString()
+      |> should equal """["Adam","Eve","Bonnie","Clyde","Donald","Daisy","Han","Leia"]"""
+
+type MultipleJsonArray = StructuredJSON<Schema="""[["Adam","Eve"],["Bonnie","Clyde"],["Donald","Daisy"],["Han","Leia"]]""">
+
+[<Test>]
+let ``Can parse multidimensional arrays``() = 
+    let inlined = MultipleJsonArray().Root
+    inlined.ToString()
+      |> should equal """[["Adam","Eve"],["Bonnie","Clyde"],["Donald","Daisy"],["Han","Leia"]]"""
