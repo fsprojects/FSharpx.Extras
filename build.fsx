@@ -16,7 +16,6 @@ let homepage = "http://github.com/fsharp/fsharpx"
 // .NET Frameworks
 let net35 = "v3.5"
 let net40 = "v4.0"
-let net45 = "v4.5"
 
 // directories
 let buildDir = "./build/"
@@ -43,7 +42,7 @@ let rec getPackageDesc = function
 
 // params
 let target = getBuildParamOrDefault "target" "All"
-let buildSpecific = hasBuildParam "v35" || hasBuildParam "v40" || hasBuildParam "v45"
+let buildSpecific = hasBuildParam "v35" || hasBuildParam "v40"
 
 let normalizeFrameworkVersion frameworkVersion =
     let v = ("[^\\d]" >=> "") frameworkVersion
@@ -63,8 +62,8 @@ let appReferences frameworkVersion =
     { (!+ "./src/**/*.*proj") with 
         Excludes = 
             [yield "./src/**/*.Silverlight.*proj"
-             if frameworkVersion <> net45 then yield "./src/**/*.TypeProviders.*proj"
              if frameworkVersion = net35 then 
+                yield "./src/**/*.TypeProviders.*proj"
                 yield "./src/**/*.Async.fsproj"
                 yield "./src/**/*.Http.fsproj" // TODO: why is that?
                 yield "./src/**/*.Observable.fsproj" // TODO: why is that?
@@ -73,7 +72,7 @@ let appReferences frameworkVersion =
 
 let testReferences frameworkVersion =
     { (!+ "./tests/**/*.*proj") with 
-        Excludes = [if frameworkVersion <> net45 then yield "./tests/**/*.TypeProviders.*proj"] }
+        Excludes = [if frameworkVersion = net35 then yield "./tests/**/*.TypeProviders.*proj"] }
     |> Scan
 
 // targets
@@ -170,21 +169,14 @@ let prepareNugetTarget = TargetTemplate (fun frameworkVersion ->
         [for ending in ["dll";"pdb";"xml"] ->
             sprintf "%sFsharpx.%s.%s" buildDir package ending]
         |> Seq.filter (fun f -> File.Exists f)
-        |> CopyTo frameworkSubDir
-
-        if package = "TypeProviders" then   // TODO: Remove when we have a .NET 4.5 Core package
-            [for ending in ["dll";"pdb";"xml"] ->
-                sprintf "%sFsharpx.%s.%s" buildDir "Core" ending]
-            |> Seq.filter (fun f -> File.Exists f)
-            |> CopyTo frameworkSubDir)
+        |> CopyTo frameworkSubDir)
 )
 
 let buildFrameworkVersionTarget = TargetTemplate (fun frameworkVersion -> ())
 
 let generateTargets() =
     [if hasBuildParam "v35" then yield net35
-     if (hasBuildParam "v40") || (not buildSpecific) then yield net40
-     if hasBuildParam "v45" then yield net45]
+     if (hasBuildParam "v40") || (not buildSpecific) then yield net40]
     |> Seq.fold
         (fun dependency frameworkVersion -> 
             tracefn "Generating targets for .NET %s" frameworkVersion
@@ -217,9 +209,9 @@ let nugetTarget = TargetTemplate (fun package ->
             ToolPath = nugetPath
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Dependencies =
-                if package = "Core" || package = "TypeProviders" then p.Dependencies else
+                if package = "Core" then p.Dependencies else
                 [projectName + ".Core", RequireExactly (NormalizeVersion version)]
-            Publish = hasBuildParam "nugetkey" && package <> "TypeProviders" })
+            Publish = hasBuildParam "nugetkey" })
         "FSharpx.Core.nuspec"
 
     !! (nugetDir package + sprintf "FSharpx.%s.*.nupkg" package)
