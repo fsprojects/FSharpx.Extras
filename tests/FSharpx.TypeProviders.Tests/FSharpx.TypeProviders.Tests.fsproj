@@ -60,6 +60,7 @@
     <Compile Include="Xaml.Tests.fs" />
     <Compile Include="Excel.Tests.fs" />
     <None Include="OptionValues.json" />
+    <None Include="App.config" />
     <None Include="SimpleArray.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
