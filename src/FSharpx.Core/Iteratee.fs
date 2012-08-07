@@ -175,6 +175,7 @@ module Iteratee =
 
     let bind f i =
         let inner bind = function
+            | Done(x, Empty) -> f x
             | Done(x, extra) ->
                 match f x with
                 | Done(x',_) -> Done(x', extra)
