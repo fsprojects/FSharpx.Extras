@@ -321,6 +321,124 @@ let ``test readLines should return the lines from the input when chunked``(input
   let actual = enumeratePureNChunk 5 input readLines |> run
   actual |> should equal expected
 
+[<Test>]
+[<Sequential>]
+let ``test consume should consume all items``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
+  let actual = enumerate (create [| 0uy..x |]) consume |> run
+  actual |> should equal [| 0uy..x |]
+
+[<Test>]
+[<Sequential>]
+let ``test consume should consume all items at once``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
+  let actual = enumeratePure1Chunk (create [| 0uy..x |]) consume |> run
+  actual |> should equal [| 0uy..x |]
+
+[<Test>]
+[<Sequential>]
+let ``test consume should consume all items when enumerating in chunks``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
+  let actual = enumeratePureNChunk 5 (create [| 0uy..x |]) consume |> run
+  actual |> should equal [| 0uy..x |]
+
+[<Test>]
+[<Sequential>]
+let ``test isolate and consume should take the first n items from the stream``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
+  let input = create [| 0uy..9uy |]
+  let expected = ByteString.take x input
+  let actual = enumerate input (joinI (isolate x consume)) |> run
+  actual |> should equal expected
+
+[<Test>]
+[<Sequential>]
+let ``test isolate and consume should take the first n items from the stream at once``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
+  let input = create [| 0uy..9uy |]
+  let expected = ByteString.take x input
+  let actual = enumeratePure1Chunk input (joinI (isolate x consume)) |> run
+  actual |> should equal expected
+
+[<Test>]
+[<Sequential>]
+let ``test isolate and consume should take the first n items when chunked``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
+  let input = create [| 0uy..9uy |]
+  let expected = ByteString.take x input
+  let actual = enumeratePureNChunk 5 input (joinI (isolate x consume)) |> run
+  actual |> should equal expected
+
+[<Test>]
+let ``test isolateWhile and consume should take anything before the first space``() =
+  let input = "Hello world"B
+  let expected = BS(input, 0, 5)
+  let actual = enumerate (create input) (joinI (isolateWhile ((<>) ' 'B) consume)) |> run
+  actual |> should equal expected
+
+[<Test>]
+let ``test isolateWhile and consume should take anything before the first space at once``() =
+  let input = "Hello world"B
+  let expected = BS(input, 0, 5)
+  let actual = enumeratePure1Chunk (create input) (joinI (isolateWhile ((<>) ' 'B) consume)) |> run
+  actual |> should equal expected
+
+[<Test>]
+let ``test isolateWhile and consume should take anything before the first space when enumerating in chunks``() =
+  let input = "Hello world"B
+  let actual = enumeratePureNChunk 2 (create input) (joinI (isolateWhile ((<>) ' 'B) consume)) |> run
+  actual |> should equal (BS(input, 0, 5))
+
+[<Test>]
+let ``test isolateUntil and consume should correctly split the input``() =
+  let input = "abcde"B
+  let actual = enumerate (create input) (joinI (isolateUntil ((=) 'c'B) consume)) |> run
+  actual |> should equal (BS(input, 0, 2))
+
+[<Test>]
+let ``test isolateUntil and consume should correctly split the input at once``() =
+  let input = "abcde"B
+  let actual = enumeratePure1Chunk (create input) (joinI (isolateUntil ((=) 'c'B) consume)) |> run
+  actual |> should equal (BS(input, 0, 2))
+
+[<Test>]
+let ``test isolateUntil and consume should correctly split the input when enumerating in chunks``() =
+  let input = "abcde"B
+  let actual = enumeratePureNChunk 2 (create input) (joinI (isolateUntil ((=) 'c'B) consume)) |> run
+  actual |> should equal (BS(input, 0, 2))
+
+[<Test>]
+let ``test map should map to uppercase letters to lowercase``() =
+  let lower = joinI (map (fun x -> x + 0x20uy) consume)
+  let actual = enumerate (BS "ABCDE"B) lower |> run
+  actual |> should equal (BS "abcde"B)
+
+[<Test>]
+let ``test map should map to uppercase letters to lowercase at once``() =
+  let lower = joinI (map (fun x -> x + 0x20uy) consume)
+  let actual = enumeratePure1Chunk (BS "ABCDE"B) lower |> run
+  actual |> should equal (BS "abcde"B)
+
+[<Test>]
+let ``test map should map to uppercase letters to lowercase when enumerating in chunks``() =
+  let lower = joinI (map (fun x -> x + 0x20uy) consume)
+  let actual = enumeratePureNChunk 2 (BS "ABCDE"B) lower |> run
+  actual |> should equal (BS "abcde"B)
+
+[<Test>]
+let ``test filter should filter filter the value for which the given predicate returns false``() =
+  let input = BS "Hello world"B
+  let expected = BS "Heo word"B
+  let actual = enumerate input (joinI (filter ((<>) 0x6cuy) consume)) |> run
+  actual |> should equal expected
+
+[<Test>]
+let ``test filter should filter the value for which the given predicate returns false at once``() =
+  let input = BS "Hello world"B
+  let expected = BS "Heo word"B
+  let actual = enumeratePure1Chunk input (joinI (filter ((<>) 0x6cuy) consume)) |> run
+  actual |> should equal expected
+
+[<Test>]
+let ``test filter should filter the value for which the given predicate returns false when enumerating in chunks``() =
+  let input = BS "Hello world"B
+  let expected = BS "Heo word"B
+  let actual = enumeratePureNChunk 5 input (joinI (filter ((<>) 0x6cuy) consume)) |> run
+  actual |> should equal expected
 
 (* CSV Parser *)
 
