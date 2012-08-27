@@ -294,7 +294,7 @@ type FSharpChoice =
     static member Select (o, f: Func<_,_>) = Choice.map f.Invoke o
 
     [<Extension>]
-    static member Join (c: Choice<'a, 'e list>, inner: Choice<'b, 'e list>, outerKeySelector: Func<'a,'c>, innerKeySelector: Func<'b,'c>, resultSelector: Func<'a,'b,'d>) =
+    static member Join (c: Choice<'a, 'e NonEmptyList>, inner: Choice<'b, 'e NonEmptyList>, outerKeySelector: Func<'a,'c>, innerKeySelector: Func<'b,'c>, resultSelector: Func<'a,'b,'d>) =
         Choice.returnM (curry resultSelector.Invoke) 
         |> Validation.ap c 
         |> Validation.ap inner 
@@ -313,10 +313,10 @@ type FSharpChoice =
 
     // validation
 
-    static member Error (x: string) = Choice2Of2 [x]
-    static member Errors x : Choice<_, string list> = Choice2Of2 x
-    static member Errors ([<ParamArray>] x) : Choice<_, string list> = Choice2Of2 (Array.toList x)
-    static member Ok x : Choice<_, string list> = Choice1Of2 x
+    static member Error (x: string) = Choice2Of2 (NonEmptyList.singleton x)
+    static member Errors x : Choice<_, string NonEmptyList> = Choice2Of2 x
+    static member Errors (error, [<ParamArray>] errors) : Choice<_, string NonEmptyList> = Choice2Of2 (NonEmptyList.create error (Array.toList errors))
+    static member Ok x : Choice<_, string NonEmptyList> = Choice1Of2 x
 
     static member Validator (p: _ Predicate, errorMsg: string) =
         let v x = 
@@ -338,9 +338,9 @@ type FSharpChoice =
     static member SelectMValidation (x, f: Func<_,_>) = Validation.mapM f.Invoke x
 
     [<Extension>]
-    static member ReturnValidation x : Choice<_, string list> = Choice1Of2 x
+    static member ReturnValidation x : Choice<_, string NonEmptyList> = Choice1Of2 x
 
-    static member EnumerableValidator (f: Func<'a, Choice<'a, _ list>>) : Func<'a seq, Choice<'a seq, _ list>> =
+    static member EnumerableValidator (f: Func<'a, Choice<'a, _ NonEmptyList>>) : Func<'a seq, Choice<'a seq, _ NonEmptyList>> =
         let ff = Validation.seqValidator f.Invoke >> Choice.map (fun a -> a :> _ seq)
         Func<_,_>(ff)
 

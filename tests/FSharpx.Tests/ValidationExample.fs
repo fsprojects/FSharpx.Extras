@@ -112,7 +112,7 @@ let part1() =
 
 module ClubTropicana =
     open Club
-    let failToList x = Choice.mapSecond List.singleton x
+    let failToList x = Choice.mapSecond NonEmptyList.singleton x
     let costByGender (p: Person) =
         match p.Gender with
         | Female -> 0m
@@ -127,7 +127,9 @@ module ClubTropicana =
 // And the use? Dave tried the second nightclub after a few more drinks in the pub
 [<Test>]
 let part2() =
-    ClubTropicana.costToEnter { Dave with Sobriety = Paralytic } |> shouldEqual (Failure ["Too old!"; "Sober up!"])
+    ClubTropicana.costToEnter { Dave with Sobriety = Paralytic } 
+    |> shouldEqual (Failure (NonEmptyList.create "Too old!" ["Sober up!"]))
+
     ClubTropicana.costToEnter Ruby |> shouldEqual (Success 0m)
 
 (**
@@ -155,11 +157,13 @@ module GayBar =
 
     let costToEnter p =
         [checkAge; checkClothes; checkSobriety; checkGender]
-        |> Validation.mapM (fun check -> check p |> Choice.mapSecond List.singleton)
+        |> Validation.mapM (fun check -> check p |> Choice.mapSecond NonEmptyList.singleton)
         |> Choice.map (function x::_ -> decimal x.Age + 1.5m)
 
 [<Test>]
 let part3() =
-    GayBar.costToEnter { Person.Gender = Male; Age = 59; Clothes = set ["Jeans"]; Sobriety = Paralytic } |> shouldEqual (Failure ["Too old!"; "Smarten up!"; "Sober up!"])
+    GayBar.costToEnter { Person.Gender = Male; Age = 59; Clothes = set ["Jeans"]; Sobriety = Paralytic } 
+    |> shouldEqual (Failure (NonEmptyList.create "Too old!" ["Smarten up!"; "Sober up!"]))
+
     GayBar.costToEnter { Person.Gender = Male; Age = 25; Clothes = set ["Tie"]; Sobriety = Sober } |> shouldEqual (Success 26.5m)
 
