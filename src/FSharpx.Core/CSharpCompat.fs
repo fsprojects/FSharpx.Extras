@@ -399,6 +399,20 @@ type FSharpMap =
     static member ToFSharpMap values = Map.ofSeq values
 
 [<Extension>]
+type NonEmptyListEx =
+    [<Extension>]
+    static member Concat(x,y) = NonEmptyList.append x y
+
+    [<Extension>]
+    static member Concat(x,y) = NonEmptyList.appendList x y
+
+    [<Extension>]
+    static member Cons(list, head) = NonEmptyList.cons head list
+
+    [<Extension>]
+    static member Select(list, mapper: Func<_,_>) = NonEmptyList.map mapper.Invoke list
+
+[<Extension>]
 type Dictionary =
   [<Extension>]
   static member TryFind (d, key) = Dictionary.tryFind key d

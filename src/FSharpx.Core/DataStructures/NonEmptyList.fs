@@ -3,6 +3,7 @@
 open System
 open System.Collections
 open System.Collections.Generic
+open System.Runtime.CompilerServices
 
 type 'a NonEmptyList = {
     Head: 'a
@@ -17,6 +18,7 @@ type 'a NonEmptyList = {
             e.GetEnumerator()
         member x.GetEnumerator() = (x :> _ seq).GetEnumerator() :> IEnumerator
 
+[<Extension>]
 module NonEmptyList =
     [<CompiledName("Create")>]
     let inline create head tail = { Head = head; Tail = tail }
@@ -31,12 +33,14 @@ module NonEmptyList =
     let inline tail (x: _ NonEmptyList) = x.Tail
 
     [<CompiledName("ToFSharpList")>]
+    [<Extension>]
     let inline toList (x: _ NonEmptyList) = x.Head :: x.Tail
 
     [<CompiledName("Length")>]
     let inline length (x: _ NonEmptyList) = x.Length
 
     [<CompiledName("ToArray")>]
+    [<Extension>]
     let toArray list =
         let r = Array.zeroCreate (length list)
         r.[0] <- head list
@@ -50,6 +54,7 @@ module NonEmptyList =
         r
 
     [<CompiledName("AsEnumerable")>]
+    [<Extension>]
     let toSeq (list: _ NonEmptyList) = list :> _ seq
 
     [<CompiledName("Select")>]
@@ -62,11 +67,11 @@ module NonEmptyList =
     let cons head tail =        
         create head (toList tail)
 
-    [<CompiledName("AppendFSharpList")>]
+    [<CompiledName("Concat")>]
     let appendList list1 list2 = 
         create (head list1) (tail list1 @ list2)
             
-    [<CompiledName("Append")>]
+    [<CompiledName("Concat")>]
     let inline append list1 list2 = 
         appendList list1 (toList list2)
 
@@ -79,6 +84,7 @@ module NonEmptyList =
         reduce (konst id) list
 
     [<CompiledName("Reverse")>]
+    [<Extension>]
     let rev list =
         List.fold (flip cons) (singleton (head list)) (tail list)
 
