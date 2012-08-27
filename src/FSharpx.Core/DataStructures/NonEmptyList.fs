@@ -1,0 +1,87 @@
+﻿namespace FSharpx
+
+open System
+open System.Collections
+open System.Collections.Generic
+
+type 'a NonEmptyList = {
+    Head: 'a
+    Tail: 'a list
+} with
+    member x.Length = x.Tail.Length + 1
+    interface IEnumerable<'a> with
+        member x.GetEnumerator() = 
+            let e = seq {
+                yield x.Head
+                yield! x.Tail }
+            e.GetEnumerator()
+        member x.GetEnumerator() = (x :> _ seq).GetEnumerator() :> IEnumerator
+
+module NonEmptyList =
+    [<CompiledName("Create")>]
+    let inline create head tail = { Head = head; Tail = tail }
+
+    [<CompiledName("Singleton")>]
+    let inline singleton value = create value []
+
+    [<CompiledName("Head")>]
+    let inline head (x: _ NonEmptyList) = x.Head
+
+    [<CompiledName("Tail")>]
+    let inline tail (x: _ NonEmptyList) = x.Tail
+
+    [<CompiledName("ToFSharpList")>]
+    let inline toList (x: _ NonEmptyList) = x.Head :: x.Tail
+
+    [<CompiledName("Length")>]
+    let inline length (x: _ NonEmptyList) = x.Length
+
+    [<CompiledName("ToArray")>]
+    let toArray list =
+        let r = Array.zeroCreate (length list)
+        r.[0] <- head list
+        let rec loop i = 
+            function
+            | [] -> ()
+            | h::t -> 
+                r.[i] <- h
+                loop (i+1) t
+        loop 1 (tail list)
+        r
+
+    [<CompiledName("AsEnumerable")>]
+    let toSeq (list: _ NonEmptyList) = list :> _ seq
+
+    [<CompiledName("Select")>]
+    let map f list = 
+        let newHead = f (head list)
+        let newTail = List.map f (tail list)
+        create newHead newTail
+    
+    [<CompiledName("Cons")>]
+    let cons head tail =        
+        create head (toList tail)
+
+    [<CompiledName("AppendFSharpList")>]
+    let appendList list1 list2 = 
+        create (head list1) (tail list1 @ list2)
+            
+    [<CompiledName("Append")>]
+    let inline append list1 list2 = 
+        appendList list1 (toList list2)
+
+    [<CompiledName("Aggregate")>]
+    let inline reduce reduction list =
+        List.fold reduction (head list) (tail list)
+
+    [<CompiledName("Last")>]
+    let inline last list = 
+        reduce (konst id) list
+
+    [<CompiledName("Reverse")>]
+    let rev list =
+        List.fold (flip cons) (singleton (head list)) (tail list)
+
+    [<CompiledName("SelectMany")>]
+    let collect mapping list =
+        List.fold (fun s e -> mapping e |> append s) (mapping (head list)) (tail list)
