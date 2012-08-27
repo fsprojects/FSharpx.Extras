@@ -23,6 +23,9 @@ module NonEmptyList =
     [<CompiledName("Create")>]
     let inline create head tail = { Head = head; Tail = tail }
 
+    [<CompiledName("Create")>]
+    let inline createParamsArray(head, [<ParamArray>] tail) = { Head = head; Tail = Array.toList tail }
+
     [<CompiledName("Singleton")>]
     let inline singleton value = create value []
 

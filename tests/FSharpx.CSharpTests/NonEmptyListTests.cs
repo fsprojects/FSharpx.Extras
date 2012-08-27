@@ -10,7 +10,9 @@ namespace FSharpx.CSharpTests {
         [Test]
         public void Create() {
             NonEmptyList<int> x = NonEmptyList.Create(1, FSharpList.Create(2, 3, 4));
+            NonEmptyList<int> y = NonEmptyList.Create(1, 2, 3, 4);
             Assert.AreEqual(4, x.Length);
+            Assert.AreEqual(x,y);
         }
 
         [Test]
