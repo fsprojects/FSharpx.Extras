@@ -266,6 +266,41 @@ module Iteratee =
     /// Right-to-left Kleisli composition
     let inline (<=<) x = flip (>=>) x
     
+    let joinI outher =
+        let rec check = function
+            | Continue k ->
+                let inner step =
+                    match step with
+                    | Continue _ -> failwith "joinI: divergent iteratee"
+                    | _ -> check step
+                in inner (k EOF)
+            | Done (x, _) -> returnI x
+            | Error e -> Error e
+        outher >>= check
+
+    // val enumList :: 'a list -> Enumerator<'a,'b>
+    let enumList xs =
+        let rec loop xs step =
+            match xs, step with
+            | (x::xs, Continue k) -> loop xs (k (Chunk x))
+            | (_, step) -> step
+        in loop xs
+
+    // val checkDoneEx :: Stream<'c> -> ((Stream<'a> -> Iteratee<'a,'b>) -> Iteratee<'c,Iteratee<'a,'b>>) -> Enumeratee<'c,'a,'b>
+    let checkDoneEx extra f = function
+        | Continue k -> f k
+        | step -> Done(step, extra)
+
+    // val checkDone :: ((Stream<'a> -> Iteratee<'a,'b>) -> Iteratee<'c,Iteratee<'a,'b>>) -> Enumeratee<'c,'a,'b>
+    let checkDone f = checkDoneEx Empty f
+
+    // val checkContinue0 :: (Enumerator<'a,'b> -> (Stream<'a> -> Iteratee<'a,'b>) -> Iteratee<'a,'b>) -> Enumrator<'a,'b>
+    let checkContinue0 inner =
+        let rec loop = function
+            | Continue k -> inner loop k
+            | step -> step
+        in loop
+
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module List =
         
@@ -392,6 +427,13 @@ module Iteratee =
                 | _ -> lines (fun tail -> cont (xs::tail))
             lines id
         
+        let consume<'a> =
+            let rec step before = function
+                | Empty | Chunk ([]: 'a list) -> Continue <| step before
+                | Chunk str -> Continue <| step (before @ str)
+                | EOF -> Done(before, EOF)
+            Continue (step List.empty)
+
         (* ========= Enumerators ========= *)
         
         // val enumeratePure1Chunk :: 'a list -> Enumerator<'a list,'b>
@@ -424,6 +466,71 @@ module Iteratee =
             | Continue k, s1::s2 ->
                 connect (k (Chunk s1)) s2
             | _ -> run sink, source
+
+        // val repeat :: 'a -> Enumerator<'a,'b>
+        let repeat a = checkContinue0 (fun loop k -> loop (k (Chunk [a])))
+
+        // val replicate :: int -> 'a -> Enumerator<'a list,'b>
+        let replicate maxCount getNext =
+            let rec loop n step =
+                match n, step with
+                | (0, step) -> step
+                | (n, Continue k) -> iteratee {
+                    let! next = returnI getNext
+                    return! loop (n - 1) (k (Chunk [next])) }
+                | (_, step) -> step
+            in loop maxCount
+
+        (* ========= Enumeratees ========= *)
+
+        // val isolate :: int -> Enumeratee<'a list,'b>
+        let rec isolate n = function
+            | step when n <= 0 -> returnI step
+            | Continue k ->
+                let rec loop = function
+                    | Empty -> Continue loop
+                    | Chunk [] -> Continue loop
+                    | Chunk str ->
+                        if List.length str < n then k (Chunk str) |> isolate (n - (List.length str))
+                        else let s1, s2 = List.splitAt n str in Done(k (Chunk s1), Chunk s2)
+                    | EOF -> Done(k EOF, EOF)
+                Continue loop
+            | step -> (drop n) >>. (returnI step)
+
+        let rec private isolateWithPredicate pred listOp dropOp = function
+            | Continue k ->
+                let rec step = function
+                | Empty -> Continue step
+                | Chunk str when List.isEmpty str -> Continue step
+                | Chunk str ->
+                    match listOp pred str with
+                    | _, [] -> isolateWithPredicate pred listOp dropOp (k (Chunk str))
+                    | str', extra -> Done(k (Chunk str'), Chunk extra)
+                | EOF -> Done(k EOF, EOF)
+                Continue step
+            | step -> (dropOp pred) >>. (returnI step)
+
+        let isolateWhile pred = isolateWithPredicate pred List.span dropWhile
+        let isolateUntil pred = isolateWithPredicate pred List.split dropUntil
+
+        // val concatMap :: ('a -> 'b) -> Enumeratee<'a list, 'b, 'c>
+        let concatMap f =
+            let rec step k = function
+                | EOF -> Done(Continue k, EOF)
+                | Chunk xs -> loop k xs
+                | Empty -> loop k []
+            and loop k = function
+                | [] -> Continue (step k)
+                | x::xs -> iteratee {
+                    let fx = f x
+                    return! checkDoneEx (Chunk xs) (flip loop xs) (k (Chunk fx)) }
+            checkDone (continueI << step)
+
+        // val map :: ('a -> 'b) -> Enumeratee<'a list, 'b list, 'c>
+        let map f = concatMap (fun x -> [f x])
+
+        // val filter :: ('a -> bool) -> Enumeratee<'a list, 'a list, 'b>
+        let filter p = concatMap (fun x -> if p x then [x] else [])
 
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module Binary =
@@ -558,6 +665,14 @@ module Iteratee =
                 | _ -> lines <| fun tail -> cont <| bs::tail
             lines id
 
+        let consume =
+            let rec step before = function
+                | Empty -> Continue <| step before
+                | Chunk str when ByteString.isEmpty str -> Continue <| step before
+                | Chunk str -> Continue <| step (ByteString.append before str)
+                | EOF -> Done(before, EOF)
+            Continue (step ByteString.empty)
+
         (* ========= Enumerators ========= *)
 
         // val enumeratePure1Chunk :: ByteString -> Enumerator<ByteString,'b>
@@ -596,3 +711,69 @@ module Iteratee =
                 | Cons(s1, s2) -> return! connect (k (Chunk s1)) s2
             | _ -> return run sink, source
         }
+
+        // val repeat :: byte -> Enumerator<ByteString, 'a>
+        let repeat a = checkContinue0 (fun loop k -> loop (k (Chunk (ByteString.singleton a))))
+
+         // val replicate :: int -> byte -> Enumerator<ByteString, 'a>
+        let replicate maxCount getNext =
+            let rec loop n step =
+                match n, step with
+                | (0, step) -> step
+                | (n, Continue k) -> iteratee {
+                    let! next = returnI getNext
+                    return! loop (n - 1) (k (Chunk (ByteString.singleton next))) }
+                | (_, step) -> step
+            in loop maxCount
+
+        (* ========= Enumeratees ========= *)
+
+        // val isolate :: int -> Enumeratee<ByteString,ByteString,'a>
+        let rec isolate n = function
+            | step when n <= 0 -> returnI step
+            | Continue k ->
+                let rec loop = function
+                    | Empty -> Continue loop
+                    | Chunk str when ByteString.isEmpty str -> Continue loop
+                    | Chunk str ->
+                        if ByteString.length str < n then k (Chunk str) |> isolate (n - (ByteString.length str))
+                        else let s1, s2 = ByteString.splitAt n str in Done(k (Chunk s1), Chunk s2)
+                    | EOF -> Done(k EOF, EOF)
+                Continue loop
+            | step -> (drop n) >>. (returnI step)
+
+        let rec private isolateWithPredicate pred byteStringOp dropOp = function
+            | Continue k ->
+                let rec step = function
+                | Empty -> Continue step
+                | Chunk str when ByteString.isEmpty str -> Continue step
+                | Chunk str ->
+                    match byteStringOp pred str with
+                    | str', extra when ByteString.isEmpty extra -> isolateWithPredicate pred byteStringOp dropOp (k (Chunk str'))
+                    | str', extra -> Done(k (Chunk str'), Chunk extra)
+                | EOF -> Done(k EOF, EOF)
+                Continue step
+            | step -> (dropOp pred) >>. (returnI step)
+
+        let isolateWhile pred = isolateWithPredicate pred ByteString.span dropWhile
+        let isolateUntil pred = isolateWithPredicate pred ByteString.split dropUntil
+
+        // val concatMap :: (byte -> ByteString) -> Enumeratee<ByteString, ByteString, 'a>
+        let concatMap (f : byte -> ByteString) =
+            let rec step k = function
+                | EOF -> Done(Continue k, EOF)
+                | Chunk xs -> loop k (ByteString.toList xs)
+                | Empty -> loop k []
+            and loop k = function
+                | [] -> Continue (step k)
+                | x::xs -> iteratee {
+                    let fx = f x
+                    let xs' = ByteString.ofList xs
+                    return! checkDoneEx (Chunk xs') (flip loop xs) (k (Chunk fx)) }
+            checkDone (continueI << step)
+
+        // val map :: (byte -> byte) -> Enumeratee<ByteString, ByteString, 'a>
+        let map f = concatMap (fun x -> ByteString.singleton (f x))
+
+        // val filter :: (byte -> bool) -> Enumeratee<ByteString, ByteString, 'a>
+        let filter p = concatMap (fun x -> if p x then ByteString.singleton x else ByteString.empty)
