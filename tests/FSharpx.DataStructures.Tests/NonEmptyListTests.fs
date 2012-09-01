@@ -43,6 +43,14 @@ let ``reverse . reverse = id`` () =
     fsCheck (fun nel -> (NonEmptyList.rev << NonEmptyList.rev) nel = nel)
 
 [<Test>]
+let ``last . reverse = head``() =
+    fsCheck (fun nel -> (NonEmptyList.last << NonEmptyList.rev) nel = NonEmptyList.head nel)
+
+[<Test>]
+let ``head . reverse = last``() =
+    fsCheck (fun nel -> (NonEmptyList.head << NonEmptyList.rev) nel = NonEmptyList.last nel)
+
+[<Test>]
 let ``last is last and never fails``() =
     fsCheck <| fun nel ->
         let actualLast = NonEmptyList.last nel
