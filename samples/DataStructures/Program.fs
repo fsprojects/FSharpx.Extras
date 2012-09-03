@@ -9,7 +9,7 @@ let array n = [|for i in 1..n -> r.Next()|]
 let vector n = 
     let v = ref empty
     for i in 1..n do
-        v := cons (r.Next()) !v
+        v := conj (r.Next()) !v
     !v
 
 let initArrayAndVector n =

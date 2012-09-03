@@ -59,3 +59,6 @@ let ``it should allow to get the tail from a queue safely``() =
     let value = empty |> snoc 1 |> snoc 2 |> tryGetTail
     value.Value |> head |> should equal 2
 
+[<Test>]
+let ``it should initialize from a list``() =
+    ofList [1..10] |> snoc 11 |> snoc 12 |> tail |> length |> should equal 11

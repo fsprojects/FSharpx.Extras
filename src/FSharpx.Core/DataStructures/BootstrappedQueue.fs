@@ -71,6 +71,14 @@ and BootstrappedQueue<'a> = Empty | NonEmpty of NonEmptyBootstrappedQueue<'a> wi
             |> BootstrappedQueue<'a>.checkQ
             |> Some
 
+    static member length : BootstrappedQueue<'a> -> int = function
+        | Empty -> 0
+        | NonEmpty q -> q.FrontAndSuspensionsLength + q.RBackLength
+
+    static member ofList (l:List<'a>) : BootstrappedQueue<'a> = 
+        let b0 = BootstrappedQueue.Empty
+        NonEmptyBootstrappedQueue<'a>.create (l.Length) l b0 0 [] |> NonEmpty
+
 let empty = Empty
 let isEmpty = function Empty -> true | _ -> false
 
@@ -79,3 +87,5 @@ let inline head queue = BootstrappedQueue<'a>.head queue
 let inline tryGetHead queue = BootstrappedQueue<'a>.tryGetHead queue
 let inline tail queue = BootstrappedQueue<'a>.tail queue
 let inline tryGetTail queue = BootstrappedQueue<'a>.tryGetTail queue
+let inline length queue = BootstrappedQueue<'a>.length queue
+let inline ofList list = BootstrappedQueue<'a>.ofList list
