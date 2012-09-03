@@ -70,7 +70,7 @@ type AltBinRndAccList<'a> =
             | None -> None
             | Some(ps') -> Some(Zero(ps'))
 
-    static member remove : int * array<'a> * int * AltBinRndAccList<'a> -> int * AltBinRndAccList<'a> = function
+    static member internal remove : int * array<'a> * int * AltBinRndAccList<'a> -> int * AltBinRndAccList<'a> = function
         | i, _, _, Nil -> raise Exceptions.OutOfBounds
         | 0, _, aIdx, One(x, ps) -> aIdx, Zero(ps)
         | i, a, aIdx, One (x, ps) -> 
@@ -88,7 +88,7 @@ type AltBinRndAccList<'a> =
             Array.set a (aIdx + 1) y
             AltBinRndAccList.remove ((i-2), a, (aIdx + 2), Zero ps')
 
-    static member tryRemove : int * array<'a> * int * AltBinRndAccList<'a> -> int * AltBinRndAccList<'a> option = function
+    static member internal tryRemove : int * array<'a> * int * AltBinRndAccList<'a> -> int * AltBinRndAccList<'a> option = function
         | i, _, _, Nil -> 0, None
         | 0, _, aIdx, One(x, ps) -> aIdx, Some(Zero(ps))
         | i, a, aIdx, One (x, ps) -> 
