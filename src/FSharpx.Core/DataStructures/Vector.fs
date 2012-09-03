@@ -427,7 +427,7 @@ let empty<'a> = PersistentVector.Empty() :> IVector<'a>
 let inline nth i (vector:'a vector) : 'a = vector.[i]
  
 /// Returns a new vector with the element 'added' at the end.   
-let inline cons (x:'a) (vector:'a vector) = vector.Conj x
+let inline conj (x:'a) (vector:'a vector) = vector.Conj x
 
 /// Returns the last element in the vector. If the vector is empty it throws an exception.
 let inline peek (vector:'a vector) = vector.Peek()

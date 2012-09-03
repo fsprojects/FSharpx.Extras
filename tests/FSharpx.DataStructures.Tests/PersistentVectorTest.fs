@@ -13,15 +13,15 @@ let ``empty vector should be empty``() =
 
 [<Test>]
 let ``multiple cons to an empty vector should increase the count``() =
-    empty |> cons 1 |> cons 4 |> cons 25 |> count |> should equal 3
+    empty |> conj 1 |> conj 4 |> conj 25 |> count |> should equal 3
 
 [<Test>]
 let ``cons to an empty vector should create a singleton vector``() =
-    empty |> cons 1 |> nth 0 |> should equal 1
+    empty |> conj 1 |> nth 0 |> should equal 1
 
 [<Test>]
 let ``multiple cons to an empty vector should create a vector``() =
-    empty |> cons 1 |> cons 4 |> cons 25 |> nth 1 |> should equal 4
+    empty |> conj 1 |> conj 4 |> conj 25 |> nth 1 |> should equal 4
 
 [<Test>]
 let ``multiple assoc to the end should work like cons and create a vector``() =
@@ -34,27 +34,27 @@ let ``multiple assoc to the end should work like cons and create a vector``() =
 let ``300 cons to an empty vector should create a vector``() =
     let vector = ref empty
     for i in 1..300 do
-        vector := cons i (!vector)
+        vector := conj i (!vector)
 
     !vector |> nth 100 |> should equal 101
     !vector |> nth 200 |> should equal 201
 
 [<Test>]
 let ``assoc an element to a nonempty vector should not change the original vector``() =
-    let v = empty |> cons "1" |> cons "4" |> cons "25" 
+    let v = empty |> conj "1" |> conj "4" |> conj "25" 
 
     v |> assocN 2 "5" |> nth 2 |> should equal "5"
     v |> nth 2 |> should equal "25"
 
 [<Test>]
 let ``vector should should be convertable to a seq``() =
-    empty |> cons 1 |> cons 4 |> cons 25  |> Seq.toList |> should equal [1;4;25]
+    empty |> conj 1 |> conj 4 |> conj 25  |> Seq.toList |> should equal [1;4;25]
 
 [<Test>]
 let ``vector with 30000 elements should be convertable to a seq``() =
     let vector = ref empty
     for i in 1..30000 do
-        vector := cons i (!vector)
+        vector := conj i (!vector)
 
     !vector |> Seq.toList |> should equal [1..30000]
 
@@ -67,7 +67,7 @@ let ``vector can be created from a seq``() =
 let ``vector with 30000 elements should allow assocN``() =
     let vector = ref empty
     for i in 1..30000 do
-        vector := cons i (!vector)
+        vector := conj i (!vector)
 
     for i in 1..30000 do
         vector := assocN (i-1) (i*2) (!vector)
@@ -76,12 +76,12 @@ let ``vector with 30000 elements should allow assocN``() =
 
 [<Test>]
 let ``can peek elements from a vector``() =
-    let vector = empty |> cons 1 |> cons 4 |> cons 25 
+    let vector = empty |> conj 1 |> conj 4 |> conj 25 
     vector |> peek |> should equal 25
     
 [<Test>]
 let ``can pop elements from a vector``() =
-    let vector = empty |> cons 1 |> cons 4 |> cons 25 
+    let vector = empty |> conj 1 |> conj 4 |> conj 25 
     vector |> peek |> should equal 25
     vector |> pop |> peek |> should equal 4
     vector |> pop |> pop |> peek |> should equal 1
@@ -94,7 +94,7 @@ let ``can pop elements from a vector``() =
 let ``vector with 30000 elements should allow pop``() =
     let vector = ref empty
     for i in 1..30000 do
-        vector := cons i (!vector)
+        vector := conj i (!vector)
 
     for i in 1..30000 do
         vector := pop (!vector)
@@ -105,15 +105,15 @@ let ``vector with 30000 elements should allow pop``() =
 let ``vector with 3 elements can compute hashcodes``() =
     let vector1 = ref empty
     for i in 1..3 do
-        vector1 := cons i (!vector1)
+        vector1 := conj i (!vector1)
 
     let vector2 = ref empty
     for i in 1..3 do
-        vector2 := cons i (!vector2)
+        vector2 := conj i (!vector2)
 
     let vector3 = ref empty
     for i in 1..3 do
-        vector3 := cons (2*i) (!vector3)
+        vector3 := conj (2*i) (!vector3)
 
     vector1.GetHashCode() |> should equal (vector2.GetHashCode())
     vector1.GetHashCode() |> should equal (vector2.GetHashCode())
@@ -122,15 +122,15 @@ let ``vector with 3 elements can compute hashcodes``() =
 let ``vector with 3 elements can be compared``() =
     let vector1 = ref empty
     for i in 1..3 do
-        vector1 := cons i (!vector1)
+        vector1 := conj i (!vector1)
 
     let vector2 = ref empty
     for i in 1..3 do
-        vector2 := cons i (!vector2)
+        vector2 := conj i (!vector2)
 
     let vector3 = ref empty
     for i in 1..3 do
-        vector3 := cons (2*i) (!vector3)
+        vector3 := conj (2*i) (!vector3)
 
 
     vector1 = vector1 |> should equal true
@@ -162,7 +162,7 @@ let ``vectors which where created by TransientVector can be compared``() =
 let ``vector should allow map``() =
     let vector = ref empty
     for i in 1..30000 do
-        vector := cons i (!vector)
+        vector := conj i (!vector)
 
     let vector2 = map (fun x -> x * 2) (!vector)
 
