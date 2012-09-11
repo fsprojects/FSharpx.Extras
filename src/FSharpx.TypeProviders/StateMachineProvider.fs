@@ -10,12 +10,13 @@ type IState = interface
 end
 
 // define a node record
-type Node = { Name : string; NextNodes : Node list}
+type Node = { Name : string; NextNodes : (string option * Node) list}
 
 // define DGML DU
 type DGML = 
     | Node of string
-    | Link of string * string
+    | Link of string * string * (string option)
+
 
 // define DGML class
 type DGMLClass() = class   
@@ -46,16 +47,19 @@ type DGMLClass() = class
             |> Seq.filter (fun node -> node.Name.LocalName = "Link")
             |> Seq.map (fun node -> 
                             let sourceName = node.Attribute(XName.Get("Source")).Value
-                            let targetName = node.Attribute(XName.Get("Target")).Value
-                            DGML.Link(sourceName, targetName))
+                            let targetName = node.Attribute(XName.Get("Target")).Value                            
+                            let label = 
+                              let attr = node.Attribute(XName.Get("Label"))
+                              if attr = null then None else Some(attr.Value)
+                            DGML.Link(sourceName, targetName,label))
             |> Seq.toList
 
         let getNextNodes fromNodeName= 
                 this.Links 
-                |> Seq.filter (fun (Link(a, b)) -> a = fromNodeName)
-                |> Seq.map (fun (Link(a,b)) -> this.FindNode(b))
-                |> Seq.filter (fun n -> match n with Some(x) -> true | None -> false)
-                |> Seq.map (fun (Some(n)) -> n)
+                |> Seq.filter (fun (Link(a, b, l)) -> a = fromNodeName)
+                |> Seq.map (fun (Link(a,b,l)) -> l,this.FindNode(b))
+                |> Seq.filter (fun (_,n) -> match n with Some(x) -> true | None -> false)
+                |> Seq.map (fun (l,Some(n)) -> l,n)
                 |> Seq.toList
 
         this.Nodes <-
@@ -89,7 +93,7 @@ type DGMLClass() = class
             
     // determine if can transit to a node represented by the nodeName
     member this.CanTransitTo(nodeName:string) =
-        this.CurrentNode.NextNodes |> Seq.exists (fun n -> n.Name = nodeName)
+        this.CurrentNode.NextNodes |> Seq.exists (fun (_,n) -> n.Name = nodeName)
 
     // force current state to a new state
     member this.ForceStateTo(args) = 
@@ -225,11 +229,17 @@ let graph  (cfg:TypeProviderConfig) =
 
                 for node in stateMachine.Nodes do                    
                     for node2 in node.NextNodes do
-                        let name = node2.Name 
+                        let label,targetNode = node2
+                        let name = targetNode.Name
+                        let trasitionName =
+                            match label with
+                            | Some l -> l
+                            | _ -> "TransitTo" + name
+
                         states.[node.Name]
                         |+!>
                           (provideMethod
-                                (sprintf "TransitTo%s" name)
+                                trasitionName
                                 []
                                 states.[name]
                                 (fun args -> <@@ { Name = name } @@>))

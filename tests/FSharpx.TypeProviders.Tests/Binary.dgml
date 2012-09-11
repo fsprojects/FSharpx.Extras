@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph GraphDirection="RightToLeft" Layout="Sugiyama" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+    <Node Id="Even" Bounds="0,59.4600000000001,50,25.96" />
+    <Node Id="Odd" Bounds="86.47,59.4600000000001,50,25.96" Label="Odd" />
+  </Nodes>
+  <Links>
+    <Link Source="Even" Target="Even" Bounds="12.5,15.960000038147,25,43.4999990463257" Label="1" LabelBounds="21.765,0,6.47000000000003,15.96" />
+    <Link Source="Even" Target="Odd" Bounds="38.0509376525879,40.189998626709,53.9868431091309,19.2700004577637" Label="0" LabelBounds="65,20.23,6.47000000000003,15.96" />
+    <Link Source="Odd" Target="Even" Bounds="44.8014678955078,85.4199981689453,53.3195724487305,18.5500030517578" Label="0" LabelBounds="65,107.97,6.47000000000003,15.96" />
+    <Link Source="Odd" Target="Odd" Bounds="98.9700012207031,15.960000038147,25,43.4999990463257" Label="1" LabelBounds="108.235,0,6.47000000000003,15.96" />
+  </Links>
+  <Properties>
+    <Property Id="Bounds" DataType="System.Windows.Rect" />
+    <Property Id="GraphDirection" DataType="Microsoft.VisualStudio.Diagrams.Layout.LayoutOrientation" />
+    <Property Id="Label" Label="Label" Description="Displayable label of an Annotatable object" DataType="System.String" />
+    <Property Id="LabelBounds" DataType="System.Windows.Rect" />
+    <Property Id="Layout" DataType="System.String" />
+  </Properties>
+</DirectedGraph>
