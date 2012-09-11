@@ -159,15 +159,14 @@ open FSharpx.TypeProviders.DSL
 open Samples.FSharp.ProvidedTypes
 open Microsoft.FSharp.Core.CompilerServices
 
-let stateMachineTy (cfg:TypeProviderConfig) =
-    erasedType<StateMachine> thisAssembly rootNamespace "StateMachine"
+let stateMachineTy makeAsync (cfg:TypeProviderConfig) =
+    erasedType<StateMachine> thisAssembly rootNamespace (if makeAsync then "AsyncStateMachine" else "StateMachine")
     |> staticParameters
         ["dgml file name", typeof<string>, None
-         "async state transition", typeof<bool>, None
          "init state", typeof<string>, None]    
         (fun typeName parameterValues -> 
             match parameterValues with 
-            | [| :? string as fileName; :? bool as makeAsync; :? string as initState |] ->
+            | [| :? string as fileName; :? string as initState |] ->
 
                 let dgml = System.IO.Path.Combine(cfg.ResolutionFolder, fileName)
 
@@ -224,5 +223,4 @@ let stateMachineTy (cfg:TypeProviderConfig) =
                 |+!> (provideConstructor
                         [] 
                         (fun args -> <@@ StateMachine(dgml,makeAsync,initState) @@>)
-                    |> addXmlDoc "Initializes a state machine instance")
-                )
+                    |> addXmlDoc "Initializes a state machine instance"))
