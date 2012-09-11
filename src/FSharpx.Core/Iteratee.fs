@@ -233,7 +233,7 @@ module Iteratee =
         member this.Zero() = empty<_>
         member this.Combine(comp1, comp2) = bind (fun () -> comp2) comp1
         member this.Delay(f) = bind f empty<_>
-        member this.TryCatch(m, handler) = catchError handler m
+        member this.TryWith(m, handler) = catchError handler m
         member this.TryFinally(m, compensation) = tryFinally compensation m
         member this.Using(res:#IDisposable, body) =
             this.TryFinally(body res, (fun () -> match res with null -> () | disp -> disp.Dispose()))
