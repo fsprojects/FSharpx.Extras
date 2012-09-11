@@ -55,6 +55,7 @@
     <Compile Include="DataStructures\ImplicitQueue.fs" />
     <Compile Include="DataStructures\RealTimeQueue.fs" />
     <Compile Include="DataStructures\BankersDequeue.fs" />	
+    <Compile Include="DataStructures\Dequeue.fs" />	
     <Compile Include="DataStructures\BottomUpMergeSort.fs" />
     <Compile Include="DataStructures\AltBinaryRandomAccessList.fs" />
     <Compile Include="Lens.fs" />
