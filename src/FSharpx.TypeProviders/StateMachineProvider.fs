@@ -182,12 +182,12 @@ let stateMachineTy makeAsync (cfg:TypeProviderConfig) =
                         |> Seq.map (fun n ->
                                     let name = n.Name
                                     provideMethod
-                                        (sprintf "TransitTo_%s" name)
+                                        (sprintf "TransitTo%s" name)
                                         []
                                         typeof<unit>
                                         (fun args -> <@@ (%%args.[0] :> StateMachine).TransitTo(name) @@>)))
                 |+!> (provideMethod
-                        "SetFunction"
+                        "SetTransitionFunction"
                         ["Name", typeof<string>
                          "StateClass", typeof<IState>]
                         typeof<unit>
