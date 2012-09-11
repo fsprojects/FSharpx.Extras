@@ -157,7 +157,7 @@ open FSharpx.TypeProviders.DSL
 open Samples.FSharp.ProvidedTypes
 open Microsoft.FSharp.Core.CompilerServices
 
-let stateMachineTy makeAsync (cfg:TypeProviderConfig) =
+let stateMachineTy ownerType makeAsync (cfg:TypeProviderConfig) =
     erasedType<StateMachine> thisAssembly rootNamespace (if makeAsync then "AsyncStateMachine" else "StateMachine")
     |> staticParameters
         ["dgml file name", typeof<string>, None
@@ -170,8 +170,10 @@ let stateMachineTy makeAsync (cfg:TypeProviderConfig) =
 
                 let stateMachine = StateMachine(makeAsync)
                 stateMachine.Init(dgml, initState)                       
+                
+                watchForChanges ownerType dgml
 
-                erasedType<StateMachine> thisAssembly rootNamespace typeName 
+                erasedType<StateMachine> thisAssembly rootNamespace typeName
                 |> hideOldMethods
                 |> addXmlDoc "A strongly typed interface to the state machine described in '%s'"
                 |++!> (stateMachine.Nodes
@@ -204,7 +206,7 @@ let stateMachineTy makeAsync (cfg:TypeProviderConfig) =
 
 type State = { Name:string }
 
-let graph  (cfg:TypeProviderConfig) =
+let graph ownerType (cfg:TypeProviderConfig) =
     erasedType<obj> thisAssembly rootNamespace ("Graph")
     |> staticParameters
         ["dgml file name", typeof<string>, None
@@ -212,9 +214,11 @@ let graph  (cfg:TypeProviderConfig) =
         (fun typeName parameterValues -> 
             match parameterValues with 
             | [| :? string as fileName; :? string as initState |] ->                
-                let ownerType = erasedType<obj> thisAssembly rootNamespace typeName 
                 let dgml = System.IO.Path.Combine(cfg.ResolutionFolder, fileName)
+                watchForChanges ownerType dgml
 
+                let ownerType = erasedType<obj> thisAssembly rootNamespace typeName 
+                
                 let stateMachine = StateMachine(false)
                 stateMachine.Init(dgml, initState)      
                 let states = System.Collections.Generic.Dictionary<_,_>()

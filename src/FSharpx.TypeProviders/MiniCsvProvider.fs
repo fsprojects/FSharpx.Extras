@@ -23,11 +23,12 @@ type CsvFile(filename) =
     member __.Data = data
 
 // Create the main provided type
-let csvType (cfg:TypeProviderConfig) =
+let csvType ownerType (cfg:TypeProviderConfig) =
     erasedType<obj> thisAssembly rootNamespace "MinCsv"
     |> staticParameter "filename"
         (fun typeName fileName ->
             let resolvedFileName = findConfigFile cfg.ResolutionFolder fileName
+            watchForChanges ownerType resolvedFileName
             let headerLine =
                 resolvedFileName
                     |> File.ReadLines
