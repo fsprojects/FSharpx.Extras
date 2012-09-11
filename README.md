@@ -7,6 +7,7 @@ Its main target is F# but it aims to be compatible with all .NET languages where
 It currently implements:
 
  * Several standard monads: State, Reader, Writer, Either, Continuation, Distribution
+ * Purely functional data structures: Queues, double-ended Queues, BottomUpMergeSort, RandomAccessList, Vector
  * Validation applicative functor
  * General functions like flip
  * Additional functions around collections
