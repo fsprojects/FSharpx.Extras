@@ -18,8 +18,7 @@ type DGML =
     | Link of string * string
 
 // define DGML class
-type DGMLClass() = class
-    
+type DGMLClass() = class   
     let mutable nodes = Unchecked.defaultof<Node list>
     let mutable links = Unchecked.defaultof<DGML list>    
     let mutable currentState = System.String.Empty
@@ -94,12 +93,7 @@ type DGMLClass() = class
 
     // force current state to a new state
     member this.ForceStateTo(args) = 
-        this.CurrentState <- args
-        
-    // assert function used for debugging
-    member this.Assert(state) = 
-        if this.CurrentState <> state then
-            failwith "assertion failed"
+        this.CurrentState <- args        
 end
 
 // state machine class which inherit the DGML class
@@ -184,14 +178,6 @@ let stateMachineTy makeAsync (cfg:TypeProviderConfig) =
                                         typeof<string>                                        
                                         (fun args -> <@@ name @@>)
                                         |> addXmlDoc ("Status " + n.Name)))
-                |++!> (stateMachine.Nodes
-                        |> Seq.map (fun n ->
-                                    let name = n.Name
-                                    provideMethod
-                                        (sprintf "Assert_%s" name)
-                                        []
-                                        typeof<unit>
-                                        (fun args -> <@@ (%%args.[0] :> StateMachine).Assert(name) @@>)))
                 |++!> (stateMachine.Nodes
                         |> Seq.map (fun n ->
                                     let name = n.Name
