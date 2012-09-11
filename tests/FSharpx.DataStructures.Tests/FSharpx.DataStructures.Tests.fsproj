@@ -96,10 +96,10 @@
     <Compile Include="RealTimeQueueTest.fs" />
     <Compile Include="BottomUpMergeSortTest.fs" />
     <Compile Include="AltBinaryRandomAccessListTest.fs" />
-    <Compile Include="BankersDequeueTest.fs" />
-    <Compile Include="DequeueTest.fs" />
-    <Compile Include="BatchedDequeueTest.fs" />
-    <Compile Include="RealTimeDequeueTest.fs" />
+    <Compile Include="BankersDequeTest.fs" />
+    <Compile Include="DequeTest.fs" />
+    <Compile Include="BatchedDequeTest.fs" />
+    <Compile Include="RealTimeDequeTest.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\FSharpx.Core\FSharpx.Core.fsproj">

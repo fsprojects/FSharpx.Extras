@@ -1,8 +1,8 @@
-﻿module FSharpx.DataStructures.Tests.RealTimeDequeueTest
+﻿module FSharpx.DataStructures.Tests.RealTimeDequeTest
 
 open System
 open FSharpx.DataStructures
-open FSharpx.DataStructures.RealTimeDequeue
+open FSharpx.DataStructures.RealTimeDeque
 open NUnit.Framework
 open FsUnit
 
@@ -625,7 +625,7 @@ let ``type cons works``() =
 
 [<Test>]
 let ``IDeque cons works``() =
-    ((lena :> IDequeue<'a>).Cons "zz") :?> RealTimeDequeue<'a> |> head |> should equal "zz"
+    ((lena :> IDeque<'a>).Cons "zz") :?> RealTimeDeque<'a> |> head |> should equal "zz"
 
 [<Test>]
 let ``ofCatLists and uncons``() =

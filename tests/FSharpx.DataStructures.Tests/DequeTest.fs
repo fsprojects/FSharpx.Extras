@@ -2,7 +2,7 @@
 
 open System
 open FSharpx.DataStructures
-open FSharpx.DataStructures.Dequeue
+open FSharpx.DataStructures.Deque
 open NUnit.Framework
 open FsUnit
 
@@ -407,7 +407,7 @@ let ``type cons works``() =
 
 [<Test>]
 let ``IDeque cons works``() =
-    ((lena :> IDequeue<'a>).Cons "zz") :?> Dequeue<'a> |> head |> should equal "zz"
+    ((lena :> IDeque<'a>).Cons "zz") :?> Deque<'a> |> head |> should equal "zz"
 
 [<Test>]
 let ``ofCatLists and uncons``() =

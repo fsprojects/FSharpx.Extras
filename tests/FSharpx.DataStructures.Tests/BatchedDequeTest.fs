@@ -1,8 +1,8 @@
-﻿module FSharpx.DataStructures.Tests.BatchedDequeue
+﻿module FSharpx.DataStructures.Tests.BatchedDeque
 
 open System
 open FSharpx.DataStructures
-open FSharpx.DataStructures.BatchedDequeue
+open FSharpx.DataStructures.BatchedDeque
 open NUnit.Framework
 open FsUnit
 
@@ -407,7 +407,7 @@ let ``type cons works``() =
 
 [<Test>]
 let ``IDeque cons works``() =
-    ((lena :> IDequeue<'a>).Cons "zz") :?> BatchedDequeue<'a> |> head |> should equal "zz"
+    ((lena :> IDeque<'a>).Cons "zz") :?> BatchedDeque<'a> |> head |> should equal "zz"
 
 [<Test>]
 let ``ofCatLists and uncons``() =
