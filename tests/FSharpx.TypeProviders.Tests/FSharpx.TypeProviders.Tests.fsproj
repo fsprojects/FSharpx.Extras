@@ -57,6 +57,7 @@
     <Compile Include="Regex.Tests.fs" />
     <Compile Include="Vector.Tests.fs" />
     <Compile Include="AppSettings.Tests.fs" />
+    <Compile Include="StateMachine.Tests.fs" />
     <Compile Include="Xaml.Tests.fs" />
     <Compile Include="Excel.Tests.fs" />
     <None Include="OptionValues.json" />
@@ -92,6 +93,9 @@
     <None Include="Test.App.config" />
     <None Include="BookTest.xls" />
     <None Include="packages.config" />
+    <Content Include="Graph1.dgml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Data.TypeProviders, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">

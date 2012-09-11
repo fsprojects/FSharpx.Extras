@@ -46,6 +46,7 @@
     <Compile Include="Settings.fs" />
     <Compile Include="JSON.fs" />
     <Compile Include="Inference.fs" />
+    <Compile Include="StateMachineProvider.fs" />
     <Compile Include="RegexProvider.fs" />
     <Compile Include="RegistryProvider.fs" />
     <Compile Include="FileSystemProvider.fs" />
