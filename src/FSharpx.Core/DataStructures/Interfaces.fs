@@ -22,3 +22,37 @@ type IVector<'a> =
 
     /// Returns a new vector that contains the given value at the index. Note - index must be <= vector.Count.
     abstract member AssocN : int*'a -> IVector<'a>
+
+type IDequeue<'a> =
+    inherit System.Collections.IEnumerable
+    inherit System.Collections.Generic.IEnumerable<'a>
+    
+    ///returns a new deque with the element added to the beginning
+    abstract member Cons : 'a -> IDequeue<'a>
+
+    ///returns the first element
+    abstract member Head : unit -> 'a
+
+    ///returns a new deque of the elements before the last element
+    abstract member Init : unit -> IDequeue<'a>
+
+    ///returns true if the deque has no elements
+    abstract member IsEmpty : unit -> bool
+
+    ///returns the last element
+    abstract member Last : unit -> 'a
+
+    ///returns the count of elememts
+    abstract member Length : unit -> int
+
+    ///returns a new deque with the element added to the end
+    abstract member Snoc : 'a -> IDequeue<'a>
+
+    ///returns a new deque of the elements trailing the first element
+    abstract member Tail : unit -> IDequeue<'a>
+
+    ///returns the first element and tail
+    abstract member Uncons : unit -> 'a * IDequeue<'a>
+
+    ///returns init and the last element
+    abstract member Unsnoc : unit -> IDequeue<'a> * 'a
