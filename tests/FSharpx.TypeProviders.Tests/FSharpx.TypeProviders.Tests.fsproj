@@ -59,6 +59,7 @@
     <Compile Include="AppSettings.Tests.fs" />
     <Compile Include="StateMachine.Tests.fs" />
     <Compile Include="AsyncStateMachine.Tests.fs" />
+    <Compile Include="StateNetwork.Tests.fs" />
     <Compile Include="Xaml.Tests.fs" />
     <Compile Include="Excel.Tests.fs" />
     <None Include="OptionValues.json" />

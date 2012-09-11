@@ -197,3 +197,48 @@ let stateMachineTy makeAsync (cfg:TypeProviderConfig) =
                         [] 
                         (fun args -> <@@ StateMachine(dgml,makeAsync,initState) @@>)
                     |> addXmlDoc "Initializes a state machine instance"))
+
+type State = { Name:string }
+
+let stateNetwork  (cfg:TypeProviderConfig) =
+    erasedType<obj> thisAssembly rootNamespace ("StateNetwork")
+    |> staticParameters
+        ["dgml file name", typeof<string>, None
+         "init state", typeof<string>, None]    
+        (fun typeName parameterValues -> 
+            match parameterValues with 
+            | [| :? string as fileName; :? string as initState |] ->                
+                let ownerType = erasedType<obj> thisAssembly rootNamespace typeName 
+                let dgml = System.IO.Path.Combine(cfg.ResolutionFolder, fileName)
+
+                let stateMachine = StateMachine(false)
+                stateMachine.Init(dgml, initState)      
+                let states = System.Collections.Generic.Dictionary<_,_>()
+
+                stateMachine.Nodes
+                    |> List.iter (fun node -> states.Add(node.Name,runtimeType<State> node.Name))
+
+                states
+                  |> Seq.iter (fun state ->
+                                let s = state.Value
+                                ownerType.AddMember s)
+
+                for node in stateMachine.Nodes do                    
+                    for node2 in node.NextNodes do
+                        let name = node2.Name 
+                        states.[node.Name]
+                        |+!>
+                          (provideMethod
+                                (sprintf "TransitTo%s" name)
+                                []
+                                states.[name]
+                                (fun args -> <@@ { Name = name } @@>))
+                        |> ignore
+                
+                ownerType
+                |> addXmlDoc "A strongly typed interface to the state machine described in '%s'"
+                |+!> (provideProperty
+                        "InitialState"
+                        states.[initState]
+                        (fun args -> <@@  { Name = initState } @@>)
+                          |> makePropertyStatic))
