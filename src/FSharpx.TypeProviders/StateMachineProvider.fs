@@ -171,18 +171,7 @@ let stateMachineTy makeAsync (cfg:TypeProviderConfig) =
                 let dgml = System.IO.Path.Combine(cfg.ResolutionFolder, fileName)
 
                 let stateMachine = StateMachine(makeAsync)
-                stateMachine.Init(dgml, initState)
-
-                let transits = 
-                    stateMachine.Nodes
-                    |> Seq.map (fun node -> 
-                                    let name = node.Name
-                                    ProvidedMethod(
-                                                methodName = sprintf "TransitTo_%s" name,
-                                                parameters = [],
-                                                returnType = typeof<unit>,
-                                                IsStaticMethod = false,
-                                                InvokeCode = fun args -> <@@ (%%args.[0] :> StateMachine).TransitTo(name) @@>))                            
+                stateMachine.Init(dgml, initState)                       
 
                 erasedType<StateMachine> thisAssembly rootNamespace typeName 
                 |> hideOldMethods
@@ -190,29 +179,27 @@ let stateMachineTy makeAsync (cfg:TypeProviderConfig) =
                 |++!> (stateMachine.Nodes
                         |> Seq.map (fun n ->
                                     let name = n.Name
-                                    ProvidedProperty(propertyName = n.Name, 
-                                        propertyType = typeof<string>, 
-                                        IsStatic=false,
-                                        GetterCode= (fun args -> <@@ name @@>))
+                                    provideProperty
+                                        name
+                                        typeof<string>                                        
+                                        (fun args -> <@@ name @@>)
                                         |> addXmlDoc ("Status " + n.Name)))
                 |++!> (stateMachine.Nodes
                         |> Seq.map (fun n ->
                                     let name = n.Name
-                                    ProvidedMethod(
-                                        methodName = sprintf "Assert_%s" name,
-                                        parameters = [],
-                                        returnType = typeof<unit>,
-                                        IsStaticMethod = false,
-                                        InvokeCode = fun args -> <@@ (%%args.[0] :> StateMachine).Assert(name)  @@>)))
+                                    provideMethod
+                                        (sprintf "Assert_%s" name)
+                                        []
+                                        typeof<unit>
+                                        (fun args -> <@@ (%%args.[0] :> StateMachine).Assert(name) @@>)))
                 |++!> (stateMachine.Nodes
                         |> Seq.map (fun n ->
                                     let name = n.Name
-                                    ProvidedMethod(
-                                        methodName = sprintf "TransitTo_%s" name,
-                                        parameters = [],
-                                        returnType = typeof<unit>,
-                                        IsStaticMethod = false,
-                                        InvokeCode = fun args -> <@@ (%%args.[0] :> StateMachine).TransitTo(name) @@>)))
+                                    provideMethod
+                                        (sprintf "TransitTo_%s" name)
+                                        []
+                                        typeof<unit>
+                                        (fun args -> <@@ (%%args.[0] :> StateMachine).TransitTo(name) @@>)))
                 |+!> (provideMethod
                         "SetFunction"
                         ["Name", typeof<string>
