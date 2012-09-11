@@ -17,7 +17,7 @@ type public FSharpxProvider(cfg:TypeProviderConfig) as this =
          XmlTypeProvider.xmlType this cfg
          StateMachineProvider.stateMachineTy true cfg
          StateMachineProvider.stateMachineTy false cfg
-         StateMachineProvider.stateNetwork cfg
+         StateMachineProvider.graph cfg
          JsonTypeProvider.jsonType this cfg
          RegistryProvider.typedRegistry
          XamlProvider.xamlType this cfg

@@ -200,8 +200,8 @@ let stateMachineTy makeAsync (cfg:TypeProviderConfig) =
 
 type State = { Name:string }
 
-let stateNetwork  (cfg:TypeProviderConfig) =
-    erasedType<obj> thisAssembly rootNamespace ("StateNetwork")
+let graph  (cfg:TypeProviderConfig) =
+    erasedType<obj> thisAssembly rootNamespace ("Graph")
     |> staticParameters
         ["dgml file name", typeof<string>, None
          "init state", typeof<string>, None]    

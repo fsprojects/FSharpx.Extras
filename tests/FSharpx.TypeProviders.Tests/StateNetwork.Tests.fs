@@ -5,7 +5,7 @@ open FSharpx
 open FSharpx.TypeProviders
 open FsUnit
 
-type Graph1 = StateNetwork<"Graph1.dgml", "State0">
+type Graph1 = Graph<"Graph1.dgml", "State0">
 
 [<Test>]
 let ``Can access initial state``() =   
@@ -14,6 +14,9 @@ let ``Can access initial state``() =
 
 [<Test>]
 let ``Can access states``() =   
-    let state = Graph1.InitialState
-    let state1 = state.TransitToState1()
-    Assert.AreEqual(state1.Name,"State1")
+    let state2 = 
+        Graph1.InitialState
+          .TransitToState1()
+          .TransitToState2()
+
+    Assert.AreEqual(state2.Name,"State2")
