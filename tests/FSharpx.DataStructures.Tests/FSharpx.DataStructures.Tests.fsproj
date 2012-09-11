@@ -98,6 +98,7 @@
     <Compile Include="AltBinaryRandomAccessListTest.fs" />
     <Compile Include="BankersDequeueTest.fs" />
     <Compile Include="DequeueTest.fs" />
+    <Compile Include="BatchedDequeueTest.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\FSharpx.Core\FSharpx.Core.fsproj">
