@@ -103,35 +103,38 @@ type DGMLClass() = class
 end
 
 // state machine class which inherit the DGML class
-// and use a MailboxProcessor to perform asynchronous message processing
-type StateMachine() as this = class
+// and use a MailboxProcessor to perform asynchronous message processing (if makeAsync = true)
+type StateMachine(makeAsync) as this = class
     inherit DGMLClass()
 
     let functions = System.Collections.Generic.Dictionary<string, IState>()
+    let transit newState =
+        if this.CanTransitTo newState then
+          this.InvokeExit(this.CurrentNode.Name)
+          this.ForceStateTo newState
+          this.InvokeEnter newState
+
     let processor = new MailboxProcessor<string>(fun inbox ->
                     let rec loop () = 
                         async {
-                            let! msg = inbox.Receive()
-                            if this.CanTransitTo(msg) then
-                                this.InvokeExit(this.CurrentNode.Name)
-                                this.ForceStateTo(msg)
-                                this.InvokeEnter(msg)
+                            let! newState = inbox.Receive()
+                            transit newState
                             return! loop ()
                         }
                     loop ())    
 
     do 
-        processor.Start()
+        if makeAsync then processor.Start()
 
     // define the second constructor taking the file name and initial state name
-    new(fileName, initState) as secondCtor = 
-        new StateMachine()
+    new(fileName, makeAsync, initState) as secondCtor = 
+        new StateMachine(makeAsync)
         then
             secondCtor.Init(fileName, initState)
 
-    // asynchronously transit to a new state
+    // asynchronously or synchronously transit to a new state
     member this.TransitTo(state) = 
-        processor.Post(state)
+        if makeAsync then processor.Post state else transit state
 
     // set the transition function
     member this.SetFunction(name:string, state:IState) = 
@@ -159,15 +162,16 @@ open Microsoft.FSharp.Core.CompilerServices
 let stateMachineTy (cfg:TypeProviderConfig) =
     erasedType<StateMachine> thisAssembly rootNamespace "StateMachine"
     |> staticParameters
-        ["dgml file name", typeof<string>, None    
+        ["dgml file name", typeof<string>, None
+         "async state transition", typeof<bool>, None
          "init state", typeof<string>, None]    
         (fun typeName parameterValues -> 
             match parameterValues with 
-            | [| :? string as fileName; :? string as initState |] ->
+            | [| :? string as fileName; :? bool as makeAsync; :? string as initState |] ->
 
                 let dgml = System.IO.Path.Combine(cfg.ResolutionFolder, fileName)
 
-                let stateMachine = StateMachine()
+                let stateMachine = StateMachine(makeAsync)
                 stateMachine.Init(dgml, initState)
 
                 let transits = 
@@ -216,9 +220,9 @@ let stateMachineTy (cfg:TypeProviderConfig) =
                          "StateClass", typeof<IState>]
                         typeof<unit>
                         (fun args -> <@@ (%%args.[0] :> StateMachine).SetFunction(%%args.[1] :> string, %%args.[2] :> IState) @@>)
-                    |> addXmlDoc "Sets the executed function for status changes")
+                    |> addXmlDoc "Sets the functions for status changes")
                 |+!> (provideConstructor
                         [] 
-                        (fun args -> <@@ StateMachine(dgml, initState) @@>)
-                    |> addXmlDoc "Initializes a regular expression instance")
+                        (fun args -> <@@ StateMachine(dgml,makeAsync,initState) @@>)
+                    |> addXmlDoc "Initializes a state machine instance")
                 )
