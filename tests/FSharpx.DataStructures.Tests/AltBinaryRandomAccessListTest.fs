@@ -77,6 +77,23 @@ let ``tryGetHead on empty should return None``() =
     empty |> tryGetHead |> should equal None
 
 [<Test>]
+let ``tryGetTail on empty should return None``() =
+    empty |> tryGetTail |> should equal None
+
+[<Test>]
+let ``tryGetTail on len 1 should return None``() =
+    empty |> cons 1 |> tryGetTail |> should equal None
+
+[<Test>]
+let ``tail on len 2 should return``() =
+    empty |> cons 1 |>  cons 2 |> tail |> head |> should equal 1
+
+[<Test>]
+let ``tryGetTail on len 2 should return``() =
+    let a = empty |> cons 1 |>  cons 2 |> tryGetTail 
+    ((head a.Value) = 1) |> should equal true
+
+[<Test>]
 let ``lookup length 1``() =
     len1 |> lookup 0 |> should equal "a"
 
@@ -269,6 +286,10 @@ let ``tryLookup length 10``() =
     let a = lena |> tryLookup 9
     ((j.Value = "j") && (i.Value = "i") && (h.Value = "h") && (g.Value = "g") && (f.Value = "f") && (e.Value = "e") 
     && (d.Value = "d") && (c.Value = "c") && (b.Value = "b")&& (a.Value = "a")) |> should equal true
+
+[<Test>]
+let ``tryLookup not found``() =
+    lena |> tryLookup 10 |> should equal None
 
 [<Test>]
 let ``update length 1``() =

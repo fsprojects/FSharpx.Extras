@@ -158,6 +158,7 @@ let tail xs =
 let tryGetTail xs =
     match (tryUncons xs) with
     | None -> None
+    | Some( _, Nil) -> None
     | Some( _, xs') -> Some(xs')
 
 let rec lookup i xs = AltBinRndAccList.lookup i xs
