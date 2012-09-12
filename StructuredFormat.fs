@@ -476,7 +476,7 @@ namespace Microsoft.FSharp.Text.StructuredFormat
             let extract rstrs = combine(List.rev rstrs) 
             let newLine (rstrs,_) n     = // \n then spaces... 
                 let indent = new System.String(' ', n)
-                let rstrs = push "\n"   rstrs
+                let rstrs = push System.Environment.NewLine rstrs
                 let rstrs = push indent rstrs
                 rstrs,n
 
