@@ -249,10 +249,15 @@ let graph ownerType (cfg:TypeProviderConfig) =
                                 (fun args -> <@@ { Name = name } @@>))
                         |> ignore
                 
+                let initalState =
+                    match states.TryGetValue initState with
+                    | true,v -> v
+                    | _ -> failwithf "The initial state \"%s\" is not part of the state machine." initState
+
                 ownerType
                 |> addXmlDoc "A strongly typed interface to the state machine described in '%s'"
                 |+!> (provideProperty
                         "InitialState"
-                        states.[initState]
+                        initalState
                         (fun args -> <@@  { Name = initState } @@>)
                           |> makePropertyStatic))
