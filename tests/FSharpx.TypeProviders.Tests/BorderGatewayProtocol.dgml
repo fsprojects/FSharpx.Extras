@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph GraphDirection="TopToBottom" Layout="Sugiyama" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+    <Node Id="Active" Bounds="75.86,230.59,52.28,25.96" />
+    <Node Id="Connect" Bounds="74.0366666666666,115.295,63.9266666666667,25.96" />
+    <Node Id="Established" Bounds="324.285,0,79.4300000000001,25.96" />
+    <Node Id="Idle" Bounds="155,57.6475,50,25.96" />
+    <Node Id="OpenConfirm" Bounds="251.205,230.59,91.59,25.96" />
+    <Node Id="OpenSent" Bounds="143.663333333333,172.9425,72.6733333333334,25.96" />
+  </Nodes>
+  <Links>
+    <Link Source="Active" Target="Active" Bounds="32.3600006103516,237.080001831055,43.5,12.9798583984375" />
+    <Link Source="Active" Target="Connect" Bounds="35,144.172470092773,41.0951843261719,88.2531433105469" />
+    <Link Source="Active" Target="Idle" Bounds="0,76.0538558959961,146.113220214844,160.129356384277" />
+    <Link Source="Active" Target="OpenSent" Bounds="102,201.823165893555,35.0752410888672,28.7668304443359" />
+    <Link Source="Connect" Target="Active" Bounds="81.466667175293,141.255004882813,13.5577850341797,80.7726898193359" />
+    <Link Source="Connect" Target="Connect" Bounds="30.5366668701172,121.785003662109,43.5,12.9675598144531" />
+    <Link Source="Connect" Target="OpenSent" Bounds="122.661956787109,141.255004882813,33.5762023925781,26.1565399169922" />
+    <Link Source="Established" Target="Established" Bounds="280.785003662109,6.48999977111816,43.5,12.9281215667725" />
+    <Link Source="Established" Target="Idle" Bounds="213.588363647461,25.1314105987549,111.626602172852,34.9728031158447" />
+    <Link Source="Idle" Target="Connect" Bounds="129.761840820313,83.6074981689453,33.5762023925781,26.1565399169922" />
+    <Link Source="Idle" Target="Idle" Bounds="111.5,64.1374969482422,43.5,12.9800033569336" />
+    <Link Source="OpenConfirm" Target="Established" Bounds="327.171661376953,34.9599990844727,36.8283386230469,195.629997253418" />
+    <Link Source="OpenConfirm" Target="Idle" Bounds="213.842422485352,77.045036315918,118.157577514648,153.544960021973" />
+    <Link Source="OpenConfirm" Target="OpenConfirm" Bounds="207.705001831055,237.081085205078,43.5,12.8839721679688" />
+    <Link Source="OpenConfirm" Target="OpenSent" Bounds="204.915740966797,204.092041015625,56.9590454101563,26.4979553222656" />
+    <Link Source="OpenSent" Target="Active" Bounds="136.58203125,198.902496337891,43.41796875,31.8882293701172" />
+    <Link Source="OpenSent" Target="Idle" Bounds="180,92.6074981689453,0,80.3350067138672" />
+    <Link Source="OpenSent" Target="OpenConfirm" Bounds="216.336669921875,194.874282836914,77.296630859375,27.369140625" />
+  </Links>
+  <Properties>
+    <Property Id="Bounds" DataType="System.Windows.Rect" />
+    <Property Id="GraphDirection" DataType="Microsoft.VisualStudio.Diagrams.Layout.LayoutOrientation" />
+    <Property Id="Layout" DataType="System.String" />
+  </Properties>
+</DirectedGraph>

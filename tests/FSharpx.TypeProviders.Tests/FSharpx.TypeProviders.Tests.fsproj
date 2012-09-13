@@ -62,6 +62,7 @@
     <Compile Include="StateNetwork.Tests.fs" />
     <Compile Include="BinaryGraph.Tests.fs" />
     <Compile Include="TurnstileGraph.Tests.fs" />
+    <Compile Include="BorderGatewayProtocolGraph.Tests.fs" />
     <Compile Include="Xaml.Tests.fs" />
     <Compile Include="Excel.Tests.fs" />
     <None Include="OptionValues.json" />
@@ -100,6 +101,7 @@
     <Content Include="Graph1.dgml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="BorderGatewayProtocol.dgml" />
     <Content Include="Turnstile.dgml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
