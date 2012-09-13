@@ -61,6 +61,7 @@
     <Compile Include="AsyncStateMachine.Tests.fs" />
     <Compile Include="StateNetwork.Tests.fs" />
     <Compile Include="BinaryGraph.Tests.fs" />
+    <Compile Include="TurnstileGraph.Tests.fs" />
     <Compile Include="Xaml.Tests.fs" />
     <Compile Include="Excel.Tests.fs" />
     <None Include="OptionValues.json" />
@@ -97,6 +98,9 @@
     <None Include="BookTest.xls" />
     <None Include="packages.config" />
     <Content Include="Graph1.dgml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Turnstile.dgml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Binary.dgml">
