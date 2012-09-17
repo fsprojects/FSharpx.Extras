@@ -100,6 +100,7 @@
     <Compile Include="DequeTest.fs" />
     <Compile Include="BatchedDequeTest.fs" />
     <Compile Include="RealTimeDequeTest.fs" />
+    <Compile Include="TreeZipperTest.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\FSharpx.Core\FSharpx.Core.fsproj">
