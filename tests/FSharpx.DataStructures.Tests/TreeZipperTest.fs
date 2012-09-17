@@ -38,3 +38,10 @@ let ``Can move up inside the zipper``() =
 let ``Can move to the top from inside the zipper``() =       
    let z1 = tree |> zipper |> move [Left;Right;Right] |> top
    Assert.AreEqual(z1.Focus,tree)
+
+[<Test>]
+let ``Can modify inside the zipper``() =
+   let z1 = tree |> zipper |> right
+   let z2 = { z1 with Focus = Branch("e", Leaf, Leaf) } |> top
+
+   Assert.AreEqual(z2.Focus,Branch("a", Branch("b", Leaf, Branch("c", Leaf, Leaf)), Branch("e", Leaf, Leaf)))
