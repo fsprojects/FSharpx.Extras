@@ -16,6 +16,25 @@ let ``test List_splitAt correctly breaks the list on the specified index``() =
   let expected = (List.ofSeq "Howdy!", List.ofSeq " Want to play?")
   List.splitAt 6 str |> should equal expected
 
+  
+[<Test>]
+let ``Can splitAt 3``() =
+  let list = [1..5]
+  let expected = [1;2;3],[4;5]
+  List.splitAt 3 list |> should equal expected
+
+[<Test>]
+let ``Can split at 3``() =
+  let list = [1..5]
+  let expected = [1;2],[3;4;5]
+  List.split ((=) 3) list |> should equal expected
+
+[<Test>]
+let ``Can split at 0``() =
+  let l1,l2 = List.split ((=) 0) [1..5]
+  l1 |> should equal [1..5]
+  l2 |> should equal []
+
 [<Test>]
 let ``test List_span correctly breaks the list on the specified predicate``() =
   let str = List.ofSeq "Howdy! Want to play?"
