@@ -1,9 +1,9 @@
-﻿module FSharpx.DataStructures.Tests.TreeZipperTest
+﻿module FSharpx.DataStructures.Tests.BinaryTreeZipperTest
 
 
 open System
 open FSharpx.DataStructures
-open FSharpx.DataStructures.TreeZipper
+open FSharpx.DataStructures.BinaryTreeZipper
 open NUnit.Framework
 open FsUnit
 
@@ -41,7 +41,6 @@ let ``Can move to the top from inside the zipper``() =
 
 [<Test>]
 let ``Can modify inside the zipper``() =
-   let z1 = tree |> zipper |> right
-   let z2 = { z1 with Focus = Branch("e", Leaf, Leaf) } |> top
+   let z1 = tree |> zipper |> right |> setFocus (branch "e") |> top
 
-   Assert.AreEqual(z2.Focus,Branch("a", Branch("b", Leaf, Branch("c", Leaf, Leaf)), Branch("e", Leaf, Leaf)))
+   Assert.AreEqual(z1.Focus,Branch("a", Branch("b", Leaf, Branch("c", Leaf, Leaf)), Branch("e", Leaf, Leaf)))

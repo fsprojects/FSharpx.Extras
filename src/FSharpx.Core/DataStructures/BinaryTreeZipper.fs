@@ -1,19 +1,21 @@
 ﻿// TreeZipper
 // original implementation taken from http://blog.xquant.net/?p=156
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-module FSharpx.DataStructures.TreeZipper
+module FSharpx.DataStructures.BinaryTreeZipper
 
 /// A simple binary tree
-type 'a Tree=
+type 'a BinaryTree=
    | Leaf
-   | Branch of 'a * 'a Tree * 'a Tree
+   | Branch of 'a * 'a BinaryTree * 'a BinaryTree
+
+/// Creates a new branch with the label x and two leafs as subbranches
+let branch x = Branch(x,Leaf,Leaf)
 
 type TreeDirection =  Left | Right
 
-/// The tree zipper datastructure
-type 'a TreeZipper  = { 
-  Focus:'a Tree
-  Path: (TreeDirection * 'a * 'a Tree) list }
+/// The zipper datastructure for binary trees
+type 'a BinaryTreeZipper  = { 
+  Focus:'a BinaryTree
+  Path: (TreeDirection * 'a * 'a BinaryTree) list }
 
 open FSharpx
 
@@ -42,6 +44,9 @@ let right z =
     | (Branch(v, other, explored)) -> { Focus = explored; Path = (Right, v, other) :: z.Path }
     | Leaf -> failwith "can't go down on leaf"
 
+/// Modifies the current focus inside the zipper
+let setFocus newFocus zipper = { zipper with Focus = newFocus }
+
 /// Creates a zipper from a tree
 let zipper t = { Focus = t; Path = [] } 
 
@@ -54,7 +59,7 @@ let inline getMove direction =
     | Right -> right
     
 /// Moves the zipper in the directions of the given list
-let rec move directions (z:'a TreeZipper) =
+let rec move directions (z:'a BinaryTreeZipper) =
     directions
       |> Seq.map getMove
       |> Seq.fold (|>) z       
