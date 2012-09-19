@@ -1,11 +1,9 @@
 ﻿module FSharpx.DataStructures.Tests.BinaryTreeZipperTest
 
-
 open System
 open FSharpx.DataStructures
 open FSharpx.DataStructures.BinaryTreeZipper
 open NUnit.Framework
-open FsUnit
 
 let tree  = Branch("a", Branch("b", Leaf, Branch("c", Leaf, Leaf)), Branch("d", Leaf, Leaf))
 

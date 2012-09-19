@@ -61,6 +61,7 @@
     <Compile Include="DataStructures\BottomUpMergeSort.fs" />
     <Compile Include="DataStructures\AltBinaryRandomAccessList.fs" />
     <Compile Include="DataStructures\BinaryTreeZipper.fs" />
+    <Compile Include="DataStructures\ListZipper.fs" />    
     <Compile Include="Lens.fs" />
     <Compile Include="CSharpCompat.fs" />
     <Compile Include="Regex.fs" />

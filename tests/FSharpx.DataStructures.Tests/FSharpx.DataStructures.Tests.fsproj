@@ -101,6 +101,7 @@
     <Compile Include="BatchedDequeTest.fs" />
     <Compile Include="RealTimeDequeTest.fs" />
     <Compile Include="BinaryTreeZipperTest.fs" />
+    <Compile Include="ListZipperTest.fs" />
     <Compile Include="FileSystemZipperTest.fs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,5 @@
-﻿// TreeZipper
-// original implementation taken from http://blog.xquant.net/?p=156
+﻿/// TreeZipper
+/// original implementation taken from http://blog.xquant.net/?p=156
 module FSharpx.DataStructures.BinaryTreeZipper
 
 /// A simple binary tree
