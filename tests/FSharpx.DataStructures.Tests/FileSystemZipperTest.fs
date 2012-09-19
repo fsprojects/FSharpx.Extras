@@ -31,12 +31,19 @@ let getName = function
 
 let nameIs name item = getName item = name
 
+/// Moves down to the folder with the given name
 let moveTo name (zipper:FSZipper) : FSZipper = 
     match zipper.Focus with
     | Folder folder ->
         let (ls, item::rs) = List.split (nameIs name) folder.Items
         { Focus = item; Path = Some(folder.Name,ls,rs) }
-  
+ 
+/// Renames the given focus
+let rename newName zipper =
+    match zipper.Focus with
+    | File name -> { zipper with Focus = File newName }
+    | Folder folder -> { zipper with Focus = Folder { folder with Name = newName } }
+
 let zipper fileSystem : FSZipper = { Focus = fileSystem; Path = None }
 
 let disk =
@@ -60,10 +67,15 @@ let disk =
 
 [<Test>]
 let ``Can move to subdir``() =       
-   let z = disk |> zipper |> moveTo "pics" |> moveTo "skull_man(scary).bmp"  
-   Assert.AreEqual(z.Focus,File "skull_man(scary).bmp")
+    let z = disk |> zipper |> moveTo "pics" |> moveTo "skull_man(scary).bmp"  
+    Assert.AreEqual(z.Focus,File "skull_man(scary).bmp")
 
 [<Test>]
 let ``Can move to subdir and up again``() =       
-   let z = disk |> zipper |> moveTo "pics" |> moveTo "skull_man(scary).bmp" |> up
-   Assert.AreEqual(getName z.Focus,"pics")
+    let z = disk |> zipper |> moveTo "pics" |> moveTo "skull_man(scary).bmp" |> up
+    Assert.AreEqual(getName z.Focus,"pics")
+
+[<Test>]
+let ``Can rename a folder``() =       
+    let z = disk |> zipper |> moveTo "pics" |> rename "photo" |> up |> moveTo "photo"
+    Assert.AreEqual(getName z.Focus,"photo")
