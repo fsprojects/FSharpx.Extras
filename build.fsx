@@ -170,13 +170,7 @@ let prepareNugetTarget = TargetTemplate (fun frameworkVersion ->
         [for ending in ["dll";"pdb";"xml"] ->
             sprintf "%sFsharpx.%s.%s" buildDir package ending]
         |> Seq.filter (fun f -> File.Exists f)
-        |> CopyTo frameworkSubDir
-
-        if package = "TypeProviders" then   // TODO: Remove when we have a .NET 4.5 Core package
-            [for ending in ["dll";"pdb";"xml"] ->
-                sprintf "%sFsharpx.%s.%s" buildDir "Core" ending]
-            |> Seq.filter (fun f -> File.Exists f)
-            |> CopyTo frameworkSubDir)
+        |> CopyTo frameworkSubDir)
 )
 
 let buildFrameworkVersionTarget = TargetTemplate (fun frameworkVersion -> ())
@@ -216,7 +210,7 @@ let nugetTarget = TargetTemplate (fun package ->
             ToolPath = nugetPath
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Dependencies =
-                if package = "Core" || package = "TypeProviders" then p.Dependencies else
+                if package = "Core" then p.Dependencies else
                 [projectName + ".Core", RequireExactly (NormalizeVersion version)]
             Publish = hasBuildParam "nugetkey" && package <> "TypeProviders" })
         "FSharpx.Core.nuspec"
