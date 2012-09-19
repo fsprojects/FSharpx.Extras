@@ -26,3 +26,10 @@ let ``When calculating, it should calculate 0.009581881533``() =
 [<Test>]
 let ``When calculating, it should calculate 0.0``() =
   calculating 0.00 0.55 0.75 |> should equal 0.0 
+
+[<Test>]
+let ``Desugared else branch should be None``() =
+    maybe { 
+        if false then 
+          return 4 } 
+      |> should equal None
