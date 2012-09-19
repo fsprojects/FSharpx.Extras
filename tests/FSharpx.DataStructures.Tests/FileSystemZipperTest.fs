@@ -7,47 +7,52 @@ open NUnit.Framework
 open FsUnit
 
 type FileName = string
-type FSItem =
+
+type Folder = { Name: FileName; Items: FSItem list }
+and FSItem =
     | File of FileName
-    | Folder of FileName * FSItem list
+    | Folder of Folder
 
-type Path = 
-    | Top
-    | Node of FileName * FSItem list * FSItem list
+let folder(name,items) = Folder { Name = name ; Items = items }
 
-type FSZipper = FSItem * Path
+type Path = FileName * FSItem list * FSItem list
+
+type FSZipper = { Focus : FSItem; Path : Path option }
 
 /// Moves the zipper one directory up
 let up (zipper:FSZipper) : FSZipper = 
-    match zipper with
-    | (item,(Node (name,ls,rs) as bs)) -> Folder(name,(ls @ [item] @ rs)), bs
+   
+    match zipper.Path with
+    | Some (name,ls,rs) -> { zipper with Focus = Folder { Name = name; Items = ls @ [zipper.Focus] @ rs} }
 
-let nameIs name = function
-    | File fileName -> name = fileName
-    | Folder(folderName,_) ->name = folderName  
+let getName = function
+    | File fileName -> fileName
+    | Folder folder -> folder.Name  
+
+let nameIs name item = getName item = name
 
 let moveTo name (zipper:FSZipper) : FSZipper = 
-    match zipper with
-    | Folder(folderName,items),bs ->
-        let (ls, item::rs) = List.split (nameIs name) items
-        item,Node(folderName,ls,rs)
+    match zipper.Focus with
+    | Folder folder ->
+        let (ls, item::rs) = List.split (nameIs name) folder.Items
+        { Focus = item; Path = Some(folder.Name,ls,rs) }
   
-let zipper fileSystem : FSZipper = fileSystem,Top
+let zipper fileSystem : FSZipper = { Focus = fileSystem; Path = None }
 
 let disk =
-    Folder("root",
+    folder("root",
         [File "goat_yelling_like_man.wmv"
          File "pope_time.avi"
-         Folder("pics",
+         folder("pics",
             [File "ape_throwing_up.jpg"
              File "watermelon_smash.gif"
              File "skull_man(scary).bmp"])
          File "dijon_poupon.doc"
-         Folder("programs",
+         folder("programs",
             [File "fartwizard.exe"
              File "owl_bandit.dmg"
              File "not_a_virus.exe"
-             Folder("source code",
+             folder("source code",
                 [File "best_hs_prog.hs"
                  File "random.hs"])
             ])
@@ -55,5 +60,10 @@ let disk =
 
 [<Test>]
 let ``Can move to subdir``() =       
-   let item,_ = disk |> zipper |> moveTo "pics" |> moveTo "skull_man(scary).bmp"  
-   Assert.AreEqual(item,File "skull_man(scary).bmp")
+   let z = disk |> zipper |> moveTo "pics" |> moveTo "skull_man(scary).bmp"  
+   Assert.AreEqual(z.Focus,File "skull_man(scary).bmp")
+
+[<Test>]
+let ``Can move to subdir and up again``() =       
+   let z = disk |> zipper |> moveTo "pics" |> moveTo "skull_man(scary).bmp" |> up
+   Assert.AreEqual(getName z.Focus,"pics")
