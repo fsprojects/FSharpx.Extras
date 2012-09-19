@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx.TypeProviders</RootNamespace>
     <AssemblyName>FSharpx.TypeProviders</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <Name>FSharpx.TypeProviders</Name>
     <TargetFrameworkProfile />
   </PropertyGroup>

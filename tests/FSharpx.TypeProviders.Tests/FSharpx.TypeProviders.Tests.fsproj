@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx.TypeProviders.Tests</RootNamespace>
     <AssemblyName>FSharpx.TypeProviders.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <Name>FSharpx.TypeProviders.Tests</Name>
     <TargetFrameworkProfile />
   </PropertyGroup>

@@ -6,7 +6,7 @@ open System.IO
 // properties
 let currentDate = System.DateTime.UtcNow
 let projectName = "FSharpx"
-let version = if isLocalBuild then "1.6.4" else buildVersion
+let version = if isLocalBuild then "1.6.39" else buildVersion
 let coreSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let projectSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let authors = ["Steffen Forkmann"; "Daniel Mohl"; "Tomas Petricek"; "Ryan Riley"; "Mauricio Scheffer"; "Phil Trelford" ]
@@ -43,7 +43,7 @@ let rec getPackageDesc = function
 
 // params
 let target = getBuildParamOrDefault "target" "All"
-let buildSpecific = hasBuildParam "v35" || hasBuildParam "v40" || hasBuildParam "v45"
+let buildSpecific = hasBuildParam "v35" || hasBuildParam "v40"
 
 let normalizeFrameworkVersion frameworkVersion =
     let v = ("[^\\d]" >=> "") frameworkVersion
@@ -63,9 +63,9 @@ let appReferences frameworkVersion =
     { (!+ "./src/**/*.*proj") with 
         Excludes = 
             [yield "./src/**/*.Silverlight.*proj"
-             if frameworkVersion <> net45 then yield "./src/**/*.TypeProviders.*proj"
              if frameworkVersion = net35 then 
                 yield "./src/**/*.Async.fsproj"
+                yield "./src/**/*.TypeProviders.*proj"
                 yield "./src/**/*.Http.fsproj" // TODO: why is that?
                 yield "./src/**/*.Observable.fsproj" // TODO: why is that?
                   ] }
@@ -73,7 +73,7 @@ let appReferences frameworkVersion =
 
 let testReferences frameworkVersion =
     { (!+ "./tests/**/*.*proj") with 
-        Excludes = [if frameworkVersion <> net45 then yield "./tests/**/*.TypeProviders.*proj"] }
+        Excludes = [if frameworkVersion = net35 then yield "./tests/**/*.TypeProviders.*proj"] }
     |> Scan
 
 // targets
@@ -183,8 +183,7 @@ let buildFrameworkVersionTarget = TargetTemplate (fun frameworkVersion -> ())
 
 let generateTargets() =
     [if hasBuildParam "v35" then yield net35
-     if (hasBuildParam "v40") || (not buildSpecific) then yield net40
-     if hasBuildParam "v45" then yield net45]
+     if (hasBuildParam "v40") || (not buildSpecific) then yield net40]
     |> Seq.fold
         (fun dependency frameworkVersion -> 
             tracefn "Generating targets for .NET %s" frameworkVersion
