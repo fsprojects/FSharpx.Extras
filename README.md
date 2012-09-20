@@ -139,6 +139,7 @@ It currently implements type safe variants of:
 * XML
 * Registry
 * XAML
+* Graph (DMBL file to state machine)
 * AppSettings.
 
 Building the project
