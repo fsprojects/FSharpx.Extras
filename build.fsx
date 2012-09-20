@@ -6,7 +6,7 @@ open System.IO
 // properties
 let currentDate = System.DateTime.UtcNow
 let projectName = "FSharpx"
-let version = if isLocalBuild then "1.6.48" else buildVersion
+let version = if isLocalBuild then "1.6.56" else buildVersion
 let coreSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let projectSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let authors = ["Steffen Forkmann"; "Daniel Mohl"; "Tomas Petricek"; "Ryan Riley"; "Mauricio Scheffer"; "Phil Trelford" ]
@@ -25,7 +25,7 @@ let testDir = "./test/"
 let deployDir = "./deploy/"
 let docsDir = "./docs/"
 
-let targetPlatformDir = getTargetPlatformDir "4.0.30319"
+let targetPlatformDir = getTargetPlatformDir "v4.0.30319"
 
 let nugetDir package = sprintf "./nuget/%s/" package
 let nugetLibDir package = nugetDir package @@ "lib"
@@ -166,18 +166,43 @@ let prepareNugetTarget = TargetTemplate (fun frameworkVersion ->
     packages
     |> Seq.iter (fun package ->
         let frameworkSubDir = nugetLibDir package @@ normalizeFrameworkVersion frameworkVersion
-        CleanDir frameworkSubDir 
+        if package <> "TypeProviders" || buildTypeProviders frameworkVersion then
+            CleanDir frameworkSubDir 
 
-        [for ending in ["dll";"pdb";"xml"] ->
-            sprintf "%sFsharpx.%s.%s" buildDir package ending]
-        |> Seq.filter (fun f -> File.Exists f)
-        |> CopyTo frameworkSubDir
-
-        if package = "TypeProviders" then   // TODO: Remove when we have a .NET 4.5 Core package
             [for ending in ["dll";"pdb";"xml"] ->
-                sprintf "%sFsharpx.%s.%s" buildDir "Core" ending]
+                sprintf "%sFsharpx.%s.%s" buildDir package ending]
             |> Seq.filter (fun f -> File.Exists f)
-            |> CopyTo frameworkSubDir)
+            |> CopyTo frameworkSubDir
+
+        if package = "TypeProviders" && buildTypeProviders frameworkVersion then
+            [for ending in ["dll";"pdb";"xml"] do
+                yield sprintf "%sFsharp.%s.%s" buildDir "Core" ending
+                yield sprintf "%sFsharpx.%s.%s" buildDir "Core" ending]
+            |> Seq.filter (fun f -> File.Exists f)
+            |> CopyTo frameworkSubDir
+
+            Rename (frameworkSubDir @@ "Fsharpx.TypeProviders.Partial.dll") (frameworkSubDir @@ "Fsharpx.TypeProviders.dll")
+
+            ILMerge
+                (fun p ->
+                    {p with
+                        Libraries = [buildDir + "FSharpx.Core.dll"]
+                        Internalize = InternalizeExcept "ILMergeExcludes.txt"
+                        ToolPath = @"lib\ILMerge\IlMerge.exe"
+                        TargetPlatform = sprintf @"v4,%s" targetPlatformDir})
+
+                (frameworkSubDir @@ "Fsharpx.TypeProviders.dll")
+                (frameworkSubDir @@ "Fsharpx.TypeProviders.Partial.dll")
+
+            ["Fsharp.Core.dll";
+             "Fsharp.Core.pdb";
+             "Fsharp.Core.xml";
+             "Fsharpx.Core.dll";
+             "Fsharpx.Core.pdb";
+             "Fsharpx.Core.xml";
+             "Fsharpx.TypeProviders.Partial.dll"]
+                |> Seq.map (fun a -> frameworkSubDir @@ a)
+                |> DeleteFiles)
 )
 
 let buildFrameworkVersionTarget = TargetTemplate (fun frameworkVersion -> ())
