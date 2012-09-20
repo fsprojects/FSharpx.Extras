@@ -6,7 +6,7 @@ open System.IO
 // properties
 let currentDate = System.DateTime.UtcNow
 let projectName = "FSharpx"
-let version = if isLocalBuild then "1.6.44" else buildVersion
+let version = if isLocalBuild then "1.6.48" else buildVersion
 let coreSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let projectSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let authors = ["Steffen Forkmann"; "Daniel Mohl"; "Tomas Petricek"; "Ryan Riley"; "Mauricio Scheffer"; "Phil Trelford" ]
@@ -171,7 +171,13 @@ let prepareNugetTarget = TargetTemplate (fun frameworkVersion ->
         [for ending in ["dll";"pdb";"xml"] ->
             sprintf "%sFsharpx.%s.%s" buildDir package ending]
         |> Seq.filter (fun f -> File.Exists f)
-        |> CopyTo frameworkSubDir)
+        |> CopyTo frameworkSubDir
+
+        if package = "TypeProviders" then   // TODO: Remove when we have a .NET 4.5 Core package
+            [for ending in ["dll";"pdb";"xml"] ->
+                sprintf "%sFsharpx.%s.%s" buildDir "Core" ending]
+            |> Seq.filter (fun f -> File.Exists f)
+            |> CopyTo frameworkSubDir)
 )
 
 let buildFrameworkVersionTarget = TargetTemplate (fun frameworkVersion -> ())
@@ -214,9 +220,9 @@ let nugetTarget = TargetTemplate (fun package ->
             ToolPath = nugetPath
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Dependencies =
-                if package = "Core" then p.Dependencies else
+                if package = "Core" || package = "TypeProviders" then p.Dependencies else
                 [projectName + ".Core", RequireExactly (NormalizeVersion version)]
-            Publish = hasBuildParam "nugetkey" && package <> "TypeProviders" })
+            Publish = hasBuildParam "nugetkey" })
         "FSharpx.Core.nuspec"
 
     !! (nugetDir package + sprintf "FSharpx.%s.*.nupkg" package)
