@@ -51,6 +51,7 @@
     <Compile Include="RealTimeQueueTest.fs" />
     <Compile Include="NonEmptyListTests.fs" />
     <Compile Include="BottomUpMergeSortTest.fs" />
+    <Compile Include="ListZipperTest.fs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
