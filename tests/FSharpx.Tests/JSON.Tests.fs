@@ -1,8 +1,9 @@
-﻿module FSharpx.TypeProviders.Tests.JSON.ParserTests
+﻿module FSharpx.Tests.JSON.ParserTests
 
 open NUnit.Framework
 open FSharpx.JSON
 open FsUnit
+open FSharpx.JSON.DocumentExtensions
 
 [<Test>]
 let ``Can parse empty document``() = 
@@ -12,19 +13,19 @@ let ``Can parse empty document``() =
 
 [<Test>] 
 let ``Can parse document with single property``() =
-    let j = parse """{"firstName": "John"}"""
+    let j = parse "{\"firstName\": \"John\"}"
     j.GetText "firstName" |> should equal "John"
 
 [<Test>] 
 let ``Can parse document with text and integer``() =
-    let j = parse """{"firstName": "John", "lastName": "Smith", "age": 25}"""
+    let j = parse "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"age\": 25}"
     j.GetText "firstName" |> should equal "John"
     j.GetText "lastName" |> should equal "Smith"
     j.GetNumber "age"  |> should equal 25
 
 [<Test>] 
 let ``Can parse document with text and float``() =
-    let j = parse """{"firstName": "John", "lastName": "Smith", "age": 25.25}"""
+    let j = parse "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"age\": 25.25}"
     j.GetNumber "age"  |> should equal 25.25
 
 open System.Globalization
@@ -35,23 +36,14 @@ let ``Can parse document with fractional numbers``() =
     let originalCulture = Thread.CurrentThread.CurrentCulture
     Thread.CurrentThread.CurrentCulture <- new CultureInfo("pt-PT") // use a culture that uses ',' instead o '.' for decimal separators
     try 
-        let j = parse """{ "age": 25.5}"""
+        let j = parse "{ \"age\": 25.5}"
         j.GetNumber "age" |> should equal 25.5
     finally
         Thread.CurrentThread.CurrentCulture <- originalCulture
 
 [<Test>]
 let ``Can parse nested document`` () =
-    let j =
-        """{
-            "main": {
-                "title": "example",
-                "nested": {
-                    "nestedTitle": "sub"
-                }
-            }
-        }"""
-        |> parse
+    let j = parse "{ \"main\": { \"title\": \"example\", \"nested\": { \"nestedTitle\": \"sub\" } } }"
     let main = j.GetJObject "main"
 
     main.GetText "title" |> should equal "example"
@@ -60,14 +52,14 @@ let ``Can parse nested document`` () =
                 
 [<Test>] 
 let ``Can parse document with booleans``() =
-    let j = parse """{ "hasTrue": true, "hasFalse": false }"""
+    let j = parse "{ \"hasTrue\": true, \"hasFalse\": false }"
     j.GetBoolean "hasTrue" |> should equal true
     j.GetBoolean "hasFalse" |> should equal false
 
 
 [<Test>] 
 let ``Can parse document with null``() =    
-    let j = parse """{"items": [{"id": "Open"}, null, {"id": "Pause"}] }"""
+    let j = parse "{ \"items\": [{\"id\": \"Open\"}, null, {\"id\": \"Pause\"}] }"
     let jArray = j.GetJArray "items"
     jArray.Elements.[0].GetText "id" |> should equal "Open"
     jArray.Elements.[1].GetType() |> should equal typeof<JSONNull>
@@ -75,7 +67,7 @@ let ``Can parse document with null``() =
 
 [<Test>] 
 let ``Can parse array in outermost scope``() =
-    let jArray = parse """[{"id": "Open"}, null, {"id": "Pause"}]""" :?> JArray
+    let jArray = parse "[{\"id\": \"Open\"}, null, {\"id\": \"Pause\"}]" :?> JArray
 
     jArray.Elements.[0].GetText "id" |> should equal "Open"
     jArray.Elements.[1].GetType() |> should equal typeof<JSONNull>
@@ -104,7 +96,7 @@ let ``Quotes in strings are property escaped``() =
 
 [<Test>]
 let ``Can parse simple array``() = 
-    let j = parse """["Adam","Eve","Bonnie","Clyde","Donald","Daisy","Han","Leia"]"""
+    let j = parse "[\"Adam\",\"Eve\",\"Bonnie\",\"Clyde\",\"Donald\",\"Daisy\",\"Han\",\"Leia\"]"
     j.GetType() |> should equal typeof<JArray>
     let j x = (j :?> JArray).Elements.[x]
     j 0  |> should equal (Text "Adam")
@@ -114,13 +106,7 @@ let ``Can parse simple array``() =
 
 [<Test>]
 let ``Can parse nested array``() = 
-    let j = parse 
-                """[
-                    ["Adam", "Eve"],
-                    ["Bonnie", "Clyde"],
-                    ["Donald", "Daisy"],
-                    ["Han", "Leia"]
-                  ]"""
+    let j = parse "[ [\"Adam\", \"Eve\"], [\"Bonnie\", \"Clyde\"], [\"Donald\", \"Daisy\"], [\"Han\", \"Leia\"] ]"
     j.GetType() |> should equal typeof<JArray>
     let j x y = ((j :?> JArray).Elements.[x] :?> JArray).Elements.[y]
     j 0 0 |> should equal (Text "Adam")

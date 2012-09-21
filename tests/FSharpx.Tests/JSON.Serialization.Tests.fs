@@ -1,7 +1,8 @@
-﻿module FSharpx.TypeProviders.Tests.JSON.SerializationTests
+﻿module FSharpx.Tests.JSON.SerializationTests
 
 open NUnit.Framework
 open FSharpx.JSON
+open FSharpx.JSON.DocumentExtensions
 open FsUnit
 
 [<Test>]
@@ -15,7 +16,7 @@ let ``Can serialize document with single property``() =
       .New()
       .AddTextProperty("firstName","John")
       .ToString()
-    |> should equal """{"firstName":"John"}"""
+    |> should equal "{\"firstName\":\"John\"}"
 
 [<Test>] 
 let ``Can serialize document with booleans``() =
@@ -24,10 +25,10 @@ let ``Can serialize document with booleans``() =
       .AddBoolProperty("aa",true)
       .AddBoolProperty("bb",false)
       .ToString()
-    |> should equal """{"aa":true,"bb":false}"""
+    |> should equal "{\"aa\":true,\"bb\":false}"
 
 [<Test>]
 let ``Can serialize document with array, null and number``() =
-    let text = """{"items":[{"id":"Open"},null,{"id":25}]}"""
+    let text = "{\"items\":[{\"id\":\"Open\"},null,{\"id\":25}]}"
     let json = parse text
     json.ToString() |> should equal text

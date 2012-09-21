@@ -41,10 +41,27 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="ProvidedTypes.fsi" />
+    <Compile Include="..\FSharpx.Core\Prelude.fs">
+      <Link>Prelude.fs</Link>
+    </Compile>
+    <Compile Include="..\FSharpx.Core\Strings.fs">
+      <Link>Strings.fs</Link>
+    </Compile>
+    <Compile Include="..\FSharpx.Core\JSON.fs">
+      <Link>JSON.fs</Link>
+    </Compile>
+    <Compile Include="..\FSharpx.Core\Collections\Collections.fs">
+      <Link>Collections.fs</Link>
+    </Compile>
+    <Compile Include="..\FSharpx.Core\ComputationExpressions\Monoid.fs">
+      <Link>Monoid.fs</Link>
+    </Compile>
+    <Compile Include="..\FSharpx.Core\ComputationExpressions\Monad.fs">
+      <Link>Monad.fs</Link>
+    </Compile>
     <Compile Include="ProvidedTypes.fs" />
     <Compile Include="TypeProviderDSL.fs" />
     <Compile Include="Settings.fs" />
-    <Compile Include="JSON.fs" />
     <Compile Include="Inference.fs" />
     <Compile Include="StateMachineProvider.fs" />
     <Compile Include="RegexProvider.fs" />
@@ -83,11 +100,6 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
-    <ProjectReference Include="..\FSharpx.Core\FSharpx.Core.fsproj">
-      <Name>FSharpx.Core</Name>
-      <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
-      <Private>True</Private>
-    </ProjectReference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
 	     Other similar extension points exist, see Microsoft.Common.targets.

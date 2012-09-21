@@ -66,7 +66,7 @@ let tokenize source=
 
     tokenize' [] [for x in source -> x]
 
-type Document = interface end
+type IDocument = interface end
 
 type internal Infrastucture =
     abstract member Serialize : StringBuilder -> StringBuilder
@@ -86,7 +86,7 @@ type Text(text:string) =
         | (:? Text as y) -> this.Value = y.Value
         | _ -> false
 
-    interface Document
+    interface IDocument
     interface Infrastucture with
         member this.Serialize sb = sb.AppendFormat("\"{0}\"", escape v)
         member this.ToXml() = v :> obj
@@ -101,7 +101,7 @@ type Number(number:float) =
         | (:? Number as y) -> this.Value = y.Value
         | _ -> false
 
-    interface Document
+    interface IDocument
     interface Infrastucture with
         member this.Serialize sb = sb.Append(v.ToString(System.Globalization.CultureInfo.InvariantCulture))
         member this.ToXml() = v :> obj
@@ -116,7 +116,7 @@ type Boolean(boolean:bool) =
         | (:? Boolean as y) -> this.Value = y.Value
         | _ -> false
 
-    interface Document
+    interface IDocument
     interface Infrastucture with
         member this.Serialize sb = sb.Append(v.ToString().ToLower())
         member this.ToXml() = v :> obj
@@ -129,12 +129,12 @@ type JSONNull() =
         | :? JSONNull -> true
         | _ -> false
 
-    interface Document
+    interface IDocument
     interface Infrastucture with
         member this.Serialize sb = sb.Append "null"
         member this.ToXml() = null
 
-type JArray(elements:List<Document>) =
+type JArray(elements:List<IDocument>) =
     let mutable v = elements
     let serialize(sb:StringBuilder) =
         let isNotFirst = ref false
@@ -156,14 +156,14 @@ type JArray(elements:List<Document>) =
               |> Seq.forall (fun (a,b) -> a.Equals b)
         | _ -> false
 
-    static member New() = new JArray(new List<Document>())
+    static member New() = new JArray(new List<IDocument>())
 
-    interface Document
+    interface IDocument
     interface Infrastucture with
         member this.Serialize sb = serialize sb
         member this.ToXml() = v |> Seq.map (fun item -> new XElement(XName.Get "item", (item:?> Infrastucture).ToXml())) :> obj
 
-type JObject(properties:Dictionary<string,Document>) =
+type JObject(properties:Dictionary<string,IDocument>) =
     let mutable v = properties
     let serialize(sb:StringBuilder) =
         let isNotFirst = ref false
@@ -187,9 +187,9 @@ type JObject(properties:Dictionary<string,Document>) =
               |> Seq.forall (fun (a,b) -> a.Key = b.Key && a.Equals b)
         | _ -> false
 
-    static member New() = new JObject(new Dictionary<string,Document>())
+    static member New() = new JObject(new Dictionary<string,IDocument>())
 
-    interface Document
+    interface IDocument
     interface Infrastucture with
         member this.Serialize sb = serialize sb
         member this.ToXml() =
@@ -207,10 +207,10 @@ open System.Globalization
 let parse source =
     let map = function
     | Token.Number number -> 
-        Number(Double.Parse(number, CultureInfo.InvariantCulture)) :> Document
-    | Token.String text -> Text(text) :> Document
-    | Token.Null -> JSONNull() :> Document
-    | Token.Boolean(b) -> Boolean(b) :> Document
+        Number(Double.Parse(number, CultureInfo.InvariantCulture)) :> IDocument
+    | Token.String text -> Text(text) :> IDocument
+    | Token.Null -> JSONNull() :> IDocument
+    | Token.Boolean(b) -> Boolean(b) :> IDocument
     | v -> failwith "Syntax Error, unrecognized token in map()"
  
     let rec parseValue = function
@@ -221,13 +221,13 @@ let parse source =
  
     and parseArray = function
     | Comma :: t -> parseArray t
-    | CloseArray :: t -> JArray.New() :> Document, t
+    | CloseArray :: t -> JArray.New() :> IDocument, t
     | t ->        
         let element, t' = parseValue t
         match parseArray t' with
         | (:? JArray as jArray),t'' -> 
             jArray.Elements.Insert(0,element)
-            jArray :> Document,t''
+            jArray :> IDocument,t''
         | _ -> failwith "Malformed JSON array"
     and parseJObject = function
     | Comma :: t -> parseJObject t
@@ -236,9 +236,9 @@ let parse source =
         match parseJObject t' with
         | (:? JObject as jObject),t'' ->
             jObject.Properties.[name] <- value
-            jObject :> Document,t''
+            jObject :> IDocument,t''
         | _ -> failwith "Malformed JSON object" 
-    | CloseBracket :: t -> JObject.New() :> Document, t
+    | CloseBracket :: t -> JObject.New() :> IDocument, t
     | _ -> failwith "Malformed JSON object"
     
     tokenize source 
@@ -265,11 +265,10 @@ let fromXml(xml:XDocument) =
                 | childs -> jObject.Properties.[pluralize key] <- createJArray childs)
         jObject
 
-    createJObject xml.Root :> Document
+    createJObject xml.Root :> IDocument
     
-[<AutoOpen>]
-module Extension =
-    type Document with 
+module DocumentExtensions =
+    type IDocument with 
         member this.GetProperty propertyName = (this :?> JObject).Properties.[propertyName]
         member this.HasProperty propertyName = (this :?> JObject).Properties.ContainsKey propertyName
         member this.GetText propertyName = (this.GetProperty(propertyName) :?> Text).Value

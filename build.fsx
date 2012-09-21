@@ -172,37 +172,7 @@ let prepareNugetTarget = TargetTemplate (fun frameworkVersion ->
             [for ending in ["dll";"pdb";"xml"] ->
                 sprintf "%sFsharpx.%s.%s" buildDir package ending]
             |> Seq.filter (fun f -> File.Exists f)
-            |> CopyTo frameworkSubDir
-
-        if package = "TypeProviders" && buildTypeProviders frameworkVersion then
-            [for ending in ["dll";"pdb";"xml"] do
-                yield sprintf "%sFsharp.%s.%s" buildDir "Core" ending
-                yield sprintf "%sFsharpx.%s.%s" buildDir "Core" ending]
-            |> Seq.filter (fun f -> File.Exists f)
-            |> CopyTo frameworkSubDir
-
-            Rename (frameworkSubDir @@ "Fsharpx.TypeProviders.Partial.dll") (frameworkSubDir @@ "Fsharpx.TypeProviders.dll")
-
-            ILMerge
-                (fun p ->
-                    {p with
-                        Libraries = [buildDir + "FSharpx.Core.dll"]
-                        Internalize = InternalizeExcept "ILMergeExcludes.txt"
-                        ToolPath = @"lib\ILMerge\IlMerge.exe"
-                        TargetPlatform = sprintf @"v4,%s" targetPlatformDir})
-
-                (frameworkSubDir @@ "Fsharpx.TypeProviders.dll")
-                (frameworkSubDir @@ "Fsharpx.TypeProviders.Partial.dll")
-
-            ["Fsharp.Core.dll";
-             "Fsharp.Core.pdb";
-             "Fsharp.Core.xml";
-             "Fsharpx.Core.dll";
-             "Fsharpx.Core.pdb";
-             "Fsharpx.Core.xml";
-             "Fsharpx.TypeProviders.Partial.dll"]
-                |> Seq.map (fun a -> frameworkSubDir @@ a)
-                |> DeleteFiles)
+            |> CopyTo frameworkSubDir)
 )
 
 let buildFrameworkVersionTarget = TargetTemplate (fun frameworkVersion -> ())

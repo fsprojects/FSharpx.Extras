@@ -12,7 +12,8 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <Name>FSharpx.Tests</Name>
     <FscToolPath>..\..\lib\FSharp\</FscToolPath>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -73,6 +74,10 @@
     <Compile Include="LensTests.fs" />
     <Compile Include="LensExample.fs" />
     <Compile Include="TimeMeasurementTests.fs" />
+    <Compile Include="JSON.Tests.fs" />
+    <Compile Include="JSON.Equality.Tests.fs" />
+    <Compile Include="JSON.Serialization.Tests.fs" />
+    <Compile Include="JSON.XMLConversion.Tests.fs" />
     <Compile Include="RegexTests.fs" />
   </ItemGroup>
   <ItemGroup>

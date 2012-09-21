@@ -11,10 +11,10 @@ open FSharpx.TypeProviders.Inference
 // ------------------------------------------------------------------------------------------------
 
 module JSONInference = 
-  let rec provideElement name multi (childs:seq<Document>) = 
+  let rec provideElement name multi (childs:seq<IDocument>) = 
     CompoundProperty(name,multi,collectElements childs,collectProperties childs)
 
-  and collectProperties (elements:seq<Document>) =
+  and collectProperties (elements:seq<IDocument>) =
     let props =
       [for el in elements do
         match el with
@@ -36,7 +36,7 @@ module JSONInference =
             |> Seq.head,
           Seq.length attrs < Seq.length elements))
 
-  and collectElements (elements:seq<Document>)  =
+  and collectElements (elements:seq<IDocument>)  =
     [ for el in elements do
         match el with
         | (:? JObject as jObject) -> 

@@ -1,7 +1,8 @@
-﻿module FSharpx.TypeProviders.Tests.JSON.EqualityTests
+﻿module FSharpx.Tests.JSON.EqualityTests
 
 open NUnit.Framework
 open FSharpx.JSON
+open FSharpx.JSON.DocumentExtensions
 open FsUnit
 
 [<Test>]
