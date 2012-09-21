@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
 using NUnit.Framework;
-using Errors = Microsoft.FSharp.Collections.FSharpList<string>;
+using Errors = FSharpx.NonEmptyList<string>;
 
 namespace FSharpx.CSharpTests {
     [TestFixture]
@@ -95,9 +95,9 @@ namespace FSharpx.CSharpTests {
         [Test]
         public void Test2_either() {
             var userID = FSharpOption.ParseInt(req_userID)
-                .ToFSharpChoice(FSharpList.Create("Invalid User ID"));
+                .ToFSharpChoice(NonEmptyList.Singleton("Invalid User ID"));
             var id = FSharpOption.ParseInt(req_otherID)
-                .ToFSharpChoice(FSharpList.Create("Invalid ID"));
+                .ToFSharpChoice(NonEmptyList.Singleton("Invalid ID"));
 
             var doSomethingFunc = L.F((int a, int b) => doSomething(a, b));
             var curriedDoSomething = doSomethingFunc.Curry();
@@ -116,9 +116,9 @@ namespace FSharpx.CSharpTests {
         [Test]
         public void Test2_either_LINQ() {
             var userID = FSharpOption.ParseInt(req_userID)
-                .ToFSharpChoice(FSharpList.Create("Invalid User ID"));
+                .ToFSharpChoice(NonEmptyList.Singleton("Invalid User ID"));
             var id = FSharpOption.ParseInt(req_otherID)
-                .ToFSharpChoice(FSharpList.Create("Invalid ID"));
+                .ToFSharpChoice(NonEmptyList.Singleton("Invalid ID"));
 
             var result =
                 from a in userID
@@ -258,7 +258,7 @@ namespace FSharpx.CSharpTests {
                 .Match(_ => Assert.Fail("Validation should have failed"),
                        err => {
                            Assert.AreEqual(1, err.Length);
-                           Assert.AreEqual("Line1 is empty but Line2 is not", err[0]);
+                           Assert.AreEqual("Line1 is empty but Line2 is not", err.Head);
                        });
         }
     }

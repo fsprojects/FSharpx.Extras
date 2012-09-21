@@ -777,7 +777,7 @@ module Validation =
         member this.apl b a = this.lift2 (fun z _ -> z) a b
 
     /// Sequential application
-    let inline ap x = apa List.append x
+    let inline ap x = apa NonEmptyList.append x
 
     /// Sequential application
     let inline (<*>) f x = ap x f
