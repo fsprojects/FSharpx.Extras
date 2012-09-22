@@ -56,3 +56,49 @@ type IDeque<'a> =
 
     ///returns init and the last element
     abstract member Unsnoc : unit -> IDeque<'a> * 'a
+
+type IRandomAccessList<'a> =
+    inherit System.Collections.IEnumerable
+    inherit System.Collections.Generic.IEnumerable<'a>
+    
+    ///returns a new random access list with the element added to the beginning
+    abstract member Cons : 'a -> IRandomAccessList<'a>
+
+    ///returns the first element
+    abstract member Head : unit -> 'a
+
+    ///returns option first element 
+    abstract member TryGetHead : unit -> 'a option
+
+    ///returns true if the random access list has no elements
+    abstract member IsEmpty : unit -> bool
+
+    ///returns the count of elememts
+    abstract member Length : unit -> int
+
+    ///returns element by index
+    abstract member Lookup : int -> 'a
+
+    ///returns option element by index
+    abstract member TryLookup : int -> 'a option
+
+    ///returns random access list reversed
+    abstract member Rev : unit -> IRandomAccessList<'a>
+
+    ///returns a new random access list of the elements trailing the first element
+    abstract member Tail : unit -> IRandomAccessList<'a>
+
+    ///returns a option random access list of the elements trailing the first element
+    abstract member TryGetTail : unit -> IRandomAccessList<'a> option
+
+    ///returns the first element and tail
+    abstract member Uncons : unit -> 'a * IRandomAccessList<'a>
+
+    ///returns the option first element and tail
+    abstract member TryUncons : unit -> ('a * IRandomAccessList<'a>) option
+
+    ///returns random access list with element updated by index
+    abstract member Update : int -> 'a -> IRandomAccessList<'a>
+
+    ///returns option random access list with element updated by index
+    abstract member TryUpdate : int -> 'a -> IRandomAccessList<'a> option
