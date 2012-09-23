@@ -117,8 +117,27 @@ let ``ofSeq minimalist``() =
     let e, t5 = uncons t4
     let f, t6 = uncons t5
     let g, t7 = uncons t6
-    ((a = "a") && (b = "b") && (c = "c") && (d = "d") 
-    && (e = "e") && (f = "f") && (g = "g")) |> should equal true
+    let h, t8 = uncons t7
+    let i, t9 = uncons t8
+    let j, t10 = uncons t9
+    ((a = "a") && (b = "b") && (c = "c") && (d = "d") && (e = "e") && (f = "f") && (g = "g") && (h = "h") 
+    && (i = "i") && (j = "j") && (t10 |> isEmpty)) |> should equal true
+
+[<Test>]
+let ``ofSeq minimalist odd number``() =
+    let x = ofSeq false ["a";"b";"c";"d";"e";"f";"g";"h";"i"]
+
+    let a, t1 = uncons x
+    let b, t2 = uncons t1
+    let c, t3 = uncons t2
+    let d, t4 = uncons t3
+    let e, t5 = uncons t4
+    let f, t6 = uncons t5
+    let g, t7 = uncons t6
+    let h, t8 = uncons t7
+    let i, t9 = uncons t8
+    ((a = "a") && (b = "b") && (c = "c") && (d = "d") && (e = "e") && (f = "f") && (g = "g") && (h = "h") 
+    && (i = "i") && (t9 |> isEmpty)) |> should equal true
 
 [<Test>]
 let ``ofSeq maximalist``() =
@@ -181,6 +200,6 @@ let ``structure pattern match and merge``() =
 [<Test>]
 let ``tryMerge max and mis should be None``() =
     let h1 = ofSeq true ["f";"e";"d";"c";"b";"a"]
-    let h2 = ofSeq false ["f";"e";"d";"c";"b";"a"]
+    let h2 = ofSeq false ["t";"u";"v";"w";"x";"y";"z"]
 
     tryMerge h1 h2 |> should equal None

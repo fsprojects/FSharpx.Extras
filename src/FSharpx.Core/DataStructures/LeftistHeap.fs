@@ -125,12 +125,21 @@ and LeftistHeap<'a>
     static member internal ofSeq (maximalist: bool) (s:seq<'a>) : LeftistHeap<'a> = 
         if Seq.isEmpty s then E(maximalist)
         else
-            let a = Array.ofSeq s
-            let rec loop (acc: LeftistHeap<'a>) dec (a': array<'a>) =
-                if dec < 0 then acc
-                else loop (LeftistHeap.insert a'.[dec] acc) (dec - 1) a'
+            let x, _ = Seq.fold (fun (acc, isMaximalist) elem -> ((LeftistHeap.singleton elem isMaximalist)::acc), isMaximalist) ([], maximalist) s
+    
+            let pairWiseMerge (l: list<LeftistHeap<'a>>) =
+                let rec loop (acc: list<LeftistHeap<'a>>) : list<LeftistHeap<'a>> -> list<LeftistHeap<'a>> = function
+                    | h1::h2::tl -> loop ((LeftistHeap.merge h1 h2)::acc) tl
+                    | h1::[] -> h1::acc
+                    | [] -> acc
 
-            loop (E(maximalist)) (a.Length - 1) a
+                loop [] l
+
+            let rec loop : list<LeftistHeap<'a>> -> LeftistHeap<'a> = function
+                | h::[] -> h
+                | x -> loop (pairWiseMerge x)
+                
+            loop x             
 
     static member private tail : LeftistHeap<'a> -> LeftistHeap<'a> = function
         | E(_) -> raise Exceptions.Empty
