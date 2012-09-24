@@ -15,9 +15,6 @@ type public FSharpxProvider(cfg:TypeProviderConfig) as this =
          MiniCsvProvider.csvType this cfg
          FilesTypeProvider.typedFileSystem
          XmlTypeProvider.xmlType this cfg
-         StateMachineProvider.stateMachineTy this true cfg
-         StateMachineProvider.stateMachineTy this false cfg
-         StateMachineProvider.graph this cfg
          JsonTypeProvider.jsonType this cfg
          RegistryProvider.typedRegistry
          XamlProvider.xamlType this cfg

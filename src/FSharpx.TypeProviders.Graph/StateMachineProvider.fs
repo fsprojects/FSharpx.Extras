@@ -1,5 +1,5 @@
 ﻿// Originally ported from http://fsharp3sample.codeplex.com
-module internal FSharpx.TypeProviders.StateMachineProvider
+module FSharpx.TypeProviders.StateMachineProvider
 
 open FSharpx.StateMachine
 open FSharpx.TypeProviders.Settings
@@ -7,7 +7,7 @@ open FSharpx.TypeProviders.DSL
 open Samples.FSharp.ProvidedTypes
 open Microsoft.FSharp.Core.CompilerServices
 
-let stateMachineTy ownerType makeAsync (cfg:TypeProviderConfig) =
+let internal stateMachineTy ownerType makeAsync (cfg:TypeProviderConfig) =
     erasedType<StateMachine> thisAssembly rootNamespace (if makeAsync then "AsyncStateMachine" else "StateMachine")
     |> staticParameters
         ["dgml file name", typeof<string>, None
@@ -54,7 +54,7 @@ let stateMachineTy ownerType makeAsync (cfg:TypeProviderConfig) =
                         (fun args -> <@@ StateMachine(dgml,makeAsync,initState) @@>)
                     |> addConstructorXmlDoc "Initializes a state machine instance"))
 
-let graph ownerType (cfg:TypeProviderConfig) =
+let internal graph ownerType (cfg:TypeProviderConfig) =
     erasedType<obj> thisAssembly rootNamespace ("Graph")
     |> staticParameters
         ["dgml file name", typeof<string>, None
@@ -109,3 +109,16 @@ let graph ownerType (cfg:TypeProviderConfig) =
                         initalState
                         (fun args -> <@@  { Name = initState } @@>)
                           |> makePropertyStatic))
+
+[<TypeProvider>]
+type public GraphProvider(cfg:TypeProviderConfig) as this =
+    inherit TypeProviderForNamespaces()
+
+    do this.AddNamespace(
+        Settings.rootNamespace, 
+        [stateMachineTy this true cfg
+         stateMachineTy this false cfg
+         graph this cfg])
+
+[<TypeProviderAssembly>]
+do ()

@@ -6,7 +6,7 @@ open System.IO
 // properties
 let currentDate = System.DateTime.UtcNow
 let projectName = "FSharpx"
-let version = if isLocalBuild then "1.6.56" else buildVersion
+let version = if isLocalBuild then "1.6.61" else buildVersion
 let coreSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let projectSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let authors = ["Steffen Forkmann"; "Daniel Mohl"; "Tomas Petricek"; "Ryan Riley"; "Mauricio Scheffer"; "Phil Trelford" ]
@@ -30,7 +30,7 @@ let nugetDir package = sprintf "./nuget/%s/" package
 let nugetLibDir package = nugetDir package @@ "lib"
 let nugetDocsDir package = nugetDir package @@ "docs"
 
-let packages = ["Core"; "Http"; "Observable"; "TypeProviders"]
+let packages = ["Core"; "Http"; "Observable"; "TypeProviders"; "TypeProviders.Graph"]
 
 let projectDesc = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible."
 
@@ -38,6 +38,7 @@ let rec getPackageDesc = function
 | "Http" -> projectDesc + "\r\n\r\nThis library provides common features for working with HTTP applications."
 | "Observable" -> projectDesc + "\r\n\r\nThis library implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford."
 | "TypeProviders" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing common type providers on top of the FSharpx.Core."
+| "TypeProviders.Graph" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a state machine type provider."
 | _ -> projectDesc + "\r\n\r\nIt currently implements:\r\n\r\n* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n* Iteratee\r\n* Purely functional data structures: Queues, double-ended Queues, BottomUpMergeSort, RandomAccessList, Vector\r\n* Validation applicative functor\r\n* General functions like flip\r\n* Additional functions around collections\r\n* Functions to make C# - F# interop easier."
 
 // params
@@ -63,7 +64,9 @@ let appReferences frameworkVersion =
     { (!+ "./src/**/*.*proj") with 
         Excludes = 
             [yield "./src/**/*.Silverlight.*proj"
-             if not (buildTypeProviders frameworkVersion) then yield "./src/**/*.TypeProviders.*proj"
+             if not (buildTypeProviders frameworkVersion) then 
+                yield "./src/**/*.TypeProviders.*proj"
+                yield "./src/**/*.TypeProviders.*.*proj"
              if frameworkVersion = net35 then 
                 yield "./src/**/*.Async.fsproj"
                 yield "./src/**/*.Http.fsproj" // TODO: why is that?
@@ -73,7 +76,9 @@ let appReferences frameworkVersion =
 
 let testReferences frameworkVersion =
     { (!+ "./tests/**/*.*proj") with 
-        Excludes = [if not (buildTypeProviders frameworkVersion) then yield "./tests/**/*.TypeProviders.*proj"] }
+        Excludes = [if not (buildTypeProviders frameworkVersion) then
+                        yield "./tests/**/*.TypeProviders.*proj"
+                        yield "./tests/**/*.TypeProviders.*.*proj"] }
     |> Scan
 
 // targets
@@ -120,6 +125,15 @@ Target "AssemblyInfo" (fun _ ->
             AssemblyDescription = getPackageDesc "TypeProviders"
             Guid = "89B6AF94-507D-4BE0-98FA-A5124884DBA8"
             OutputFileName = "./src/FSharpx.TypeProviders/AssemblyInfo.fs" })
+            
+    AssemblyInfo (fun p ->
+        {p with 
+            CodeLanguage = FSharp
+            AssemblyVersion = version
+            AssemblyTitle = "FSharpx.TypeProviders.Graph"
+            AssemblyDescription = getPackageDesc "TypeProviders.Graph"
+            Guid = "D68BF790-E641-4A40-9BC2-CCD8870D8C4B"
+            OutputFileName = "./src/FSharpx.TypeProviders.Graph/AssemblyInfo.fs" })
 )
 
 let buildAppTarget = TargetTemplate (fun frameworkVersion ->
@@ -165,7 +179,7 @@ let prepareNugetTarget = TargetTemplate (fun frameworkVersion ->
     packages
     |> Seq.iter (fun package ->
         let frameworkSubDir = nugetLibDir package @@ normalizeFrameworkVersion frameworkVersion
-        if package <> "TypeProviders" || buildTypeProviders frameworkVersion then
+        if (not <| package.StartsWith "TypeProviders") || buildTypeProviders frameworkVersion then
             CleanDir frameworkSubDir 
 
             [for ending in ["dll";"pdb";"xml"] ->
@@ -214,7 +228,7 @@ let nugetTarget = TargetTemplate (fun package ->
             ToolPath = nugetPath
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Dependencies =
-                if package = "Core" || package = "TypeProviders" then p.Dependencies else
+                if package = "Core" || package.StartsWith "TypeProviders" then p.Dependencies else
                 [projectName + ".Core", RequireExactly (NormalizeVersion version)]
             Publish = hasBuildParam "nugetkey" })
         "FSharpx.Core.nuspec"

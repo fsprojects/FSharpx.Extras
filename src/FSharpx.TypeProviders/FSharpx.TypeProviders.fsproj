@@ -66,10 +66,6 @@
     <Compile Include="TypeProviderDSL.fs" />
     <Compile Include="Settings.fs" />
     <Compile Include="Inference.fs" />
-    <Compile Include="..\FSharpx.Core\StateMachine.fs">
-      <Link>StateMachine.fs</Link>
-    </Compile>
-    <Compile Include="StateMachineProvider.fs" />
     <Compile Include="RegexProvider.fs" />
     <Compile Include="RegistryProvider.fs" />
     <Compile Include="FileSystemProvider.fs" />

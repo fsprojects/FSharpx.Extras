@@ -108,11 +108,11 @@
     <Reference Include="FSharp.Data.TypeProviders, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <HintPath>..\..\lib\FSharp\Net45\FSharp.Data.TypeProviders.dll</HintPath>
     </Reference>
-    <Reference Include="FSharpx.Core">
-      <HintPath>..\..\src\FSharpx.TypeProviders\bin\Debug\FSharpx.Core.dll</HintPath>
-    </Reference>
     <Reference Include="FSharpx.TypeProviders">
       <HintPath>..\..\src\FSharpx.TypeProviders\bin\Debug\FSharpx.TypeProviders.dll</HintPath>
+    </Reference>
+    <Reference Include="FSharpx.TypeProviders.Graph">
+      <HintPath>..\..\src\FSharpx.TypeProviders.Graph\bin\Debug\FSharpx.TypeProviders.Graph.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core">
