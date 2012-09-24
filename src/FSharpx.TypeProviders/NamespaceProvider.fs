@@ -10,7 +10,7 @@ type public FSharpxProvider(cfg:TypeProviderConfig) as this =
     inherit TypeProviderForNamespaces()
 
     do this.AddNamespace(
-        Settings.rootNamespace, 
+        DSL.rootNamespace, 
         [RegexTypeProvider.regexTy
          MiniCsvProvider.csvType this cfg
          FilesTypeProvider.typedFileSystem

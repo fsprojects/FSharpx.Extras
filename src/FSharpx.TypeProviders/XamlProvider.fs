@@ -12,7 +12,6 @@ open System.Windows.Markup
 open System.Xml
 open System.Linq.Expressions
 open FSharpx.TypeProviders.DSL
-open FSharpx.TypeProviders.Settings
 
 let wpfAssembly = typeof<System.Windows.Controls.Button>.Assembly
 

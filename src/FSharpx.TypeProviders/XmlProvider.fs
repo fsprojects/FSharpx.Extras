@@ -6,7 +6,6 @@ module internal FSharpx.TypeProviders.XmlTypeProvider
 
 open System
 open System.IO
-open FSharpx.TypeProviders.Settings
 open FSharpx.TypeProviders.DSL
 open Microsoft.FSharp.Quotations
 open Samples.FSharp.ProvidedTypes

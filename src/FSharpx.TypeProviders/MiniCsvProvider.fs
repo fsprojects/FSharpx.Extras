@@ -4,7 +4,6 @@
 // warranties of merchantability and fitness for a particular purpose. 
 module FSharpx.TypeProviders.MiniCsvProvider
 
-open FSharpx.TypeProviders.Settings
 open FSharpx.TypeProviders.DSL
 open System.Reflection
 open System.IO

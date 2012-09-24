@@ -1,9 +1,8 @@
-﻿module FSharpx.TypeProviders.Tests.BinaryGraphTests
+﻿module FSharpx.TypeProviders.Graph.Tests.BinaryGraphTests
 
 open NUnit.Framework
 open FSharpx
 open FSharpx.TypeProviders
-open FsUnit
 
 type BinaryGraph = Graph<"Binary.dgml", "Even"> 
 

@@ -1,9 +1,8 @@
-﻿module FSharpx.TypeProviders.Tests.BorderGatewayProtocolGraphTests
+﻿module FSharpx.TypeProviders.Graph.Tests.BorderGatewayProtocolGraphTests
 
 open NUnit.Framework
 open FSharpx
 open FSharpx.TypeProviders
-open FsUnit
 
 type BGP = Graph<"BorderGatewayProtocol.dgml", "Idle"> 
 

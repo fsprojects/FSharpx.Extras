@@ -20,7 +20,6 @@ type SimpleProperty = SimpleProperty of string * Type * bool
 
 type CompoundProperty = CompoundProperty of string * bool * CompoundProperty seq * SimpleProperty seq
 
-open Settings
 open System.IO
 open Samples.FSharp.ProvidedTypes
 open Microsoft.FSharp.Quotations

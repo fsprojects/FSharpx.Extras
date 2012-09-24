@@ -189,3 +189,7 @@ let createStructuredParser thisAssembly rootNamespace typeName (cfg:TypeProvider
                 | [| :? string; :? string as schema |] when schema <> missingValue ->        
                     createTypeFromSchemaF typeName schema
                 | _ -> failwith "You have to specify a filename or inlined Schema")
+
+// Get the assembly and namespace used to house the provided types
+let thisAssembly = Assembly.GetExecutingAssembly()
+let rootNamespace = "FSharpx"

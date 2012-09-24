@@ -64,7 +64,6 @@
       <Link>Monad.fs</Link>
     </Compile>
     <Compile Include="TypeProviderDSL.fs" />
-    <Compile Include="Settings.fs" />
     <Compile Include="Inference.fs" />
     <Compile Include="RegexProvider.fs" />
     <Compile Include="RegistryProvider.fs" />

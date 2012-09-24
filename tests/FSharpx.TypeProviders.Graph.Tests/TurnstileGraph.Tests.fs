@@ -1,9 +1,8 @@
-﻿module FSharpx.TypeProviders.Tests.TurnstileGraphTests
+﻿module FSharpx.TypeProviders.Graph.Tests.TurnstileGraphTests
 
 open NUnit.Framework
 open FSharpx
 open FSharpx.TypeProviders
-open FsUnit
 
 type Turnstile = Graph<"Turnstile.dgml", "Locked"> 
 

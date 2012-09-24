@@ -2,7 +2,6 @@
 
 open FSharpx
 open FSharpx.TypeProviders.DSL
-open FSharpx.TypeProviders.Settings
 open Microsoft.FSharp.Core.CompilerServices
 open Samples.FSharp.ProvidedTypes
 open System

@@ -3,7 +3,6 @@
 open System
 open System.IO
 open FSharpx.TypeProviders.DSL
-open FSharpx.TypeProviders.Settings
 open Microsoft.FSharp.Quotations
 open Samples.FSharp.ProvidedTypes
 open FSharpx.TypeProviders.Inference

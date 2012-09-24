@@ -1,9 +1,8 @@
-﻿module FSharpx.TypeProviders.Tests.AsyncStateMachineTests
+﻿module FSharpx.TypeProviders.Graph.Tests.AsyncStateMachineTests
 
 open NUnit.Framework
 open FSharpx
 open FSharpx.TypeProviders
-open FsUnit
 open System.Threading
 
 type SM1 = AsyncStateMachine<"Graph1.dgml", "State0">

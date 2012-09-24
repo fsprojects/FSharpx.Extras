@@ -1,9 +1,8 @@
-﻿module FSharpx.TypeProviders.Tests.StateMachineTests
+﻿module FSharpx.TypeProviders.Graph.Tests.StateMachineTests
 
 open NUnit.Framework
 open FSharpx
 open FSharpx.TypeProviders
-open FsUnit
 
 type SM1 = StateMachine<"Graph1.dgml", "State0">
 

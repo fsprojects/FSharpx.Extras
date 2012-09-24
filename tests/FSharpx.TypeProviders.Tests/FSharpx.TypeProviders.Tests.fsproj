@@ -52,12 +52,6 @@
     <Compile Include="Regex.Tests.fs" />
     <Compile Include="Vector.Tests.fs" />
     <Compile Include="AppSettings.Tests.fs" />
-    <Compile Include="StateMachine.Tests.fs" />
-    <Compile Include="AsyncStateMachine.Tests.fs" />
-    <Compile Include="StateNetwork.Tests.fs" />
-    <Compile Include="BinaryGraph.Tests.fs" />
-    <Compile Include="TurnstileGraph.Tests.fs" />
-    <Compile Include="BorderGatewayProtocolGraph.Tests.fs" />
     <Compile Include="Xaml.Tests.fs" />
     <Compile Include="Excel.Tests.fs" />
     <None Include="OptionValues.json" />
@@ -93,16 +87,6 @@
     <None Include="Test.App.config" />
     <None Include="BookTest.xls" />
     <None Include="packages.config" />
-    <Content Include="Graph1.dgml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <None Include="BorderGatewayProtocol.dgml" />
-    <Content Include="Turnstile.dgml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Binary.dgml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Data.TypeProviders, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -110,9 +94,6 @@
     </Reference>
     <Reference Include="FSharpx.TypeProviders">
       <HintPath>..\..\src\FSharpx.TypeProviders\bin\Debug\FSharpx.TypeProviders.dll</HintPath>
-    </Reference>
-    <Reference Include="FSharpx.TypeProviders.Graph">
-      <HintPath>..\..\src\FSharpx.TypeProviders.Graph\bin\Debug\FSharpx.TypeProviders.Graph.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core">

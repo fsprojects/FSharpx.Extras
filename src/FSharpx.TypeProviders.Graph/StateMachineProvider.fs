@@ -2,7 +2,6 @@
 module FSharpx.TypeProviders.StateMachineProvider
 
 open FSharpx.StateMachine
-open FSharpx.TypeProviders.Settings
 open FSharpx.TypeProviders.DSL
 open Samples.FSharp.ProvidedTypes
 open Microsoft.FSharp.Core.CompilerServices
@@ -115,7 +114,7 @@ type public GraphProvider(cfg:TypeProviderConfig) as this =
     inherit TypeProviderForNamespaces()
 
     do this.AddNamespace(
-        Settings.rootNamespace, 
+        rootNamespace, 
         [stateMachineTy this true cfg
          stateMachineTy this false cfg
          graph this cfg])

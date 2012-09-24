@@ -1,9 +1,8 @@
-﻿module FSharpx.TypeProviders.Tests.StateNetworkTests
+﻿module FSharpx.TypeProviders.Graph.Tests.StateNetworkTests
 
 open NUnit.Framework
 open FSharpx
 open FSharpx.TypeProviders
-open FsUnit
 
 type Graph1 = Graph<"Graph1.dgml", "State0">
 
