@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="ProvidedTypes.fsi" />
+    <Compile Include="ProvidedTypes.fs" />
     <Compile Include="..\FSharpx.Core\Prelude.fs">
       <Link>Prelude.fs</Link>
     </Compile>
@@ -62,7 +63,6 @@
     <Compile Include="..\FSharpx.Core\ComputationExpressions\Monad.fs">
       <Link>Monad.fs</Link>
     </Compile>
-    <Compile Include="ProvidedTypes.fs" />
     <Compile Include="TypeProviderDSL.fs" />
     <Compile Include="Settings.fs" />
     <Compile Include="Inference.fs" />
