@@ -2417,3 +2417,69 @@ let ``tryUpdate elements length 4``() =
     && (a1 = "a") && (b1 = "zz") && (c1 = "c") && (d1 = "d") 
     && (a2 = "a") && (b2 = "b") && (c2 = "zz") && (d2 = "d") 
     && (a3 = "a") && (b3 = "b") && (c3 = "c") && (d3 = "zz")) |> should equal true
+
+[<Test>]
+let ``tryUncons on empty``() =
+    let q = empty 2
+    (tryUncons q = None) |> should equal true
+
+[<Test>]
+let ``tryUncons on q``() =
+    let q = ofSeq ["a";"b";"c";"d"]
+    let x, xs = (tryUncons q).Value 
+    x |> should equal "a"
+
+[<Test>]
+let ``tryUnsnoc on empty``() =
+    let q = empty 2
+    (tryUnsnoc q = None) |> should equal true
+
+[<Test>]
+let ``tryUnsnoc on q``() =
+    let q = ofSeq ["a";"b";"c";"d"]
+    let xs, x = (tryUnsnoc q).Value 
+    x |> should equal "d"
+
+[<Test>]
+let ``tryGetHead on empty``() =
+    let q = empty 2
+    (tryGetHead q = None) |> should equal true
+
+[<Test>]
+let ``tryGetHead on q``() =
+    let q = ofSeq ["a";"b";"c";"d"]
+    (tryGetHead q).Value |> should equal "a"
+
+[<Test>]
+let ``tryGetInit on empty``() =
+    let q = empty 2
+    (tryGetInit q = None) |> should equal true
+
+[<Test>]
+let ``tryGetInit on q``() =
+    let q = ofSeq ["a";"b";"c";"d"]
+//    (tryGetInit q).Value |> last |> should equal "c"
+    let x = (tryGetInit q).Value 
+    let x2 = x|> last 
+    x2 |> should equal "c"
+
+[<Test>]
+let ``tryGetLast on empty``() =
+    let q = empty 2
+    (tryGetLast q = None) |> should equal true
+
+[<Test>]
+let ``tryGetLast on q``() =
+    let q = ofSeq ["a";"b";"c";"d"]
+    (tryGetLast q).Value |> should equal "d"
+
+
+[<Test>]
+let ``tryGetTail on empty``() =
+    let q = empty 2
+    (tryGetTail q = None) |> should equal true
+
+[<Test>]
+let ``tryGetTail on q``() =
+    let q = ofSeq ["a";"b";"c";"d"]
+    (tryGetTail q).Value |> head |> should equal "b"

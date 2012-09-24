@@ -2,37 +2,95 @@
 // original implementation taken from http://lepensemoi.free.fr/index.php/2010/02/11/alternative-binary-random-access-list
 //J.F. added remove, trys, length, append, rev
 
+namespace FSharpx.DataStructures
 
-module FSharpx.DataStructures.AltBinaryRandomAccessList
+open System.Collections
+open System.Collections.Generic
 
-type AltBinRndAccList<'a> =
+type AltBinRndAccList<'a> = 
     | Nil
     | Zero of AltBinRndAccList<'a * 'a>
     | One of 'a * AltBinRndAccList<'a * 'a>
-    //polymorphic recursion cannot be achieved through let-bound functions
-    //hence we use static member methods
-    static member cons (x : 'a) : AltBinRndAccList<'a> -> AltBinRndAccList<'a> = function
-        | Nil -> One (x, Nil)
-        | Zero ps -> One (x, ps)
-        | One(y, ps) ->  Zero(AltBinRndAccList.cons (x,y) ps)
+    
+    with
+    interface IRandomAccessList<'a> with
 
-    static member uncons : AltBinRndAccList<'a> -> 'a * AltBinRndAccList<'a> = function
-        | Nil -> raise Exceptions.Empty
-        | One(x, Nil) -> (x, Nil)
-        | One(x, ps) -> (x, Zero ps)
-        | Zero ps ->
-              let (x,y), ps' = AltBinRndAccList.uncons ps
-              x, (One (y, ps'))
+        member this.Cons (x : 'a) = AltBinRndAccList.cons x this :> _
 
-    static member tryUncons : AltBinRndAccList<'a> -> ('a * AltBinRndAccList<'a>) option = function
-        | Nil -> None
-        | One(x, Nil) -> Some(x, Nil)
-        | One(x, ps) -> Some(x, Zero ps)
-        | Zero ps ->
-              let (x,y), ps' = AltBinRndAccList.uncons ps
-              Some(x, (One (y, ps')))
+        member this.Head() =
+            let x, _ = AltBinRndAccList.uncons this
+            x
 
-    static member lookup (i:int) : AltBinRndAccList<'a> -> 'a = function
+        member this.TryGetHead() =
+            match AltBinRndAccList.tryUncons this with
+            | None -> None
+            | Some( x, _) -> Some(x)
+
+        member this.IsEmpty() = AltBinRndAccList.isEmpty this
+
+        member this.Length() = AltBinRndAccList.length (0, 1, this)
+
+        member this.Lookup i = AltBinRndAccList.lookup i this
+
+        member this.TryLookup i = AltBinRndAccList.tryLookup i this
+
+        member this.Rev() = AltBinRndAccList.rev this :> _
+
+        member this.Tail() =
+            let _, xs = AltBinRndAccList.uncons this
+            xs :> _
+
+        member this.TryGetTail() =
+            match AltBinRndAccList.tryUncons this with
+            | None -> None
+            | Some( _, Nil) -> None
+            | Some( _, xs) -> Some(xs :> _)
+
+        member this.Uncons() =
+            let x, xs = AltBinRndAccList.uncons this
+            x, xs :> _
+
+        member this.TryUncons() =
+            match AltBinRndAccList.tryUncons this with
+            | None -> None
+            | Some(x, xs) -> Some(x, xs :> _)
+
+        member this.Update i y = AltBinRndAccList.fupdate ((fun x -> y), i, this) :> _
+        
+        member this.TryUpdate i y =
+            match AltBinRndAccList.ftryUpdate ((fun x -> y), i, this) with
+            | None -> None
+            | Some(x) -> Some(x :> _)
+
+        member this.GetEnumerator() = 
+            let e = seq {
+                match AltBinRndAccList.tryUncons this with
+                | None -> () 
+                | Some(x, xs) ->
+                    yield x 
+                    yield! xs}
+            e.GetEnumerator()
+
+        member this.GetEnumerator() = (this :> _ seq).GetEnumerator() :> IEnumerator
+            
+and AltBinRndAccList<'a> 
+
+    with
+
+    static member internal cons (x : 'a) : AltBinRndAccList<'a> -> AltBinRndAccList<'a> = function
+        | Nil ->  One (x, Nil) 
+        | Zero ps -> One (x, ps) 
+        | One(y, ps) ->  Zero(AltBinRndAccList.cons (x,y) ps) 
+             
+    static member internal isEmpty : AltBinRndAccList<'a> -> bool = function Nil -> true | _ -> false 
+
+    static member internal length : int * int * AltBinRndAccList<'a> -> int = function
+        | len, acc, Nil -> len
+        | len, acc, One(x, Nil) -> len + acc
+        | len, acc, One(x, ps) -> AltBinRndAccList.length ((len + acc), (2 * acc), ps)
+        | len, acc, Zero ps -> AltBinRndAccList.length (len, (2 * acc), ps)
+
+    static member internal lookup (i:int) : AltBinRndAccList<'a> -> 'a = function
         | Nil -> raise Exceptions.OutOfBounds
         | One(x, ps) ->
             if i = 0 then x else AltBinRndAccList.lookup (i-1) (Zero ps)
@@ -40,7 +98,7 @@ type AltBinRndAccList<'a> =
             let (x, y) = AltBinRndAccList.lookup (i/2) ps
             if i % 2 = 0 then x else y
 
-    static member tryLookup (i:int) : AltBinRndAccList<'a> -> 'a option = function
+    static member internal tryLookup (i:int) : AltBinRndAccList<'a> -> 'a option = function
         | Nil -> None
         | One(x, ps) ->
             if i = 0 then Some(x) else AltBinRndAccList.tryLookup (i-1) (Zero ps)
@@ -49,33 +107,37 @@ type AltBinRndAccList<'a> =
             | None -> None
             | Some (x, y) -> if i % 2 = 0 then Some(x) else Some(y)
 
-    static member fupdate : ('a -> 'a) * int * AltBinRndAccList<'a> -> AltBinRndAccList<'a> = function
-        | f, i, Nil -> raise Exceptions.OutOfBounds
-        | f, 0, One(x, ps) -> One(f x, ps)
-        | f, i, One (x, ps) -> AltBinRndAccList.cons x (AltBinRndAccList.fupdate (f, i-1, Zero ps))
-        | f, i, Zero ps ->
-            let f' (x, y) = if i % 2= 0 then f x, y else x, f y
-            Zero(AltBinRndAccList.fupdate(f', i/2, ps))
+    static member internal ofSeq (s:seq<'a>) : AltBinRndAccList<'a> = 
+        if Seq.isEmpty s then Nil
+        else
+            let a = Array.ofSeq s
+            let rec loop (acc: AltBinRndAccList<'a>) dec (a': array<'a>) =
+                if dec < 0 then acc
+                else loop (AltBinRndAccList.cons a'.[dec] acc) (dec - 1) a'
+            loop Nil (a.Length - 1) a
 
-    static member tryfUpdate : ('a -> 'a) * int * AltBinRndAccList<'a> -> AltBinRndAccList<'a> option = function
-        | f, i, Nil -> None
-        | f, 0, One(x, ps) -> Some(One(f x, ps))
-        | f, i, One (x, ps) -> 
-            match (AltBinRndAccList.tryfUpdate (f, i-1, Zero ps)) with
-            | None -> None
-            | Some(ps') -> Some(AltBinRndAccList.cons x ps')
-        | f, i, Zero ps ->
-            let f' (x, y) = if i % 2= 0 then f x, y else x, f y
-            match (AltBinRndAccList.tryfUpdate(f', i/2, ps)) with
-            | None -> None
-            | Some(ps') -> Some(Zero(ps'))
+    static member internal uncons : AltBinRndAccList<'a> -> 'a * AltBinRndAccList<'a> = function
+        | Nil -> raise Exceptions.Empty
+        | One(x, Nil) -> (x, Nil)
+        | One(x, ps) -> (x, Zero ps)
+        | Zero ps ->
+              let (x,y), ps' = AltBinRndAccList.uncons ps
+              x, (One (y, ps'))
 
-    static member internal remove : int * array<'a> * int * AltBinRndAccList<'a> -> int * AltBinRndAccList<'a> = function
+    static member internal tryUncons : AltBinRndAccList<'a> -> ('a * AltBinRndAccList<'a>) option = function
+        | Nil -> None
+        | One(x, Nil) -> Some(x, Nil)
+        | One(x, ps) -> Some(x, Zero ps)
+        | Zero ps ->
+              let (x,y), ps' = AltBinRndAccList.uncons ps
+              Some(x, (One (y, ps')))
+
+    static member internal fremove : int * array<'a> * int * AltBinRndAccList<'a> -> int * AltBinRndAccList<'a> = function
         | i, _, _, Nil -> raise Exceptions.OutOfBounds
         | 0, _, aIdx, One(x, ps) -> aIdx, Zero(ps)
         | i, a, aIdx, One (x, ps) -> 
             Array.set a aIdx x
-            AltBinRndAccList.remove (i-1, a, (aIdx+1), Zero ps)
+            AltBinRndAccList.fremove (i-1, a, (aIdx+1), Zero ps)
         | 0, _, aIdx, Zero ps -> 
             let (x,y), ps' = AltBinRndAccList.uncons ps
             aIdx, One(y, ps')
@@ -86,14 +148,14 @@ type AltBinRndAccList<'a> =
             let (x,y), ps' = AltBinRndAccList.uncons ps
             Array.set a aIdx x
             Array.set a (aIdx + 1) y
-            AltBinRndAccList.remove ((i-2), a, (aIdx + 2), Zero ps')
+            AltBinRndAccList.fremove ((i-2), a, (aIdx + 2), Zero ps')
 
-    static member internal tryRemove : int * array<'a> * int * AltBinRndAccList<'a> -> int * AltBinRndAccList<'a> option = function
+    static member internal ftryRemove : int * array<'a> * int * AltBinRndAccList<'a> -> int * AltBinRndAccList<'a> option = function
         | i, _, _, Nil -> 0, None
         | 0, _, aIdx, One(x, ps) -> aIdx, Some(Zero(ps))
         | i, a, aIdx, One (x, ps) -> 
             Array.set a aIdx x
-            AltBinRndAccList.tryRemove (i-1, a, (aIdx+1), Zero ps)
+            AltBinRndAccList.ftryRemove (i-1, a, (aIdx+1), Zero ps)
         | 0, _, aIdx, Zero ps -> 
             let (x,y), ps' = AltBinRndAccList.uncons ps
             aIdx, Some(One(y, ps'))
@@ -104,9 +166,9 @@ type AltBinRndAccList<'a> =
             let (x,y), ps' = AltBinRndAccList.uncons ps
             Array.set a aIdx x
             Array.set a (aIdx + 1) y
-            AltBinRndAccList.tryRemove ((i-2), a, (aIdx + 2), Zero ps')
+            AltBinRndAccList.ftryRemove ((i-2), a, (aIdx + 2), Zero ps')
 
-    static member rev : AltBinRndAccList<'a> -> AltBinRndAccList<'a> = function
+    static member internal rev : AltBinRndAccList<'a> -> AltBinRndAccList<'a> = function
         | Nil -> Nil
         | xs -> 
             let rec loop xs' acc =
@@ -115,7 +177,28 @@ type AltBinRndAccList<'a> =
                 | Some(x, xs'') -> loop xs'' (AltBinRndAccList.cons x acc)
             loop xs Nil
 
-    static member append : AltBinRndAccList<'a> * AltBinRndAccList<'a> -> AltBinRndAccList<'a> = function
+    static member internal fupdate : ('a -> 'a) * int * AltBinRndAccList<'a> -> AltBinRndAccList<'a> = function
+        | f, i, Nil -> raise Exceptions.OutOfBounds
+        | f, 0, One(x, ps) -> One(f x, ps)
+        | f, i, One (x, ps) -> AltBinRndAccList.cons x (AltBinRndAccList.fupdate (f, i-1, Zero ps))
+        | f, i, Zero ps ->
+            let f' (x, y) = if i % 2= 0 then f x, y else x, f y
+            Zero(AltBinRndAccList.fupdate(f', i/2, ps))
+
+    static member internal ftryUpdate : ('a -> 'a) * int * AltBinRndAccList<'a> -> AltBinRndAccList<'a> option = function
+        | f, i, Nil -> None
+        | f, 0, One(x, ps) -> Some(One(f x, ps))
+        | f, i, One (x, ps) -> 
+            match (AltBinRndAccList.ftryUpdate (f, i-1, Zero ps)) with
+            | None -> None
+            | Some(ps') -> Some(AltBinRndAccList.cons x ps')
+        | f, i, Zero ps ->
+            let f' (x, y) = if i % 2= 0 then f x, y else x, f y
+            match (AltBinRndAccList.ftryUpdate(f', i/2, ps)) with
+            | None -> None
+            | Some(ps') -> Some(Zero(ps'))
+
+    static member internal append : AltBinRndAccList<'a> * AltBinRndAccList<'a> -> AltBinRndAccList<'a> = function
         | Nil, Nil -> Nil
         | xs, Nil -> xs
         | Nil, ys -> ys
@@ -127,82 +210,160 @@ type AltBinRndAccList<'a> =
                 | Some(x, xs'') -> loop xs'' (AltBinRndAccList.cons x acc)
             loop xs' ys
 
-    static member length : int * int * AltBinRndAccList<'a> -> int = function
-        | len, acc, Nil -> len
-        | len, acc, One(x, Nil) -> len + acc
-        | len, acc, One(x, ps) -> AltBinRndAccList.length ((len + acc), (2 * acc), ps)
-        | len, acc, Zero ps -> AltBinRndAccList.length (len, (2 * acc), ps)
-               
-let empty = Nil
+    member this.Cons (x : 'a) = AltBinRndAccList.cons x this
 
-let isEmpty = function Nil -> true | _ -> false
+    member this.Head() =
+        let x, _ = AltBinRndAccList.uncons this
+        x
 
-let inline cons x xs = AltBinRndAccList.cons x xs
+    member this.TryGetHead() =
+        match AltBinRndAccList.tryUncons this with
+        | None -> None
+        | Some( x, _) -> Some(x)
 
-let inline uncons x = AltBinRndAccList.uncons x
-let inline tryUncons x = AltBinRndAccList.tryUncons x
+    member this.IsEmpty() = AltBinRndAccList.isEmpty this
 
-let head xs =
-    let x, _ = uncons xs
-    x
+    member this.Length() = AltBinRndAccList.length (0, 1, this)
 
-let tryGetHead xs =
-    match (tryUncons xs) with
-    | None -> None
-    | Some(x, _) -> Some(x)
+    member this.Lookup i = AltBinRndAccList.lookup i this
 
-let tail xs =
-    let _, xs' = uncons xs
-    xs'
+    member this.TryLookup i = AltBinRndAccList.tryLookup i this
 
-let tryGetTail xs =
-    match (tryUncons xs) with
-    | None -> None
-    | Some( _, Nil) -> None
-    | Some( _, xs') -> Some(xs')
-
-let rec lookup i xs = AltBinRndAccList.lookup i xs
-let rec tryLookup i xs = AltBinRndAccList.tryLookup i xs
-
-let inline length xs = AltBinRndAccList.length (0, 1, xs)
-let inline update i y xs = AltBinRndAccList.fupdate ((fun x -> y), i, xs)
-let inline tryUpdate i y xs = AltBinRndAccList.tryfUpdate ((fun x -> y), i, xs)
-let inline rev xs = AltBinRndAccList.rev xs
-let inline append xs ys = AltBinRndAccList.append (xs, ys)
-
-let remove i xs = 
-    if i = 0 then 
-        match (AltBinRndAccList.uncons xs) with
-        | _, Zero(Nil) -> Nil
-        | _, x -> x
-    else
-        let front = Array.create i (fst (AltBinRndAccList.uncons xs))
-        match (AltBinRndAccList.remove (i, front, 0, xs)) with
-        | _, Zero(Nil) -> Nil
-        | frontLen, x -> 
-            let rec loop i' (front':'a array) (back:AltBinRndAccList<'a>) =
-                match i' with
+    member this.Remove i = 
+        if i = 0 then 
+            match (AltBinRndAccList.uncons this) with
+            | _, Zero(Nil) -> Nil
+            | _, x -> x
+        else
+            let front = Array.create i (fst (AltBinRndAccList.uncons this))
+            match (AltBinRndAccList.fremove (i, front, 0, this)) with
+            | _, Zero(Nil) -> Nil
+            | frontLen, x -> 
+                let rec loop i' (front':'a array) (back:AltBinRndAccList<'a>) =
+                    match i' with
                     
-                | i'' when i'' > -1 -> loop (i''- 1) front' ( AltBinRndAccList.cons front'.[i''] back)
-                | i'' -> back
+                    | i'' when i'' > -1 -> loop (i''- 1) front' ( AltBinRndAccList.cons front'.[i''] back)
+                    | i'' -> back
                         
-            loop (frontLen - 1) front x
+                loop (frontLen - 1) front x
 
-let tryRemove i xs = 
-    if i = 0 then 
-        match (AltBinRndAccList.uncons xs) with
-        | _, Zero(Nil) -> Some(Nil)
-        | _, x -> Some(x)
-    else
-        let front = Array.create i (fst (AltBinRndAccList.uncons xs))
-        match (AltBinRndAccList.tryRemove (i, front, 0, xs)) with
-        | _, None -> None
-        | _, Some(Zero(Nil)) -> Some(Nil)
-        | frontLen, Some(x) -> 
-            let rec loop i' (front':'a array) (back:AltBinRndAccList<'a>) =
-                match i' with
+    member this.TryRemove i = 
+        if i = 0 then 
+            match (AltBinRndAccList.uncons this) with
+            | _, Zero(Nil) -> Some(Nil)
+            | _, x -> Some(x)
+        else
+            let front = Array.create i (fst (AltBinRndAccList.uncons this))
+            match (AltBinRndAccList.ftryRemove (i, front, 0, this)) with
+            | _, None -> None
+            | _, Some(Zero(Nil)) -> Some(Nil)
+            | frontLen, Some(x) -> 
+                let rec loop i' (front':'a array) (back:AltBinRndAccList<'a>) =
+                    match i' with
                     
-                | i'' when i'' > -1 -> loop (i''- 1) front' ( AltBinRndAccList.cons front'.[i''] back)
-                | i'' -> Some(back)
+                    | i'' when i'' > -1 -> loop (i''- 1) front' ( AltBinRndAccList.cons front'.[i''] back)
+                    | i'' -> Some(back)
                         
-            loop (frontLen - 1) front x
+                loop (frontLen - 1) front x
+
+    member this.Rev() = AltBinRndAccList.rev this 
+
+    member this.Tail() =
+        let _, xs = AltBinRndAccList.uncons this
+        xs 
+
+    member this.TryGetTail() =
+        match AltBinRndAccList.tryUncons this with
+        | None -> None
+        | Some( _, Nil) -> None
+        | Some( _, xs) -> Some(xs)
+
+    member this.Uncons() =
+        let x, xs = AltBinRndAccList.uncons this
+        x, xs
+
+    member this.TryUncons() =
+        match AltBinRndAccList.tryUncons this with
+        | None -> None
+        | Some(x, xs) -> Some(x, xs)
+
+    member this.Update i y = AltBinRndAccList.fupdate ((fun x -> y), i, this)
+        
+    member this.TryUpdate i y =
+        match AltBinRndAccList.ftryUpdate ((fun x -> y), i, this) with
+        | None -> None
+        | Some(x) -> Some(x)
+      
+      
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+ module AltBinaryRandomAccessList = 
+    //pattern discriminator
+
+    let (|Cons|Nil|) (l: AltBinRndAccList<'a>) = match l.TryUncons() with Some(a,b) -> Cons(a,b) | None -> Nil
+
+    ///returns random access list from elements of 2 random access lists concatenated 
+    let append xs ys = AltBinRndAccList.append (xs, ys)
+   
+     ///returns a new random access list with the element added to the beginning
+    let inline cons x (xs: AltBinRndAccList<'a>) = xs.Cons x   
+  
+    ///returns the first element
+    let head xs =
+        let x, _ = AltBinRndAccList.uncons xs
+        x
+
+     ///returns a empty random access list
+    let empty = Nil
+
+    ///returns option first element 
+    let tryGetHead xs =
+        match (AltBinRndAccList.tryUncons xs) with
+        | None -> None
+        | Some( x, _) -> Some(x)
+
+    ///returns true if the random access list has no elements
+    let inline isEmpty (xs: AltBinRndAccList<'a>) = xs.IsEmpty()
+
+    ///returns the count of elememts
+    let inline length (xs: AltBinRndAccList<'a>) = xs.Length() 
+
+    ///returns element by index
+    let rec lookup i xs = AltBinRndAccList.lookup i xs
+
+    ///returns option element by index
+    let rec tryLookup i xs = AltBinRndAccList.tryLookup i xs
+
+    ///returns random access list from the sequence
+    let ofSeq s = AltBinRndAccList.ofSeq s
+
+    ///returns random access list with element removed by index
+    let inline remove i (xs: AltBinRndAccList<'a>) = xs.Remove i 
+
+    ///returns option random access list with element removed by index
+    let inline tryRemove i (xs: AltBinRndAccList<'a>) = xs.TryRemove i
+
+    //returns random access list reversed
+    let inline rev (xs: AltBinRndAccList<'a>) = xs.Rev()
+
+    ///returns a new random access list of the elements trailing the first element
+    let tail xs =
+        let _, xs' = AltBinRndAccList.uncons xs
+        xs'
+
+    ///returns a option random access list of the elements trailing the first element
+    let tryGetTail xs =
+        match (AltBinRndAccList.tryUncons xs) with
+        | None -> None
+        | Some( _, xs') -> Some(xs')
+
+    ///returns the first element and tail
+    let inline uncons (xs: AltBinRndAccList<'a>) = xs.Uncons()
+
+    ///returns the option first element and tail
+    let inline tryUncons (xs: AltBinRndAccList<'a>) = xs.TryUncons()
+
+    ///returns random access list with element updated by index
+    let inline update i y (xs: AltBinRndAccList<'a>) = xs.Update i y
+
+    ///returns option random access list with element updated by index
+    let inline tryUpdate i y (xs: AltBinRndAccList<'a>) = xs.TryUpdate i y
