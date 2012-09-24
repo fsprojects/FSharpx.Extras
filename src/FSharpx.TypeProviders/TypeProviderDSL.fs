@@ -6,7 +6,6 @@ open Samples.FSharp.ProvidedTypes
 open System.Reflection
 open Microsoft.FSharp.Quotations
 open FSharpx.Strings
-open System.Xml.Linq
 open System.Collections.Generic
 open Microsoft.FSharp.Core.CompilerServices
 

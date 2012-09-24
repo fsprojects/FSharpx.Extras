@@ -55,6 +55,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Graph
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Documents", "src\FSharpx.TypeProviders.Documents\FSharpx.TypeProviders.Documents.fsproj", "{D8B350D6-2DD7-462D-B598-7DA663DC77F7}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Xaml", "src\FSharpx.TypeProviders.Xaml\FSharpx.TypeProviders.Xaml.fsproj", "{F4431F59-B9D3-4D3B-BF6E-3E29FCDCDA3C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		DataStructures|Any CPU = DataStructures|Any CPU
@@ -290,6 +292,21 @@ Global
 		{D8B350D6-2DD7-462D-B598-7DA663DC77F7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{D8B350D6-2DD7-462D-B598-7DA663DC77F7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{D8B350D6-2DD7-462D-B598-7DA663DC77F7}.Release|x86.ActiveCfg = Release|Any CPU
+		{F4431F59-B9D3-4D3B-BF6E-3E29FCDCDA3C}.DataStructures|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4431F59-B9D3-4D3B-BF6E-3E29FCDCDA3C}.DataStructures|Any CPU.Build.0 = Debug|Any CPU
+		{F4431F59-B9D3-4D3B-BF6E-3E29FCDCDA3C}.DataStructures|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F4431F59-B9D3-4D3B-BF6E-3E29FCDCDA3C}.DataStructures|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F4431F59-B9D3-4D3B-BF6E-3E29FCDCDA3C}.DataStructures|x86.ActiveCfg = Debug|Any CPU
+		{F4431F59-B9D3-4D3B-BF6E-3E29FCDCDA3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4431F59-B9D3-4D3B-BF6E-3E29FCDCDA3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4431F59-B9D3-4D3B-BF6E-3E29FCDCDA3C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F4431F59-B9D3-4D3B-BF6E-3E29FCDCDA3C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F4431F59-B9D3-4D3B-BF6E-3E29FCDCDA3C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F4431F59-B9D3-4D3B-BF6E-3E29FCDCDA3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4431F59-B9D3-4D3B-BF6E-3E29FCDCDA3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4431F59-B9D3-4D3B-BF6E-3E29FCDCDA3C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{F4431F59-B9D3-4D3B-BF6E-3E29FCDCDA3C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{F4431F59-B9D3-4D3B-BF6E-3E29FCDCDA3C}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

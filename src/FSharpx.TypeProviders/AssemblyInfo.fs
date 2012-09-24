@@ -26,9 +26,9 @@ This library is for the .NET platform implementing common type providers on top 
 
 [<assembly: AssemblyProduct ("FSharpx.TypeProviders")>]
 
-[<assembly: AssemblyVersion ("1.6.62")>]
+[<assembly: AssemblyVersion ("1.6.64")>]
 
-[<assembly: AssemblyFileVersion ("1.6.62")>]
+[<assembly: AssemblyFileVersion ("1.6.64")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 

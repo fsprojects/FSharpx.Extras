@@ -128,3 +128,12 @@ let internal xamlType (ownerType:TypeProviderForNamespaces)  (cfg:TypeProviderCo
         createTypeFromReader typeName null schema reader
     
     createStructuredParser thisAssembly rootNamespace "XAML" cfg ownerType createTypeFromFileName createTypeFromSchema
+
+[<TypeProvider>]
+type public XamlProvider(cfg:TypeProviderConfig) as this =
+    inherit TypeProviderForNamespaces()
+
+    do this.AddNamespace(DSL.rootNamespace,[xamlType this cfg])
+
+[<TypeProviderAssembly>]
+do ()

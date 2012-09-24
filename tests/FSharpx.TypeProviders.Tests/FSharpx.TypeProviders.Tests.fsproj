@@ -44,10 +44,7 @@
     <Compile Include="Regex.Tests.fs" />
     <Compile Include="Vector.Tests.fs" />
     <Compile Include="AppSettings.Tests.fs" />
-    <Compile Include="Xaml.Tests.fs" />
     <Compile Include="Excel.Tests.fs" />
-    <None Include="NamedRoot.xaml" />
-    <None Include="StackPanel.xaml" />
     <None Include="Test.App.config" />
     <None Include="BookTest.xls" />
     <None Include="packages.config" />
@@ -67,15 +64,12 @@
       <HintPath>..\..\packages\NUnit.2.6.0.12054\lib\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
 	     Other similar extension points exist, see Microsoft.Common.targets.

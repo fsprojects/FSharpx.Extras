@@ -14,7 +14,6 @@ type public FSharpxProvider(cfg:TypeProviderConfig) as this =
         [RegexTypeProvider.regexTy         
          FilesTypeProvider.typedFileSystem
          RegistryProvider.typedRegistry
-         XamlProvider.xamlType this cfg
          AppSettingsTypeProvider.typedAppSettings cfg
          ExcelProvider.typExcel cfg
          VectorTypeProvider.vectorTypeProvider])

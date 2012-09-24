@@ -69,7 +69,6 @@
     <Compile Include="RegistryProvider.fs" />
     <Compile Include="FileSystemProvider.fs" />
     <Compile Include="AppSettingsProvider.fs" />
-    <Compile Include="XamlProvider.fs" />
     <Compile Include="ExcelProvider.fs" />
     <Compile Include="VectorProvider.fs" />
     <Compile Include="NamespaceProvider.fs" />
@@ -85,17 +84,12 @@
       <HintPath>..\..\lib\FSharp\Net45\FSharp.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
-    <Reference Include="System.Windows.Presentation" />
-    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
 	     Other similar extension points exist, see Microsoft.Common.targets.
