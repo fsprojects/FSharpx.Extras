@@ -42,7 +42,6 @@
     <Compile Include="Registry.Tests.fs" />
     <Compile Include="FileSystem.Tests.fs" />
     <Compile Include="Regex.Tests.fs" />
-    <Compile Include="Vector.Tests.fs" />
     <Compile Include="AppSettings.Tests.fs" />
     <Compile Include="Excel.Tests.fs" />
     <None Include="Test.App.config" />
