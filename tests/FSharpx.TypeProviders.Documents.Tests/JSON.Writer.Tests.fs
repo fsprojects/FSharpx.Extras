@@ -2,7 +2,6 @@
 
 open NUnit.Framework
 open FSharpx
-open FSharpx.JSON
 open FsUnit
 
 type InlinedJSON = StructuredJSON<Schema="""{ "firstName": "Max" "lastName": "Mustermann" "age": 26 "isCool": true, "size":42.42 }""">

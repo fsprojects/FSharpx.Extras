@@ -11,11 +11,8 @@ type public FSharpxProvider(cfg:TypeProviderConfig) as this =
 
     do this.AddNamespace(
         DSL.rootNamespace, 
-        [RegexTypeProvider.regexTy
-         MiniCsvProvider.csvType this cfg
+        [RegexTypeProvider.regexTy         
          FilesTypeProvider.typedFileSystem
-         XmlTypeProvider.xmlType this cfg
-         JsonTypeProvider.jsonType this cfg
          RegistryProvider.typedRegistry
          XamlProvider.xamlType this cfg
          AppSettingsTypeProvider.typedAppSettings cfg

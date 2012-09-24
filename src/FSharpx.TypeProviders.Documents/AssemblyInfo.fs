@@ -1,4 +1,4 @@
-module FSharpx.TypeProviders.Graph.AssemblyInfo
+module FSharpx.TypeProviders.Documents.AssemblyInfo
 #nowarn "49" // uppercase argument names
 #nowarn "67" // this type test or downcast will always hold
 #nowarn "66" // tis upast is unnecessary - the types are identical
@@ -16,15 +16,15 @@ exception ReturnNoneException183c26a427ae489c8fd92ec21a0c9a59
 
 [<assembly: CLSCompliant (false)>]
 
-[<assembly: Guid ("D68BF790-E641-4A40-9BC2-CCD8870D8C4B")>]
+[<assembly: Guid ("39F68CD1-A6CC-4AF8-9734-3C2FE3E3B7D8")>]
 
-[<assembly: AssemblyTitle ("FSharpx.TypeProviders.Graph")>]
+[<assembly: AssemblyTitle ("FSharpx.TypeProviders.Documents")>]
 
 [<assembly: AssemblyDescription ("FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.
 
-This library is for the .NET platform implementing a state machine type provider.")>]
+This library is for the .NET platform implementing a type provider for JSON, XML and CSV documents.")>]
 
-[<assembly: AssemblyProduct ("FSharpx.TypeProviders.Graph")>]
+[<assembly: AssemblyProduct ("FSharpx.TypeProviders.Documents")>]
 
 [<assembly: AssemblyVersion ("1.6.62")>]
 

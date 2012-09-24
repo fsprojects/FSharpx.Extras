@@ -1,4 +1,4 @@
-﻿module FSharpx.TypeProviders.Tests.JSON.WikieSampleTests
+﻿module FSharpx.TypeProviders.Tests.JSON.WikiSampleTests
 
 open NUnit.Framework
 open FSharpx
