@@ -53,6 +53,9 @@
     <Compile Include="..\FSharpx.Core\Collections\Collections.fs">
       <Link>Collections.fs</Link>
     </Compile>
+    <Compile Include="..\FSharpx.Core\Collections\NonEmptyList.fs">
+      <Link>NonEmptyList.fs</Link>
+    </Compile>
     <Compile Include="..\FSharpx.Core\ComputationExpressions\Monoid.fs">
       <Link>Monoid.fs</Link>
     </Compile>

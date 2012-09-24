@@ -16,7 +16,6 @@ let homepage = "http://github.com/fsharp/fsharpx"
 // .NET Frameworks
 let net35 = "v3.5"
 let net40 = "v4.0"
-let net45 = "v4.5"
 
 // directories
 let buildDir = "./build/"
