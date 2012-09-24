@@ -47,7 +47,7 @@ namespace FSharpx.CSharpTests.ValidationExample {
     // Let's define the checks that *all* nightclubs make!
 
     class Club {
-        public static readonly Func<Person, FSharpChoice<Person, FSharpList<string>>>
+        public static readonly Func<Person, FSharpChoice<Person, NonEmptyList<string>>>
             CheckAge =
                 p => {
                     if (p.Age < 18)
@@ -57,7 +57,7 @@ namespace FSharpx.CSharpTests.ValidationExample {
                     return FSharpChoice.Ok(p);
                 };
 
-        public static readonly Func<Person, FSharpChoice<Person, FSharpList<string>>>
+        public static readonly Func<Person, FSharpChoice<Person, NonEmptyList<string>>>
             CheckClothes =
                 p => {
                     if (p.Gender == Gender.Male && !p.Clothes.Contains("Tie"))
@@ -67,7 +67,7 @@ namespace FSharpx.CSharpTests.ValidationExample {
                     return FSharpChoice.Ok(p);
                 };
 
-        public static readonly Func<Person, FSharpChoice<Person, FSharpList<string>>> 
+        public static readonly Func<Person, FSharpChoice<Person, NonEmptyList<string>>> 
             CheckSobriety =
                 p => {
                     if (new[] { Sobriety.Drunk, Sobriety.Paralytic, Sobriety.Unconscious }.Contains(p.Sobriety))
@@ -80,7 +80,7 @@ namespace FSharpx.CSharpTests.ValidationExample {
 
     class ClubbedToDeath {
         // PERFORM THE CHECKS USING Monadic SUGAR (LINQ)
-        public static FSharpChoice<decimal, FSharpList<string>> CostToEnter(Person p) {
+        public static FSharpChoice<decimal, NonEmptyList<string>> CostToEnter(Person p) {
             return from a in Club.CheckAge(p)
                    from b in Club.CheckClothes(a)
                    from c in Club.CheckSobriety(b)
@@ -163,7 +163,7 @@ namespace FSharpx.CSharpTests.ValidationExample {
     class ClubTropicana {
         //PERFORM THE CHECKS USING applicative functors, accumulating failure via a monoid
         // using LINQ sugar
-        public static FSharpChoice<decimal, FSharpList<string>> CostToEnter(Person p) {
+        public static FSharpChoice<decimal, NonEmptyList<string>> CostToEnter(Person p) {
             return from c in Club.CheckAge(p)
                    join x in Club.CheckClothes(p) on 1 equals 1
                    join y in Club.CheckSobriety(p) on 1 equals 1
@@ -175,7 +175,7 @@ namespace FSharpx.CSharpTests.ValidationExample {
         static readonly Func<Person, Person, Person, decimal> CostByGender =
             (p, x, y) => p.Gender == Gender.Female ? 0m : 7.5m;
 
-        public static FSharpChoice<decimal, FSharpList<string>> CostToEnter2(Person p) {
+        public static FSharpChoice<decimal, NonEmptyList<string>> CostToEnter2(Person p) {
             return CostByGender.Curry().ReturnValidation()
                 .ApValidation(Club.CheckAge(p))
                 .ApValidation(Club.CheckClothes(p))
@@ -220,7 +220,7 @@ namespace FSharpx.CSharpTests.ValidationExample {
      */
 
     class GayBar {
-        public static readonly Func<Person, FSharpChoice<Person, FSharpList<string>>> 
+        public static readonly Func<Person, FSharpChoice<Person, NonEmptyList<string>>> 
             CheckGender =
                 p => {
                     if (p.Gender == Gender.Male)
@@ -228,7 +228,7 @@ namespace FSharpx.CSharpTests.ValidationExample {
                     return FSharpChoice.Error<Person>("Men only");
                 };
 
-        public static FSharpChoice<decimal, FSharpList<string>> CostToEnter(Person p) {
+        public static FSharpChoice<decimal, NonEmptyList<string>> CostToEnter(Person p) {
             return 
                 FSharpList.Create(Club.CheckAge, Club.CheckClothes, Club.CheckSobriety, CheckGender)
                     .SelectMValidation(check => check(p))

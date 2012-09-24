@@ -12,7 +12,7 @@ open NUnit.Framework
 let validator pred error value =
     if pred value
         then Choice1Of2 value
-        else Choice2Of2 [error]
+        else Choice2Of2 (NonEmptyList.singleton error)
 
 let (==) = LanguagePrimitives.PhysicalEquality
 let inline (!=) a b = not (a == b)

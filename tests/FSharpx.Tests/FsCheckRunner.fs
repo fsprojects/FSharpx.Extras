@@ -18,3 +18,11 @@ let private nUnitConfig = { Config.Default with Runner = nUnitRunner }
 
 let fsCheck name testable =
     FsCheck.Check.One (name, nUnitConfig, testable)
+
+module Gen = 
+    let ap x f = 
+        gen {
+            let! x' = x
+            let! f' = f
+            return f' x'
+        }
