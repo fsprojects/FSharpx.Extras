@@ -2,7 +2,7 @@
 // Original Xml type provider
 // (c) Tomas Petricek - tomasP.net, Available under Apache 2.0 license.
 // ----------------------------------------------------------------------------
-module FSharpx.TypeProviders.XmlTypeProvider
+module internal FSharpx.TypeProviders.XmlTypeProvider
 
 open System
 open System.IO
@@ -80,7 +80,7 @@ let xmlType (ownerType:TypeProviderForNamespaces) cfg =
           ToStringExpr = fun args -> <@@ (%%args.[0]: TypedXDocument).Document.ToString() @@> }
         |> createParserType<TypedXDocument> typeName generateType            
         |+!> (provideMethod ("ToJson") [] typeof<IDocument> (fun args -> <@@ (%%args.[0]: TypedXDocument).Document.ToJson() @@>)
-                |> addXmlDoc "Gets the Json representation")
+                |> addMethodXmlDoc "Gets the Json representation")
     
     let createTypeFromFileName typeName = File.ReadAllText >> createTypeFromSchema typeName
 

@@ -10,7 +10,7 @@ open FSharpx.TypeProviders.Inference
 // Infers the structure of JSON file from data
 // ------------------------------------------------------------------------------------------------
 
-module JSONInference = 
+module internal JSONInference = 
   let rec provideElement name multi (childs:seq<IDocument>) = 
     CompoundProperty(name,multi,collectElements childs,collectProperties childs)
 

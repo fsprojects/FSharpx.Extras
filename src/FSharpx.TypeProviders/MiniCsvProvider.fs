@@ -2,7 +2,6 @@
 // This sample code is provided "as is" without warranty of any kind. 
 // We disclaim all warranties, either express or implied, including the 
 // warranties of merchantability and fitness for a particular purpose. 
-
 module FSharpx.TypeProviders.MiniCsvProvider
 
 open FSharpx.TypeProviders.Settings
@@ -23,7 +22,7 @@ type CsvFile(filename) =
     member __.Data = data
 
 // Create the main provided type
-let csvType ownerType (cfg:TypeProviderConfig) =
+let internal csvType ownerType (cfg:TypeProviderConfig) =
     erasedType<obj> thisAssembly rootNamespace "MinCsv"
     |> staticParameter "filename"
         (fun typeName fileName ->
@@ -59,7 +58,7 @@ let csvType ownerType (cfg:TypeProviderConfig) =
                                 fieldName 
                                 fieldType
                                 (fun args -> <@@ (%%args.[0]:float[]).[i] @@>)
-                              |> addDefinitionLocation 
+                              |> addPropertyDefinitionLocation 
                                     { Line = 1
                                       Column = header.Index + 1 
                                       FileName = fileName}))
@@ -70,11 +69,11 @@ let csvType ownerType (cfg:TypeProviderConfig) =
             |+!> (provideConstructor
                     [] 
                     (fun _ -> <@@ CsvFile(resolvedFileName) @@>)
-                |> addXmlDoc "Initializes a CsvFile instance")
+                |> addConstructorXmlDoc "Initializes a CsvFile instance")
             |+!> (provideConstructor
                     ["filename", typeof<string>] 
                     (fun args -> <@@ CsvFile(%%args.[0]) @@>)
-                |> addXmlDoc "Initializes a CsvFile instance from the given path.")
+                |> addConstructorXmlDoc "Initializes a CsvFile instance from the given path.")
             |+!> provideProperty
                     "Data"
                     (typedefof<seq<_>>.MakeGenericType rowType)

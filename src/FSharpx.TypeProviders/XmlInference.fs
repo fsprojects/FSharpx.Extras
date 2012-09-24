@@ -6,6 +6,7 @@ namespace FSharpx.TypeProviders
 
 open System
 open System.Xml.Linq
+open FSharpx.Strings
 open FSharpx.TypeProviders.DSL
 open System.Collections.Generic
 open FSharpx.TypeProviders.Inference
@@ -23,8 +24,7 @@ type TypedXDocument(document:XDocument) =
 // ------------------------------------------------------------------------------------------------
 // Infers the structure of XML file from data
 // ------------------------------------------------------------------------------------------------
-
-module XmlInference = 
+module internal XmlInference = 
   let rec provideElement name (elements:seq<XElement>) = 
     CompoundProperty(name,true,collectElements elements,collectAttributes elements)
 

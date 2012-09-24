@@ -1,5 +1,4 @@
-﻿
-module FSharpx.TypeProviders.ExcelProvider
+﻿module FSharpx.TypeProviders.ExcelProvider
 
 open System.IO
 open System
@@ -9,10 +8,7 @@ open Microsoft.Office.Interop
 open FSharpx.TypeProviders.Settings
 open System.Collections.Generic
 
-
-let ApplyMoveToRange (rg:Excel.Range) (move:Excel.XlDirection) = 
-      rg.Worksheet.Range(rg, rg.End(move))
-
+let ApplyMoveToRange (rg:Excel.Range) (move:Excel.XlDirection) = rg.Worksheet.Range(rg, rg.End(move))
 
 // Simple type wrapping Excel data
 type  ExcelFileInternal(filename, sheetorrangename) =
@@ -63,11 +59,11 @@ type internal ReflectiveBuilder =
             .MakeGenericMethod([|lType|])
             .Invoke(null, [|args|])
 
-type GlobalSingleton private () =
+type internal GlobalSingleton private () =
    static let mutable instance = Dictionary<_, _>()
    static member Instance = instance
 
-let memoize f =
+let internal memoize f =
       //let cache = Dictionary<_, _>()
       fun x ->
          if (GlobalSingleton.Instance).ContainsKey(x) then (GlobalSingleton.Instance).[x]
@@ -76,7 +72,7 @@ let memoize f =
               res
 
 
-let typExcel(cfg:TypeProviderConfig) =
+let internal typExcel(cfg:TypeProviderConfig) =
    // Create the main provided type
    let excTy = ProvidedTypeDefinition(System.Reflection.Assembly.GetExecutingAssembly(), rootNamespace, "ExcelFile", Some(typeof<obj>))
 
@@ -176,6 +172,3 @@ let typExcel(cfg:TypeProviderConfig) =
 
    // add the type to the namespace
    excTy
-
-[<TypeProviderAssembly>]
-do()

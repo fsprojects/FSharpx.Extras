@@ -1,4 +1,4 @@
-﻿module FSharpx.TypeProviders.JsonTypeProvider
+﻿module internal FSharpx.TypeProviders.JsonTypeProvider
 
 open System
 open System.IO
@@ -83,7 +83,7 @@ let jsonType (ownerType:TypeProviderForNamespaces) cfg =
           ToStringExpr = fun args -> <@@ (%%args.[0]: IDocument).ToString() @@> }
         |> createParserType<IDocument> typeName generateType            
         |+!> (provideMethod ("ToXml") [] typeof<XObject seq> (fun args -> <@@ (%%args.[0]: IDocument).ToXml() @@>)
-                |> addXmlDoc "Gets the Xml representation")
+                |> addMethodXmlDoc "Gets the Xml representation")
 
     let createTypeFromFileName typeName = File.ReadAllText >> createTypeFromSchema typeName
 

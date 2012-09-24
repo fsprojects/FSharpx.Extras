@@ -36,3 +36,7 @@ let ``Can simplify the type names``() =
     niceName "hello!123" =!= "Hello123"
     niceName "HelloWorld123_hello__@__omg" =!= "HelloWorld123HelloOmg"
     niceName "HKEY_CURRENT_USER" =!= "HKEY_CURRENT_USER"
+
+[<Test>]
+let ``Can infer floats``() = 
+    isFloat "42.42" |> should equal true

@@ -1,4 +1,4 @@
-﻿module FSharpx.TypeProviders.AppSettingsTypeProvider
+﻿module internal FSharpx.TypeProviders.AppSettingsTypeProvider
 
 open FSharpx
 open FSharpx.TypeProviders.DSL
@@ -34,8 +34,8 @@ let addTypedAppSettings (cfg:TypeProviderConfig) (configFileName:string) (tyDef:
                             | Double fieldValue -> literalField key fieldValue
                             | fieldValue -> literalField key fieldValue
                         field
-                        |> addXmlDoc (sprintf "Returns the value from %s with key %s" configFileName key)
-                        |> addDefinitionLocation (fileStart configFileName)))
+                        |> addLiteralXmlDoc (sprintf "Returns the value from %s with key %s" configFileName key)
+                        |> addLiteralDefinitionLocation (fileStart configFileName)))
     with 
     | exn -> tyDef
     

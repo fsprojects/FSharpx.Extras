@@ -1,4 +1,4 @@
-﻿module FSharpx.TypeProviders.RegistryProvider
+﻿module internal FSharpx.TypeProviders.RegistryProvider
 
 open Samples.FSharp.ProvidedTypes
 open FSharpx.TypeProviders.Settings
@@ -32,7 +32,7 @@ let rec createRegistryNode (registryKey:RegistryKey,subkeyName) () =
         |> addXmlDoc (sprintf "A strongly typed interface to '%s'" registryKey.Name)
         |+> (fun () ->
                 literalField "Path" registryKey.Name
-                    |> addXmlDoc (sprintf "Full path to '%s'" registryKey.Name)) 
+                    |> addLiteralXmlDoc (sprintf "Full path to '%s'" registryKey.Name)) 
         |++!> (
             registryKey
             |> getAccessibleValues

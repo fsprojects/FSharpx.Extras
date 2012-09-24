@@ -1,4 +1,4 @@
-﻿module FSharpx.TypeProviders.FilesTypeProvider
+﻿module internal FSharpx.TypeProviders.FilesTypeProvider
 
 // originally from https://gist.github.com/1241061
 
@@ -15,7 +15,7 @@ let rec annotateAsFileSystemInfo (fileSystemInfo:FileSystemInfo) (ownerTy:Provid
                 |> hideOldMethods
                 |+> (fun () ->
                         literalField "Path" fileSystemInfo.FullName
-                         |> addXmlDoc (sprintf "Full path to '%s'" fileSystemInfo.FullName))
+                         |> addLiteralXmlDoc (sprintf "Full path to '%s'" fileSystemInfo.FullName))
         
         match fileSystemInfo with
         | :? DirectoryInfo as dir ->

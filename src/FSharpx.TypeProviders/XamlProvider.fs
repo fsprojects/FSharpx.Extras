@@ -30,19 +30,19 @@ type XamlFile(root:FrameworkElement) =
 
     member this.Root = root
 
-type XamlNode =
+type internal XamlNode =
     { Position: FilePosition
       IsRoot: bool
       Name: string
       NodeType : Type }
 
-let posOfReader filename (xaml:XmlReader) = 
+let internal posOfReader filename (xaml:XmlReader) = 
     let lineInfo = xaml :> obj :?> IXmlLineInfo
     { Line = lineInfo.LineNumber
       Column = lineInfo.LinePosition
       FileName = filename }
 
-let createXamlNode filename isRoot (xaml:XmlReader) =
+let internal createXamlNode filename isRoot (xaml:XmlReader) =
     let pos = posOfReader filename xaml
     try
         let typeName = xaml.Name
@@ -73,7 +73,7 @@ let createXamlNode filename isRoot (xaml:XmlReader) =
     with
     | :? XmlException -> failwithf "Error near %A" pos
 
-let readXamlFile filename (xaml:XmlReader) =    
+let internal readXamlFile filename (xaml:XmlReader) =    
     seq {
         let isRoot = ref true
         while xaml.Read() do
@@ -90,7 +90,7 @@ let readXamlFile filename (xaml:XmlReader) =
 let createXmlReader(textReader:TextReader) =
     XmlReader.Create(textReader, XmlReaderSettings(IgnoreProcessingInstructions = true, IgnoreWhitespace = true))
 
-let createTypeFromReader typeName fileName schema (reader: TextReader) =
+let internal createTypeFromReader typeName fileName schema (reader: TextReader) =
     let elements = 
         reader
         |> createXmlReader 
@@ -109,17 +109,17 @@ let createTypeFromReader typeName fileName schema (reader: TextReader) =
         |+!> (provideConstructor
                 [] 
                 (fun args -> <@@ XamlFile(XamlReader.Parse(schema) :?> FrameworkElement) @@>)
-                |> addXmlDoc (sprintf "Initializes typed access to %s" fileName)
-                |> addDefinitionLocation root.Position)
+                |> addConstructorXmlDoc (sprintf "Initializes typed access to %s" fileName)
+                |> addConstructorDefinitionLocation root.Position)
     |++!> (
         elements
         |> Seq.map (fun node ->
              provideProperty node.Name node.NodeType (accessExpr node)
-             |> addXmlDoc (sprintf "Gets the %s element" node.Name)
-             |> addDefinitionLocation node.Position))   
+             |> addPropertyXmlDoc (sprintf "Gets the %s element" node.Name)
+             |> addPropertyDefinitionLocation node.Position))   
 
 /// Infer schema from the loaded data and generate type with properties     
-let xamlType (ownerType:TypeProviderForNamespaces)  (cfg:TypeProviderConfig) =
+let internal xamlType (ownerType:TypeProviderForNamespaces)  (cfg:TypeProviderConfig) =
     let createTypeFromFileName typeName (fileName:string) =        
         use reader = new StreamReader(fileName)
         createTypeFromReader typeName fileName (File.ReadAllText fileName) reader

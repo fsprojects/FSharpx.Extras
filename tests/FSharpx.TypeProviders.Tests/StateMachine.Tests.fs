@@ -42,11 +42,11 @@ let ``Executes the transition functions``() =
     let entered2 = ref false
     let left2 = ref false
 
-    let trans1 = { new StateMachineProvider.IState with
+    let trans1 = { new StateMachine.IState with
                             member this.EnterFunction() = entered1 := true
                             member this.ExitFunction() = left1 := true }
 
-    let trans2 = { new StateMachineProvider.IState with
+    let trans2 = { new StateMachine.IState with
                             member this.EnterFunction() = entered2 := true
                             member this.ExitFunction() = left2 := true }
 

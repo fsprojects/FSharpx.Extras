@@ -1,6 +1,5 @@
-﻿// This typeprovider is originally from the FSharp preview samples
-
-module FSharpx.TypeProviders.RegexTypeProvider
+﻿/// This typeprovider is originally from the FSharp preview samples
+module internal FSharpx.TypeProviders.RegexTypeProvider
 
 open System.Reflection
 open Microsoft.FSharp.Core.CompilerServices
@@ -25,7 +24,7 @@ let regexTy =
                                 (if group <> "0" then group else "CompleteMatch")
                                 typeof<Group>
                                 (fun args -> <@@ (%%args.[0]:Match).Groups.[group] @@>)
-                                |> addXmlDoc(sprintf @"Gets the ""%s"" group from this match" group))
+                                |> addPropertyXmlDoc(sprintf @"Gets the ""%s"" group from this match" group))
                 
             let matchType =
                 runtimeType<Match> "MatchType"
@@ -41,16 +40,16 @@ let regexTy =
                         typeof<bool>
                         (fun args -> <@@ Regex.IsMatch(%%args.[0], pattern) @@>)
                     |> makeStatic
-                    |> addXmlDoc "Indicates whether the regular expression finds a match in the specified input string")
+                    |> addMethodXmlDoc "Indicates whether the regular expression finds a match in the specified input string")
                 |+!> matchType
                 |+!> (provideMethod 
                         "Match"
                         ["input", typeof<string>]
                         matchType
                         (fun args -> <@@ (%%args.[0]:Regex).Match(%%args.[1]) @@>)
-                    |> addXmlDoc "Searches the specified input string for the first occurence of this regular expression")
+                    |> addMethodXmlDoc "Searches the specified input string for the first occurence of this regular expression")
                 |+!> (provideConstructor
                         [] 
                         (fun args -> <@@ Regex(pattern) @@>)
-                    |> addXmlDoc "Initializes a regular expression instance")
+                    |> addConstructorXmlDoc "Initializes a regular expression instance")
             | _ -> failwith "unexpected parameter values")
