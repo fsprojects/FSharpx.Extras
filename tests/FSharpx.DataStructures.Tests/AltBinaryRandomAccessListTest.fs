@@ -81,8 +81,9 @@ let ``tryGetTail on empty should return None``() =
     empty |> tryGetTail |> should equal None
 
 [<Test>]
-let ``tryGetTail on len 1 should return None``() =
-    empty |> cons 1 |> tryGetTail |> should equal None
+let ``tryGetTail on len 1 should return Some empty``() =
+    let x = (empty |> cons 1 |> tryGetTail).Value
+    x |> isEmpty |> should equal true
 
 [<Test>]
 let ``tail on len 2 should return``() =
@@ -1091,3 +1092,15 @@ let ``length of 1 - 10 good``() =
     (((length len1) = 1) && ((length len2) = 2) && ((length len3) = 3) && ((length len4) = 4) 
     && ((length len5) = 5) && ((length len6) = 6) && ((length len7) = 7) && ((length len8) = 8) 
     && ((length len9) = 9) && ((length lena) = 10)) |> should equal true
+
+[<Test>]
+let ``ofSeq``() =
+    let x = ofSeq ["a";"b";"c";"d";"e";"f";"g";"h";"i";"j"]
+
+    (((x |> lookup 0) = "a") && ((x |> lookup 1) = "b") && ((x |> lookup 2) = "c") && ((x |> lookup 3) = "d") 
+    && ((x |> lookup 4) = "e") && ((x |> lookup 5) = "f") && ((x |> lookup 6) = "g") && ((x |> lookup 7) = "h")
+    && ((x |> lookup 8) = "i") && ((x |> lookup 9) = "j")) |> should equal true
+
+[<Test>]
+let ``IRandomAccessList cons works``() =
+    ((lena :> IRandomAccessList<'a>).Cons "zz") :?> AltBinRndAccList<'a> |> head |> should equal "zz"
