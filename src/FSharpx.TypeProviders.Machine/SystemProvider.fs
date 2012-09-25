@@ -6,13 +6,13 @@ open Samples.FSharp.ProvidedTypes
 open System.Text.RegularExpressions
 
 [<TypeProvider>]
-type public FSharpxProvider(cfg:TypeProviderConfig) as this =
+type public SystemProvider(cfg:TypeProviderConfig) as this =
     inherit TypeProviderForNamespaces()
 
     do this.AddNamespace(
         DSL.rootNamespace, 
-        [RegexTypeProvider.regexTy
-         AppSettingsTypeProvider.typedAppSettings cfg])
+        [FilesTypeProvider.typedFileSystem
+         RegistryProvider.typedRegistry])
 
 [<TypeProviderAssembly>]
 do ()

@@ -1,6 +1,5 @@
-﻿module internal FSharpx.TypeProviders.FilesTypeProvider
-
-// originally from https://gist.github.com/1241061
+﻿/// originally from https://gist.github.com/1241061
+module internal FSharpx.TypeProviders.FilesTypeProvider
 
 open Samples.FSharp.ProvidedTypes
 open FSharpx.TypeProviders.DSL

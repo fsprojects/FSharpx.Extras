@@ -6,7 +6,7 @@ open System.IO
 // properties
 let currentDate = System.DateTime.UtcNow
 let projectName = "FSharpx"
-let version = if isLocalBuild then "1.6.68" else buildVersion
+let version = if isLocalBuild then "1.6.69" else buildVersion
 let coreSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let projectSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let authors = ["Steffen Forkmann"; "Daniel Mohl"; "Tomas Petricek"; "Ryan Riley"; "Mauricio Scheffer"; "Phil Trelford" ]
@@ -30,7 +30,7 @@ let nugetDir package = sprintf "./nuget/%s/" package
 let nugetLibDir package = nugetDir package @@ "lib"
 let nugetDocsDir package = nugetDir package @@ "docs"
 
-let packages = ["Core"; "Http"; "Observable"; "TypeProviders"; "TypeProviders.Graph"; "TypeProviders.Documents"; "TypeProviders.Xaml"; "TypeProviders.Math"; "TypeProviders.Excel"]
+let packages = ["Core"; "Http"; "Observable"; "TypeProviders"; "TypeProviders.Graph"; "TypeProviders.Documents"; "TypeProviders.Xaml"; "TypeProviders.Math"; "TypeProviders.Excel"; "TypeProviders.Machine"]
 
 let projectDesc = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible."
 
@@ -43,6 +43,7 @@ let rec getPackageDesc = function
 | "TypeProviders.Xaml" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type provider for Xaml files."
 | "TypeProviders.Math" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type provider for vectors."
 | "TypeProviders.Excel" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a Excel type provider."
+| "TypeProviders.Machine" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing type providers for the file system and the registry."
 | _ -> projectDesc + "\r\n\r\nIt currently implements:\r\n\r\n* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n* Iteratee\r\n* Purely functional data structures: Queues, double-ended Queues, BottomUpMergeSort, RandomAccessList, Vector\r\n* Validation applicative functor\r\n* General functions like flip\r\n* Additional functions around collections\r\n* Functions to make C# - F# interop easier."
 
 // params
@@ -174,6 +175,15 @@ Target "AssemblyInfo" (fun _ ->
             AssemblyDescription = getPackageDesc "TypeProviders.Excel"
             Guid = "54AB8A7D-094D-49A7-AB18-AA34E388A43E"
             OutputFileName = "./src/FSharpx.TypeProviders.Excel/AssemblyInfo.fs" })
+
+    AssemblyInfo (fun p ->
+        {p with 
+            CodeLanguage = FSharp
+            AssemblyVersion = version
+            AssemblyTitle = "FSharpx.TypeProviders.Machine"
+            AssemblyDescription = getPackageDesc "TypeProviders.Machine"
+            Guid = "63B7CF90-901B-4809-ACBA-F6366B994677"
+            OutputFileName = "./src/FSharpx.TypeProviders.Machine/AssemblyInfo.fs" })
 )
 
 let buildAppTarget = TargetTemplate (fun frameworkVersion ->

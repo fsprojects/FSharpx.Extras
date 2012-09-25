@@ -62,8 +62,6 @@
     </Compile>
     <Compile Include="TypeProviderDSL.fs" />
     <Compile Include="RegexProvider.fs" />
-    <Compile Include="RegistryProvider.fs" />
-    <Compile Include="FileSystemProvider.fs" />
     <Compile Include="AppSettingsProvider.fs" />
     <Compile Include="NamespaceProvider.fs" />
   </ItemGroup>
