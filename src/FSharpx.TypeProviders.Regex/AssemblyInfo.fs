@@ -26,9 +26,9 @@ This library is for the .NET platform implementing a type providers for regular 
 
 [<assembly: AssemblyProduct ("FSharpx.TypeProviders.Regex")>]
 
-[<assembly: AssemblyVersion ("1.6.70")>]
+[<assembly: AssemblyVersion ("1.6.71")>]
 
-[<assembly: AssemblyFileVersion ("1.6.70")>]
+[<assembly: AssemblyFileVersion ("1.6.71")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 

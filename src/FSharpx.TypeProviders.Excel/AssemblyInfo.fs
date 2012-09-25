@@ -26,9 +26,9 @@ This library is for the .NET platform implementing a Excel type provider.")>]
 
 [<assembly: AssemblyProduct ("FSharpx.TypeProviders.Excel")>]
 
-[<assembly: AssemblyVersion ("1.6.70")>]
+[<assembly: AssemblyVersion ("1.6.71")>]
 
-[<assembly: AssemblyFileVersion ("1.6.70")>]
+[<assembly: AssemblyFileVersion ("1.6.71")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 
