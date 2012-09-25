@@ -48,9 +48,6 @@
     <Compile Include="..\FSharpx.Core\Strings.fs">
       <Link>Strings.fs</Link>
     </Compile>
-    <Compile Include="..\FSharpx.Core\JSON.fs">
-      <Link>JSON.fs</Link>
-    </Compile>
     <Compile Include="..\FSharpx.Core\Collections\Collections.fs">
       <Link>Collections.fs</Link>
     </Compile>
@@ -64,12 +61,10 @@
       <Link>Monad.fs</Link>
     </Compile>
     <Compile Include="TypeProviderDSL.fs" />
-    <Compile Include="Inference.fs" />
     <Compile Include="RegexProvider.fs" />
     <Compile Include="RegistryProvider.fs" />
     <Compile Include="FileSystemProvider.fs" />
     <Compile Include="AppSettingsProvider.fs" />
-    <Compile Include="ExcelProvider.fs" />
     <Compile Include="NamespaceProvider.fs" />
   </ItemGroup>
   <ItemGroup>
@@ -77,7 +72,6 @@
       <HintPath>..\..\lib\FSharp\Net45\FSharp.Data.TypeProviders.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c" />
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core">
       <HintPath>..\..\lib\FSharp\Net45\FSharp.Core.dll</HintPath>

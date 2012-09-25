@@ -14,8 +14,7 @@ type public FSharpxProvider(cfg:TypeProviderConfig) as this =
         [RegexTypeProvider.regexTy         
          FilesTypeProvider.typedFileSystem
          RegistryProvider.typedRegistry
-         AppSettingsTypeProvider.typedAppSettings cfg
-         ExcelProvider.typExcel cfg])
+         AppSettingsTypeProvider.typedAppSettings cfg])
 
 [<TypeProviderAssembly>]
 do ()

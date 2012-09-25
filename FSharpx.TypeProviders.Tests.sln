@@ -13,6 +13,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Xaml.
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Math.Tests", "tests\FSharpx.TypeProviders.Math.Tests\FSharpx.TypeProviders.Math.Tests.fsproj", "{BCCBD0E1-0F65-4FEB-A628-453A5373C79F}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Excel.Tests", "tests\FSharpx.TypeProviders.Excel.Tests\FSharpx.TypeProviders.Excel.Tests.fsproj", "{6739B948-5467-4E8F-AB32-43C11D9068BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{BCCBD0E1-0F65-4FEB-A628-453A5373C79F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCCBD0E1-0F65-4FEB-A628-453A5373C79F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCCBD0E1-0F65-4FEB-A628-453A5373C79F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6739B948-5467-4E8F-AB32-43C11D9068BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6739B948-5467-4E8F-AB32-43C11D9068BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6739B948-5467-4E8F-AB32-43C11D9068BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6739B948-5467-4E8F-AB32-43C11D9068BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -43,9 +43,7 @@
     <Compile Include="FileSystem.Tests.fs" />
     <Compile Include="Regex.Tests.fs" />
     <Compile Include="AppSettings.Tests.fs" />
-    <Compile Include="Excel.Tests.fs" />
     <None Include="Test.App.config" />
-    <None Include="BookTest.xls" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

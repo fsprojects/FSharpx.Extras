@@ -171,3 +171,12 @@ let internal typExcel(cfg:TypeProviderConfig) =
 
    // add the type to the namespace
    excTy
+
+[<TypeProvider>]
+type public ExcelProvider(cfg:TypeProviderConfig) as this =
+    inherit TypeProviderForNamespaces()
+
+    do this.AddNamespace(DSL.rootNamespace,[typExcel cfg])
+
+[<TypeProviderAssembly>]
+do ()

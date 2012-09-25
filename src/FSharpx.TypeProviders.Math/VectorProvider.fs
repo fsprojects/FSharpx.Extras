@@ -67,3 +67,12 @@ let internal vectorTypeProvider =
                                         typeof<float>
                                         (fun args -> <@@ (%%args.[0]:float array).[i] @@>)
                                       |> addPropertyXmlDoc (sprintf @"Gets the %s axis." name))))
+
+[<TypeProvider>]
+type public MathProvider(cfg:TypeProviderConfig) as this =
+    inherit TypeProviderForNamespaces()
+
+    do this.AddNamespace(DSL.rootNamespace,[vectorTypeProvider])
+
+[<TypeProviderAssembly>]
+do ()
