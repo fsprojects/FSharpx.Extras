@@ -6,7 +6,7 @@ open System.IO
 // properties
 let currentDate = System.DateTime.UtcNow
 let projectName = "FSharpx"
-let version = if isLocalBuild then "1.6.71" else buildVersion
+let version = if isLocalBuild then "1.6.77" else buildVersion
 let coreSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let projectSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let authors = ["Steffen Forkmann"; "Daniel Mohl"; "Tomas Petricek"; "Ryan Riley"; "Mauricio Scheffer"; "Phil Trelford" ]
@@ -23,6 +23,7 @@ let packagesDir = "./packages/"
 let testDir = "./test/"
 let deployDir = "./deploy/"
 let docsDir = "./docs/"
+let nugetMainDir = "./nuget/"
 
 let targetPlatformDir = getTargetPlatformDir "v4.0.30319"
 
@@ -30,7 +31,8 @@ let nugetDir package = sprintf "./nuget/%s/" package
 let nugetLibDir package = nugetDir package @@ "lib"
 let nugetDocsDir package = nugetDir package @@ "docs"
 
-let packages = ["Core"; "Http"; "Observable"; "TypeProviders.Graph"; "TypeProviders.Documents"; "TypeProviders.Xaml"; "TypeProviders.Math"; "TypeProviders.Excel"; "TypeProviders.Machine"; "TypeProviders.Regex"; "TypeProviders.AppSettings";]
+let typeProvidersPackages = ["TypeProviders.Graph"; "TypeProviders.Documents"; "TypeProviders.Xaml"; "TypeProviders.Math"; "TypeProviders.Excel"; "TypeProviders.Machine"; "TypeProviders.Regex"; "TypeProviders.AppSettings"]
+let packages = ["Core"; "Http"; "Observable"; "TypeProviders"] @ typeProvidersPackages
 
 let projectDesc = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible."
 
@@ -71,9 +73,9 @@ let appReferences frameworkVersion =
     { (!+ "./src/**/*.*proj") with 
         Excludes = 
             [yield "./src/**/*.Silverlight.*proj"
-             if not (buildTypeProviders frameworkVersion) then 
-                yield "./src/**/*.TypeProviders.*proj"
+             if not (buildTypeProviders frameworkVersion) then                
                 yield "./src/**/*.TypeProviders.*.*proj"
+                yield "./src/**/*.TypeProviders.*proj"
              if frameworkVersion = net35 then 
                 yield "./src/**/*.Async.fsproj"
                 yield "./src/**/*.Http.fsproj" // TODO: why is that?
@@ -90,7 +92,7 @@ let testReferences frameworkVersion =
 
 // targets
 Target "Clean" (fun _ ->
-    CleanDirs [buildDir; testDir; deployDir; docsDir]
+    CleanDirs [buildDir; testDir; deployDir; docsDir; nugetMainDir]
 
     packages
     |> Seq.iter (fun x -> CleanDirs [nugetDir x; nugetLibDir x; nugetDocsDir x])
@@ -123,7 +125,7 @@ Target "AssemblyInfo" (fun _ ->
             AssemblyDescription = getPackageDesc "Observable"
             Guid = "2E802F54-9CD0-4B0A-B834-5C5979403B50"
             OutputFileName = "./src/FSharpx.Observable/AssemblyInfo.fs" })
-
+            
     AssemblyInfo (fun p ->
         {p with 
             CodeLanguage = FSharp
@@ -132,7 +134,7 @@ Target "AssemblyInfo" (fun _ ->
             AssemblyDescription = getPackageDesc "TypeProviders"
             Guid = "89B6AF94-507D-4BE0-98FA-A5124884DBA8"
             OutputFileName = "./src/FSharpx.TypeProviders/AssemblyInfo.fs" })
-            
+
     AssemblyInfo (fun p ->
         {p with 
             CodeLanguage = FSharp
@@ -249,8 +251,8 @@ let prepareNugetTarget = TargetTemplate (fun frameworkVersion ->
     packages
     |> Seq.iter (fun package ->
         let frameworkSubDir = nugetLibDir package @@ normalizeFrameworkVersion frameworkVersion
-        if (not <| package.StartsWith "TypeProviders") || buildTypeProviders frameworkVersion then
-            CleanDir frameworkSubDir 
+        if not <| package.StartsWith "TypeProviders" || buildTypeProviders frameworkVersion then
+            CleanDir frameworkSubDir
 
             [for ending in ["dll";"pdb";"xml"] ->
                 sprintf "%sFsharpx.%s.%s" buildDir package ending]
@@ -298,8 +300,11 @@ let nugetTarget = TargetTemplate (fun package ->
             ToolPath = nugetPath
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Dependencies =
-                if package = "Core" || package.StartsWith "TypeProviders" then p.Dependencies else
-                [projectName + ".Core", RequireExactly (NormalizeVersion version)]
+                if package = "TypeProviders" then
+                  typeProvidersPackages
+                  |> List.map (fun p -> "FSharpx." + p, RequireExactly (NormalizeVersion version))
+                elif package = "Core" || package.StartsWith "TypeProviders" then p.Dependencies else
+                  [projectName + ".Core", RequireExactly (NormalizeVersion version)]
             Publish = hasBuildParam "nugetkey" })
         "FSharpx.Core.nuspec"
 
@@ -337,7 +342,7 @@ Target "All" DoNothing
   ==> (generateTargets())
   ==> "GenerateDocumentation"
   ==> "ZipDocumentation"
-  ==> (generateNugetTargets())  
+  ==> (generateNugetTargets())
   ==> "DeployZip"
   ==> "Deploy"
 
