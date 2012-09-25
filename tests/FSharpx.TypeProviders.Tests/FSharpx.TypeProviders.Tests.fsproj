@@ -39,7 +39,6 @@
     <Compile Include="..\FSharpx.Tests\FsUnit.fs">
       <Link>FsUnit.fs</Link>
     </Compile>
-    <Compile Include="Regex.Tests.fs" />
     <Compile Include="AppSettings.Tests.fs" />
     <None Include="Test.App.config" />
     <None Include="packages.config" />

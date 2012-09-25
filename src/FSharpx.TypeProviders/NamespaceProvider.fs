@@ -11,8 +11,7 @@ type public FSharpxProvider(cfg:TypeProviderConfig) as this =
 
     do this.AddNamespace(
         DSL.rootNamespace, 
-        [RegexTypeProvider.regexTy
-         AppSettingsTypeProvider.typedAppSettings cfg])
+        [AppSettingsTypeProvider.typedAppSettings cfg])
 
 [<TypeProviderAssembly>]
 do ()

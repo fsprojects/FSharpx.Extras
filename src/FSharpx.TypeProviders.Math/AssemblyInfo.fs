@@ -26,9 +26,9 @@ This library is for the .NET platform implementing a type provider for vectors."
 
 [<assembly: AssemblyProduct ("FSharpx.TypeProviders.Math")>]
 
-[<assembly: AssemblyVersion ("1.6.69")>]
+[<assembly: AssemblyVersion ("1.6.70")>]
 
-[<assembly: AssemblyFileVersion ("1.6.69")>]
+[<assembly: AssemblyFileVersion ("1.6.70")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 

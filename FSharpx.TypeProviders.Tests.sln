@@ -17,6 +17,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Excel
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Machine.Tests", "tests\FSharpx.TypeProviders.Machine.Tests\FSharpx.TypeProviders.Machine.Tests.fsproj", "{5AA173A1-3BC9-49C0-8DF5-4B76A8E2A64E}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Regex.Tests", "tests\FSharpx.TypeProviders.Regex.Tests\FSharpx.TypeProviders.Regex.Tests.fsproj", "{57B631E3-9709-4785-B66A-18CA7413B300}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{5AA173A1-3BC9-49C0-8DF5-4B76A8E2A64E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AA173A1-3BC9-49C0-8DF5-4B76A8E2A64E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5AA173A1-3BC9-49C0-8DF5-4B76A8E2A64E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57B631E3-9709-4785-B66A-18CA7413B300}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57B631E3-9709-4785-B66A-18CA7413B300}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57B631E3-9709-4785-B66A-18CA7413B300}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57B631E3-9709-4785-B66A-18CA7413B300}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

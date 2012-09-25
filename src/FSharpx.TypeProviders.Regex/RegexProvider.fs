@@ -1,5 +1,5 @@
 ﻿/// This typeprovider is originally from the FSharp preview samples
-module internal FSharpx.TypeProviders.RegexTypeProvider
+module FSharpx.TypeProviders.RegexTypeProvider
 
 open System.Reflection
 open Microsoft.FSharp.Core.CompilerServices
@@ -7,7 +7,7 @@ open Samples.FSharp.ProvidedTypes
 open System.Text.RegularExpressions
 open FSharpx.TypeProviders.DSL
 
-let regexTy = 
+let internal regexTy = 
     erasedType<Regex> thisAssembly rootNamespace "Regex"
     |> staticParameters
         ["pattern", typeof<string>, None]
@@ -52,3 +52,12 @@ let regexTy =
                         (fun args -> <@@ Regex(pattern) @@>)
                     |> addConstructorXmlDoc "Initializes a regular expression instance")
             | _ -> failwith "unexpected parameter values")
+
+[<TypeProvider>]
+type public RegexProvider(cfg:TypeProviderConfig) as this =
+    inherit TypeProviderForNamespaces()
+
+    do this.AddNamespace(DSL.rootNamespace, [regexTy])
+
+[<TypeProviderAssembly>]
+do ()
