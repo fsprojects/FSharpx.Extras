@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Microsoft.FSharp.Collections;
+﻿using Microsoft.FSharp.Collections;
 using NUnit.Framework;
 
 
@@ -73,7 +71,7 @@ namespace FSharpx.CSharpTests {
         [Test]
         public void Cons() {
             var x = NonEmptyList.Singleton(1).Cons(2);
-            CollectionAssert.AreEqual(new[] { 1, 2 }, x);
+            CollectionAssert.AreEqual(new[] { 2, 1 }, x);
         }
 
         [Test]

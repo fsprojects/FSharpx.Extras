@@ -1,12 +1,11 @@
-﻿// Starting to implement a DSL on top of ProvidedTypes API
-module FSharpx.TypeProviders.DSL
+﻿/// Starting to implement a DSL on top of ProvidedTypes API
+module internal FSharpx.TypeProviders.DSL
 
 open System
 open Samples.FSharp.ProvidedTypes
 open System.Reflection
 open Microsoft.FSharp.Quotations
 open FSharpx.Strings
-open System.Xml.Linq
 open System.Collections.Generic
 open Microsoft.FSharp.Core.CompilerServices
 
@@ -21,14 +20,48 @@ let hideOldMethods (typeDef:ProvidedTypeDefinition) =
     typeDef.HideObjectMethods <- true
     typeDef
 
-let inline addXmlDoc xmlDoc (definition: ^a) = 
-    (^a : (member AddXmlDoc: string -> unit) (definition,xmlDoc))
+let addXmlDoc xmlDoc (definition: ProvidedTypeDefinition) = 
+    definition.AddXmlDoc xmlDoc
+    definition
+
+let addLiteralXmlDoc xmlDoc (definition: ProvidedLiteralField) = 
+    definition.AddXmlDoc xmlDoc
+    definition
+
+let addConstructorXmlDoc xmlDoc (definition: ProvidedConstructor) = 
+    definition.AddXmlDoc xmlDoc
+    definition
+
+let addMethodXmlDoc xmlDoc (definition: ProvidedMethod) =
+    definition.AddXmlDoc xmlDoc
+    definition
+
+let addPropertyXmlDoc xmlDoc (definition: ProvidedProperty) =
+    definition.AddXmlDoc xmlDoc
+    definition
+
+/// Add metadata defining the type's location in the referenced file
+let addDefinitionLocation (filePosition:FilePosition) (definition: ProvidedTypeDefinition) = 
+    if System.String.IsNullOrEmpty filePosition.FileName then definition else
+    definition.AddDefinitionLocation(filePosition.Line,filePosition.Column,filePosition.FileName)
+    definition
+
+/// Add metadata defining the literal's location in the referenced file
+let addLiteralDefinitionLocation (filePosition:FilePosition) (definition: ProvidedLiteralField) = 
+    if System.String.IsNullOrEmpty filePosition.FileName then definition else
+    definition.AddDefinitionLocation(filePosition.Line,filePosition.Column,filePosition.FileName)
     definition
 
 /// Add metadata defining the property's location in the referenced file
-let inline addDefinitionLocation (filePosition:FilePosition) (definition: ^a) = 
+let addPropertyDefinitionLocation (filePosition:FilePosition) (definition: ProvidedProperty) = 
     if System.String.IsNullOrEmpty filePosition.FileName then definition else
-    (^a : (member AddDefinitionLocation: int*int*string -> unit) (definition,filePosition.Line,filePosition.Column,filePosition.FileName))
+    definition.AddDefinitionLocation(filePosition.Line,filePosition.Column,filePosition.FileName)
+    definition
+
+/// Add metadata defining the constructor's location in the referenced file
+let addConstructorDefinitionLocation (filePosition:FilePosition) (definition: ProvidedConstructor) = 
+    if System.String.IsNullOrEmpty filePosition.FileName then definition else
+    definition.AddDefinitionLocation(filePosition.Line,filePosition.Column,filePosition.FileName)
     definition
 
 let runtimeType<'a> typeName = ProvidedTypeDefinition(typeName |> niceName, Some typeof<'a>)
@@ -155,3 +188,7 @@ let createStructuredParser thisAssembly rootNamespace typeName (cfg:TypeProvider
                 | [| :? string; :? string as schema |] when schema <> missingValue ->        
                     createTypeFromSchemaF typeName schema
                 | _ -> failwith "You have to specify a filename or inlined Schema")
+
+// Get the assembly and namespace used to house the provided types
+let thisAssembly = Assembly.GetExecutingAssembly()
+let rootNamespace = "FSharpx"

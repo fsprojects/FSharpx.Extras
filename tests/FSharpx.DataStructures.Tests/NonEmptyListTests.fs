@@ -6,13 +6,13 @@ open FsCheck
 open FsCheck.NUnit
 
 type NonEmptyListGen =
-    static member NonEmptyList =
+    static member NonEmptyList() =
         gen.Return NonEmptyList.create 
         |> Gen.ap Arb.generate
-        |> Gen.ap Arb.generate
+        |> Gen.ap (Arb.generate |> Gen.suchThat (fun l -> l.Length < 10))
         |> Arb.fromGen
 
-Arb.register<NonEmptyListGen>() |> ignore
+let registerGen = lazy (Arb.register<NonEmptyListGen>() |> ignore)
 
 let fsCheck t = fsCheck "" t
 
@@ -85,8 +85,9 @@ let ``monad right identity``() =
 
 [<Test>]
 let ``monad associativity``() =
-    let (>>=) m f = NonEmptyList.collect f m
-    fsCheck <| fun f g nel ->
+    registerGen.Force()
+    let inline (>>=) m f = NonEmptyList.collect f m
+    fsCheck <| fun (f: int -> int NonEmptyList) (g: int -> int NonEmptyList) (nel: int NonEmptyList) ->
         let n1 = (nel >>= f) >>= g
         let n2 = nel >>= (fun x -> f x >>= g)
         n1 = n2

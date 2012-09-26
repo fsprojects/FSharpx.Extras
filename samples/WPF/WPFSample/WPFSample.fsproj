@@ -44,8 +44,8 @@
     <None Include="Window.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="FSharpx.TypeProviders">
-      <HintPath>..\..\..\src\FSharpx.TypeProviders\bin\Debug\FSharpx.TypeProviders.dll</HintPath>
+    <Reference Include="FSharpx.TypeProviders.Xaml">
+      <HintPath>..\..\..\src\FSharpx.TypeProviders.Xaml\bin\Debug\FSharpx.TypeProviders.Xaml.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">

@@ -1,9 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 11
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Tests", "tests\FSharpx.TypeProviders.Tests\FSharpx.TypeProviders.Tests.fsproj", "{7B3C99B0-E1B6-4BD8-81BC-3F62300A363F}"
-EndProject
+# Visual Studio 2012
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "WPFSample", "samples\WPF\WPFSample\WPFSample.fsproj", "{4468E3E7-88CC-4B75-A17D-1FE46717A3AC}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Graph.Tests", "tests\FSharpx.TypeProviders.Graph.Tests\FSharpx.TypeProviders.Graph.Tests.fsproj", "{7A255035-C169-4745-92F2-51D4101EE03B}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Documents.Tests", "tests\FSharpx.TypeProviders.Documents.Tests\FSharpx.TypeProviders.Documents.Tests.fsproj", "{31806C6C-BE56-4850-A71C-21D26938AC35}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Xaml.Tests", "tests\FSharpx.TypeProviders.Xaml.Tests\FSharpx.TypeProviders.Xaml.Tests.fsproj", "{36B258D4-1AA4-4031-906A-228E649A3EC4}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Math.Tests", "tests\FSharpx.TypeProviders.Math.Tests\FSharpx.TypeProviders.Math.Tests.fsproj", "{BCCBD0E1-0F65-4FEB-A628-453A5373C79F}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Excel.Tests", "tests\FSharpx.TypeProviders.Excel.Tests\FSharpx.TypeProviders.Excel.Tests.fsproj", "{6739B948-5467-4E8F-AB32-43C11D9068BB}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Machine.Tests", "tests\FSharpx.TypeProviders.Machine.Tests\FSharpx.TypeProviders.Machine.Tests.fsproj", "{5AA173A1-3BC9-49C0-8DF5-4B76A8E2A64E}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Regex.Tests", "tests\FSharpx.TypeProviders.Regex.Tests\FSharpx.TypeProviders.Regex.Tests.fsproj", "{57B631E3-9709-4785-B66A-18CA7413B300}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.AppSettings.Tests", "tests\FSharpx.TypeProviders.AppSettings.Tests\FSharpx.TypeProviders.AppSettings.Tests.fsproj", "{9F86F2E8-F112-4B26-AD14-9BC017558423}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Freebase.Tests", "tests\FSharpx.TypeProviders.Freebase.Tests\FSharpx.TypeProviders.Freebase.Tests.fsproj", "{0B6753F4-E166-40FB-A877-67495095E795}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +31,42 @@ Global
 		{4468E3E7-88CC-4B75-A17D-1FE46717A3AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4468E3E7-88CC-4B75-A17D-1FE46717A3AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4468E3E7-88CC-4B75-A17D-1FE46717A3AC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7B3C99B0-E1B6-4BD8-81BC-3F62300A363F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7B3C99B0-E1B6-4BD8-81BC-3F62300A363F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7B3C99B0-E1B6-4BD8-81BC-3F62300A363F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7B3C99B0-E1B6-4BD8-81BC-3F62300A363F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A255035-C169-4745-92F2-51D4101EE03B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A255035-C169-4745-92F2-51D4101EE03B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A255035-C169-4745-92F2-51D4101EE03B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A255035-C169-4745-92F2-51D4101EE03B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31806C6C-BE56-4850-A71C-21D26938AC35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31806C6C-BE56-4850-A71C-21D26938AC35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31806C6C-BE56-4850-A71C-21D26938AC35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31806C6C-BE56-4850-A71C-21D26938AC35}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36B258D4-1AA4-4031-906A-228E649A3EC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36B258D4-1AA4-4031-906A-228E649A3EC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36B258D4-1AA4-4031-906A-228E649A3EC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36B258D4-1AA4-4031-906A-228E649A3EC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCCBD0E1-0F65-4FEB-A628-453A5373C79F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCCBD0E1-0F65-4FEB-A628-453A5373C79F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCCBD0E1-0F65-4FEB-A628-453A5373C79F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCCBD0E1-0F65-4FEB-A628-453A5373C79F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6739B948-5467-4E8F-AB32-43C11D9068BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6739B948-5467-4E8F-AB32-43C11D9068BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6739B948-5467-4E8F-AB32-43C11D9068BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6739B948-5467-4E8F-AB32-43C11D9068BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AA173A1-3BC9-49C0-8DF5-4B76A8E2A64E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AA173A1-3BC9-49C0-8DF5-4B76A8E2A64E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AA173A1-3BC9-49C0-8DF5-4B76A8E2A64E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AA173A1-3BC9-49C0-8DF5-4B76A8E2A64E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57B631E3-9709-4785-B66A-18CA7413B300}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57B631E3-9709-4785-B66A-18CA7413B300}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57B631E3-9709-4785-B66A-18CA7413B300}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57B631E3-9709-4785-B66A-18CA7413B300}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F86F2E8-F112-4B26-AD14-9BC017558423}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F86F2E8-F112-4B26-AD14-9BC017558423}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F86F2E8-F112-4B26-AD14-9BC017558423}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F86F2E8-F112-4B26-AD14-9BC017558423}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B6753F4-E166-40FB-A877-67495095E795}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B6753F4-E166-40FB-A877-67495095E795}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B6753F4-E166-40FB-A877-67495095E795}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B6753F4-E166-40FB-A877-67495095E795}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

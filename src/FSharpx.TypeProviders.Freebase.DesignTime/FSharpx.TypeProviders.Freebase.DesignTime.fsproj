@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>7259ec6a-fd19-4767-b514-116c0db973aa</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>FSharpx.TypeProviders.Freebase.DesignTime</RootNamespace>
+    <AssemblyName>FSharpx.TypeProviders.Freebase.DesignTime</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <Name>FSharpx.TypeProviders.Freebase.DesignTime</Name>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <Tailcalls>false</Tailcalls>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <WarningLevel>3</WarningLevel>
+    <DocumentationFile>bin\Debug\FSharpx.TypeProviders.Freebase.DesignTime.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <Tailcalls>true</Tailcalls>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <WarningLevel>3</WarningLevel>
+    <DocumentationFile>bin\Release\FSharpx.TypeProviders.Freebase.DesignTime.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FSharp.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="..\FSharpx.TypeProviders.Freebase\DefaultVersionAttribute.fs">
+      <Link>DefaultVersionAttribute.fs</Link>
+    </Compile>
+    <Compile Include="..\FSharpx.TypeProviders.Freebase\Cache.fsi">
+      <Link>Cache.fsi</Link>
+    </Compile>
+    <Compile Include="..\FSharpx.TypeProviders.Freebase\Cache.fs">
+      <Link>Cache.fs</Link>
+    </Compile>
+    <Compile Include="..\FSharpx.TypeProviders.Freebase\JsonParser.fs">
+      <Link>JsonParser.fs</Link>
+    </Compile>
+    <Compile Include="..\FSharpx.TypeProviders\ProvidedTypes.fsi">
+      <Link>ProvidedTypes.fsi</Link>
+    </Compile>
+    <Compile Include="..\FSharpx.TypeProviders\ProvidedTypes.fs">
+      <Link>ProvidedTypes.fs</Link>
+    </Compile>
+    <Compile Include="..\FSharpx.TypeProviders.Freebase\FreebaseRequests.fs">
+      <Link>FreebaseRequests.fs</Link>
+    </Compile>
+    <Compile Include="..\FSharpx.TypeProviders.Freebase\FreebaseSchema.fs">
+      <Link>FreebaseSchema.fs</Link>
+    </Compile>
+    <Compile Include="..\FSharpx.Core\Strings.fs">
+      <Link>Strings.fs</Link>
+    </Compile>
+    <Compile Include="FreebaseTypeProvider.fs" />
+  </ItemGroup>
+  <PropertyGroup>
+    <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets" Condition=" Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

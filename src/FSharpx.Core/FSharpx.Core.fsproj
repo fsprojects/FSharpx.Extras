@@ -39,6 +39,8 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Prelude.fs" />
     <Compile Include="Strings.fs" />
+    <Compile Include="JSON.fs" />
+    <Compile Include="StateMachine.fs" />
     <Compile Include="IO.fs" />
     <Compile Include="Collections\Collections.fs" />
     <Compile Include="Collections\ByteString.fs" />
@@ -46,6 +48,7 @@
     <Compile Include="Collections\NonEmptyList.fs" />
     <Compile Include="ComputationExpressions\Monoid.fs" />
     <Compile Include="ComputationExpressions\Monad.fs" />
+    <Compile Include="ComputationExpressions\DistributionMonad.fs" />
     <Compile Include="ComputationExpressions\Continuation.fs" />
     <Compile Include="ComputationExpressions\Enumerator.fs" />
     <Compile Include="DataStructures\Interfaces.fs" />
@@ -65,7 +68,7 @@
 	<Compile Include="DataStructures\SkewBinaryRandomAccessList.fs" />
 	<Compile Include="DataStructures\LeftistHeap.fs" />
     <Compile Include="DataStructures\BinaryTreeZipper.fs" />
-    <Compile Include="DataStructures\ListZipper.fs" />    
+    <Compile Include="DataStructures\ListZipper.fs" />
     <Compile Include="Lens.fs" />
     <Compile Include="CSharpCompat.fs" />
     <Compile Include="Regex.fs" />

@@ -1,6 +1,7 @@
 ﻿namespace FSharpx
 
 open System
+open System.Globalization
 
 module Strings =
     /// Checks whether the given text starts with the given prefix
@@ -22,12 +23,15 @@ module Strings =
     let inline isNullOrEmpty text = String.IsNullOrEmpty text
 
     /// Returns the pluralized version of a noun
-    let inline pluralize(name:string) =
-        if name.EndsWith("s") then name else
-        name + "s"
+    let inline pluralize(s:string) =
+        if s.Contains " of " || s.Contains " Of " || s.EndsWith "s" then s
+        elif s.EndsWith "ch" then s + "es"
+        elif s.EndsWith "y" then (s.TrimEnd 'y') + "ies"
+        else s + "s"
 
     /// Returns the singularized version of a noun
     let inline singularize(name:string) =
+        if name.EndsWith("ies") then name.Substring(0,name.Length-3) + "y" else
         if name.EndsWith("s") then name.Substring(0,name.Length-1) else
         name
 
@@ -79,3 +83,23 @@ module Strings =
                 if Seq.forall Char.IsLetterOrDigit sub then
                   yield sub.[0].ToString().ToUpper() + sub.ToLower().Substring(1) }
         |> String.concat ""
+
+    /// Checks whether the string is a boolean value
+    let isBool (s:string) =
+        let l = s.ToLower()
+        l = "true" || l = "false" || l = "yes" || l = "no"
+
+    /// Checks whether the string is an int
+    let isInt (s:string) = Int32.TryParse s |> fst
+
+    /// Checks whether the string is a float
+    let isFloat (s:string) =
+          Double.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture) 
+            |> fst
+
+    /// Checks whether all values of the sequence can be inferred to a special type
+    let inferType values =     
+        if Seq.forall isBool values then typeof<bool>
+        elif Seq.forall isInt values then typeof<int>
+        elif Seq.forall isFloat values then typeof<float>
+        else typeof<string>
