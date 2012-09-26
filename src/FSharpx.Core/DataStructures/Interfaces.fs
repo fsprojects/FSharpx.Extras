@@ -30,6 +30,9 @@ type IDeque<'a> =
     ///returns a new deque with the element added to the beginning
     abstract member Cons : 'a -> IDeque<'a>
 
+    ///returns the count of elememts
+    abstract member Count : unit -> int
+
     ///returns the first element
     abstract member Head : unit -> 'a
 
@@ -100,6 +103,9 @@ type IHeap<'a when 'a : comparison> =
     inherit System.Collections.IEnumerable
     inherit System.Collections.Generic.IEnumerable<'a>
 
+    ///returns the count of elememts
+    abstract member Count : unit -> int
+
     ///returns the min or max element
     abstract member Head : unit -> 'a
 
@@ -142,6 +148,9 @@ type IRandomAccessList<'a> =
     
     ///returns a new random access list with the element added to the beginning
     abstract member Cons : 'a -> IRandomAccessList<'a>
+
+    ///returns the count of elememts
+    abstract member Count : unit -> int
 
     ///returns the first element
     abstract member Head : unit -> 'a
