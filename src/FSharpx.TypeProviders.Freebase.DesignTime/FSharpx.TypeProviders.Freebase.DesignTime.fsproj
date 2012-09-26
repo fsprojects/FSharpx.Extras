@@ -66,6 +66,9 @@
     <Compile Include="..\FSharpx.TypeProviders.Freebase\FreebaseSchema.fs">
       <Link>FreebaseSchema.fs</Link>
     </Compile>
+    <Compile Include="..\FSharpx.Core\Strings.fs">
+      <Link>Strings.fs</Link>
+    </Compile>
     <Compile Include="FreebaseTypeProvider.fs" />
   </ItemGroup>
   <PropertyGroup>

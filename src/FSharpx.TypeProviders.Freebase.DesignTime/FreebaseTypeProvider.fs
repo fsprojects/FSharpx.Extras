@@ -145,14 +145,7 @@ type public FreebaseTypeProvider(config : TypeProviderConfig) as this =
         let theServiceTypesClass = ProvidedTypeDefinition("ServiceTypes",baseType=Some typeof<obj>,HideObjectMethods=true)
         theServiceTypesClass.AddXmlDoc (xmlDoc "Contains the types defined in the web data store")
 
-        let pluralize  (s:string) = 
-            if usePluralize then 
-                if s.Contains " of " || s.Contains " Of " || s.EndsWith "s" then s
-                elif s.EndsWith "ch" then s + "es"
-                elif s.EndsWith "y" then (s.TrimEnd 'y') + "ies"
-                else s + "s"
-            else
-                s
+        let pluralize = if usePluralize then FSharpx.Strings.pluralize else id
     
         let containerTypeNameForDomainTypes (fbDomainIdOpt:DomainId) = 
             match fbDomainIdOpt with 

@@ -12,6 +12,7 @@ let ``Can pluralize names``() =
    check "Authors" "Authors"
    check "Item" "Items"
    check "Items" "Items"
+   check "Entity" "Entities"
 
 [<Test>]
 let ``Can singularize names``() =
@@ -20,6 +21,7 @@ let ``Can singularize names``() =
    check "Authors" "Author"
    check "Item" "Item"
    check "Items" "Item"
+   check "Entities" "Entity"
 
 [<Test>]
 let ``Can simplify the type names``() = 
