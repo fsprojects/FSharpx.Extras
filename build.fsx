@@ -273,8 +273,9 @@ let prepareNugetTarget = TargetTemplate (fun frameworkVersion ->
         if not <| package.StartsWith "TypeProviders" || buildTypeProviders frameworkVersion then
             CleanDir frameworkSubDir
 
-            [for ending in ["dll";"pdb";"xml"] ->
-                sprintf "%sFsharpx.%s.%s" buildDir package ending]
+            [for ending in ["dll";"pdb";"xml"] do
+                yield sprintf "%sFsharpx.%s.%s" buildDir package ending
+                yield sprintf "%sFsharpx.%s.DesignTime.%s" buildDir package ending]
             |> Seq.filter (fun f -> File.Exists f)
             |> CopyTo frameworkSubDir)
 )

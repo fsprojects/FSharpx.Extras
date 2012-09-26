@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx.TypeProviders.Freebase</RootNamespace>
     <AssemblyName>FSharpx.TypeProviders.Freebase</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <Name>FSharpx.TypeProviders.Freebase</Name>
     <TargetFrameworkProfile />
   </PropertyGroup>

@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx.TypeProviders.Freebase.Tests</RootNamespace>
     <AssemblyName>FSharpx.TypeProviders.Freebase.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <Name>FSharpx.TypeProviders.Freebase.Tests</Name>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -47,8 +47,8 @@
     <Reference Include="FSharp.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>True</Private>
     </Reference>
-    <Reference Include="FSharpx.TypeProviders.FreeBase">
-      <HintPath>..\..\src\FSharpx.TypeProviders.Freebase\bin\Debug\FSharpx.TypeProviders.FreeBase.dll</HintPath>
+    <Reference Include="FSharpx.TypeProviders.Freebase">
+      <HintPath>..\..\src\FSharpx.TypeProviders.Freebase\bin\Debug\FSharpx.TypeProviders.Freebase.dll</HintPath>
     </Reference>
     <Reference Include="FSharpx.TypeProviders.Freebase.DesignTime">
       <HintPath>..\..\src\FSharpx.TypeProviders.Freebase\bin\Debug\FSharpx.TypeProviders.Freebase.DesignTime.dll</HintPath>

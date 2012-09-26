@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx.TypeProviders.Freebase.DesignTime</RootNamespace>
     <AssemblyName>FSharpx.TypeProviders.Freebase.DesignTime</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <Name>FSharpx.TypeProviders.Freebase.DesignTime</Name>
     <TargetFrameworkProfile />
   </PropertyGroup>
