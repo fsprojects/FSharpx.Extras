@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\FSharpx.TypeProviders\TypeProviders.targets" />
   <PropertyGroup>
@@ -49,6 +49,7 @@
     <Reference Include="System.Windows.Browser" Condition="'$(TargetFramework)' == 'sl5' OR '$(TargetFramework)' == 'sl5-compiler'" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyInfo.fs" />
     <Compile Include="DefaultVersionAttribute.fs" />
     <Compile Include="Cache.fsi" />
     <Compile Include="Cache.fs" />
@@ -62,6 +63,13 @@
     <Compile Include="FreebaseRequests.fs" />
     <Compile Include="FreebaseSchema.fs" />
     <Compile Include="FreebaseRuntime.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FSharpx.TypeProviders.Freebase.DesignTime\FSharpx.TypeProviders.Freebase.DesignTime.fsproj">
+      <Name>FSharpx.TypeProviders.Freebase.DesignTime</Name>
+      <Project>{7259ec6a-fd19-4767-b514-116c0db973aa}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
