@@ -4,7 +4,7 @@
 // warranties of merchantability and fitness for a particular purpose. 
 
 /// Provides Freebase schema and data as provided types, properties and methods
-namespace Samples.DataStore.FreebaseProvider.FreebaseTypeExtender
+namespace FSharpx.TypeProviders.Freebase.FreebaseTypeExtender
 
 open System
 open System.Collections.Generic
@@ -13,8 +13,8 @@ open System.Linq
 open Microsoft.FSharp.Core.CompilerServices
 open Microsoft.FSharp.Quotations
 open Samples.FSharp.ProvidedTypes
-open Samples.DataStore.FreebaseProvider.FreebaseRequests
-open Samples.DataStore.FreebaseProvider.FreebaseReflection
+open FSharpx.TypeProviders.Freebase.FreebaseRequests
+open FSharpx.TypeProviders.Freebase.FreebaseReflection
 open Utilities.Caching
 
 #if BROWSER
@@ -64,11 +64,11 @@ type internal FreebaseRuntimeInfo (config : TypeProviderConfig) =
     let runtimeAssembly = Assembly.LoadFrom(config.RuntimeAssembly)
 #endif
 
-    member val FreebaseDataContextType = runtimeAssembly.GetType("Samples.DataStore.FreebaseProvider.FreebaseRuntime.FreebaseDataContext")
-    member val FreebaseIndividualsType = runtimeAssembly.GetType("Samples.DataStore.FreebaseProvider.FreebaseRuntime.FreebaseIndividuals")
-    member val FreebaseObjectType = runtimeAssembly.GetType("Samples.DataStore.FreebaseProvider.FreebaseRuntime.IFreebaseObject")
-    member val FreebaseDomainType = runtimeAssembly.GetType("Samples.DataStore.FreebaseProvider.FreebaseRuntime.FreebaseDomain")
-    member val FreebaseDomainCategoryType = runtimeAssembly.GetType("Samples.DataStore.FreebaseProvider.FreebaseRuntime.FreebaseDomainCategory")
+    member val FreebaseDataContextType = runtimeAssembly.GetType("FSharpx.TypeProviders.Freebase.FreebaseRuntime.FreebaseDataContext")
+    member val FreebaseIndividualsType = runtimeAssembly.GetType("FSharpx.TypeProviders.Freebase.FreebaseRuntime.FreebaseIndividuals")
+    member val FreebaseObjectType = runtimeAssembly.GetType("FSharpx.TypeProviders.Freebase.FreebaseRuntime.IFreebaseObject")
+    member val FreebaseDomainType = runtimeAssembly.GetType("FSharpx.TypeProviders.Freebase.FreebaseRuntime.FreebaseDomain")
+    member val FreebaseDomainCategoryType = runtimeAssembly.GetType("FSharpx.TypeProviders.Freebase.FreebaseRuntime.FreebaseDomainCategory")
 
     member this.RuntimeAssembly = runtimeAssembly
 
@@ -83,7 +83,7 @@ type public FreebaseTypeProvider(config : TypeProviderConfig) as this =
     let fbRuntimeInfo = FreebaseRuntimeInfo(config)
 
     /// Root namespace of Freebase types
-    let rootNamespace = "Samples.DataStore.Freebase"
+    let rootNamespace = "FSharpx.TypeProviders.Freebase"
     let createTypes(apiKey, proxyPrefix, serviceUrl, rootTypeName, numIndividuals, useUnits, usePluralize, snapshotDate, useLocalCache, allowQueryEvaluateOnClientSide) = 
 
         let fb = new FreebaseQueries(apiKey, proxyPrefix, serviceUrl, "FreebaseSchema", snapshotDate, useLocalCache)

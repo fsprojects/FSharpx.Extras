@@ -4,9 +4,9 @@
 // warranties of merchantability and fitness for a particular purpose. 
 
 /// This file contains an object model for Freebase schema information
-module internal Samples.DataStore.FreebaseProvider.FreebaseReflection
+module internal FSharpx.TypeProviders.Freebase.FreebaseReflection
 
-open Samples.DataStore.FreebaseProvider.FreebaseRequests
+open FSharpx.TypeProviders.Freebase.FreebaseRequests
 open System
 open System.Text
 open Utilities.Json

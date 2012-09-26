@@ -3,7 +3,7 @@
 // We disclaim all warranties, either express or implied, including the 
 // warranties of merchantability and fitness for a particular purpose. 
 
-namespace Samples.DataStore.Freebase
+namespace FSharpx.TypeProviders.Freebase
 
     /// Extension members for operations permitted in queries of the Freebase service
     [<AutoOpen>]
@@ -41,15 +41,15 @@ namespace Samples.DataStore.Freebase
            member s.Where(p:System.Linq.Expressions.Expression<System.Func<_,_>>) =  System.Linq.Queryable.Where(s,p)
 
 
-namespace Samples.DataStore.FreebaseProvider.FreebaseRuntime
+namespace FSharpx.TypeProviders.Freebase.FreebaseRuntime
 
 open System
 open System.Linq
 open System.Text
 open System.Collections.Generic
 open Microsoft.FSharp.Core.CompilerServices
-open Samples.DataStore.FreebaseProvider.FreebaseReflection
-open Samples.DataStore.FreebaseProvider.FreebaseRequests
+open FSharpx.TypeProviders.Freebase.FreebaseReflection
+open FSharpx.TypeProviders.Freebase.FreebaseRequests
 open Utilities.Json
 
 /// Represents data for a single object
@@ -388,7 +388,7 @@ module internal QueryImplementation =
     open System.Linq
     open System.Linq.Expressions
     open System.Reflection
-    //open Samples.DataStore.Freebase.FreebaseOperators
+    //open FSharpx.TypeProviders.Freebase.FreebaseOperators
 
     /// TODO: make this a parameter
     let evaluateOnClientSideWhereNecessary = true
@@ -884,6 +884,6 @@ type internal TypeProviderAssemblyAttribute(assemblyName : string) =
 
 #endif
 
-[<assembly:TypeProviderAssembly("Samples.DataStore.Freebase.DesignTime")>]
+[<assembly:TypeProviderAssembly("FSharpx.TypeProviders.Freebase.DesignTime")>]
 do()
 

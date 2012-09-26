@@ -4,7 +4,7 @@
 // warranties of merchantability and fitness for a particular purpose. 
 
 /// This file contains functions to help perform basic REST and JSON query accesses to the Freebase MQL data service.
-module internal Samples.DataStore.FreebaseProvider.FreebaseRequests
+module internal FSharpx.TypeProviders.Freebase.FreebaseRequests
 
 open System
 open System.Diagnostics
