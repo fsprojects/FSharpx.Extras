@@ -11,6 +11,7 @@ open Microsoft.FSharp.Reflection
 open System.Collections.Generic
 open FSharpx.Strings
 
+[<RequireQualifiedAccess>]
 type Token =
 | OpenBracket | CloseBracket
 | OpenArray | CloseArray
@@ -42,15 +43,15 @@ let tokenize source=
 
     let rec tokenize' acc = function
         | w :: t when Char.IsWhiteSpace(w) -> tokenize' acc t   // skip whitespace
-        | '{' :: t -> tokenize' (OpenBracket :: acc) t
-        | '}' :: t -> tokenize' (CloseBracket :: acc) t
-        | '[' :: t -> tokenize' (OpenArray :: acc) t
-        | ']' :: t -> tokenize' (CloseArray :: acc) t
-        | ':' :: t -> tokenize' (Colon :: acc) t
-        | ',' :: t -> tokenize' (Comma :: acc) t
+        | '{' :: t -> tokenize' (Token.OpenBracket :: acc) t
+        | '}' :: t -> tokenize' (Token.CloseBracket :: acc) t
+        | '[' :: t -> tokenize' (Token.OpenArray :: acc) t
+        | ']' :: t -> tokenize' (Token.CloseArray :: acc) t
+        | ':' :: t -> tokenize' (Token.Colon :: acc) t
+        | ',' :: t -> tokenize' (Token.Comma :: acc) t
         | 'n' :: 'u' :: 'l' :: 'l' :: t -> tokenize' (Token.Null :: acc) t
-        | 't' :: 'r' :: 'u' :: 'e' :: t -> tokenize' (Boolean true :: acc) t
-        | 'f' :: 'a' :: 'l' :: 's' :: 'e' :: t -> tokenize' (Boolean false :: acc) t
+        | 't' :: 'r' :: 'u' :: 'e' :: t -> tokenize' (Token.Boolean true :: acc) t
+        | 'f' :: 'a' :: 'l' :: 's' :: 'e' :: t -> tokenize' (Token.Boolean false :: acc) t
         | '"' :: t -> // start of string
             let s, t' = parseString "" t
             tokenize' (Token.String(s) :: acc) t'        
@@ -214,14 +215,14 @@ let parse source =
     | v -> failwith "Syntax Error, unrecognized token in map()"
  
     let rec parseValue = function
-    | OpenBracket :: t -> parseJObject t
-    | OpenArray :: t ->  parseArray t
+    | Token.OpenBracket :: t -> parseJObject t
+    | Token.OpenArray :: t ->  parseArray t
     | h :: t -> map h, t
     | _ -> failwith "bad value"
  
     and parseArray = function
-    | Comma :: t -> parseArray t
-    | CloseArray :: t -> JArray.New() :> IDocument, t
+    | Token.Comma :: t -> parseArray t
+    | Token.CloseArray :: t -> JArray.New() :> IDocument, t
     | t ->        
         let element, t' = parseValue t
         match parseArray t' with
@@ -230,15 +231,15 @@ let parse source =
             jArray :> IDocument,t''
         | _ -> failwith "Malformed JSON array"
     and parseJObject = function
-    | Comma :: t -> parseJObject t
-    | Token.String(name) :: Colon :: t -> 
+    | Token.Comma :: t -> parseJObject t
+    | Token.String(name) :: Token.Colon :: t -> 
         let value,t' = parseValue t
         match parseJObject t' with
         | (:? JObject as jObject),t'' ->
             jObject.Properties.[name] <- value
             jObject :> IDocument,t''
         | _ -> failwith "Malformed JSON object" 
-    | CloseBracket :: t -> JObject.New() :> IDocument, t
+    | Token.CloseBracket :: t -> JObject.New() :> IDocument, t
     | _ -> failwith "Malformed JSON object"
     
     tokenize source 
