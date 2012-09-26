@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Default to Debug, Silverlight -->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <TargetFramework Condition=" '$(TargetFramework)' == '' ">net45</TargetFramework>
+    <!-- <TargetFramework Condition=" '$(TargetFramework)' == '' ">sl5-compiler</TargetFramework>  -->
+    <TypeProviderRuntimeFramework Condition=" '$(TypeProviderRuntimeFramework)' == '' ">$(TargetFramework)</TypeProviderRuntimeFramework>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'sl5' OR '$(TargetFramework)' == 'sl5-compiler' ">
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <DefineConstants>$(DefineConstants);BROWSER</DefineConstants>
+    <DefineConstants>$(DefineConstants);FX_NO_ASSEMBLY_LOAD_FROM</DefineConstants>
+    <DefineConstants>$(DefineConstants);FX_NO_CONCURRENT</DefineConstants>
+    <DefineConstants>$(DefineConstants);FX_NO_LOCAL_FILESYSTEM</DefineConstants>
+    <DefineConstants>$(DefineConstants);FX_NO_SYNC_WEBRESPONSE</DefineConstants>
+    <DefineConstants>$(DefineConstants);FX_NO_CUSTOMTYPEDESCRIPTOR</DefineConstants>
+    <DefineConstants>$(DefineConstants);FX_NO_CUSTOMATTRIBUTEDATA</DefineConstants>
+    <DefineConstants>$(DefineConstants);NO_SECURITY_ELEMENT_ESCAPE</DefineConstants>
+    <DefineConstants>$(DefineConstants);FX_NO_REFLECTION_ONLY_LOAD</DefineConstants>
+    <DefineConstants>$(DefineConstants);NO_SYSTEM_ENVIRONMENT_GETENVIRONMENTVARIABLE</DefineConstants>
+    <DefineConstants >$(DefineConstants);FX_NO_WEBHEADERS_ADD</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'portable47' ">
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Profile47</TargetFrameworkProfile>
+    <DefineConstants >$(DefineConstants);FX_NO_LOCAL_FILESYSTEM</DefineConstants>
+    <DefineConstants >$(DefineConstants);FX_NO_CONCURRENT</DefineConstants>
+    <DefineConstants >$(DefineConstants);NO_SYSTEM_ENVIRONMENT_GETENVIRONMENTVARIABLE</DefineConstants>
+    <DefineConstants >$(DefineConstants);FX_NO_CUSTOMTYPEDESCRIPTOR</DefineConstants>
+    <DefineConstants >$(DefineConstants);FX_NO_CUSTOMATTRIBUTEDATA</DefineConstants>
+    <DefineConstants >$(DefineConstants);FX_NO_SYNC_WEBRESPONSE</DefineConstants>
+    <DefineConstants >$(DefineConstants);FX_NO_WEBREQUEST_CONTENTLENGTH</DefineConstants>
+    <DefineConstants >$(DefineConstants);FX_NO_GETCURRENTMETHOD</DefineConstants>
+    <DefineConstants >$(DefineConstants);FX_NO_WEBHEADERS_ADD</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'mono45' ">
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net40' OR '$(TargetFramework)' == 'mono40' ">
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net35' OR '$(TargetFramework)' == 'mono20' ">
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <DefineConstants >$(DefineConstants);FX_NO_CONCURRENT</DefineConstants>
+    <DefineConstants >$(DefineConstants);NO_FSHARP_CORE_TYPE_PROVIDER_ASSEMBLY_ATTRIBUTE</DefineConstants>
+  </PropertyGroup>
+ <PropertyGroup Condition=" '$(TargetFramework)' == 'sl5-compiler' ">
+    <FSharpSilverlightAssembliesPath>..\..\Compiler\3.0\head\$(Configuration)\$(TargetFramework)\bin</FSharpSilverlightAssembliesPath>
+ </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TypeProviderRuntimeFramework)' == 'sl5' OR '$(TypeProviderRuntimeFramework)' == 'sl5-compiler' ">
+    <DefineConstants >$(DefineConstants);TYPE_PROVIDER_RUNTIME_FX_SL5</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TypeProviderRuntimeFramework)' == 'sl5-compiler' ">
+    <DefineConstants >$(DefineConstants);TYPE_PROVIDER_RUNTIME_FX_SL5_COMPILER</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TypeProviderRuntimeFramework)' == 'portable47' ">
+    <DefineConstants >$(DefineConstants);TYPE_PROVIDER_RUNTIME_FX_PORTABLE47</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TypeProviderRuntimeFramework)' == 'net45' OR '$(TypeProviderRuntimeFramework)' == 'mono45' ">
+    <DefineConstants >$(DefineConstants);TYPE_PROVIDER_RUNTIME_FX_NET45</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TypeProviderRuntimeFramework)' == 'net40' OR '$(TypeProviderRuntimeFramework)' == 'mono40' ">
+    <DefineConstants >$(DefineConstants);TYPE_PROVIDER_RUNTIME_FX_NET40</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TypeProviderRuntimeFramework)' == 'net35' OR '$(TypeProviderRuntimeFramework)' == 'mono20' ">
+    <DefineConstants >$(DefineConstants);TYPE_PROVIDER_RUNTIME_FX_NET35</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <OtherFlags>$(OtherFlags) /warnon:1182</OtherFlags>
+    <OutputPath>..\$(Configuration)\$(TypeProviderRuntimeFramework)</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\$(TypeProviderRuntimeFramework)\</IntermediateOutputPath>
+    <WarningLevel>3</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <Tailcalls>false</Tailcalls>
+    <DefineConstants>$(DefineConstants);DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <Tailcalls>true</Tailcalls>
+    <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup >
+    <Reference Include="FSharp.Core" Condition=" '$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'mono45' " />
+    <Reference Include="FSharp.Core, Version=2.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" Condition=" '$(TargetFramework)' == 'net35' " />
+    <Reference Include="FSharp.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" Condition=" '$(TargetFramework)' == 'net40' OR '$(TargetFramework)' == 'mono40' " />
+    <Reference Include="FSharp.Core" Condition="'$(TargetFramework)' == 'portable47' OR '$(TargetFramework)' == 'sl5'">
+      <Name>FSharp.Core</Name>
+      <AssemblyName>FSharp.Core.dll</AssemblyName>
+      <HintPath>$(MSBuildExtensionsPath32)\..\Reference Assemblies\Microsoft\FSharp\3.0\Runtime\.NETPortable\FSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="FSharp.Core" Condition="'$(TargetFramework)' == 'sl5-compiler'">
+      <HintPath>$(FSharpSilverlightAssembliesPath)\FSharp.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

@@ -66,6 +66,10 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Regex
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.AppSettings", "src\FSharpx.TypeProviders.AppSettings\FSharpx.TypeProviders.AppSettings.fsproj", "{A0A11809-14D9-4896-8525-85EF3B4D43BF}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Freebase", "src\FSharpx.TypeProviders.Freebase\FSharpx.TypeProviders.Freebase.fsproj", "{9DA9A11A-F58E-4660-8FAF-FEB7BA5D9713}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Freebase.DesignTime", "src\FSharpx.TypeProviders.Freebase.DesignTime\FSharpx.TypeProviders.Freebase.DesignTime.fsproj", "{7259EC6A-FD19-4767-B514-116C0DB973AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		DataStructures|Any CPU = DataStructures|Any CPU
@@ -391,6 +395,36 @@ Global
 		{A0A11809-14D9-4896-8525-85EF3B4D43BF}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{A0A11809-14D9-4896-8525-85EF3B4D43BF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A0A11809-14D9-4896-8525-85EF3B4D43BF}.Release|x86.ActiveCfg = Release|Any CPU
+		{9DA9A11A-F58E-4660-8FAF-FEB7BA5D9713}.DataStructures|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DA9A11A-F58E-4660-8FAF-FEB7BA5D9713}.DataStructures|Any CPU.Build.0 = Debug|Any CPU
+		{9DA9A11A-F58E-4660-8FAF-FEB7BA5D9713}.DataStructures|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9DA9A11A-F58E-4660-8FAF-FEB7BA5D9713}.DataStructures|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9DA9A11A-F58E-4660-8FAF-FEB7BA5D9713}.DataStructures|x86.ActiveCfg = Debug|Any CPU
+		{9DA9A11A-F58E-4660-8FAF-FEB7BA5D9713}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DA9A11A-F58E-4660-8FAF-FEB7BA5D9713}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DA9A11A-F58E-4660-8FAF-FEB7BA5D9713}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9DA9A11A-F58E-4660-8FAF-FEB7BA5D9713}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9DA9A11A-F58E-4660-8FAF-FEB7BA5D9713}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9DA9A11A-F58E-4660-8FAF-FEB7BA5D9713}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DA9A11A-F58E-4660-8FAF-FEB7BA5D9713}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DA9A11A-F58E-4660-8FAF-FEB7BA5D9713}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9DA9A11A-F58E-4660-8FAF-FEB7BA5D9713}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9DA9A11A-F58E-4660-8FAF-FEB7BA5D9713}.Release|x86.ActiveCfg = Release|Any CPU
+		{7259EC6A-FD19-4767-B514-116C0DB973AA}.DataStructures|Any CPU.ActiveCfg = Debug|Any CPU
+		{7259EC6A-FD19-4767-B514-116C0DB973AA}.DataStructures|Any CPU.Build.0 = Debug|Any CPU
+		{7259EC6A-FD19-4767-B514-116C0DB973AA}.DataStructures|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{7259EC6A-FD19-4767-B514-116C0DB973AA}.DataStructures|Mixed Platforms.Build.0 = Debug|Any CPU
+		{7259EC6A-FD19-4767-B514-116C0DB973AA}.DataStructures|x86.ActiveCfg = Debug|Any CPU
+		{7259EC6A-FD19-4767-B514-116C0DB973AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7259EC6A-FD19-4767-B514-116C0DB973AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7259EC6A-FD19-4767-B514-116C0DB973AA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{7259EC6A-FD19-4767-B514-116C0DB973AA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{7259EC6A-FD19-4767-B514-116C0DB973AA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7259EC6A-FD19-4767-B514-116C0DB973AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7259EC6A-FD19-4767-B514-116C0DB973AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7259EC6A-FD19-4767-B514-116C0DB973AA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{7259EC6A-FD19-4767-B514-116C0DB973AA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{7259EC6A-FD19-4767-B514-116C0DB973AA}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
