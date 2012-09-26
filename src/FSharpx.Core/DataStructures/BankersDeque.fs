@@ -316,6 +316,8 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
 
         member this.Cons x = this.Cons x :> _
 
+        member this.Count() = this.Length()
+
         member this.Head() = this.Head()
 
         member this.TryGetHead() = this.TryGetHead()

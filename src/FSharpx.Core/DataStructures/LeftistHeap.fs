@@ -15,6 +15,8 @@ type LeftistHeap<'a when 'a : comparison> =
 
     interface IHeap<'a> with
         
+        member this.Count() = this.Length()
+
         member this.Head() = LeftistHeap.head this
 
         member this.TryGetHead() = LeftistHeap.tryGetHead this
