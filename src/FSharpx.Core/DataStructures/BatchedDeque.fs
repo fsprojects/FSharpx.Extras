@@ -273,6 +273,8 @@ type BatchedDeque<'a> (front, rBack) =
 
         member this.Cons x = this.Cons x :> _
 
+        member this.Count() = this.Length()
+
         member this.Head() = this.Head()
 
         member this.TryGetHead() = this.TryGetHead()

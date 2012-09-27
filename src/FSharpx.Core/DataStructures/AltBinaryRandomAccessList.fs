@@ -17,6 +17,8 @@ type AltBinRndAccList<'a> =
 
         member this.Cons (x : 'a) = AltBinRndAccList.cons x this :> _
 
+        member this.Count() = AltBinRndAccList.length (0, 1, this)
+
         member this.Head() =
             let x, _ = AltBinRndAccList.uncons this
             x
