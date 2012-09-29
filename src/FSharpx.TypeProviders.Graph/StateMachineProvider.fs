@@ -56,18 +56,17 @@ let internal stateMachineTy ownerType makeAsync (cfg:TypeProviderConfig) =
 let internal graph ownerType (cfg:TypeProviderConfig) =
     erasedType<obj> thisAssembly rootNamespace ("Graph")
     |> staticParameters
-        ["dgml file name", typeof<string>, None
-         "init state", typeof<string>, None]    
+        ["dgml file name", typeof<string>, None]    
         (fun typeName parameterValues -> 
             match parameterValues with 
-            | [| :? string as fileName; :? string as initState |] ->                
+            | [| :? string as fileName |] ->                
                 let dgml = System.IO.Path.Combine(cfg.ResolutionFolder, fileName)
                 watchForChanges ownerType dgml
 
                 let ownerType = erasedType<obj> thisAssembly rootNamespace typeName 
                 
                 let stateMachine = StateMachine(false)
-                stateMachine.Init(dgml, initState)      
+                stateMachine.Init(dgml, null)      
                 let states = System.Collections.Generic.Dictionary<_,_>()
 
                 stateMachine.Nodes
@@ -122,19 +121,7 @@ let internal graph ownerType (cfg:TypeProviderConfig) =
                                 |> makeStatic)
                     |> ignore
 
-                
-                let initalState =
-                    match states.TryGetValue initState with
-                    | true,v -> v
-                    | _ -> failwithf "The initial state \"%s\" is not part of the state machine." initState
-
-                ownerType
-                |> addXmlDoc "A strongly typed interface to the state machine described in '%s'"
-                |+!> (provideProperty
-                        "InitialState"
-                        initalState
-                        (fun args -> <@@  { Name = initState } @@>)
-                          |> makePropertyStatic))
+                ownerType)
 
 [<TypeProvider>]
 type public GraphProvider(cfg:TypeProviderConfig) as this =

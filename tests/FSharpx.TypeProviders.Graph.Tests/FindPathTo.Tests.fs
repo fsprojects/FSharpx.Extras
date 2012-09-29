@@ -4,7 +4,7 @@ open NUnit.Framework
 open FSharpx
 open FSharpx.TypeProviders
 
-type Actors = Graph<"Actors.dgml", "Keanu Reeves">
+type Actors = Graph<"Actors.dgml">
 
 [<Test>]
 let ``Can find path between Keanu Reeves and Kevin Bacon``() =   
