@@ -134,6 +134,20 @@ type StateMachine(makeAsync) as this = class
     member this.TransitTo(state) = 
         if makeAsync then processor.Post state else transit state
 
+    // FindPath - Slow version
+    member this.FindShortestPathTo(startNode,targetNode) = 
+        let rec findShortestPath path (visitedNodes: Set<string>) (currentNode:string) =            
+            let paths =
+                let currentNode = (this.FindNode currentNode).Value
+                currentNode.NextNodes
+                |> List.choose (fun (_,node) ->
+                    if node.Name = targetNode then Some path else
+                    if visitedNodes |> Set.contains node.Name then None else                    
+                    findShortestPath (node.Name::path) (visitedNodes |> Set.add node.Name) node.Name)
+            if paths = [] then None else Some (paths |> List.minBy (fun path -> List.length path))
+        
+        findShortestPath [startNode] (Set.singleton startNode) startNode
+
     // set the transition function
     member this.SetFunction(name:string, state:IState) = 
         if functions.ContainsKey(name) then 

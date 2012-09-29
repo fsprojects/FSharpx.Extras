@@ -88,13 +88,40 @@ let internal graph ownerType (cfg:TypeProviderConfig) =
                             | _ -> "TransitTo" + name
 
                         states.[node.Name]
-                        |+!>
-                          (provideMethod
-                                trasitionName
-                                []
-                                states.[name]
-                                (fun args -> <@@ { Name = name } @@>))
+                        |+!> (provideMethod trasitionName [] states.[name] (fun args -> <@@ { Name = name } @@>))
                         |> ignore
+
+
+
+                for node1 in stateMachine.Nodes do
+                    for targetNode in stateMachine.Nodes do
+                        if node1 <> targetNode then
+                            match stateMachine.FindShortestPathTo(node1.Name,targetNode.Name) with
+                            | Some path ->
+                                let name = targetNode.Name
+                                let path = path |> List.rev |> List.tail
+
+                                states.[node1.Name]
+                                |+!> 
+                                   (provideMethod 
+                                        ("ShortestPathTo" + name) 
+                                        [] 
+                                        (typedefof<list<_>>.MakeGenericType typeof<string>) 
+                                        (fun args -> <@@ path @@>))
+                                |> ignore
+                            | None -> ()
+
+                for node in stateMachine.Nodes do
+                    let name = node.Name
+                    ownerType
+                    |+!> (provideMethod
+                            ("StartFrom" + name)
+                            []
+                            states.[name]
+                            (fun args -> <@@  { Name = name } @@>)
+                                |> makeStatic)
+                    |> ignore
+
                 
                 let initalState =
                     match states.TryGetValue initState with

@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph GraphDirection="LeftToRight" Layout="Sugiyama" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+    <Node Id="Higher Learning" Category="Movie" Bounds="262.178333333334,97.52,104.78,25.96" Label="Higher Learning" />
+    <Node Id="Ice Cube" Category="Actor" Bounds="416.0475,19.52,65.85,25.96" />
+    <Node Id="Jeniffer Conelly" Category="Actor" Bounds="398.645833333334,136.52,100.653333333333,25.96" />
+    <Node Id="Keanu Reeves" Category="Actor" Bounds="122.649166666667,58.52,93.0566666666667,25.96" />
+    <Node Id="Kevin Bacon" Category="Actor" Bounds="406.814166666667,253.52,84.3166666666667,25.96" />
+    <Node Id="Laurence Fishburne" Category="Actor" Bounds="107.864166666667,175.52,122.626666666667,25.96" Label="Laurence Fishburne" />
+    <Node Id="Mystic River" Category="Movie" Bounds="272.688333333334,253.52,83.76,25.96" Label="Mystic River" />
+    <Node Id="The Matrix" Category="Movie" Bounds="0,97.52,76.1766666666667,25.96" Label="The Matrix" />
+  </Nodes>
+  <Links>
+    <Link Source="Higher Learning" Target="Ice Cube" Bounds="322.13818359375,8.125,97.0579528808594,89.3949966430664" />
+    <Link Source="Higher Learning" Target="Jeniffer Conelly" Bounds="366.958343505859,111.909942626953,52.23779296875,20.0402374267578" />
+    <Link Source="Higher Learning" Target="Laurence Fishburne" Bounds="238.914428710938,123.480003356934,64.2991027832031,58.3443069458008" />
+    <Link Source="Ice Cube" Target="Higher Learning" Bounds="345.091644287109,45.4799995422363,81.8579711914063,47.5739479064941" />
+    <Link Source="Jeniffer Conelly" Target="Higher Learning" Bounds="331.848876953125,130.253890991211,95.1007385253906,45.2461090087891" />
+    <Link Source="Keanu Reeves" Target="The Matrix" Bounds="85.0408706665039,84.4800033569336,58.4571762084961,23.6995010375977" />
+    <Link Source="Kevin Bacon" Target="Mystic River" Bounds="345.091644287109,279.480010986328,81.8579711914063,16.2699890136719" />
+    <Link Source="Laurence Fishburne" Target="Higher Learning" Bounds="182.017227172852,116.20783996582,71.677490234375,59.3121643066406" />
+    <Link Source="Laurence Fishburne" Target="Mystic River" Bounds="194.856964111328,201.479995727539,89.1880493164063,47.5739593505859" />
+    <Link Source="Laurence Fishburne" Target="The Matrix" Bounds="47.8391799926758,131.653442382813,95.6588668823242,81.2215576171875" />
+    <Link Source="Mystic River" Target="Kevin Bacon" Bounds="337.277923583984,237.25,81.918212890625,16.2700042724609" />
+    <Link Source="Mystic River" Target="Laurence Fishburne" Bounds="182.692077636719,208.993347167969,109.166656494141,81.8816528320313" />
+    <Link Source="The Matrix" Target="Keanu Reeves" Bounds="47.0631866455078,45.5,88.4026336669922,52.0199966430664" />
+    <Link Source="The Matrix" Target="Laurence Fishburne" Bounds="56.0380363464355,123.480003356934,79.4277839660645,47.9800186157227" />
+  </Links>
+  <Categories>
+    <Category Id="Actor" Label="Actor" Background="#FF7DC633" IsTag="True" />
+    <Category Id="Movie" Label="Movie" Background="#FFFF7F7F" IsTag="True" />
+  </Categories>
+  <Properties>
+    <Property Id="Background" Label="Background" Description="The background color" DataType="System.Windows.Media.Brush" />
+    <Property Id="Bounds" DataType="System.Windows.Rect" />
+    <Property Id="Expression" DataType="System.String" />
+    <Property Id="GraphDirection" DataType="Microsoft.VisualStudio.Diagrams.Layout.LayoutOrientation" />
+    <Property Id="GroupLabel" DataType="System.String" />
+    <Property Id="IsEnabled" DataType="System.Boolean" />
+    <Property Id="IsTag" DataType="System.Boolean" />
+    <Property Id="Label" Label="Label" Description="Displayable label of an Annotatable object" DataType="System.String" />
+    <Property Id="Layout" DataType="System.String" />
+    <Property Id="TargetType" DataType="System.Type" />
+    <Property Id="Value" DataType="System.String" />
+    <Property Id="ValueLabel" DataType="System.String" />
+  </Properties>
+  <Styles>
+    <Style TargetType="Node" GroupLabel="Actor" ValueLabel="Has category">
+      <Condition Expression="HasCategory('Actor')" />
+      <Setter Property="Background" Value="#FF7DC633" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Movie" ValueLabel="Has category">
+      <Condition Expression="HasCategory('Movie')" />
+      <Setter Property="Background" Value="#FFFF7F7F" />
+    </Style>
+  </Styles>
+</DirectedGraph>
