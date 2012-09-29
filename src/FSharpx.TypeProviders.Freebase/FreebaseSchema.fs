@@ -2,6 +2,10 @@
 // This sample code is provided "as is" without warranty of any kind. 
 // We disclaim all warranties, either express or implied, including the 
 // warranties of merchantability and fitness for a particular purpose. 
+//
+// This file contains a table of data of units of measure 
+// downloaded from www.freebase.com itself. See www.freebase.com 
+// for terms and conditions of use.
 
 /// This file contains an object model for Freebase schema information
 module internal Samples.DataStore.FreebaseProvider.FreebaseReflection
@@ -282,9 +286,8 @@ type FreebaseUnit =
     static member (*) (u1: FreebaseUnit, u2:FreebaseUnit) = Prod (u1, u2)
     static member (/) (u1: FreebaseUnit, u2:FreebaseUnit) = Div (u1, u2)
 
-/// This table of data was downloaded from www.freebase,com itself. See www.freebase.com for term and conditions of use.
-/// The F# script used to download the data is shown further below (it uses the Freebase type provider itself - if you don't
-/// have a copy of one, you have a tricky bootstrapping problem to solve :-))
+/// This table of data was downloaded from www.freebase.com itself. 
+/// See www.freebase.com for term and conditions of use.
 let units = 
    dict [
        ("/en/astronomical_unit", (* "Astronomical unit", *) (SI "metre", 1.49598e+11, None))
