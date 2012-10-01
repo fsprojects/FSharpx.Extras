@@ -24,6 +24,7 @@ module internal JSONInference =
                 | :? Text -> yield prop.Key, typeof<string>
                 | (:? Number as n) -> yield prop.Key, if n.Value = Math.Round n.Value then typeof<int> else typeof<float>
                 | :? Boolean -> yield prop.Key, typeof<bool>
+                | (:? Date as d) -> yield prop.Key, typeof<DateTime>
                 | _ -> ()              
         | _ -> ()]
     props

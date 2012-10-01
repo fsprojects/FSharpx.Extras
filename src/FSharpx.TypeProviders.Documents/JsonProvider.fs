@@ -24,6 +24,8 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
             <@@ (%%args.[0]: IDocument).GetNumber propertyName |> int @@>
         | x when x = typeof<float> -> 
             <@@ (%%args.[0]: IDocument).GetNumber propertyName @@>
+        | x when x = typeof<DateTime> -> 
+            <@@ (%%args.[0]: IDocument).GetDate propertyName @@>
 
     let checkIfOptional propertyName (args: Expr list) = 
         <@@ (%%args.[0]: IDocument).HasProperty propertyName @@>
@@ -38,6 +40,8 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
             <@@ (%%args.[0]: IDocument).AddNumberProperty(propertyName,float (%%args.[1]:int)) |> ignore @@>
         | x when x = typeof<float> ->
             <@@ (%%args.[0]: IDocument).AddNumberProperty(propertyName,(%%args.[1]:float)) |> ignore @@>
+        | x when x = typeof<DateTime> -> 
+            <@@ (%%args.[0]: IDocument).AddDateProperty(propertyName,(%%args.[1]:DateTime)) |> ignore @@>
 
     let optionalSetterExpr propertyName propertyType (args: Expr list) =         
         match propertyType with
@@ -56,6 +60,10 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
         | x when x = typeof<float> -> 
             <@@ match (%%args.[1]:float option) with
                 | Some number -> (%%args.[0]: IDocument).AddNumberProperty(propertyName,number) |> ignore
+                | None -> (%%args.[0]: IDocument).RemoveProperty propertyName @@>
+        | x when x = typeof<DateTime> -> 
+            <@@ match (%%args.[1]:DateTime option) with
+                | Some date -> (%%args.[0]: IDocument).AddDateProperty(propertyName,date) |> ignore
                 | None -> (%%args.[0]: IDocument).RemoveProperty propertyName @@>
 
     generateProperties ty accessExpr checkIfOptional setterExpr optionalSetterExpr elementProperties

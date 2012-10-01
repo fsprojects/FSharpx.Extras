@@ -28,6 +28,11 @@ let ``Can parse document with text and float``() =
     let j = parse "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"age\": 25.25}"
     j.GetNumber "age"  |> should equal 25.25
 
+[<Test>]
+let ``Can parse document with date``() =
+    let j = parse "{\"anniversary\": \"\\/Date(869080830450)\\/\"}"
+    j.GetDate "anniversary" |> should equal (new System.DateTime(1997, 07, 16, 19, 20, 30, 450))
+
 open System.Globalization
 open System.Threading
 
