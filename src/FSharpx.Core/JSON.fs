@@ -17,6 +17,7 @@ type Token =
 | OpenArray | CloseArray
 | Colon | Comma
 | String of string
+| Date of DateTime
 | Boolean of bool
 | Null
 | Number of string
@@ -91,6 +92,23 @@ type Text(text:string) =
     interface Infrastucture with
         member this.Serialize sb = sb.AppendFormat("\"{0}\"", escape v)
         member this.ToXml() = v :> obj
+
+type Date(date:DateTime) =
+    let mutable v = date
+
+    member this.Value with get() = v and set (value) = v <- value
+    override this.ToString() = sprintf "\"%s\"" (v.ToString())
+
+    override this.Equals other =
+        match other with
+        | (:? Date as y) -> this.Value = y.Value
+        | _ -> false
+
+    interface IDocument
+    interface Infrastucture with
+        member this.Serialize sb = sb.Append(v.ToString(System.Globalization.CultureInfo.InvariantCulture))
+        member this.ToXml() = v :> obj
+
 
 type Number(number:float) =
     let mutable v = number
@@ -200,16 +218,40 @@ type JObject(properties:Dictionary<string,IDocument>) =
                     | (:? Text as v) -> new XAttribute(XName.Get kv.Key, v.Value) :> XObject
                     | (:? Boolean as v) -> new XAttribute(XName.Get kv.Key, v.Value) :> XObject
                     | (:? Number as v) -> new XAttribute(XName.Get kv.Key, v.Value) :> XObject
+                    | (:? Date as v) -> new XAttribute(XName.Get kv.Key, v.Value) :> XObject
                     | _ -> new XElement(XName.Get kv.Key, (kv.Value :?> Infrastucture).ToXml()) :> XObject) :> obj
 
 open System.Globalization
 
 /// Parses a JSON source text and returns an JSON AST
 let parse source =
+
+    let (|Date|String|) input = 
+        let msDateRegex = new System.Text.RegularExpressions.Regex(@"^\\\/Date\((-?\d+)(?:-\d+)?\)\\\/$")
+        let iso8601Regex = new System.Text.RegularExpressions.Regex(@"^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$")
+        let matchesMS = msDateRegex.Match(input)
+        if matchesMS.Success then
+            matchesMS.Groups.[1].Value 
+            |> Double.Parse 
+            |> (new DateTime(1970, 1, 1)).AddMilliseconds 
+            |> (fun x -> Date(x))
+        elif iso8601Regex.IsMatch(input) then
+            input 
+            |> DateTime.TryParse
+            |> (fun (parsed, d) -> if parsed then 
+                                     Date(d)
+                                   else
+                                     String(input))
+        else
+            String(input)
+
     let map = function
     | Token.Number number -> 
         Number(Double.Parse(number, CultureInfo.InvariantCulture)) :> IDocument
-    | Token.String text -> Text(text) :> IDocument
+    | Token.String text -> 
+        match text with
+        | Date(d) -> Date(d) :> IDocument
+        | String(st) -> Text(st) :> IDocument
     | Token.Null -> JSONNull() :> IDocument
     | Token.Boolean(b) -> Boolean(b) :> IDocument
     | v -> failwith "Syntax Error, unrecognized token in map()"
@@ -273,6 +315,7 @@ module DocumentExtensions =
         member this.GetProperty propertyName = (this :?> JObject).Properties.[propertyName]
         member this.HasProperty propertyName = (this :?> JObject).Properties.ContainsKey propertyName
         member this.GetText propertyName = (this.GetProperty(propertyName) :?> Text).Value
+        member this.GetDate propertyName = (this.GetProperty(propertyName) :?> Date).Value
         member this.GetNumber propertyName = (this.GetProperty(propertyName) :?> Number).Value
         member this.GetBoolean propertyName = (this.GetProperty(propertyName) :?> Boolean).Value
         member this.GetJObject propertyName = this.GetProperty(propertyName) :?> JObject
@@ -289,6 +332,7 @@ module DocumentExtensions =
         member this.AddTextProperty(propertyName,text) = (this :?> JObject).Properties.[propertyName] <- Text(text); this
         member this.AddBoolProperty(propertyName,boolean) = (this :?> JObject).Properties.[propertyName] <- Boolean(boolean); this
         member this.AddNumberProperty(propertyName,number) = (this :?> JObject).Properties.[propertyName] <- Number(number); this
+        member this.AddDateProperty(propertyName,date) = (this :?> JObject).Properties.[propertyName] <- Date(date); this
         member this.AddElement element = (this :?> JArray).Elements.Add element; this
         
         member this.RemoveProperty propertyName = (this :?> JObject).Properties.Remove propertyName |> ignore
