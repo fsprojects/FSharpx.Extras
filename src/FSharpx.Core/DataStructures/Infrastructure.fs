@@ -5,7 +5,8 @@ module Exceptions =
 
     let OutOfBounds = new System.IndexOutOfRangeException() // TODO: make this a better exception
 
-module LazyList =    
+module LazyListHelpr =
+    
     let rec private revAux r acc =
         match r with
         | LazyList.Nil -> acc
@@ -29,3 +30,15 @@ module LazyList =
             | 0 -> leftL, (LazyList.tail ll')
             | _ -> loop (z - 1)  ((LazyList.head ll')::leftL) (LazyList.tail ll')
         loop n List.empty ll
+
+module ListHelpr =
+
+    let rec loop2Array (left:'a array) right = function
+        | x when x < 0 -> left, (List.tail right)
+        | x ->  
+            Array.set left x (List.head right)
+            loop2Array left (List.tail right) (x-1) 
+
+    let rec loopFromArray frontLen (left:'a array) right = function
+        | x when x > frontLen -> right
+        | x -> loopFromArray frontLen left (left.[x]::right) (x + 1) 

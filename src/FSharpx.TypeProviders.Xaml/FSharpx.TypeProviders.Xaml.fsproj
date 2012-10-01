@@ -60,7 +60,6 @@
       <Link>TypeProviderDSL.fs</Link>
     </Compile>
     <Compile Include="XamlProvider.fs" />
-    <Compile Include="VectorProvider.fs" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>

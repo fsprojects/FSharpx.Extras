@@ -55,7 +55,6 @@
       <Link>TypeProviderDSL.fs</Link>
     </Compile>
     <Compile Include="VectorProvider.fs" />
-    <Compile Include="NamespaceProvider.fs" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>

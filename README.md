@@ -126,21 +126,29 @@ memory leaks (see also related [StackOverflow discussion][4])
 Type Providers
 ---------------------
 
-FSharpx.TypeProviders is a library for the .NET platform implementing common type providers on top of the FSharpx.Core. 
- main target is F# 3.0 but it aims to be compatible with all .NET languages wherever possible.
+FSharpx provides some very interesting F# type providers. At the moment we have:
 
-It currently implements type safe variants of:
+ * FSharpx.TypeProviders.AppSettings which generates setters and getters for application settings files.
+ * FSharpx.TypeProviders.Documents which allows strongly typed access to JSON, XML and CSV files.
+ * FSharpx.TypeProviders.Excel which provides strongly typed access to Excel spread sheets.
+ * FSharpx.TypeProviders.Graph which includes type providers for state machines and graphs.
+ * FSharpx.TypeProviders.Math which contains a type provider for vector data structures.
+ * FSharpx.TypeProviders.Regex which allows to access regular expressions in a strongly typed manner.
+ * FSharpx.TypeProviders.Machine which provides strongly typed access to the Registry and the file system.
+ * FSharpx.TypeProviders.Xaml which includes a type provider for XAML files and therefor enables to use Visual Studios’s WPF Designer from F#.
+ * FSharpx.TypeProviders.Freebase which allows to access the Freebase database with strong typing.
 
-* Regex
-* FileSystem
-* Csv
-* Excel
-* JSON
-* XML
-* Registry
-* XAML
-* Graph (DMBL file to state machine)
-* AppSettings.
+At the moment all type providers should work with .NET 4.0 and .NET 4.5 and F# 3.0.
+
+In order to build and test the type providers do the following:
+
+ * Open FSharpx.WithTypeProviders.sln with Visual Studio 2012
+ * Set FSharpx.TypeProviders as startup project
+ * In the properties of FSharpx.TypeProviders:
+   * Set the start action to "external program" and "C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\devenv.exe"
+   * Set the command line argument to "C:\code\fsharpx\FSharpx.TypeProviders.Tests.sln" (adjust the path to match to your system)
+ * Run the project --> A new Visual Studio 2012 instance should opened with FSharpx.TypeProviders.Tests.sln
+
 
 Building the project
 -----------------------
