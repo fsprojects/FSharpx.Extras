@@ -253,7 +253,7 @@ let testTarget = TargetTemplate (fun frameworkVersion ->
 )
 
 Target "GenerateDocumentation" (fun _ ->
-    !! (buildDir + "*.dll")
+    !! (buildDir + "FSharpx*.dll")
     |> Docu (fun p ->
         {p with
             ToolPath = fakePath + "/docu.exe"
