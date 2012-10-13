@@ -96,7 +96,7 @@ let createParserType<'a> typeName (generateTypeF: ProvidedTypeDefinition -> Comp
     |+!> (provideConstructor ["filename", typeof<string>] settings.FileNameConstructor
            |> addConstructorXmlDoc "Initializes a document from the given path.")
     |+!> (provideConstructor ["documentContent", typeof<string>] settings.DocumentContentConstructor
-           |> addConstructorXmlDoc "Initializes a document from the given JSON string.")
+           |> addConstructorXmlDoc "Initializes a document from the given string.")
     |+!> (provideProperty "Root" (generateTypeF parserType settings.Schema) settings.RootPropertyGetter
            |> addPropertyXmlDoc "Gets the document root")
     |+!> (provideMethod ("ToString") [] typeof<string> settings.ToStringExpr

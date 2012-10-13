@@ -9,9 +9,16 @@ open FSharpx.TypeProviders.Inference
 open FSharpx.JSON.DocumentExtensions
 open FSharpx.JSON
 
+let dict = new System.Collections.Generic.Dictionary<_,_>()
+
 // Generates type for an inferred JSON document
 let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elementName,multiProperty,elementChildren,elementProperties)) =
-    let ty = runtimeType<IDocument> elementName
+    let append =
+        match dict.TryGetValue elementName with
+        | true,c -> dict.[elementName] <- c + 1; c.ToString()
+        | _ -> dict.Add(elementName,1); ""
+
+    let ty = runtimeType<IDocument> (elementName + append)
     ownerType.AddMember(ty)
 
     let accessExpr propertyName propertyType (args: Expr list) = 

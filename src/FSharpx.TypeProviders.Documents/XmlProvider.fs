@@ -12,9 +12,16 @@ open Samples.FSharp.ProvidedTypes
 open FSharpx.TypeProviders.Inference
 open System.Xml.Linq
 
+let dict = new System.Collections.Generic.Dictionary<_,_>()
+
 /// Generates type for an inferred XML element
 let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elementName,multi,elementChildren,elementProperties)) =
-    let ty = runtimeType<TypedXElement> elementName
+    let append =
+        match dict.TryGetValue elementName with
+        | true,c -> dict.[elementName] <- c + 1; c.ToString()
+        | _ -> dict.Add(elementName,1); ""
+
+    let ty = runtimeType<TypedXElement> (elementName + append)
     ownerType.AddMember(ty)
 
     let accessExpr propertyName propertyType (args: Expr list) = 
