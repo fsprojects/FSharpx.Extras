@@ -4,7 +4,7 @@ open FSharpx
 open FSharpx.DataStructures
 open NUnit.Framework
 
-let tree = RoseTree.create
+let tree a b = RoseTree.create a (LazyList.ofList b)
 
 let atree = tree 1 [tree 2 [tree 3 []]; tree 4 [tree 5 [tree 6 []]]]
 let ctree = tree "f" [tree "b" [tree "a" []; tree "d" [tree "c" []; tree "e" []]]; tree "g" [tree "i" [tree "h" []]]]
@@ -26,8 +26,6 @@ let map() =
     let actual = RoseTree.map ((+) 1) atree
     let expected = tree 2 [tree 3 [tree 4 []]; tree 5 [tree 6 [tree 7 []]]]
     Assert.AreEqual(expected, actual)
-
-
 
 // not the best example, as text nodes cannot have children
 
