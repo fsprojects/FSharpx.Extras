@@ -6,7 +6,7 @@ open System.IO
 // properties
 let currentDate = System.DateTime.UtcNow
 let projectName = "FSharpx"
-let version = if isLocalBuild then "1.6.83" else buildVersion
+let version = if isLocalBuild then "1.6.86" else buildVersion
 let coreSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let projectSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let authors = ["Steffen Forkmann"; "Daniel Mohl"; "Tomas Petricek"; "Ryan Riley"; "Mauricio Scheffer"; "Phil Trelford" ]
@@ -252,20 +252,6 @@ let testTarget = TargetTemplate (fun frameworkVersion ->
             OutputFile = testDir + sprintf "TestResults.%s.xml" frameworkVersion })
 )
 
-Target "GenerateDocumentation" (fun _ ->
-    !! (buildDir + "FSharpx*.dll")
-    |> Docu (fun p ->
-        {p with
-            ToolPath = fakePath + "/docu.exe"
-            TemplatesPath = "./lib/templates"
-            OutputPath = docsDir })
-)
-
-Target "ZipDocumentation" (fun _ ->
-    !! (docsDir + "/**/*.*")
-    |> Zip docsDir (deployDir + sprintf "Documentation-%s.zip" version)
-)
-
 let prepareNugetTarget = TargetTemplate (fun frameworkVersion ->
     packages
     |> Seq.iter (fun package ->
@@ -308,6 +294,14 @@ let generateTargets() =
             "AssemblyInfo"
 
 let nugetTarget = TargetTemplate (fun package ->
+    CleanDir docsDir
+    !! (buildDir @@ (sprintf "FSharpx.%s.dll" package))
+    |> Docu (fun p ->
+        {p with
+            ToolPath = fakePath + "/docu.exe"
+            TemplatesPath = "./lib/templates"
+            OutputPath = docsDir })
+
     XCopy (docsDir |> FullName) (nugetDocsDir package)
     [ "LICENSE.md" ] |> CopyTo (nugetDir package)
     NuGet (fun p -> 
@@ -332,6 +326,8 @@ let nugetTarget = TargetTemplate (fun package ->
       |> CopyTo deployDir
 )
 
+Target "TestAll" DoNothing
+
 let generateNugetTargets() =
     packages 
     |> Seq.fold
@@ -342,7 +338,7 @@ let generateNugetTargets() =
             nugetTarget buildPackage package
 
             dependency ==> buildPackage)
-            "ZipDocumentation"
+            "TestAll"
 
 Target "DeployZip" (fun _ ->
     !! (buildDir + "/**/*.*")
@@ -360,8 +356,7 @@ Target "All" DoNothing
 "Clean"
   ==> "AssemblyInfo"
   ==> (generateTargets())
-  ==> "GenerateDocumentation"
-  ==> "ZipDocumentation"
+  ==> "TestAll"
   ==> (generateNugetTargets())
   ==> "DeployZip"
   ==> "Deploy"
