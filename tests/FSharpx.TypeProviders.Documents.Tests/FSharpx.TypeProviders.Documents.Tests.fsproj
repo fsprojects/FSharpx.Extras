@@ -85,6 +85,10 @@
     <Content Include="SmallTest_SameStructure.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Compile Include="JSON.Dates.Tests.fs" />
+    <Content Include="Dates.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharpx.TypeProviders.Documents">

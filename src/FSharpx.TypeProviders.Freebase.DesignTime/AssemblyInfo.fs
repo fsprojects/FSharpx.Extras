@@ -34,9 +34,9 @@ It currently implements:
 
 [<assembly: AssemblyProduct ("FSharpx.TypeProviders.Freebase.DesignTime")>]
 
-[<assembly: AssemblyVersion ("1.6.77")>]
+[<assembly: AssemblyVersion ("1.6.83")>]
 
-[<assembly: AssemblyFileVersion ("1.6.77")>]
+[<assembly: AssemblyFileVersion ("1.6.83")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 

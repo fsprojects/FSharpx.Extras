@@ -26,9 +26,9 @@ This library is for the .NET platform implementing a Freebase type provider.")>]
 
 [<assembly: AssemblyProduct ("FSharpx.TypeProviders.Freebase")>]
 
-[<assembly: AssemblyVersion ("1.6.77")>]
+[<assembly: AssemblyVersion ("1.6.83")>]
 
-[<assembly: AssemblyFileVersion ("1.6.77")>]
+[<assembly: AssemblyFileVersion ("1.6.83")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 

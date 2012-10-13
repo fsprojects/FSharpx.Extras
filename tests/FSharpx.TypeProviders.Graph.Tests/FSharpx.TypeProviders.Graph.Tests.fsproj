@@ -31,6 +31,34 @@
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>bin\Release\FSharpx.TypeProviders.Graph.Tests.XML</DocumentationFile>
   </PropertyGroup>
+  <PropertyGroup>
+    <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets" Condition=" Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')" />
+  <ItemGroup>
+    <Content Include="Graph1.dgml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BorderGatewayProtocol.dgml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Turnstile.dgml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Binary.dgml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Actors.dgml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="BorderGatewayProtocolGraph.Tests.fs" />
+    <Compile Include="StateNetwork.Tests.fs" />
+    <Compile Include="BinaryGraph.Tests.fs" />
+    <Compile Include="TurnstileGraph.Tests.fs" />
+    <Compile Include="AsyncStateMachine.Tests.fs" />
+    <Compile Include="StateMachine.Tests.fs" />
+    <Compile Include="FindPathTo.Tests.fs" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharpx.TypeProviders.Graph">
       <HintPath>..\..\src\FSharpx.TypeProviders.Graph\bin\Debug\FSharpx.TypeProviders.Graph.dll</HintPath>
@@ -46,30 +74,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="Graph1.dgml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="BorderGatewayProtocol.dgml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Turnstile.dgml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Binary.dgml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Compile Include="BorderGatewayProtocolGraph.Tests.fs" />
-    <Compile Include="StateNetwork.Tests.fs" />
-    <Compile Include="BinaryGraph.Tests.fs" />
-    <Compile Include="TurnstileGraph.Tests.fs" />
-    <Compile Include="AsyncStateMachine.Tests.fs" />
-    <Compile Include="StateMachine.Tests.fs" />
-  </ItemGroup>
-  <PropertyGroup>
-    <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
-  </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets" Condition=" Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

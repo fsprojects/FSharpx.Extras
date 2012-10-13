@@ -28,6 +28,58 @@ let ``Can parse document with text and float``() =
     let j = parse "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"age\": 25.25}"
     j.GetNumber "age"  |> should equal 25.25
 
+[<Test>]
+let ``Can parse document with date``() =
+    let j = parse "{\"anniversary\": \"\\/Date(869080830450)\\/\"}"
+    j.GetDate "anniversary" |> should equal (new System.DateTime(1997, 07, 16, 19, 20, 30, 450, System.DateTimeKind.Utc))
+    (j.GetDate "anniversary").Kind |> should equal System.DateTimeKind.Utc
+
+[<Test>]
+let ``Can parse document with iso date``() =
+    let j = parse "{\"anniversary\": \"2009-05-19 14:39:22.500\"}"
+    j.GetDate "anniversary" |> should equal (new System.DateTime(2009, 05, 19, 14, 39, 22, 500, System.DateTimeKind.Local))
+    (j.GetDate "anniversary").Kind |> should equal System.DateTimeKind.Local
+
+[<Test>]
+[<SetCulture("zh-CN")>]
+let ``Can parse document with iso date in local culture``() =
+    let j = parse "{\"anniversary\": \"2009-05-19 14:39:22.500\"}"
+    j.GetDate "anniversary" |> should equal (new System.DateTime(2009, 05, 19, 14, 39, 22, 500, System.DateTimeKind.Local))
+    (j.GetDate "anniversary").Kind |> should equal System.DateTimeKind.Local
+
+[<Test>]
+let ``Can parse document with partial iso date``() =
+    let j = parse "{\"anniversary\": \"2009-05-19\"}"
+    j.GetDate "anniversary" |> should equal (new System.DateTime(2009, 05, 19, 0, 0, 0, System.DateTimeKind.Local))
+    (j.GetDate "anniversary").Kind |> should equal System.DateTimeKind.Local
+
+[<Test>]
+let ``Can parse document with timezone iso date``() =
+    let j = parse "{\"anniversary\": \"2009-05-19 14:39:22+0600\"}"
+    (j.GetDate "anniversary").ToUniversalTime() |> should equal (new System.DateTime(2009, 05, 19, 8, 39, 22, System.DateTimeKind.Utc))
+    
+[<Test>]
+let ``Can parse document with UTC iso date``() =
+    let j = parse "{\"anniversary\": \"2009-05-19 14:39:22Z\"}"
+    (j.GetDate "anniversary").ToUniversalTime() |> should equal (new System.DateTime(2009, 05, 19, 14, 39, 22, System.DateTimeKind.Utc))
+    (j.GetDate "anniversary").Kind |> should equal System.DateTimeKind.Utc
+    
+// TODO: Due to limitations in the current ISO 8601 datetime parsing these fail, and should be made to pass
+//[<Test>]
+//let ``Cant Yet parse document with basic iso date``() =
+//    let j = parse "{\"anniversary\": \"19810405\"}"
+//    j.GetDate "anniversary" |> should equal (new System.DateTime(1981, 04, 05))
+//
+//[<Test>]
+//let ``Cant Yet parse weird iso date``() =
+//    let j = parse "{\"anniversary\": \"2010-02-18T16.5\"}"
+//    j.GetDate "anniversary" |> should equal (new System.DateTime(2010, 02, 18, 16, 30, 00))
+
+[<Test>]
+let ``Can parse completely invalid, but close, date as string``() =
+    let j = parse "{\"anniversary\": \"2010-02-18T16.5:23.35:4\"}"
+    j.GetText "anniversary" |> should equal "2010-02-18T16.5:23.35:4"
+
 open System.Globalization
 open System.Threading
 

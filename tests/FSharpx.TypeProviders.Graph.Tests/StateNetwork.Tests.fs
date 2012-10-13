@@ -4,17 +4,17 @@ open NUnit.Framework
 open FSharpx
 open FSharpx.TypeProviders
 
-type Graph1 = Graph<"Graph1.dgml", "State0">
+type Graph1 = Graph<"Graph1.dgml">
 
 [<Test>]
 let ``Can access initial state``() =   
-    let state = Graph1.InitialState
+    let state = Graph1.StartFromState0()
     Assert.AreEqual(state.Name,"State0")
 
 [<Test>]
 let ``Can access states``() =   
     let state2 = 
-        Graph1.InitialState
+        Graph1.StartFromState0()
           .TransitToState1()
           .TransitToState2()
 
