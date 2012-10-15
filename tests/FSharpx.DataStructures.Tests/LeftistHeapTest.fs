@@ -155,7 +155,7 @@ let ``ofSeq maximalist``() =
 [<Test>]
 let ``IRandomAccessList insert works``() =
     let lena = empty true |> insert "a" |> insert "b" |> insert "c" |> insert "d" |> insert "e" |> insert "f" |> insert "g" |> insert "h" |> insert "i" |> insert "j"
-    ((lena :> IHeap<'a>).Insert "zz") :?> LeftistHeap<'a> |> head |> should equal "zz"
+    ((lena :> IHeap<string>).Insert "zz") :?> LeftistHeap<string> |> head |> should equal "zz"
 
 [<Test>]
 let ``cons pattern discriminator``() =

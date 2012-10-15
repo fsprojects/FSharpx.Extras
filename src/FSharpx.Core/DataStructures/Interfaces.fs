@@ -142,6 +142,40 @@ type IHeap<'a when 'a : comparison> =
     ///returns option head element and tail
     abstract member TryUncons : unit -> ('a * IHeap<'a>) option
 
+type IQueue<'a> =
+    inherit System.Collections.IEnumerable
+    inherit System.Collections.Generic.IEnumerable<'a>
+ 
+    ///returns the count of elememts
+    abstract member Count : unit -> int
+
+    ///returns the first element
+    abstract member Head : unit -> 'a
+
+    ///returns option first element
+    abstract member TryGetHead : unit -> 'a option
+
+    ///returns true if the queue has no elements
+    abstract member IsEmpty : unit -> bool
+
+    ///returns the count of elememts
+    abstract member Length : unit -> int
+
+    ///returns a new queue with the element added to the end
+    abstract member Snoc : 'a -> IQueue<'a>
+
+    ///returns a new queue of the elements trailing the first element
+    abstract member Tail : unit -> IQueue<'a>
+
+    ///returns option queue of the elements trailing the first element
+    abstract member TryGetTail : unit -> IQueue<'a> option
+
+    ///returns the first element and tail
+    abstract member Uncons : unit -> 'a * IQueue<'a>
+
+    //returns the option first element and tail
+    abstract member TryUncons : unit -> ('a * IQueue<'a>) option
+
 type IRandomAccessList<'a> =
     inherit System.Collections.IEnumerable
     inherit System.Collections.Generic.IEnumerable<'a>

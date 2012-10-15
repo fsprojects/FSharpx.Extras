@@ -493,4 +493,4 @@ let ``ofSeq``() =
 [<Test>]
 let ``IRandomAccessList cons works``() =
     let lena = empty() |> cons "a" |> cons "b" |> cons "c" |> cons "d" |> cons "e" |> cons "f" |> cons "g" |> cons "h" |> cons "i" |> cons "j"
-    ((lena :> IRandomAccessList<'a>).Cons "zz") :?> SkewBinaryRandomAccessList<'a> |> head |> should equal "zz"
+    ((lena :> IRandomAccessList<string>).Cons "zz") :?> SkewBinaryRandomAccessList<string> |> head |> should equal "zz"

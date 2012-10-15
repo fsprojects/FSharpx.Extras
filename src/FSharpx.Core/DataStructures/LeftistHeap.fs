@@ -13,59 +13,6 @@ type LeftistHeap<'a when 'a : comparison> =
 
     with
 
-    interface IHeap<'a> with
-        
-        member this.Count() = this.Length()
-
-        member this.Head() = LeftistHeap.head this
-
-        member this.TryGetHead() = LeftistHeap.tryGetHead this
-
-        member this.Insert (x : 'a) = LeftistHeap.insert x this :> _
-
-        member this.IsEmpty() = LeftistHeap.isEmpty this
-
-        member this.IsMaximalist() = LeftistHeap.isMaximalist this
-
-        member this.Length() = LeftistHeap.length this
-
-        member this.Merge xs = LeftistHeap.merge this (xs :?> LeftistHeap<'a>) :> _
-
-        member this.TryMerge xs = 
-            match LeftistHeap.tryMerge this (xs :?> LeftistHeap<'a>) with
-            | None -> None
-            | Some(xs) -> Some(xs :> _)
-
-        member this.Tail() = LeftistHeap.tail this :> _
-
-        member this.TryGetTail() =
-            match LeftistHeap.tryGetTail this with
-            | None -> None
-            | Some(xs) -> Some(xs :> _)
-
-        member this.Uncons() = 
-            (LeftistHeap.head this), (LeftistHeap.tail this) :> _
-
-        member this.TryUncons() =
-            match LeftistHeap.tryUncons this with
-            | None -> None
-            | Some(x, xs) -> Some(x, xs :> _)
-
-        member this.GetEnumerator() = 
-            let e = seq {
-                match LeftistHeap.tryUncons this with
-                | None -> () 
-                | Some(x, ts) ->
-                    yield x 
-                    yield! ts}
-            e.GetEnumerator()
-
-        member this.GetEnumerator() = (this :> _ seq).GetEnumerator() :> IEnumerator  
-
-and LeftistHeap<'a> 
-
-    with
-
     static member private isEmpty : LeftistHeap<'a> -> bool = function 
         | E(_) -> true 
         | _ -> false
@@ -111,10 +58,9 @@ and LeftistHeap<'a>
                 else Some(LeftistHeap.make y a2 (LeftistHeap.merge h1 b2))
         else None
 
-    static member private singleton (x: 'a) (maximalist: bool) = LeftistHeap.make x (E(maximalist)) (E(maximalist))
-
     static member private insert (x: 'a) (h: LeftistHeap<'a>) : LeftistHeap<'a> = 
-        LeftistHeap.merge (LeftistHeap.singleton x (h.IsMaximalist())) h
+        let isMaximalist = h.IsMaximalist()
+        LeftistHeap.merge (T(isMaximalist, 1, 1, x, E(isMaximalist), E(isMaximalist))) h
 
     static member private head: LeftistHeap<'a> -> 'a = function
         | E(_) -> raise Exceptions.Empty
@@ -127,7 +73,8 @@ and LeftistHeap<'a>
     static member internal ofSeq (maximalist: bool) (s:seq<'a>) : LeftistHeap<'a> = 
         if Seq.isEmpty s then E(maximalist)
         else
-            let x, _ = Seq.fold (fun (acc, isMaximalist) elem -> ((LeftistHeap.singleton elem isMaximalist)::acc), isMaximalist) ([], maximalist) s
+            let x, _ = 
+                Seq.fold (fun (acc, isMaximalist) elem -> (((T(isMaximalist, 1, 1, elem, E(isMaximalist), E(isMaximalist))))::acc), isMaximalist) ([], maximalist) s
     
             let pairWiseMerge (l: list<LeftistHeap<'a>>) =
                 let rec loop (acc: list<LeftistHeap<'a>>) : list<LeftistHeap<'a>> -> list<LeftistHeap<'a>> = function
@@ -192,6 +139,55 @@ and LeftistHeap<'a>
 
     ///returns option head element and tail
     member this.TryUncons() = LeftistHeap.tryUncons this
+
+    interface IHeap<'a> with
+        
+        member this.Count() = this.Length()
+
+        member this.Head() = LeftistHeap.head this
+
+        member this.TryGetHead() = LeftistHeap.tryGetHead this
+
+        member this.Insert (x : 'a) = LeftistHeap.insert x this :> _
+
+        member this.IsEmpty() = LeftistHeap.isEmpty this
+
+        member this.IsMaximalist() = LeftistHeap.isMaximalist this
+
+        member this.Length() = LeftistHeap.length this
+
+        member this.Merge xs = LeftistHeap.merge this (xs :?> LeftistHeap<'a>) :> _
+
+        member this.TryMerge xs = 
+            match LeftistHeap.tryMerge this (xs :?> LeftistHeap<'a>) with
+            | None -> None
+            | Some(xs) -> Some(xs :> _)
+
+        member this.Tail() = LeftistHeap.tail this :> _
+
+        member this.TryGetTail() =
+            match LeftistHeap.tryGetTail this with
+            | None -> None
+            | Some(xs) -> Some(xs :> _)
+
+        member this.Uncons() = 
+            (LeftistHeap.head this), (LeftistHeap.tail this) :> _
+
+        member this.TryUncons() =
+            match LeftistHeap.tryUncons this with
+            | None -> None
+            | Some(x, xs) -> Some(x, xs :> _)
+
+        member this.GetEnumerator() = 
+            let e = seq {
+                match LeftistHeap.tryUncons this with
+                | None -> () 
+                | Some(x, ts) ->
+                    yield x 
+                    yield! ts}
+            e.GetEnumerator()
+
+        member this.GetEnumerator() = (this :> _ seq).GetEnumerator() :> IEnumerator  
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module LeftistHeap =   

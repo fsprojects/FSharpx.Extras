@@ -351,7 +351,10 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
 
         member this.Tail() = this.Tail() :> _
 
-        member this.TryGetTail() = Some(this.TryGetTail().Value :> _)
+        member this.TryGetTail() =
+            match this.TryGetTail() with
+            | None -> None
+            | Some(q) -> Some(q :> _)
 
         member this.Uncons() = 
             let x, xs = this.Uncons() 
@@ -481,7 +484,7 @@ module BankersDeque =
     ///front-back stream ratio constant defaulted to 2
     let singleton x = empty stndC |> cons x  
 
-    //returns a deque of one element
+    ///returns a deque of one element
     ///c is front-back stream ratio constant, should be at least 2
     let singletonC c x = empty c |> cons x  
 

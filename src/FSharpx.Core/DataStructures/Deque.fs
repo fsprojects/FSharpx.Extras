@@ -326,7 +326,10 @@ type Deque<'a> (front, rBack) =
 
         member this.Tail() = this.Tail() :> _
 
-        member this.TryGetTail() = Some(this.TryGetTail().Value :> _)
+        member this.TryGetTail() = 
+            match this.TryGetTail() with
+            | None -> None
+            | Some(q) -> Some(q :> _)
 
         member this.Uncons() = 
             let x, xs = this.Uncons() 

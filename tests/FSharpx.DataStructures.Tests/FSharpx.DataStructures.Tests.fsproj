@@ -43,6 +43,7 @@
   </PropertyGroup>
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
+	<Compile Include="Infrastructure.fs" />
     <Compile Include="DListTest.fs" />
     <Compile Include="TransientVectorTest.fs" />
     <Compile Include="PersistentVectorTest.fs" />
@@ -60,6 +61,7 @@
 	<Compile Include="BankersDequeTest.fs" />
 	<Compile Include="RealTimeDequeTest.fs" />
 	<Compile Include="LeftistHeapTest.fs" />
+	<Compile Include="IQueueTest.fs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
