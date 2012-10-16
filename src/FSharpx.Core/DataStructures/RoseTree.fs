@@ -2,6 +2,7 @@
 
 open System
 open System.Linq
+open System.Runtime.CompilerServices
 
 /// Multi-way tree, also known as rose tree.
 // Ported from http://hackage.haskell.org/packages/archive/containers/latest/doc/html/src/Data-Tree.html
@@ -26,6 +27,7 @@ and 'a RoseForest = 'a RoseTree LazyList
 module L = LazyList
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+[<Extension>]
 module RoseTree =
     let inline create root children = { Root = root; Children = children }
 
@@ -49,12 +51,16 @@ module RoseTree =
         { RoseTree.Root = a.Root
           Children = L.append a.Children (L.map (bind f) x.Children) }
 
+    [<CompiledName("DfsPre")>]
+    [<Extension>]
     let rec dfsPre (x: _ RoseTree) =
         seq {
             yield x.Root
             yield! Seq.collect dfsPre x.Children
         }
 
+    [<CompiledName("DfsPost")>]
+    [<Extension>]
     let rec dfsPost (x: _ RoseTree) =
         seq {
             yield! Seq.collect dfsPost x.Children
