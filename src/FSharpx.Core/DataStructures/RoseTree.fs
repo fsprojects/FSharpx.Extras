@@ -7,13 +7,19 @@ open System.Linq
 // Ported from http://hackage.haskell.org/packages/archive/containers/latest/doc/html/src/Data-Tree.html
 [<CustomEquality; NoComparison>]
 type 'a RoseTree = { Root: 'a; Children: 'a RoseForest }
-    with 
+    with
+    override x.Equals y = 
+        match y with
+        | :? RoseTree<'a> as y ->
+            (x :> _ IEquatable).Equals y
+        | _ -> false
+    override x.GetHashCode() = 
+        391
+        + (box x.Root).GetHashCode() * 23
+        + x.Children.GetHashCode()
     interface IEquatable<'a RoseTree> with
         member x.Equals y = 
-            let xc = x.Children :> _ seq
-            let yc = y.Children :> _ seq
-            obj.Equals(x.Root, y.Root) &&
-            xc.SequenceEqual yc
+            obj.Equals(x.Root, y.Root) && (x.Children :> _ seq).SequenceEqual y.Children
             
 and 'a RoseForest = 'a RoseTree LazyList
 
@@ -61,5 +67,6 @@ module RoseTree =
         L.map (unfold f)
 
 // TODO: 
+// bfs: http://pdf.aminer.org/000/309/950/the_under_appreciated_unfold.pdf
 // sequence / mapM / filterM
 // zipper: http://hackage.haskell.org/package/rosezipper-0.2
