@@ -14,6 +14,32 @@ type NonEmptyListGen =
 
 let registerGen = lazy (Arb.register<NonEmptyListGen>() |> ignore)
 
+[<Test>]
+let ``functor laws``() =
+    registerGen.Force()
+    let n = sprintf "NonEmptyList : functor %s"
+    let map = NonEmptyList.map
+    fsCheck (n "preserves identity") <| 
+        fun value -> map id value = value
+    fsCheck (n "preserves composition") <|
+        fun f g value -> map (f << g) value = (map f << map g) value
+
+[<Test>]
+let ``monad laws``() =
+    registerGen.Force()
+    let ret (x: int) = NonEmptyList.singleton x
+    let n = sprintf "NonEmptyList : monad %s"
+    let inline (>>=) m f = NonEmptyList.collect f m
+    fsCheck "left identity" <| 
+        fun f a -> ret a >>= f = f a
+    fsCheck "right identity" <| 
+        fun x -> x >>= ret = x
+    fsCheck "associativity" <| 
+        fun f g v ->
+            let a = (v >>= f) >>= g
+            let b = v >>= (fun x -> f x >>= g)
+            a = b
+
 let fsCheck t = fsCheck "" t
 
 [<Test>]
@@ -31,12 +57,6 @@ let ``toList is same length as non-empty list`` () =
 [<Test>]
 let ``toArray is same length as non-empty list`` () =
     fsCheck (fun nel -> NonEmptyList.toArray nel |> Array.length = nel.Length)
-
-[<Test>]
-let ``functor laws``() =
-    let map = NonEmptyList.map
-    fsCheck (fun nel -> map id nel = nel)
-    fsCheck (fun f g nel -> map (f << g) nel = (map f << map g) nel)
 
 [<Test>]
 let ``reverse . reverse = id`` () =
@@ -71,23 +91,3 @@ let reduce() =
         let actual = NonEmptyList.reduce (+) nel
         let expected = nel |> NonEmptyList.toList |> List.sum
         expected = actual
-
-[<Test>]
-let ``monad left identity``() =
-    fsCheck <| fun f a ->
-        let x = NonEmptyList.singleton a |> NonEmptyList.collect f
-        x = f a
-
-[<Test>]
-let ``monad right identity``() =
-    fsCheck <| fun nel ->
-        NonEmptyList.collect NonEmptyList.singleton nel = nel
-
-[<Test>]
-let ``monad associativity``() =
-    registerGen.Force()
-    let inline (>>=) m f = NonEmptyList.collect f m
-    fsCheck <| fun (f: int -> int NonEmptyList) (g: int -> int NonEmptyList) (nel: int NonEmptyList) ->
-        let n1 = (nel >>= f) >>= g
-        let n2 = nel >>= (fun x -> f x >>= g)
-        n1 = n2
