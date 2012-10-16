@@ -35,12 +35,14 @@ module RoseTree =
         { RoseTree.Root = f x.Root
           Children = L.map (map f) x.Children }
 
-    let rec ap f x =
+    let rec ap x f =
         { RoseTree.Root = f.Root x.Root
           Children = 
             let a = L.map (map f.Root) x.Children
-            let b = L.map (fun c -> ap c x) f.Children
+            let b = L.map (fun c -> ap x c) f.Children
             L.append a b }
+
+    let inline lift2 f a b = singleton f |> ap a |> ap b
 
     let rec bind f x =
         let a = f x.Root
