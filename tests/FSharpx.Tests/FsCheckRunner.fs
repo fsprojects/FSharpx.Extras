@@ -1,5 +1,6 @@
 ﻿module FsCheck.NUnit
 
+open FSharpx
 open FsCheck
 open NUnit.Framework
 
@@ -20,9 +21,4 @@ let fsCheck name testable =
     FsCheck.Check.One (name, nUnitConfig, testable)
 
 module Gen = 
-    let ap x f = 
-        gen {
-            let! x' = x
-            let! f' = f
-            return f' x'
-        }
+    let ap x = flip Gen.apply x
