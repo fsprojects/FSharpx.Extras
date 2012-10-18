@@ -185,6 +185,12 @@ type FSharpOption =
         | Some v -> Choice1Of2 v
         | _ -> Choice2Of2 other
 
+    [<Extension>]
+    static member ToFSharpList o = Option.toList o
+
+    [<Extension>]
+    static member ToArray o = Option.toArray o
+
     // LINQ
     [<Extension>]
     static member Select (o, f: Func<_,_>) = Option.map f.Invoke o
