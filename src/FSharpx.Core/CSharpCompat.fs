@@ -54,58 +54,74 @@ type FSharpFunc =
 /// Extensions around Actions and Funcs
 [<Extension>]
 type Funcs =
+    /// Converts an action to a function returning Unit
     [<Extension>]
     static member ToFunc (a: Action) =
         Func<_>(a.Invoke)
 
+    /// Converts an action to a function returning Unit
     [<Extension>]
     static member ToFunc (a: Action<_>) =
         Func<_,_>(a.Invoke)
   
+    /// Converts an action to a function returning Unit
     [<Extension>]
     static member ToFunc (a: Action<_,_>) =
         Func<_,_,_>(curry a.Invoke)
-  
+
+    /// Converts an action to a function returning Unit
     [<Extension>]
     static member ToFunc (f: Action<_,_,_>) =
         Func<_,_,_,_>(fun a b c -> f.Invoke(a,b,c))
 
+    /// Converts an uncurried function to a curried function
     [<Extension>]
     static member Curry (f: Func<_,_,_>) =
         Func<_,Func<_,_>>(fun a -> Func<_,_>(fun b -> f.Invoke(a,b)))
 
+    /// Converts an uncurried function to a curried function
     [<Extension>]
     static member Curry (f: Func<_,_,_,_>) =
         Func<_,Func<_,Func<_,_>>>(fun a -> Func<_,Func<_,_>>(fun b -> Func<_,_>(fun c -> f.Invoke(a,b,c))))
 
+    /// Converts an action with 2 arguments into an action taking a 2-tuple
     [<Extension>]
     static member Tuple (f: Action<_,_>) =
         Action<_>(fun (a,b) -> f.Invoke(a,b))
 
+    /// Converts an action with 3 arguments into an action taking a 3-tuple
     [<Extension>]
     static member Tuple (f: Action<_,_,_>) =
         Action<_>(fun (a,b,c) -> f.Invoke(a,b,c))
 
+    /// Converts an action with 4 arguments into an action taking a 4-tuple
     [<Extension>]
     static member Tuple (f: Action<_,_,_,_>) =
         Action<_>(fun (a,b,c,d) -> f.Invoke(a,b,c,d))
 
+    /// Converts an action taking a 2-tuple into an action with 2 parameters
     [<Extension>]
     static member Untuple (f: Action<_ * _>) =
         Action<_,_>(fun a b -> f.Invoke(a,b))
 
+    /// /// Converts an action taking a 3-tuple into an action with 3 parameters
     [<Extension>]
     static member Untuple (f: Action<_ * _ * _>) =
         Action<_,_,_>(fun a b c -> f.Invoke(a,b,c))
 
+    /// Converts an action taking a 4-tuple into an action with 4 parameters
     [<Extension>]
     static member Untuple (f: Action<_ * _ * _ * _>) =
         Action<_,_,_,_>(fun a b c d -> f.Invoke(a,b,c,d))
 
+    /// Composes two functions.
+    /// Mathematically: f . g
     [<Extension>]
     static member Compose (f: Func<_,_>, g: Func<_,_>) =
         Func<_,_>(fun x -> f.Invoke(g.Invoke(x)))
 
+    /// Composes two functions (forward composition).
+    /// Mathematically: g . f
     [<Extension>]
     static member AndThen (f: Func<_,_>, g: Func<_,_>) =
         Func<_,_>(fun x -> g.Invoke(f.Invoke(x)))
@@ -161,6 +177,7 @@ type FSharpOption =
         | Some v -> f.Invoke v
         | _ -> ()
 
+    /// Gets the option if Some x, otherwise the supplied default value.
     [<Extension>]
     static member OrElse (o, other) =
         match o with
@@ -185,29 +202,38 @@ type FSharpOption =
         | Some v -> Choice1Of2 v
         | _ -> Choice2Of2 other
 
+    /// Converts the option to a list of length 0 or 1
     [<Extension>]
     static member ToFSharpList o = Option.toList o
 
+    /// Converts the option to an array of length 0 or 1
     [<Extension>]
     static member ToArray o = Option.toArray o
 
-    // LINQ
+    /// Transforms an option value by using a specified mapping function
     [<Extension>]
     static member Select (o, f: Func<_,_>) = Option.map f.Invoke o
 
+    /// Invokes a function on an optional value that itself yields an option
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>) = Option.bind f.Invoke o
 
+    /// Invokes a function on an optional value that itself yields an option,
+    /// and then applies a mapping function
     [<Extension>]
     static member SelectMany (o, f: Func<_,_>, mapper: Func<_,_,_>) =
       let mapper = Option.lift2 (curry mapper.Invoke)
       let v = Option.bind f.Invoke o
       mapper o v
 
+    /// <summary>
+    /// Evaluates the equivalent of <see cref="System.Linq.Enumerable.Aggregate"/> for an option
+    /// </summary>
     [<Extension>]
     static member Aggregate (o, state, f: Func<_,_,_>) =
         Option.fold (curry f.Invoke) state o
 
+    /// Applies a predicate to the option. If the predicate returns true, returns Some x, otherwise None.
     [<Extension>]
     static member Where (o: _ option, pred: _ Predicate) =
       Option.filter pred.Invoke o
@@ -247,9 +273,13 @@ type FSharpOption =
 [<Extension>]
 type FSharpChoice =
 
+    /// If Choice is 1Of2, return its value.
+    /// Otherwise throw ArgumentException.
     [<Extension>]
     static member Value (c: Choice<_,_>) = Choice.get c
 
+    /// Attempts to cast an object.
+    /// Stores the cast value in 1Of2 if successful, otherwise stores the exception in 2Of2
     static member Cast (o: obj) = Choice.cast o
 
     [<Extension>]
