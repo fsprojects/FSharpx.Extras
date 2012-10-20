@@ -24,14 +24,14 @@ type BatchedDeque<'a> (front, rBack) =
     member this.Cons x =  BatchedDeque(x::front, rBack)
            
     ///returns the first element 
-    member this.Head() =
+    member this.Head =
         match front, rBack with
         | [], [] -> raise Exceptions.Empty
         | hd::tl, _ -> hd
         | [], xs -> List.rev xs |> List.head
 
     ///returns option first element
-    member this.TryGetHead() =
+    member this.TryGetHead =
         match front, rBack with
         | [], [] -> None
         | hd::tl, _ -> Some(hd)
@@ -40,7 +40,7 @@ type BatchedDeque<'a> (front, rBack) =
             Some(x)
 
     ///returns a new deque of the elements before the last element
-    member this.Init() = 
+    member this.Init = 
         match front, rBack with 
         | [],  [] -> raise Exceptions.Empty
         | _ , x::xs -> BatchedDeque(front, xs)
@@ -53,7 +53,7 @@ type BatchedDeque<'a> (front, rBack) =
             BatchedDeque(front', rear'.Tail) 
             
     ///returns a new deque of the elements before the last element
-    member this.TryGetInit() = 
+    member this.TryGetInit = 
         match front, rBack with 
         | [],  [] -> None
         | _ , x::xs -> Some(BatchedDeque(front, xs))
@@ -66,26 +66,26 @@ type BatchedDeque<'a> (front, rBack) =
             Some(BatchedDeque(front', rear'.Tail)) 
           
     ///returns true if the deque has no elements  
-    member this.IsEmpty() =  
+    member this.IsEmpty =  
         match front, rBack with
         | [], [] -> true | _ -> false
 
     ///returns the last element
-    member this.Last() = 
+    member this.Last = 
         match front, rBack with
         | [], [] -> raise Exceptions.Empty
         | xs, [] -> List.rev xs |> List.head
         | _, hd::tl -> hd
 
     ///returns option last element
-    member this.TryGetLast() = 
+    member this.TryGetLast = 
         match front, rBack with
         | [], [] -> None
         | xs, [] -> Some(List.rev xs |> List.head)
         | _, hd::tl -> Some(hd)
 
     ///returns the count of elememts
-    member this.Length() = front.Length + rBack.Length
+    member this.Length = front.Length + rBack.Length
 
     ///returns element by index
     member this.Lookup (i:int) =
@@ -164,14 +164,14 @@ type BatchedDeque<'a> (front, rBack) =
             Some((new BatchedDeque<'a>(front, newRear)))
 
     ///returns deque reversed
-    member this.Rev() = 
+    member this.Rev = 
         (new BatchedDeque<'a>(rBack, front))
 
     ///returns a new deque with the element added to the end
     member this.Snoc x = BatchedDeque(front, x::rBack)
 
     ///returns a new deque of the elements trailing the first element
-    member this.Tail() =
+    member this.Tail =
         match front, rBack with
         | [],  [] -> raise Exceptions.Empty
         | x::xs,  _ ->  BatchedDeque(xs, rBack)
@@ -185,7 +185,7 @@ type BatchedDeque<'a> (front, rBack) =
             BatchedDeque(front'.Tail, rear')
 
     ///returns option deque of the elements trailing the first element
-    member this.TryGetTail() =
+    member this.TryGetTail =
         match front, rBack with
         | [],  [] -> None
         | x::xs,  _ ->  Some(BatchedDeque(xs, rBack))
@@ -199,28 +199,28 @@ type BatchedDeque<'a> (front, rBack) =
             Some(BatchedDeque(front'.Tail, rear'))
 
     ///returns the first element and tail
-    member this.Uncons() =  
+    member this.Uncons =  
         match front, rBack with
         | [], [] -> raise Exceptions.Empty
-        | _, _ -> this.Head(), this.Tail()
+        | _, _ -> this.Head, this.Tail
 
     ///returns option first element and tail
-    member this.TryUncons() =  
+    member this.TryUncons =  
         match front, rBack with
         | [], [] -> None
-        | _, _ -> Some(this.Head(), this.Tail())
+        | _, _ -> Some(this.Head, this.Tail)
 
     ///returns init and the last element
-    member this.Unsnoc() =  
+    member this.Unsnoc =  
         match front, rBack with
         | [], [] -> raise Exceptions.Empty
-        | _, _ -> this.Init(), this.Last()
+        | _, _ -> this.Init, this.Last
 
     ///returns option init and the last element
-    member this.TryUnsnoc() =  
+    member this.TryUnsnoc =  
         match front, rBack with
         | [], [] -> None
-        | _, _ -> Some(this.Init(), this.Last())
+        | _, _ -> Some(this.Init, this.Last)
           
     ///returns deque with element updated by index
     member this.Update (i:int) (y: 'a) =
@@ -273,23 +273,23 @@ type BatchedDeque<'a> (front, rBack) =
 
         member this.Cons x = this.Cons x :> _
 
-        member this.Count() = this.Length()
+        member this.Count = this.Length
 
-        member this.Head() = this.Head()
+        member this.Head = this.Head
 
-        member this.TryGetHead() = this.TryGetHead()
+        member this.TryGetHead = this.TryGetHead
 
-        member this.Init() = this.Init() :> _
+        member this.Init = this.Init :> _
 
-        member this.TryGetInit() = Some(this.TryGetInit().Value :> _)
+        member this.TryGetInit = Some(this.TryGetInit.Value :> _)
 
-        member this.IsEmpty() = this.IsEmpty()
+        member this.IsEmpty = this.IsEmpty
 
-        member this.Last() = this.Last()
+        member this.Last = this.Last
 
-        member this.TryGetLast() = this.TryGetLast()
+        member this.TryGetLast = this.TryGetLast
 
-        member this.Length() = this.Length()
+        member this.Length = this.Length
 
         member this.Lookup i = this.Lookup i
 
@@ -302,29 +302,32 @@ type BatchedDeque<'a> (front, rBack) =
             | None -> None
             | Some(q) -> Some(q :> _)
 
-        member this.Rev() = this.Rev() :> _
+        member this.Rev = this.Rev :> _
 
         member this.Snoc x = this.Snoc x :> _
 
-        member this.Tail() = this.Tail() :> _
+        member this.Tail = this.Tail :> _
 
-        member this.TryGetTail() = Some(this.TryGetTail().Value :> _)
+        member this.TryGetTail = 
+            match this.TryGetTail with
+            | None -> None
+            | Some(q) -> Some(q :> _)
 
-        member this.Uncons() = 
-            let x, xs = this.Uncons() 
+        member this.Uncons = 
+            let x, xs = this.Uncons 
             x, xs :> _
 
-        member this.TryUncons() = 
-            match this.TryUncons() with
+        member this.TryUncons = 
+            match this.TryUncons with
             | None -> None
             | Some(x, q) -> Some(x, q :> _)
 
-        member this.Unsnoc() = 
-            let xs, x = this.Unsnoc() 
+        member this.Unsnoc = 
+            let xs, x = this.Unsnoc 
             xs :> _, x
 
-        member this.TryUnsnoc() = 
-            match this.TryUnsnoc() with
+        member this.TryUnsnoc = 
+            match this.TryUnsnoc with
             | None -> None
             | Some(q, x) -> Some(q :> _, x)
 
@@ -350,9 +353,9 @@ module BatchedDeque =
 
     //pattern discriminator
 
-    let (|Cons|Nil|) (q : BatchedDeque<'a>) = match q.TryUncons() with Some(a,b) -> Cons(a,b) | None -> Nil
+    let (|Cons|Nil|) (q : BatchedDeque<'a>) = match q.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
 
-    let (|Snoc|Nil|) (q : BatchedDeque<'a>) = match q.TryUnsnoc() with Some(a,b) -> Snoc(a,b) | None -> Nil
+    let (|Snoc|Nil|) (q : BatchedDeque<'a>) = match q.TryUnsnoc with Some(a,b) -> Snoc(a,b) | None -> Nil
 
     ///returns a new deque with the element added to the beginning
     let inline cons (x : 'a) (q : BatchedDeque<'a>) = q.Cons x 
@@ -361,28 +364,28 @@ module BatchedDeque =
     let empty() = BatchedDeque.Empty()
 
     ///returns the first element
-    let inline head (q : BatchedDeque<'a>) = q.Head()
+    let inline head (q : BatchedDeque<'a>) = q.Head
 
     ///returns option first element
-    let inline tryGetHead (q : BatchedDeque<'a>) = q.TryGetHead()
+    let inline tryGetHead (q : BatchedDeque<'a>) = q.TryGetHead
 
     ///returns a new deque of the elements before the last element
-    let inline init (q : BatchedDeque<'a>) = q.Init() 
+    let inline init (q : BatchedDeque<'a>) = q.Init 
 
     ///returns option deque of the elements before the last element
-    let inline tryGetInit (q : BatchedDeque<'a>) = q.TryGetInit() 
+    let inline tryGetInit (q : BatchedDeque<'a>) = q.TryGetInit 
 
     ///returns true if the deque has no elements
-    let inline isEmpty (q : BatchedDeque<'a>) = q.IsEmpty()
+    let inline isEmpty (q : BatchedDeque<'a>) = q.IsEmpty
 
     ///returns the last element
-    let inline last (q : BatchedDeque<'a>) = q.Last()
+    let inline last (q : BatchedDeque<'a>) = q.Last
 
     ///returns option last element
-    let inline tryGetLast (q : BatchedDeque<'a>) = q.TryGetLast()
+    let inline tryGetLast (q : BatchedDeque<'a>) = q.TryGetLast
 
     ///returns the count of elememts
-    let inline length (q : BatchedDeque<'a>) = q.Length()
+    let inline length (q : BatchedDeque<'a>) = q.Length
 
     ///returns element by index
     let inline lookup i (q : BatchedDeque<'a>) = q.Lookup i
@@ -403,7 +406,7 @@ module BatchedDeque =
     let inline tryRemove i (q : BatchedDeque<'a>) = q.TryRemove i
 
     ///returns deque reversed
-    let inline rev (q : BatchedDeque<'a>) = q.Rev()
+    let inline rev (q : BatchedDeque<'a>) = q.Rev
 
     ///returns a deque of one element
     let singleton x = BatchedDeque.Singleton x
@@ -412,22 +415,22 @@ module BatchedDeque =
     let inline snoc (x : 'a) (q : BatchedDeque<'a>) = (q.Snoc x) 
 
     ///returns a new deque of the elements trailing the first element
-    let inline tail (q : BatchedDeque<'a>) = q.Tail() 
+    let inline tail (q : BatchedDeque<'a>) = q.Tail 
 
     ///returns option deque of the elements trailing the first element
-    let inline tryGetTail (q : BatchedDeque<'a>) = q.TryGetTail() 
+    let inline tryGetTail (q : BatchedDeque<'a>) = q.TryGetTail 
 
     ///returns the first element and tail
-    let inline uncons (q : BatchedDeque<'a>) = q.Uncons()
+    let inline uncons (q : BatchedDeque<'a>) = q.Uncons
 
     ///returns option first element and tail
-    let inline tryUncons (q : BatchedDeque<'a>) = q.TryUncons()
+    let inline tryUncons (q : BatchedDeque<'a>) = q.TryUncons
 
     ///returns init and the last element
-    let inline unsnoc (q : BatchedDeque<'a>) = q.Unsnoc()
+    let inline unsnoc (q : BatchedDeque<'a>) = q.Unsnoc
 
     ///returns option init and the last element
-    let inline tryUnsnoc (q : BatchedDeque<'a>) = q.TryUnsnoc()
+    let inline tryUnsnoc (q : BatchedDeque<'a>) = q.TryUnsnoc
 
     ///returns deque with element updated by index
     let inline update i y (q : BatchedDeque<'a>) = q.Update i y

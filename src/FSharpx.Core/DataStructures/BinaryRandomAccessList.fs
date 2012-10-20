@@ -131,28 +131,28 @@ type BinaryRandomAccessList<'a> (randomAccessList) =
 
     member this.Cons (x:'a)  = BinaryRandomAccessList(BinaryRandomAccessList.consTree ((Leaf x), randomAccessList))
 
-    member this.Head() =
+    member this.Head =
         match BinaryRandomAccessList.unconsTree randomAccessList with
         | Leaf x, _ -> x
         | _ -> raise Exceptions.Empty
 
-    member this.TryGetHead() =
+    member this.TryGetHead =
        match BinaryRandomAccessList.tryUnconsTree randomAccessList with
         | Some(Leaf x, _) -> Some(x)
         | _ -> None
 
-    member this.IsEmpty() = 
+    member this.IsEmpty = 
         match randomAccessList with
         | [] -> true
         | _ -> false
 
-    member this.Length() = BinaryRandomAccessList.length (0, 1, randomAccessList)
+    member this.Length = BinaryRandomAccessList.length (0, 1, randomAccessList)
 
     member this.Lookup (i:int) = BinaryRandomAccessList.lookup (i, randomAccessList)
 
     member thie.TryLookup (i:int) = BinaryRandomAccessList.tryLookup (i, randomAccessList)
 
-    member this.Rev() =
+    member this.Rev =
 
         let rec loop : list<Digit<'a>> * list<Digit<'a>> -> BinaryRandomAccessList<'a>  = function
             | acc, [] -> BinaryRandomAccessList(acc)  
@@ -162,21 +162,21 @@ type BinaryRandomAccessList<'a> (randomAccessList) =
             
         loop ([], randomAccessList)
 
-    member this.Tail() =
+    member this.Tail =
         let _, ts = BinaryRandomAccessList.unconsTree randomAccessList
         BinaryRandomAccessList(ts)
 
-    member this.TryGetTail() =
+    member this.TryGetTail =
         match BinaryRandomAccessList.tryUnconsTree randomAccessList with
         | None -> None
         | Some(_, xs) -> Some(BinaryRandomAccessList(xs))
 
-    member this.Uncons() =
+    member this.Uncons =
         match BinaryRandomAccessList.unconsTree randomAccessList with
         | (Leaf x), ts -> x, BinaryRandomAccessList(ts)
         | _ -> failwith "can't get there"
 
-    member this.TryUncons() =
+    member this.TryUncons =
         match BinaryRandomAccessList.tryUnconsTree randomAccessList with
         | Some((Leaf x), ts) -> Some(x, BinaryRandomAccessList(ts))
         | _ -> None
@@ -192,35 +192,35 @@ type BinaryRandomAccessList<'a> (randomAccessList) =
 
         member this.Cons (x : 'a) = this.Cons x :> _
 
-        member this.Count() = this.Length()
+        member this.Count = this.Length
 
-        member this.Head() = this.Head()
+        member this.Head = this.Head
 
-        member this.TryGetHead() = this.TryGetHead()
+        member this.TryGetHead = this.TryGetHead
 
-        member this.IsEmpty() = this.IsEmpty()
+        member this.IsEmpty = this.IsEmpty
 
-        member this.Length() = this.Length()
+        member this.Length = this.Length
 
         member this.Lookup i = this.Lookup i
 
         member this.TryLookup i = this.TryLookup i
 
-        member this.Rev() = this.Rev() :> _
+        member this.Rev = this.Rev :> _
 
-        member this.Tail() = this.Tail() :> _
+        member this.Tail = this.Tail :> _
 
-        member this.TryGetTail() =
-            match this.TryGetTail() with
+        member this.TryGetTail =
+            match this.TryGetTail with
             | None -> None
             | Some(xs) -> Some(xs :> _)
 
-        member this.Uncons() = 
-            let x, ts = this.Uncons() 
+        member this.Uncons = 
+            let x, ts = this.Uncons 
             x, ts :> _
 
-        member this.TryUncons() =
-            match this.TryUncons()  with
+        member this.TryUncons =
+            match this.TryUncons  with
             | None -> None
             | Some(x, ts) -> Some(x, ts :> _)
 
@@ -233,7 +233,7 @@ type BinaryRandomAccessList<'a> (randomAccessList) =
 
         member this.GetEnumerator() = 
             let e = seq {
-                match this.TryUncons() with
+                match this.TryUncons with
                 | None -> () 
                 | Some(x, ts) ->
                     yield x 
@@ -246,25 +246,25 @@ type BinaryRandomAccessList<'a> (randomAccessList) =
 module BinaryRandomAccessList =   
     //pattern discriminator
 
-    let (|Cons|Nil|) (l: BinaryRandomAccessList<'a>) = match l.TryUncons() with Some(a,b) -> Cons(a,b) | None -> Nil
+    let (|Cons|Nil|) (l: BinaryRandomAccessList<'a>) = match l.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
   
      ///returns a new random access list with the element added to the beginning
     let inline cons x (xs: BinaryRandomAccessList<'a>) = xs.Cons x   
   
     ///returns the first element
-    let inline head (xs: BinaryRandomAccessList<'a>)  = xs.Head()
+    let inline head (xs: BinaryRandomAccessList<'a>)  = xs.Head
 
     ///returns option first element 
-    let inline tryGetHead (xs: BinaryRandomAccessList<'a>)  = xs.TryGetHead()
+    let inline tryGetHead (xs: BinaryRandomAccessList<'a>)  = xs.TryGetHead
 
     ///returns a empty random access list
     let inline empty() = BinaryRandomAccessList<'a>([])
 
     ///returns true if the random access list has no elements
-    let inline isEmpty (xs: BinaryRandomAccessList<'a>) = xs.IsEmpty()
+    let inline isEmpty (xs: BinaryRandomAccessList<'a>) = xs.IsEmpty
 
     ///returns the count of elememts
-    let inline length (xs: BinaryRandomAccessList<'a>) = xs.Length() 
+    let inline length (xs: BinaryRandomAccessList<'a>) = xs.Length 
 
     ///returns element by index
     let inline lookup i (xs: BinaryRandomAccessList<'a>) = xs.Lookup i 
@@ -276,19 +276,19 @@ module BinaryRandomAccessList =
     let ofSeq s = BinaryRandomAccessList.ofSeq s
 
     //returns random access list reversed
-    let inline rev (xs: BinaryRandomAccessList<'a>) = xs.Rev()
+    let inline rev (xs: BinaryRandomAccessList<'a>) = xs.Rev
 
     ///returns a new random access list of the elements trailing the first element
-    let inline tail (xs: BinaryRandomAccessList<'a>) = xs.Tail()
+    let inline tail (xs: BinaryRandomAccessList<'a>) = xs.Tail
 
     ///returns a option random access list of the elements trailing the first element
-    let inline tryGetTail (xs: BinaryRandomAccessList<'a>) = xs.TryGetTail()
+    let inline tryGetTail (xs: BinaryRandomAccessList<'a>) = xs.TryGetTail
 
     ///returns the first element and tail
-    let inline uncons (xs: BinaryRandomAccessList<'a>) = xs.Uncons()
+    let inline uncons (xs: BinaryRandomAccessList<'a>) = xs.Uncons
 
     ///returns the option first element and tail
-    let inline tryUncons (xs: BinaryRandomAccessList<'a>) = xs.TryUncons()
+    let inline tryUncons (xs: BinaryRandomAccessList<'a>) = xs.TryUncons
 
     ///returns random access list with element updated by index
     let inline update i y (xs: BinaryRandomAccessList<'a>) = xs.Update i y
