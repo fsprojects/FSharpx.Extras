@@ -238,5 +238,32 @@ namespace FSharpx.CSharpTests {
             Assert.AreEqual(noList, r);
         }
 
+        [Test]
+        public void ToFSharpList_None() {
+            FSharpOption<int> a = null;
+            FSharpList<int> b = a.ToFSharpList();
+            Assert.AreEqual(0, b.Length);
+        }
+
+        [Test]
+        public void ToFSharpList_Some() {
+            var a = 5.Some().ToFSharpList();
+            Assert.AreEqual(1, a.Length);
+            Assert.AreEqual(5, a[0]);
+        }
+
+        [Test]
+        public void ToArray_None() {
+            FSharpOption<int> a = null;
+            int[] b = a.ToArray();
+            Assert.AreEqual(0, b.Length);
+        }
+
+        [Test]
+        public void ToArray_Some() {
+            var a = 5.Some().ToArray();
+            Assert.AreEqual(1, a.Length);
+            Assert.AreEqual(5, a[0]);
+        }
     }
 }
