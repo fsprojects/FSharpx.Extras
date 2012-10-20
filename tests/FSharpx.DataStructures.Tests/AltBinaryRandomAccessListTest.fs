@@ -1103,4 +1103,4 @@ let ``ofSeq``() =
 
 [<Test>]
 let ``IRandomAccessList cons works``() =
-    ((lena :> IRandomAccessList<string>).Cons "zz") :?> AltBinRndAccList<string> |> head |> should equal "zz"
+    ((lena :> IRandomAccessList<string>).Cons "zz").Head |> should equal "zz"

@@ -133,22 +133,22 @@ type SkewBinaryRandomAccessList<'a> (randomAccessList) =
 
     member this.Cons (x:'a)  = SkewBinaryRandomAccessList(SkewBinaryRandomAccessList.cons x randomAccessList)
 
-    member this.Head() = SkewBinaryRandomAccessList.head randomAccessList
+    member this.Head = SkewBinaryRandomAccessList.head randomAccessList
 
-    member this.TryGetHead() = SkewBinaryRandomAccessList.tryGetHead randomAccessList
+    member this.TryGetHead = SkewBinaryRandomAccessList.tryGetHead randomAccessList
 
-    member this.IsEmpty() = 
+    member this.IsEmpty = 
         match randomAccessList with
         | [] -> true
         | _ -> false
 
-    member this.Length() = SkewBinaryRandomAccessList.length (0, randomAccessList)
+    member this.Length = SkewBinaryRandomAccessList.length (0, randomAccessList)
 
     member this.Lookup (i:int) = SkewBinaryRandomAccessList.lookup (i, randomAccessList)
 
     member thie.TryLookup (i:int) = SkewBinaryRandomAccessList.tryLookup (i, randomAccessList)
 
-    member this.Rev() =
+    member this.Rev =
 
         let rec loop : list<int * TreeSBRAL<'a>> * list<int * TreeSBRAL<'a>> -> SkewBinaryRandomAccessList<'a>  = function
             | acc, [] -> SkewBinaryRandomAccessList(acc)  
@@ -158,22 +158,22 @@ type SkewBinaryRandomAccessList<'a> (randomAccessList) =
             
         loop ([], randomAccessList)
 
-    member this.Tail() = SkewBinaryRandomAccessList(SkewBinaryRandomAccessList.tail randomAccessList)
+    member this.Tail = SkewBinaryRandomAccessList(SkewBinaryRandomAccessList.tail randomAccessList)
 
-    member this.TryGetTail() =
+    member this.TryGetTail =
         match randomAccessList with
         | [] -> None
         | (1, Leaf _)::ts -> Some(SkewBinaryRandomAccessList(ts))
         | (w, Node(_, t1, t2))::ts -> Some(SkewBinaryRandomAccessList((w/2, t1) :: (w/2, t2) :: ts))
         | _ -> failwith "should not get there"
 
-    member this.Uncons() =
-        this.Head(), this.Tail()
+    member this.Uncons =
+        this.Head, this.Tail
 
-    member this.TryUncons() =
+    member this.TryUncons =
         match SkewBinaryRandomAccessList.tryGetHead randomAccessList with
         | None -> None
-        | Some(x) -> Some(x, this.Tail()) 
+        | Some(x) -> Some(x, this.Tail) 
 
     member this.Update i y = SkewBinaryRandomAccessList(SkewBinaryRandomAccessList.update i y randomAccessList)
         
@@ -186,35 +186,35 @@ type SkewBinaryRandomAccessList<'a> (randomAccessList) =
 
         member this.Cons (x : 'a) = this.Cons x :> _
 
-        member this.Count() = this.Length()
+        member this.Count = this.Length
 
-        member this.Head() = this.Head()
+        member this.Head = this.Head
 
-        member this.TryGetHead() = this.TryGetHead()
+        member this.TryGetHead = this.TryGetHead
 
-        member this.IsEmpty() = this.IsEmpty()
+        member this.IsEmpty = this.IsEmpty
 
-        member this.Length() = this.Length()
+        member this.Length = this.Length
 
         member this.Lookup i = this.Lookup i
 
         member this.TryLookup i = this.TryLookup i
 
-        member this.Rev() = this.Rev() :> _
+        member this.Rev = this.Rev :> _
 
-        member this.Tail() = this.Tail() :> _
+        member this.Tail = this.Tail :> _
 
-        member this.TryGetTail() =
-            match this.TryGetTail() with
+        member this.TryGetTail =
+            match this.TryGetTail with
             | None -> None
             | Some(xs) -> Some(xs :> _)
 
-        member this.Uncons() = 
-            let x, ts = this.Uncons() 
+        member this.Uncons = 
+            let x, ts = this.Uncons 
             x, ts :> _
 
-        member this.TryUncons() =
-            match this.TryUncons()  with
+        member this.TryUncons =
+            match this.TryUncons  with
             | None -> None
             | Some(x, ts) -> Some(x, ts :> _)
 
@@ -227,7 +227,7 @@ type SkewBinaryRandomAccessList<'a> (randomAccessList) =
 
         member this.GetEnumerator() = 
             let e = seq {
-                match this.TryUncons() with
+                match this.TryUncons with
                 | None -> () 
                 | Some(x, ts) ->
                     yield x 
@@ -240,25 +240,25 @@ type SkewBinaryRandomAccessList<'a> (randomAccessList) =
 module SkewBinaryRandomAccessList =   
     //pattern discriminator
 
-    let (|Cons|Nil|) (l: SkewBinaryRandomAccessList<'a>) = match l.TryUncons() with Some(a,b) -> Cons(a,b) | None -> Nil
+    let (|Cons|Nil|) (l: SkewBinaryRandomAccessList<'a>) = match l.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
   
      ///returns a new random access list with the element added to the beginning
     let inline cons x (xs: SkewBinaryRandomAccessList<'a>) = xs.Cons x   
   
     ///returns the first element
-    let inline head (xs: SkewBinaryRandomAccessList<'a>)  = xs.Head()
+    let inline head (xs: SkewBinaryRandomAccessList<'a>)  = xs.Head
 
     ///returns option first element 
-    let inline tryGetHead (xs: SkewBinaryRandomAccessList<'a>)  = xs.TryGetHead()
+    let inline tryGetHead (xs: SkewBinaryRandomAccessList<'a>)  = xs.TryGetHead
 
     ///returns a empty random access list
     let inline empty() = SkewBinaryRandomAccessList<'a>([])
 
     ///returns true if the random access list has no elements
-    let inline isEmpty (xs: SkewBinaryRandomAccessList<'a>) = xs.IsEmpty()
+    let inline isEmpty (xs: SkewBinaryRandomAccessList<'a>) = xs.IsEmpty
 
     ///returns the count of elememts
-    let inline length (xs: SkewBinaryRandomAccessList<'a>) = xs.Length() 
+    let inline length (xs: SkewBinaryRandomAccessList<'a>) = xs.Length 
 
     ///returns element by index
     let inline lookup i (xs: SkewBinaryRandomAccessList<'a>) = xs.Lookup i 
@@ -269,19 +269,19 @@ module SkewBinaryRandomAccessList =
     let ofSeq s = SkewBinaryRandomAccessList.ofSeq s
 
     //returns random access list reversed
-    let inline rev (xs: SkewBinaryRandomAccessList<'a>) = xs.Rev()
+    let inline rev (xs: SkewBinaryRandomAccessList<'a>) = xs.Rev
 
     ///returns a new random access list of the elements trailing the first element
-    let inline tail (xs: SkewBinaryRandomAccessList<'a>) = xs.Tail()
+    let inline tail (xs: SkewBinaryRandomAccessList<'a>) = xs.Tail
 
     ///returns a option random access list of the elements trailing the first element
-    let inline tryGetTail (xs: SkewBinaryRandomAccessList<'a>) = xs.TryGetTail()
+    let inline tryGetTail (xs: SkewBinaryRandomAccessList<'a>) = xs.TryGetTail
 
     ///returns the first element and tail
-    let inline uncons (xs: SkewBinaryRandomAccessList<'a>) = xs.Uncons()
+    let inline uncons (xs: SkewBinaryRandomAccessList<'a>) = xs.Uncons
 
     ///returns the option first element and tail
-    let inline tryUncons (xs: SkewBinaryRandomAccessList<'a>) = xs.TryUncons()
+    let inline tryUncons (xs: SkewBinaryRandomAccessList<'a>) = xs.TryUncons
 
     ///returns random access list with element updated by index
     let inline update i y (xs: SkewBinaryRandomAccessList<'a>) = xs.Update i y

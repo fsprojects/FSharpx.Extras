@@ -17,42 +17,42 @@ type AltBinRndAccList<'a> =
 
         member this.Cons (x : 'a) = AltBinRndAccList.cons x this :> _
 
-        member this.Count() = AltBinRndAccList.length (0, 1, this)
+        member this.Count = AltBinRndAccList.length (0, 1, this)
 
-        member this.Head() =
+        member this.Head =
             let x, _ = AltBinRndAccList.uncons this
             x
 
-        member this.TryGetHead() =
+        member this.TryGetHead =
             match AltBinRndAccList.tryUncons this with
             | None -> None
             | Some( x, _) -> Some(x)
 
-        member this.IsEmpty() = AltBinRndAccList.isEmpty this
+        member this.IsEmpty = AltBinRndAccList.isEmpty this
 
-        member this.Length() = AltBinRndAccList.length (0, 1, this)
+        member this.Length = AltBinRndAccList.length (0, 1, this)
 
         member this.Lookup i = AltBinRndAccList.lookup i this
 
         member this.TryLookup i = AltBinRndAccList.tryLookup i this
 
-        member this.Rev() = AltBinRndAccList.rev this :> _
+        member this.Rev = AltBinRndAccList.rev this :> _
 
-        member this.Tail() =
+        member this.Tail =
             let _, xs = AltBinRndAccList.uncons this
             xs :> _
 
-        member this.TryGetTail() =
+        member this.TryGetTail =
             match AltBinRndAccList.tryUncons this with
             | None -> None
             | Some( _, Nil) -> None
             | Some( _, xs) -> Some(xs :> _)
 
-        member this.Uncons() =
+        member this.Uncons =
             let x, xs = AltBinRndAccList.uncons this
             x, xs :> _
 
-        member this.TryUncons() =
+        member this.TryUncons =
             match AltBinRndAccList.tryUncons this with
             | None -> None
             | Some(x, xs) -> Some(x, xs :> _)
@@ -214,7 +214,7 @@ and AltBinRndAccList<'a>
 
     member this.Cons (x : 'a) = AltBinRndAccList.cons x this
 
-    member this.Head() =
+    member this.Head =
         let x, _ = AltBinRndAccList.uncons this
         x
 
@@ -223,9 +223,9 @@ and AltBinRndAccList<'a>
         | None -> None
         | Some( x, _) -> Some(x)
 
-    member this.IsEmpty() = AltBinRndAccList.isEmpty this
+    member this.IsEmpty = AltBinRndAccList.isEmpty this
 
-    member this.Length() = AltBinRndAccList.length (0, 1, this)
+    member this.Length = AltBinRndAccList.length (0, 1, this)
 
     member this.Lookup i = AltBinRndAccList.lookup i this
 
@@ -268,23 +268,23 @@ and AltBinRndAccList<'a>
                         
                 loop (frontLen - 1) front x
 
-    member this.Rev() = AltBinRndAccList.rev this 
+    member this.Rev = AltBinRndAccList.rev this 
 
-    member this.Tail() =
+    member this.Tail =
         let _, xs = AltBinRndAccList.uncons this
         xs 
 
-    member this.TryGetTail() =
+    member this.TryGetTail =
         match AltBinRndAccList.tryUncons this with
         | None -> None
         | Some( _, Nil) -> None
         | Some( _, xs) -> Some(xs)
 
-    member this.Uncons() =
+    member this.Uncons =
         let x, xs = AltBinRndAccList.uncons this
         x, xs
 
-    member this.TryUncons() =
+    member this.TryUncons =
         match AltBinRndAccList.tryUncons this with
         | None -> None
         | Some(x, xs) -> Some(x, xs)
@@ -301,7 +301,7 @@ and AltBinRndAccList<'a>
  module AltBinaryRandomAccessList = 
     //pattern discriminator
 
-    let (|Cons|Nil|) (l: AltBinRndAccList<'a>) = match l.TryUncons() with Some(a,b) -> Cons(a,b) | None -> Nil
+    let (|Cons|Nil|) (l: AltBinRndAccList<'a>) = match l.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
 
     ///returns random access list from elements of 2 random access lists concatenated 
     let append xs ys = AltBinRndAccList.append (xs, ys)
@@ -324,10 +324,10 @@ and AltBinRndAccList<'a>
         | Some( x, _) -> Some(x)
 
     ///returns true if the random access list has no elements
-    let inline isEmpty (xs: AltBinRndAccList<'a>) = xs.IsEmpty()
+    let inline isEmpty (xs: AltBinRndAccList<'a>) = xs.IsEmpty
 
     ///returns the count of elememts
-    let inline length (xs: AltBinRndAccList<'a>) = xs.Length() 
+    let inline length (xs: AltBinRndAccList<'a>) = xs.Length 
 
     ///returns element by index
     let rec lookup i xs = AltBinRndAccList.lookup i xs
@@ -345,7 +345,7 @@ and AltBinRndAccList<'a>
     let inline tryRemove i (xs: AltBinRndAccList<'a>) = xs.TryRemove i
 
     //returns random access list reversed
-    let inline rev (xs: AltBinRndAccList<'a>) = xs.Rev()
+    let inline rev (xs: AltBinRndAccList<'a>) = xs.Rev
 
     ///returns a new random access list of the elements trailing the first element
     let tail xs =
@@ -359,10 +359,10 @@ and AltBinRndAccList<'a>
         | Some( _, xs') -> Some(xs')
 
     ///returns the first element and tail
-    let inline uncons (xs: AltBinRndAccList<'a>) = xs.Uncons()
+    let inline uncons (xs: AltBinRndAccList<'a>) = xs.Uncons
 
     ///returns the option first element and tail
-    let inline tryUncons (xs: AltBinRndAccList<'a>) = xs.TryUncons()
+    let inline tryUncons (xs: AltBinRndAccList<'a>) = xs.TryUncons
 
     ///returns random access list with element updated by index
     let inline update i y (xs: AltBinRndAccList<'a>) = xs.Update i y

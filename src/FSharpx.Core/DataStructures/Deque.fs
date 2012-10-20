@@ -52,21 +52,21 @@ type Deque<'a> (front, rBack) =
         Deque (f, r) 
    
     ///returns the first element
-    member this.Head() =
+    member this.Head =
         match front, rBack with
         | [], [] -> raise Exceptions.Empty
         | hd::tl, _ -> hd
         | [], xs -> List.rev xs |> List.head
 
     ///returns option first element
-    member this.TryGetHead() =
+    member this.TryGetHead =
         match front, rBack with
         | [], [] -> None
         | hd::tl, _ -> Some(hd)
         | [], xs -> Some(List.rev xs |> List.head )
 
     ///returns a new deque of the elements before the last element
-    member this.Init() = 
+    member this.Init = 
         let rec loop : 'a list * 'a list -> Deque<'a> = function
             | [], [] -> raise Exceptions.Empty
             | f, hd::tl -> 
@@ -77,7 +77,7 @@ type Deque<'a> (front, rBack) =
         loop (front, rBack)
 
     ///returns option deque of the elements before the last element
-    member this.TryGetInit() = 
+    member this.TryGetInit = 
         let rec loop : 'a list * 'a list -> Deque<'a> option = function
             | [], [] -> None
             | f, hd::tl -> 
@@ -88,26 +88,26 @@ type Deque<'a> (front, rBack) =
         loop (front, rBack)
          
     ///returns true if the deque has no elements
-    member this.IsEmpty() =  
+    member this.IsEmpty =  
         match front, rBack with
         | [], [] -> true | _ -> false
 
     ///returns the last element
-    member this.Last() = 
+    member this.Last = 
         match front, rBack with
         | [], [] -> raise Exceptions.Empty
         | xs, [] -> List.rev xs |> List.head
         | _, hd::tl -> hd
 
     ///returns option last element
-    member this.TryGetLast() = 
+    member this.TryGetLast = 
         match front, rBack with
         | [], [] -> None
         | xs, [] -> Some(List.rev xs |> List.head)
         | _, hd::tl -> Some(hd)
 
     ///returns the count of elememts
-    member this.Length() = front.Length + rBack.Length
+    member this.Length = front.Length + rBack.Length
 
     ///returns element by index
     member this.Lookup (i:int) =
@@ -188,7 +188,7 @@ type Deque<'a> (front, rBack) =
             Some((new Deque<'a>(Deque.checkf(front, newRear))))
 
     ///returns deque reversed
-    member this.Rev() = 
+    member this.Rev = 
         new Deque<'a>(rBack, front)
 
     ///returns a new deque with the element added to the end
@@ -197,7 +197,7 @@ type Deque<'a> (front, rBack) =
         Deque (f, r)
 
     ///returns a new deque of the elements trailing the first element
-    member this.Tail() =
+    member this.Tail =
         let rec loop : 'a list * 'a list -> Deque<'a> = function
             | [], [] -> raise Exceptions.Empty
             | hd::tl, r -> 
@@ -207,7 +207,7 @@ type Deque<'a> (front, rBack) =
         loop (front, rBack)
 
     ///returns option deque of the elements trailing the first element
-    member this.TryGetTail() =
+    member this.TryGetTail =
         let rec loop : 'a list * 'a list -> Deque<'a> option = function
             | [], [] -> None
             | hd::tl, r -> 
@@ -217,28 +217,28 @@ type Deque<'a> (front, rBack) =
         loop (front, rBack)
 
     ///returns the first element and tail
-    member this.Uncons() =  
+    member this.Uncons =  
         match front, rBack with
         | [], [] -> raise Exceptions.Empty
-        | _, _ -> this.Head(), this.Tail()
+        | _, _ -> this.Head, this.Tail
 
     ///returns option first element and tail
-    member this.TryUncons() =  
+    member this.TryUncons =  
         match front, rBack with
         | [], [] -> None
-        | _, _ -> Some(this.Head(), this.Tail())
+        | _, _ -> Some(this.Head, this.Tail)
 
     ///returns init and the last element
-    member this.Unsnoc() =  
+    member this.Unsnoc =  
         match front, rBack with
         | [], [] -> raise Exceptions.Empty
-        | _, _ -> this.Init(), this.Last()
+        | _, _ -> this.Init, this.Last
           
     ///returns option init and the last element
-    member this.TryUnsnoc() =  
+    member this.TryUnsnoc =  
         match front, rBack with
         | [], [] -> None
-        | _, _ -> Some(this.Init(), this.Last())
+        | _, _ -> Some(this.Init, this.Last)
     
     ///returns deque with element updated by index
     member this.Update (i:int) (y: 'a) =
@@ -291,23 +291,23 @@ type Deque<'a> (front, rBack) =
 
         member this.Cons x = this.Cons x :> _
 
-        member this.Count() = this.Length()
+        member this.Count = this.Length
 
-        member this.Head() = this.Head()
+        member this.Head = this.Head
 
-        member this.TryGetHead() = this.TryGetHead()
+        member this.TryGetHead = this.TryGetHead
 
-        member this.Init() = this.Init() :> _
+        member this.Init = this.Init :> _
 
-        member this.TryGetInit() = Some(this.TryGetInit().Value :> _)
+        member this.TryGetInit = Some(this.TryGetInit.Value :> _)
 
-        member this.IsEmpty() = this.IsEmpty()
+        member this.IsEmpty = this.IsEmpty
 
-        member this.Last() = this.Last()
+        member this.Last = this.Last
 
-        member this.TryGetLast() = this.TryGetLast()
+        member this.TryGetLast = this.TryGetLast
 
-        member this.Length() = this.Length()
+        member this.Length = this.Length
 
         member this.Lookup i = this.Lookup i
 
@@ -320,32 +320,32 @@ type Deque<'a> (front, rBack) =
             | None -> None
             | Some(q) -> Some(q :> _)
 
-        member this.Rev() = this.Rev() :> _
+        member this.Rev = this.Rev :> _
 
         member this.Snoc x = this.Snoc x :> _
 
-        member this.Tail() = this.Tail() :> _
+        member this.Tail = this.Tail :> _
 
-        member this.TryGetTail() = 
-            match this.TryGetTail() with
+        member this.TryGetTail = 
+            match this.TryGetTail with
             | None -> None
             | Some(q) -> Some(q :> _)
 
-        member this.Uncons() = 
-            let x, xs = this.Uncons() 
+        member this.Uncons = 
+            let x, xs = this.Uncons 
             x, xs :> _
 
-        member this.TryUncons() = 
-            match this.TryUncons() with
+        member this.TryUncons = 
+            match this.TryUncons with
             | None -> None
             | Some(x, q) -> Some(x, q :> _)
 
-        member this.Unsnoc() = 
-            let xs, x = this.Unsnoc() 
+        member this.Unsnoc = 
+            let xs, x = this.Unsnoc 
             xs :> _, x
 
-        member this.TryUnsnoc() = 
-            match this.TryUnsnoc() with
+        member this.TryUnsnoc = 
+            match this.TryUnsnoc with
             | None -> None
             | Some(q, x) -> Some(q :> _, x)
 
@@ -371,9 +371,9 @@ module Deque =
 
 //pattern discriminators
 
-    let (|Cons|Nil|) (q : Deque<'a>) = match q.TryUncons() with Some(a,b) -> Cons(a,b) | None -> Nil
+    let (|Cons|Nil|) (q : Deque<'a>) = match q.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
 
-    let (|Snoc|Nil|) (q : Deque<'a>) = match q.TryUnsnoc() with Some(a,b) -> Snoc(a,b) | None -> Nil
+    let (|Snoc|Nil|) (q : Deque<'a>) = match q.TryUnsnoc with Some(a,b) -> Snoc(a,b) | None -> Nil
 
     ///returns a new deque with the element added to the beginning
     let inline cons (x : 'a) (q : Deque<'a>) = q.Cons x 
@@ -382,28 +382,28 @@ module Deque =
     let empty() = Deque.Empty()
 
     ///returns the first element
-    let inline head (q : Deque<'a>) = q.Head()
+    let inline head (q : Deque<'a>) = q.Head
 
     ///returns option first element
-    let inline tryGetHead (q : Deque<'a>) = q.TryGetHead()
+    let inline tryGetHead (q : Deque<'a>) = q.TryGetHead
 
     ///returns a new deque of the elements before the last element
-    let inline init (q : Deque<'a>) = q.Init() 
+    let inline init (q : Deque<'a>) = q.Init 
 
     ///returns option deque of the elements before the last element
-    let inline tryGetInit (q : Deque<'a>) = q.TryGetInit() 
+    let inline tryGetInit (q : Deque<'a>) = q.TryGetInit 
 
     ///returns true if the deque has no elements
-    let inline isEmpty (q : Deque<'a>) = q.IsEmpty()
+    let inline isEmpty (q : Deque<'a>) = q.IsEmpty
 
     ///returns the last element
-    let inline last (q : Deque<'a>) = q.Last()
+    let inline last (q : Deque<'a>) = q.Last
 
     ///returns option last element
-    let inline tryGetLast (q : Deque<'a>) = q.TryGetLast()
+    let inline tryGetLast (q : Deque<'a>) = q.TryGetLast
 
     ///returns the count of elememts
-    let inline length (q : Deque<'a>) = q.Length()
+    let inline length (q : Deque<'a>) = q.Length
 
     ///returns element by index
     let inline lookup i (q : Deque<'a>) = q.Lookup i
@@ -424,7 +424,7 @@ module Deque =
     let inline tryRemove i (q : Deque<'a>) = q.TryRemove i
 
     ///returns deque reversed
-    let inline rev (q : Deque<'a>) = q.Rev()
+    let inline rev (q : Deque<'a>) = q.Rev
 
     ///returns a deque of one element
     let singleton x = Deque.Singleton x
@@ -433,22 +433,22 @@ module Deque =
     let inline snoc (x : 'a) (q : Deque<'a>) = (q.Snoc x) 
 
     ///returns a new deque of the elements trailing the first element
-    let inline tail (q : Deque<'a>) = q.Tail() 
+    let inline tail (q : Deque<'a>) = q.Tail 
 
     ///returns option deque of the elements trailing the first element
-    let inline tryGetTail (q : Deque<'a>) = q.TryGetTail() 
+    let inline tryGetTail (q : Deque<'a>) = q.TryGetTail 
 
     ///returns the first element and tail
-    let inline uncons (q : Deque<'a>) = q.Uncons()
+    let inline uncons (q : Deque<'a>) = q.Uncons
 
     ///returns option first element and tail
-    let inline tryUncons (q : Deque<'a>) = q.TryUncons()
+    let inline tryUncons (q : Deque<'a>) = q.TryUncons
 
     ///returns init and the last element
-    let inline unsnoc (q : Deque<'a>) = q.Unsnoc()
+    let inline unsnoc (q : Deque<'a>) = q.Unsnoc
 
     ///returns option init and the last element
-    let inline tryUnsnoc (q : Deque<'a>) = q.TryUnsnoc()
+    let inline tryUnsnoc (q : Deque<'a>) = q.TryUnsnoc
 
     ///returns deque with element updated by index
     let inline update i y (q : Deque<'a>) = q.Update i y

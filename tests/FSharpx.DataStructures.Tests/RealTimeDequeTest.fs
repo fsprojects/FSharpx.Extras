@@ -625,7 +625,7 @@ let ``type cons works``() =
 
 [<Test>]
 let ``IDeque cons works``() =
-    ((lena :> IDeque<string>).Cons "zz") :?> RealTimeDeque<string> |> head |> should equal "zz"
+    ((lena :> IDeque<string>).Cons "zz").Head |> should equal "zz"
 
 [<Test>]
 let ``ofCatLists and uncons``() =
