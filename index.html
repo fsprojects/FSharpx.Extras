@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Fsharpx by fsharp</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Fsharpx</h1>
+          <h2>Extensions and Tools for F# Programming</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/fsharp/fsharpx/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/fsharp/fsharpx/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/fsharp/fsharpx" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h1>FSharpx</h1>
+
+<p><strong>FSharpx</strong> is a library for the .NET platform implementing general functional constructs on top of the F# core library. 
+Its main target is F# but it aims to be compatible with all .NET languages wherever possible.</p>
+
+<p>It currently implements:</p>
+
+<ul>
+<li>Several standard monads: State, Reader, Writer, Either, Continuation, Distribution</li>
+<li>Purely functional data structures: Queues, double-ended Queues, BottomUpMergeSort, RandomAccessList, Vector, RoseTree</li>
+<li>Validation applicative functor</li>
+<li>General functions like flip</li>
+<li>Additional functions around collections</li>
+<li>Functions to make C# - F# interop easier</li>
+<li>Async and Observable extensions</li>
+</ul><h1>F# Async Extensions</h1>
+
+<p>This library implements various extensions for asynchronous programming 
+using F# asynchronous workflows and F# agents (the <code>MailboxProcessor</code> type
+in the standard F# library). It defines <em>asynchronous sequences</em> that represent
+asynchronous operations returning multiple values (such as reading data from
+a stream in chunks), several reusable F# agents and numerous extensions.</p>
+
+<ul>
+<li>Samples that demonstrate how to use most of the extensions can
+be found in the <a href="http://github.com/fsharp/fsharpx/tree/master/samples">samples directory</a>
+</li>
+</ul><h2>Asynchronous sequences</h2>
+
+<p>Asynchronous sequences can be used to work with asynchronous computations that return
+multiple results. A value of type <code>AsyncSeq&lt;'T&gt;</code> can be started (just like an asynchronous 
+workflow) and it eventually returns. The result is either a special value representing
+the end of the sequence or a value of type <code>'T</code> (head) together with the rest of the 
+asynchronous sequence (tail) of type <code>AsyncSeq&lt;'T&gt;</code>.</p>
+
+<p>Unlike <code>IObservable&lt;'T&gt;</code>, asynchronous sequences are not <em>push-based</em>. The code that 
+generates the next value of the asynchronous sequence starts only after previous elements
+have been processed. This makes it possible to easily write computations that return
+results as long as some component is using them. </p>
+
+<p>However, <code>IObservable&lt;'T&gt;</code> values can
+be converted to asynchronous sequences. The <code>AsyncSeq.ofObservable</code> combinator creates an
+asynchronous sequence that discards values produced by the observable while the 
+asynchronous sequence was blocked. The <code>AsyncSeq.ofObservableBuffered</code> combinator stores
+all produced values in an unbounded buffer and returns the values from the buffer as soon
+as the user of asynchronous sequence requestst the next element.</p>
+
+<p>The library defines an F# computation expression for workfing with asynchronous sequences.
+For example, sequence that emits numbers in 1 second intervals can be defined as follows:</p>
+
+<pre><code>let rec numbers n = asyncSeq {
+  yield n
+  do! Async.Sleep(1000)
+  yield! numbers (n + 1) }
+</code></pre>
+
+<p>Asynchronous workflows and asynchronous sequences can use the <code>for</code> construct to iterate
+over all elements of an asynchronous sequence. For example:</p>
+
+<pre><code>let rec evenNumbers = asyncSeq {
+  for n in numbers 0 do
+    if n%2=0 then yield n }
+</code></pre>
+
+<p>The library also provides numerous combinators (similar to functions from the <code>Seq</code> module).
+The result of operations that aggregate values of an asynchronous sequence is an asynchronous
+workflow that returns a single value:</p>
+
+<pre><code>let rec sumTenEvenSquares = 
+  numbers 0
+  |&gt; AsyncSeq.filter (fun n -&gt; n%2 = 0)
+  |&gt; AsyncSeq.map (fun n -&gt; n*n)
+  |&gt; AsyncSeq.fold (+) 0
+
+let n = 
+  sumTenEvenSquares 
+  |&gt; Async.RunSynchronously
+</code></pre>
+
+<p>For some examples that use (earlier versions) of asynchronous sequences, see also the following
+two F# snippets: <a href="http://fssnip.net/1k">first</a> and <a href="http://fssnip.net/1Y">second</a>.</p>
+
+<h2>Reusable agents</h2>
+
+<p>The library implements several reusable agents for building concurrent applications:</p>
+
+<ul>
+<li><p><strong>Agent</strong> is a simple type aliast for <code>MailboxProcessor</code> that is more convenient to use</p></li>
+<li><p><strong>AutoCancelAgent</strong> wraps the standard F# agent and adds support for stopping of the
+agent's body using the <code>IDisposable</code> interface (the type automatically creates a 
+cancellation token, uses it to start the underlying agent and cancels it when the agent 
+is disposed). For example, <a href="http://fssnip.net/64">see this F# snippet</a>.</p></li>
+<li><p><strong>BatchProcessingAgent</strong> can be used to implement batch processing. It creates groups of 
+messages (added using the <code>Enqueue</code> method) and emits them using the <code>BatchProduced</code> 
+event. A group is produced when it reaches the maximal size or after the timeout elapses.</p></li>
+<li><p><strong>BlockingQueueAgent</strong> implements an asynchronous queue with blocking put and blocking 
+get operations. It can be used to implement the <em>producer-consumer</em> concurrent pattern. 
+The constructor of the agent takes the maximal size of the buffer.</p></li>
+</ul><h2>Observable extensions</h2>
+
+<p>The library implements extensions for using <code>IObservable&lt;'T&gt;</code> type from F# asynchronous 
+workflows. An overloaded extension method <code>Async.AwaitObservable</code> can be used to wait 
+for an occurrence of an event (or other observable action):</p>
+
+<pre><code>let counter n = async {
+  printfn "Counting: %d" n
+  let! _ = form.MouseDown |&gt; Async.AwaitObservable
+  return! counter (n + 1) }
+</code></pre>
+
+<p>Overloaded version of the method allows waiting for the first of multiple events. The 
+method asynchronously returns <code>Choice&lt;'T1, 'T2&gt;</code> value that can be used to determine 
+which of the events has occurred.</p>
+
+<p>For examples using this method see Chapter 16 of <a href="http://manning.com/petricek">Real World Functional Programming</a> 
+(some examples are available in a <a href="http://dotnetslackers.com/articles/net/Programming-user-interfaces-using-f-sharp-workflows.aspx">free excerpt from the chapter</a>). The 
+<code>Async.AwaitObservable</code> method should be used instead of <code>Async.AwaitEvent</code> to avoid 
+memory leaks (see also related <a href="http://stackoverflow.com/questions/3701861/wait-for-any-event-of-multiple-events-simultaneously-in-f">StackOverflow discussion</a>)</p>
+
+<h2>Type Providers</h2>
+
+<p>FSharpx provides some very interesting F# type providers. At the moment we have:</p>
+
+<ul>
+<li>FSharpx.TypeProviders.AppSettings which generates setters and getters for application settings files.</li>
+<li>FSharpx.TypeProviders.Documents which allows strongly typed access to JSON, XML and CSV files.</li>
+<li>FSharpx.TypeProviders.Excel which provides strongly typed access to Excel spread sheets.</li>
+<li>FSharpx.TypeProviders.Graph which includes type providers for state machines and graphs.</li>
+<li>FSharpx.TypeProviders.Math which contains a type provider for vector data structures.</li>
+<li>FSharpx.TypeProviders.Regex which allows to access regular expressions in a strongly typed manner.</li>
+<li>FSharpx.TypeProviders.Machine which provides strongly typed access to the Registry and the file system.</li>
+<li>FSharpx.TypeProviders.Xaml which includes a type provider for XAML files and therefor enables to use Visual Studios’s WPF Designer from F#.</li>
+<li>FSharpx.TypeProviders.Freebase which allows to access the Freebase database with strong typing.</li>
+</ul><p>At the moment all type providers should work with .NET 4.0 and .NET 4.5 and F# 3.0.</p>
+
+<p>In order to build and test the type providers do the following:</p>
+
+<ul>
+<li>Open FSharpx.WithTypeProviders.sln with Visual Studio 2012</li>
+<li>Set FSharpx.TypeProviders as startup project</li>
+<li>In the properties of FSharpx.TypeProviders:
+
+<ul>
+<li>Set the start action to "external program" and "C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\devenv.exe"</li>
+<li>Set the command line argument to "C:\code\fsharpx\FSharpx.TypeProviders.Tests.sln" (adjust the path to match to your system)</li>
+</ul>
+</li>
+<li>Run the project --&gt; A new Visual Studio 2012 instance should opened with FSharpx.TypeProviders.Tests.sln</li>
+</ul><h2>Building the project</h2>
+
+<p>Read the wiki page about <a href="https://github.com/fsharp/fsharpx/wiki/Build">Build</a></p>
+        </section>
+
+        <footer>
+          Fsharpx is maintained by <a href="https://github.com/fsharp">fsharp</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
