@@ -33,10 +33,21 @@
         <section id="main_content">
           <h1>FSharpx</h1>
 
-<p><strong>FSharpx</strong> is a library for the .NET platform implementing general functional constructs on top of the F# core library. 
-Its main target is F# but it aims to be compatible with all .NET languages wherever possible.</p>
+<p><strong>FSharpx</strong> is a collection of libraries and tools for use with F#. </p>
 
-<p>It currently implements:</p>
+<h2>Use via NuGET</h2>
+
+<pre><code>Install-Package FSharpx.Core 
+Install-Package FSharpx.Http
+Install-Package FSharpx.Observable
+Install-Package FSharpx.TypeProviders
+Install-Package FSharpx.TypeProviders.{Documents,Graph,AppSettings,Excel,Math,Regex,Machine,Xaml,Freebase}
+Install-Package FSharpx.Compatibility.OCaml  
+</code></pre>
+
+<h2>FSharpx Core</h2>
+
+<p>FSharpx.Core provides:</p>
 
 <ul>
 <li>Several standard monads: State, Reader, Writer, Either, Continuation, Distribution</li>
@@ -46,9 +57,9 @@ Its main target is F# but it aims to be compatible with all .NET languages where
 <li>Additional functions around collections</li>
 <li>Functions to make C# - F# interop easier</li>
 <li>Async and Observable extensions</li>
-</ul><h1>F# Async Extensions</h1>
+</ul><h2>F# Async Extensions</h2>
 
-<p>This library implements various extensions for asynchronous programming 
+<p>The FSharpx.Core library implements various extensions for asynchronous programming 
 using F# asynchronous workflows and F# agents (the <code>MailboxProcessor</code> type
 in the standard F# library). It defines <em>asynchronous sequences</em> that represent
 asynchronous operations returning multiple values (such as reading data from
@@ -58,7 +69,7 @@ a stream in chunks), several reusable F# agents and numerous extensions.</p>
 <li>Samples that demonstrate how to use most of the extensions can
 be found in the <a href="http://github.com/fsharp/fsharpx/tree/master/samples">samples directory</a>
 </li>
-</ul><h2>Asynchronous sequences</h2>
+</ul><h3>Asynchronous sequences</h3>
 
 <p>Asynchronous sequences can be used to work with asynchronous computations that return
 multiple results. A value of type <code>AsyncSeq&lt;'T&gt;</code> can be started (just like an asynchronous 
@@ -113,7 +124,7 @@ let n =
 <p>For some examples that use (earlier versions) of asynchronous sequences, see also the following
 two F# snippets: <a href="http://fssnip.net/1k">first</a> and <a href="http://fssnip.net/1Y">second</a>.</p>
 
-<h2>Reusable agents</h2>
+<h3>Reusable agents</h3>
 
 <p>The library implements several reusable agents for building concurrent applications:</p>
 
@@ -129,7 +140,7 @@ event. A group is produced when it reaches the maximal size or after the timeout
 <li><p><strong>BlockingQueueAgent</strong> implements an asynchronous queue with blocking put and blocking 
 get operations. It can be used to implement the <em>producer-consumer</em> concurrent pattern. 
 The constructor of the agent takes the maximal size of the buffer.</p></li>
-</ul><h2>Observable extensions</h2>
+</ul><h3>Observable extensions</h3>
 
 <p>The library implements extensions for using <code>IObservable&lt;'T&gt;</code> type from F# asynchronous 
 workflows. An overloaded extension method <code>Async.AwaitObservable</code> can be used to wait 
@@ -150,7 +161,7 @@ which of the events has occurred.</p>
 <code>Async.AwaitObservable</code> method should be used instead of <code>Async.AwaitEvent</code> to avoid 
 memory leaks (see also related <a href="http://stackoverflow.com/questions/3701861/wait-for-any-event-of-multiple-events-simultaneously-in-f">StackOverflow discussion</a>)</p>
 
-<h2>Type Providers</h2>
+<h3>Type Providers</h3>
 
 <p>FSharpx provides some very interesting F# type providers. At the moment we have:</p>
 
@@ -179,7 +190,7 @@ memory leaks (see also related <a href="http://stackoverflow.com/questions/37018
 </ul>
 </li>
 <li>Run the project --&gt; A new Visual Studio 2012 instance should opened with FSharpx.TypeProviders.Tests.sln</li>
-</ul><h2>Building the project</h2>
+</ul><h3>Building the project</h3>
 
 <p>Read the wiki page about <a href="https://github.com/fsharp/fsharpx/wiki/Build">Build</a></p>
         </section>
