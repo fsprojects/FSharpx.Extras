@@ -31,17 +31,20 @@
         <hr>
 
         <section id="main_content">
-          <h1>Use via NuGET</h1>
+          <h2>Use via NuGET</h2>
 
 <pre><code>Install-Package FSharpx.Core 
 Install-Package FSharpx.Http
 Install-Package FSharpx.Observable
-Install-Package FSharpx.TypeProviders
-Install-Package FSharpx.TypeProviders.{Documents,Graph,AppSettings,Excel,Math,Regex,Machine,Xaml,Freebase}
 Install-Package FSharpx.Compatibility.OCaml  
+Install-Package FSharpx.TypeProviders
+Install-Package FSharpx.TypeProviders.{Documents,Freebase,Graph,AppSettings,Excel,Math,Regex,Machine,Xaml}
 </code></pre>
 
 <h2>FSharpx Core</h2>
+
+<p>FSharpx.Core is a collection of general functional constructs extending F#. Its main target is F# but
+it aims to be compatible with all .NET languages wherever possible.</p>
 
 <p>FSharpx.Core provides:</p>
 
@@ -52,112 +55,8 @@ Install-Package FSharpx.Compatibility.OCaml
 <li>General functions like flip</li>
 <li>Additional functions around collections</li>
 <li>Functions to make C# - F# interop easier</li>
-<li>Async and Observable extensions</li>
-</ul><h3>F# Async Extensions</h3>
-
-<p>The FSharpx.Core library implements various extensions for asynchronous programming 
-using F# asynchronous workflows and F# agents (the <code>MailboxProcessor</code> type
-in the standard F# library). It defines <em>asynchronous sequences</em> that represent
-asynchronous operations returning multiple values (such as reading data from
-a stream in chunks), several reusable F# agents and numerous extensions.</p>
-
-<ul>
-<li>Samples that demonstrate how to use most of the extensions can
-be found in the <a href="http://github.com/fsharp/fsharpx/tree/master/samples">samples directory</a>
-</li>
-</ul><h3>Asynchronous sequences</h3>
-
-<p>Asynchronous sequences can be used to work with asynchronous computations that return
-multiple results. A value of type <code>AsyncSeq&lt;'T&gt;</code> can be started (just like an asynchronous 
-workflow) and it eventually returns. The result is either a special value representing
-the end of the sequence or a value of type <code>'T</code> (head) together with the rest of the 
-asynchronous sequence (tail) of type <code>AsyncSeq&lt;'T&gt;</code>.</p>
-
-<p>Unlike <code>IObservable&lt;'T&gt;</code>, asynchronous sequences are not <em>push-based</em>. The code that 
-generates the next value of the asynchronous sequence starts only after previous elements
-have been processed. This makes it possible to easily write computations that return
-results as long as some component is using them. </p>
-
-<p>However, <code>IObservable&lt;'T&gt;</code> values can
-be converted to asynchronous sequences. The <code>AsyncSeq.ofObservable</code> combinator creates an
-asynchronous sequence that discards values produced by the observable while the 
-asynchronous sequence was blocked. The <code>AsyncSeq.ofObservableBuffered</code> combinator stores
-all produced values in an unbounded buffer and returns the values from the buffer as soon
-as the user of asynchronous sequence requestst the next element.</p>
-
-<p>The library defines an F# computation expression for workfing with asynchronous sequences.
-For example, sequence that emits numbers in 1 second intervals can be defined as follows:</p>
-
-<pre><code>let rec numbers n = asyncSeq {
-  yield n
-  do! Async.Sleep(1000)
-  yield! numbers (n + 1) }
-</code></pre>
-
-<p>Asynchronous workflows and asynchronous sequences can use the <code>for</code> construct to iterate
-over all elements of an asynchronous sequence. For example:</p>
-
-<pre><code>let rec evenNumbers = asyncSeq {
-  for n in numbers 0 do
-    if n%2=0 then yield n }
-</code></pre>
-
-<p>The library also provides numerous combinators (similar to functions from the <code>Seq</code> module).
-The result of operations that aggregate values of an asynchronous sequence is an asynchronous
-workflow that returns a single value:</p>
-
-<pre><code>let rec sumTenEvenSquares = 
-  numbers 0
-  |&gt; AsyncSeq.filter (fun n -&gt; n%2 = 0)
-  |&gt; AsyncSeq.map (fun n -&gt; n*n)
-  |&gt; AsyncSeq.fold (+) 0
-
-let n = 
-  sumTenEvenSquares 
-  |&gt; Async.RunSynchronously
-</code></pre>
-
-<p>For some examples that use (earlier versions) of asynchronous sequences, see also the following
-two F# snippets: <a href="http://fssnip.net/1k">first</a> and <a href="http://fssnip.net/1Y">second</a>.</p>
-
-<h3>Reusable agents</h3>
-
-<p>The library implements several reusable agents for building concurrent applications:</p>
-
-<ul>
-<li><p><strong>Agent</strong> is a simple type aliast for <code>MailboxProcessor</code> that is more convenient to use</p></li>
-<li><p><strong>AutoCancelAgent</strong> wraps the standard F# agent and adds support for stopping of the
-agent's body using the <code>IDisposable</code> interface (the type automatically creates a 
-cancellation token, uses it to start the underlying agent and cancels it when the agent 
-is disposed). For example, <a href="http://fssnip.net/64">see this F# snippet</a>.</p></li>
-<li><p><strong>BatchProcessingAgent</strong> can be used to implement batch processing. It creates groups of 
-messages (added using the <code>Enqueue</code> method) and emits them using the <code>BatchProduced</code> 
-event. A group is produced when it reaches the maximal size or after the timeout elapses.</p></li>
-<li><p><strong>BlockingQueueAgent</strong> implements an asynchronous queue with blocking put and blocking 
-get operations. It can be used to implement the <em>producer-consumer</em> concurrent pattern. 
-The constructor of the agent takes the maximal size of the buffer.</p></li>
-</ul><h3>Observable extensions</h3>
-
-<p>The library implements extensions for using <code>IObservable&lt;'T&gt;</code> type from F# asynchronous 
-workflows. An overloaded extension method <code>Async.AwaitObservable</code> can be used to wait 
-for an occurrence of an event (or other observable action):</p>
-
-<pre><code>let counter n = async {
-  printfn "Counting: %d" n
-  let! _ = form.MouseDown |&gt; Async.AwaitObservable
-  return! counter (n + 1) }
-</code></pre>
-
-<p>Overloaded version of the method allows waiting for the first of multiple events. The 
-method asynchronously returns <code>Choice&lt;'T1, 'T2&gt;</code> value that can be used to determine 
-which of the events has occurred.</p>
-
-<p>For examples using this method see Chapter 16 of <a href="http://manning.com/petricek">Real World Functional Programming</a> 
-(some examples are available in a <a href="http://dotnetslackers.com/articles/net/Programming-user-interfaces-using-f-sharp-workflows.aspx">free excerpt from the chapter</a>). The 
-<code>Async.AwaitObservable</code> method should be used instead of <code>Async.AwaitEvent</code> to avoid 
-memory leaks (see also related <a href="http://stackoverflow.com/questions/3701861/wait-for-any-event-of-multiple-events-simultaneously-in-f">StackOverflow discussion</a>)</p>
-
-<h2>Type Providers</h2>
+<li><a href="https://github.com/fsharp/fsharpx/wiki/FSharpx-Async-Extensions">Async extensions, Reusable agents and Observable extensions</a></li>
+</ul><h2>Type Providers</h2>
 
 <p>FSharpx provides some very interesting F# type providers. At the moment we have:</p>
 
@@ -169,9 +68,13 @@ memory leaks (see also related <a href="http://stackoverflow.com/questions/37018
 <li>FSharpx.TypeProviders.Math which contains a type provider for vector data structures.</li>
 <li>FSharpx.TypeProviders.Regex which allows to access regular expressions in a strongly typed manner.</li>
 <li>FSharpx.TypeProviders.Machine which provides strongly typed access to the Registry and the file system.</li>
-<li>FSharpx.TypeProviders.Xaml which includes a type provider for XAML files and therefor enables to use Visual Studios’s WPF Designer from F#.</li>
+<li>FSharpx.TypeProviders.Xaml which includes a type provider for XAML files and therefore enables the use of the Visual Studios WPF Designer from F#.</li>
 <li>FSharpx.TypeProviders.Freebase which allows to access the Freebase database with strong typing.</li>
 </ul><p>At the moment all type providers should work with .NET 4.0 and .NET 4.5 and F# 3.0.</p>
+
+<h3>Building the project</h3>
+
+<p>Read the wiki page about <a href="https://github.com/fsharp/fsharpx/wiki/Build">Build</a></p>
 
 <p>In order to build and test the type providers do the following:</p>
 
@@ -186,9 +89,7 @@ memory leaks (see also related <a href="http://stackoverflow.com/questions/37018
 </ul>
 </li>
 <li>Run the project --&gt; A new Visual Studio 2012 instance should opened with FSharpx.TypeProviders.Tests.sln</li>
-</ul><h2>Building the project</h2>
-
-<p>Read the wiki page about <a href="https://github.com/fsharp/fsharpx/wiki/Build">Build</a></p>
+</ul>
         </section>
 
         <footer>
