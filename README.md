@@ -13,6 +13,9 @@
 
 ## FSharpx Core
 
+FSharpx.Core is a collection of general functional constructs extending F#. Its main target is F# but
+it aims to be compatible with all .NET languages wherever possible.
+
 FSharpx.Core provides:
  * Several standard monads: State, Reader, Writer, Either, Continuation, Distribution
  * Purely functional data structures: Queues, double-ended Queues, BottomUpMergeSort, RandomAccessList, Vector, RoseTree
