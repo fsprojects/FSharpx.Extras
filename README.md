@@ -1,11 +1,19 @@
-FSharpx
-=======
+# FSharpx
 
-**FSharpx** is a library for the .NET platform implementing general functional constructs on top of the F# core library. 
-Its main target is F# but it aims to be compatible with all .NET languages wherever possible.
+**FSharpx** is a collection of libraries and tools for use with F#. 
 
-It currently implements:
+## Use via NuGET
 
+    Install-Package FSharpx.Core 
+    Install-Package FSharpx.Http
+    Install-Package FSharpx.Observable
+    Install-Package FSharpx.TypeProviders
+    Install-Package FSharpx.TypeProviders.{Documents,Graph,AppSettings,Excel,Math,Regex,Machine,Xaml,Freebase}
+    Install-Package FSharpx.Compatibility.OCaml  
+
+## FSharpx Core
+
+FSharpx.Core provides:
  * Several standard monads: State, Reader, Writer, Either, Continuation, Distribution
  * Purely functional data structures: Queues, double-ended Queues, BottomUpMergeSort, RandomAccessList, Vector, RoseTree
  * Validation applicative functor
@@ -15,10 +23,9 @@ It currently implements:
  * Async and Observable extensions
 
 
-F# Async Extensions
-===================
+## F# Async Extensions
 
-This library implements various extensions for asynchronous programming 
+The FSharpx.Core library implements various extensions for asynchronous programming 
 using F# asynchronous workflows and F# agents (the `MailboxProcessor` type
 in the standard F# library). It defines _asynchronous sequences_ that represent
 asynchronous operations returning multiple values (such as reading data from
@@ -27,8 +34,7 @@ a stream in chunks), several reusable F# agents and numerous extensions.
  * Samples that demonstrate how to use most of the extensions can
    be found in the [samples directory][7]
 
-Asynchronous sequences
-----------------------
+### Asynchronous sequences
 
 Asynchronous sequences can be used to work with asynchronous computations that return
 multiple results. A value of type `AsyncSeq<'T>` can be started (just like an asynchronous 
@@ -80,8 +86,7 @@ workflow that returns a single value:
 For some examples that use (earlier versions) of asynchronous sequences, see also the following
 two F# snippets: [first][5] and [second][6].
 
-Reusable agents
----------------
+### Reusable agents
 
 The library implements several reusable agents for building concurrent applications:
 
@@ -101,8 +106,7 @@ The library implements several reusable agents for building concurrent applicati
    The constructor of the agent takes the maximal size of the buffer.
 
 
-Observable extensions
----------------------
+### Observable extensions
 
 The library implements extensions for using `IObservable<'T>` type from F# asynchronous 
 workflows. An overloaded extension method `Async.AwaitObservable` can be used to wait 
@@ -123,8 +127,7 @@ For examples using this method see Chapter 16 of [Real World Functional Programm
 memory leaks (see also related [StackOverflow discussion][4])
 
 
-Type Providers
----------------------
+## Type Providers
 
 FSharpx provides some very interesting F# type providers. At the moment we have:
 
@@ -135,7 +138,7 @@ FSharpx provides some very interesting F# type providers. At the moment we have:
  * FSharpx.TypeProviders.Math which contains a type provider for vector data structures.
  * FSharpx.TypeProviders.Regex which allows to access regular expressions in a strongly typed manner.
  * FSharpx.TypeProviders.Machine which provides strongly typed access to the Registry and the file system.
- * FSharpx.TypeProviders.Xaml which includes a type provider for XAML files and therefor enables to use Visual Studios’s WPF Designer from F#.
+ * FSharpx.TypeProviders.Xaml which includes a type provider for XAML files and therefor enables to use Visual Studiosâ€™s WPF Designer from F#.
  * FSharpx.TypeProviders.Freebase which allows to access the Freebase database with strong typing.
 
 At the moment all type providers should work with .NET 4.0 and .NET 4.5 and F# 3.0.
@@ -150,8 +153,7 @@ In order to build and test the type providers do the following:
  * Run the project --> A new Visual Studio 2012 instance should opened with FSharpx.TypeProviders.Tests.sln
 
 
-Building the project
------------------------
+### Building the project
 
 Read the wiki page about [Build](https://github.com/fsharp/fsharpx/wiki/Build)
 
