@@ -79,21 +79,21 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
         |> BankersDeque.check 
    
     ///returns the first element
-    member this.Head() =
+    member this.Head =
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> raise Exceptions.Empty
         | LazyList.Nil, LazyList.Cons(x, _) -> x
         | LazyList.Cons(x, _), _ -> x
 
     ///returns option first element
-    member this.TryGetHead() =
+    member this.TryGetHead =
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> None
         | LazyList.Nil, LazyList.Cons(x, _) -> Some(x)
         | LazyList.Cons(x, _), _ -> Some(x)
 
     ///returns a new deque of the elements before the last element
-    member this.Init() = 
+    member this.Init = 
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> raise Exceptions.Empty
         | _, LazyList.Nil -> BankersDeque.Empty this.c 
@@ -102,7 +102,7 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
             |> BankersDeque.check 
 
     ///returns option deque of the elements before the last element
-    member this.TryGetInit() = 
+    member this.TryGetInit = 
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> None
         | _, LazyList.Nil -> Some(BankersDeque.Empty this.c)
@@ -110,25 +110,25 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
             Some(new BankersDeque<'a>(this.c, this.frontLength, this.front, (this.rBackLength-1), xs) |> BankersDeque.check)
          
     ///returns true if the deque has no elements
-    member this.IsEmpty() =  
+    member this.IsEmpty =  
         ((this.frontLength = 0) && (this.rBackLength = 0))
 
     ///returns the last element
-    member this.Last() = 
+    member this.Last = 
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> raise Exceptions.Empty
         | _, LazyList.Cons(x, _) ->  x
         | LazyList.Cons(x, _), LazyList.Nil-> x
 
     ///returns option last element
-    member this.TryGetLast() = 
+    member this.TryGetLast = 
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> None
         | _, LazyList.Cons(x, _) -> Some(x)
         | LazyList.Cons(x, _), LazyList.Nil-> Some(x)
 
     ///returns the count of elememts
-    member this.Length() = BankersDeque.length this
+    member this.Length = BankersDeque.length this
 
     ///returns element by index
     member this.Lookup (i:int) =
@@ -211,7 +211,7 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
             Some(z)
 
     ///returns deque reversed
-    member this.Rev() = 
+    member this.Rev = 
         (new BankersDeque<'a>(c, rBackLength, rBack, frontLength, front))
 
     ///returns a new deque with the element added to the end
@@ -220,7 +220,7 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
         |> BankersDeque.check
 
     ///returns a new deque of the elements trailing the first element
-    member this.Tail() =
+    member this.Tail =
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> raise Exceptions.Empty
         | LazyList.Nil, LazyList.Cons(x, _) -> BankersDeque.Empty this.c 
@@ -229,7 +229,7 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
             |> BankersDeque.check
 
     ///returns option deque of the elements trailing the first element
-    member this.TryGetTail() =
+    member this.TryGetTail =
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> None
         | LazyList.Nil, LazyList.Cons(x, _) -> Some(BankersDeque.Empty this.c)
@@ -238,28 +238,28 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
             |> BankersDeque.check)
 
     ///returns the first element and tail
-    member this.Uncons() =  
+    member this.Uncons =  
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> raise Exceptions.Empty
-        | _, _ -> this.Head(), this.Tail()
+        | _, _ -> this.Head, this.Tail
 
     ///returns option first element and tail
-    member this.TryUncons() =  
+    member this.TryUncons =  
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> None
-        | _, _ -> Some(this.Head(), this.Tail())
+        | _, _ -> Some(this.Head, this.Tail)
 
     ///returns init and the last element
-    member this.Unsnoc() =  
+    member this.Unsnoc =  
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> raise Exceptions.Empty
-        | _, _ -> this.Init(), this.Last()
+        | _, _ -> this.Init, this.Last
 
     ///returns option init and the last element
-    member this.TryUnsnoc() =  
+    member this.TryUnsnoc =  
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> None
-        | _, _ -> Some(this.Init(), this.Last())
+        | _, _ -> Some(this.Init, this.Last)
 
     ///returns deque with element updated by index
     member this.Update (i:int) (y: 'a) =
@@ -316,23 +316,23 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
 
         member this.Cons x = this.Cons x :> _
 
-        member this.Count() = this.Length()
+        member this.Count = this.Length
 
-        member this.Head() = this.Head()
+        member this.Head = this.Head
 
-        member this.TryGetHead() = this.TryGetHead()
+        member this.TryGetHead = this.TryGetHead
 
-        member this.Init() = this.Init() :> _
+        member this.Init = this.Init :> _
 
-        member this.TryGetInit() = Some(this.TryGetInit().Value :> _)
+        member this.TryGetInit = Some(this.TryGetInit.Value :> _)
 
-        member this.IsEmpty() = this.IsEmpty()
+        member this.IsEmpty = this.IsEmpty
 
-        member this.Last() = this.Last()
+        member this.Last = this.Last
 
-        member this.TryGetLast() = this.TryGetLast()
+        member this.TryGetLast = this.TryGetLast
 
-        member this.Length() = this.Length()
+        member this.Length = this.Length
 
         member this.Lookup i = this.Lookup i
 
@@ -345,29 +345,32 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
             | None -> None
             | Some(q) -> Some(q :> _)
 
-        member this.Rev() = this.Rev() :> _
+        member this.Rev = this.Rev :> _
 
         member this.Snoc x = this.Snoc x :> _
 
-        member this.Tail() = this.Tail() :> _
+        member this.Tail = this.Tail :> _
 
-        member this.TryGetTail() = Some(this.TryGetTail().Value :> _)
+        member this.TryGetTail =
+            match this.TryGetTail with
+            | None -> None
+            | Some(q) -> Some(q :> _)
 
-        member this.Uncons() = 
-            let x, xs = this.Uncons() 
+        member this.Uncons = 
+            let x, xs = this.Uncons 
             x, xs :> _
 
-        member this.TryUncons() = 
-            match this.TryUncons() with
+        member this.TryUncons = 
+            match this.TryUncons with
             | None -> None
             | Some(x, q) -> Some(x, q :> _)
 
-        member this.Unsnoc() = 
-            let xs, x = this.Unsnoc() 
+        member this.Unsnoc = 
+            let xs, x = this.Unsnoc 
             xs :> _, x
 
-        member this.TryUnsnoc() = 
-            match this.TryUnsnoc() with
+        member this.TryUnsnoc = 
+            match this.TryUnsnoc with
             | None -> None
             | Some(q, x) -> Some(q :> _, x)
 
@@ -393,9 +396,9 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
 module BankersDeque =
     //pattern discriminators
 
-    let (|Cons|Nil|) (q : BankersDeque<'a>) = match q.TryUncons() with Some(a,b) -> Cons(a,b) | None -> Nil
+    let (|Cons|Nil|) (q : BankersDeque<'a>) = match q.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
 
-    let (|Snoc|Nil|) (q : BankersDeque<'a>) = match q.TryUnsnoc() with Some(a,b) -> Snoc(a,b) | None -> Nil
+    let (|Snoc|Nil|) (q : BankersDeque<'a>) = match q.TryUnsnoc with Some(a,b) -> Snoc(a,b) | None -> Nil
 
     let private stndC = 2
 
@@ -415,28 +418,28 @@ module BankersDeque =
     let empty c = BankersDeque.Empty c
 
     ///returns the first element
-    let inline head (q : BankersDeque<'a>) = q.Head()
+    let inline head (q : BankersDeque<'a>) = q.Head
 
     ///returns option first element
-    let inline tryGetHead (q : BankersDeque<'a>) = q.TryGetHead()
+    let inline tryGetHead (q : BankersDeque<'a>) = q.TryGetHead
 
     ///returns a new deque of the elements before the last element
-    let inline init (q : BankersDeque<'a>) = q.Init() 
+    let inline init (q : BankersDeque<'a>) = q.Init 
 
     ///returns option deque of the elements before the last element
-    let inline tryGetInit (q : BankersDeque<'a>) = q.TryGetInit() 
+    let inline tryGetInit (q : BankersDeque<'a>) = q.TryGetInit 
 
     ///returns true if the deque has no elements
-    let inline isEmpty (q : BankersDeque<'a>) = q.IsEmpty()
+    let inline isEmpty (q : BankersDeque<'a>) = q.IsEmpty
 
     ///returns the last element
-    let inline last (q : BankersDeque<'a>) = q.Last()
+    let inline last (q : BankersDeque<'a>) = q.Last
 
     ///returns option last element
-    let inline tryGetLast (q : BankersDeque<'a>) = q.TryGetLast()
+    let inline tryGetLast (q : BankersDeque<'a>) = q.TryGetLast
 
     ///returns the count of elememts
-    let inline length (q : BankersDeque<'a>) = q.Length()
+    let inline length (q : BankersDeque<'a>) = q.Length
 
     ///returns element by index
     let inline lookup i (q : BankersDeque<'a>) = q.Lookup i
@@ -475,13 +478,13 @@ module BankersDeque =
     let inline tryRemove i (q : BankersDeque<'a>) = q.TryRemove i
 
     ///returns deque reversed
-    let inline rev (q : BankersDeque<'a>) = q.Rev()
+    let inline rev (q : BankersDeque<'a>) = q.Rev
 
     ///returns a deque of one element
     ///front-back stream ratio constant defaulted to 2
     let singleton x = empty stndC |> cons x  
 
-    //returns a deque of one element
+    ///returns a deque of one element
     ///c is front-back stream ratio constant, should be at least 2
     let singletonC c x = empty c |> cons x  
 
@@ -489,22 +492,22 @@ module BankersDeque =
     let inline snoc (x : 'a) (q : BankersDeque<'a>) = (q.Snoc x) 
 
     ///returns a new deque of the elements trailing the first element
-    let inline tail (q : BankersDeque<'a>) = q.Tail() 
+    let inline tail (q : BankersDeque<'a>) = q.Tail 
 
     ///returns option deque of the elements trailing the first element
-    let inline tryGetTail (q : BankersDeque<'a>) = q.TryGetTail() 
+    let inline tryGetTail (q : BankersDeque<'a>) = q.TryGetTail 
 
     ///returns the first element and tail
-    let inline uncons (q : BankersDeque<'a>) = q.Uncons()
+    let inline uncons (q : BankersDeque<'a>) = q.Uncons
 
     ///returns option first element and tail
-    let inline tryUncons (q : BankersDeque<'a>) = q.TryUncons()
+    let inline tryUncons (q : BankersDeque<'a>) = q.TryUncons
 
     ///returns init and the last element
-    let inline unsnoc (q : BankersDeque<'a>) = q.Unsnoc()
+    let inline unsnoc (q : BankersDeque<'a>) = q.Unsnoc
 
     ///returns option init and the last element
-    let inline tryUnsnoc (q : BankersDeque<'a>) = q.TryUnsnoc()
+    let inline tryUnsnoc (q : BankersDeque<'a>) = q.TryUnsnoc
 
     ///returns deque with element updated by index
     let inline update i y (q : BankersDeque<'a>) = q.Update i y

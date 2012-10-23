@@ -153,9 +153,9 @@ let ``ofSeq maximalist``() =
     ((d = "d") && (e = "e") && (f = "f") && (g = "g") && (h = "h") && (i = "i") && (j = "j")) |> should equal true
 
 [<Test>]
-let ``IRandomAccessList insert works``() =
+let ``IHeap insert works``() =
     let lena = empty true |> insert "a" |> insert "b" |> insert "c" |> insert "d" |> insert "e" |> insert "f" |> insert "g" |> insert "h" |> insert "i" |> insert "j"
-    ((lena :> IHeap<'a>).Insert "zz") :?> LeftistHeap<'a> |> head |> should equal "zz"
+    ((lena :> IHeap<_, string>).Insert "zz").Head |> should equal "zz"
 
 [<Test>]
 let ``cons pattern discriminator``() =
