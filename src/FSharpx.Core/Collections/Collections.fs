@@ -82,6 +82,15 @@ module List =
     let inline mapIf pred f =
         List.map (fun x -> if pred x then f x else x)
 
+    let mapAccum f s l =
+        let rec loop s l cont =
+            match l with
+            | [] -> cont (s, [])
+            | x::xs ->
+                let (s, y) = f s x
+                loop s xs (fun (s,ys) -> cont (s, y::ys))
+        loop s l id
+
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Dictionary =
     let tryFind key (d: IDictionary<_,_>) =

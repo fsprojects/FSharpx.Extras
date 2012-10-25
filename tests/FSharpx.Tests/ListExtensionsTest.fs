@@ -45,3 +45,9 @@ let ``test List_span correctly breaks the list on the specified predicate``() =
 let lift2() =
     List.lift2 (+) [0;1] [0;2]
     |> should equal [0;2;1;3]
+
+[<Test>]
+let mapAccum() =
+  let list = [-5..-1]
+  let expected = (15, [5;4;3;2;1])
+  List.mapAccum (fun a b -> let c = abs b in (a+c,c)) 0 list |> should equal expected
