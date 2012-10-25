@@ -8,15 +8,10 @@ open System.Collections
 open System.Collections.Generic
 
 type LeftistHeap<'a when 'a : comparison> =
-//type LeftistHeap<'a> =
     | E of bool
     | T of bool * int * int * 'a * LeftistHeap<'a> * LeftistHeap<'a> 
 
     with
-
-    static member private isEmpty : LeftistHeap<'a> -> bool = function 
-        | E(_) -> true 
-        | _ -> false
 
     static member private rank : LeftistHeap<'a> -> int = function 
         | E(_) -> 0 
@@ -41,6 +36,23 @@ type LeftistHeap<'a when 'a : comparison> =
                     else LeftistHeap.make y a2 (LeftistHeap.merge h1 b2)
         else
             failwith "not same max or min"
+
+    //http://lorgonblog.wordpress.com/2008/04/06/catamorphisms-part-two
+    static member private foldHeap nodeF leafV (h : LeftistHeap<'a>) = 
+
+        let rec Loop (h : LeftistHeap<'a>) cont = 
+            match h with 
+            | T(_, _, _, a, l, r) -> Loop l  (fun lacc ->  
+                                    Loop r (fun racc -> 
+                                    cont (nodeF a lacc racc))) 
+            | E(_) -> cont leafV 
+        Loop h (fun x -> x)
+
+    static member private inOrder (h : LeftistHeap<'a>) = (LeftistHeap.foldHeap (fun x l r acc -> l (x :: (r acc))) (fun acc -> acc) h) [] 
+           
+    static member private isEmpty : LeftistHeap<'a> -> bool = function 
+        | E(_) -> true 
+        | _ -> false
 
     static member private tryMerge (h1: LeftistHeap<'a>) (h2: LeftistHeap<'a>) : LeftistHeap<'a> option = 
         if (h1.IsMaximalist) = (h2.IsMaximalist) then
@@ -178,12 +190,23 @@ type LeftistHeap<'a when 'a : comparison> =
             | Some(x, xs) -> Some(x, xs)
 
         member this.GetEnumerator() = 
-            let e = seq {
-                match LeftistHeap.tryUncons this with
-                | None -> () 
-                | Some(x, ts) ->
-                    yield x 
-                    yield! ts}
+            let e = 
+                if (this.Length > 1000) then
+                    if this.IsMaximalist
+//WARNING! List.sort |> List.rev significantly faster (caveat: on 32-bit Win 7) than List.sortwith...go figure!
+//            LeftistHeap.inOrder this |> List.sortWith (fun x y -> if (x > y) then -1
+//                                                                             else 
+//                                                                               if (x = y) then 0
+//                                                                               else 1) |> List.fold f state
+                    then LeftistHeap.inOrder this |> List.sort |> List.rev |> List.toSeq
+                    else LeftistHeap.inOrder this |> List.sort |> List.toSeq
+                else
+                    seq {
+                    match LeftistHeap.tryUncons this with
+                    | None -> () 
+                    | Some(x, ts) ->
+                        yield x 
+                        yield! ts}
             e.GetEnumerator()
 
         member this.GetEnumerator() = (this :> _ seq).GetEnumerator() :> IEnumerator  
@@ -192,7 +215,7 @@ type LeftistHeap<'a when 'a : comparison> =
 module LeftistHeap =   
     //pattern discriminator
 
-    let (|Cons|Nil|) (l: LeftistHeap<'a>) = match l.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
+    let (|Cons|Nil|) (h: LeftistHeap<'a>) = match h.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
   
     ///returns a empty heap
     let inline empty (maximalist: bool) = E(maximalist)
