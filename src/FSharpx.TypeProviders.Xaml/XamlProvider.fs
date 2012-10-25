@@ -11,7 +11,7 @@ open System.Windows
 open System.Windows.Markup
 open System.Xml
 open System.Linq.Expressions
-open FSharpx.TypeProviders.DSL
+open FSharpx.TypeProviders.Helper
 
 let wpfAssembly = typeof<System.Windows.Controls.Button>.Assembly
 
@@ -103,19 +103,29 @@ let internal createTypeFromReader typeName fileName schema (reader: TextReader) 
         let expr = if node.IsRoot then <@@ (%%args.[0] :> XamlFile).Root @@> else <@@ (%%args.[0] :> XamlFile).GetChild name @@>
         Expr.Coerce(expr,node.NodeType)
 
-    erasedType<XamlFile> thisAssembly rootNamespace typeName
-        |> addDefinitionLocation root.Position
-        |+!> (provideConstructor
-                [] 
-                (fun args -> <@@ XamlFile(XamlReader.Parse(schema) :?> FrameworkElement) @@>)
-                |> addConstructorXmlDoc (sprintf "Initializes typed access to %s" fileName)
-                |> addConstructorDefinitionLocation root.Position)
-    |++!> (
-        elements
-        |> Seq.map (fun node ->
-             provideProperty node.Name node.NodeType (accessExpr node)
-             |> addPropertyXmlDoc (sprintf "Gets the %s element" node.Name)
-             |> addPropertyDefinitionLocation node.Position))   
+    let xamlType = erasedType<XamlFile> thisAssembly rootNamespace typeName
+    xamlType.AddDefinitionLocation(root.Position.Line,root.Position.Column,root.Position.FileName)
+
+    let ctor = 
+        ProvidedConstructor(
+            parameters = [], 
+            InvokeCode = (fun args -> <@@ XamlFile(XamlReader.Parse(schema) :?> FrameworkElement) @@>))
+
+    ctor.AddXmlDoc (sprintf "Initializes typed access to %s" fileName)
+    ctor.AddDefinitionLocation(root.Position.Line,root.Position.Column,root.Position.FileName)
+    xamlType.AddMember ctor
+
+    for node in elements do
+        let property = 
+            ProvidedProperty(
+                propertyName = node.Name,
+                propertyType = node.NodeType,
+                GetterCode = accessExpr node)
+        property.AddXmlDoc(sprintf "Gets the %s element" node.Name)
+        property.AddDefinitionLocation(root.Position.Line,root.Position.Column,root.Position.FileName)
+        xamlType.AddMember property
+   
+    xamlType 
 
 /// Infer schema from the loaded data and generate type with properties     
 let internal xamlType (ownerType:TypeProviderForNamespaces)  (cfg:TypeProviderConfig) =
@@ -126,14 +136,30 @@ let internal xamlType (ownerType:TypeProviderForNamespaces)  (cfg:TypeProviderCo
     let createTypeFromSchema typeName (schema:string) =        
         use reader = new StringReader(schema)
         createTypeFromReader typeName null schema reader
-    
-    createStructuredParser thisAssembly rootNamespace "XAML" cfg ownerType createTypeFromFileName createTypeFromSchema
+
+    let missingValue = "@@@missingValue###"
+    let xamlType = erasedType<obj> thisAssembly rootNamespace "XAML"
+    xamlType.DefineStaticParameters(
+        parameters = [ProvidedStaticParameter("FileName", typeof<string>, missingValue) // Parameterize the type by the file to use as a template
+                      ProvidedStaticParameter("Schema", typeof<string>, missingValue)], // Allows to specify inlined schema
+        instantiationFunction = (fun typeName parameterValues ->
+            match parameterValues with 
+            | [| :? string as fileName; :? string |] when fileName <> missingValue ->        
+                let resolvedFileName = findConfigFile cfg.ResolutionFolder fileName
+                watchForChanges ownerType resolvedFileName
+                
+                createTypeFromFileName typeName resolvedFileName
+            | [| :? string; :? string as schema |] when schema <> missingValue ->        
+                createTypeFromSchema typeName schema
+            | _ -> failwith "You have to specify a filename or inlined Schema"))
+
+    xamlType
 
 [<TypeProvider>]
 type public XamlProvider(cfg:TypeProviderConfig) as this =
     inherit TypeProviderForNamespaces()
 
-    do this.AddNamespace(DSL.rootNamespace,[xamlType this cfg])
+    do this.AddNamespace(rootNamespace,[xamlType this cfg])
 
 [<TypeProviderAssembly>]
 do ()
