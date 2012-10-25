@@ -89,6 +89,41 @@ module Dictionary =
         | true,v -> Some v
         | _ -> None
 
+    let valueList (d: IDictionary<_,_>) = d.Values |> Seq.toList
+
+    let spanWithKey pred (d: IDictionary<_,_>) =
+        let right = Dictionary()
+        let left = Dictionary()
+        for pair in d do
+            match pair.Key, pair.Value with
+            | (key, value) when pred key -> right.Add(key, value)
+            | (key, value) when not (pred key) -> left.Add(key, value)
+            | _ -> failwith "Unrecognized pattern"
+        (left, right)
+
+    let splitWithKey pred d = spanWithKey (not << pred) d
+
+    let insertWith f k v (d: IDictionary<_,_>) =
+        let d = Dictionary(d)
+        match tryFind k d with
+        | Some value -> d.[k] <- f v value
+        | None -> d.Add(k, v)
+        d
+
+    let updateWith f k (d: IDictionary<_,_>) =
+        let d = Dictionary(d)
+        let inner v =
+            match f v with
+            | Some value -> d.[k] <- value
+            | None -> d.Remove(k) |> ignore
+        d |> tryFind k |> Option.iter inner
+        d
+
+    let toList (d: IDictionary<_,_>) =
+        d
+        |> Seq.map (fun x -> (x.Key, x.Value))
+        |> Seq.toList
+
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 [<Extension>]
 module NameValueCollection =
