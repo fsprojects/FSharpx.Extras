@@ -45,6 +45,7 @@
     <Compile Include="..\FSharpx.Core\Strings.fs">
       <Link>Strings.fs</Link>
     </Compile>
+    <Compile Include="TypeProvider.Helper.fs" />
     <Compile Include="TypeProviderDSL.fs" />
   </ItemGroup>
   <ItemGroup>
