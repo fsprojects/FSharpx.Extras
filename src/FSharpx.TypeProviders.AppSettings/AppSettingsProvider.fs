@@ -1,6 +1,7 @@
 ﻿module FSharpx.TypeProviders.AppSettingsTypeProvider
 
 open FSharpx
+open FSharpx.Strings
 open FSharpx.TypeProviders.Helper
 open Microsoft.FSharp.Core.CompilerServices
 open Samples.FSharp.ProvidedTypes
@@ -30,7 +31,7 @@ let internal typedAppSettings (cfg:TypeProviderConfig) =
         parameters = [ProvidedStaticParameter("configFileName", typeof<string>)], 
         instantiationFunction = (fun typeName parameterValues ->
             match parameterValues with 
-            | [| :? string as configFileName |] -> 
+            | [| :? string as configFileName |] ->
                 let typeDef = erasedType<obj> thisAssembly rootNamespace typeName
                 try
                     let filePath = findConfigFile cfg.ResolutionFolder configFileName
@@ -40,10 +41,10 @@ let internal typedAppSettings (cfg:TypeProviderConfig) =
                     for key in appSettings.AllKeys do
                         let field =
                             match (appSettings.Item key).Value with
-                            | Int fieldValue -> literalField key fieldValue
-                            | Bool fieldValue -> literalField key fieldValue
-                            | Double fieldValue -> literalField key fieldValue
-                            | fieldValue -> literalField key fieldValue
+                            | Int fieldValue ->    ProvidedLiteralField(niceName key, typeof<int>, fieldValue)
+                            | Bool fieldValue ->   ProvidedLiteralField(niceName key, typeof<bool>, fieldValue)
+                            | Double fieldValue -> ProvidedLiteralField(niceName key, typeof<float>, fieldValue)
+                            | fieldValue ->        ProvidedLiteralField(niceName key, typeof<obj>, fieldValue)
 
                         field.AddXmlDoc (sprintf "Returns the value from %s with key %s" configFileName key)
                         field.AddDefinitionLocation(1,1,configFileName)

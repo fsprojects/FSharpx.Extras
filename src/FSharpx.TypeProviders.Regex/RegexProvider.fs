@@ -5,59 +5,72 @@ open System.Reflection
 open Microsoft.FSharp.Core.CompilerServices
 open Samples.FSharp.ProvidedTypes
 open System.Text.RegularExpressions
-open FSharpx.TypeProviders.DSL
+open FSharpx.TypeProviders.Helper
 
-let internal regexTy = 
-    erasedType<Regex> thisAssembly rootNamespace "Regex"
-    |> staticParameters
-        ["pattern", typeof<string>, None]
-        (fun typeName parameterValues ->
-
+let internal typedRegex() = 
+    let regexType = erasedType<Regex> thisAssembly rootNamespace "Regex"
+    regexType.DefineStaticParameters(
+        parameters = [ProvidedStaticParameter("pattern", typeof<string>)], 
+        instantiationFunction = (fun typeName parameterValues ->
             match parameterValues with 
-            | [| :? string as pattern |] ->
+            | [| :? string as pattern |] -> 
+                let matchType = runtimeType<Match> "MatchType"
+                matchType.HideObjectMethods <- true
 
-            let groupProperties =
-                Regex(pattern).GetGroupNames()
-                    |> Seq.map (fun group ->
-                            provideProperty 
-                                (if group <> "0" then group else "CompleteMatch")
-                                typeof<Group>
-                                (fun args -> <@@ (%%args.[0]:Match).Groups.[group] @@>)
-                                |> addPropertyXmlDoc(sprintf @"Gets the ""%s"" group from this match" group))
+                for group in Regex(pattern).GetGroupNames() do
+                    let property = 
+                        ProvidedProperty(
+                            propertyName = (if group <> "0" then group else "CompleteMatch"),
+                            propertyType = typeof<Group>,
+                            GetterCode = (fun args -> <@@ (%%args.[0]:Match).Groups.[group] @@>))
+                    property.AddXmlDoc(sprintf @"Gets the ""%s"" group from this match" group)
+                    matchType.AddMember property
                 
-            let matchType =
-                runtimeType<Match> "MatchType"
-                  |> hideOldMethods
-                  |++!> groupProperties
 
-            erasedType<Regex> thisAssembly rootNamespace typeName 
-                |> hideOldMethods
-                |> addXmlDoc "A strongly typed interface to the regular expression '%s'"
-                |+!> (provideMethod
-                        "IsMatch"
-                        ["input", typeof<string>]
-                        typeof<bool>
-                        (fun args -> <@@ Regex.IsMatch(%%args.[0], pattern) @@>)
-                    |> makeStatic
-                    |> addMethodXmlDoc "Indicates whether the regular expression finds a match in the specified input string")
-                |+!> matchType
-                |+!> (provideMethod 
-                        "Match"
-                        ["input", typeof<string>]
-                        matchType
-                        (fun args -> <@@ (%%args.[0]:Regex).Match(%%args.[1]) @@>)
-                    |> addMethodXmlDoc "Searches the specified input string for the first occurence of this regular expression")
-                |+!> (provideConstructor
-                        [] 
-                        (fun args -> <@@ Regex(pattern) @@>)
-                    |> addConstructorXmlDoc "Initializes a regular expression instance")
-            | _ -> failwith "unexpected parameter values")
+                let regexType = erasedType<Regex> thisAssembly rootNamespace typeName
+                regexType.HideObjectMethods <- true
+                regexType.AddXmlDoc "A strongly typed interface to the regular expression '%s'"
+
+                regexType.AddMember matchType
+
+                let isMatchMethod =
+                    ProvidedMethod(
+                        methodName = "IsMatch",
+                        parameters = [ProvidedParameter("input", typeof<string>)],
+                        returnType = typeof<bool>,
+                        InvokeCode = (fun args -> <@@ Regex.IsMatch(%%args.[0], pattern) @@>),
+                        IsStaticMethod = true)
+                isMatchMethod.AddXmlDoc "Indicates whether the regular expression finds a match in the specified input string"
+
+                regexType.AddMember isMatchMethod
+
+                let matchMethod =
+                    ProvidedMethod(
+                        methodName = "Match",
+                        parameters = [ProvidedParameter("input", typeof<string>)],
+                        returnType = matchType,
+                        InvokeCode = (fun args -> <@@ (%%args.[0]:Regex).Match(%%args.[1]) @@>))
+                isMatchMethod.AddXmlDoc "Searches the specified input string for the first occurence of this regular expression"
+
+                regexType.AddMember matchMethod
+                
+                let ctor = 
+                    ProvidedConstructor(
+                        parameters = [], 
+                        InvokeCode = (fun args -> <@@ Regex(pattern) @@>))
+
+                ctor.AddXmlDoc "Initializes a regular expression instance"
+                regexType.AddMember ctor
+
+                regexType
+            | _ -> failwith "unexpected parameter values"))
+    regexType
 
 [<TypeProvider>]
 type public RegexProvider(cfg:TypeProviderConfig) as this =
     inherit TypeProviderForNamespaces()
 
-    do this.AddNamespace(DSL.rootNamespace, [regexTy])
+    do this.AddNamespace(rootNamespace, [typedRegex()])
 
 [<TypeProviderAssembly>]
 do ()
