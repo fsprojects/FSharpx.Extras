@@ -109,7 +109,7 @@ let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
                         methodName = "ToJson",
                         parameters = [],
                         returnType = typeof<IDocument>,
-                        InvokeCode =  (fun args -> <@@ (%%args.[0]: TypedXDocument).Document.ToJson() @@>))
+                        InvokeCode = (fun args -> <@@ (%%args.[0]: TypedXDocument).Document.ToJson() @@>))
 
                 converterMethod.AddXmlDoc "Gets the JSON representation"
 
