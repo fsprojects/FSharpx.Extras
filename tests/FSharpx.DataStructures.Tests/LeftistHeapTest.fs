@@ -174,9 +174,10 @@ let ``seq enumerate matches build list string``(x : obj) =
     let genAndName = unbox x
     fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun (h : LeftistHeap<string>, l) -> h |> Seq.toList = l |> classifyCollect h h.Length))
 
-[<Test>]
-let ``seq enumerate matches long build list``() =
-    fsCheck "long build list" (Prop.forAll (Arb.fromGen longLeftistHeapIntOfSeqGen) (fun (h : LeftistHeap<int>, l) -> h |> Seq.toList = l |> classifyCollect h h.Length))
+//Always comment this test for pull request. Can cause stackoverflow in test phase of integration build because of debug mode not supporting tail recursion
+//[<Test>]
+//let ``seq enumerate matches long build list``() =
+//    fsCheck "long build list" (Prop.forAll (Arb.fromGen longLeftistHeapIntOfSeqGen) (fun (h : LeftistHeap<int>, l) -> h |> Seq.toList = l |> classifyCollect h h.Length))
 
 [<Test>]
 let ``structure pattern match and merge``() =
