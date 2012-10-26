@@ -51,10 +51,13 @@
     <Compile Include="..\FSharpx.Core\Strings.fs">
       <Link>Strings.fs</Link>
     </Compile>
+    <Compile Include="..\FSharpx.TypeProviders\TypeProvider.Helper.fs">
+      <Link>TypeProvider.Helper.fs</Link>
+    </Compile>
+    <Compile Include="FileSystemProvider.fs" />
     <Compile Include="..\FSharpx.TypeProviders\TypeProviderDSL.fs">
       <Link>TypeProviderDSL.fs</Link>
     </Compile>
-    <Compile Include="FileSystemProvider.fs" />
     <Compile Include="RegistryProvider.fs" />
     <Compile Include="SystemProvider.fs" />
   </ItemGroup>

@@ -11,7 +11,7 @@ type public SystemProvider(cfg:TypeProviderConfig) as this =
 
     do this.AddNamespace(
         DSL.rootNamespace, 
-        [FilesTypeProvider.typedFileSystem
+        [FilesTypeProvider.createTypedFileSystem()
          RegistryProvider.typedRegistry])
 
 [<TypeProviderAssembly>]
