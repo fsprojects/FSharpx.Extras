@@ -2,16 +2,17 @@
 module FSharpx.TypeProviders.StateMachineProvider
 
 open FSharpx.StateMachine
-open FSharpx.TypeProviders.DSL
+open FSharpx.Strings
+open FSharpx.TypeProviders.Helper
 open Samples.FSharp.ProvidedTypes
 open Microsoft.FSharp.Core.CompilerServices
 
 let internal stateMachineTy ownerType makeAsync (cfg:TypeProviderConfig) =
-    erasedType<StateMachine> thisAssembly rootNamespace (if makeAsync then "AsyncStateMachine" else "StateMachine")
-    |> staticParameters
-        ["dgml file name", typeof<string>, None
-         "init state", typeof<string>, None]    
-        (fun typeName parameterValues -> 
+    let stateMachineType = erasedType<StateMachine> thisAssembly rootNamespace (if makeAsync then "AsyncStateMachine" else "StateMachine")
+    stateMachineType.DefineStaticParameters(
+        parameters = [ProvidedStaticParameter("dgml file name", typeof<string>)
+                      ProvidedStaticParameter("init state", typeof<string>)],
+        instantiationFunction = (fun typeName parameterValues ->
             match parameterValues with 
             | [| :? string as fileName; :? string as initState |] ->
 
@@ -22,42 +23,54 @@ let internal stateMachineTy ownerType makeAsync (cfg:TypeProviderConfig) =
                 
                 watchForChanges ownerType dgml
 
-                erasedType<StateMachine> thisAssembly rootNamespace typeName
-                |> hideOldMethods
-                |> addXmlDoc "A strongly typed interface to the state machine described in '%s'"
-                |++!> (stateMachine.Nodes
-                        |> Seq.map (fun n ->
-                                    let name = n.Name
-                                    provideProperty
-                                        name
-                                        typeof<string>                                        
-                                        (fun args -> <@@ name @@>)
-                                        |> addPropertyXmlDoc ("Status " + n.Name)))
-                |++!> (stateMachine.Nodes
-                        |> Seq.map (fun n ->
-                                    let name = n.Name
-                                    provideMethod
-                                        (sprintf "TransitTo%s" name)
-                                        []
-                                        typeof<unit>
-                                        (fun args -> <@@ (%%args.[0] :> StateMachine).TransitTo(name) @@>)))
-                |+!> (provideMethod
-                        "SetTransitionFunction"
-                        ["Name", typeof<string>
-                         "StateClass", typeof<IState>]
-                        typeof<unit>
-                        (fun args -> <@@ (%%args.[0] :> StateMachine).SetFunction(%%args.[1] :> string, %%args.[2] :> IState) @@>)
-                    |> addMethodXmlDoc "Sets the functions for status changes")
-                |+!> (provideConstructor
-                        [] 
-                        (fun args -> <@@ StateMachine(dgml,makeAsync,initState) @@>)
-                    |> addConstructorXmlDoc "Initializes a state machine instance"))
+                let stateMachineType = erasedType<StateMachine> thisAssembly rootNamespace typeName
+                stateMachineType.HideObjectMethods <- true
+                stateMachineType.AddXmlDoc (sprintf "A strongly typed interface to the state machine described in '%s'" fileName)
+
+                for n in stateMachine.Nodes do
+                    let name = n.Name
+                    let property =
+                        ProvidedProperty(
+                            propertyName = niceName name,
+                            propertyType = typeof<string>,
+                            GetterCode = (fun args -> <@@ name @@>))
+                    property.AddXmlDoc("Status " + n.Name)
+                    stateMachineType.AddMember property
+
+                    let transitMethod = 
+                        ProvidedMethod(
+                            methodName = niceName (sprintf "TransitTo%s" name),
+                            parameters = [],
+                            returnType = typeof<unit>,
+                            InvokeCode = (fun args -> <@@ (%%args.[0] :> StateMachine).TransitTo(name) @@>))
+                    stateMachineType.AddMember transitMethod
+
+                let setTransitionFunctionMethod =
+                    ProvidedMethod(
+                        methodName = "SetTransitionFunction",
+                        parameters = [ProvidedParameter("Name", typeof<string>)
+                                      ProvidedParameter("StateClass", typeof<IState>)],
+                        returnType = typeof<unit>,
+                        InvokeCode = (fun args -> <@@ (%%args.[0] :> StateMachine).SetFunction(%%args.[1] :> string, %%args.[2] :> IState) @@>))
+
+                setTransitionFunctionMethod.AddXmlDoc "Sets the functions for status changes"
+                stateMachineType.AddMember setTransitionFunctionMethod
+
+                let defaultConstructor = 
+                    ProvidedConstructor(
+                        parameters = [],
+                        InvokeCode = (fun _ -> <@@ StateMachine(dgml,makeAsync,initState) @@>))
+                defaultConstructor.AddXmlDoc "Initializes a state machine instance"
+
+                stateMachineType.AddMember defaultConstructor
+                stateMachineType))
+    stateMachineType
 
 let internal graph ownerType (cfg:TypeProviderConfig) =
-    erasedType<obj> thisAssembly rootNamespace ("Graph")
-    |> staticParameters
-        ["dgml file name", typeof<string>, None]    
-        (fun typeName parameterValues -> 
+    let graphType = erasedType<obj> thisAssembly rootNamespace ("Graph")
+    graphType.DefineStaticParameters(
+        parameters = [ProvidedStaticParameter("dgml file name", typeof<string>)],
+        instantiationFunction = (fun typeName parameterValues ->
             match parameterValues with 
             | [| :? string as fileName |] ->                
                 let dgml = System.IO.Path.Combine(cfg.ResolutionFolder, fileName)
@@ -86,11 +99,13 @@ let internal graph ownerType (cfg:TypeProviderConfig) =
                             | Some l -> l
                             | _ -> "TransitTo" + name
 
-                        states.[node.Name]
-                        |+!> (provideMethod trasitionName [] states.[name] (fun args -> <@@ { Name = name } @@>))
-                        |> ignore
-
-
+                        let transitionMethod =
+                            ProvidedMethod(
+                                methodName = niceName trasitionName,
+                                parameters = [],
+                                returnType = states.[name],
+                                InvokeCode = (fun args -> <@@ { Name = name } @@>))
+                        states.[node.Name].AddMember transitionMethod
 
                 for node1 in stateMachine.Nodes do
                     for targetNode in stateMachine.Nodes do
@@ -100,28 +115,29 @@ let internal graph ownerType (cfg:TypeProviderConfig) =
                                 let name = targetNode.Name
                                 let path = path |> List.rev |> List.tail
 
-                                states.[node1.Name]
-                                |+!> 
-                                   (provideMethod 
-                                        ("ShortestPathTo" + name) 
-                                        [] 
-                                        (typedefof<list<_>>.MakeGenericType typeof<string>) 
-                                        (fun args -> <@@ path @@>))
-                                |> ignore
+                                let shortestPathMethod =
+                                    ProvidedMethod(
+                                        methodName = niceName ("ShortestPathTo" + name),
+                                        parameters = [],
+                                        returnType = listType typeof<string>,
+                                        InvokeCode = (fun args -> <@@ path @@>))
+                                states.[node1.Name].AddMember shortestPathMethod
                             | None -> ()
 
                 for node in stateMachine.Nodes do
                     let name = node.Name
-                    ownerType
-                    |+!> (provideMethod
-                            ("StartFrom" + name)
-                            []
-                            states.[name]
-                            (fun args -> <@@  { Name = name } @@>)
-                                |> makeStatic)
-                    |> ignore
 
-                ownerType)
+                    let startFromMethod =
+                        ProvidedMethod(
+                            methodName = niceName ("StartFrom" + name),
+                            parameters = [],
+                            returnType = states.[name],
+                            InvokeCode = (fun args -> <@@  { Name = name } @@>),
+                            IsStaticMethod = true)
+                    ownerType.AddMember startFromMethod
+
+                ownerType))
+    graphType
 
 [<TypeProvider>]
 type public GraphProvider(cfg:TypeProviderConfig) as this =

@@ -25,6 +25,7 @@ let erasedType<'a> assemblyName rootNamespace typeName =
 let runtimeType<'a> typeName = ProvidedTypeDefinition(niceName typeName, Some typeof<'a>)
 
 let seqType ty = typedefof<seq<_>>.MakeGenericType[| ty |]
+let listType ty = typedefof<list<_>>.MakeGenericType[| ty |]
 
 let optionType ty = typedefof<option<_>>.MakeGenericType[| ty |]
 
