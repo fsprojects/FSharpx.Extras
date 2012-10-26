@@ -7,7 +7,7 @@ module internal FSharpx.TypeProviders.Inference
 open System
 open System.Xml
 open System.Xml.Linq
-open FSharpx.TypeProviders.DSL
+open FSharpx.TypeProviders.Helper
 open System.Collections.Generic
 open System.Globalization
 open FSharpx.Strings
@@ -26,34 +26,42 @@ open Microsoft.FSharp.Quotations
 open Microsoft.FSharp.Core.CompilerServices
 
 /// Generate property for every inferred property
-let generateProperties ownerType accessExpr checkIfOptional setterExpr optionalSetterExpr elementProperties =   
+let generateProperties (ownerType:ProvidedTypeDefinition) accessExpr checkIfOptional setterExpr optionalSetterExpr elementProperties =   
     for SimpleProperty(propertyName,propertyType,optional) in elementProperties do
-        ownerType
-          |+!> (if optional then
-                    let newType = optionType propertyType
-                    // For optional elements, we return Option value
-                    let cases = Reflection.FSharpType.GetUnionCases newType
-                    let some = cases |> Seq.find (fun c -> c.Name = "Some")
-                    let none = cases |> Seq.find (fun c -> c.Name = "None")
+        let property =
+            if optional then
+                let newType = optionType propertyType
+                // For optional elements, we return Option value
+                let cases = Reflection.FSharpType.GetUnionCases newType
+                let some = cases |> Seq.find (fun c -> c.Name = "Some")
+                let none = cases |> Seq.find (fun c -> c.Name = "None")
 
-                    let optionalAccessExpr =
-                        (fun args ->
-                            Expr.IfThenElse
-                                (checkIfOptional propertyName args,
-                                Expr.NewUnionCase(some, [accessExpr propertyName propertyType args]),
-                                Expr.NewUnionCase(none, [])))
+                let optionalAccessExpr =
+                    (fun args ->
+                        Expr.IfThenElse
+                            (checkIfOptional propertyName args,
+                            Expr.NewUnionCase(some, [accessExpr propertyName propertyType args]),
+                            Expr.NewUnionCase(none, [])))
 
-                    provideProperty propertyName newType optionalAccessExpr
-                        |> addSetter (optionalSetterExpr propertyName propertyType)
-                else
-                    provideProperty propertyName propertyType (accessExpr propertyName propertyType)
-                        |> addSetter (setterExpr propertyName propertyType)
-                |> addPropertyXmlDoc (sprintf "Gets the %s attribute" propertyName))
-          |> ignore
+                ProvidedProperty(
+                    propertyName = niceName propertyName,
+                    propertyType = newType,
+                    GetterCode = optionalAccessExpr,
+                    SetterCode = optionalSetterExpr propertyName propertyType)
+            else
+                ProvidedProperty(
+                    propertyName = niceName propertyName,
+                    propertyType = propertyType,
+                    GetterCode = accessExpr propertyName propertyType,
+                    SetterCode = setterExpr propertyName propertyType)
+
+        property.AddXmlDoc(sprintf "Gets the %s attribute" propertyName)
+
+        ownerType.AddMember property
 
 /// Iterates over all the sub elements, generates types for them
 /// and adds member for accessing them to the parent.
-let generateSublements ownerType parentType multiAccessExpr addChildExpr newChildExpr singleAccessExpr generateTypeF children =
+let generateSublements (ownerType:ProvidedTypeDefinition) parentType multiAccessExpr addChildExpr newChildExpr singleAccessExpr generateTypeF children =
     for CompoundProperty(childName,multi,_,_) as child in children do
         let childType = generateTypeF parentType child
 
@@ -61,19 +69,48 @@ let generateSublements ownerType parentType multiAccessExpr addChildExpr newChil
             let newType = seqType childType
             let niceChildName = childName |> niceName |> singularize 
 
-            ownerType
-            |+!> (provideMethod ("Get" + pluralize niceChildName) [] newType (multiAccessExpr childName)
-                    |> addMethodXmlDoc (sprintf @"Gets the %s elements" childName))
-            |+!> (provideMethod ("New" + niceChildName) [] childType (newChildExpr childName)
-                    |> addMethodXmlDoc (sprintf @"Creates a new %s element" childName))
-            |+!> (provideMethod ("Add" + niceChildName) ["element", childType] typeof<unit> (addChildExpr childName)
-                    |> addMethodXmlDoc (sprintf @"Adds a %s element" childName))            
-            |> ignore
+            let getChildrenMethod =
+                ProvidedMethod(
+                    methodName = "Get" + pluralize niceChildName,
+                    parameters = [],
+                    returnType = newType,
+                    InvokeCode = multiAccessExpr childName)
+
+            getChildrenMethod.AddXmlDoc (sprintf @"Gets the %s elements" childName)
+
+            ownerType.AddMember getChildrenMethod
+
+            let newChildMethod =
+                ProvidedMethod(
+                    methodName = "New" + niceChildName,
+                    parameters = [],
+                    returnType = childType,
+                    InvokeCode = newChildExpr childName)
+
+            newChildMethod.AddXmlDoc (sprintf @"Creates a new %s element" childName)
+
+            ownerType.AddMember newChildMethod
+            
+            let addChildMethod =
+                ProvidedMethod(
+                    methodName = "Add" + niceChildName,
+                    parameters = [ProvidedParameter("element", childType)],
+                    returnType = typeof<unit>,
+                    InvokeCode = addChildExpr childName)
+
+            addChildMethod.AddXmlDoc (sprintf @"Adds a %s element" childName)
+
+            ownerType.AddMember addChildMethod
         else
-            ownerType
-            |+!> (provideProperty childName childType (singleAccessExpr childName)
-                    |> addPropertyXmlDoc (sprintf @"Gets the %s attribute" childName))
-            |> ignore
+            let childGetter =
+                ProvidedProperty(
+                    propertyName = niceName childName,
+                    propertyType = childType,
+                    GetterCode = singleAccessExpr childName)
+
+            childGetter.AddXmlDoc (sprintf @"Gets the %s attribute" childName)
+            ownerType.AddMember childGetter
+
 
     ownerType
 
@@ -90,14 +127,50 @@ type GeneratedParserSettings = {
 /// Generates constructors for loading data and adds type representing Root node
 let createParserType<'a> typeName (generateTypeF: ProvidedTypeDefinition -> CompoundProperty -> ProvidedTypeDefinition) settings =
     let parserType = erasedType<'a> thisAssembly rootNamespace typeName
+     
+    let defaultConstructor = 
+        ProvidedConstructor(
+            parameters = [],
+            InvokeCode = settings.EmptyConstructor)
+    defaultConstructor.AddXmlDoc "Initializes the document from the schema sample."
+
+    parserType.AddMember defaultConstructor
+
+    let fileNameConstructor = 
+        ProvidedConstructor(
+            parameters = [ProvidedParameter("filename", typeof<string>)],
+            InvokeCode = settings.FileNameConstructor)
+    fileNameConstructor.AddXmlDoc "Initializes a document from the given path."
+
+    parserType.AddMember fileNameConstructor
+
+    let inlinedDocumentConstructor = 
+        ProvidedConstructor(
+            parameters = [ProvidedParameter("documentContent", typeof<string>)],
+            InvokeCode = settings.DocumentContentConstructor)
+    inlinedDocumentConstructor.AddXmlDoc "Initializes a document from the given string."
+
+    parserType.AddMember inlinedDocumentConstructor
+
+    let rootProperty =
+        ProvidedProperty(
+            propertyName = "Root",
+            propertyType = generateTypeF parserType settings.Schema,
+            GetterCode = settings.RootPropertyGetter)
+
+    rootProperty.AddXmlDoc "Gets the document root"
+
+    parserType.AddMember rootProperty
+
+    let toStringMethod =
+        ProvidedMethod(
+            methodName = "ToString",
+            parameters = [],
+            returnType = typeof<string>,
+            InvokeCode = settings.ToStringExpr)
+
+    toStringMethod.AddXmlDoc "Gets the string representation"
+
+    parserType.AddMember toStringMethod
+
     parserType
-    |+!> (provideConstructor [] settings.EmptyConstructor
-           |> addConstructorXmlDoc "Initializes the document from the schema sample.")
-    |+!> (provideConstructor ["filename", typeof<string>] settings.FileNameConstructor
-           |> addConstructorXmlDoc "Initializes a document from the given path.")
-    |+!> (provideConstructor ["documentContent", typeof<string>] settings.DocumentContentConstructor
-           |> addConstructorXmlDoc "Initializes a document from the given string.")
-    |+!> (provideProperty "Root" (generateTypeF parserType settings.Schema) settings.RootPropertyGetter
-           |> addPropertyXmlDoc "Gets the document root")
-    |+!> (provideMethod ("ToString") [] typeof<string> settings.ToStringExpr
-           |> addMethodXmlDoc "Gets the string representation")

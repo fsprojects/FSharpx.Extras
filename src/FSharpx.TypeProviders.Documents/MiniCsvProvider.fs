@@ -4,7 +4,7 @@
 // warranties of merchantability and fitness for a particular purpose. 
 module FSharpx.TypeProviders.MiniCsvProvider
 
-open FSharpx.TypeProviders.DSL
+open FSharpx.TypeProviders.Helper
 open System.Reflection
 open System.IO
 open Samples.FSharp.ProvidedTypes
@@ -22,26 +22,28 @@ type CsvFile(filename) =
 
 // Create the main provided type
 let internal csvType ownerType (cfg:TypeProviderConfig) =
-    erasedType<obj> thisAssembly rootNamespace "MinCsv"
-    |> staticParameter "filename"
-        (fun typeName fileName ->
-            let resolvedFileName = findConfigFile cfg.ResolutionFolder fileName
-            watchForChanges ownerType resolvedFileName
-            let headerLine =
-                resolvedFileName
-                    |> File.ReadLines
-                    |> Seq.head
+    let csvType = erasedType<obj> thisAssembly rootNamespace "MinCsv"
+    csvType.DefineStaticParameters(
+        parameters = [ProvidedStaticParameter("filename", typeof<string>)], 
+        instantiationFunction = (fun typeName parameterValues ->
+            match parameterValues with 
+            | [| :? string as fileName |] -> 
+                let resolvedFileName = findConfigFile cfg.ResolutionFolder fileName
+                watchForChanges ownerType resolvedFileName
+                let headerLine =
+                    resolvedFileName
+                        |> File.ReadLines
+                        |> Seq.head
 
-            // extract header names from the file, splitting on commas
-            // we use Regex matching so that we can get the position in the row at which the field occurs
-            let headers = [for m in Regex.Matches(headerLine, "[^,]+") -> m]
+                // extract header names from the file, splitting on commas
+                // we use Regex matching so that we can get the position in the row at which the field occurs
+                let headers = [for m in Regex.Matches(headerLine, "[^,]+") -> m]
 
-            let rowType =
-                runtimeType<float[]> "Row"
-                  |> hideOldMethods
-                  |++!> (
-                        headers
-                        |> Seq.mapi (fun i header ->
+                let rowType = runtimeType<float[]> "Row"
+                rowType.HideObjectMethods <- true
+
+                headers
+                    |> Seq.iteri (fun i header ->
                             // try to decompose this header into a name and unit
                             let fieldName, fieldType =
                                 let m = Regex.Match(header.Value, @"(?<field>.+) \((?<unit>.+)\)")
@@ -53,28 +55,45 @@ let internal csvType ownerType (cfg:TypeProviderConfig) =
                                     // no units, just treat it as a normal float
                                     header.Value, typeof<float>
                             
-                            provideProperty 
-                                fieldName 
-                                fieldType
-                                (fun args -> <@@ (%%args.[0]:float[]).[i] @@>)
-                              |> addPropertyDefinitionLocation 
-                                    { Line = 1
-                                      Column = header.Index + 1 
-                                      FileName = fileName}))
+                            let property = 
+                                ProvidedProperty (
+                                    propertyName = fieldName,
+                                    propertyType = fieldType,
+                                    GetterCode = (fun args -> <@@ (%%args.[0]:float[]).[i] @@>))
+
+                            property.AddDefinitionLocation(1,header.Index + 1,fileName)
+                            rowType.AddMember property)
                 
-            // define the provided type, erasing to CsvFile
-            erasedType<CsvFile> thisAssembly rootNamespace typeName 
-            |> addXmlDoc (sprintf "A strongly typed interface to the csv file '%s'" fileName)
-            |+!> (provideConstructor
-                    [] 
-                    (fun _ -> <@@ CsvFile(resolvedFileName) @@>)
-                |> addConstructorXmlDoc "Initializes a CsvFile instance")
-            |+!> (provideConstructor
-                    ["filename", typeof<string>] 
-                    (fun args -> <@@ CsvFile(%%args.[0]) @@>)
-                |> addConstructorXmlDoc "Initializes a CsvFile instance from the given path.")
-            |+!> provideProperty
-                    "Data"
-                    (typedefof<seq<_>>.MakeGenericType rowType)
-                    (fun args -> <@@ (%%args.[0]:CsvFile).Data @@>)
-            |+!> rowType)
+                // define the provided type, erasing to CsvFile
+                let csvType = erasedType<CsvFile> thisAssembly rootNamespace typeName 
+                csvType.AddXmlDoc(sprintf "A strongly typed interface to the csv file '%s'" fileName)
+
+                let defaultConstructor = 
+                    ProvidedConstructor(
+                        parameters = [],
+                        InvokeCode = (fun _ -> <@@ CsvFile(resolvedFileName) @@>))
+                defaultConstructor.AddXmlDoc "Initializes a CsvFile instance"
+
+                csvType.AddMember defaultConstructor
+
+                let fileNameConstructor = 
+                    ProvidedConstructor(
+                        parameters = [ProvidedParameter("filename", typeof<string>)],
+                        InvokeCode = (fun args -> <@@ CsvFile(%%args.[0]) @@>))
+                fileNameConstructor.AddXmlDoc "Initializes a CsvFile instance from the given path."
+
+                csvType.AddMember fileNameConstructor
+
+                let rootProperty =
+                    ProvidedProperty(
+                        propertyName = "Data",
+                        propertyType = seqType rowType,
+                        GetterCode =  (fun args -> <@@ (%%args.[0]:CsvFile).Data @@>))
+
+                rootProperty.AddXmlDoc "Gets the document root"
+
+                csvType.AddMember rootProperty
+                csvType.AddMember rowType
+                csvType))
+
+    csvType
