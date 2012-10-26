@@ -95,14 +95,57 @@ let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
                     | _ -> failwith "You have to specify a filename or inlined Schema"
                     
                 let doc = XDocument.Parse schema
-                let xmlDocumentType =
-                    { Schema = XmlInference.provideElement doc.Root.Name.LocalName [doc.Root]
-                      EmptyConstructor = fun args -> <@@ TypedXDocument(XDocument.Parse schema) @@>
-                      FileNameConstructor = fun args -> <@@ TypedXDocument(XDocument.Load(%%args.[0] : string)) @@>
-                      DocumentContentConstructor = fun args -> <@@ TypedXDocument(XDocument.Parse(%%args.[0] : string)) @@>
-                      RootPropertyGetter = fun args -> <@@ TypedXElement((%%args.[0] : TypedXDocument).Document.Root) @@>
-                      ToStringExpr = fun args -> <@@ (%%args.[0]: TypedXDocument).Document.ToString() @@> }
-                    |> createParserType<TypedXDocument> typeName generateType     
+                let xmlSchema = XmlInference.provideElement doc.Root.Name.LocalName [doc.Root]
+
+                let xmlDocumentType = erasedType<TypedXDocument> thisAssembly rootNamespace typeName
+     
+                let defaultConstructor = 
+                    ProvidedConstructor(
+                        parameters = [],
+                        InvokeCode = (fun args -> <@@ TypedXDocument(XDocument.Parse schema) @@>))
+                defaultConstructor.AddXmlDoc "Initializes the document from the schema sample."
+
+                xmlDocumentType.AddMember defaultConstructor
+
+                let fileNameConstructor = 
+                    ProvidedConstructor(
+                        parameters = [ProvidedParameter("filename", typeof<string>)],
+                        InvokeCode = (fun args -> <@@ TypedXDocument(XDocument.Load(%%args.[0] : string)) @@>))
+                fileNameConstructor.AddXmlDoc "Initializes a document from the given path."
+
+                xmlDocumentType.AddMember fileNameConstructor
+
+                let inlinedDocumentMethod = 
+                    ProvidedMethod(
+                        methodName = "Parse",
+                        parameters = [ProvidedParameter("documentContent", typeof<string>)],
+                        returnType = xmlDocumentType,
+                        IsStaticMethod = true,
+                        InvokeCode = (fun args -> <@@ TypedXDocument(XDocument.Parse(%%args.[0] : string)) @@>))
+                inlinedDocumentMethod.AddXmlDoc "Initializes a document from the given string."
+
+                xmlDocumentType.AddMember inlinedDocumentMethod
+
+                let rootProperty =
+                    ProvidedProperty(
+                        propertyName = "Root",
+                        propertyType = generateType xmlDocumentType xmlSchema,
+                        GetterCode = (fun args -> <@@ TypedXElement((%%args.[0] : TypedXDocument).Document.Root) @@>))
+
+                rootProperty.AddXmlDoc "Gets the document root"
+
+                xmlDocumentType.AddMember rootProperty
+
+                let toStringMethod =
+                    ProvidedMethod(
+                        methodName = "ToString",
+                        parameters = [],
+                        returnType = typeof<string>,
+                        InvokeCode = (fun args -> <@@ (%%args.[0]: TypedXDocument).Document.ToString() @@>))
+
+                toStringMethod.AddXmlDoc "Gets the string representation"
+
+                xmlDocumentType.AddMember toStringMethod
         
                 let converterMethod =
                     ProvidedMethod(
