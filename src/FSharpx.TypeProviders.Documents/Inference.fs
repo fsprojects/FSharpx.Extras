@@ -144,13 +144,16 @@ let createParserType<'a> typeName (generateTypeF: ProvidedTypeDefinition -> Comp
 
     parserType.AddMember fileNameConstructor
 
-    let inlinedDocumentConstructor = 
-        ProvidedConstructor(
+    let inlinedDocumentMethod = 
+        ProvidedMethod(
+            methodName = "Parse",
             parameters = [ProvidedParameter("documentContent", typeof<string>)],
+            returnType = parserType,
+            IsStaticMethod = true,
             InvokeCode = settings.DocumentContentConstructor)
-    inlinedDocumentConstructor.AddXmlDoc "Initializes a document from the given string."
+    inlinedDocumentMethod.AddXmlDoc "Initializes a document from the given string."
 
-    parserType.AddMember inlinedDocumentConstructor
+    parserType.AddMember inlinedDocumentMethod
 
     let rootProperty =
         ProvidedProperty(

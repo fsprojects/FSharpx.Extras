@@ -27,8 +27,8 @@ let newJson2 =
             "age"      : 24
     }"""
 
-let document = WikiSample(documentContent=newJson).Root
-let document2 = WikiSample(documentContent=newJson2).Root
+let document = WikiSample.Parse(newJson).Root
+let document2 = WikiSample.Parse(newJson2).Root
 
 [<Test>]
 let ``Jane should have first name of Jane``() = 
