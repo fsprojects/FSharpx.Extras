@@ -24,6 +24,10 @@ let erasedType<'a> assemblyName rootNamespace typeName =
 
 let runtimeType<'a> typeName = ProvidedTypeDefinition(niceName typeName, Some typeof<'a>)
 
+let seqType ty = typedefof<seq<_>>.MakeGenericType[| ty |]
+
+let optionType ty = typedefof<option<_>>.MakeGenericType[| ty |]
+
 /// Implements invalidation of schema when the file changes
 let watchForChanges (ownerType:TypeProviderForNamespaces) (fileName:string) = 
     if not (fileName.StartsWith("http", System.StringComparison.InvariantCultureIgnoreCase)) then
