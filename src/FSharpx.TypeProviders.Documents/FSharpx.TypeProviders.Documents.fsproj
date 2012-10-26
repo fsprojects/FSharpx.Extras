@@ -60,11 +60,11 @@
       <Link>TypeProvider.Helper.fs</Link>
     </Compile>
     <Compile Include="Inference.fs" />
+    <Compile Include="XmlInference.fs" />
+    <Compile Include="XmlProvider.fs" />
     <Compile Include="..\FSharpx.TypeProviders\TypeProviderDSL.fs">
       <Link>TypeProviderDSL.fs</Link>
     </Compile>
-    <Compile Include="XmlInference.fs" />
-    <Compile Include="XmlProvider.fs" />
     <Compile Include="JsonInference.fs" />
     <Compile Include="JsonProvider.fs" />
     <Compile Include="MiniCsvProvider.fs" />

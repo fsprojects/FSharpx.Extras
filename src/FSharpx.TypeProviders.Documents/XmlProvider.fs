@@ -6,8 +6,9 @@ module internal FSharpx.TypeProviders.XmlTypeProvider
 
 open System
 open System.IO
-open FSharpx.TypeProviders.DSL
+open FSharpx.TypeProviders.Helper
 open Microsoft.FSharp.Quotations
+open Microsoft.FSharp.Core.CompilerServices
 open Samples.FSharp.ProvidedTypes
 open FSharpx.TypeProviders.Inference
 open System.Xml.Linq
@@ -75,19 +76,47 @@ open FSharpx.JSON
 open FSharpx.JSON.DocumentExtensions
 
 /// Infer schema from the loaded data and generate type with properties
-let xmlType (ownerType:TypeProviderForNamespaces) cfg =
+let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
     let createTypeFromSchema typeName (xmlText:string) =        
         let doc = XDocument.Parse xmlText
-        { Schema = XmlInference.provideElement doc.Root.Name.LocalName [doc.Root]
-          EmptyConstructor = fun args -> <@@ TypedXDocument(XDocument.Parse xmlText) @@>
-          FileNameConstructor = fun args -> <@@ TypedXDocument(XDocument.Load(%%args.[0] : string)) @@>
-          DocumentContentConstructor = fun args -> <@@ TypedXDocument(XDocument.Parse(%%args.[0] : string)) @@>
-          RootPropertyGetter = fun args -> <@@ TypedXElement((%%args.[0] : TypedXDocument).Document.Root) @@>
-          ToStringExpr = fun args -> <@@ (%%args.[0]: TypedXDocument).Document.ToString() @@> }
-        |> createParserType<TypedXDocument> typeName generateType            
-        |+!> (provideMethod ("ToJson") [] typeof<IDocument> (fun args -> <@@ (%%args.[0]: TypedXDocument).Document.ToJson() @@>)
-                |> addMethodXmlDoc "Gets the Json representation")
+        let xmlDocumentType =
+            { Schema = XmlInference.provideElement doc.Root.Name.LocalName [doc.Root]
+              EmptyConstructor = fun args -> <@@ TypedXDocument(XDocument.Parse xmlText) @@>
+              FileNameConstructor = fun args -> <@@ TypedXDocument(XDocument.Load(%%args.[0] : string)) @@>
+              DocumentContentConstructor = fun args -> <@@ TypedXDocument(XDocument.Parse(%%args.[0] : string)) @@>
+              RootPropertyGetter = fun args -> <@@ TypedXElement((%%args.[0] : TypedXDocument).Document.Root) @@>
+              ToStringExpr = fun args -> <@@ (%%args.[0]: TypedXDocument).Document.ToString() @@> }
+            |> createParserType<TypedXDocument> typeName generateType     
+        
+        let converterMethod =
+            ProvidedMethod(
+                methodName = "ToJson",
+                parameters = [],
+                returnType = typeof<IDocument>,
+                InvokeCode =  (fun args -> <@@ (%%args.[0]: TypedXDocument).Document.ToJson() @@>))
+
+        converterMethod.AddXmlDoc "Gets the JSON representation"
+
+        xmlDocumentType.AddMember converterMethod
+        xmlDocumentType
     
     let createTypeFromFileName typeName = File.ReadAllText >> createTypeFromSchema typeName
 
-    createStructuredParser thisAssembly rootNamespace "StructuredXml" cfg ownerType createTypeFromFileName createTypeFromSchema
+
+    let missingValue = "@@@missingValue###"
+    let xmlDocumentType = erasedType<obj> thisAssembly rootNamespace "StructuredXml"
+    xmlDocumentType.DefineStaticParameters(
+        parameters = [ProvidedStaticParameter("FileName", typeof<string>, missingValue)   // Parameterize the type by the file to use as a template
+                      ProvidedStaticParameter("Schema" , typeof<string>, missingValue) ], // Allows to specify inlined schema
+        instantiationFunction = 
+            (fun typeName parameterValues ->
+                    match parameterValues with 
+                    | [| :? string as fileName; :? string |] when fileName <> missingValue ->        
+                        let resolvedFileName = findConfigFile cfg.ResolutionFolder fileName
+                        watchForChanges ownerType resolvedFileName
+                
+                        createTypeFromFileName typeName resolvedFileName
+                    | [| :? string; :? string as schema |] when schema <> missingValue ->        
+                        createTypeFromSchema typeName schema
+                    | _ -> failwith "You have to specify a filename or inlined Schema"))
+    xmlDocumentType
