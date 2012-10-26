@@ -55,9 +55,6 @@
       <Link>TypeProvider.Helper.fs</Link>
     </Compile>
     <Compile Include="FileSystemProvider.fs" />
-    <Compile Include="..\FSharpx.TypeProviders\TypeProviderDSL.fs">
-      <Link>TypeProviderDSL.fs</Link>
-    </Compile>
     <Compile Include="RegistryProvider.fs" />
     <Compile Include="SystemProvider.fs" />
   </ItemGroup>
