@@ -106,14 +106,57 @@ let jsonType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
                     | [| :? string; :? string as schema |] when schema <> missingValue -> schema
                     | _ -> failwith "You have to specify a filename or inlined Schema"
                     
-                let jsonDocumentType =
-                    { Schema = JSONInference.provideElement "Document" false [parse schema]
-                      EmptyConstructor = fun args -> <@@ parse schema @@>
-                      FileNameConstructor = fun args -> <@@ (%%args.[0] : string) |> File.ReadAllText |> parse  @@>
-                      DocumentContentConstructor = fun args -> <@@ (%%args.[0] : string) |> parse  @@>
-                      RootPropertyGetter = fun args -> <@@ (%%args.[0] : IDocument) @@>
-                      ToStringExpr = fun args -> <@@ (%%args.[0]: IDocument).ToString() @@> }
-                    |> createParserType<IDocument> typeName generateType     
+                let jsonSchema = JSONInference.provideElement "Document" false [parse schema]
+                    
+                let jsonDocumentType = erasedType<IDocument> thisAssembly rootNamespace typeName
+     
+                let defaultConstructor = 
+                    ProvidedConstructor(
+                        parameters = [],
+                        InvokeCode = (fun args -> <@@ parse schema @@>))
+                defaultConstructor.AddXmlDoc "Initializes the document from the schema sample."
+
+                jsonDocumentType.AddMember defaultConstructor
+
+                let fileNameConstructor = 
+                    ProvidedConstructor(
+                        parameters = [ProvidedParameter("filename", typeof<string>)],
+                        InvokeCode = (fun args -> <@@ (%%args.[0] : string) |> File.ReadAllText |> parse  @@>))
+                fileNameConstructor.AddXmlDoc "Initializes a document from the given path."
+
+                jsonDocumentType.AddMember fileNameConstructor
+
+                let inlinedDocumentMethod = 
+                    ProvidedMethod(
+                        methodName = "Parse",
+                        parameters = [ProvidedParameter("documentContent", typeof<string>)],
+                        returnType = jsonDocumentType,
+                        IsStaticMethod = true,
+                        InvokeCode = (fun args -> <@@ (%%args.[0] : string) |> parse  @@>))
+                inlinedDocumentMethod.AddXmlDoc "Initializes a document from the given string."
+
+                jsonDocumentType.AddMember inlinedDocumentMethod
+
+                let rootProperty =
+                    ProvidedProperty(
+                        propertyName = "Root",
+                        propertyType = generateType jsonDocumentType jsonSchema,
+                        GetterCode = (fun args -> <@@ (%%args.[0] : IDocument) @@>))
+
+                rootProperty.AddXmlDoc "Gets the document root"
+
+                jsonDocumentType.AddMember rootProperty
+
+                let toStringMethod =
+                    ProvidedMethod(
+                        methodName = "ToString",
+                        parameters = [],
+                        returnType = typeof<string>,
+                        InvokeCode = (fun args -> <@@ (%%args.[0]: IDocument).ToString() @@>))
+
+                toStringMethod.AddXmlDoc "Gets the string representation"
+
+                jsonDocumentType.AddMember toStringMethod                
         
                 let converterMethod =
                     ProvidedMethod(

@@ -10,8 +10,8 @@ type PersonXml = StructuredXml<Schema="""<authors><author name="Ludwig" surname=
 let newXml = """<authors><author name="Jane" surname="Doe" age="23" /></authors>"""
 let newXml2 = """<authors><author name="Jim" surname="Smith" age="24" /></authors>"""
 
-let firstPerson = PersonXml(documentContent=newXml).Root.GetAuthors() |> Seq.head
-let nextPerson = PersonXml(documentContent=newXml2).Root.GetAuthors() |> Seq.head
+let firstPerson = PersonXml.Parse(newXml).Root.GetAuthors() |> Seq.head
+let nextPerson = PersonXml.Parse(newXml2).Root.GetAuthors() |> Seq.head
 
 [<Test>]
 let ``Jane should have first name of Jane``() = 
