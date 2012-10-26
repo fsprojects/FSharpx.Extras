@@ -29,6 +29,11 @@ type XamlFile(root:FrameworkElement) =
 
     member this.Root = root
 
+type internal FilePosition =  
+   { Line: int; 
+     Column: int;
+     FileName: string }
+
 type internal XamlNode =
     { Position: FilePosition
       IsRoot: bool
