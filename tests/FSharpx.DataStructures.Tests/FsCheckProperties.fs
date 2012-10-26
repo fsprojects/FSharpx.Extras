@@ -51,9 +51,3 @@ important that every structure size up to a certain value (let us say "8" for ar
     let listObj n  = Gen.listOfLength n Arb.generate<obj>
 
     let listString n  = Gen.listOfLength n Arb.generate<string>
-
-    let length1thru12 = Gen.choose (1, 12)
-
-    let length2thru12 = Gen.choose (2, 12)
-
-    let length1001thru2000 = Gen.choose (1001, 2000)
