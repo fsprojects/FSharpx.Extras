@@ -28,61 +28,57 @@ let insertThruList l h  =
         
     loop h l
 
-let length1thru12 = Gen.choose (1, 12)
-let length2thru12 = Gen.choose (2, 12)
-let length1001thru2000 = Gen.choose (1001, 2000)
-
 (* LeftistHeap Gens *)
 let maxLeftistHeapIntGen =
-        gen { let! n = length2thru12
-              let! n2 = length1thru12
+        gen { let! n = Gen.length2thru12
+              let! n2 = Gen.length1thru12
               let! x =  Gen.listInt n
               let! y =  Gen.listInt n2
               return ( (LeftistHeap.ofSeq true x |> insertThruList y), ((x @ y) |> List.sort |> List.rev) ) }
 
 let maxLeftistHeapIntOfSeqGen =
-        gen { let! n = length1thru12
+        gen { let! n = Gen.length1thru12
               let! x =  Gen.listInt n
               return ( (LeftistHeap.ofSeq true x), (x |> List.sort |> List.rev) ) }
 
 let maxLeftistHeapIntInsertGen =
-        gen { let! n = length1thru12
+        gen { let! n = Gen.length1thru12
               let! x =  Gen.listInt n
               return ( (LeftistHeap.empty true |> insertThruList x), (x |> List.sort |> List.rev) ) }
 
 let maxLeftistHeapStringGen =
-        gen { let! n = length1thru12
-              let! n2 = length2thru12
+        gen { let! n = Gen.length1thru12
+              let! n2 = Gen.length2thru12
               let! x =  Gen.listString n
               let! y =  Gen.listString n2
               return ( (LeftistHeap.ofSeq true x |> insertThruList y), ((x @ y) |> List.sort |> List.rev) ) }
 
 let minLeftistHeapIntGen =
-        gen { let! n = length2thru12
-              let! n2 = length1thru12
+        gen { let! n = Gen.length2thru12
+              let! n2 = Gen.length1thru12
               let! x =  Gen.listInt n
               let! y =  Gen.listInt n2
               return ( (LeftistHeap.ofSeq false x |> insertThruList y), ((x @ y) |> List.sort) ) }
 
 let minLeftistHeapIntOfSeqGen =
-        gen { let! n = length1thru12
+        gen { let! n = Gen.length1thru12
               let! x =  Gen.listInt n
               return ( (LeftistHeap.ofSeq false x), (x |> List.sort |> List.rev) ) }
 
 let minLeftistHeapIntInsertGen =
-        gen { let! n = length1thru12
+        gen { let! n = Gen.length1thru12
               let! x =  Gen.listInt n
               return ( (LeftistHeap.empty false |> insertThruList x), (x |> List.sort |> List.rev) ) }
 
 let minLeftistHeapStringGen =
-        gen { let! n = length1thru12
-              let! n2 = length2thru12
+        gen { let! n = Gen.length1thru12
+              let! n2 = Gen.length2thru12
               let! x =  Gen.listString n
               let! y =  Gen.listString n2
               return ( (LeftistHeap.ofSeq false x |> insertThruList y), ((x @ y) |> List.sort) ) }
 
 let longLeftistHeapIntOfSeqGen =
-        gen { let! n = length1001thru2000
+        gen { let! n = Gen.length1001thru2000
               let! x = Gen.listInt n
               return ( (LeftistHeap.ofSeq true x), (x |> List.sort |> List.rev) ) }
 
@@ -177,10 +173,6 @@ let ``seq enumerate matches build list int``(x : obj) =
 let ``seq enumerate matches build list string``(x : obj) =
     let genAndName = unbox x
     fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun (h : LeftistHeap<string>, l) -> h |> Seq.toList = l |> classifyCollect h h.Length))
-
-[<Test>]
-let ``seq enumerate matches long build list``() =
-    fsCheck "long build list" (Prop.forAll (Arb.fromGen longLeftistHeapIntOfSeqGen) (fun (h : LeftistHeap<int>, l) -> h |> Seq.toList = l |> classifyCollect h h.Length))
 
 [<Test>]
 let ``structure pattern match and merge``() =

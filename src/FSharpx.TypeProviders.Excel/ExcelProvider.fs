@@ -5,6 +5,7 @@ open System
 open Samples.FSharp.ProvidedTypes
 open Microsoft.FSharp.Core.CompilerServices
 open Microsoft.Office.Interop
+open FSharpx.TypeProviders.Helper
 open System.Collections.Generic
 
 let ApplyMoveToRange (rg:Excel.Range) (move:Excel.XlDirection) = rg.Worksheet.Range(rg, rg.End(move))
@@ -73,7 +74,7 @@ let internal memoize f =
 
 let internal typExcel(cfg:TypeProviderConfig) =
    // Create the main provided type
-   let excTy = ProvidedTypeDefinition(System.Reflection.Assembly.GetExecutingAssembly(), DSL.rootNamespace, "ExcelFile", Some(typeof<obj>))
+   let excTy = ProvidedTypeDefinition(System.Reflection.Assembly.GetExecutingAssembly(), rootNamespace, "ExcelFile", Some(typeof<obj>))
 
    // Parameterize the type by the file to use as a template
    let filename = ProvidedStaticParameter("filename", typeof<string>)
@@ -154,7 +155,7 @@ let internal typExcel(cfg:TypeProviderConfig) =
          xlApp.Quit()
 
          // define the provided type, erasing to excelFile
-         let ty = ProvidedTypeDefinition(System.Reflection.Assembly.GetExecutingAssembly(), DSL.rootNamespace, tyName, Some(typeof<ExcelFileInternal>))
+         let ty = ProvidedTypeDefinition(System.Reflection.Assembly.GetExecutingAssembly(), rootNamespace, tyName, Some(typeof<ExcelFileInternal>))
 
          // add a parameterless constructor which loads the file that was used to define the schema
          ty.AddMember(ProvidedConstructor([], InvokeCode = fun [] -> <@@ ExcelFileInternal(resolvedFilename, sheetorrangename) @@>))
@@ -176,7 +177,7 @@ let internal typExcel(cfg:TypeProviderConfig) =
 type public ExcelProvider(cfg:TypeProviderConfig) as this =
     inherit TypeProviderForNamespaces()
 
-    do this.AddNamespace(DSL.rootNamespace,[typExcel cfg])
+    do this.AddNamespace(rootNamespace,[typExcel cfg])
 
 [<TypeProviderAssembly>]
 do ()

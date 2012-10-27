@@ -56,8 +56,8 @@
     <Compile Include="..\FSharpx.Core\JSON.fs">
       <Link>JSON.fs</Link>
     </Compile>
-    <Compile Include="..\FSharpx.TypeProviders\TypeProviderDSL.fs">
-      <Link>TypeProviderDSL.fs</Link>
+    <Compile Include="..\FSharpx.TypeProviders\TypeProvider.Helper.fs">
+      <Link>TypeProvider.Helper.fs</Link>
     </Compile>
     <Compile Include="Inference.fs" />
     <Compile Include="XmlInference.fs" />

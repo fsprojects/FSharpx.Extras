@@ -196,6 +196,7 @@ module HoodMelvilleQueue =
     let inline tryGetHead (q : HoodMelvilleQueue<'a>) = q.TryGetHead
 
     ///returns true if the queue has no elements
+
     let inline isEmpty (q : HoodMelvilleQueue<'a>) = q.IsEmpty
 
     ///returns the count of elememts
