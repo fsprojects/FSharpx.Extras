@@ -196,10 +196,11 @@ module HoodMelvilleQueue =
     let inline tryGetHead (q : HoodMelvilleQueue<'a>) = q.TryGetHead
 
     ///returns true if the queue has no elements
-    let inline isEmpty() (q : HoodMelvilleQueue<'a>) = q.IsEmpty
+
+    let inline isEmpty (q : HoodMelvilleQueue<'a>) = q.IsEmpty
 
     ///returns the count of elememts
-    let inline length() (q : HoodMelvilleQueue<'a>) = q.Length
+    let inline length (q : HoodMelvilleQueue<'a>) = q.Length
 
     ///returns a queue of the list
     let ofList xs = HoodMelvilleQueue.OfSeq xs
