@@ -73,6 +73,7 @@
 	<Compile Include="DataStructures\BankersQueue.fs" />
 	<Compile Include="DataStructures\BatchedQueue.fs" />
 	<Compile Include="DataStructures\PhysicistQueue.fs" />
+	<Compile Include="DataStructures\HoodMelvilleQueue.fs" />
     <Compile Include="Lens.fs" />
     <Compile Include="CSharpCompat.fs" />
     <Compile Include="Regex.fs" />
