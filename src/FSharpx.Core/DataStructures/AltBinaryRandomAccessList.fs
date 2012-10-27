@@ -17,7 +17,7 @@ type AltBinRndAccList<'a> =
 
         member this.Cons (x : 'a) = AltBinRndAccList.cons x this :> _
 
-        member this.Count = AltBinRndAccList.length (0, 1, this)
+        member this.Count() = AltBinRndAccList.length (0, 1, this)
 
         member this.Head =
             let x, _ = AltBinRndAccList.uncons this
@@ -30,13 +30,13 @@ type AltBinRndAccList<'a> =
 
         member this.IsEmpty = AltBinRndAccList.isEmpty this
 
-        member this.Length = AltBinRndAccList.length (0, 1, this)
+        member this.Length() = AltBinRndAccList.length (0, 1, this)
 
         member this.Lookup i = AltBinRndAccList.lookup i this
 
         member this.TryLookup i = AltBinRndAccList.tryLookup i this
 
-        member this.Rev = AltBinRndAccList.rev this :> _
+        member this.Rev() = AltBinRndAccList.rev this :> _
 
         member this.Tail =
             let _, xs = AltBinRndAccList.uncons this
@@ -225,7 +225,7 @@ and AltBinRndAccList<'a>
 
     member this.IsEmpty = AltBinRndAccList.isEmpty this
 
-    member this.Length = AltBinRndAccList.length (0, 1, this)
+    member this.Length() = AltBinRndAccList.length (0, 1, this)
 
     member this.Lookup i = AltBinRndAccList.lookup i this
 
@@ -268,7 +268,7 @@ and AltBinRndAccList<'a>
                         
                 loop (frontLen - 1) front x
 
-    member this.Rev = AltBinRndAccList.rev this 
+    member this.Rev() = AltBinRndAccList.rev this 
 
     member this.Tail =
         let _, xs = AltBinRndAccList.uncons this
@@ -327,7 +327,7 @@ and AltBinRndAccList<'a>
     let inline isEmpty (xs: AltBinRndAccList<'a>) = xs.IsEmpty
 
     ///returns the count of elememts
-    let inline length (xs: AltBinRndAccList<'a>) = xs.Length 
+    let inline length (xs: AltBinRndAccList<'a>) = xs.Length() 
 
     ///returns element by index
     let rec lookup i xs = AltBinRndAccList.lookup i xs
@@ -345,7 +345,7 @@ and AltBinRndAccList<'a>
     let inline tryRemove i (xs: AltBinRndAccList<'a>) = xs.TryRemove i
 
     //returns random access list reversed
-    let inline rev (xs: AltBinRndAccList<'a>) = xs.Rev
+    let inline rev (xs: AltBinRndAccList<'a>) = xs.Rev()
 
     ///returns a new random access list of the elements trailing the first element
     let tail xs =

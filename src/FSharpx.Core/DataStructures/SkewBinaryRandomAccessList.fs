@@ -142,13 +142,13 @@ type SkewBinaryRandomAccessList<'a> (randomAccessList) =
         | [] -> true
         | _ -> false
 
-    member this.Length = SkewBinaryRandomAccessList.length (0, randomAccessList)
+    member this.Length() = SkewBinaryRandomAccessList.length (0, randomAccessList)
 
     member this.Lookup (i:int) = SkewBinaryRandomAccessList.lookup (i, randomAccessList)
 
     member thie.TryLookup (i:int) = SkewBinaryRandomAccessList.tryLookup (i, randomAccessList)
 
-    member this.Rev =
+    member this.Rev() =
 
         let rec loop : list<int * TreeSBRAL<'a>> * list<int * TreeSBRAL<'a>> -> SkewBinaryRandomAccessList<'a>  = function
             | acc, [] -> SkewBinaryRandomAccessList(acc)  
@@ -186,7 +186,7 @@ type SkewBinaryRandomAccessList<'a> (randomAccessList) =
 
         member this.Cons (x : 'a) = this.Cons x :> _
 
-        member this.Count = this.Length
+        member this.Count() = this.Length()
 
         member this.Head = this.Head
 
@@ -194,13 +194,13 @@ type SkewBinaryRandomAccessList<'a> (randomAccessList) =
 
         member this.IsEmpty = this.IsEmpty
 
-        member this.Length = this.Length
+        member this.Length() = this.Length()
 
         member this.Lookup i = this.Lookup i
 
         member this.TryLookup i = this.TryLookup i
 
-        member this.Rev = this.Rev :> _
+        member this.Rev() = this.Rev() :> _
 
         member this.Tail = this.Tail :> _
 
@@ -258,7 +258,7 @@ module SkewBinaryRandomAccessList =
     let inline isEmpty (xs: SkewBinaryRandomAccessList<'a>) = xs.IsEmpty
 
     ///returns the count of elememts
-    let inline length (xs: SkewBinaryRandomAccessList<'a>) = xs.Length 
+    let inline length (xs: SkewBinaryRandomAccessList<'a>) = xs.Length() 
 
     ///returns element by index
     let inline lookup i (xs: SkewBinaryRandomAccessList<'a>) = xs.Lookup i 
@@ -269,7 +269,7 @@ module SkewBinaryRandomAccessList =
     let ofSeq s = SkewBinaryRandomAccessList.ofSeq s
 
     //returns random access list reversed
-    let inline rev (xs: SkewBinaryRandomAccessList<'a>) = xs.Rev
+    let inline rev (xs: SkewBinaryRandomAccessList<'a>) = xs.Rev()
 
     ///returns a new random access list of the elements trailing the first element
     let inline tail (xs: SkewBinaryRandomAccessList<'a>) = xs.Tail
