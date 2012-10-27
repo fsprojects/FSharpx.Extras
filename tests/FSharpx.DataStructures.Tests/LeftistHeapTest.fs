@@ -175,10 +175,6 @@ let ``seq enumerate matches build list string``(x : obj) =
     fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun (h : LeftistHeap<string>, l) -> h |> Seq.toList = l |> classifyCollect h h.Length))
 
 [<Test>]
-let ``seq enumerate matches long build list``() =
-    fsCheck "long build list" (Prop.forAll (Arb.fromGen longLeftistHeapIntOfSeqGen) (fun (h : LeftistHeap<int>, l) -> h |> Seq.toList = l |> classifyCollect h h.Length))
-
-[<Test>]
 let ``structure pattern match and merge``() =
     let h = ofSeq true ["f";"e";"d";"c";"b";"a"]
 
