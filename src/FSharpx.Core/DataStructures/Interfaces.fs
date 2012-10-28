@@ -187,7 +187,7 @@ type IRandomAccessList<'a> =
     abstract member Cons : 'a -> IRandomAccessList<'a>
 
     ///returns the count of elememts
-    abstract member Count : int with get
+    abstract member Count : unit -> int
 
     ///returns the first element
     abstract member Head : 'a with get
@@ -199,7 +199,7 @@ type IRandomAccessList<'a> =
     abstract member IsEmpty : bool with get
 
     ///returns the count of elememts
-    abstract member Length : int with get
+    abstract member Length : unit -> int
 
     ///returns element by index
     abstract member Lookup : int -> 'a
@@ -208,7 +208,7 @@ type IRandomAccessList<'a> =
     abstract member TryLookup : int -> 'a option
 
     ///returns random access list reversed
-    abstract member Rev : IRandomAccessList<'a> with get
+    abstract member Rev : unit -> IRandomAccessList<'a> 
 
     ///returns a new random access list of the elements trailing the first element
     abstract member Tail : IRandomAccessList<'a> with get

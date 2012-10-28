@@ -146,13 +146,13 @@ type BinaryRandomAccessList<'a> (randomAccessList) =
         | [] -> true
         | _ -> false
 
-    member this.Length = BinaryRandomAccessList.length (0, 1, randomAccessList)
+    member this.Length() = BinaryRandomAccessList.length (0, 1, randomAccessList)
 
     member this.Lookup (i:int) = BinaryRandomAccessList.lookup (i, randomAccessList)
 
     member thie.TryLookup (i:int) = BinaryRandomAccessList.tryLookup (i, randomAccessList)
 
-    member this.Rev =
+    member this.Rev() =
 
         let rec loop : list<Digit<'a>> * list<Digit<'a>> -> BinaryRandomAccessList<'a>  = function
             | acc, [] -> BinaryRandomAccessList(acc)  
@@ -192,7 +192,7 @@ type BinaryRandomAccessList<'a> (randomAccessList) =
 
         member this.Cons (x : 'a) = this.Cons x :> _
 
-        member this.Count = this.Length
+        member this.Count() = this.Length()
 
         member this.Head = this.Head
 
@@ -200,13 +200,13 @@ type BinaryRandomAccessList<'a> (randomAccessList) =
 
         member this.IsEmpty = this.IsEmpty
 
-        member this.Length = this.Length
+        member this.Length() = this.Length()
 
         member this.Lookup i = this.Lookup i
 
         member this.TryLookup i = this.TryLookup i
 
-        member this.Rev = this.Rev :> _
+        member this.Rev() = this.Rev() :> _
 
         member this.Tail = this.Tail :> _
 
@@ -264,7 +264,7 @@ module BinaryRandomAccessList =
     let inline isEmpty (xs: BinaryRandomAccessList<'a>) = xs.IsEmpty
 
     ///returns the count of elememts
-    let inline length (xs: BinaryRandomAccessList<'a>) = xs.Length 
+    let inline length (xs: BinaryRandomAccessList<'a>) = xs.Length() 
 
     ///returns element by index
     let inline lookup i (xs: BinaryRandomAccessList<'a>) = xs.Lookup i 
@@ -276,7 +276,7 @@ module BinaryRandomAccessList =
     let ofSeq s = BinaryRandomAccessList.ofSeq s
 
     //returns random access list reversed
-    let inline rev (xs: BinaryRandomAccessList<'a>) = xs.Rev
+    let inline rev (xs: BinaryRandomAccessList<'a>) = xs.Rev()
 
     ///returns a new random access list of the elements trailing the first element
     let inline tail (xs: BinaryRandomAccessList<'a>) = xs.Tail
