@@ -98,40 +98,33 @@ module Dictionary =
         | true,v -> Some v
         | _ -> None
 
-    let valueList (d: IDictionary<_,_>) = d.Values |> Seq.toList
-
-    let spanWithKey pred (d: IDictionary<_,_>) =
-        let right = Dictionary()
-        let left = Dictionary()
-        for pair in d do
-            match pair.Key, pair.Value with
-            | (key, value) when pred key -> right.Add(key, value)
-            | (key, value) when not (pred key) -> left.Add(key, value)
+module Map =
+    let spanWithKey pred map =
+        map
+        |> Map.fold (fun (l,r) k v ->
+            match k,v with
+            | (key, value) when pred key -> (l, r |> Map.add key value)
+            | (key, value) when not (pred key) -> (l |> Map.add key value, r)
             | _ -> failwith "Unrecognized pattern"
-        (left, right)
+        ) (Map.empty, Map.empty)
 
     let splitWithKey pred d = spanWithKey (not << pred) d
 
-    let insertWith f k v (d: IDictionary<_,_>) =
-        let d = Dictionary(d)
-        match tryFind k d with
-        | Some value -> d.[k] <- f v value
-        | None -> d.Add(k, v)
-        d
+    let insertWith f k v map =
+        match Map.tryFind k map with
+        | Some value -> map |> Map.add k (f v value)
+        | None -> map |> Map.add k v
 
-    let updateWith f k (d: IDictionary<_,_>) =
-        let d = Dictionary(d)
-        let inner v =
+    let updateWith f k map =
+        let inner v map =
             match f v with
-            | Some value -> d.[k] <- value
-            | None -> d.Remove(k) |> ignore
-        d |> tryFind k |> Option.iter inner
-        d
+            | Some value -> map |> Map.add k value
+            | None -> map |> Map.remove k
+        match Map.tryFind k map with
+        | Some v -> inner v map
+        | None -> map
 
-    let toList (d: IDictionary<_,_>) =
-        d
-        |> Seq.map (fun x -> (x.Key, x.Value))
-        |> Seq.toList
+    let valueList map = map |> Map.toList |> List.unzip |> snd
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 [<Extension>]

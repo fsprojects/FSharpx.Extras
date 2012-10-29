@@ -1,11 +1,9 @@
 ﻿namespace FSharpx.DataStructures
 
-open System.Collections.Generic
-
 // Ported from http://hackage.haskell.org/packages/archive/bktrees/latest/doc/html/src/Data-Set-BKTree.html
 
 type 'a BKTree =
-  | Node of 'a * int * IDictionary<int,'a BKTree>
+  | Node of 'a * int * Map<int,'a BKTree>
   | Empty
 
 module BKTree =
@@ -22,14 +20,14 @@ module BKTree =
         | Node(_, s, _) -> s
         | Empty -> 0
 
-    let singleton a = Node(a, 1, Dictionary())
+    let singleton a = Node(a, 1, Map.empty)
 
     let rec insert distance a = function
-        | Empty -> Node(a, 1 , Dictionary())
+        | Empty -> Node(a, 1 , Map.empty)
         | Node(b, size, dict) ->
             let recurse _ tree = insert distance a tree
             let d = distance a b
-            let dict = Dictionary.insertWith recurse d (Node(a, 1, Dictionary())) dict
+            let dict = Map.insertWith recurse d (Node(a, 1, Map.empty)) dict
             Node(b, size + 1, dict)
 
     let rec exists distance a = function
@@ -38,30 +36,30 @@ module BKTree =
             let d = distance a b
             if d = 0 then true
             else
-                match Dictionary.tryFind d dict with
+                match Map.tryFind d dict with
                 | None -> false
                 | Some tree -> exists distance a tree
 
     let private subTree d n dict =
-        let (_, rightTree) = dict |> Dictionary.splitWithKey ((>) (d-n-1))
-        let (centerTree, _) = rightTree |> Dictionary.splitWithKey ((>=) (d+n+1))
+        let (_, rightTree) = dict |> Map.splitWithKey ((>) (d-n-1))
+        let (centerTree, _) = rightTree |> Map.splitWithKey ((>=) (d+n+1))
         centerTree
 
     let rec existsDistance distance n a = function
         | Empty -> false
-        | Node(b, _, dict) ->
+        | Node(b, _, map) ->
             let d = distance a b
             if d <= n then true
             else
-                dict
+                map
                 |> subTree d n
-                |> Dictionary.valueList
+                |> Map.valueList
                 |> List.exists (existsDistance distance n a)
 
     let rec elems = function
         | Empty -> []
         | Node(a, _ , d) ->
-            a :: (d |> Dictionary.valueList |> List.collect elems)
+            a :: (d |> Map.valueList |> List.collect elems)
 
     let rec elemsDistance distance n a = function
         | Empty -> []
@@ -69,7 +67,7 @@ module BKTree =
             let d = distance a b
             dict
             |> subTree d n
-            |> Dictionary.valueList
+            |> Map.valueList
             |> List.collect (elemsDistance distance n a)
             |> if d <= n then List.cons b else id
 
@@ -79,12 +77,12 @@ module BKTree =
 
     let rec delete distance a = function
         | Empty -> Empty
-        | Node(b, _, dict) ->
+        | Node(b, _, map) ->
             let d = distance a b
-            if d = 0 then unions distance (Dictionary.valueList dict)
+            if d = 0 then unions distance (Map.valueList map)
             else
-                let subtree = Dictionary.updateWith (Some << (delete distance a)) d dict
-                let size = subtree |> Dictionary.valueList |> List.map size |> List.sum |> (+) 1
+                let subtree = Map.updateWith (Some << (delete distance a)) d map
+                let size = subtree |> Map.valueList |> List.map size |> List.sum |> (+) 1
                 Node(b, size, subtree)
 
     module Int =

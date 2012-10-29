@@ -1,6 +1,5 @@
 ﻿module FSharpx.DataStructures.Tests.BKTreeTest
 
-open System.Collections.Generic
 open FSharpx
 open FSharpx.DataStructures
 open NUnit.Framework
@@ -13,11 +12,11 @@ let sem tree = tree |> BKTree.elems |> List.sort
 
 let trans f xs = xs |> BKTree.Int.fromList |> f |> sem
 
-let rec inv dict = function
+let rec inv m = function
     | Empty -> true
-    | Node(a, _, dictionary) ->
-        List.forall (fun (d,b) -> BKTree.Int.distance a b = d) dict &&
-            List.forall (fun (d,t) -> inv ((d,a)::dict) t) (Dictionary.toList dictionary)
+    | Node(a, _, map) ->
+        List.forall (fun (d,b) -> BKTree.Int.distance a b = d) m &&
+            List.forall (fun (d,t) -> inv ((d,a)::m) t) (Map.toList map)
 
 let invariant t = inv [] t
 
