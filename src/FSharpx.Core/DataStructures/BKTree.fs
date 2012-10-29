@@ -136,7 +136,7 @@ module BKTree =
             hirschberg xs ys
 
     let Int = Functions(fun i j -> abs(i - j))
-    let Char = Functions(fun i j -> abs((int i) - (int j)))
+    let Char = Functions(fun (i: char) j -> abs((int i) - (int j)))
 
     [<GeneralizableValue>]
     let List<'a when 'a : equality> : 'a list Functions = Functions hirschberg
