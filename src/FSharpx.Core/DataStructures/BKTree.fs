@@ -61,6 +61,10 @@ module BKTree =
         | Node(a, _ , d) ->
             a :: (d |> Map.valueList |> List.collect toList)
 
+    let toSeq tree = tree |> toList |> List.toSeq
+    
+    let toArray tree = tree |> toList |> List.toArray
+
     let rec private toListDistance distance n a = function
         | Empty -> []
         | Node(b, _, dict) ->
@@ -71,7 +75,13 @@ module BKTree =
             |> List.collect (toListDistance distance n a)
             |> if d <= n then List.cons b else id
 
-    let private ofList distance xs = xs |> List.fold (flip (add distance)) empty
+    let private ofCollection pred distance xs = xs |> pred (flip (add distance)) empty
+
+    let private ofList distance xs = ofCollection List.fold distance xs
+
+    let private ofSeq distance xs = ofCollection Seq.fold distance xs
+
+    let private ofArray distance xs = ofCollection Array.fold distance xs
 
     let private concat distance xs = xs |> List.collect toList |> ofList distance
 
@@ -95,6 +105,8 @@ module BKTree =
         member x.concat xs = concat distance xs
         member x.append t1 t2 = x.concat [t1; t2]
         member x.delete a tree = delete distance a tree
+        member x.ofSeq xs = ofSeq distance xs
+        member x.ofArray xs = ofArray distance xs
 
     let private hirschberg xs = function
         | [] -> List.length xs
