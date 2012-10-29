@@ -22,10 +22,10 @@ module BKTree =
 
     let singleton a = Node(a, 1, Map.empty)
 
-    let rec private insert distance a = function
+    let rec private add distance a = function
         | Empty -> Node(a, 1 , Map.empty)
         | Node(b, size, dict) ->
-            let recurse _ tree = insert distance a tree
+            let recurse _ tree = add distance a tree
             let d = distance a b
             let dict = Map.insertWith recurse d (Node(a, 1, Map.empty)) dict
             Node(b, size + 1, dict)
@@ -56,30 +56,30 @@ module BKTree =
                 |> Map.valueList
                 |> List.exists (existsDistance distance n a)
 
-    let rec elems = function
+    let rec toList = function
         | Empty -> []
         | Node(a, _ , d) ->
-            a :: (d |> Map.valueList |> List.collect elems)
+            a :: (d |> Map.valueList |> List.collect toList)
 
-    let rec private elemsDistance distance n a = function
+    let rec private toListDistance distance n a = function
         | Empty -> []
         | Node(b, _, dict) ->
             let d = distance a b
             dict
             |> subTree d n
             |> Map.valueList
-            |> List.collect (elemsDistance distance n a)
+            |> List.collect (toListDistance distance n a)
             |> if d <= n then List.cons b else id
 
-    let private fromList distance xs = xs |> List.fold (flip (insert distance)) empty
+    let private ofList distance xs = xs |> List.fold (flip (add distance)) empty
 
-    let private unions distance xs = xs |> List.collect elems |> fromList distance
+    let private concat distance xs = xs |> List.collect toList |> ofList distance
 
     let rec private delete distance a = function
         | Empty -> Empty
         | Node(b, _, map) ->
             let d = distance a b
-            if d = 0 then unions distance (Map.valueList map)
+            if d = 0 then concat distance (Map.valueList map)
             else
                 let subtree = Map.updateWith (Some << (delete distance a)) d map
                 let size = subtree |> Map.valueList |> List.map size |> List.sum |> (+) 1
@@ -87,13 +87,13 @@ module BKTree =
 
     type 'a Functions(distance: 'a -> 'a -> int) =
         member x.distance = distance
-        member x.insert a tree = insert distance a tree
+        member x.add a tree = add distance a tree
         member x.exists a tree = exists distance a tree
         member x.existsDistance n a tree = existsDistance distance n a tree
-        member x.elemsDistance n a tree = elemsDistance distance n a tree
-        member x.fromList xs = fromList distance xs
-        member x.unions xs = unions distance xs
-        member x.union t1 t2 = x.unions [t1; t2]
+        member x.toListDistance n a tree = toListDistance distance n a tree
+        member x.ofList xs = ofList distance xs
+        member x.concat xs = concat distance xs
+        member x.append t1 t2 = x.concat [t1; t2]
         member x.delete a tree = delete distance a tree
 
     let private hirschberg xs = function

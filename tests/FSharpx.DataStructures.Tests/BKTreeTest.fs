@@ -8,9 +8,9 @@ open FsCheck.NUnit
 
 let fsCheck t = fsCheck "" t
 
-let sem tree = tree |> BKTree.elems |> List.sort
+let sem tree = tree |> BKTree.toList |> List.sort
 
-let trans f xs = xs |> BKTree.Int.fromList |> f |> sem
+let trans f xs = xs |> BKTree.Int.ofList |> f |> sem
 
 let rec inv m = function
     | Empty -> true
@@ -43,31 +43,31 @@ let empty() =
 
 [<Test>]
 let isEmpty() =
-    fsCheck (fun xs -> BKTree.isEmpty (BKTree.Int.fromList xs) = List.isEmpty xs)
+    fsCheck (fun xs -> BKTree.isEmpty (BKTree.Int.ofList xs) = List.isEmpty xs)
 
 [<Test>]
 let singleton() =
-    fsCheck (fun n -> BKTree.elems (BKTree.Int.fromList [n]) = [n])
+    fsCheck (fun n -> BKTree.toList (BKTree.Int.ofList [n]) = [n])
 
 [<Test>]
-let fromList() =
-    fsCheck (fun xs -> sem (BKTree.Int.fromList xs) = List.sort xs)
+let ofList() =
+    fsCheck (fun xs -> sem (BKTree.Int.ofList xs) = List.sort xs)
 
 [<Test>]
-let ``fromList inv``() =
-    fsCheck (fun xs -> invariant (BKTree.Int.fromList xs))
+let ``ofList inv``() =
+    fsCheck (fun xs -> invariant (BKTree.Int.ofList xs))
 
 [<Test>]
-let insert() =
-    fsCheck (fun n xs -> trans (BKTree.Int.insert n) xs = List.sort (n::xs))
+let add() =
+    fsCheck (fun n xs -> trans (BKTree.Int.add n) xs = List.sort (n::xs))
 
 [<Test>]
-let ``insert inv``() =
-    fsCheck (fun n xs -> invariant (BKTree.Int.insert n (BKTree.Int.fromList xs)))
+let ``add inv``() =
+    fsCheck (fun n xs -> invariant (BKTree.Int.add n (BKTree.Int.ofList xs)))
 
 [<Test>]
 let exists() =
-    fsCheck (fun n xs -> BKTree.Int.exists n (BKTree.Int.fromList xs) = List.exists ((=) n) xs)
+    fsCheck (fun n xs -> BKTree.Int.exists n (BKTree.Int.ofList xs) = List.exists ((=) n) xs)
 
 [<Test>]
 let existsDistance() =
@@ -75,7 +75,7 @@ let existsDistance() =
         let d = dist % 5
         let reference = List.exists (fun e -> BKTree.Int.distance n e <= d) xs
         Prop.collect reference
-            (BKTree.Int.existsDistance d n (BKTree.Int.fromList xs) = List.exists (fun e -> BKTree.Int.distance n e <= d) xs)
+            (BKTree.Int.existsDistance d n (BKTree.Int.ofList xs) = List.exists (fun e -> BKTree.Int.distance n e <= d) xs)
 
 [<Test>]
 let delete() =
@@ -87,81 +87,81 @@ let delete() =
      
 [<Test>]
 let ``delete inv``() =
-    fsCheck (fun n xs -> invariant (BKTree.Int.delete n (BKTree.Int.fromList xs)))
+    fsCheck (fun n xs -> invariant (BKTree.Int.delete n (BKTree.Int.ofList xs)))
 
 [<Test>]
-let elems() =
-    fsCheck (fun xs -> List.sort (BKTree.elems (BKTree.Int.fromList xs)) = List.sort xs)
+let toList() =
+    fsCheck (fun xs -> List.sort (BKTree.toList (BKTree.Int.ofList xs)) = List.sort xs)
 
 [<Test>]
-let elemsDistance() =
+let toListDistance() =
     fsCheck <| fun dist n xs ->
         let d = dist % 5
-        List.sort (BKTree.Int.elemsDistance d n (BKTree.Int.fromList xs)) =
+        List.sort (BKTree.Int.toListDistance d n (BKTree.Int.ofList xs)) =
             List.sort (List.filter (fun e -> BKTree.Int.distance n e <= d) xs)
 
 [<Test>]
-let unions() =
-    fsCheck (fun xss -> sem (BKTree.Int.unions (List.map BKTree.Int.fromList xss)) = List.sort (List.concat xss))
+let concat() =
+    fsCheck (fun xss -> sem (BKTree.Int.concat (List.map BKTree.Int.ofList xss)) = List.sort (List.concat xss))
 
 [<Test>]
-let ``unions inv``() =
-    fsCheck (fun xss -> invariant (BKTree.Int.unions (List.map BKTree.Int.fromList xss)))
+let ``concat inv``() =
+    fsCheck (fun xss -> invariant (BKTree.Int.concat (List.map BKTree.Int.ofList xss)))
 
 [<Test>]
-let union() =
+let append() =
     fsCheck <| fun xs ys ->
-        sem (BKTree.Int.union (BKTree.Int.fromList xs) (BKTree.Int.fromList ys)) = List.sort (List.append xs ys)
+        sem (BKTree.Int.append (BKTree.Int.ofList xs) (BKTree.Int.ofList ys)) = List.sort (List.append xs ys)
 
 [<Test>]
-let ``union inv``() =
-    fsCheck (fun xs ys -> invariant (BKTree.Int.union (BKTree.Int.fromList xs) (BKTree.Int.fromList ys)))
+let ``append inv``() =
+    fsCheck (fun xs ys -> invariant (BKTree.Int.append (BKTree.Int.ofList xs) (BKTree.Int.ofList ys)))
 
 [<Test>]
-let ``delete . insert = id``() =
-    fsCheck (fun n xs -> trans ((BKTree.Int.delete n) << (BKTree.Int.insert n)) xs = List.sort xs)
+let ``delete . add = id``() =
+    fsCheck (fun n xs -> trans ((BKTree.Int.delete n) << (BKTree.Int.add n)) xs = List.sort xs)
 
 [<Test>]
 let ``The size of an empty BKTree is 0``() =
     fsCheck (fun _ -> BKTree.size BKTree.empty = 0)
 
 [<Test>]
-let ``fromList and size``() =
-    fsCheck (fun xs -> BKTree.size (BKTree.Int.fromList xs) = List.length xs)
+let ``ofList and size``() =
+    fsCheck (fun xs -> BKTree.size (BKTree.Int.ofList xs) = List.length xs)
 
 [<Test>]
-let ``insert . size = size + 1``() =
+let ``add . size = size + 1``() =
     fsCheck <| fun n xs ->
-        let tree = BKTree.Int.fromList xs
-        BKTree.size (BKTree.Int.insert n tree) = BKTree.size tree + 1
+        let tree = BKTree.Int.ofList xs
+        BKTree.size (BKTree.Int.add n tree) = BKTree.size tree + 1
 
 [<Test>]
 let ``delete . size = size - 1``() =
     fsCheck <| fun n xs ->
-        let tree = BKTree.Int.fromList xs
+        let tree = BKTree.Int.ofList xs
         BKTree.size (BKTree.Int.delete n tree) = BKTree.size tree - if BKTree.Int.exists n tree then 1 else 0
 
 [<Test>]
-let ``union and size``() =
+let ``append and size``() =
     fsCheck <| fun xs ys ->
-        let treeXs = BKTree.Int.fromList xs
-        let treeYs = BKTree.Int.fromList ys
-        BKTree.size (BKTree.Int.union treeXs treeYs) = BKTree.size treeXs + BKTree.size treeYs
+        let treeXs = BKTree.Int.ofList xs
+        let treeYs = BKTree.Int.ofList ys
+        BKTree.size (BKTree.Int.append treeXs treeYs) = BKTree.size treeXs + BKTree.size treeYs
 
 [<Test>]
-let ``unions and size``() =
+let ``concat and size``() =
     fsCheck <| fun xss ->
-        let trees = List.map BKTree.Int.fromList xss
-        BKTree.size (BKTree.Int.unions trees) = List.sum (List.map BKTree.size trees)
+        let trees = List.map BKTree.Int.ofList xss
+        BKTree.size (BKTree.Int.concat trees) = List.sum (List.map BKTree.size trees)
 
 [<Test>]
-let ``unions and exists``() =
+let ``concat and exists``() =
     fsCheck <| fun xss ->
-        let tree = BKTree.Int.unions (List.map BKTree.Int.fromList xss)
+        let tree = BKTree.Int.concat (List.map BKTree.Int.ofList xss)
         List.forall (fun x -> BKTree.Int.exists x tree) (List.concat xss)
 
 [<Test>]
-let ``fromList and exists``() =
+let ``ofList and exists``() =
     fsCheck <| fun xs ->
-        let tree = BKTree.Int.fromList xs
+        let tree = BKTree.Int.ofList xs
         List.forall (fun x -> BKTree.Int.exists x tree) xs
