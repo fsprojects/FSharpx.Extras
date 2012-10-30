@@ -308,3 +308,24 @@ let ``ofList build and serialize``() =
 
     fsCheck "PhysicistQueue" (Prop.forAll (Arb.fromGen QueueGen.physicistQueueOfListqGen) 
         (fun ((q : PhysicistQueue<int>), (l : int list)) -> q |>  Seq.toList = l |> classifyCollect q q.Length))
+
+[<Test>]
+[<Category("IQueue")>]
+[<Property("Category", "IQueue")>]
+let ``TryUncons wind-down to None``() =
+    let qBn = BankersQueue.ofSeq  ["f";"e";"d";"c";"b";"a"] :> IQueue<string>
+    let qBt = BatchedQueue.ofSeq  ["f";"e";"d";"c";"b";"a"] :> IQueue<string>
+    let qH = HoodMelvilleQueue.ofSeq  ["f";"e";"d";"c";"b";"a"] :> IQueue<string>
+    let qP = PhysicistQueue.ofSeq  ["f";"e";"d";"c";"b";"a"] :> IQueue<string>
+
+    let rec loop (iq : IQueue<string>) = 
+        match (iq.TryUncons) with
+        | Some(hd, tl) ->  loop tl
+        | None -> ()
+
+    loop qBn
+    loop qBt
+    loop qH
+    loop qP
+
+    true |> should equal true
