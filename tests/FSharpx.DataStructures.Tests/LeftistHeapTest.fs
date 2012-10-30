@@ -77,11 +77,6 @@ let minLeftistHeapStringGen =
               let! y =  Gen.listString n2
               return ( (LeftistHeap.ofSeq false x |> insertThruList y), ((x @ y) |> List.sort) ) }
 
-let longLeftistHeapIntOfSeqGen =
-        gen { let! n = Gen.length1001thru2000
-              let! x = Gen.listInt n
-              return ( (LeftistHeap.ofSeq true x), (x |> List.sort |> List.rev) ) }
-
 // NUnit TestCaseSource does not understand array of tuples at runtime
 let intGens start =
     let v = Array.create 6 (box (maxLeftistHeapIntGen, "max LeftistHeap int"))
@@ -173,10 +168,6 @@ let ``seq enumerate matches build list int``(x : obj) =
 let ``seq enumerate matches build list string``(x : obj) =
     let genAndName = unbox x
     fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun (h : LeftistHeap<string>, l) -> h |> Seq.toList = l |> classifyCollect h h.Length))
-
-[<Test>]
-let ``seq enumerate matches long build list``() =
-    fsCheck "long build list" (Prop.forAll (Arb.fromGen longLeftistHeapIntOfSeqGen) (fun (h : LeftistHeap<int>, l) -> h |> Seq.toList = l |> classifyCollect h h.Length))
 
 [<Test>]
 let ``structure pattern match and merge``() =
