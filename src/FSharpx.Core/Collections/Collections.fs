@@ -82,6 +82,10 @@ module List =
     let inline mapIf pred f =
         List.map (fun x -> if pred x then f x else x)
 
+    /// Behaves like a combination of map and fold; 
+    /// it applies a function to each element of a list, 
+    /// passing an accumulating parameter from left to right, 
+    /// and returning a final value of this accumulator together with the new list.
     let mapAccum f s l =
         let rec loop s l cont =
             match l with
@@ -110,17 +114,26 @@ module Map =
 
     let splitWithKey pred d = spanWithKey (not << pred) d
 
-    let insertWith f k v map =
-        match Map.tryFind k map with
-        | Some value -> map |> Map.add k (f v value)
-        | None -> map |> Map.add k v
+    /// <summary>
+    /// <code>insertWith f key value mp</code> will insert the pair <code>(key, value)</code> into <code>mp</code> if <code>key</code> does not exist in the map. 
+    /// If the key does exist, the function will insert <code>f new_value old_value</code>.
+    /// </summary>
+    let insertWith f key value map =
+        match Map.tryFind key map with
+        | Some oldValue -> map |> Map.add key (f value oldValue)
+        | None -> map |> Map.add key value
 
-    let updateWith f k map =
+    /// <summary>
+    /// <code>update f k map</code> updates the value <code>x</code> at key <code>k</code> (if it is in the map). 
+    /// If <code>f x</code> is <code>None</code>, the element is deleted. 
+    /// If it is <code>Some y</code>, the key is bound to the new value <code>y</code>.
+    /// </summary>
+    let updateWith f key map =
         let inner v map =
             match f v with
-            | Some value -> map |> Map.add k value
-            | None -> map |> Map.remove k
-        match Map.tryFind k map with
+            | Some value -> map |> Map.add key value
+            | None -> map |> Map.remove key
+        match Map.tryFind key map with
         | Some v -> inner v map
         | None -> map
 
