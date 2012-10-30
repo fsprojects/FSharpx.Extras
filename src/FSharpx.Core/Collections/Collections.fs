@@ -82,12 +82,49 @@ module List =
     let inline mapIf pred f =
         List.map (fun x -> if pred x then f x else x)
 
+    let mapAccum f s l =
+        let rec loop s l cont =
+            match l with
+            | [] -> cont (s, [])
+            | x::xs ->
+                let (s, y) = f s x
+                loop s xs (fun (s,ys) -> cont (s, y::ys))
+        loop s l id
+
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Dictionary =
     let tryFind key (d: IDictionary<_,_>) =
         match d.TryGetValue key with
         | true,v -> Some v
         | _ -> None
+
+module Map =
+    let spanWithKey pred map =
+        map
+        |> Map.fold (fun (l,r) k v ->
+            match k,v with
+            | (key, value) when pred key -> (l, r |> Map.add key value)
+            | (key, value) when not (pred key) -> (l |> Map.add key value, r)
+            | _ -> failwith "Unrecognized pattern"
+        ) (Map.empty, Map.empty)
+
+    let splitWithKey pred d = spanWithKey (not << pred) d
+
+    let insertWith f k v map =
+        match Map.tryFind k map with
+        | Some value -> map |> Map.add k (f v value)
+        | None -> map |> Map.add k v
+
+    let updateWith f k map =
+        let inner v map =
+            match f v with
+            | Some value -> map |> Map.add k value
+            | None -> map |> Map.remove k
+        match Map.tryFind k map with
+        | Some v -> inner v map
+        | None -> map
+
+    let valueList map = map |> Map.toList |> List.unzip |> snd
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 [<Extension>]
