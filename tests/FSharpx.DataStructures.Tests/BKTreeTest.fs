@@ -165,3 +165,10 @@ let ``ofList and exists``() =
     fsCheck <| fun xs ->
         let tree = BKTree.Int.ofList xs
         List.forall (fun x -> BKTree.Int.exists x tree) xs
+
+[<Test>]
+let ``implements IEnumerable``() =
+    fsCheck <| fun values ->
+        let tree = BKTree.Int.ofList values
+        let a = tree :> _ seq |> Seq.toList
+        set values = set a && a.Length = values.Length

@@ -1,14 +1,29 @@
 ﻿namespace FSharpx.DataStructures
 
+open System.Collections
+open System.Collections.Generic
+open FSharpx
+
 // Ported from http://hackage.haskell.org/packages/archive/bktrees/latest/doc/html/src/Data-Set-BKTree.html
 
 type 'a BKTree =
   | Node of 'a * int * Map<int,'a BKTree>
   | Empty
+  with 
+  member x.ToList() =
+    match x with
+    | Empty -> []
+    | Node(a, _ , d) ->
+        a :: (d |> Map.valueList |> List.collect (fun t -> t.ToList()))
+
+  interface IEnumerable<'a> with
+    member x.GetEnumerator() =
+        (x.ToList() :> _ seq).GetEnumerator()
+        
+    member x.GetEnumerator() =
+        (x :> _ seq).GetEnumerator() :> IEnumerator
 
 module BKTree =
-
-    open FSharpx
 
     let isEmpty = function
         | Empty -> true
@@ -56,10 +71,7 @@ module BKTree =
                 |> Map.valueList
                 |> List.exists (existsDistance distance n a)
 
-    let rec toList = function
-        | Empty -> []
-        | Node(a, _ , d) ->
-            a :: (d |> Map.valueList |> List.collect toList)
+    let inline toList (tree: _ BKTree) = tree.ToList()
 
     let toSeq tree = tree |> toList |> List.toSeq
     
