@@ -77,11 +77,6 @@ let minLeftistHeapStringGen =
               let! y =  Gen.listString n2
               return ( (LeftistHeap.ofSeq false x |> insertThruList y), ((x @ y) |> List.sort) ) }
 
-let longLeftistHeapIntOfSeqGen =
-        gen { let! n = Gen.length1001thru2000
-              let! x = Gen.listInt n
-              return ( (LeftistHeap.ofSeq true x), (x |> List.sort |> List.rev) ) }
-
 // NUnit TestCaseSource does not understand array of tuples at runtime
 let intGens start =
     let v = Array.create 6 (box (maxLeftistHeapIntGen, "max LeftistHeap int"))

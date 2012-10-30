@@ -191,22 +191,15 @@ type LeftistHeap<'a when 'a : comparison> =
 
         member this.GetEnumerator() = 
             let e = 
-                if (this.Length > 1000) then
-                    if this.IsMaximalist
+                if this.IsMaximalist
 //WARNING! List.sort |> List.rev significantly faster (caveat: on 32-bit Win 7) than List.sortwith...go figure!
 //            LeftistHeap.inOrder this |> List.sortWith (fun x y -> if (x > y) then -1
 //                                                                             else 
 //                                                                               if (x = y) then 0
 //                                                                               else 1) |> List.fold f state
-                    then LeftistHeap.inOrder this |> List.sort |> List.rev |> List.toSeq
-                    else LeftistHeap.inOrder this |> List.sort |> List.toSeq
-                else
-                    seq {
-                    match LeftistHeap.tryUncons this with
-                    | None -> () 
-                    | Some(x, ts) ->
-                        yield x 
-                        yield! ts}
+                then LeftistHeap.inOrder this |> List.sort |> List.rev |> List.toSeq
+                else LeftistHeap.inOrder this |> List.sort |> List.toSeq
+
             e.GetEnumerator()
 
         member this.GetEnumerator() = (this :> _ seq).GetEnumerator() :> IEnumerator  
