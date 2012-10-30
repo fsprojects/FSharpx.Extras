@@ -44,7 +44,7 @@
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
     <Compile Include="FsCheckProperties.fs" />
-	<Compile Include="QueueGen.fs" />
+    <Compile Include="QueueGen.fs" />
     <Compile Include="DListTest.fs" />
     <Compile Include="TransientVectorTest.fs" />
     <Compile Include="PersistentVectorTest.fs" />
@@ -65,6 +65,7 @@
     <Compile Include="RoseTreeTest.fs" />
     <Compile Include="IQueueTest.fs" />
     <Compile Include="BKTreeTest.fs" />
+    <Compile Include="IntMapTest.fs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
