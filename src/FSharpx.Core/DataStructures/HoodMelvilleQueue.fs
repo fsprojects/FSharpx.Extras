@@ -128,7 +128,7 @@ type HoodMelvilleQueue<'a> (frontLength : int, front : list<'a>, state : Rotatio
         | hd::tl ->
             Some(hd, (HoodMelvilleQueue<'a>((frontLength-1), tl, (HoodMelvilleQueue.invalidate state), rBackLength, rBack)
             |> HoodMelvilleQueue.check))
-        | _ -> raise Exceptions.Empty
+        | _ -> None
 
     with
     interface IQueue<'a> with
