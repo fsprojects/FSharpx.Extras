@@ -6,31 +6,31 @@ open FSharpx
 
 type RealTimeQueue<'a> = {
     F: LazyList<'a> 
-    R: Lazy<list<'a>>
+    R: list<'a>
     S: LazyList<'a> }
 
-let empty<'a> : RealTimeQueue<'a> = { F = LazyList.empty; R = lazy []; S = LazyList.empty }
+let empty<'a> : RealTimeQueue<'a> = { F = LazyList.empty; R = []; S = LazyList.empty }
 
 let isEmpty queue = LazyList.isEmpty queue.F
 
 let rec rotate queue =
     match queue.F with
-    | LazyList.Nil -> LazyList.cons (Lazy.force queue.R |> List.head) queue.S
+    | LazyList.Nil -> LazyList.cons (queue.R |> List.head) queue.S
     | LazyList.Cons (hd, tl) ->
-        let x = Lazy.force queue.R
+        let x = queue.R
         let y = List.head x
         let ys = List.tail x
         let right = LazyList.cons y queue.S
-        LazyList.cons hd (rotate { F = tl; R = lazy ys; S = right })
+        LazyList.cons hd (rotate { F = tl; R = ys; S = right })
 
 let rec exec queue =
     match queue.S with
     | LazyList.Nil ->
         let f' = rotate {queue with S = LazyList.empty}
-        { F = f'; R = lazy []; S = f' }
+        { F = f'; R = []; S = f' }
     | LazyList.Cons (hd, tl) -> {queue with S = tl}
 
-let snoc x queue = exec {queue with R = lazy (x::Lazy.force queue.R) }
+let snoc x queue = exec {queue with R = (x::queue.R) }
 
 let head queue =
     match queue.F with
