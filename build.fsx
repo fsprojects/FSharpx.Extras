@@ -1,12 +1,18 @@
 #r "./packages/FAKE.1.64.5/tools/FakeLib.dll"
 
 open Fake 
+open Fake.Git
 open System.IO
 
 // properties
 let currentDate = System.DateTime.UtcNow
 let projectName = "FSharpx"
-let version = if isLocalBuild then "1.6.96" else buildVersion
+
+let version =
+    if hasBuildParam "version" then getBuildParam "version" else
+    if isLocalBuild then getLastTag() else
+    buildVersion
+
 let coreSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let projectSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let authors = ["Steffen Forkmann"; "Daniel Mohl"; "Tomas Petricek"; "Ryan Riley"; "Mauricio Scheffer"; "Phil Trelford" ]
