@@ -130,6 +130,8 @@ module Option =
     /// Sequence actions, discarding the value of the second argument.
     let inline ( <*) x y = lift2 (fun z _ -> z) x y
 
+    let inline liftM f m = liftM maybe f m
+
     /// Sequentially compose two maybe actions, discarding any value produced by the first
     let inline (>>.) m f = bindM maybe m (fun _ -> f)
     /// Left-to-right Kleisli composition
@@ -220,6 +222,11 @@ module Option =
         List.foldBack cons s (returnM [])
 
     let inline mapM f x = sequence (List.map f x)
+
+    let inline getOrElseWith v f =
+        function
+        | Some x -> f x
+        | None -> v
 
 module Nullable =
     let (|Null|Value|) (x: _ Nullable) =
