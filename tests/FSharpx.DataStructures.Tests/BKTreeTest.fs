@@ -16,7 +16,7 @@ let rec inv m = function
     | Empty -> true
     | Node(a, _, map) ->
         List.forall (fun (d,b) -> BKTree.Int.distance a b = d) m &&
-            List.forall (fun (d,t) -> inv ((d,a)::m) t) (Map.toList map)
+            List.forall (fun (d,t) -> inv ((d,a)::m) t) (IntMap.toList map)
 
 let invariant t = inv [] t
 
