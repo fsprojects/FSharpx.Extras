@@ -7,14 +7,14 @@ open FSharpx
 // Ported from http://hackage.haskell.org/packages/archive/bktrees/latest/doc/html/src/Data-Set-BKTree.html
 
 type 'a BKTree =
-  | Node of 'a * int * Map<int,'a BKTree>
+  | Node of 'a * int * IntMap<'a BKTree>
   | Empty
   with 
   member x.ToList() =
     match x with
     | Empty -> []
-    | Node(a, _ , d) ->
-        a :: (d |> Map.valueList |> List.collect (fun t -> t.ToList()))
+    | Node(a, _ , m) ->
+        a :: (m |> IntMap.values |> List.collect (fun t -> t.ToList()))
 
   interface IEnumerable<'a> with
     member x.GetEnumerator() =
@@ -35,29 +35,29 @@ module BKTree =
         | Node(_, s, _) -> s
         | Empty -> 0
 
-    let singleton a = Node(a, 1, Map.empty)
+    let singleton a = Node(a, 1, IntMap.empty)
 
     let rec private add distance a = function
-        | Empty -> Node(a, 1 , Map.empty)
-        | Node(b, size, dict) ->
+        | Empty -> Node(a, 1 , IntMap.empty)
+        | Node(b, size, map) ->
             let recurse _ tree = add distance a tree
             let d = distance a b
-            let dict = Map.insertWith recurse d (Node(a, 1, Map.empty)) dict
-            Node(b, size + 1, dict)
+            let map = IntMap.insertWith recurse d (Node(a, 1, IntMap.empty)) map
+            Node(b, size + 1, map)
 
     let rec private exists distance a = function
         | Empty -> false
-        | Node(b, _, dict) ->
+        | Node(b, _, map) ->
             let d = distance a b
             if d = 0 then true
             else
-                match Map.tryFind d dict with
+                match IntMap.tryFind d map with
                 | None -> false
                 | Some tree -> exists distance a tree
 
-    let private subTree d n dict =
-        let (_, rightTree) = dict |> Map.splitWithKey ((>) (d-n-1))
-        let (centerTree, _) = rightTree |> Map.splitWithKey ((>=) (d+n+1))
+    let private subTree d n map =
+        let (_, rightTree) = map |> IntMap.split (d - n - 1)
+        let (centerTree, _) = rightTree |> IntMap.split (d + n + 1)
         centerTree
 
     let rec private existsDistance distance n a = function
@@ -68,7 +68,7 @@ module BKTree =
             else
                 map
                 |> subTree d n
-                |> Map.valueList
+                |> IntMap.values
                 |> List.exists (existsDistance distance n a)
 
     let inline toList (tree: _ BKTree) = tree.ToList()
@@ -79,11 +79,11 @@ module BKTree =
 
     let rec private toListDistance distance n a = function
         | Empty -> []
-        | Node(b, _, dict) ->
+        | Node(b, _, map) ->
             let d = distance a b
-            dict
+            map
             |> subTree d n
-            |> Map.valueList
+            |> IntMap.values
             |> List.collect (toListDistance distance n a)
             |> if d <= n then List.cons b else id
 
@@ -101,10 +101,10 @@ module BKTree =
         | Empty -> Empty
         | Node(b, _, map) ->
             let d = distance a b
-            if d = 0 then concat distance (Map.valueList map)
+            if d = 0 then concat distance (IntMap.values map)
             else
-                let subtree = Map.updateWith (Some << (delete distance a)) d map
-                let size = subtree |> Map.valueList |> List.map size |> List.sum |> (+) 1
+                let subtree = IntMap.update (Some << (delete distance a)) d map
+                let size = subtree |> IntMap.values |> List.map size |> List.sum |> (+) 1
                 Node(b, size, subtree)
 
     type 'a Functions(distance: 'a -> 'a -> int) =
