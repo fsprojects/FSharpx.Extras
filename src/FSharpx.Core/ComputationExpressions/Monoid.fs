@@ -1,24 +1,33 @@
 ﻿module FSharpx.Monoid
+
+type ISemigroup<'a> =
+    /// <summary>
+    /// Associative operation
+    /// </summary>
+    abstract append : 'a -> 'a -> 'a
     
 /// Monoid (associative binary operation with identity)
 /// The monoid implementation comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.
 [<AbstractClass>]
-type Monoid<'a>() =
+type Monoid<'a>() as m =
     /// <summary>
     /// Identity
     /// </summary>
-    abstract member mempty : 'a
+    abstract mempty : 'a
 
     /// <summary>
     /// Associative operation
     /// </summary>
-    abstract member mappend : 'a -> 'a -> 'a
+    abstract mappend : 'a -> 'a -> 'a
 
     /// <summary>
     /// Fold a list using this monoid
     /// </summary>
-    abstract member mconcat : 'a seq -> 'a
+    abstract mconcat : 'a seq -> 'a
     default x.mconcat a = Seq.fold x.mappend x.mempty a
+
+    interface ISemigroup<'a> with
+        member x.append a b = m.mappend a b
 
 /// List monoid
 type ListMonoid<'a>() =
@@ -82,3 +91,15 @@ let AnyMonoid =
     { new Monoid<bool>() with
         override this.mempty = false
         override this.mappend a b = a || b }
+
+// doesn't compile due to this F# bug http://stackoverflow.com/questions/4485445/f-interface-inheritance-failure-due-to-unit
+(*
+let UnitMonoid =
+    { new Monoid<unit>() with
+        override this.mempty = ()
+        override this.mappend _ _ = () }
+*)
+
+type NonEmptyListSemigroup<'a>() =
+    interface ISemigroup<'a NonEmptyList> with
+        member x.append a b = NonEmptyList.append a b
