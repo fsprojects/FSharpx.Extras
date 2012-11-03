@@ -26,6 +26,12 @@ type ListMonoid<'a>() =
         override this.mempty = []
         override this.mappend a b = a @ b
 
+/// The dual of a monoid, obtained by swapping the arguments of 'mappend'.
+type DualMonoid<'a>(m: 'a Monoid) =
+    inherit Monoid<'a>()
+        override this.mempty = m.mempty
+        override this.mappend a b = m.mappend b a
+
 /// Option wrapper monoid
 type OptionMonoid<'a>(m: 'a Monoid) =
     inherit Monoid<'a option>()
@@ -36,6 +42,19 @@ type OptionMonoid<'a>(m: 'a Monoid) =
             | Some a, None   -> Some a
             | None, Some a   -> Some a
             | None, None     -> None
+
+type Tuple2Monoid<'a,'b>(a: 'a Monoid, b: 'b Monoid) =
+    inherit Monoid<'a * 'b>()
+        override this.mempty = a.mempty, b.mempty
+        override this.mappend x y = a.mappend (fst x) (fst y), b.mappend (snd x) (snd y)
+
+type Tuple3Monoid<'a,'b,'c>(a: 'a Monoid, b: 'b Monoid, c: 'c Monoid) =
+    inherit Monoid<'a * 'b * 'c>()
+        override this.mempty = a.mempty, b.mempty, c.mempty
+        override this.mappend x y =
+            let a1,b1,c1 = x
+            let a2,b2,c2 = y
+            a.mappend a1 a2, b.mappend b1 b2, c.mappend c1 c2
             
 /// Monoid (int,0,+)
 let IntSumMonoid = 
@@ -53,3 +72,13 @@ let StringMonoid =
     { new Monoid<string>() with
         override this.mempty = ""
         override this.mappend a b = a + b }
+
+let AllMonoid =
+    { new Monoid<bool>() with
+        override this.mempty = true
+        override this.mappend a b = a && b }
+
+let AnyMonoid = 
+    { new Monoid<bool>() with
+        override this.mempty = false
+        override this.mappend a b = a || b }
