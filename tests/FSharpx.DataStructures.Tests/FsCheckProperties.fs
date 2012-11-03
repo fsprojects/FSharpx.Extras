@@ -15,6 +15,15 @@ let checkEquality<'a when 'a : equality> name =
         fun (x: 'a) (y: 'a) (z: 'a) ->
             if x = y && y = z then x = z else true
 
+let checkMonoid name (monoid: _ FSharpx.Monoid.Monoid) =
+    let n = sprintf "%s : monoid %s" name
+    fsCheck (n "left identity") <|
+        fun a -> monoid.mappend a monoid.mempty = a
+    fsCheck (n "right identity") <|
+        fun a -> monoid.mappend monoid.mempty a = a
+    fsCheck (n "associativity") <|
+        fun x y z -> monoid.mappend (monoid.mappend x y) z = monoid.mappend x (monoid.mappend y z)
+
 let classifyCollect xs (count : int) (y : bool) =
     y |> Prop.collect count
     |> Prop.classify (xs.GetType().FullName.Contains("System.Int32")) "int"  

@@ -505,6 +505,7 @@ let ``test maxViewWithKey``() =
 
 open FsCheck
 open FsCheck.NUnit
+open FSharpx.Tests.Properties
 open System.Linq
 
 let fsCheck t = fsCheck "" t
@@ -673,13 +674,5 @@ let ``functor laws``() =
 [<Test>]
 let ``monoid law``() =
     registerGen.Force()
-    let n = sprintf "IntMap : monoid %s"
-    let mempty = IntMap.empty
-    let mappend = IntMap.append
-    let mconcat = IntMap.concat
-    NUnit.fsCheck (n "left identity") <| 
-        fun a -> mappend a mempty = a
-    NUnit.fsCheck (n "right identity") <| 
-        fun a -> mappend mempty a = a
-    NUnit.fsCheck (n "associativity") <|
-        fun x y z -> mappend (mappend x y) z = mappend x (mappend y z)
+    checkMonoid "IntMap obj" (IntMapMonoid<obj>())
+    checkMonoid "IntMap int" (IntMapMonoid<int>())
