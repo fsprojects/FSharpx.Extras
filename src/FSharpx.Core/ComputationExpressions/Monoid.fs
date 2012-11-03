@@ -48,3 +48,8 @@ let IntProductMonoid =
     { new Monoid<int>() with
         override this.mempty = 1
         override this.mappend a b = a * b }
+
+let StringMonoid =
+    { new Monoid<string>() with
+        override this.mempty = ""
+        override this.mappend a b = a + b }
