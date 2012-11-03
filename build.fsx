@@ -48,6 +48,7 @@ let rec getPackageDesc = function
 | "TypeProviders" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing common type providers on top of the FSharpx.Core."
 | "TypeProviders.Graph" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a state machine type provider."
 | "TypeProviders.Documents" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type provider for JSON, XML and CSV documents."
+| "TypeProviders.ProtocolBuffers" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type provider for protocol buffers."
 | "TypeProviders.Xaml" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type provider for Xaml files."
 | "TypeProviders.Math" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type provider for vectors."
 | "TypeProviders.Excel" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a Excel type provider."
@@ -236,6 +237,15 @@ Target "AssemblyInfo" (fun _ ->
             AssemblyDescription = getPackageDesc "TypeProviders.Freebase.DesignTime"
             Guid = "028E461D-AA92-4E5F-8F0D-1C8778FBBD4F"
             OutputFileName = "./src/FSharpx.TypeProviders.Freebase.DesignTime/AssemblyInfo.fs" })
+
+    AssemblyInfo (fun p ->
+        {p with 
+            CodeLanguage = FSharp
+            AssemblyVersion = version
+            AssemblyTitle = "FSharpx.TypeProviders.ProtocolBuffers"
+            AssemblyDescription = getPackageDesc "TypeProviders.ProtocolBuffers"
+            Guid = "2FEB7E07-DA57-4C6B-AA03-3BFF41147A17"
+            OutputFileName = "./src/FSharpx.TypeProviders..ProtocolBuffers/AssemblyInfo.fs" })
 )
 
 let buildAppTarget = TargetTemplate (fun frameworkVersion ->
