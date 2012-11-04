@@ -27,6 +27,7 @@ obj/
 _ReSharper*/
 [Tt]est[Rr]esult*
 build/
+build-portable/
 deploy/
 docs/
 nuget/

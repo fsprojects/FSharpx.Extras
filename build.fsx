@@ -25,6 +25,7 @@ let net40 = "v4.0"
 
 // directories
 let buildDir = "./build/"
+let buildPortableDir = "./build-portable/"
 let packagesDir = "./packages/"
 let testDir = "./test/"
 let deployDir = "./deploy/"
@@ -71,7 +72,15 @@ let normalizeFrameworkVersion frameworkVersion =
     let v = ("[^\\d]" >=> "") frameworkVersion
     v.Substring(0,2)
 
-let frameworkParams frameworkVersion = ["TargetFrameworkVersion", frameworkVersion; "DefineConstants", "NET" + normalizeFrameworkVersion frameworkVersion]
+let frameworkParams portable frameworkVersion = 
+    if portable then
+        ["TargetFramework", "portable47"
+         "TargetFrameworkVersion", frameworkVersion
+         "TypeProviderRuntimeFramework", "portable47"
+         "DefineConstants", "NET" + normalizeFrameworkVersion frameworkVersion + ";FX_NO_LOCAL_FILESYSTEM;FX_NO_CONCURRENT;NO_SYSTEM_ENVIRONMENT_GETENVIRONMENTVARIABLE;FX_NO_CUSTOMTYPEDESCRIPTOR;FX_NO_CUSTOMATTRIBUTEDATA;FX_NO_SYNC_WEBRESPONSE;FX_NO_WEBREQUEST_CONTENTLENGTH;FX_NO_GETCURRENTMETHOD;FX_NO_WEBHEADERS_ADD;TYPE_PROVIDER_RUNTIME_FX_PORTABLE47;TRACE"]
+    else
+        ["TargetFrameworkVersion", frameworkVersion
+         "DefineConstants", "NET" + normalizeFrameworkVersion frameworkVersion]
 
 // tools
 let fakeVersion = GetPackageVersion packagesDir "FAKE"
@@ -81,19 +90,22 @@ let nunitVersion = GetPackageVersion packagesDir "NUnit.Runners"
 let nunitPath = sprintf "%sNUnit.Runners.%s/Tools" packagesDir nunitVersion
 
 // files
-let appReferences frameworkVersion =    
-    { (!+ "./src/**/*.*proj") with 
-        Excludes = 
-            [yield "./src/**/*.Silverlight.*proj"
-             if not (buildTypeProviders frameworkVersion) then                
-                yield "./src/**/*.TypeProviders.*.*proj"
-                yield "./src/**/*.TypeProviders.*proj"
-             if frameworkVersion = net35 then 
-                yield "./src/**/*.Async.fsproj"
-                yield "./src/**/*.Http.fsproj" // TODO: why is that?
-                yield "./src/**/*.Observable.fsproj" // TODO: why is that?
-                  ] }
-    |> Scan
+let appReferences portable frameworkVersion =
+    if portable then
+        !! "./src/**/*Freebase.fsproj"
+    else
+        { (!+ "./src/**/*.*proj") with 
+            Excludes = 
+                [yield "./src/**/*.Silverlight.*proj"
+                 if not (buildTypeProviders frameworkVersion) then                
+                    yield "./src/**/*.TypeProviders.*.*proj"
+                    yield "./src/**/*.TypeProviders.*proj"
+                 if frameworkVersion = net35 then 
+                    yield "./src/**/*.Async.fsproj"
+                    yield "./src/**/*.Http.fsproj" // TODO: why is that?
+                    yield "./src/**/*.Observable.fsproj" // TODO: why is that?
+                      ] }
+        |> Scan
 
 let testReferences frameworkVersion =
     { (!+ "./tests/**/*.*proj") with 
@@ -104,7 +116,7 @@ let testReferences frameworkVersion =
 
 // targets
 Target "Clean" (fun _ ->
-    CleanDirs [buildDir; testDir; deployDir; docsDir; nugetMainDir]
+    CleanDirs [buildDir; buildPortableDir; testDir; deployDir; docsDir; nugetMainDir]
 
     packages
     |> Seq.iter (fun x -> CleanDirs [nugetDir x; nugetLibDir x; nugetDocsDir x])
@@ -222,10 +234,19 @@ Target "AssemblyInfo" (fun _ ->
 
 let buildAppTarget = TargetTemplate (fun frameworkVersion ->
     CleanDir buildDir
+    CleanDir buildPortableDir
 
-    appReferences frameworkVersion
-    |> MSBuild buildDir "Build" (["Configuration","Release"] @ frameworkParams frameworkVersion)
+    appReferences false frameworkVersion
+    |> MSBuild buildDir "Build" (["Configuration","Release"] @ frameworkParams false frameworkVersion)
     |> Log "AppBuild-Output: "
+
+    if frameworkVersion = net40 then
+        appReferences true frameworkVersion
+        |> MSBuild buildPortableDir "Build" (["Configuration","Release"] @ frameworkParams true frameworkVersion)
+        |> Log "AppBuild-Output: "
+
+        !! (buildDir @@ "*DesignTime.*")
+            |> CopyTo buildPortableDir
 )
 
 let buildTestTarget = TargetTemplate (fun frameworkVersion ->
@@ -249,14 +270,22 @@ let prepareNugetTarget = TargetTemplate (fun frameworkVersion ->
     packages
     |> Seq.iter (fun package ->
         let frameworkSubDir = nugetLibDir package @@ normalizeFrameworkVersion frameworkVersion
+        let portableSubDir = nugetLibDir package @@ "portable-windows8+net45"
         if not <| package.StartsWith "TypeProviders" || buildTypeProviders frameworkVersion then
             CleanDir frameworkSubDir
+            CleanDir portableSubDir
 
             [for ending in ["dll";"pdb";"xml"] do
                 yield sprintf "%sFsharpx.%s.%s" buildDir package ending
                 yield sprintf "%sFsharpx.%s.DesignTime.%s" buildDir package ending]
             |> Seq.filter (fun f -> File.Exists f)
-            |> CopyTo frameworkSubDir)
+            |> CopyTo frameworkSubDir
+
+            [for ending in ["dll";"pdb";"xml"] do
+                yield sprintf "%sFsharpx.%s.%s" buildPortableDir package ending
+                yield sprintf "%sFsharpx.%s.DesignTime.%s" buildPortableDir package ending]
+            |> Seq.filter (fun f -> File.Exists f)
+            |> CopyTo portableSubDir)
 )
 
 let buildFrameworkVersionTarget = TargetTemplate (fun frameworkVersion -> ())
@@ -280,7 +309,7 @@ let generateTargets() =
             buildAppTarget buildApp frameworkVersion
             buildTestTarget buildTest frameworkVersion
             testTarget test frameworkVersion
-            prepareNugetTarget prepareNuget frameworkVersion
+            prepareNugetTarget prepareNuget frameworkVersion            
             buildFrameworkVersionTarget buildFrameworkVersion frameworkVersion
 
             dependency ==> buildApp ==> buildTest ==> test ==> prepareNuget ==> buildFrameworkVersion)
