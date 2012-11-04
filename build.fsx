@@ -270,7 +270,7 @@ let prepareNugetTarget = TargetTemplate (fun frameworkVersion ->
     packages
     |> Seq.iter (fun package ->
         let frameworkSubDir = nugetLibDir package @@ normalizeFrameworkVersion frameworkVersion
-        let portableSubDir = nugetLibDir package @@ "portable-windows8+net45"
+        let portableSubDir = nugetLibDir package @@ "portable-net4+sl4+wp71+win8"
         if not <| package.StartsWith "TypeProviders" || buildTypeProviders frameworkVersion then
             CleanDir frameworkSubDir
             CleanDir portableSubDir
