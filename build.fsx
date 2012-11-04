@@ -218,24 +218,6 @@ Target "AssemblyInfo" (fun _ ->
             AssemblyDescription = getPackageDesc "TypeProviders.AppSettings"
             Guid = "75A1B454-ED85-4FAB-939C-026891B758DB"
             OutputFileName = "./src/FSharpx.TypeProviders.AppSettings/AssemblyInfo.fs" })
-
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = version
-            AssemblyTitle = "FSharpx.TypeProviders.Freebase"
-            AssemblyDescription = getPackageDesc "TypeProviders.Freebase"
-            Guid = "9758C301-CC29-4D89-BE76-6C6BC0353867"
-            OutputFileName = "./src/FSharpx.TypeProviders.Freebase/AssemblyInfo.fs" })
-
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = version
-            AssemblyTitle = "FSharpx.TypeProviders.Freebase.DesignTime"
-            AssemblyDescription = getPackageDesc "TypeProviders.Freebase.DesignTime"
-            Guid = "028E461D-AA92-4E5F-8F0D-1C8778FBBD4F"
-            OutputFileName = "./src/FSharpx.TypeProviders.Freebase.DesignTime/AssemblyInfo.fs" })
 )
 
 let buildAppTarget = TargetTemplate (fun frameworkVersion ->
