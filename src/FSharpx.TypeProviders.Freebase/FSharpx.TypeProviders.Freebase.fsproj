@@ -54,22 +54,9 @@
     <Compile Include="Cache.fsi" />
     <Compile Include="Cache.fs" />
     <Compile Include="JsonParser.fs" />
-    <Compile Include="..\FSharpx.TypeProviders\ProvidedTypes.fsi">
-      <Link>ProvidedTypes.fsi</Link>
-    </Compile>
-    <Compile Include="..\FSharpx.TypeProviders\ProvidedTypes.fs">
-      <Link>ProvidedTypes.fs</Link>
-    </Compile>
     <Compile Include="FreebaseRequests.fs" />
     <Compile Include="FreebaseSchema.fs" />
     <Compile Include="FreebaseRuntime.fs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FSharpx.TypeProviders.Freebase.DesignTime\FSharpx.TypeProviders.Freebase.DesignTime.fsproj">
-      <Name>FSharpx.TypeProviders.Freebase.DesignTime</Name>
-      <Project>{7259ec6a-fd19-4767-b514-116c0db973aa}</Project>
-      <Private>True</Private>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
