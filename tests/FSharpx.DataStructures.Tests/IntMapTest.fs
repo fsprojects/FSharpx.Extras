@@ -674,5 +674,5 @@ let ``functor laws``() =
 [<Test>]
 let ``monoid law``() =
     registerGen.Force()
-    checkMonoid "IntMap obj" (IntMapMonoid<obj>())
-    checkMonoid "IntMap int" (IntMapMonoid<int>())
+    checkMonoid "IntMap obj" (IntMap.IntMapMonoid<obj>())
+    checkMonoid "IntMap int" (IntMap.IntMapMonoid<int>())

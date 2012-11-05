@@ -695,7 +695,7 @@ module IntMap =
 
     let isProperSubmapOf m1 m2 = isProperSubmapOfBy (=) m1 m2
 
-type IntMapMonoid<'a>() =
-    inherit FSharpx.Monoid.Monoid<'a IntMap>()
-        override x.Zero() = IntMap.empty
-        override x.Combine(a,b) = IntMap.append a b
+    type IntMapMonoid<'a>() =
+        inherit Monoid<'a IntMap>()
+            override x.Zero() = empty
+            override x.Combine(a,b) = append a b
