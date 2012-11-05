@@ -411,9 +411,9 @@ module IntMap =
 
     let private first f (x, y) = (f x, y)
 
-    let maxView t = Option.liftM (first snd) (maxViewWithKey t)
+    let maxView t = Option.map (first snd) (maxViewWithKey t)
 
-    let minView t = Option.liftM (first snd) (minViewWithKey t)
+    let minView t = Option.map (first snd) (minViewWithKey t)
 
     let deleteFindMax t = Option.getOrElseF (fun _ -> failwith "deleteFindMax: empty map has no maximal element") << maxViewWithKey <| t
 
