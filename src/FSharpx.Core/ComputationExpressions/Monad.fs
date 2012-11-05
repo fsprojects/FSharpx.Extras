@@ -108,6 +108,17 @@ module Option =
             this.Using(sequence.GetEnumerator(),
                                  fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current)))
     let maybe = MaybeBuilder()
+
+    /// Option wrapper monoid
+    type OptionMonoid<'a>(m: 'a Monoid) =
+        inherit Monoid<'a option>()
+            override this.Zero() = None
+            override this.Combine(a, b) = 
+                match a,b with
+                | Some a, Some b -> Some (m.Combine(a,b))
+                | Some a, None   -> Some a
+                | None, Some a   -> Some a
+                | None, None     -> None
     
     open Operators
     
@@ -591,7 +602,7 @@ module Writer =
             this.Using(sequence.GetEnumerator(), 
                 fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current)))
 
-    let writer = WriterBuilder(Monoid.ListMonoid<string>())
+    let writer = WriterBuilder(List.ListMonoid<string>())
 
     let tell   w = fun () -> ((), w)
     let listen m = fun () -> let (a, w) = m() in ((a, w), w)
@@ -798,7 +809,7 @@ module Validation =
 
 
     type NonEmptyListValidation<'a>() = 
-        inherit CustomValidation<'a NonEmptyList>(NonEmptyListSemigroup<'a>())
+        inherit CustomValidation<'a NonEmptyList>(NonEmptyList.NonEmptyListSemigroup<'a>())
 
     /// Sequential application
     let inline ap x = apa NonEmptyList.append x

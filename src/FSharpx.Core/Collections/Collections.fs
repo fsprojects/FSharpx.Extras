@@ -30,7 +30,6 @@ module Seq =
                 for j in l2 do
                     yield f i j }
         
-
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Array = 
     let inline nth i arr = Array.get arr i
@@ -95,6 +94,18 @@ module List =
                 loop s xs (fun (s,ys) -> cont (s, y::ys))
         loop s l id
 
+    /// List monoid
+    type ListMonoid<'a>() =
+        inherit Monoid<'a list>()
+            override this.Zero() = []
+            override this.Combine(a,b) = a @ b
+
+module Set =
+    type SetMonoid<'a when 'a : comparison>() =
+        inherit Monoid<'a Set>()
+            override this.Zero() = Set.empty
+            override this.Combine(a,b) = Set.union a b
+
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Dictionary =
     let tryFind key (d: IDictionary<_,_>) =
@@ -141,6 +152,11 @@ module Map =
 
     let union (map1: Map<_,_>) (map2: Map<_,_>) = 
         Seq.fold (fun m (KeyValue(k,v)) -> Map.add k v m) map1 map2
+
+    type MapMonoid<'key, 'value when 'key : comparison>() =
+        inherit Monoid<Map<'key, 'value>>()
+            override this.Zero() = Map.empty
+            override this.Combine(a,b) = union a b
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 [<Extension>]

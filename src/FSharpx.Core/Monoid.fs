@@ -39,33 +39,11 @@ type Monoid<'a>() as m =
 
 module Monoid =
 
-    /// List monoid
-    type ListMonoid<'a>() =
-        inherit Monoid<'a list>()
-            override this.Zero() = []
-            override this.Combine(a,b) = a @ b
-
-    type SetMonoid<'a when 'a : comparison>() =
-        inherit Monoid<'a Set>()
-            override this.Zero() = Set.empty
-            override this.Combine(a,b) = Set.union a b
-
     /// The dual of a monoid, obtained by swapping the arguments of 'Combine'.
     type DualMonoid<'a>(m: 'a Monoid) =
         inherit Monoid<'a>()
             override this.Zero() = m.Zero()
             override this.Combine(a,b) = m.Combine(b,a)
-
-    /// Option wrapper monoid
-    type OptionMonoid<'a>(m: 'a Monoid) =
-        inherit Monoid<'a option>()
-            override this.Zero() = None
-            override this.Combine(a, b) = 
-                match a,b with
-                | Some a, Some b -> Some (m.Combine(a,b))
-                | Some a, None   -> Some a
-                | None, Some a   -> Some a
-                | None, None     -> None
 
     type Tuple2Monoid<'a,'b>(a: 'a Monoid, b: 'b Monoid) =
         inherit Monoid<'a * 'b>()
@@ -105,11 +83,6 @@ module Monoid =
             override this.Zero() = false
             override this.Combine(a,b) = a || b }
 
-    type MapMonoid<'key, 'value when 'key : comparison>() =
-        inherit Monoid<Map<'key, 'value>>()
-            override this.Zero() = Map.empty
-            override this.Combine(a,b) = Map.union a b
-
     // doesn't compile due to this F# bug http://stackoverflow.com/questions/4485445/f-interface-inheritance-failure-due-to-unit
     (*
     let UnitMonoid =
@@ -118,6 +91,3 @@ module Monoid =
             override this.Combine(_,_) = () }
     *)
 
-    type NonEmptyListSemigroup<'a>() =
-        interface ISemigroup<'a NonEmptyList> with
-            member x.Combine(a,b) = NonEmptyList.append a b

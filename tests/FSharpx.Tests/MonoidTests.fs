@@ -17,15 +17,15 @@ let ``int sum monoid``() =
 
 [<Test>]
 let ``list monoid``() =
-    checkMonoid "list" (ListMonoid<obj>())
+    checkMonoid "list" (List.ListMonoid<obj>())
 
 [<Test>]
 let ``set monoid``() =
-    checkMonoid "set" (SetMonoid<int>())
+    checkMonoid "set" (Set.SetMonoid<int>())
 
 [<Test>]
 let ``map monoid``() =
-    checkMonoid "" (MapMonoid<int, int>())
+    checkMonoid "" (Map.MapMonoid<int, int>())
 
 [<Test>]
 let ``string monoid``() =
@@ -33,7 +33,7 @@ let ``string monoid``() =
 
 [<Test>]
 let ``option monoid``() =
-    checkMonoid "option" (OptionMonoid IntProductMonoid)
+    checkMonoid "option" (Option.OptionMonoid IntProductMonoid)
 
 [<Test>]
 let ``dual monoid``() =
@@ -60,9 +60,9 @@ let ``all monoid``() =
 
 [<Test>]
 let ``tuple2 monoid``() =
-    checkMonoid "tuple2" (Tuple2Monoid(ListMonoid<int>(), StringMonoid))
+    checkMonoid "tuple2" (Tuple2Monoid(List.ListMonoid<int>(), StringMonoid))
 
 [<Test>]
 let ``tuple3 monoid``() =
-    checkMonoid "tuple3" (Tuple3Monoid(ListMonoid<int>(), StringMonoid, AllMonoid))
+    checkMonoid "tuple3" (Tuple3Monoid(List.ListMonoid<int>(), StringMonoid, AllMonoid))
 
