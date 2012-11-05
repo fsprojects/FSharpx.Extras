@@ -29,6 +29,9 @@ module Seq =
             for i in l1 do
                 for j in l2 do
                     yield f i j }
+
+    let foldMap (monoid: _ Monoid) f =
+        Seq.fold (fun s e -> monoid.Combine(s, f e)) (monoid.Zero())
         
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Array = 
@@ -93,6 +96,9 @@ module List =
                 let (s, y) = f s x
                 loop s xs (fun (s,ys) -> cont (s, y::ys))
         loop s l id
+
+    let foldMap (monoid: _ Monoid) f =
+        List.fold (fun s e -> monoid.Combine(s, f e)) (monoid.Zero())
 
     /// List monoid
     type ListMonoid<'a>() =

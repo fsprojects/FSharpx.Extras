@@ -33,6 +33,18 @@ let ``fold via dfs``() =
     Assert.AreEqual(720, actual)
 
 [<Test>]
+let ``fold via monoid``() =
+    let actual = RoseTree.foldMap Monoid.IntProductMonoid id atree
+    Assert.AreEqual(720, actual)
+
+[<Test>]
+let ``count nodes and multiply values in single pass via monoid``() =
+    let m = Monoid.Tuple2Monoid(Monoid.IntProductMonoid, Monoid.IntSumMonoid)
+    let product, count = RoseTree.foldMap m (fun v -> v,1) atree
+    Assert.AreEqual(720, product)
+    Assert.AreEqual(6, count)
+
+[<Test>]
 let unfold() =
     let a = RoseTree.unfold (fun i -> i, LazyList.ofSeq {i+1..3}) 0
     let expected = tree 0 [tree 1 [tree 2 [tree 3 []]; tree 3 []]; tree 2 [tree 3 []]; tree 3 []]
