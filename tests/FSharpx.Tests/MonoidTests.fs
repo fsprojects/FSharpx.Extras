@@ -20,6 +20,14 @@ let ``list monoid``() =
     checkMonoid "list" (ListMonoid<obj>())
 
 [<Test>]
+let ``set monoid``() =
+    checkMonoid "set" (SetMonoid<int>())
+
+[<Test>]
+let ``map monoid``() =
+    checkMonoid "" (MapMonoid<int, int>())
+
+[<Test>]
 let ``string monoid``() =
     checkMonoid "string" StringMonoid
 
@@ -57,3 +65,4 @@ let ``tuple2 monoid``() =
 [<Test>]
 let ``tuple3 monoid``() =
     checkMonoid "tuple3" (Tuple3Monoid(ListMonoid<int>(), StringMonoid, AllMonoid))
+

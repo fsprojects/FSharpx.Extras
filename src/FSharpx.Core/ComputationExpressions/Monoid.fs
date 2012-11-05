@@ -26,13 +26,13 @@ type Monoid<'a>() as m =
     abstract Concat : 'a seq -> 'a
     default x.Concat a = x.For(a, id)
 
-    member x.Yield a = a
-    member x.Delay f = f()
-
     abstract For: 'a seq * ('a -> 'a) -> 'a
     default x.For(sequence, body) =
         let combine a b = x.Combine(a, body b)
         Seq.fold combine (x.Zero()) sequence
+
+    member x.Yield a = a
+    member x.Delay f = f()
 
     interface ISemigroup<'a> with
         member x.Combine(a,b) = m.Combine(a,b)
@@ -42,6 +42,11 @@ type ListMonoid<'a>() =
     inherit Monoid<'a list>()
         override this.Zero() = []
         override this.Combine(a,b) = a @ b
+
+type SetMonoid<'a when 'a : comparison>() =
+    inherit Monoid<'a Set>()
+        override this.Zero() = Set.empty
+        override this.Combine(a,b) = Set.union a b
 
 /// The dual of a monoid, obtained by swapping the arguments of 'Combine'.
 type DualMonoid<'a>(m: 'a Monoid) =
@@ -97,6 +102,11 @@ let AnyMonoid =
     { new Monoid<bool>() with
         override this.Zero() = false
         override this.Combine(a,b) = a || b }
+
+type MapMonoid<'key, 'value when 'key : comparison>() =
+    inherit Monoid<Map<'key, 'value>>()
+        override this.Zero() = Map.empty
+        override this.Combine(a,b) = Map.union a b
 
 // doesn't compile due to this F# bug http://stackoverflow.com/questions/4485445/f-interface-inheritance-failure-due-to-unit
 (*

@@ -139,6 +139,9 @@ module Map =
 
     let valueList map = map |> Map.toList |> List.unzip |> snd
 
+    let union (map1: Map<_,_>) (map2: Map<_,_>) = 
+        Seq.fold (fun m (KeyValue(k,v)) -> Map.add k v m) map1 map2
+
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 [<Extension>]
 module NameValueCollection =
