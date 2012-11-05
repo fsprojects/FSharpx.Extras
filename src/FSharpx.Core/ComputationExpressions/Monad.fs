@@ -560,11 +560,11 @@ module Writer =
         fun () ->
             let (a, w) = writer()
             let (a', w') = (k a)()
-            (a', m.mappend w w')
+            (a', m.Combine(w, w'))
 
     /// Inject a value into the Writer type
     let returnM (monoid: _ Monoid) a = 
-        fun () -> (a, monoid.mempty)
+        fun () -> (a, monoid.Zero())
     
     /// The writer monad.
     /// This monad comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.
@@ -771,7 +771,7 @@ module Validation =
         | Choice2Of2 e1, Choice2Of2 e2 -> Choice2Of2 (append e1 e2)
 
     /// Sequential application, parameterized by semigroup
-    let inline apm (m: _ ISemigroup) = apa m.append
+    let inline apm (m: _ ISemigroup) = apa (curry m.Combine)
 
     type CustomValidation<'a>(semigroup: 'a ISemigroup) =
         /// Sequential application

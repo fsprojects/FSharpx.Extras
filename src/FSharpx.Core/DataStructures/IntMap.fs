@@ -697,5 +697,5 @@ module IntMap =
 
 type IntMapMonoid<'a>() =
     inherit FSharpx.Monoid.Monoid<'a IntMap>()
-        override x.mempty = IntMap.empty
-        override x.mappend a b = IntMap.append a b
+        override x.Zero() = IntMap.empty
+        override x.Combine(a,b) = IntMap.append a b

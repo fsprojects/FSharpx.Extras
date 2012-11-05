@@ -34,7 +34,13 @@ let ``dual monoid``() =
 [<Test>]
 let ``dual monoid example``() =
     let m = DualMonoid StringMonoid
-    Assert.AreEqual("worldhello", m.mappend "hello" "world")
+    let r1 = m {
+        yield "hello"
+        yield "world"
+    }
+    let r2 = m.Combine("hello", "world")
+    Assert.AreEqual("worldhello", r1)
+    Assert.AreEqual("worldhello", r2)
 
 [<Test>]
 let ``any monoid``() =

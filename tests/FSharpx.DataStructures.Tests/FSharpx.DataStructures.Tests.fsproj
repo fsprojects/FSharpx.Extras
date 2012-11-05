@@ -43,7 +43,6 @@
   </PropertyGroup>
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
-    <Compile Include="FsCheckProperties.fs" />
     <Compile Include="QueueGen.fs" />
     <Compile Include="DListTest.fs" />
     <Compile Include="TransientVectorTest.fs" />
