@@ -153,31 +153,31 @@ let ``fail if there is no tail in the queue``(eIQ : IQueue<obj>) =
 let ``fold matches build list rev``() =
 
     fsCheck "BatchedQueue" (Prop.forAll (Arb.fromGen QueueGen.batchedQueueIntGen) 
-        (fun ((q :IQueue<int>), (l : int list)) -> q :?> BatchedQueue<int> |> BatchedQueue.fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) |> classifyCollect q q.Length))
+        (fun ((q :IQueue<int>), (l : int list)) -> q :?> BatchedQueue<int> |> BatchedQueue.fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) |> classifyCollect q (q.Length())))
               
     fsCheck "BatchedQueue OfSeq" (Prop.forAll (Arb.fromGen QueueGen.batchedQueueIntOfSeqGen) 
-        (fun ((q :IQueue<int>), (l : int list)) -> q :?> BatchedQueue<int> |> BatchedQueue.fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) |> classifyCollect q q.Length))
+        (fun ((q :IQueue<int>), (l : int list)) -> q :?> BatchedQueue<int> |> BatchedQueue.fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) |> classifyCollect q (q.Length())))
 
     fsCheck "BatchedQueue Snoc" (Prop.forAll (Arb.fromGen QueueGen.batchedQueueIntSnocGen) 
-        (fun ((q :IQueue<int>), (l : int list)) -> q :?> BatchedQueue<int> |> BatchedQueue.fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) |> classifyCollect q q.Length))
+        (fun ((q :IQueue<int>), (l : int list)) -> q :?> BatchedQueue<int> |> BatchedQueue.fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) |> classifyCollect q (q.Length())))
 
     fsCheck "HoodMelvilleQueue" (Prop.forAll (Arb.fromGen QueueGen.hoodMelvilleQueueIntGen) 
-        (fun ((q :IQueue<int>), (l : int list)) -> q :?> HoodMelvilleQueue<int> |> HoodMelvilleQueue.fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) |> classifyCollect q q.Length))
+        (fun ((q :IQueue<int>), (l : int list)) -> q :?> HoodMelvilleQueue<int> |> HoodMelvilleQueue.fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) |> classifyCollect q (q.Length())))
               
     fsCheck "HoodMelvilleQueue OfSeq" (Prop.forAll (Arb.fromGen QueueGen.hoodMelvilleQueueIntOfSeqGen) 
-        (fun ((q :IQueue<int>), (l : int list)) -> q :?> HoodMelvilleQueue<int> |> HoodMelvilleQueue.fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) |> classifyCollect q q.Length))
+        (fun ((q :IQueue<int>), (l : int list)) -> q :?> HoodMelvilleQueue<int> |> HoodMelvilleQueue.fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) |> classifyCollect q (q.Length())))
 
     fsCheck "HoodMelvilleQueue Snoc" (Prop.forAll (Arb.fromGen QueueGen.hoodMelvilleQueueIntSnocGen) 
-        (fun ((q :IQueue<int>), (l : int list)) -> q :?> HoodMelvilleQueue<int> |> HoodMelvilleQueue.fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) |> classifyCollect q q.Length))
+        (fun ((q :IQueue<int>), (l : int list)) -> q :?> HoodMelvilleQueue<int> |> HoodMelvilleQueue.fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) |> classifyCollect q (q.Length())))
 
     fsCheck "PhysicistQueue" (Prop.forAll (Arb.fromGen QueueGen.physicistQueueIntGen) 
-        (fun ((q :IQueue<int>), (l : int list)) -> q :?> PhysicistQueue<int> |> PhysicistQueue.fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) |> classifyCollect q q.Length))
+        (fun ((q :IQueue<int>), (l : int list)) -> q :?> PhysicistQueue<int> |> PhysicistQueue.fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) |> classifyCollect q (q.Length())))
               
     fsCheck "PhysicistQueue OfSeq" (Prop.forAll (Arb.fromGen (QueueGen.physicistQueueIntOfSeqGen)) 
-        (fun ((q :IQueue<int>), (l : int list)) -> q :?> PhysicistQueue<int> |> PhysicistQueue.fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) |> classifyCollect q q.Length))
+        (fun ((q :IQueue<int>), (l : int list)) -> q :?> PhysicistQueue<int> |> PhysicistQueue.fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) |> classifyCollect q (q.Length())))
 
     fsCheck "PhysicistQueue Snoc" (Prop.forAll (Arb.fromGen (QueueGen.physicistQueueIntSnocGen)) 
-        (fun ((q :IQueue<int>), (l : int list)) -> q :?> PhysicistQueue<int> |> PhysicistQueue.fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) |> classifyCollect q q.Length))
+        (fun ((q :IQueue<int>), (l : int list)) -> q :?> PhysicistQueue<int> |> PhysicistQueue.fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) |> classifyCollect q (q.Length())))
 
 [<Test>]
 [<Category("nonIQueue")>]
@@ -185,31 +185,31 @@ let ``fold matches build list rev``() =
 let ``foldback matches build list``() =
 
     fsCheck "BatchedQueue" (Prop.forAll (Arb.fromGen QueueGen.batchedQueueIntGen) 
-        (fun ((q : IQueue<int>), (l : int list)) -> BatchedQueue.foldBack (fun (elem : int) (l' : int list)  -> elem::l') (q :?> BatchedQueue<int>) [] = l |> classifyCollect q q.Length))
+        (fun ((q : IQueue<int>), (l : int list)) -> BatchedQueue.foldBack (fun (elem : int) (l' : int list)  -> elem::l') (q :?> BatchedQueue<int>) [] = l |> classifyCollect q (q.Length())))
               
     fsCheck "BatchedQueue OfSeq" (Prop.forAll (Arb.fromGen QueueGen.batchedQueueIntOfSeqGen) 
-        (fun ((q : IQueue<int>), (l : int list)) -> BatchedQueue.foldBack (fun (elem : int) (l' : int list) -> elem::l') (q :?> BatchedQueue<int>) [] = l |> classifyCollect q q.Length))
+        (fun ((q : IQueue<int>), (l : int list)) -> BatchedQueue.foldBack (fun (elem : int) (l' : int list) -> elem::l') (q :?> BatchedQueue<int>) [] = l |> classifyCollect q (q.Length())))
 
     fsCheck "BatchedQueue Snoc" (Prop.forAll (Arb.fromGen QueueGen.batchedQueueIntSnocGen) 
-        (fun ((q : IQueue<int>), (l : int list)) -> BatchedQueue.foldBack (fun (elem : int) (l' : int list) -> elem::l') (q :?> BatchedQueue<int>) [] = l |> classifyCollect q q.Length))
+        (fun ((q : IQueue<int>), (l : int list)) -> BatchedQueue.foldBack (fun (elem : int) (l' : int list) -> elem::l') (q :?> BatchedQueue<int>) [] = l |> classifyCollect q (q.Length())))
 
     fsCheck "HoodMelvilleQueue" (Prop.forAll (Arb.fromGen QueueGen.hoodMelvilleQueueIntGen) 
-        (fun ((q : IQueue<int>), (l : int list)) -> HoodMelvilleQueue.foldBack (fun (elem : int) (l' : int list)  -> elem::l') (q :?> HoodMelvilleQueue<int>) [] = l |> classifyCollect q q.Length))
+        (fun ((q : IQueue<int>), (l : int list)) -> HoodMelvilleQueue.foldBack (fun (elem : int) (l' : int list)  -> elem::l') (q :?> HoodMelvilleQueue<int>) [] = l |> classifyCollect q (q.Length())))
               
     fsCheck "HoodMelvilleQueue OfSeq" (Prop.forAll (Arb.fromGen QueueGen.hoodMelvilleQueueIntOfSeqGen) 
-        (fun ((q : IQueue<int>), (l : int list)) -> HoodMelvilleQueue.foldBack (fun (elem : int) (l' : int list) -> elem::l') (q :?> HoodMelvilleQueue<int>) [] = l |> classifyCollect q q.Length))
+        (fun ((q : IQueue<int>), (l : int list)) -> HoodMelvilleQueue.foldBack (fun (elem : int) (l' : int list) -> elem::l') (q :?> HoodMelvilleQueue<int>) [] = l |> classifyCollect q (q.Length())))
 
     fsCheck "HoodMelvilleQueue Snoc" (Prop.forAll (Arb.fromGen QueueGen.hoodMelvilleQueueIntSnocGen) 
-        (fun ((q : IQueue<int>), (l : int list)) -> HoodMelvilleQueue.foldBack (fun (elem : int) (l' : int list) -> elem::l') (q :?> HoodMelvilleQueue<int>) [] = l |> classifyCollect q q.Length))
+        (fun ((q : IQueue<int>), (l : int list)) -> HoodMelvilleQueue.foldBack (fun (elem : int) (l' : int list) -> elem::l') (q :?> HoodMelvilleQueue<int>) [] = l |> classifyCollect q (q.Length())))
 
     fsCheck "PhysicistQueue" (Prop.forAll (Arb.fromGen QueueGen.physicistQueueIntGen) 
-        (fun ((q : IQueue<int>), (l : int list)) -> PhysicistQueue.foldBack (fun (elem : int) (l' : int list)  -> elem::l') (q :?> PhysicistQueue<int>) [] = l |> classifyCollect q q.Length))
+        (fun ((q : IQueue<int>), (l : int list)) -> PhysicistQueue.foldBack (fun (elem : int) (l' : int list)  -> elem::l') (q :?> PhysicistQueue<int>) [] = l |> classifyCollect q (q.Length())))
               
     fsCheck "PhysicistQueue OfSeq" (Prop.forAll (Arb.fromGen QueueGen.physicistQueueIntOfSeqGen) 
-        (fun ((q : IQueue<int>), (l : int list)) -> PhysicistQueue.foldBack (fun (elem : int) (l' : int list) -> elem::l') (q :?> PhysicistQueue<int>) [] = l |> classifyCollect q q.Length))
+        (fun ((q : IQueue<int>), (l : int list)) -> PhysicistQueue.foldBack (fun (elem : int) (l' : int list) -> elem::l') (q :?> PhysicistQueue<int>) [] = l |> classifyCollect q (q.Length())))
 
     fsCheck "PhysicistQueue Snoc" (Prop.forAll (Arb.fromGen QueueGen.physicistQueueIntSnocGen) 
-        (fun ((q : IQueue<int>), (l : int list)) -> PhysicistQueue.foldBack (fun (elem : int) (l' : int list) -> elem::l') (q :?> PhysicistQueue<int>) [] = l |> classifyCollect q q.Length))
+        (fun ((q : IQueue<int>), (l : int list)) -> PhysicistQueue.foldBack (fun (elem : int) (l' : int list) -> elem::l') (q :?> PhysicistQueue<int>) [] = l |> classifyCollect q (q.Length())))
 
 [<Test>]
 [<Category("IQueue")>]
@@ -217,7 +217,7 @@ let ``foldback matches build list``() =
 [<TestCaseSource("intGensStart1")>]
 let ``get head from queue``(x : obj) =
     let genAndName = unbox x 
-    fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun (q :IQueue<int>, l) -> q.Head = (List.nth l 0) |> classifyCollect q q.Length))
+    fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun (q :IQueue<int>, l) -> q.Head = (List.nth l 0) |> classifyCollect q (q.Length())))
 
 [<Test>]
 [<Category("IQueue")>]
@@ -225,7 +225,7 @@ let ``get head from queue``(x : obj) =
 [<TestCaseSource("intGensStart1")>]
 let ``get head from queue safely``(x : obj) =
     let genAndName = unbox x 
-    fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun (q :IQueue<int>, l) -> q.TryGetHead.Value = (List.nth l 0) |> classifyCollect q q.Length))
+    fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun (q :IQueue<int>, l) -> q.TryGetHead.Value = (List.nth l 0) |> classifyCollect q (q.Length())))
 
 [<Test>]
 [<Category("IQueue")>]
@@ -233,7 +233,7 @@ let ``get head from queue safely``(x : obj) =
 [<TestCaseSource("intGensStart2")>]
 let ``get tail from queue``(x : obj) =
     let genAndName = unbox x 
-    fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun ((q : IQueue<int>), l) -> q.Tail.Head = (List.nth l 1) |> classifyCollect q q.Length))
+    fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun ((q : IQueue<int>), l) -> q.Tail.Head = (List.nth l 1) |> classifyCollect q (q.Length())))
 
 [<Test>]
 [<Category("IQueue")>]
@@ -241,7 +241,7 @@ let ``get tail from queue``(x : obj) =
 [<TestCaseSource("intGensStart2")>]
 let ``get tail from queue safely``(x : obj) =
     let genAndName = unbox x 
-    fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun (q : IQueue<int>, l) -> q.TryGetTail.Value.Head = (List.nth l 1) |> classifyCollect q q.Length))
+    fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun (q : IQueue<int>, l) -> q.TryGetTail.Value.Head = (List.nth l 1) |> classifyCollect q (q.Length())))
 
 [<Test>]
 [<Category("IQueue")>]
@@ -263,7 +263,7 @@ let ``give None if there is no tail in the queue``(eIQ  : IQueue<obj>) =
 [<TestCaseSource("intGensStart1")>]
 let ``int queue builds and serializes``(x : obj) =
     let genAndName = unbox x 
-    fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun (q :IQueue<int>, l) -> q |> Seq.toList = l |> classifyCollect q q.Length))
+    fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun (q :IQueue<int>, l) -> q |> Seq.toList = l |> classifyCollect q (q.Length())))
 
 [<Test>]
 [<Category("IQueue")>]
@@ -271,7 +271,7 @@ let ``int queue builds and serializes``(x : obj) =
 [<TestCaseSource("objGens")>]
 let ``obj queue builds and serializes``(x : obj) =
     let genAndName = unbox x 
-    fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun (q :IQueue<obj>, l) -> q |> Seq.toList = l |> classifyCollect q q.Length))
+    fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun (q :IQueue<obj>, l) -> q |> Seq.toList = l |> classifyCollect q (q.Length())))
 
 [<Test>]
 [<Category("IQueue")>]
@@ -279,7 +279,7 @@ let ``obj queue builds and serializes``(x : obj) =
 [<TestCaseSource("stringGens")>]
 let ``string queue builds and serializes``(x : obj) =
     let genAndName = unbox x 
-    fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun (q :IQueue<string>, l) -> q |> Seq.toList = l |> classifyCollect q q.Length))
+    fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun (q :IQueue<string>, l) -> q |> Seq.toList = l |> classifyCollect q (q.Length())))
 
 [<Test>]
 [<Category("nonIQueue")>]
@@ -287,13 +287,13 @@ let ``string queue builds and serializes``(x : obj) =
 let ``reverse . reverse = id``() =
 
     fsCheck "BankersQueue" (Prop.forAll (Arb.fromGen QueueGen.bankersQueueObjGen) 
-        (fun (q, l) -> q :?> BankersQueue<obj> |> BankersQueue.rev |> BankersQueue.rev |> Seq.toList = (q |> Seq.toList) |> classifyCollect q q.Length))
+        (fun (q, l) -> q :?> BankersQueue<obj> |> BankersQueue.rev |> BankersQueue.rev |> Seq.toList = (q |> Seq.toList) |> classifyCollect q (q.Length())))
     
     fsCheck "BatchedQueue" (Prop.forAll (Arb.fromGen QueueGen.batchedQueueObjGen) 
-        (fun (q, l) -> q :?> BatchedQueue<obj> |> BatchedQueue.rev |> BatchedQueue.rev |> Seq.toList = (q |> Seq.toList) |> classifyCollect q q.Length))
+        (fun (q, l) -> q :?> BatchedQueue<obj> |> BatchedQueue.rev |> BatchedQueue.rev |> Seq.toList = (q |> Seq.toList) |> classifyCollect q (q.Length())))
     
     fsCheck "PhysicistQueue" (Prop.forAll (Arb.fromGen QueueGen.physicistQueueIntGen) 
-        (fun (q, l) -> q :?> PhysicistQueue<int> |> PhysicistQueue.rev |> PhysicistQueue.rev |> Seq.toList = (q |> Seq.toList) |> classifyCollect q q.Length))
+        (fun (q, l) -> q :?> PhysicistQueue<int> |> PhysicistQueue.rev |> PhysicistQueue.rev |> Seq.toList = (q |> Seq.toList) |> classifyCollect q (q.Length())))
 
 [<Test>]
 [<Category("nonIQueue")>]

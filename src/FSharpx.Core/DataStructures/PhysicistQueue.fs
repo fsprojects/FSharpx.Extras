@@ -116,7 +116,7 @@ type PhysicistQueue<'a> (prefix : list<'a>, frontLength : int, front : Lazy<list
     with
     interface IQueue<'a> with
 
-        member this.Count = this.Length
+        member this.Count() = this.Length
 
         member this.Head = this.Head
 
@@ -124,7 +124,7 @@ type PhysicistQueue<'a> (prefix : list<'a>, frontLength : int, front : Lazy<list
 
         member this.IsEmpty = this.IsEmpty
 
-        member this.Length = this.Length
+        member this.Length() = this.Length
 
         member this.Snoc x = this.Snoc x :> _
 

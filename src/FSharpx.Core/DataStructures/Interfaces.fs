@@ -104,13 +104,13 @@ type IHeap<'a when 'a : comparison> =
     inherit System.Collections.Generic.IEnumerable<'a>
 
     ///returns the count of elememts
-    abstract member Count : int with get
+    abstract member Count : unit -> int
 
     ///returns the min or max element
-    abstract member Head : 'a with get
+    abstract member Head : unit -> 'a 
 
     ///returns option first min or max element
-    abstract member TryGetHead : 'a option with get
+    abstract member TryGetHead : unit -> 'a option
 
     ///returns true if the heap has no elements
     abstract member IsEmpty : bool with get
@@ -119,7 +119,7 @@ type IHeap<'a when 'a : comparison> =
     abstract member IsMaximalist : bool with get
 
     ///returns the count of elememts
-    abstract member Length : int with get
+    abstract member Length : unit -> int
 
 type IHeap<'c, 'a when 'c :> IHeap<'c, 'a> and 'a : comparison> =
     inherit IHeap<'a>
@@ -134,23 +134,23 @@ type IHeap<'c, 'a when 'c :> IHeap<'c, 'a> and 'a : comparison> =
     abstract member TryMerge : 'c -> 'c option
 
     ///returns a new heap of the elements trailing the head
-    abstract member Tail : 'c with get
+    abstract member Tail : unit -> 'c 
 
     ///returns option heap of the elements trailing the head
-    abstract member TryGetTail : 'c option with get
+    abstract member TryGetTail : unit -> 'c option 
 
     ///returns the head element and tail
-    abstract member Uncons : 'a * 'c with get
+    abstract member Uncons : unit -> ('a * 'c) 
 
     ///returns option head element and tail
-    abstract member TryUncons : ('a * 'c) option with get
+    abstract member TryUncons : unit -> ('a * 'c) option
 
 type IQueue<'a> =
     inherit System.Collections.IEnumerable
     inherit System.Collections.Generic.IEnumerable<'a>
  
     ///returns the count of elememts
-    abstract member Count :int with get
+    abstract member Count : unit -> int
 
     ///returns the first element
     abstract member Head :'a with get
@@ -162,7 +162,7 @@ type IQueue<'a> =
     abstract member IsEmpty :bool with get
 
     ///returns the count of elememts
-    abstract member Length :int with get
+    abstract member Length : unit -> int
 
     ///returns a new queue with the element added to the end
     abstract member Snoc : 'a -> IQueue<'a>
