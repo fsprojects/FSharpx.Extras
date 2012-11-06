@@ -139,10 +139,10 @@ type LeftistHeap<'a when 'a : comparison> =
     member this.TryMerge xs = LeftistHeap.tryMerge this xs
 
     ///returns a new heap of the elements trailing the head, O(log n)
-    member this.Tail = LeftistHeap.tail this
+    member this.Tail() = LeftistHeap.tail this
        
     ///returns option heap of the elements trailing the head, O(log n)
-    member this.TryGetTail = LeftistHeap.tryGetTail this
+    member this.TryGetTail() = LeftistHeap.tryGetTail this
 
     ///returns the head element and tail, O(log n)
     member this.Uncons() = 
@@ -241,10 +241,10 @@ module LeftistHeap =
     let ofSeq maximalist s = LeftistHeap.ofSeq maximalist s
 
     ///returns a new heap of the elements trailing the head, O(log n)
-    let inline tail (xs: LeftistHeap<'a>) = xs.Tail
+    let inline tail (xs: LeftistHeap<'a>) = xs.Tail()
 
     ///returns option heap of the elements trailing the head, O(log n)
-    let inline tryGetTail (xs: LeftistHeap<'a>) = xs.TryGetTail
+    let inline tryGetTail (xs: LeftistHeap<'a>) = xs.TryGetTail()
 
     ///returns the head element and tail, O(log n)
     let inline uncons (xs: LeftistHeap<'a>) = xs.Uncons()
