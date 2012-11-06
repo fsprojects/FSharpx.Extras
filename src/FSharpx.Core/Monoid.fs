@@ -37,6 +37,7 @@ type Monoid<'a>() as m =
         member x.Combine(a,b) = m.Combine(a,b)
 
 module Monoid =
+    open System
 
     /// The dual of a monoid, obtained by swapping the arguments of 'Combine'.
     let dual (m: _ Monoid) =
@@ -81,6 +82,16 @@ module Monoid =
         { new Monoid<bool>() with
             override this.Zero() = false
             override this.Combine(a,b) = a || b }
+
+    let minInt =
+        { new Monoid<_>() with
+            override this.Zero() = Int32.MaxValue
+            override this.Combine(a,b) = min a b }
+
+    let maxInt =
+        { new Monoid<_>() with
+            override this.Zero() = Int32.MinValue
+            override this.Combine(a,b) = max a b }
 
     // doesn't compile due to this F# bug http://stackoverflow.com/questions/4485445/f-interface-inheritance-failure-due-to-unit
     (*

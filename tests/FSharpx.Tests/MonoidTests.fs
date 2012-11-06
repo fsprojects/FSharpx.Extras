@@ -79,6 +79,14 @@ let ``tuple3 monoid``() =
     checkMonoid "tuple3" (Monoid.tuple3 List.monoid Monoid.string Monoid.all)
 
 [<Test>]
+let ``min monoid``() =
+    checkMonoid "min" (Monoid.minInt)
+
+[<Test>]
+let ``max monoid``() =
+    checkMonoid "max" (Monoid.maxInt)
+
+[<Test>]
 let ``bytestring monoid``() =
     bytestringArbRegister.Force()
     checkMonoid "bytestring" ByteString.monoid
