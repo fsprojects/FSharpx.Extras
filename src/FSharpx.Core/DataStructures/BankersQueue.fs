@@ -84,7 +84,7 @@ type BankersQueue<'a> (frontLength : int, front : LazyList<'a>, backLength : int
     with
     interface IQueue<'a> with
 
-        member this.Count = this.Length
+        member this.Count() = this.Length
 
         member this.Head = this.Head
 
@@ -92,7 +92,7 @@ type BankersQueue<'a> (frontLength : int, front : LazyList<'a>, backLength : int
 
         member this.IsEmpty = this.IsEmpty
 
-        member this.Length = this.Length
+        member this.Length() = this.Length
 
         member this.Snoc x = this.Snoc x :> _
 

@@ -94,7 +94,7 @@ type BatchedQueue<'a> (front : list<'a>, rBack : list<'a>) =
     with
     interface IQueue<'a> with
 
-        member this.Count = this.Length
+        member this.Count() = this.Length
 
         member this.Head = this.Head
 
@@ -102,7 +102,7 @@ type BatchedQueue<'a> (front : list<'a>, rBack : list<'a>) =
 
         member this.IsEmpty = this.IsEmpty
 
-        member this.Length = this.Length
+        member this.Length() = this.Length
 
         member this.Snoc x = this.Snoc x :> _
 
