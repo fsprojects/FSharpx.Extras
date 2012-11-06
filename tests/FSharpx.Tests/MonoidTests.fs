@@ -7,6 +7,18 @@ open FSharpx
 open FSharpx.Tests.Properties
 open FSharpx.Monoid
 
+type ByteStringGen =
+    static member ByteStringArb =
+        let g = gen {
+            let! a = Arb.generate<_[]>
+            let! offset = Gen.choose(0, max 0 (a.Length - 1))
+            let! count = Gen.choose(0, a.Length - offset)
+            return ByteString(a, offset, count)
+        }
+        Arb.fromGen g
+
+let bytestringArbRegister = lazy (FsCheck.Arb.register<ByteStringGen>() |> ignore)
+
 [<Test>]
 let ``int product monoid``() =
     checkMonoid "int product" Monoid.intProduct
@@ -66,3 +78,7 @@ let ``tuple2 monoid``() =
 let ``tuple3 monoid``() =
     checkMonoid "tuple3" (Monoid.tuple3 List.monoid Monoid.string Monoid.all)
 
+[<Test>]
+let ``bytestring monoid``() =
+    bytestringArbRegister.Force()
+    checkMonoid "bytestring" ByteString.monoid
