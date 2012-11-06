@@ -34,6 +34,8 @@ open FSharpx.Nullable
 
 let greaterThan o = validator ((<?) o)
 
+let lengthNotEquals l = validator (fun (x: string) -> x.Length <> l) "Invalid length"
+
 let validateOrder (o: Order) =
     let nameNotNull = nonNull "Product name can't be null" o.ProductName
     let positiveCost n = greaterThan (0m).n (sprintf "Cost for product '%s' can't be negative" n) o.Cost
@@ -89,20 +91,33 @@ let ``using ap``() =
       errors |> should contain "Surname can't be null"
 
 [<Test>]
-let ``validation with monoid``() =
-  let v = Validation.CustomValidation (Monoid.sum())
-  // count the number of broken rules
-  let validator pred value =
-      if pred value
-          then Choice1Of2 value
-          else Choice2Of2 1
-  let notEqual a = validator ((<>) a)
-  let lengthNotEquals l = validator (fun (x: string) -> x.Length <> l)
-  let validateString x = 
-    Choice.returnM x
-    |> v.apl (notEqual "hello" x)
-    |> v.apl (lengthNotEquals 5 x)
-  match validateString "hello" with
-  | Success c -> failwithf "Valid string: %s" c
-  | Failure e -> Assert.AreEqual(2, e)
+let ``validation with sum monoid``() =
+    let v = Validation.CustomValidation (Monoid.sum())
+    // count the number of broken rules
+    let intValidator x = Choice.mapSecond (konst 1) x
+    let notEqual a = notEqual a "" >> intValidator
+    let lengthNotEquals l = lengthNotEquals l >> intValidator
+    let validateString x = 
+        Choice.returnM x
+        |> v.apl (notEqual "hello" x)
+        |> v.apl (lengthNotEquals 5 x)
+    match validateString "hello" with
+    | Success c -> failwithf "Valid string: %s" c
+    | Failure e -> Assert.AreEqual(2, e)
 
+[<Test>]
+let ``validation with unit monoid``() =
+    // using the unit monoid to avoid the overhead of concatenating error lists.
+    let v = Validation.CustomValidation Monoid.unit
+
+    // convert validator errors to unit
+    let unitValidator x = Choice.mapSecond ignore x
+    let notEqual a = notEqual a "" >> unitValidator
+    let lengthNotEquals l = lengthNotEquals l >> unitValidator
+    let validateString x = 
+        Choice.returnM x
+        |> v.apl (notEqual "hello" x)
+        |> v.apl (lengthNotEquals 5 x)
+    match validateString "hello" with
+    | Success c -> failwithf "Valid string: %s" c
+    | Failure () -> ()

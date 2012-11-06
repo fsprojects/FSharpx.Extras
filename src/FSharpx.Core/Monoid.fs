@@ -109,11 +109,10 @@ module Monoid =
             override this.Zero() = false
             override this.Combine(a,b) = a || b }
 
-    // doesn't compile due to this F# bug http://stackoverflow.com/questions/4485445/f-interface-inheritance-failure-due-to-unit
-    (*
-    let UnitMonoid =
-        { new Monoid<unit>() with
-            override this.Zero() = ()
-            override this.Combine(_,_) = () }
-    *)
-
+    let unit = 
+        // can't write this as a direct Monoid object expression due to this F# bug http://stackoverflow.com/questions/4485445/f-interface-inheritance-failure-due-to-unit
+        let inline create zero combine =
+            { new Monoid<_>() with
+                override this.Zero() = zero
+                override this.Combine(a,b) = combine a b }
+        create () (fun _ _ -> ())

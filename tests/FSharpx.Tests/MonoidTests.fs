@@ -37,7 +37,7 @@ let ``set monoid``() =
 
 [<Test>]
 let ``map monoid``() =
-    checkMonoid "" Map.monoid<int,int>
+    checkMonoid "map" Map.monoid<int,int>
 
 [<Test>]
 let ``string monoid``() =
@@ -90,3 +90,7 @@ let ``max monoid``() =
 let ``bytestring monoid``() =
     bytestringArbRegister.Force()
     checkMonoid "bytestring" ByteString.monoid
+
+[<Test>]
+let ``unit monoid``() =
+    checkMonoid "unit" Monoid.unit
