@@ -1,5 +1,6 @@
 ﻿namespace FSharpx
 
+/// Semigroup (set with associative binary operation)
 type ISemigroup<'a> =
     /// <summary>
     /// Associative operation
@@ -35,6 +36,15 @@ type Monoid<'a>() as m =
 
     interface ISemigroup<'a> with
         member x.Combine(a,b) = m.Combine(a,b)
+
+module Semigroup =
+    let min<'a when 'a : comparison> = 
+        { new ISemigroup<'a> with
+            member x.Combine(a,b) = min a b }
+
+    let max<'a when 'a : comparison> = 
+        { new ISemigroup<'a> with
+            member x.Combine(a,b) = max a b }
 
 module Monoid =
     open System

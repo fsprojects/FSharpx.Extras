@@ -110,7 +110,7 @@ module Option =
     let maybe = MaybeBuilder()
 
     /// Option wrapper monoid
-    let monoid (m: _ Monoid) =
+    let monoid (m: _ ISemigroup) =
         { new Monoid<_>() with
             override this.Zero() = None
             override this.Combine(a, b) = 
