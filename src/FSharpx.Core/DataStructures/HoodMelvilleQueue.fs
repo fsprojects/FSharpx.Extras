@@ -133,7 +133,7 @@ type HoodMelvilleQueue<'a> (frontLength : int, front : list<'a>, state : Rotatio
     with
     interface IQueue<'a> with
 
-        member this.Count = this.Length
+        member this.Count() = this.Length
 
         member this.Head = this.Head
 
@@ -141,7 +141,7 @@ type HoodMelvilleQueue<'a> (frontLength : int, front : list<'a>, state : Rotatio
 
         member this.IsEmpty = this.IsEmpty
 
-        member this.Length = this.Length
+        member this.Length() = this.Length
 
         member this.Snoc x = this.Snoc x :> _
 

@@ -132,7 +132,7 @@ let ``empty list should be empty``() =
 let ``head should return``(x : obj) =
     let genAndName = unbox x 
     fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun ((h : BinomialHeap<int>), (l : int list)) ->    
-                                                                            (h.Head = l.Head)     
+                                                                            (h.Head() = l.Head)     
                                                                             |> classifyCollect h (h.Length())))
 [<Test>]
 let ``insert works``() =
@@ -168,28 +168,28 @@ let ``seq enumerate matches build list string``(x : obj) =
 let ``tail should return``(x : obj) =
     let genAndName = unbox x 
     fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun ((h : BinomialHeap<int>), (l : int list)) ->    
-                                                                            let tl = h.Tail
+                                                                            let tl = h.Tail()
                                                                             let tlHead =
-                                                                                if (tl.Length() > 0) then (tl.Head = l.Item(1))
+                                                                                if (tl.Length() > 0) then (tl.Head() = l.Item(1))
                                                                                 else true
                                                                             (tlHead && (tl.Length() = (l.Length - 1)))     
                                                                             |> classifyCollect h (h.Length())))
 
 [<Test>]
 let ``tryGetHead on empty should return None``() =
-    (BinomialHeap.empty true).TryGetHead |> should equal None
+    (BinomialHeap.empty true).TryGetHead() |> should equal None
 
 [<Test>]
 [<TestCaseSource("intGensStart2")>]
 let ``tryGetHead should return``(x : obj) =
     let genAndName = unbox x 
     fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun ((h : BinomialHeap<int>), (l : int list)) ->    
-                                                                            (h.TryGetHead.Value = l.Head)     
+                                                                            (h.TryGetHead().Value = l.Head)     
                                                                             |> classifyCollect h (h.Length())))
 
 [<Test>]
 let ``tryGetTail on empty should return None``() =
-    (BinomialHeap.empty true).TryGetTail |> should equal None
+    (BinomialHeap.empty true).TryGetTail() |> should equal None
 
 [<Test>]
 let ``tryGetTail on len 1 should return Some empty``() =
@@ -208,19 +208,19 @@ let ``tryMerge max and mis should be None``() =
 let ``tryUncons 1 element``(x : obj) =
     let genAndName = unbox x 
     fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun ((h : BinomialHeap<int>), (l : int list)) ->    
-                                                                            let x, tl = h.TryUncons.Value
+                                                                            let x, tl = h.TryUncons().Value
                                                                             ((x = l.Head) && (tl.Length() = (l.Length - 1)))     
                                                                             |> classifyCollect h (h.Length())))
 
 [<Test>]
 let ``tryUncons empty``() =
-    (BinomialHeap.empty true).TryUncons |> should equal None
+    (BinomialHeap.empty true).TryUncons() |> should equal None
 
 [<Test>]
 [<TestCaseSource("intGensStart2")>]
 let ``uncons 1 element``(x : obj) =
     let genAndName = unbox x 
     fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun ((h : BinomialHeap<int>), (l : int list)) ->    
-                                                                            let x, tl = h.Uncons
+                                                                            let x, tl = h.Uncons()
                                                                             ((x = l.Head) && (tl.Length() = (l.Length - 1)))     
                                                                             |> classifyCollect h (h.Length())))

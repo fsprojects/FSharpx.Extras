@@ -20,13 +20,7 @@ Even restricting only to this type, never got generic element type 'a to work. N
 *)
 
 let insertThruList l h  =
-    let rec loop (h' : LeftistHeap<'a>) (l' : 'a list) = 
-        match l' with
-        | hd :: [] -> h'.Insert hd
-        | hd :: tl -> loop (h'.Insert hd) tl
-        | [] -> h' 
-        
-    loop h l
+    List.fold (fun (h' : #IHeap<_,'a>) x -> h'.Insert  x  ) h l
 
 (* LeftistHeap Gens *)
 let maxLeftistHeapIntGen =
@@ -229,19 +223,19 @@ let ``tryMerge max and mis should be None``() =
 let ``tryUncons 1 element``(x : obj) =
     let genAndName = unbox x 
     fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun ((h : LeftistHeap<int>), (l : int list)) ->    
-                                                                            let x, tl = h.TryUncons.Value
+                                                                            let x, tl = h.TryUncons().Value
                                                                             ((x = l.Head) && (tl.Length = (l.Length - 1)))     
                                                                             |> classifyCollect h h.Length))
 
 [<Test>]
 let ``tryUncons empty``() =
-    (LeftistHeap.empty true).TryUncons |> should equal None
+    (LeftistHeap.empty true).TryUncons() |> should equal None
 
 [<Test>]
 [<TestCaseSource("intGensStart2")>]
 let ``uncons 1 element``(x : obj) =
     let genAndName = unbox x 
     fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun ((h : LeftistHeap<int>), (l : int list)) ->    
-                                                                            let x, tl = h.Uncons
+                                                                            let x, tl = h.Uncons()
                                                                             ((x = l.Head) && (tl.Length = (l.Length - 1)))     
                                                                             |> classifyCollect h h.Length))
