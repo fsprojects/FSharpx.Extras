@@ -159,24 +159,59 @@ type BinomialHeap<'a when 'a : comparison> (isMaximalist : bool, heap : list<Bin
         if this.heap.IsEmpty then None
         else Some(BinomialHeap.uncons this.IsMaximalist this.heap)
 
-    interface IEnumerable<'a>
+    interface IHeap<BinomialHeap<'a>, 'a> with
+        
+        member this.Count() = this.Length()
 
-        with 
+        member this.Head() = BinomialHeap.head this.IsMaximalist this.heap
+
+        member this.TryGetHead() = 
+            if this.heap.IsEmpty then None
+            else Some(BinomialHeap.head this.IsMaximalist this.heap)
+
+        member this.Insert (x : 'a) = BinomialHeap<'a>(this.IsMaximalist, (BinomialHeap.insert this.IsMaximalist x this.heap))
+
+        member this.IsEmpty = BinomialHeap.isEmpty this
+
+        member this.IsMaximalist = this.IsMaximalist 
+
+        member this.Length() = this.Length() 
+
+        member this.Merge (xs : BinomialHeap<'a>) = 
+            if (this.IsMaximalist = xs.IsMaximalist) then
+                BinomialHeap<'a>(this.IsMaximalist, (BinomialHeap.merge this.IsMaximalist this.heap xs.heap))
+            else failwith "not same max or min"
+
+        member this.TryMerge (xs : BinomialHeap<'a>)  = 
+            if (this.IsMaximalist <> xs.IsMaximalist) then None
+            else Some(BinomialHeap<'a>(this.IsMaximalist, (BinomialHeap.merge this.IsMaximalist this.heap xs.heap)))
+
+        member this.Tail() = BinomialHeap<'a>(this.IsMaximalist, (BinomialHeap.tail this.IsMaximalist this.heap))
+
+        member this.TryGetTail() =
+            if this.heap.IsEmpty then None
+            else Some(BinomialHeap<'a>(this.IsMaximalist, (BinomialHeap.tail this.IsMaximalist this.heap)))
+
+        member this.Uncons() = BinomialHeap.uncons this.IsMaximalist this.heap
+
+        member this.TryUncons() =
+            if this.heap.IsEmpty then None
+            else Some(BinomialHeap.uncons this.IsMaximalist this.heap)
+
         member this.GetEnumerator() = 
             let e = 
                 if this.IsMaximalist
+//WARNING! List.sort |> List.rev significantly faster (caveat: on 32-bit Win 7) than List.sortwith...go figure!
+//            BinomialHeap.inOrder this |> List.sortWith (fun x y -> if (x > y) then -1
+//                                                                             else 
+//                                                                               if (x = y) then 0
+//                                                                               else 1) |> List.fold f state
                 then BinomialHeap.inOrder this.heap |> List.sort |> List.rev |> List.toSeq
                 else BinomialHeap.inOrder this.heap |> List.sort |> List.toSeq
 
             e.GetEnumerator()
 
-        member this.GetEnumerator() = 
-            let e = 
-                if this.IsMaximalist
-                then BinomialHeap.inOrder this.heap |> List.sort |> List.rev |> List.toSeq
-                else BinomialHeap.inOrder this.heap |> List.sort |> List.toSeq
-
-            e.GetEnumerator() :> IEnumerator 
+        member this.GetEnumerator() = (this :> _ seq).GetEnumerator() :> IEnumerator  
 
 module BinomialHeap = 
     //pattern discriminator

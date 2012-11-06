@@ -8,6 +8,7 @@ open NUnit.Framework
 open FsCheck
 open FsCheck.NUnit
 open FsUnit
+open HeapGen
 
 //only going up to 5 elements is probably sufficient to test all edge cases
 
@@ -19,71 +20,19 @@ file for each heap type, unlike IQueue.
 Even restricting only to this type, never got generic element type 'a to work. Need separate tests for int and string.
 *)
 
-let insertThruList l h  =
-    List.fold (fun (h' : #IHeap<_,'a>) x -> h'.Insert  x  ) h l
-
-(* LeftistHeap Gens *)
-let maxLeftistHeapIntGen =
-        gen { let! n = Gen.length2thru12
-              let! n2 = Gen.length1thru12
-              let! x =  Gen.listInt n
-              let! y =  Gen.listInt n2
-              return ( (LeftistHeap.ofSeq true x |> insertThruList y), ((x @ y) |> List.sort |> List.rev) ) }
-
-let maxLeftistHeapIntOfSeqGen =
-        gen { let! n = Gen.length1thru12
-              let! x =  Gen.listInt n
-              return ( (LeftistHeap.ofSeq true x), (x |> List.sort |> List.rev) ) }
-
-let maxLeftistHeapIntInsertGen =
-        gen { let! n = Gen.length1thru12
-              let! x =  Gen.listInt n
-              return ( (LeftistHeap.empty true |> insertThruList x), (x |> List.sort |> List.rev) ) }
-
-let maxLeftistHeapStringGen =
-        gen { let! n = Gen.length1thru12
-              let! n2 = Gen.length2thru12
-              let! x =  Gen.listString n
-              let! y =  Gen.listString n2
-              return ( (LeftistHeap.ofSeq true x |> insertThruList y), ((x @ y) |> List.sort |> List.rev) ) }
-
-let minLeftistHeapIntGen =
-        gen { let! n = Gen.length2thru12
-              let! n2 = Gen.length1thru12
-              let! x =  Gen.listInt n
-              let! y =  Gen.listInt n2
-              return ( (LeftistHeap.ofSeq false x |> insertThruList y), ((x @ y) |> List.sort) ) }
-
-let minLeftistHeapIntOfSeqGen =
-        gen { let! n = Gen.length1thru12
-              let! x =  Gen.listInt n
-              return ( (LeftistHeap.ofSeq false x), (x |> List.sort |> List.rev) ) }
-
-let minLeftistHeapIntInsertGen =
-        gen { let! n = Gen.length1thru12
-              let! x =  Gen.listInt n
-              return ( (LeftistHeap.empty false |> insertThruList x), (x |> List.sort |> List.rev) ) }
-
-let minLeftistHeapStringGen =
-        gen { let! n = Gen.length1thru12
-              let! n2 = Gen.length2thru12
-              let! x =  Gen.listString n
-              let! y =  Gen.listString n2
-              return ( (LeftistHeap.ofSeq false x |> insertThruList y), ((x @ y) |> List.sort) ) }
-
 // NUnit TestCaseSource does not understand array of tuples at runtime
 let intGens start =
     let v = Array.create 6 (box (maxLeftistHeapIntGen, "max LeftistHeap int"))
     v.[1] <- box ((maxLeftistHeapIntOfSeqGen  |> Gen.suchThat (fun (q, l) -> l.Length >= start)), "max LeftistHeap OfSeq")
     v.[2] <- box ((maxLeftistHeapIntInsertGen  |> Gen.suchThat (fun (q, l) -> l.Length >= start)), "max LeftistHeap from Insert")
-    v.[3] <- box (maxLeftistHeapIntGen , "max LeftistHeap int")
-    v.[4] <- box ((maxLeftistHeapIntOfSeqGen  |> Gen.suchThat (fun (q, l) -> l.Length >= start)), "max LeftistHeap OfSeq")
-    v.[5] <- box ((maxLeftistHeapIntInsertGen  |> Gen.suchThat (fun (q, l) -> l.Length >= start)), "max LeftistHeap from Insert")
+    v.[3] <- box (minLeftistHeapIntGen , "min LeftistHeap int")
+    v.[4] <- box ((minLeftistHeapIntOfSeqGen  |> Gen.suchThat (fun (q, l) -> l.Length >= start)), "min LeftistHeap OfSeq")
+    v.[5] <- box ((minLeftistHeapIntInsertGen  |> Gen.suchThat (fun (q, l) -> l.Length >= start)), "min LeftistHeap from Insert")
     v
 
 let stringGens =
     let v = Array.create 2 (box (maxLeftistHeapStringGen, "max LeftistHeap string"))
-    v.[1] <- box (maxLeftistHeapStringGen, "max LeftistHeap string")
+    v.[1] <- box (minLeftistHeapStringGen, "min LeftistHeap string")
     v
 
 let intGensStart1 =
@@ -183,7 +132,7 @@ let ``structure pattern match and merge``() =
 let ``tail should return``(x : obj) =
     let genAndName = unbox x 
     fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun ((h : LeftistHeap<int>), (l : int list)) ->    
-                                                                            let tl = h.Tail
+                                                                            let tl = h.Tail()
                                                                             let tlHead =
                                                                                 if (tl.Length > 0) then (tl.Head = l.Item(1))
                                                                                 else true
@@ -204,12 +153,11 @@ let ``tryGetHead should return``(x : obj) =
 
 [<Test>]
 let ``tryGetTail on empty should return None``() =
-    (LeftistHeap.empty true).TryGetTail |> should equal None
+    (LeftistHeap.empty true).TryGetTail() |> should equal None
 
 [<Test>]
 let ``tryGetTail on len 1 should return Some empty``() =
-    let h = LeftistHeap.empty true |> insert 1 |> tryGetTail
-    h.Value |> isEmpty |> should equal true
+    (LeftistHeap.empty true |> insert 1 |> tryGetTail).Value |> isEmpty |> should equal true
 
 [<Test>]
 let ``tryMerge max and mis should be None``() =
