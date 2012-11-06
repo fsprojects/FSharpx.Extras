@@ -34,12 +34,12 @@ let ``fold via dfs``() =
 
 [<Test>]
 let ``fold via monoid``() =
-    let actual = RoseTree.foldMap Monoid.intProduct id atree
+    let actual = RoseTree.foldMap (Monoid.product()) id atree
     Assert.AreEqual(720, actual)
 
 [<Test>]
 let ``count nodes and multiply values and find max value in single pass via monoid``() =
-    let m = Monoid.tuple3 Monoid.intProduct Monoid.intSum Monoid.maxInt
+    let m = Monoid.tuple3 (Monoid.product()) (Monoid.sum()) Monoid.maxInt
     let product, count, maxValue = RoseTree.foldMap m (fun v -> v, 1, v) atree
     Assert.AreEqual(720, product)
     Assert.AreEqual(6, count)

@@ -55,18 +55,34 @@ module Monoid =
             override this.Zero() = a.Zero(), b.Zero(), c.Zero()
             override this.Combine((a1,b1,c1), (a2,b2,c2)) =
                 a.Combine(a1, a2), b.Combine(b1, b2), c.Combine(c1, c2) }
-            
-    /// Monoid (int,0,+)
-    let intSum = 
-        { new Monoid<int>() with
-            override this.Zero() = 0
+
+    /// Monoid (a,0,+)
+    let inline sum() = 
+        { new Monoid<_>() with
+            override this.Zero() = LanguagePrimitives.GenericZero
             override this.Combine(a,b) = a + b }
 
-    /// Monoid (int,1,*)
-    let intProduct =
-        { new Monoid<int>() with
-            override this.Zero() = 1
+    /// Monoid (a,1,*)
+    let inline product() =
+        { new Monoid<_>() with
+            override this.Zero() = LanguagePrimitives.GenericOne
             override this.Combine(a,b) = a * b }
+
+    /// Monoid (int,0,+)
+    let sumInt : Monoid<int> = sum()
+
+    /// Monoid (int,1,*)
+    let productInt : Monoid<int> = product()
+
+    let minInt =
+        { new Monoid<_>() with
+            override this.Zero() = Int32.MaxValue
+            override this.Combine(a,b) = min a b }
+
+    let maxInt =
+        { new Monoid<_>() with
+            override this.Zero() = Int32.MinValue
+            override this.Combine(a,b) = max a b }
 
     let string =
         { new Monoid<string>() with
@@ -82,16 +98,6 @@ module Monoid =
         { new Monoid<bool>() with
             override this.Zero() = false
             override this.Combine(a,b) = a || b }
-
-    let minInt =
-        { new Monoid<_>() with
-            override this.Zero() = Int32.MaxValue
-            override this.Combine(a,b) = min a b }
-
-    let maxInt =
-        { new Monoid<_>() with
-            override this.Zero() = Int32.MinValue
-            override this.Combine(a,b) = max a b }
 
     // doesn't compile due to this F# bug http://stackoverflow.com/questions/4485445/f-interface-inheritance-failure-due-to-unit
     (*

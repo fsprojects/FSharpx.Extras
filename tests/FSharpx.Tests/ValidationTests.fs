@@ -90,7 +90,7 @@ let ``using ap``() =
 
 [<Test>]
 let ``validation with monoid``() =
-  let v = Validation.CustomValidation Monoid.intSum
+  let v = Validation.CustomValidation (Monoid.sum())
   // count the number of broken rules
   let validator pred value =
       if pred value

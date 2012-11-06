@@ -21,23 +21,23 @@ let bytestringArbRegister = lazy (FsCheck.Arb.register<ByteStringGen>() |> ignor
 
 [<Test>]
 let ``int product monoid``() =
-    checkMonoid "int product" Monoid.intProduct
+    checkMonoid "int product" Monoid.productInt
 
 [<Test>]
 let ``int sum monoid``() =
-    checkMonoid "int sum" Monoid.intSum
+    checkMonoid "int sum" Monoid.sumInt
 
 [<Test>]
 let ``list monoid``() =
-    checkMonoid "list" (List.monoid)
+    checkMonoid "list" List.monoid
 
 [<Test>]
 let ``set monoid``() =
-    checkMonoid "set" (Set.monoid<int>)
+    checkMonoid "set" Set.monoid<int>
 
 [<Test>]
 let ``map monoid``() =
-    checkMonoid "" (Map.monoid<int,int>)
+    checkMonoid "" Map.monoid<int,int>
 
 [<Test>]
 let ``string monoid``() =
@@ -45,7 +45,7 @@ let ``string monoid``() =
 
 [<Test>]
 let ``option monoid``() =
-    checkMonoid "option" (Option.monoid Monoid.intProduct)
+    checkMonoid "option" (Option.monoid (Monoid.product()))
 
 [<Test>]
 let ``dual monoid``() =
@@ -80,11 +80,11 @@ let ``tuple3 monoid``() =
 
 [<Test>]
 let ``min monoid``() =
-    checkMonoid "min" (Monoid.minInt)
+    checkMonoid "min" Monoid.minInt
 
 [<Test>]
 let ``max monoid``() =
-    checkMonoid "max" (Monoid.maxInt)
+    checkMonoid "max" Monoid.maxInt
 
 [<Test>]
 let ``bytestring monoid``() =
