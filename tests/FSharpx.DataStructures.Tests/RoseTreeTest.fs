@@ -34,12 +34,12 @@ let ``fold via dfs``() =
 
 [<Test>]
 let ``fold via monoid``() =
-    let actual = RoseTree.foldMap Monoid.IntProductMonoid id atree
+    let actual = RoseTree.foldMap Monoid.intProduct id atree
     Assert.AreEqual(720, actual)
 
 [<Test>]
 let ``count nodes and multiply values in single pass via monoid``() =
-    let m = Monoid.Tuple2Monoid(Monoid.IntProductMonoid, Monoid.IntSumMonoid)
+    let m = Monoid.tuple2 Monoid.intProduct Monoid.intSum
     let product, count = RoseTree.foldMap m (fun v -> v,1) atree
     Assert.AreEqual(720, product)
     Assert.AreEqual(6, count)

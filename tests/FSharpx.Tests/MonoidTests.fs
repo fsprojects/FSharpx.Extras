@@ -9,39 +9,39 @@ open FSharpx.Monoid
 
 [<Test>]
 let ``int product monoid``() =
-    checkMonoid "int product" IntProductMonoid
+    checkMonoid "int product" Monoid.intProduct
 
 [<Test>]
 let ``int sum monoid``() =
-    checkMonoid "int sum" IntSumMonoid
+    checkMonoid "int sum" Monoid.intSum
 
 [<Test>]
 let ``list monoid``() =
-    checkMonoid "list" (List.ListMonoid<obj>())
+    checkMonoid "list" (List.monoid)
 
 [<Test>]
 let ``set monoid``() =
-    checkMonoid "set" (Set.SetMonoid<int>())
+    checkMonoid "set" (Set.monoid<int>)
 
 [<Test>]
 let ``map monoid``() =
-    checkMonoid "" (Map.MapMonoid<int, int>())
+    checkMonoid "" (Map.monoid<int,int>)
 
 [<Test>]
 let ``string monoid``() =
-    checkMonoid "string" StringMonoid
+    checkMonoid "string" Monoid.string
 
 [<Test>]
 let ``option monoid``() =
-    checkMonoid "option" (Option.OptionMonoid IntProductMonoid)
+    checkMonoid "option" (Option.monoid Monoid.intProduct)
 
 [<Test>]
 let ``dual monoid``() =
-    checkMonoid "dual" (DualMonoid StringMonoid)
+    checkMonoid "dual" (Monoid.dual Monoid.string)
 
 [<Test>]
 let ``dual monoid example``() =
-    let m = DualMonoid StringMonoid
+    let m = Monoid.dual Monoid.string
     let r1 = m {
         yield "hello"
         yield "world"
@@ -52,17 +52,17 @@ let ``dual monoid example``() =
 
 [<Test>]
 let ``any monoid``() =
-    checkMonoid "any" AnyMonoid
+    checkMonoid "any" Monoid.any
 
 [<Test>]
 let ``all monoid``() =
-    checkMonoid "all" AllMonoid
+    checkMonoid "all" Monoid.all
 
 [<Test>]
 let ``tuple2 monoid``() =
-    checkMonoid "tuple2" (Tuple2Monoid(List.ListMonoid<int>(), StringMonoid))
+    checkMonoid "tuple2" (Monoid.tuple2 List.monoid Monoid.string)
 
 [<Test>]
 let ``tuple3 monoid``() =
-    checkMonoid "tuple3" (Tuple3Monoid(List.ListMonoid<int>(), StringMonoid, AllMonoid))
+    checkMonoid "tuple3" (Monoid.tuple3 List.monoid Monoid.string Monoid.all)
 

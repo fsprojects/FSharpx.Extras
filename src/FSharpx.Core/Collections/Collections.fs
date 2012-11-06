@@ -101,16 +101,16 @@ module List =
         List.fold (fun s e -> monoid.Combine(s, f e)) (monoid.Zero())
 
     /// List monoid
-    type ListMonoid<'a>() =
-        inherit Monoid<'a list>()
+    let monoid<'a> =
+        { new Monoid<'a list>() with
             override this.Zero() = []
-            override this.Combine(a,b) = a @ b
+            override this.Combine(a,b) = a @ b }
 
 module Set =
-    type SetMonoid<'a when 'a : comparison>() =
-        inherit Monoid<'a Set>()
+    let monoid<'a when 'a : comparison> =
+        { new Monoid<'a Set>() with
             override this.Zero() = Set.empty
-            override this.Combine(a,b) = Set.union a b
+            override this.Combine(a,b) = Set.union a b }
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Dictionary =
@@ -159,10 +159,11 @@ module Map =
     let union (map1: Map<_,_>) (map2: Map<_,_>) = 
         Seq.fold (fun m (KeyValue(k,v)) -> Map.add k v m) map1 map2
 
-    type MapMonoid<'key, 'value when 'key : comparison>() =
-        inherit Monoid<Map<'key, 'value>>()
+            
+    let monoid<'key, 'value when 'key : comparison> =
+        { new Monoid<Map<'key, 'value>>() with
             override this.Zero() = Map.empty
-            override this.Combine(a,b) = union a b
+            override this.Combine(a,b) = union a b }
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 [<Extension>]

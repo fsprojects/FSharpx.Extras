@@ -7,7 +7,6 @@ type ISemigroup<'a> =
     abstract Combine : 'a * 'a -> 'a
     
 /// Monoid (associative binary operation with identity)
-/// The monoid implementation comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.
 [<AbstractClass>]
 type Monoid<'a>() as m =
     /// <summary>
@@ -40,45 +39,45 @@ type Monoid<'a>() as m =
 module Monoid =
 
     /// The dual of a monoid, obtained by swapping the arguments of 'Combine'.
-    type DualMonoid<'a>(m: 'a Monoid) =
-        inherit Monoid<'a>()
+    let dual (m: _ Monoid) =
+        { new Monoid<_>() with            
             override this.Zero() = m.Zero()
-            override this.Combine(a,b) = m.Combine(b,a)
+            override this.Combine(a,b) = m.Combine(b,a) }
 
-    type Tuple2Monoid<'a,'b>(a: 'a Monoid, b: 'b Monoid) =
-        inherit Monoid<'a * 'b>()
+    let tuple2 (a: _ Monoid) (b: _ Monoid) =
+        { new Monoid<_ * _>() with
             override this.Zero() = a.Zero(), b.Zero()
-            override this.Combine((a1,b1), (a2,b2)) = a.Combine(a1, a2), b.Combine(b1, b2)
+            override this.Combine((a1,b1), (a2,b2)) = a.Combine(a1, a2), b.Combine(b1, b2) }
 
-    type Tuple3Monoid<'a,'b,'c>(a: 'a Monoid, b: 'b Monoid, c: 'c Monoid) =
-        inherit Monoid<'a * 'b * 'c>()
+    let tuple3 (a: 'a Monoid) (b: 'b Monoid) (c: 'c Monoid) =
+        { new Monoid<_ * _ * _>() with
             override this.Zero() = a.Zero(), b.Zero(), c.Zero()
             override this.Combine((a1,b1,c1), (a2,b2,c2)) =
-                a.Combine(a1, a2), b.Combine(b1, b2), c.Combine(c1, c2)
+                a.Combine(a1, a2), b.Combine(b1, b2), c.Combine(c1, c2) }
             
     /// Monoid (int,0,+)
-    let IntSumMonoid = 
+    let intSum = 
         { new Monoid<int>() with
             override this.Zero() = 0
             override this.Combine(a,b) = a + b }
 
     /// Monoid (int,1,*)
-    let IntProductMonoid =
+    let intProduct =
         { new Monoid<int>() with
             override this.Zero() = 1
             override this.Combine(a,b) = a * b }
 
-    let StringMonoid =
+    let string =
         { new Monoid<string>() with
             override this.Zero() = ""
             override this.Combine(a,b) = a + b }
 
-    let AllMonoid =
+    let all =
         { new Monoid<bool>() with
             override this.Zero() = true
             override this.Combine(a,b) = a && b }
 
-    let AnyMonoid = 
+    let any = 
         { new Monoid<bool>() with
             override this.Zero() = false
             override this.Combine(a,b) = a || b }
