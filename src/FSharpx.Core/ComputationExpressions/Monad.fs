@@ -108,6 +108,17 @@ module Option =
             this.Using(sequence.GetEnumerator(),
                                  fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current)))
     let maybe = MaybeBuilder()
+
+    /// Option wrapper monoid
+    let monoid (m: _ ISemigroup) =
+        { new Monoid<_>() with
+            override this.Zero() = None
+            override this.Combine(a, b) = 
+                match a,b with
+                | Some a, Some b -> Some (m.Combine(a,b))
+                | Some a, None   -> Some a
+                | None, Some a   -> Some a
+                | None, None     -> None }
     
     open Operators
     
@@ -558,11 +569,11 @@ module Writer =
         fun () ->
             let (a, w) = writer()
             let (a', w') = (k a)()
-            (a', m.mappend w w')
+            (a', m.Combine(w, w'))
 
     /// Inject a value into the Writer type
     let returnM (monoid: _ Monoid) a = 
-        fun () -> (a, monoid.mempty)
+        fun () -> (a, monoid.Zero())
     
     /// The writer monad.
     /// This monad comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.
@@ -589,7 +600,7 @@ module Writer =
             this.Using(sequence.GetEnumerator(), 
                 fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current)))
 
-    let writer = WriterBuilder(Monoid.ListMonoid<string>())
+    let writer = WriterBuilder(List.monoid<string>)
 
     let tell   w = fun () -> ((), w)
     let listen m = fun () -> let (a, w) = m() in ((a, w), w)
@@ -768,18 +779,35 @@ module Validation =
         | Choice1Of2 f, Choice2Of2 e     -> Choice2Of2 e
         | Choice2Of2 e1, Choice2Of2 e2 -> Choice2Of2 (append e1 e2)
 
-    /// Sequential application, parameterized by monoid
-    let inline apm (m: _ Monoid) = apa m.mappend
+    /// Sequential application, parameterized by semigroup
+    let inline apm (m: _ ISemigroup) = apa (curry m.Combine)
 
-    type CustomValidation<'a>(monoid: 'a Monoid) =
+    type CustomValidation<'a>(semigroup: 'a ISemigroup) =
         /// Sequential application
-        member this.ap x = apm monoid x
+        member this.ap x = apm semigroup x
+
         /// Promote a function to a monad/applicative, scanning the monadic/applicative arguments from left to right.
         member this.lift2 f a b = returnM f |> this.ap a |> this.ap b
+
         /// Sequence actions, discarding the value of the first argument.
         member this.apr b a = this.lift2 (fun _ z -> z) a b
+
         /// Sequence actions, discarding the value of the second argument.
         member this.apl b a = this.lift2 (fun z _ -> z) a b
+
+        member this.seqValidator f = 
+            let inline cons a b = this.lift2 (flip List.cons) a b
+            Seq.map f >> Seq.fold cons (returnM [])
+
+        member this.sequence s =
+            let inline cons a b = this.lift2 List.cons a b
+            List.foldBack cons s (returnM [])
+
+        member this.mapM f x = this.sequence (List.map f x)
+
+
+    type NonEmptyListValidation<'a>() = 
+        inherit CustomValidation<'a NonEmptyList>(NonEmptyList.NonEmptyListSemigroup<'a>())
 
     /// Sequential application
     let inline ap x = apa NonEmptyList.append x

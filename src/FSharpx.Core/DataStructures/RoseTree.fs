@@ -29,6 +29,8 @@ module L = LazyList
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 [<Extension>]
 module RoseTree =
+    open FSharpx
+
     let inline create root children = { Root = root; Children = children }
 
     let inline singleton x = create x L.empty
@@ -74,6 +76,10 @@ module RoseTree =
     and unfoldForest f =
         L.map (unfold f)
 
+    let rec foldMap (monoid: _ Monoid) f (tree: _ RoseTree) =
+        let inline (++) a b = monoid.Combine(a,b)
+        f tree.Root ++ Seq.foldMap monoid (foldMap monoid f) tree.Children
+        
 // TODO: 
 // bfs: http://pdf.aminer.org/000/309/950/the_under_appreciated_unfold.pdf
 // sequence / mapM / filterM
