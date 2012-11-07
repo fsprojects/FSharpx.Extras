@@ -213,6 +213,23 @@ type BinomialHeap<'a when 'a : comparison> (isMaximalist : bool, heap : list<Bin
 
         member this.GetEnumerator() = (this :> _ seq).GetEnumerator() :> IEnumerator  
 
+    interface IPriorityQueue<'a>
+
+        with
+        member this.IsEmpty = this.IsEmpty
+        member this.Insert element = this.Insert element :> IPriorityQueue<'a>
+        member this.TryPeek() = this.TryGetHead()
+        member this.Peek() = this.Head()
+
+        member this.TryPop() = 
+            match this.TryUncons() with
+            | Some(element,newHeap) -> Some(element,newHeap  :> IPriorityQueue<'a>)
+            | None -> None
+
+        member this.Pop() = 
+            let element,newHeap = this.Uncons()
+            element,(newHeap  :> IPriorityQueue<'a>)
+
 module BinomialHeap = 
     //pattern discriminator
     let (|Cons|Nil|) (h: BinomialHeap<'a>) = match h.TryUncons() with Some(a,b) -> Cons(a,b) | None -> Nil
