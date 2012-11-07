@@ -8,6 +8,7 @@ open NUnit.Framework
 open FsCheck
 open FsCheck.NUnit
 open FsUnit
+open HeapGen
 
 //only going up to 5 elements is probably sufficient to test all edge cases
 
@@ -19,77 +20,19 @@ file for each heap type, unlike IQueue.
 Even restricting only to this type, never got generic element type 'a to work. Need separate tests for int and string.
 *)
 
-let insertThruList l h  =
-    let rec loop (h' : BinomialHeap<'a>) (l' : 'a list) = 
-        match l' with
-        | hd :: [] -> h'.Insert hd
-        | hd :: tl -> loop (h'.Insert hd) tl
-        | [] -> h' 
-        
-    loop h l
-
-(* BinomialHeap Gens *)
-let maxBinomialHeapIntGen =
-        gen { let! n = Gen.length2thru12
-              let! n2 = Gen.length1thru12
-              let! x =  Gen.listInt n
-              let! y =  Gen.listInt n2
-              return ( (BinomialHeap.ofSeq true x |> insertThruList y), ((x @ y) |> List.sort |> List.rev) ) }
-
-let maxBinomialHeapIntOfSeqGen =
-        gen { let! n = Gen.length1thru12
-              let! x =  Gen.listInt n
-              return ( (BinomialHeap.ofSeq true x), (x |> List.sort |> List.rev) ) }
-
-let maxBinomialHeapIntInsertGen =
-        gen { let! n = Gen.length1thru12
-              let! x =  Gen.listInt n
-              return ( (BinomialHeap.empty true |> insertThruList x), (x |> List.sort |> List.rev) ) }
-
-let maxBinomialHeapStringGen =
-        gen { let! n = Gen.length1thru12
-              let! n2 = Gen.length2thru12
-              let! x =  Gen.listString n
-              let! y =  Gen.listString n2
-              return ( (BinomialHeap.ofSeq true x |> insertThruList y), ((x @ y) |> List.sort |> List.rev) ) }
-
-let minBinomialHeapIntGen =
-        gen { let! n = Gen.length2thru12
-              let! n2 = Gen.length1thru12
-              let! x =  Gen.listInt n
-              let! y =  Gen.listInt n2
-              return ( (BinomialHeap.ofSeq false x |> insertThruList y), ((x @ y) |> List.sort) ) }
-
-let minBinomialHeapIntOfSeqGen =
-        gen { let! n = Gen.length1thru12
-              let! x =  Gen.listInt n
-              return ( (BinomialHeap.ofSeq false x), (x |> List.sort |> List.rev) ) }
-
-let minBinomialHeapIntInsertGen =
-        gen { let! n = Gen.length1thru12
-              let! x =  Gen.listInt n
-              return ( (BinomialHeap.empty false |> insertThruList x), (x |> List.sort |> List.rev) ) }
-
-let minBinomialHeapStringGen =
-        gen { let! n = Gen.length1thru12
-              let! n2 = Gen.length2thru12
-              let! x =  Gen.listString n
-              let! y =  Gen.listString n2
-              return ( (BinomialHeap.ofSeq false x |> insertThruList y), ((x @ y) |> List.sort) ) }
-
 // NUnit TestCaseSource does not understand array of tuples at runtime
 let intGens start =
     let v = Array.create 6 (box (maxBinomialHeapIntGen, "max BinomialHeap int"))
     v.[1] <- box ((maxBinomialHeapIntOfSeqGen  |> Gen.suchThat (fun (q, l) -> l.Length >= start)), "max BinomialHeap OfSeq")
     v.[2] <- box ((maxBinomialHeapIntInsertGen  |> Gen.suchThat (fun (q, l) -> l.Length >= start)), "max BinomialHeap from Insert")
-    v.[3] <- box (maxBinomialHeapIntGen , "max BinomialHeap int")
-    v.[4] <- box ((maxBinomialHeapIntOfSeqGen  |> Gen.suchThat (fun (q, l) -> l.Length >= start)), "max BinomialHeap OfSeq")
-    v.[5] <- box ((maxBinomialHeapIntInsertGen  |> Gen.suchThat (fun (q, l) -> l.Length >= start)), "max BinomialHeap from Insert")
+    v.[3] <- box (minBinomialHeapIntGen , "min BinomialHeap int")
+    v.[4] <- box ((minBinomialHeapIntOfSeqGen  |> Gen.suchThat (fun (q, l) -> l.Length >= start)), "min BinomialHeap OfSeq")
+    v.[5] <- box ((minBinomialHeapIntInsertGen  |> Gen.suchThat (fun (q, l) -> l.Length >= start)), "min BinomialHeap from Insert")
     v
 
 let stringGens =
     let v = Array.create 2 (box (maxBinomialHeapStringGen, "max BinomialHeap string"))
-    v.[1] <- box (maxBinomialHeapStringGen, "max BinomialHeap string")
+    v.[1] <- box (minBinomialHeapStringGen, "min BinomialHeap string")
     v
 
 let intGensStart1 =
