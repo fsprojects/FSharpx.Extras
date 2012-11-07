@@ -159,6 +159,23 @@ type BinomialHeap<'a when 'a : comparison> (isMaximalist : bool, heap : list<Bin
         if this.heap.IsEmpty then None
         else Some(BinomialHeap.uncons this.IsMaximalist this.heap)
 
+    interface IEnumerable<'a> with
+
+        member this.GetEnumerator() = 
+            let e = 
+                if this.IsMaximalist
+//WARNING! List.sort |> List.rev significantly faster (caveat: on 32-bit Win 7) than List.sortwith...go figure!
+//            BinomialHeap.inOrder this |> List.sortWith (fun x y -> if (x > y) then -1
+//                                                                             else 
+//                                                                               if (x = y) then 0
+//                                                                               else 1) |> List.fold f state
+                then BinomialHeap.inOrder this.heap |> List.sort |> List.rev |> List.toSeq
+                else BinomialHeap.inOrder this.heap |> List.sort |> List.toSeq
+
+            e.GetEnumerator()
+
+        member this.GetEnumerator() = (this :> _ seq).GetEnumerator() :> IEnumerator  
+
     interface IHeap<BinomialHeap<'a>, 'a> with
         
         member this.Count() = this.Length()
@@ -198,20 +215,22 @@ type BinomialHeap<'a when 'a : comparison> (isMaximalist : bool, heap : list<Bin
             if this.heap.IsEmpty then None
             else Some(BinomialHeap.uncons this.IsMaximalist this.heap)
 
-        member this.GetEnumerator() = 
-            let e = 
-                if this.IsMaximalist
-//WARNING! List.sort |> List.rev significantly faster (caveat: on 32-bit Win 7) than List.sortwith...go figure!
-//            BinomialHeap.inOrder this |> List.sortWith (fun x y -> if (x > y) then -1
-//                                                                             else 
-//                                                                               if (x = y) then 0
-//                                                                               else 1) |> List.fold f state
-                then BinomialHeap.inOrder this.heap |> List.sort |> List.rev |> List.toSeq
-                else BinomialHeap.inOrder this.heap |> List.sort |> List.toSeq
+    interface IPriorityQueue<'a>
 
-            e.GetEnumerator()
+        with
+        member this.IsEmpty = this.IsEmpty
+        member this.Insert element = this.Insert element :> IPriorityQueue<'a>
+        member this.TryPeek() = this.TryGetHead()
+        member this.Peek() = this.Head()
 
-        member this.GetEnumerator() = (this :> _ seq).GetEnumerator() :> IEnumerator  
+        member this.TryPop() = 
+            match this.TryUncons() with
+            | Some(element,newHeap) -> Some(element,newHeap  :> IPriorityQueue<'a>)
+            | None -> None
+
+        member this.Pop() = 
+            let element,newHeap = this.Uncons()
+            element,(newHeap  :> IPriorityQueue<'a>)
 
 module BinomialHeap = 
     //pattern discriminator

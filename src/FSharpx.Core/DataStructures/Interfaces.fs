@@ -179,6 +179,28 @@ type IQueue<'a> =
     //returns the option first element and tail
     abstract member TryUncons : ('a * IQueue<'a>) option with get
 
+type IPriorityQueue<'a when 'a : comparison> =
+    inherit System.Collections.IEnumerable
+    inherit System.Collections.Generic.IEnumerable<'a>
+
+    ///returns true if the queue has no elements
+    abstract member IsEmpty : bool with get
+
+    ///returns a new queue with the element added to the end
+    abstract member Insert : 'a -> IPriorityQueue<'a>
+
+    ///returns option first element
+    abstract member TryPeek : unit -> 'a option
+
+    ///returns the first element
+    abstract member Peek : unit -> 'a
+
+    //returns the option first element and tail
+    abstract member TryPop : unit -> ('a * IPriorityQueue<'a>) option
+
+    ///returns the first element and tail
+    abstract member Pop : unit -> 'a * IPriorityQueue<'a> 
+
 type IRandomAccessList<'a> =
     inherit System.Collections.IEnumerable
     inherit System.Collections.Generic.IEnumerable<'a>
