@@ -7,7 +7,7 @@ open FsUnit
 
 [<Test>]
 let ``empty queue should be empty``() =
-    let pq = empty
+    let pq = empty false
 
     isEmpty pq |> should equal true
     tryPeek pq |> should equal None
@@ -15,21 +15,21 @@ let ``empty queue should be empty``() =
 
 [<Test>]
 let ``After adding an element to the PQ it shouldn't be empty``() =
-    let pq = empty |> insert 1
+    let pq = empty false |> insert 1
 
     isEmpty pq |> should equal false
     
 
 [<Test>]
 let ``After adding an element to the PQ the element should be the smallest``() =
-    let pq = empty |> insert 1
+    let pq = empty false |> insert 1
 
     tryPeek pq |> should equal (Some 1)
     peek pq |> should equal 1
 
 [<Test>]
 let ``After adding an element to the PQ and popping it the PQ should be empty``() =
-    let pq = empty |> insert 1
+    let pq = empty false |> insert 1
 
     let element,newPQ = pop pq
     element |> should equal 1
@@ -41,7 +41,7 @@ let ``After adding an element to the PQ and popping it the PQ should be empty``(
 
 [<Test>]
 let ``Adding multiple elements to the PQ should allow to pop the smallest``() =
-    let pq = empty |> insert 1 |> insert 3 |> insert 0 |> insert 4 |> insert -3
+    let pq = empty false |> insert 1 |> insert 3 |> insert 0 |> insert 4 |> insert -3
 
     let element,newPQ = pop pq
     element |> should equal -3
@@ -57,5 +57,27 @@ let ``Adding multiple elements to the PQ should allow to pop the smallest``() =
 
     let element,newPQ = pop newPQ
     element |> should equal 4
+
+    isEmpty newPQ |> should equal true
+
+
+[<Test>]
+let ``Adding multiple elements to a MaxPriorityQueue should allow to pop the smallest``() =
+    let pq = empty true |> insert 1 |> insert 3 |> insert 0 |> insert 4 |> insert -3
+
+    let element,newPQ = pop pq
+    element |> should equal 4
+
+    let element,newPQ = pop newPQ
+    element |> should equal 3
+
+    let element,newPQ = pop newPQ
+    element |> should equal 1
+
+    let element,newPQ = pop newPQ
+    element |> should equal 0
+
+    let element,newPQ = pop newPQ
+    element |> should equal -3
 
     isEmpty newPQ |> should equal true

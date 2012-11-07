@@ -3,7 +3,7 @@
 open FSharpx.DataStructures.BinomialHeap
 
 module HeapPriorityQueue =
-    let empty<'a when 'a : comparison> = BinomialHeap<'a>.empty(false) :> IPriorityQueue<'a>
+    let empty<'a when 'a : comparison> maxQueue = BinomialHeap<'a>.empty maxQueue :> IPriorityQueue<'a>
 
     let inline isEmpty (pq:IPriorityQueue<'a>) = pq.IsEmpty
 
