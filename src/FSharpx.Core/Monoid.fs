@@ -116,3 +116,9 @@ module Monoid =
                 override this.Zero() = zero
                 override this.Combine(a,b) = combine a b }
         create () (fun _ _ -> ())
+
+    [<GeneralizableValue>]
+    let endo<'a> = 
+        { new Monoid<'a -> 'a>() with
+            override this.Zero() = id
+            override this.Combine(f,g) = f << g }

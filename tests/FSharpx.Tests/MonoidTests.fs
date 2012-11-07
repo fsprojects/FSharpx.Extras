@@ -94,3 +94,26 @@ let ``bytestring monoid``() =
 [<Test>]
 let ``unit monoid``() =
     checkMonoid "unit" Monoid.unit
+
+[<Test>]
+let ``endo monoid``() =
+    // a -> a does not support equality
+    //checkMonoid "endo" Monoid.endo
+
+    // endo composes functions
+    // this also shows using a monoid in a computation expression (in this case as a mconcat)
+    // also equivalent to Seq.fold (<<) id [(*) 2; (-) 4; (+) 2]
+    let composedFunction = 
+        Monoid.endo {
+            for f in [(*) 2; (+) 4; (+) 2] -> f
+        }
+    Assert.AreEqual(12, composedFunction 0)
+
+[<Test>]
+let ``endo as dlist``() =
+    let (@) a b = Monoid.endo.Combine(a,b)
+    let nil = Monoid.endo.Zero()
+    let singleton x a = List.monoid.Combine([x], a)
+    let toList l = l []
+    let z = singleton 4 @ singleton 5
+    Assert.AreEqual([4;5], toList z)
