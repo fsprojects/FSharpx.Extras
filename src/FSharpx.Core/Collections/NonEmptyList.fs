@@ -94,3 +94,7 @@ module NonEmptyList =
     [<CompiledName("SelectMany")>]
     let collect mapping list =
         List.fold (fun s e -> mapping e |> append s) (mapping (head list)) (tail list)
+
+    type NonEmptyListSemigroup<'a>() =
+        interface ISemigroup<'a NonEmptyList> with
+            member x.Combine(a,b) = append a b

@@ -193,3 +193,8 @@ module ByteString =
     let take n bs = splitAt n bs |> fst 
     let takeWhile pred bs = span pred bs |> fst
     let takeUntil pred bs = split pred bs |> fst 
+
+    let monoid =
+        { new Monoid<_>() with
+            override x.Zero() = empty
+            override x.Combine(a,b) = append a b }

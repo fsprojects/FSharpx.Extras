@@ -1,5 +1,6 @@
 ﻿module FSharpx.Tests.Properties
 
+open FSharpx
 open FsCheck
 open FsCheck.NUnit
 
@@ -15,14 +16,16 @@ let checkEquality<'a when 'a : equality> name =
         fun (x: 'a) (y: 'a) (z: 'a) ->
             if x = y && y = z then x = z else true
 
-let checkMonoid name (monoid: _ FSharpx.Monoid.Monoid) =
+let checkMonoid name (monoid: _ FSharpx.Monoid) =
     let n = sprintf "%s : monoid %s" name
+    let mappend = curry monoid.Combine
+    let mempty = monoid.Zero()
     fsCheck (n "left identity") <|
-        fun a -> monoid.mappend a monoid.mempty = a
+        fun a -> mappend a mempty = a
     fsCheck (n "right identity") <|
-        fun a -> monoid.mappend monoid.mempty a = a
+        fun a -> mappend mempty a = a
     fsCheck (n "associativity") <|
-        fun x y z -> monoid.mappend (monoid.mappend x y) z = monoid.mappend x (monoid.mappend y z)
+        fun x y z -> mappend (mappend x y) z = mappend x (mappend y z)
 
 let classifyCollect xs (count : int) (y : bool) =
     y |> Prop.collect count

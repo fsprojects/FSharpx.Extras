@@ -29,8 +29,10 @@ module Seq =
             for i in l1 do
                 for j in l2 do
                     yield f i j }
-        
 
+    let foldMap (monoid: _ Monoid) f =
+        Seq.fold (fun s e -> monoid.Combine(s, f e)) (monoid.Zero())
+        
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Array = 
     let inline nth i arr = Array.get arr i
@@ -95,6 +97,21 @@ module List =
                 loop s xs (fun (s,ys) -> cont (s, y::ys))
         loop s l id
 
+    let foldMap (monoid: _ Monoid) f =
+        List.fold (fun s e -> monoid.Combine(s, f e)) (monoid.Zero())
+
+    /// List monoid
+    let monoid<'a> =
+        { new Monoid<'a list>() with
+            override this.Zero() = []
+            override this.Combine(a,b) = a @ b }
+
+module Set =
+    let monoid<'a when 'a : comparison> =
+        { new Monoid<'a Set>() with
+            override this.Zero() = Set.empty
+            override this.Combine(a,b) = Set.union a b }
+
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Dictionary =
     let tryFind key (d: IDictionary<_,_>) =
@@ -138,6 +155,15 @@ module Map =
         | None -> map
 
     let valueList map = map |> Map.toList |> List.unzip |> snd
+
+    let union (map1: Map<_,_>) (map2: Map<_,_>) = 
+        Seq.fold (fun m (KeyValue(k,v)) -> Map.add k v m) map1 map2
+
+            
+    let monoid<'key, 'value when 'key : comparison> =
+        { new Monoid<Map<'key, 'value>>() with
+            override this.Zero() = Map.empty
+            override this.Combine(a,b) = union a b }
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 [<Extension>]

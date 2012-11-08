@@ -42,11 +42,11 @@
     <Compile Include="JSON.fs" />
     <Compile Include="StateMachine.fs" />
     <Compile Include="IO.fs" />
+    <Compile Include="Monoid.fs" />
     <Compile Include="Collections\Collections.fs" />
     <Compile Include="Collections\ByteString.fs" />
     <Compile Include="Collections\CircularBuffer.fs" />
     <Compile Include="Collections\NonEmptyList.fs" />
-    <Compile Include="ComputationExpressions\Monoid.fs" />
     <Compile Include="ComputationExpressions\Monad.fs" />
     <Compile Include="ComputationExpressions\DistributionMonad.fs" />
     <Compile Include="ComputationExpressions\Continuation.fs" />
