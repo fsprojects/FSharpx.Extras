@@ -29,6 +29,195 @@ module Seq =
             for i in l1 do
                 for j in l2 do
                     yield f i j }
+    
+    /// Will iterate the current sequence until the given predicate is statisfied
+    let iterBreak (f:'a -> bool) (seq:seq<_>) = 
+        use en = seq.GetEnumerator() 
+        let mutable run = true
+        while en.MoveNext() && run do
+            run <- f en.Current
+    
+    /// The same as Seq.average except will return None if the seq is empty
+    let inline tryAverage (seq : seq<(^a)>) : ^a option =
+        if not(Seq.isEmpty seq)
+        then Some <| (Seq.average seq)
+        else None
+    
+    /// Splits a sequences at the given index
+    let splitAt n seq = (Seq.take n seq, Seq.skip n seq)
+    
+    /// Converts a streamReader into a seq yielding on each line
+    let ofStreamReader (streamReader : System.IO.StreamReader) = 
+         seq {  
+                use sr = streamReader
+                while not(sr.EndOfStream) do
+                    yield sr.ReadLine()
+             }
+    
+    /// Converts a Stream into a sequence of bytes
+    let ofStreamByByte (stream: System.IO.Stream) =
+        seq { while stream.Length <> stream.Position do
+                let x = stream.ReadByte()
+                if (int x) < 0 then ()
+                else yield x }
+    
+    /// Converts a stream into a seq of byte[] where the array is of the length given
+    let ofStreamByChunk chunkSize (stream: System.IO.Stream) =
+        let buffer = Array.zeroCreate<byte> chunkSize
+        seq { while stream.Length <> stream.Position do
+                let bytesRead = stream.Read(buffer, 0, chunkSize)
+                if bytesRead = 0 then ()
+                else yield buffer }
+    
+    /// Creates a inifinte sequences of the given values
+    let asCircular values = 
+        let rec next () = 
+            seq {
+                for element in values do
+                    yield element
+                yield! next()
+            }
+        next()
+    
+    /// Creates a inifinte sequences of the given values, executing the given function everytime the given seq is exhusted
+    let asCircularOnLoop f values = 
+        let rec next () = 
+            seq {
+                for element in values do
+                    yield element
+                f()
+                yield! next()
+            }
+        next()
+
+    /// Creates a inifinte sequences of the given values returning None everytime the given seq is exhusted
+    let asCircularWithBreak values = 
+        let rec next () = 
+            seq {
+                for element in values do
+                    yield Some(element)
+                yield None
+                yield! next()
+            }
+        next()
+    
+    /// Converts a System.Collections.IEnumerable to a seq 
+    let ofEnumerable<'a> (a : System.Collections.IEnumerable) = 
+         let enum = a.GetEnumerator()
+         seq {
+             while enum.MoveNext() do yield unbox<'a> enum.Current
+         }
+    
+    /// The same as Seq.nth except returns None if the sequence is empty or does not have enough elements
+    let tryNth index (source : seq<_>) = 
+         let rec tryNth' index (e : System.Collections.Generic.IEnumerator<'a>) = 
+             if not (e.MoveNext()) then None
+             else if index < 0 then None
+             else if index = 0 then Some(e.Current)
+             else tryNth' (index-1) e
+    
+         use e = source.GetEnumerator()
+         tryNth' index e
+    
+    /// The same as Seq.skip except returns None if the sequence is empty or does not have enough elements
+    let trySkip count (source: seq<_>) =
+        seq { use e = source.GetEnumerator() 
+              for _ in 1 .. count do
+                  if not (e.MoveNext()) then ()
+              while e.MoveNext() do
+                  yield e.Current }
+    
+    /// The same as Seq.take except returns None if the sequence is empty or does not have enough elements
+    let tryTake count (source : seq<'T>)    = 
+        if Unchecked.equals null source then invalidArg "source" "input seq cannot be null"
+        if count < 0 then invalidArg "count" "count must be non negative"
+        if count = 0 then Seq.empty else  
+        seq { use e = source.GetEnumerator() 
+              for _ in 0 .. count - 1 do
+                  if (e.MoveNext()) 
+                  then yield e.Current
+                  else ()
+             }
+    
+    /// Creates an inifinte sequence of the given value
+    let repeat a = seq { while true do yield a }
+
+    /// Contracts a seq selecting every n values
+    let contract n (a : seq<_>) =
+        let rec ctr' s vals' =
+            match vals' |> trySkip (n - 1) |> List.ofSeq with
+            | [] -> s
+            | h :: t -> ctr' (h :: s) (t |> Seq.ofList)
+        ctr' [] a |> List.rev |> Seq.ofList
+    
+    /// Merges to sequences using the given function to transform the elements for comparision
+    let rec mergeBy f (a : seq<_>) (b : seq<_>) =
+        seq {
+            match a |> List.ofSeq, b |> List.ofSeq with
+            | h :: t, h' :: t' when f(h) < f(h') ->
+                yield h; yield! mergeBy f t b
+            | h :: t, h' :: t' -> 
+                yield h'; yield! mergeBy f a t'
+            | h :: t, [] -> yield! a
+            | [], h :: t -> yield! b
+            | [], [] -> ()
+        }
+
+    /// Combines to sequences using the given function
+    let rec combine f (a : seq<_>) (b : seq<_>) =
+        seq {
+            match a |> List.ofSeq, b |> List.ofSeq with
+            | h :: t, h' :: t' -> 
+                yield f h h'
+                yield! combine f t t'
+            | h :: t, [] -> yield! a
+            | [], h :: t -> yield! b
+            | [], [] -> ()
+        }
+
+    /// Merges two sequences by the default comparer for 'a
+    let merge a b = mergeBy id a b
+
+    /// Replicates each element in the seq n-times
+    let grow n = Seq.collect (fun x -> (repeat x) |> Seq.take n)
+
+    /// Pages the underlying sequence
+    let page page pageSize (source : seq<_>) =
+          source |> trySkip (page * pageSize) |> tryTake pageSize
+
+    /// Returns an array of sliding windows of data drawn from the source array.
+    /// Each window contains the n elements surrounding the current element.
+    let centeredWindow n (source: _ seq) =    
+        if n < 0 then invalidArg "n" "n must be a positive integer"
+        let source' = Seq.toArray source
+        let lastIndex = Array.length source' - 1
+    
+        let window i _ =
+            let windowStartIndex = Math.Max(i - n, 0)
+            let windowEndIndex = Math.Min(i + n, lastIndex)
+            let arrSize = windowEndIndex - windowStartIndex + 1
+            let target = Array.zeroCreate arrSize
+            Array.blit source' windowStartIndex target 0 arrSize
+            target |> Seq.ofArray
+
+        Array.mapi window source' |> Seq.ofArray
+
+    /// Calculates the central moving average for the array using n elements either side
+    /// of the point where the mean is being calculated.
+    let inline centralMovingAverage n (a:^t seq) = 
+        a |> centeredWindow n |> Seq.map Seq.average
+        
+    /// Calculates the central moving average for the array of optional elements using n
+    /// elements either side of the point where the mean is being calculated. If any of
+    /// the optional elements in the averaging window are None then the average itself
+    /// is None.
+    let inline centralMovingAverageOfOption n (a:^t option array) = 
+        a 
+        |> centeredWindow n 
+        |> Seq.map (fun window ->
+                        if Seq.exists Option.isNone window
+                        then None
+                        else Some(Seq.averageBy Option.get window))
         
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
