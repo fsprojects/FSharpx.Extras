@@ -528,6 +528,7 @@ let ``prop singleton``() =
 
 [<Test>]
 let ``prop insert and tryFind``() =
+    registerGen.Force()
     fsCheck (fun k t -> IntMap.tryFind k (IntMap.insert k () t) <> None)
 
 [<Test>]
@@ -550,6 +551,7 @@ let ``prop append``() =
 
 [<Test>]
 let ``prop append and singleton``() =
+    registerGen.Force()
     fsCheck (fun t k x -> IntMap.append (IntMap.singleton k x) t = IntMap.insert k x t)
 
 [<Test>]
@@ -639,6 +641,7 @@ let ``prop alter``() =
 
 [<Test>]
 let ``prop isEmpty``() =
+    registerGen.Force()
     fsCheck (fun m -> IntMap.isEmpty m = (IntMap.size m = 0))
 
 [<Test>]
