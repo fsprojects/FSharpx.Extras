@@ -29,6 +29,28 @@ module Seq =
             for i in l1 do
                 for j in l2 do
                     yield f i j }
+    
+    /// The same as Seq.skip except returns None if the sequence is empty or does not have enough elements
+    let trySkip count (source: seq<_>) =
+        seq { use e = source.GetEnumerator() 
+              for _ in 1 .. count do
+                  if not (e.MoveNext()) then ()
+              while e.MoveNext() do
+                  yield e.Current }
+
+    /// Creates an inifinte sequence of the given value
+    let repeat a = seq { while true do yield a }
+
+    /// Contracts a seq selecting every n values
+    let contract n (a : seq<_>) =
+        let rec ctr' s vals' =
+            match vals' |> trySkip (n - 1) |> List.ofSeq with
+            | [] -> s
+            | h :: t -> ctr' (h :: s) (t |> Seq.ofList)
+        ctr' [] a |> List.rev |> Seq.ofList
+
+    /// Replicates each element in the seq n-times
+    let grow n = Seq.collect (fun x -> (repeat x) |> Seq.take n)
         
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
