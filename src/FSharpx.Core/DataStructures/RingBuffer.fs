@@ -6,59 +6,61 @@ open System.Collections
 open System.Collections.Generic
 open FSharpx
 
-type RingBuffer<'a>(position : int, vals : seq<'a>) = 
-    
-    let buffer = vals |> Seq.toArray
-    let size = buffer.Length
-    let position = ref position
-    let next curr = 
-        (curr + 1) % size
+type RingBuffer<'a>(position:int, values:seq<'a>) =
+    let buffer = values |> Seq.toArray     
+    let mutable position = position
 
-    new(size : int) = 
-        RingBuffer(0, Array.zeroCreate size)
+    member x.Buffer with get() = buffer
+    member x.Position with get() = position and set(value) = position <- value
 
-    new(vals : seq<'a>) = 
-        RingBuffer(0, vals)
+    new(size) = RingBuffer(0, Array.zeroCreate size)
+    new(values) = RingBuffer(0, values)
 
-    member internal x.MoveNext() = 
-        position := next !position
+    member private x.IndexOffset(i, offset) = (i + offset) % x.Buffer.Length
 
-    member x.Length 
-        with get() = size
+    member x.ToArray() =
+        [|
+            for i in 0 .. x.Buffer.Length - 1 do
+                yield x.Buffer.[x.IndexOffset(x.Position, i)]
+        |]
+             
+    member x.Insert(op, offset, items) =
+        if offset >= 0 && offset < x.Buffer.Length then
+            let values = Seq.toArray items
+            let startIndex = x.IndexOffset(x.Position, offset)
+            for i in 0 .. (min (x.Buffer.Length - offset) values.Length) - 1 do
+                let insetIndex = x.IndexOffset(startIndex, i)
+                x.Buffer.[insetIndex] <- op x.Buffer.[insetIndex] values.[i]
+             
+    member x.Insert(offset, items) =
+        x.Insert((fun _ b -> b), offset, items)
+ 
+    /// Tries to advance the position of the RingBuffer by the offset.
+    /// Returns None if offset is negative, otherwise Some containing 
+    /// the position of the RingBuffer.    
+    member x.TryAdvance(offset) =
+        if offset >= 0 then
+            for i in 0 .. offset - 1 do
+                x.Buffer.[x.IndexOffset(x.Position, i)] <- Unchecked.defaultof<'a>
+            x.Position <- x.IndexOffset(x.Position, offset)
+            Some(x.Position)
+        else
+            None
 
-    member x.Position 
-        with get() = !position
-
-    member x.Values = 
-         [|
-            let pos = !position
-            let count = ref -1
-            while !count < (size - 1) do
-                yield buffer.[next (pos + !count)]
-                incr(count)
-         |]
-
-    member x.Insert(offset : int, vals : seq<'a>) =
-         let values = Seq.toArray vals
-         if values.Length > 0 && offset < size
-         then
-            let count = ref -1
-            let pos = !position + offset
-            let maxItems = min values.Length (size - offset)
-            for v in values.[0..maxItems-1] do
-                buffer.[next (pos + !count)] <- values.[!count + 1]
-                incr count
-    
-    member x.Advance(offset : int) = 
-        for indx in [1..offset] do
-            buffer.[!position] <- Unchecked.defaultof<'a>
-            x.MoveNext()
+    /// Advances the position of the RingBuffer by the offset.
+    /// Returns the position of the RingBuffer. Throws an ArgumentException if
+    /// the offset is negative.
+    member x.Advance(offset) =
+        match x.TryAdvance(offset) with
+        | Some(position) -> position
+        | None -> invalidArg "offset" "the offset must be greater than or equal to zero"
 
     member x.Normalize() = 
-        buffer.[0..size - 1] <- x.Values 
-        position := 0
+        x.Buffer.[0 .. x.Buffer.Length - 1] <- x.ToArray() 
+        x.Position <- 0
 
-    member x.Clone() = RingBuffer<'a>(x.Position, x.Values)
+    member x.Clone() = 
+        RingBuffer<'a>(x.Position, x.ToArray())
 
 module RingBuffer =
     let create (seq: 'a seq) = new RingBuffer<'a>(seq)

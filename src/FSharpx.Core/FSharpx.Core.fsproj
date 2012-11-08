@@ -56,6 +56,7 @@
     <Compile Include="DataStructures\DList.fs" />
     <Compile Include="DataStructures\Vector.fs" />
     <Compile Include="DataStructures\RingBuffer.fs" />
+    <Compile Include="DataStructures\TimeSeries.fs" />
     <Compile Include="DataStructures\BootstrappedQueue.fs" />
     <Compile Include="DataStructures\ImplicitQueue.fs" />
     <Compile Include="DataStructures\RealTimeQueue.fs" />

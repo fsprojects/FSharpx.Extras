@@ -45,11 +45,12 @@
   <ItemGroup>
     <Compile Include="FsCheckProperties.fs" />
     <Compile Include="QueueGen.fs" />
-	<Compile Include="HeapGen.fs" />
+    <Compile Include="HeapGen.fs" />
     <Compile Include="DListTest.fs" />
     <Compile Include="TransientVectorTest.fs" />
     <Compile Include="PersistentVectorTest.fs" />
     <Compile Include="RingBufferTest.fs" />
+    <Compile Include="TimeSeriesTest.fs" />
     <Compile Include="BootstrappedQueueTest.fs" />
     <Compile Include="ImplicitQueueTest.fs" />
     <Compile Include="RealTimeQueueTest.fs" />
