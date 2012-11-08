@@ -225,6 +225,27 @@ module Array =
     let inline nth i arr = Array.get arr i
     let inline setAt i v arr = Array.set arr i v; arr
 
+    let copyTo sourceStartIndx startIndx source target =
+        let targetLength = (Array.length target)
+        if startIndx < 0 || startIndx > targetLength - 1 then
+            failwith "Start Index outside the bounds of the array"
+
+        let sourceLength = (Array.length source)
+        let elementsToCopy = 
+                    if (targetLength - startIndx - sourceStartIndx) > sourceLength then
+                        sourceLength
+                    else
+                       (targetLength - startIndx - sourceStartIndx)    
+
+        Array.blit source sourceStartIndx target startIndx elementsToCopy
+    
+    let ofTuple (source : obj) : obj array = 
+        Microsoft.FSharp.Reflection.FSharpValue.GetTupleFields source
+
+    let toTuple (source : 'a array) : 't = 
+        let elements = source |> Array.map (fun x -> x :> obj)
+        Microsoft.FSharp.Reflection.FSharpValue.MakeTuple(elements, typeof<'t>) :?> 't
+
 module List =
     /// Curried cons
     let inline cons hd tl = hd::tl
