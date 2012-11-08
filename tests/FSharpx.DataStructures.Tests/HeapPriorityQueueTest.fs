@@ -60,7 +60,6 @@ let ``Adding multiple elements to the PQ should allow to pop the smallest``() =
 
     isEmpty newPQ |> should equal true
 
-
 [<Test>]
 let ``Adding multiple elements to a MaxPriorityQueue should allow to pop the smallest``() =
     let pq = empty true |> insert 1 |> insert 3 |> insert 0 |> insert 4 |> insert -3
@@ -81,3 +80,9 @@ let ``Adding multiple elements to a MaxPriorityQueue should allow to pop the sma
     element |> should equal -3
 
     isEmpty newPQ |> should equal true
+
+[<Test>]
+let ``Can use a PQ as a seq``() =
+    let pq = empty false |> insert 15 |> insert 3 |> insert 0 |> insert 4 |> insert -3
+
+    pq |> Seq.toList |> should equal [-3;0;3;4;15]
