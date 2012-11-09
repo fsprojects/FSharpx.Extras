@@ -40,13 +40,6 @@ let ``test tryFind``() =
     employeeCurrency 2 |> should equal None
 
 [<Test>]
-let ``test find``() =
-    let employeeDept = IntMap.ofList([(1,1); (2,2)])
-    let x = IntMap.find 2 employeeDept
-
-    x |> should equal 2
-
-[<Test>]
 let ``test findWithDefault``() =
     IntMap.findWithDefault 'x' 1 (IntMap.ofList [(5,'a'); (3,'b')]) |> should equal 'x'
     IntMap.findWithDefault 'x' 5 (IntMap.ofList [(5,'a'); (3,'b')]) |> should equal 'a'
