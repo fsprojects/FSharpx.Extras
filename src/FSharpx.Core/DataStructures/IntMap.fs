@@ -94,14 +94,14 @@ module IntMap =
     let notExists k m = not <| exists k m
 
     let rec find k m =
-        let notFound = failwith <| sprintf "IntMap.find: key %d is not an element of the map" k
+        let notFound() = failwith <| sprintf "IntMap.find: key %d is not an element of the map" k
         match m with
-        | Bin(p, m, l, r) when nomatch k p m -> notFound
+        | Bin(p, m, l, r) when nomatch k p m -> notFound()
         | Bin(p, m, l, r) when zero k m -> find k l
         | Bin(p, m, l, r) -> find k r
         | Tip(kx, x) when k = kx -> x
-        | Tip(kx, x) -> notFound
-        | Nil -> notFound
+        | Tip(kx, x) -> notFound()
+        | Nil -> notFound()
 
     let rec findWithDefault def k =
         function
