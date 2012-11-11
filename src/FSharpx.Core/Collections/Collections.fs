@@ -367,6 +367,7 @@ module Map =
 
     let valueList map = map |> Map.toList |> List.unzip |> snd
 
+    /// Combines the two Maps into a single Map
     let union (map1: Map<_,_>) (map2: Map<_,_>) = 
         Seq.fold (fun m (KeyValue(k,v)) -> Map.add k v m) map1 map2
 
@@ -377,12 +378,15 @@ module Map =
                     then Map.add k result.Value s
                     else s) Map.empty map
 
+    /// Allows to remove many keys from a Map
     let removeMany (keys : seq<'a>) (map : Map<'a,'b>) =
         Seq.fold (fun s key -> Map.remove key s) map keys
 
+    /// Retrieves the values from a Map
     let values (map : Map<'a,'b>) = 
         map |> Map.toSeq |> Seq.map snd
-        
+
+    /// Retrieves the keys from a Map    
     let keys (map : Map<'a,'b>) = 
         map |> Map.toSeq |> Seq.map fst
 
