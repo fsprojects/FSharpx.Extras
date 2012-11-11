@@ -311,6 +311,11 @@ module List =
     let foldMap (monoid: _ Monoid) f =
         List.fold (fun s e -> monoid.Combine(s, f e)) (monoid.Zero())
 
+    let rec transpose lst =
+        match lst with
+        | (_::_)::_ -> List.map List.head lst :: transpose (List.map List.tail lst)
+        | _         -> []
+
     /// List monoid
     let monoid<'a> =
         { new Monoid<'a list>() with

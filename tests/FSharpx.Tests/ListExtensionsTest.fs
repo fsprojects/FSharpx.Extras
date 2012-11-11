@@ -51,3 +51,18 @@ let mapAccum() =
   let list = [-5..-1]
   let expected = (15, [5;4;3;2;1])
   List.mapAccum (fun a b -> let c = abs b in (a+c,c)) 0 list |> should equal expected
+
+[<Test>]
+let ``I should be able to transpose a list``() =
+    let a = 
+        [
+            [1;2;3];
+            [4;5;6]
+        ] 
+    let expected = 
+        [
+            [1;4];
+            [2;5];
+            [3;6]
+        ]
+    (a |> List.transpose) |> should equal expected
