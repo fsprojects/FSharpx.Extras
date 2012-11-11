@@ -72,7 +72,7 @@ module Seq =
                 if bytesRead = 0 then ()
                 else yield buffer }
     
-    /// Creates a inifinte sequences of the given values
+    /// Creates a infinite sequences of the given values
     let asCircular values = 
         let rec next () = 
             seq {
@@ -82,7 +82,7 @@ module Seq =
             }
         next()
     
-    /// Creates a inifinte sequences of the given values, executing the given function everytime the given seq is exhusted
+    /// Creates a infinite sequences of the given values, executing the given function everytime the given seq is exhausted
     let asCircularOnLoop f values = 
         let rec next () = 
             seq {
@@ -93,7 +93,7 @@ module Seq =
             }
         next()
 
-    /// Creates a inifinte sequences of the given values returning None everytime the given seq is exhusted
+    /// Creates a infinite sequences of the given values returning None everytime the given seq is exhausted
     let asCircularWithBreak values = 
         let rec next () = 
             seq {
@@ -142,7 +142,7 @@ module Seq =
                   else ()
              }
     
-    /// Creates an inifinte sequence of the given value
+    /// Creates an infinite sequence of the given value
     let repeat a = seq { while true do yield a }
 
     /// Contracts a seq selecting every n values
