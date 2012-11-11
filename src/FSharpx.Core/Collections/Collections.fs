@@ -370,6 +370,24 @@ module Map =
     let union (map1: Map<_,_>) (map2: Map<_,_>) = 
         Seq.fold (fun m (KeyValue(k,v)) -> Map.add k v m) map1 map2
 
+    let choose (f : 'a -> 'b -> 'c option) (map : Map<'a,'b>) =
+        Map.fold (fun s k v -> 
+                    let result = f k v 
+                    if Option.isSome result 
+                    then Map.add k result.Value s
+                    else s) Map.empty map
+
+    let removeMany (keys : seq<'a>) (map : Map<'a,'b>) =
+        Seq.fold (fun s key -> Map.remove key s) map keys
+
+    let values (map : Map<'a,'b>) = 
+        map |> Map.toSeq |> Seq.map snd
+        
+    let keys (map : Map<'a,'b>) = 
+        map |> Map.toSeq |> Seq.map fst
+
+    let findOrDefault key defaultValue (map : Map<'a,'b>) =
+        defaultArg (map.TryFind key) defaultValue
             
     let monoid<'key, 'value when 'key : comparison> =
         { new Monoid<Map<'key, 'value>>() with
