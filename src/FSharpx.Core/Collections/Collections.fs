@@ -42,9 +42,16 @@ module Seq =
     
     /// The same as Seq.average except will return None if the seq is empty
     let inline tryAverage (seq : seq<(^a)>) : ^a option =
-        if not(Seq.isEmpty seq)
-        then Some <| (Seq.average seq)
-        else None
+        use e = seq.GetEnumerator()     
+        let mutable acc = LanguagePrimitives.GenericZero< (^a) >
+        let mutable count = 0
+        while e.MoveNext() do
+            acc <- acc + e.Current
+            count <- count + 1
+        if count = 0 
+        then None
+        else Some(LanguagePrimitives.DivideByInt< (^a) > acc count)
+
     
     /// Splits a sequences at the given index
     let splitAt n seq = (Seq.take n seq, Seq.skip n seq)
@@ -65,6 +72,7 @@ module Seq =
                 else yield x }
     
     /// Converts a stream into a seq of byte[] where the array is of the length given
+    /// Note: the last chunk maybe less than the given chunk size
     let ofStreamByChunk chunkSize (stream: System.IO.Stream) =
         let buffer = Array.zeroCreate<byte> chunkSize
         seq { while stream.Length <> stream.Position do
@@ -111,6 +119,24 @@ module Seq =
              while enum.MoveNext() do yield unbox<'a> enum.Current
          }
     
+    /// A safe version of seq head
+    let tryHead (source : seq<_>) = 
+        use e = source.GetEnumerator()
+        if e.MoveNext()
+        then Some(e.Current)
+        else None //empty list                
+        
+      
+    let tail (source : seq<_>) = 
+        seq {
+            use e = source.GetEnumerator()
+            if e.MoveNext()
+            then 
+                while e.MoveNext() do
+                    yield e.Current
+            else () //empty list                
+        }
+
     /// The same as Seq.nth except returns None if the sequence is empty or does not have enough elements
     let tryNth index (source : seq<_>) = 
          let rec tryNth' index (e : System.Collections.Generic.IEnumerator<'a>) = 
@@ -123,7 +149,7 @@ module Seq =
          tryNth' index e
     
     /// The same as Seq.skip except returns None if the sequence is empty or does not have enough elements
-    let trySkip count (source: seq<_>) =
+    let skipNoFail count (source: seq<_>) =
         seq { use e = source.GetEnumerator() 
               for _ in 1 .. count do
                   if not (e.MoveNext()) then ()
@@ -131,7 +157,7 @@ module Seq =
                   yield e.Current }
     
     /// The same as Seq.take except returns None if the sequence is empty or does not have enough elements
-    let tryTake count (source : seq<'T>)    = 
+    let takeNoFail count (source : seq<'T>)    = 
         if Unchecked.equals null source then invalidArg "source" "input seq cannot be null"
         if count < 0 then invalidArg "count" "count must be non negative"
         if count = 0 then Seq.empty else  
@@ -146,81 +172,35 @@ module Seq =
     let repeat a = seq { while true do yield a }
 
     /// Contracts a seq selecting every n values
-    let contract n (a : seq<_>) =
-        let rec ctr' s vals' =
-            match vals' |> trySkip (n - 1) |> List.ofSeq with
-            | [] -> s
-            | h :: t -> ctr' (h :: s) (t |> Seq.ofList)
-        ctr' [] a |> List.rev |> Seq.ofList
-    
-    /// Merges to sequences using the given function to transform the elements for comparision
-    let rec mergeBy f (a : seq<_>) (b : seq<_>) =
+    let rec contract n (source : seq<_>) =
         seq {
-            match a |> List.ofSeq, b |> List.ofSeq with
-            | h :: t, h' :: t' when f(h) < f(h') ->
-                yield h; yield! mergeBy f t b
-            | h :: t, h' :: t' -> 
-                yield h'; yield! mergeBy f a t'
-            | h :: t, [] -> yield! a
-            | [], h :: t -> yield! b
-            | [], [] -> ()
+              let values = source |> skipNoFail (n - 1)
+              match values |> tryNth 0 with
+              | Some(v) -> 
+                    yield v
+                    yield! contract n (tail values)
+              | None -> ()
         }
 
     /// Combines to sequences using the given function
     let rec combine f (a : seq<_>) (b : seq<_>) =
         seq {
-            match a |> List.ofSeq, b |> List.ofSeq with
-            | h :: t, h' :: t' -> 
-                yield f h h'
-                yield! combine f t t'
-            | h :: t, [] -> yield! a
-            | [], h :: t -> yield! b
-            | [], [] -> ()
+            use e = a.GetEnumerator()
+            use e' = b.GetEnumerator()
+            let eNext = ref (e.MoveNext())
+            let eNext' = ref (e'.MoveNext())
+            while !eNext || !eNext' do
+               yield f e.Current e'.Current
+               eNext := e.MoveNext()
+               eNext' := e'.MoveNext()
         }
-
-    /// Merges two sequences by the default comparer for 'a
-    let merge a b = mergeBy id a b
 
     /// Replicates each element in the seq n-times
     let grow n = Seq.collect (fun x -> (repeat x) |> Seq.take n)
 
     /// Pages the underlying sequence
     let page page pageSize (source : seq<_>) =
-          source |> trySkip (page * pageSize) |> tryTake pageSize
-
-    /// Returns an array of sliding windows of data drawn from the source array.
-    /// Each window contains the n elements surrounding the current element.
-    let centeredWindow n (source: _ seq) =    
-        if n < 0 then invalidArg "n" "n must be a positive integer"
-        let source' = Seq.toArray source
-        let lastIndex = Array.length source' - 1
-    
-        let window i _ =
-            let windowStartIndex = Math.Max(i - n, 0)
-            let windowEndIndex = Math.Min(i + n, lastIndex)
-            let arrSize = windowEndIndex - windowStartIndex + 1
-            let target = Array.zeroCreate arrSize
-            Array.blit source' windowStartIndex target 0 arrSize
-            target |> Seq.ofArray
-
-        Array.mapi window source' |> Seq.ofArray
-
-    /// Calculates the central moving average for the array using n elements either side
-    /// of the point where the mean is being calculated.
-    let inline centralMovingAverage n (a:^t seq) = 
-        a |> centeredWindow n |> Seq.map Seq.average
-        
-    /// Calculates the central moving average for the array of optional elements using n
-    /// elements either side of the point where the mean is being calculated. If any of
-    /// the optional elements in the averaging window are None then the average itself
-    /// is None.
-    let inline centralMovingAverageOfOption n (a:^t option array) = 
-        a 
-        |> centeredWindow n 
-        |> Seq.map (fun window ->
-                        if Seq.exists Option.isNone window
-                        then None
-                        else Some(Seq.averageBy Option.get window))
+          source |> skipNoFail (page * pageSize) |> takeNoFail pageSize
         
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
@@ -248,6 +228,39 @@ module Array =
     let toTuple (source : 'a array) : 't = 
         let elements = source |> Array.map (fun x -> x :> obj)
         Microsoft.FSharp.Reflection.FSharpValue.MakeTuple(elements, typeof<'t>) :?> 't
+
+    /// Returns an array of sliding windows of data drawn from the source array.
+    /// Each window contains the n elements surrounding the current element.
+    let centeredWindow n (source: _ []) =    
+        if n < 0 then invalidArg "n" "n must be a positive integer"
+        let lastIndex = source.Length - 1
+    
+        let window i _ =
+            let windowStartIndex = Math.Max(i - n, 0)
+            let windowEndIndex = Math.Min(i + n, lastIndex)
+            let arrSize = windowEndIndex - windowStartIndex + 1
+            let target = Array.zeroCreate arrSize
+            Array.blit source windowStartIndex target 0 arrSize
+            target
+
+        Array.mapi window source
+
+    /// Calculates the central moving average for the array using n elements either side
+    /// of the point where the mean is being calculated.
+    let inline centralMovingAverage n (a:^t []) = 
+        a |> centeredWindow n |> Array.map (Array.average)
+        
+    /// Calculates the central moving average for the array of optional elements using n
+    /// elements either side of the point where the mean is being calculated. If any of
+    /// the optional elements in the averaging window are None then the average itself
+    /// is None.
+    let inline centralMovingAverageOfOption n (a:^t option array) = 
+        a 
+        |> centeredWindow n 
+        |> Array.map (fun window ->
+                        if Array.exists Option.isNone window
+                        then None
+                        else Some(Array.averageBy Option.get window))
 
 module List =
     /// Curried cons
@@ -315,6 +328,22 @@ module List =
         match lst with
         | (_::_)::_ -> List.map List.head lst :: transpose (List.map List.tail lst)
         | _         -> []
+
+    /// Merges to sequences using the given function to transform the elements for comparision
+    let rec mergeBy f (a : _ list) (b : _ list) =
+        [
+            match a, b with
+            | h :: t, h' :: t' when f(h) < f(h') ->
+                yield h; yield! mergeBy f t b
+            | h :: t, h' :: t' -> 
+                yield h'; yield! mergeBy f a t'
+            | h :: t, [] -> yield! a
+            | [], h :: t -> yield! b
+            | [], [] -> ()
+        ]
+
+    /// Merges two sequences by the default comparer for 'a
+    let merge a b = mergeBy id a b
 
     /// List monoid
     let monoid<'a> =
