@@ -110,28 +110,33 @@ let ``I should get some if try to get a index inside the seq``() =
 
 [<Test>]
 let ``I should get none when trySkip past the end of the seq``() =
-    Seq.trySkip 20 data
+    Seq.skipNoFail 20 data
     |> should equal Seq.empty
 
 [<Test>]
 let ``I should get Some when trySkip``() =
-    Seq.trySkip 5 data
+    Seq.skipNoFail 5 data
     |> should equal [6.;7.;8.;9.;10.]
 
 [<Test>]
 let ``I should get none when tryTake past the end of the seq``() =
-    Seq.tryTake 20 data
+    Seq.takeNoFail 20 data
     |> should equal data
 
 [<Test>]
 let ``I should get Some when tryTake``() =
-    Seq.tryTake 5 data
+    Seq.takeNoFail 5 data
     |> should equal [1.;2.;3.;4.;5.]
 
 [<Test>] 
 let ``I should be able to repeat a single value infinitely``() =
     Seq.repeat 1 |> Seq.take 5
     |> should equal [1;1;1;1;1]
+
+[<Test>]
+let ``I should be able to get the tail of a sequence``() =
+    Seq.tail [1;2;3;4]
+    |> should equal [2;3;4]
 
 [<Test>]
 let ``I should be able to contract a seq taking every nth value``() =
@@ -142,19 +147,14 @@ let ``I should be able to contract a seq taking every nth value``() =
 let ``I should be able to contract a seq sequence by a given ratio``() = 
     let actual = Seq.contract 2 (Seq.init 72 (fun i -> 0)) |> Seq.toList
     let expected = Seq.init 36 (fun i -> 0) |> Seq.toList
-    actual |> should equal expected 
+    actual |> should equal expected
+
 
 [<Test>]
-let ``Should be able to merge to sequences``() =
-    let a,b = [1;2;3;4;5], [6;7;8;9;10]
-    Seq.mergeBy id a b
-    |> should equal [1;2;3;4;5;6;7;8;9;10]
+let ``I should be able to contract a inifinite sequence``() =
+    let actual = Seq.contract 5 (Seq.initInfinite (fun i -> i + 1))
+    actual |> Seq.take 5 |> should equal [5;10;15;20;25] 
 
-[<Test>]
-let ``Should be able to merge two sequences II``() =
-    let a,b = [1;2;3;4;5], [6;7;8;9;10]
-    Seq.merge a b
-    |> should equal [1;2;3;4;5;6;7;8;9;10]
 
 [<Test>]
 let ``Should be able to combine two sequences``() =
@@ -173,28 +173,3 @@ let ``I should be able to page a seq``() =
     Seq.page 0 2 data |> should equal [1.;2.]
     Seq.page 1 2 data |> should equal [3.;4.]
     Seq.page 2 2 data |> should equal [5.;6.]
-
-[<Test>]
-let ``I should be able to create a centered window from a seq``() =
-    let result = Seq.centeredWindow 3 data |> Seq.map (Seq.toList) |> Seq.toList
-    result |> should equal [
-                                [1;2;3;4]
-                                [1;2;3;4;5]
-                                [1;2;3;4;5;6]
-                                [1;2;3;4;5;6;7]
-                                [2;3;4;5;6;7;8]
-                                [3;4;5;6;7;8;9]
-                                [4;5;6;7;8;9;10]
-                                [5;6;7;8;9;10]
-                                [6;7;8;9;10]
-                                [7;8;9;10]
-                            ]
-
-[<Test>]
-let ``I should be able to compute the central moving average of a seq``() =
-    let result = Seq.centralMovingAverage 3 data |> Seq.toList
-    result |> should equal [
-                                2.5; 3.; 3.5; 4.; 
-                                5.; 6.; 7.;
-                                7.5; 8.; 8.5
-                           ]

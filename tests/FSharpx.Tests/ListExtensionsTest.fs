@@ -53,6 +53,18 @@ let mapAccum() =
   List.mapAccum (fun a b -> let c = abs b in (a+c,c)) 0 list |> should equal expected
 
 [<Test>]
+let ``Should be able to merge to lists``() =
+    let a,b = [1;2;3;4;5], [6;7;8;9;10]
+    List.mergeBy id a b
+    |> should equal [1;2;3;4;5;6;7;8;9;10]
+
+[<Test>]
+let ``Should be able to merge two lists II``() =
+    let a,b = [1;2;3;4;5], [6;7;8;9;10]
+    List.merge a b
+    |> should equal [1;2;3;4;5;6;7;8;9;10]
+
+[<Test>]
 let ``I should be able to transpose a list``() =
     let a = 
         [
