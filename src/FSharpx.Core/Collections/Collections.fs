@@ -42,9 +42,16 @@ module Seq =
     
     /// The same as Seq.average except will return None if the seq is empty
     let inline tryAverage (seq : seq<(^a)>) : ^a option =
-        if not(Seq.isEmpty seq)
-        then Some <| (Seq.average seq)
-        else None
+        use e = seq.GetEnumerator()     
+        let mutable acc = LanguagePrimitives.GenericZero< (^a) >
+        let mutable count = 0
+        while e.MoveNext() do
+            acc <- acc + e.Current
+            count <- count + 1
+        if count = 0 
+        then None
+        else Some(LanguagePrimitives.DivideByInt< (^a) > acc count)
+
     
     /// Splits a sequences at the given index
     let splitAt n seq = (Seq.take n seq, Seq.skip n seq)
@@ -65,6 +72,7 @@ module Seq =
                 else yield x }
     
     /// Converts a stream into a seq of byte[] where the array is of the length given
+    /// Note: the last chunk maybe less than the given chunk size
     let ofStreamByChunk chunkSize (stream: System.IO.Stream) =
         let buffer = Array.zeroCreate<byte> chunkSize
         seq { while stream.Length <> stream.Position do
@@ -177,13 +185,14 @@ module Seq =
     /// Combines to sequences using the given function
     let rec combine f (a : seq<_>) (b : seq<_>) =
         seq {
-            match a |> List.ofSeq, b |> List.ofSeq with
-            | h :: t, h' :: t' -> 
-                yield f h h'
-                yield! combine f t t'
-            | h :: t, [] -> yield! a
-            | [], h :: t -> yield! b
-            | [], [] -> ()
+            use e = a.GetEnumerator()
+            use e' = b.GetEnumerator()
+            let eNext = ref (e.MoveNext())
+            let eNext' = ref (e'.MoveNext())
+            while !eNext || !eNext' do
+               yield f e.Current e'.Current
+               eNext := e.MoveNext()
+               eNext' := e'.MoveNext()
         }
 
     /// Replicates each element in the seq n-times

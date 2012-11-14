@@ -139,6 +139,11 @@ let ``I should be able to get the tail of a sequence``() =
     |> should equal [2;3;4]
 
 [<Test>]
+let ``I should be able to get the tail of a empty sequence``() =
+    Seq.tail []
+    |> should equal []
+
+[<Test>]
 let ``I should be able to contract a seq taking every nth value``() =
     Seq.contract 5 data
     |> should equal [5;10]
@@ -149,9 +154,13 @@ let ``I should be able to contract a seq sequence by a given ratio``() =
     let expected = Seq.init 36 (fun i -> 0) |> Seq.toList
     actual |> should equal expected
 
+[<Test>]
+let ``I should be able to contract an empty sequence``() =
+    let actual = Seq.contract 5 (Seq.empty)
+    actual |> should equal [] 
 
 [<Test>]
-let ``I should be able to contract a inifinite sequence``() =
+let ``I should be able to contract a infinite sequence``() =
     let actual = Seq.contract 5 (Seq.initInfinite (fun i -> i + 1))
     actual |> Seq.take 5 |> should equal [5;10;15;20;25] 
 
@@ -160,6 +169,24 @@ let ``I should be able to contract a inifinite sequence``() =
 let ``Should be able to combine two sequences``() =
     let a,b = [1;2;3;4;5], [6;7;8;9;10]
     Seq.combine (+) a b
+    |> should equal [7;9;11;13;15]
+
+[<Test>]
+let ``Should be able to combine two empty sequences``() =
+    let a,b = [], []
+    Seq.combine (+) a b
+    |> should equal []
+
+[<Test>]
+let ``Should be able to combine two sequences when one is infinite``() =
+    let a,b = [1;2;3;4;5], (Seq.initInfinite (fun i -> i + 6))
+    Seq.combine (+) a b |> Seq.take 5
+    |> should equal [7;9;11;13;15]
+
+[<Test>]
+let ``Should be able to combine two sequences when both are infinite``() =
+    let a,b = (Seq.initInfinite (fun i -> i + 1)), (Seq.initInfinite (fun i -> i + 6))
+    Seq.combine (+) a b |> Seq.take 5
     |> should equal [7;9;11;13;15]
 
 [<Test>]
