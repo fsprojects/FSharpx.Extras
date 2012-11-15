@@ -79,6 +79,15 @@ module RoseTree =
     let rec foldMap (monoid: _ Monoid) f (tree: _ RoseTree) =
         let inline (++) a b = monoid.Combine(a,b)
         f tree.Root ++ Seq.foldMap monoid (foldMap monoid f) tree.Children
+
+    /// Behaves like a combination of map and fold; 
+    /// it applies a function to each element of a tree, 
+    /// passing an accumulating parameter, 
+    /// and returning a final value of this accumulator together with the new tree.
+    let rec mapAccum f state tree =
+        let nstate, root = f state tree.Root
+        let nstate, children = LazyList.mapAccum (mapAccum f) nstate tree.Children
+        nstate, create root children
         
 // TODO: 
 // bfs: http://pdf.aminer.org/000/309/950/the_under_appreciated_unfold.pdf

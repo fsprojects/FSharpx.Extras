@@ -69,6 +69,19 @@ let htmldoc =
     tree (elem "body") [tree (elem "div") [text "hello world"]]
 
 [<Test>]
+let mapAccum() =
+    let e, taggedHtmlDoc = 
+        RoseTree.mapAccum 
+            (fun i -> function
+                      | Element x -> i+1, Element { x with Attributes = ("data-i",i.ToString())::x.Attributes }
+                      | x -> i,x) 0 htmldoc
+    let expected = 
+        tree (elemA "body" ["data-i","0"]) 
+            [tree (elemA "div" ["data-i","1"]) [text "hello world"]]
+    Assert.AreEqual(expected, taggedHtmlDoc)
+    Assert.AreEqual(2, e)
+
+[<Test>]
 let bind() =
     let wrapText =
         function
