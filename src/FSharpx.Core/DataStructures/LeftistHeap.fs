@@ -19,16 +19,16 @@ type LeftistHeap<'a when 'a : comparison> =
 
     static member private make (x: 'a) (a: LeftistHeap<'a>) (b: LeftistHeap<'a>) : LeftistHeap<'a> =
         if LeftistHeap.rank a > LeftistHeap.rank b then
-          T((a.IsMaximalist), (a.Length + b.Length + 1), LeftistHeap.rank b + 1, x, a, b)
+          T((a.IsDescending), (a.Length + b.Length + 1), LeftistHeap.rank b + 1, x, a, b)
         else
-          T((a.IsMaximalist), (a.Length + b.Length + 1), LeftistHeap.rank a + 1, x, b, a)
+          T((a.IsDescending), (a.Length + b.Length + 1), LeftistHeap.rank a + 1, x, b, a)
 
     static member private merge (h1: LeftistHeap<'a>) (h2: LeftistHeap<'a>) : LeftistHeap<'a> = 
-        if (h1.IsMaximalist) = (h2.IsMaximalist) then
+        if (h1.IsDescending) = (h2.IsDescending) then
             match h1, h2 with
             | E(_), x | x, E(_) -> x
             | T(_, _, _, x, a1, b1), T(_, _, _, y, a2, b2) ->
-                if (h1.IsMaximalist) then
+                if (h1.IsDescending) then
                     if x < y then LeftistHeap.make y a2 (LeftistHeap.merge h1 b2)
                     else LeftistHeap.make x a1 (LeftistHeap.merge b1 h2)
                 else
@@ -55,7 +55,7 @@ type LeftistHeap<'a when 'a : comparison> =
         | _ -> false
 
     static member private tryMerge (h1: LeftistHeap<'a>) (h2: LeftistHeap<'a>) : LeftistHeap<'a> option = 
-        if (h1.IsMaximalist) = (h2.IsMaximalist) then
+        if (h1.IsDescending) = (h2.IsDescending) then
             match h1, h2 with
             | E(_), x | x, E(_) -> Some(x)
             | T(_, _, _, x, a1, b1), T(_, _, _, y, a2, b2) ->
@@ -64,8 +64,8 @@ type LeftistHeap<'a when 'a : comparison> =
         else None
 
     static member private insert (x: 'a) (h: LeftistHeap<'a>) : LeftistHeap<'a> = 
-        let isMaximalist = h.IsMaximalist
-        LeftistHeap.merge (T(isMaximalist, 1, 1, x, E(isMaximalist), E(isMaximalist))) h
+        let isDescending = h.IsDescending
+        LeftistHeap.merge (T(isDescending, 1, 1, x, E(isDescending), E(isDescending))) h
 
     static member private head: LeftistHeap<'a> -> 'a = function
         | E(_) -> raise Exceptions.Empty
@@ -75,11 +75,11 @@ type LeftistHeap<'a when 'a : comparison> =
         | E(_) -> None
         | T(_, _, _, x, _, _) -> Some(x)
  
-    static member internal ofSeq (maximalist: bool) (s:seq<'a>) : LeftistHeap<'a> = 
-        if Seq.isEmpty s then E(maximalist)
+    static member internal ofSeq (descending: bool) (s:seq<'a>) : LeftistHeap<'a> = 
+        if Seq.isEmpty s then E(descending)
         else
             let x, _ = 
-                Seq.fold (fun (acc, isMaximalist) elem -> (((T(isMaximalist, 1, 1, elem, E(isMaximalist), E(isMaximalist))))::acc), isMaximalist) ([], maximalist) s
+                Seq.fold (fun (acc, isDescending) elem -> (((T(isDescending, 1, 1, elem, E(isDescending), E(isDescending))))::acc), isDescending) ([], descending) s
     
             let pairWiseMerge (l: list<LeftistHeap<'a>>) =
                 let rec loop (acc: list<LeftistHeap<'a>>) : list<LeftistHeap<'a>> -> list<LeftistHeap<'a>> = function
@@ -121,7 +121,7 @@ type LeftistHeap<'a when 'a : comparison> =
     member this.IsEmpty = LeftistHeap.isEmpty this
 
     ///returns true if the heap has max element at head, O(1)
-    member this.IsMaximalist : bool = 
+    member this.IsDescending : bool = 
         match this with
         | E(m) -> m 
         |  T(m, _, _, _, _, _) -> m
@@ -132,7 +132,7 @@ type LeftistHeap<'a when 'a : comparison> =
         | E(_) -> 0
         | T(_, i, _, _, _, _) -> i
 
-    ///returns heap from merging two heaps, both must have same isMaximalist, O(log n)
+    ///returns heap from merging two heaps, both must have same isDescending, O(log n)
     member this.Merge xs = LeftistHeap.merge this xs
 
     ///returns heap option from merging two heaps, O(log n)
@@ -163,7 +163,7 @@ type LeftistHeap<'a when 'a : comparison> =
 
         member this.IsEmpty = LeftistHeap.isEmpty this
 
-        member this.IsMaximalist = this.IsMaximalist 
+        member this.IsDescending = this.IsDescending 
 
         member this.Length() = this.Length 
 
@@ -191,7 +191,7 @@ type LeftistHeap<'a when 'a : comparison> =
 
         member this.GetEnumerator() = 
             let e = 
-                if this.IsMaximalist
+                if this.IsDescending
 //WARNING! List.sort |> List.rev significantly faster (caveat: on 32-bit Win 7) than List.sortwith...go figure!
 //            LeftistHeap.inOrder this |> List.sortWith (fun x y -> if (x > y) then -1
 //                                                                             else 
@@ -211,7 +211,7 @@ module LeftistHeap =
     let (|Cons|Nil|) (h: LeftistHeap<'a>) = match h.TryUncons() with Some(a,b) -> Cons(a,b) | None -> Nil
   
     ///returns a empty heap, O(1)
-    let inline empty (maximalist: bool) = E(maximalist)
+    let inline empty (descending: bool) = E(descending)
 
     ///returns the min or max element, O(1)
     let inline head (xs: LeftistHeap<'a>)  = xs.Head
@@ -226,19 +226,19 @@ module LeftistHeap =
     let inline isEmpty (xs: LeftistHeap<'a>) = xs.IsEmpty
 
     ///returns true if the heap has max element at head, O(1)
-    let inline isMaximalist (xs: LeftistHeap<'a>) = xs.IsMaximalist
+    let inline isDescending (xs: LeftistHeap<'a>) = xs.IsDescending
 
     ///returns the count of elememts, O(1)
     let inline length (xs: LeftistHeap<'a>) = xs.Length 
 
-    ///returns heap from merging two heaps, both must have same isMaximalist, O(log n)
+    ///returns heap from merging two heaps, both must have same isDescending, O(log n)
     let inline merge (xs: LeftistHeap<'a>) (ys: LeftistHeap<'a>) = xs.Merge ys
 
     ///returns heap option from merging two heaps, O(log n)
     let inline tryMerge (xs: LeftistHeap<'a>) (ys: LeftistHeap<'a>) = xs.TryMerge ys
 
     ///returns heap from the sequence, O(log n)
-    let ofSeq maximalist s = LeftistHeap.ofSeq maximalist s
+    let ofSeq descending s = LeftistHeap.ofSeq descending s
 
     ///returns a new heap of the elements trailing the head, O(log n)
     let inline tail (xs: LeftistHeap<'a>) = xs.Tail()
