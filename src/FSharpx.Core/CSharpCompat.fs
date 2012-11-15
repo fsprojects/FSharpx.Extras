@@ -538,3 +538,8 @@ type RoseTree =
         let mapper = RoseTree.lift2 (curry mapper.Invoke)
         let v = RoseTree.bind f.Invoke o
         mapper o v
+
+    [<Extension>]
+    static member SelectAccum (o, state, f: Func<_,_,_>) =
+        let ff = FSharpFunc.FromFunc f
+        RoseTree.mapAccum ff state o

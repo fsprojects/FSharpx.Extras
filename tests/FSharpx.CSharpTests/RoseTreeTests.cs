@@ -73,19 +73,46 @@ namespace FSharpx.CSharpTests {
             return RoseTree.Create(root, children);
         }
 
+        private static readonly RoseTree<string> atree =
+            R("f",
+                R("b",
+                    R("a"),
+                    R("d",
+                        R("c"),
+                        R("e"))),
+                R("g",
+                    R("i",
+                        R("h"))));
+
         [Test]
         public void DFS() {
-            var a = R("f",
-                        R("b",
-                            R("a"),
-                            R("d",
-                                R("c"),
-                                R("e"))),
-                        R("g", 
-                            R("i",
-                                R("h"))));
-            var elements = a.DfsPre().ToList();
+            var elements = atree.DfsPre().ToList();
             CollectionAssert.AreEqual(new[] {"f", "b", "a", "d","c","e","g","i","h"}, elements);
+        }
+
+        [Test]
+        public void SelectAccum_trivial() {
+            var b = atree.SelectAccum(0, Tuple.Create);
+            Assert.AreEqual(0, b.Item1);
+            Assert.AreEqual(atree, b.Item2);
+        }
+
+        [Test]
+        public void SelectAccum() {
+            var b = atree.SelectAccum(0, (i,e) => Tuple.Create(i+1, e + i));
+            Assert.AreEqual(9, b.Item1);
+            var expected =
+                R("f0",
+                    R("b1",
+                        R("a2"),
+                        R("d3",
+                            R("c4"),
+                            R("e5"))),
+                    R("g6",
+                        R("i7",
+                            R("h8"))));
+
+            Assert.AreEqual(expected, b.Item2);
         }
 
         private static void PrintTree<T>(RoseTree<T> tree, int level) {
