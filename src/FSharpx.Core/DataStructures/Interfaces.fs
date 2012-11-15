@@ -116,7 +116,7 @@ type IHeap<'a when 'a : comparison> =
     abstract member IsEmpty : bool with get
 
     ///returns true if the heap has max element at head
-    abstract member IsMaximalist : bool with get
+    abstract member IsDescending : bool with get
 
     ///returns the count of elememts
     abstract member Length : unit -> int
@@ -127,7 +127,7 @@ type IHeap<'c, 'a when 'c :> IHeap<'c, 'a> and 'a : comparison> =
     ///returns a new heap with the element inserted
     abstract member Insert : 'a -> 'c
 
-    ///returns heap from merging two heaps, both must have same isMaximalist
+    ///returns heap from merging two heaps, both must have same isDescending
     abstract member Merge : 'c -> 'c
 
     ///returns heap option from merging two heaps
