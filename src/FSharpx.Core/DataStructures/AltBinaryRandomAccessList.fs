@@ -212,25 +212,33 @@ and AltBinRndAccList<'a>
                 | Some(x, xs'') -> loop xs'' (AltBinRndAccList.cons x acc)
             loop xs' ys
 
+    ///O(log n). Returns a new random access list with the element added to the beginning.
     member this.Cons (x : 'a) = AltBinRndAccList.cons x this
 
+    ///O(log n). Returns the first element.
     member this.Head =
         let x, _ = AltBinRndAccList.uncons this
         x
 
+    ///O(log n). Returns option first element.
     member this.TryGetHead() =
         match AltBinRndAccList.tryUncons this with
         | None -> None
         | Some( x, _) -> Some(x)
 
+    ///O(1). Returns true if the random access list has no elements.
     member this.IsEmpty = AltBinRndAccList.isEmpty this
 
+    ///O(log n). Returns the count of elememts.
     member this.Length() = AltBinRndAccList.length (0, 1, this)
 
+    ///O(log n). Returns element by index.
     member this.Lookup i = AltBinRndAccList.lookup i this
 
+    ///O(log n). Returns option element by index.
     member this.TryLookup i = AltBinRndAccList.tryLookup i this
 
+    ///O(n). Returns random access list with element removed by index.
     member this.Remove i = 
         if i = 0 then 
             match (AltBinRndAccList.uncons this) with
@@ -249,6 +257,7 @@ and AltBinRndAccList<'a>
                         
                 loop (frontLen - 1) front x
 
+    ///O(n). Returns option random access list with element removed by index.
     member this.TryRemove i = 
         if i = 0 then 
             match (AltBinRndAccList.uncons this) with
@@ -268,29 +277,36 @@ and AltBinRndAccList<'a>
                         
                 loop (frontLen - 1) front x
 
+    ///O(n). Returns random access list reversed.
     member this.Rev() = AltBinRndAccList.rev this 
 
+    ///O(log n). Returns a new random access list of the elements trailing the first element.
     member this.Tail =
         let _, xs = AltBinRndAccList.uncons this
         xs 
 
+    ///O(log n). Returns a option random access list of the elements trailing the first element.
     member this.TryGetTail =
         match AltBinRndAccList.tryUncons this with
         | None -> None
         | Some( _, Nil) -> None
         | Some( _, xs) -> Some(xs)
 
+    ///O(log n). Returns the first element and tail.
     member this.Uncons =
         let x, xs = AltBinRndAccList.uncons this
         x, xs
 
+    ///O(log n). Returns the option first element and tail.
     member this.TryUncons =
         match AltBinRndAccList.tryUncons this with
         | None -> None
         | Some(x, xs) -> Some(x, xs)
 
+    ///O(log n). Returns random access list with element updated by index.
     member this.Update i y = AltBinRndAccList.fupdate ((fun x -> y), i, this)
         
+    ///O(log n). Returns option random access list with element updated by index.
     member this.TryUpdate i y =
         match AltBinRndAccList.ftryUpdate ((fun x -> y), i, this) with
         | None -> None
@@ -303,69 +319,69 @@ and AltBinRndAccList<'a>
 
     let (|Cons|Nil|) (l: AltBinRndAccList<'a>) = match l.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
 
-    ///returns random access list from elements of 2 random access lists concatenated 
+    ///O(xs). Returns random access list from elements of 2 random access lists concatenated.
     let append xs ys = AltBinRndAccList.append (xs, ys)
    
-     ///returns a new random access list with the element added to the beginning
+    ///O(log n). Returns a new random access list with the element added to the beginning.
     let inline cons x (xs: AltBinRndAccList<'a>) = xs.Cons x   
   
-    ///returns the first element
+    ///O(log n). Returns the first element.
     let head xs =
         let x, _ = AltBinRndAccList.uncons xs
         x
 
-     ///returns a empty random access list
+    ///O(1). Returns a empty random access list.
     let empty = Nil
 
-    ///returns option first element 
+    ///O(log n). Returns option first element.
     let tryGetHead xs =
         match (AltBinRndAccList.tryUncons xs) with
         | None -> None
         | Some( x, _) -> Some(x)
 
-    ///returns true if the random access list has no elements
+    ///O(1). Returns true if the random access list has no elements.
     let inline isEmpty (xs: AltBinRndAccList<'a>) = xs.IsEmpty
 
-    ///returns the count of elememts
+    ///O(log n). Returns the count of elememts.
     let inline length (xs: AltBinRndAccList<'a>) = xs.Length() 
 
-    ///returns element by index
+    ///O(log n). Returns element by index.
     let rec lookup i xs = AltBinRndAccList.lookup i xs
 
-    ///returns option element by index
+    ///O(log n). Returns option element by index.
     let rec tryLookup i xs = AltBinRndAccList.tryLookup i xs
 
-    ///returns random access list from the sequence
+    ///O(n). Returns random access list from the sequence.
     let ofSeq s = AltBinRndAccList.ofSeq s
 
-    ///returns random access list with element removed by index
+    ///O(n). Returns random access list with element removed by index.
     let inline remove i (xs: AltBinRndAccList<'a>) = xs.Remove i 
 
-    ///returns option random access list with element removed by index
+    ///O(n). Returns option random access list with element removed by index.
     let inline tryRemove i (xs: AltBinRndAccList<'a>) = xs.TryRemove i
 
-    //returns random access list reversed
+    ///O(n). Returns random access list reversed.
     let inline rev (xs: AltBinRndAccList<'a>) = xs.Rev()
 
-    ///returns a new random access list of the elements trailing the first element
+    ///O(log n). Returns a new random access list of the elements trailing the first element.
     let tail xs =
         let _, xs' = AltBinRndAccList.uncons xs
         xs'
 
-    ///returns a option random access list of the elements trailing the first element
+    ///O(log n). Returns a option random access list of the elements trailing the first element.
     let tryGetTail xs =
         match (AltBinRndAccList.tryUncons xs) with
         | None -> None
         | Some( _, xs') -> Some(xs')
 
-    ///returns the first element and tail
+    ///O(log n). Returns the first element and tail.
     let inline uncons (xs: AltBinRndAccList<'a>) = xs.Uncons
 
-    ///returns the option first element and tail
+    ///O(log n). Returns the option first element and tail.
     let inline tryUncons (xs: AltBinRndAccList<'a>) = xs.TryUncons
 
-    ///returns random access list with element updated by index
+    ///O(log n). Returns random access list with element updated by index.
     let inline update i y (xs: AltBinRndAccList<'a>) = xs.Update i y
 
-    ///returns option random access list with element updated by index
+    ///O(log n). Returns option random access list with element updated by index.
     let inline tryUpdate i y (xs: AltBinRndAccList<'a>) = xs.TryUpdate i y
