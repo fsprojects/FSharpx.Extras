@@ -131,23 +131,31 @@ type SkewBinaryRandomAccessList<'a> (randomAccessList) =
 
             loop [] (a.Length - 1) a
 
+    ///O(1), worst case. Returns a new random access list with the element added to the beginning.
     member this.Cons (x:'a)  = SkewBinaryRandomAccessList(SkewBinaryRandomAccessList.cons x randomAccessList)
 
+    ///O(1), worst case. Returns the first element.
     member this.Head = SkewBinaryRandomAccessList.head randomAccessList
 
+    ///O(1), worst case. Returns option first element.
     member this.TryGetHead = SkewBinaryRandomAccessList.tryGetHead randomAccessList
 
+    ///O(1). Returns true if the random access list has no elements.
     member this.IsEmpty = 
         match randomAccessList with
         | [] -> true
         | _ -> false
 
+    ///O(log n) Returns the count of elememts.
     member this.Length() = SkewBinaryRandomAccessList.length (0, randomAccessList)
 
+    ///O(log n), worst case. Returns element by index.
     member this.Lookup (i:int) = SkewBinaryRandomAccessList.lookup (i, randomAccessList)
 
+    ///O(log n), worst case. Returns option element by index.
     member thie.TryLookup (i:int) = SkewBinaryRandomAccessList.tryLookup (i, randomAccessList)
 
+    ///O(n). Returns random access list reversed.
     member this.Rev() =
 
         let rec loop : list<int * TreeSBRAL<'a>> * list<int * TreeSBRAL<'a>> -> SkewBinaryRandomAccessList<'a>  = function
@@ -158,8 +166,10 @@ type SkewBinaryRandomAccessList<'a> (randomAccessList) =
             
         loop ([], randomAccessList)
 
+    ///O(1), worst case. Returns a new random access list of the elements trailing the first element.
     member this.Tail = SkewBinaryRandomAccessList(SkewBinaryRandomAccessList.tail randomAccessList)
 
+    ///O(1), worst case. Returns a option random access list of the elements trailing the first element.
     member this.TryGetTail =
         match randomAccessList with
         | [] -> None
@@ -167,16 +177,20 @@ type SkewBinaryRandomAccessList<'a> (randomAccessList) =
         | (w, Node(_, t1, t2))::ts -> Some(SkewBinaryRandomAccessList((w/2, t1) :: (w/2, t2) :: ts))
         | _ -> failwith "should not get there"
 
+    ///O(1), worst case. Returns the first element and tail.
     member this.Uncons =
         this.Head, this.Tail
 
+    ///O(1), worst case. Returns the option first element and tail.
     member this.TryUncons =
         match SkewBinaryRandomAccessList.tryGetHead randomAccessList with
         | None -> None
         | Some(x) -> Some(x, this.Tail) 
 
+    ///O(log n), worst case. Returns random access list with element updated by index.
     member this.Update i y = SkewBinaryRandomAccessList(SkewBinaryRandomAccessList.update i y randomAccessList)
         
+    ///O(log n), worst case. Returns option random access list with element updated by index.
     member this.TryUpdate i y =
         match SkewBinaryRandomAccessList.tryUpdate i y randomAccessList with
         | None -> None
@@ -242,49 +256,50 @@ module SkewBinaryRandomAccessList =
 
     let (|Cons|Nil|) (l: SkewBinaryRandomAccessList<'a>) = match l.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
   
-     ///returns a new random access list with the element added to the beginning
+    ///O(1), worst case. Returns a new random access list with the element added to the beginning.
     let inline cons x (xs: SkewBinaryRandomAccessList<'a>) = xs.Cons x   
   
-    ///returns the first element
+    ///O(1), worst case. Returns the first element.
     let inline head (xs: SkewBinaryRandomAccessList<'a>)  = xs.Head
 
-    ///returns option first element 
+    ///O(1), worst case. Returns option first element.
     let inline tryGetHead (xs: SkewBinaryRandomAccessList<'a>)  = xs.TryGetHead
 
-    ///returns a empty random access list
+    ///returns a empty random access list.
     let inline empty() = SkewBinaryRandomAccessList<'a>([])
 
-    ///returns true if the random access list has no elements
+    ///O(1). Returns true if the random access list has no elements.
     let inline isEmpty (xs: SkewBinaryRandomAccessList<'a>) = xs.IsEmpty
 
-    ///returns the count of elememts
+    ///O(log n). Returns the count of elememts.
     let inline length (xs: SkewBinaryRandomAccessList<'a>) = xs.Length() 
 
-    ///returns element by index
+    ///O(log n), worst case. Returns element by index.
     let inline lookup i (xs: SkewBinaryRandomAccessList<'a>) = xs.Lookup i 
 
-    ///returns option element by index
+    ///O(log n), worst case. Returns option element by index.
     let inline tryLookup i (xs: SkewBinaryRandomAccessList<'a>) = xs.TryLookup i
-    ///returns random access list from the sequence
+    
+    ///O(n) Returns random access list from the sequence.
     let ofSeq s = SkewBinaryRandomAccessList.ofSeq s
 
-    //returns random access list reversed
+    ///O(n). Returns random access list reversed.
     let inline rev (xs: SkewBinaryRandomAccessList<'a>) = xs.Rev()
 
-    ///returns a new random access list of the elements trailing the first element
+    ///O(1), worst case. Returns a new random access list of the elements trailing the first element.
     let inline tail (xs: SkewBinaryRandomAccessList<'a>) = xs.Tail
 
-    ///returns a option random access list of the elements trailing the first element
+    ///O(1), worst case. Returns a option random access list of the elements trailing the first element.
     let inline tryGetTail (xs: SkewBinaryRandomAccessList<'a>) = xs.TryGetTail
 
-    ///returns the first element and tail
+    ///O(1), worst case. Returns the first element and tail.
     let inline uncons (xs: SkewBinaryRandomAccessList<'a>) = xs.Uncons
 
-    ///returns the option first element and tail
+    ///O(1), worst case. Returns the option first element and tail.
     let inline tryUncons (xs: SkewBinaryRandomAccessList<'a>) = xs.TryUncons
 
-    ///returns random access list with element updated by index
+    ///O(log n), worst case. Returns random access list with element updated by index.
     let inline update i y (xs: SkewBinaryRandomAccessList<'a>) = xs.Update i y
 
-    ///returns option random access list with element updated by index
+    ///O(log n), worst case. Returns option random access list with element updated by index.
     let inline tryUpdate i y (xs: SkewBinaryRandomAccessList<'a>) = xs.TryUpdate i y

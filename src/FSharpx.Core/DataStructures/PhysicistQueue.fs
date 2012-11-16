@@ -57,36 +57,36 @@ type PhysicistQueue<'a> (prefix : list<'a>, frontLength : int, front : Lazy<list
     static member internal OfSeq (xs:seq<'a>) = 
         PhysicistQueue<'a>((List.ofSeq xs), (Seq.length xs), (lazy (List.ofSeq xs)), 0, [])
    
-    ///returns the first element
+    ///O(1), amortized. Returns the first element.
     member this.Head =
         match prefix with
         | hd::_ -> hd
         | _ -> raise Exceptions.Empty
 
-    ///returns option first element
+    ///O(1), amortized. Returns option first element.
     member this.TryGetHead =
         match prefix with
         | hd::_ -> Some(hd)
         | _ -> None
          
-    ///returns true if the queue has no elements
+    ///O(1). Returns true if the queue has no elements.
     member this.IsEmpty = (frontLength = 0)
 
-    ///returns the count of elememts
+    ///O(1). Returns the count of elememts.
     member this.Length = PhysicistQueue.length this
 
-    ///returns queue reversed
+    ///O(1). Returns queue reversed.
     member this.Rev = 
         if (prefix.Length = frontLength)
         then PhysicistQueue<'a>(rBack, rBackLength, (lazy rBack), frontLength, prefix) |> PhysicistQueue.check
         else PhysicistQueue<'a>(rBack, rBackLength, (lazy rBack), frontLength, front.Value) |> PhysicistQueue.check
 
-    ///returns a new queue with the element added to the end
+    ///O(1), amortized. Returns a new queue with the element added to the end.
     member this.Snoc x = 
         PhysicistQueue(prefix, frontLength, front, (rBackLength + 1), x::rBack)
         |> PhysicistQueue.check
 
-    ///returns a new queue of the elements trailing the first element
+    ///O(1), amortized. Returns a new queue of the elements trailing the first element.
     member this.Tail =
         match prefix with
         | hd::_ ->
@@ -94,20 +94,20 @@ type PhysicistQueue<'a> (prefix : list<'a>, frontLength : int, front : Lazy<list
             |> PhysicistQueue.check
         | _ -> raise Exceptions.Empty
 
-    ///returns option queue of the elements trailing the first element
+    ///O(1), amortized. Returns option queue of the elements trailing the first element.
     member this.TryGetTail =
         match prefix with
         | hd::_ ->
             Some (PhysicistQueue(prefix.Tail, (frontLength - 1), (lazy front.Value.Tail), rBackLength, rBack) |> PhysicistQueue.check)
         | _ -> None
 
-    ///returns the first element and tail
+    ///O(1), amortized. Returns the first element and tail.
     member this.Uncons = 
         match prefix with
         | hd::_ -> hd, (PhysicistQueue(prefix.Tail, (frontLength - 1), (lazy front.Value.Tail), rBackLength, rBack) |> PhysicistQueue.check)
         | _ -> raise Exceptions.Empty
 
-    ///returns option first element and tail
+    ///O(1), amortized. Returns option first element and tail.
     member this.TryUncons =  
        match prefix with
         | hd::_ -> Some(hd, (PhysicistQueue(prefix.Tail, (frontLength - 1), (lazy front.Value.Tail), rBackLength, rBack) |> PhysicistQueue.check))
@@ -160,47 +160,47 @@ module PhysicistQueue =
 
     let (|Cons|Nil|) (q : PhysicistQueue<'a>) = match q.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
 
-    ///returns queue of no elements
+    ///O(1). Returns queue of no elements.
     let empty() = PhysicistQueue.Empty()
 
-    ///applies a function to each element of the queue, threading an accumulator argument through the computation, left to right
+    ///O(n). Applies a function to each element of the queue, threading an accumulator argument through the computation, left to right.
     let fold (f : ('State -> 'T -> 'State)) (state : 'State) (q : PhysicistQueue<'T>) = PhysicistQueue<_>.fold f state q
 
-    ///applies a function to each element of the queue, threading an accumulator argument through the computation, right to left
+    ///O(n). Applies a function to each element of the queue, threading an accumulator argument through the computation, right to left.
     let foldBack (f : ('T -> 'State -> 'State)) (q : PhysicistQueue<'T>) (state : 'State) =  PhysicistQueue<_>.foldBack f q state
 
-    ///returns the first element
+    ///O(1), amortized. Returns the first element.
     let inline head (q : PhysicistQueue<'a>) = q.Head
 
-    ///returns option first element
+    ///O(1), amortized. Returns option first element.
     let inline tryGetHead (q : PhysicistQueue<'a>) = q.TryGetHead
 
-    ///returns true if the queue has no elements
+    ///O(1). Returns true if the queue has no elements.
     let inline isEmpty (q : PhysicistQueue<'a>) = q.IsEmpty
 
-    ///returns the count of elememts
+    ///O(1). Returns the count of elememts.
     let inline length (q : PhysicistQueue<'a>) = q.Length
 
-    ///returns a queue of the list
+    ///O(1). Returns a queue of the list.
     let ofList xs = PhysicistQueue.OfList xs
 
-    ///returns a queue of the seq
+    ///O(1). Returns a queue of the seq.
     let ofSeq xs = PhysicistQueue.OfSeq xs
 
-    ///returns queue reversed
+    ///O(1). Returns queue reversed.
     let inline rev (q : PhysicistQueue<'a>) = q.Rev
 
-    ///returns a new queue with the element added to the end
+    ///O(1), amortized. Returns a new queue with the element added to the end.
     let inline snoc (x : 'a) (q : PhysicistQueue<'a>) = (q.Snoc x) 
 
-    ///returns a new queue of the elements trailing the first element
+    ///O(1), amortized. Returns a new queue of the elements trailing the first element.
     let inline tail (q : PhysicistQueue<'a>) = q.Tail 
 
-    ///returns option queue of the elements trailing the first element
+    ///O(1), amortized. Returns option queue of the elements trailing the first element.
     let inline tryGetTail (q : PhysicistQueue<'a>) = q.TryGetTail 
 
-    ///returns the first element and tail
+    ///O(1), amortized. Returns the first element and tail.
     let inline uncons (q : PhysicistQueue<'a>) = q.Uncons
 
-    ///returns option first element and tail
+    ///O(1), amortized. Returns option first element and tail.
     let inline tryUncons (q : PhysicistQueue<'a>) = q.TryUncons

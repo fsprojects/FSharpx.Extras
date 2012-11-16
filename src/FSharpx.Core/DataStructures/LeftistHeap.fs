@@ -108,47 +108,47 @@ type LeftistHeap<'a when 'a : comparison> =
             | None -> None
             | Some(x) -> Some(x, (LeftistHeap.tail h))
         
-    ///returns the min or max element, O(1)
+    ///O(1). Returns the min or max element.
     member this.Head = LeftistHeap.head this
 
-    ///returns option first min or max element, O(1)
+    ///O(1). Returns option first min or max element.
     member this.TryGetHead = LeftistHeap.tryGetHead this
 
-    ///returns a new heap with the element inserted, O(log n)
+    ///O(log n). Returns a new heap with the element inserted.
     member this.Insert x  = LeftistHeap.insert x this
 
-    ///returns true if the heap has no elements, O(1)
+    ///O(1). Returns true if the heap has no elements.
     member this.IsEmpty = LeftistHeap.isEmpty this
 
-    ///returns true if the heap has max element at head, O(1)
+    ///O(1). Returns true if the heap has max element at head.
     member this.IsDescending : bool = 
         match this with
         | E(m) -> m 
         |  T(m, _, _, _, _, _) -> m
 
-    ///returns the count of elememts, O(1)
+    ///O(1). Returns the count of elememts.
     member this.Length : int = 
         match this with
         | E(_) -> 0
         | T(_, i, _, _, _, _) -> i
 
-    ///returns heap from merging two heaps, both must have same isDescending, O(log n)
+    ///O(log n). Returns heap from merging two heaps, both must have same isDescending.
     member this.Merge xs = LeftistHeap.merge this xs
 
-    ///returns heap option from merging two heaps, O(log n)
+    ///O(log n). Returns heap option from merging two heaps
     member this.TryMerge xs = LeftistHeap.tryMerge this xs
 
-    ///returns a new heap of the elements trailing the head, O(log n)
+    ///O(log n) Returns a new heap of the elements trailing the head.
     member this.Tail() = LeftistHeap.tail this
        
-    ///returns option heap of the elements trailing the head, O(log n)
+    ///O(log n). Returns option heap of the elements trailing the head.
     member this.TryGetTail() = LeftistHeap.tryGetTail this
 
-    ///returns the head element and tail, O(log n)
+    ///O(log n). Returns the head element and tail.
     member this.Uncons() = 
         (LeftistHeap.head this), (LeftistHeap.tail this)
 
-    ///returns option head element and tail, O(log n)
+    ///O(log n). Returns option head element and tail.
     member this.TryUncons() = LeftistHeap.tryUncons this
 
     interface IHeap<LeftistHeap<'a>, 'a> with
@@ -210,44 +210,44 @@ module LeftistHeap =
 
     let (|Cons|Nil|) (h: LeftistHeap<'a>) = match h.TryUncons() with Some(a,b) -> Cons(a,b) | None -> Nil
   
-    ///returns a empty heap, O(1)
+    ///O(1). Returns a empty heap.
     let inline empty (descending: bool) = E(descending)
 
-    ///returns the min or max element, O(1)
+    ///O(1). Returns the min or max element.
     let inline head (xs: LeftistHeap<'a>)  = xs.Head
 
-    ///returns option first min or max element, O(1)
+    ///O(1). Returns option first min or max element.
     let inline tryGetHead (xs: LeftistHeap<'a>)  = xs.TryGetHead
 
-    ///returns a new heap with the element inserted, O(log n)
+    ///O(log n). Returns a new heap with the element inserted.
     let inline insert x (xs: LeftistHeap<'a>) = xs.Insert x   
 
-    ///returns true if the heap has no elements, O(1)
+    ///O(1). Returns true if the heap has no elements.
     let inline isEmpty (xs: LeftistHeap<'a>) = xs.IsEmpty
 
-    ///returns true if the heap has max element at head, O(1)
+    ///O(1). Returns true if the heap has max element at head.
     let inline isDescending (xs: LeftistHeap<'a>) = xs.IsDescending
 
-    ///returns the count of elememts, O(1)
+    ///O(1). Returns the count of elememts.
     let inline length (xs: LeftistHeap<'a>) = xs.Length 
 
-    ///returns heap from merging two heaps, both must have same isDescending, O(log n)
+    ///O(log n). Returns heap from merging two heaps, both must have same isDescending.
     let inline merge (xs: LeftistHeap<'a>) (ys: LeftistHeap<'a>) = xs.Merge ys
 
-    ///returns heap option from merging two heaps, O(log n)
+    ///O(log n). Returns heap option from merging two heaps.
     let inline tryMerge (xs: LeftistHeap<'a>) (ys: LeftistHeap<'a>) = xs.TryMerge ys
 
-    ///returns heap from the sequence, O(log n)
+    ///O(log n). Returns heap from the sequence.
     let ofSeq descending s = LeftistHeap.ofSeq descending s
 
-    ///returns a new heap of the elements trailing the head, O(log n)
+    ///O(log n). Returns a new heap of the elements trailing the head.
     let inline tail (xs: LeftistHeap<'a>) = xs.Tail()
 
-    ///returns option heap of the elements trailing the head, O(log n)
+    ///O(log n). Returns option heap of the elements trailing the head.
     let inline tryGetTail (xs: LeftistHeap<'a>) = xs.TryGetTail()
 
-    ///returns the head element and tail, O(log n)
+    ///O(log n). Returns the head element and tail.
     let inline uncons (xs: LeftistHeap<'a>) = xs.Uncons()
 
-    ///returns option head element and tail, O(log n)
+    ///O(log n). Returns option head element and tail.
     let inline tryUncons (xs: LeftistHeap<'a>) = xs.TryUncons()

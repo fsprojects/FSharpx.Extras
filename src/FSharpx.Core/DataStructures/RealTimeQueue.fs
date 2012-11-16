@@ -9,8 +9,10 @@ type RealTimeQueue<'a> = {
     R: list<'a>
     S: LazyList<'a> }
 
+///O(1). Returns queue of no elements.
 let empty<'a> : RealTimeQueue<'a> = { F = LazyList.empty; R = []; S = LazyList.empty }
 
+///O(1). Returns true if the queue has no elements
 let isEmpty queue = LazyList.isEmpty queue.F
 
 let rec rotate queue =
@@ -30,23 +32,28 @@ let rec exec queue =
         { F = f'; R = []; S = f' }
     | LazyList.Cons (hd, tl) -> {queue with S = tl}
 
+///O(1), worst case. Returns a new queue with the element added to the end.
 let snoc x queue = exec {queue with R = (x::queue.R) }
 
+///O(1), worst case. Returns the first element.
 let head queue =
     match queue.F with
     | LazyList.Nil -> raise Exceptions.Empty
     | LazyList.Cons (hd, tl) -> hd
 
+///O(1), worst case.  Returns option first element.
 let tryGetHead queue = 
     match queue.F with
     | LazyList.Nil -> None
     | LazyList.Cons (hd, tl) -> Some hd
 
+///O(1), worst case. Returns a new queue of the elements trailing the first element.
 let tail queue =
     match queue.F with
     | LazyList.Nil -> raise Exceptions.Empty
     | LazyList.Cons (hd, tl) -> exec {queue with F = tl }
 
+///O(1), worst case. Returns option queue of the elements trailing the first element.
 let tryGetTail queue = 
     match queue.F with
     | LazyList.Nil -> None
