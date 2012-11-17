@@ -129,29 +129,37 @@ type BinaryRandomAccessList<'a> (randomAccessList) =
 
             loop [] (a.Length - 1) a
 
+    ///O(log n), worst case. Returns a new random access list with the element added to the beginning.
     member this.Cons (x:'a)  = BinaryRandomAccessList(BinaryRandomAccessList.consTree ((Leaf x), randomAccessList))
 
+    ///O(log n), worst case. Returns the first element.
     member this.Head =
         match BinaryRandomAccessList.unconsTree randomAccessList with
         | Leaf x, _ -> x
         | _ -> raise Exceptions.Empty
 
+    ///O(log n), worst case. Returns option first element.
     member this.TryGetHead =
        match BinaryRandomAccessList.tryUnconsTree randomAccessList with
         | Some(Leaf x, _) -> Some(x)
         | _ -> None
 
+    ///O(1). Returns true if the random access list has no elements.
     member this.IsEmpty = 
         match randomAccessList with
         | [] -> true
         | _ -> false
 
+    ///O(log n). Returns the count of elememts.
     member this.Length() = BinaryRandomAccessList.length (0, 1, randomAccessList)
 
+    ///O(log n), worst case. Returns element by index.
     member this.Lookup (i:int) = BinaryRandomAccessList.lookup (i, randomAccessList)
 
+    ///O(log n), worst case. Returns option element by index.
     member thie.TryLookup (i:int) = BinaryRandomAccessList.tryLookup (i, randomAccessList)
 
+    ///O(n). Returns random access list reversed.
     member this.Rev() =
 
         let rec loop : list<Digit<'a>> * list<Digit<'a>> -> BinaryRandomAccessList<'a>  = function
@@ -162,27 +170,33 @@ type BinaryRandomAccessList<'a> (randomAccessList) =
             
         loop ([], randomAccessList)
 
+    ///O(log n), worst case. Returns a new random access list of the elements trailing the first element.
     member this.Tail =
         let _, ts = BinaryRandomAccessList.unconsTree randomAccessList
         BinaryRandomAccessList(ts)
 
+    ///O(log n), worst case. Returns a option random access list of the elements trailing the first element.
     member this.TryGetTail =
         match BinaryRandomAccessList.tryUnconsTree randomAccessList with
         | None -> None
         | Some(_, xs) -> Some(BinaryRandomAccessList(xs))
 
+    ///O(log n), worst case. Returns the first element and tail.
     member this.Uncons =
         match BinaryRandomAccessList.unconsTree randomAccessList with
         | (Leaf x), ts -> x, BinaryRandomAccessList(ts)
         | _ -> failwith "can't get there"
 
+    ///O(log n), worst case. Returns the option first element and tail.
     member this.TryUncons =
         match BinaryRandomAccessList.tryUnconsTree randomAccessList with
         | Some((Leaf x), ts) -> Some(x, BinaryRandomAccessList(ts))
         | _ -> None
 
+    ///O(log n), worst case. Returns random access list with element updated by index.
     member this.Update i y = BinaryRandomAccessList(BinaryRandomAccessList.update i y randomAccessList)
         
+    ///O(log n), worst case. Returns option random access list with element updated by index.
     member this.TryUpdate i y =
         match BinaryRandomAccessList.tryUpdate i y randomAccessList with
         | None -> None
@@ -248,50 +262,50 @@ module BinaryRandomAccessList =
 
     let (|Cons|Nil|) (l: BinaryRandomAccessList<'a>) = match l.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
   
-     ///returns a new random access list with the element added to the beginning
+    ///O(log n), worst case. Returns a new random access list with the element added to the beginning.
     let inline cons x (xs: BinaryRandomAccessList<'a>) = xs.Cons x   
   
-    ///returns the first element
+    ///O(log n), worst case. Returns the first element.
     let inline head (xs: BinaryRandomAccessList<'a>)  = xs.Head
 
-    ///returns option first element 
+    ///O(log n), worst case. Returns option first element.
     let inline tryGetHead (xs: BinaryRandomAccessList<'a>)  = xs.TryGetHead
 
-    ///returns a empty random access list
+    ///O(1). Returns a empty random access list.
     let inline empty() = BinaryRandomAccessList<'a>([])
 
-    ///returns true if the random access list has no elements
+    ///O(1). Returns true if the random access list has no elements.
     let inline isEmpty (xs: BinaryRandomAccessList<'a>) = xs.IsEmpty
 
-    ///returns the count of elememts
+    ///O(log n). Returns the count of elememts.
     let inline length (xs: BinaryRandomAccessList<'a>) = xs.Length() 
 
-    ///returns element by index
+    ///O(log n), worst case. Returns element by index.
     let inline lookup i (xs: BinaryRandomAccessList<'a>) = xs.Lookup i 
 
-    ///returns option element by index
+    ///O(log n), worst case. Returns option element by index.
     let inline tryLookup i (xs: BinaryRandomAccessList<'a>) = xs.TryLookup i
 
-    ///returns random access list from the sequence
+    ///O(n). Returns random access list from the sequence.
     let ofSeq s = BinaryRandomAccessList.ofSeq s
 
-    //returns random access list reversed
+    ///O(n). Returns random access list reversed.
     let inline rev (xs: BinaryRandomAccessList<'a>) = xs.Rev()
 
-    ///returns a new random access list of the elements trailing the first element
+    ///O(log n), worst case. Returns a new random access list of the elements trailing the first element.
     let inline tail (xs: BinaryRandomAccessList<'a>) = xs.Tail
 
-    ///returns a option random access list of the elements trailing the first element
+    ///O(log n), worst case. Returns a option random access list of the elements trailing the first element.
     let inline tryGetTail (xs: BinaryRandomAccessList<'a>) = xs.TryGetTail
 
-    ///returns the first element and tail
+    ///O(log n), worst case. Returns the first element and tail.
     let inline uncons (xs: BinaryRandomAccessList<'a>) = xs.Uncons
 
-    ///returns the option first element and tail
+    ///O(log n), worst case. Returns the option first element and tail.
     let inline tryUncons (xs: BinaryRandomAccessList<'a>) = xs.TryUncons
 
-    ///returns random access list with element updated by index
+    ///O(log n), worst case. Returns random access list with element updated by index.
     let inline update i y (xs: BinaryRandomAccessList<'a>) = xs.Update i y
 
-    ///returns option random access list with element updated by index
+    ///O(log n), worst case. Returns option random access list with element updated by index.
     let inline tryUpdate i y (xs: BinaryRandomAccessList<'a>) = xs.TryUpdate i y

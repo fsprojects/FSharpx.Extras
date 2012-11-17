@@ -79,13 +79,29 @@ and BootstrappedQueue<'a> = Empty | NonEmpty of NonEmptyBootstrappedQueue<'a> wi
         let b0 = BootstrappedQueue.Empty
         NonEmptyBootstrappedQueue<'a>.create (l.Length) l b0 0 [] |> NonEmpty
 
+///O(1). Returns queue of no elements.
 let empty = Empty
+
+///O(1). Returns true if the queue has no elements
 let isEmpty = function Empty -> true | _ -> false
 
+///O(log* n). Returns a new queue with the element added to the end.
 let inline snoc x queue = BootstrappedQueue.snoc x queue
+
+///O(1), worst case. Returns the first element.
 let inline head queue = BootstrappedQueue<'a>.head queue
+
+///O(1), worst case.  Returns option first element.
 let inline tryGetHead queue = BootstrappedQueue<'a>.tryGetHead queue
+
+///O(log* n), worst case. Returns a new queue of the elements trailing the first element.
 let inline tail queue = BootstrappedQueue<'a>.tail queue
+
+///O(log* n), worst case. Returns option queue of the elements trailing the first element.
 let inline tryGetTail queue = BootstrappedQueue<'a>.tryGetTail queue
+
+///O(1). Returns the count of elememts.
 let inline length queue = BootstrappedQueue<'a>.length queue
+
+///O(1). Returns a queue of the list.
 let inline ofList list = BootstrappedQueue<'a>.ofList list

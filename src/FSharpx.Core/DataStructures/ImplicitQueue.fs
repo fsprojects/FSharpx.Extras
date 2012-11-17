@@ -13,7 +13,10 @@ type ImplicitQueue<'a> =
 | Shallow of Digit<'a>
 | Deep of Digit<'a> * Lazy<ImplicitQueue<'a * 'a>> * Digit<'a>
 
+///O(1). Returns queue of no elements.
 let empty = Shallow Zero
+
+///O(1). Returns true if the queue has no elements
 let isEmpty = function Shallow Zero -> true | _ -> false
 
 type ImplicitQueue<'a> with
@@ -62,8 +65,17 @@ type ImplicitQueue<'a> with
             Some(Deep(Two(y, z), lazy ImplicitQueue.tail q', r))
         | _ -> failwith "should not get there"
 
+///O(1), amortized. Returns a new queue with the element added to the end.
 let inline snoc x queue = ImplicitQueue.snoc x queue
+
+///O(1), amortized. Returns the first element.
 let inline head queue = ImplicitQueue<'a>.head queue
+
+///O(1), amortized. Returns option first element.
 let inline tryGetHead queue = ImplicitQueue<'a>.tryGetHead queue
+
+///O(1), amortized. Returns a new queue of the elements trailing the first element.
 let inline tail queue = ImplicitQueue<'a>.tail queue
+
+///O(1), amortized. Returns option queue of the elements trailing the first element.
 let inline tryGetTail queue = ImplicitQueue<'a>.tryGetTail queue

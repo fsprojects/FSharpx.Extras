@@ -14,10 +14,10 @@ type BinomialHeap<'a when 'a : comparison> (isDescending : bool, heap : list<Bin
 
     member private this.heap = heap
 
-    ///returns true if the heap has max element at head, O(1)
+    ///O(1). Returns true if the heap has max element at head.
     member this.IsDescending = isDescending
 
-    ///returns the count of elememts, O(log n)
+    ///O(log n). Returns the count of elememts.
     member this.Length() = List.fold (fun acc (Node(r, _, _)) -> acc + int (2.0**(float r))) 0 this.heap
 
     static member internal  empty isDescending = BinomialHeap<'a>(isDescending, [])
@@ -117,44 +117,44 @@ type BinomialHeap<'a when 'a : comparison> (isDescending : bool, heap : list<Bin
 
     static member private inOrder (h : list<BinomialTree<'a>>) = (BinomialHeap.foldHeap (fun x l r acc -> l (x :: (r acc))) (fun acc -> acc) h) [] 
 
-    ///returns the min or max element, O(log n)
+    ///O(log n). Returns the min or max element.
     member this.Head() = BinomialHeap.head this.IsDescending this.heap
 
-    ///returns option first min or max element, O(log n)
+    ///O(log n). Returns option first min or max element.
     member this.TryGetHead() = 
         if this.heap.IsEmpty then None
         else Some(BinomialHeap.head this.IsDescending this.heap)
 
-    ///returns a new heap with the element inserted, O(log n)
+    ///O(log n). Returns a new heap with the element inserted.
     member this.Insert x  = BinomialHeap<'a>(this.IsDescending, (BinomialHeap.insert this.IsDescending x this.heap))
 
-    ///returns true if the heap has no elements, O(1)
+    ///O(1). Returns true if the heap has no elements.
     member this.IsEmpty = BinomialHeap.isEmpty this
 
-    ///returns heap from merging two heaps, both must have same isDescending, O(log n)
+    ///O(log n). Returns heap from merging two heaps, both must have same isDescending.
     member this.Merge (xs : BinomialHeap<'a>) : BinomialHeap<'a> = 
         if (this.IsDescending = xs.IsDescending) then
             BinomialHeap<'a>(this.IsDescending, (BinomialHeap.merge this.IsDescending this.heap xs.heap))
         else failwith "not same max or min"
 
-    ///returns heap option from merging two heaps, O(log n)
+    ///O(log n). Returns heap option from merging two heaps.
     member this.TryMerge (xs : BinomialHeap<'a>) = 
         if (this.IsDescending <> xs.IsDescending) then None
         else Some(BinomialHeap<'a>(this.IsDescending, (BinomialHeap.merge this.IsDescending this.heap xs.heap)))
 
-    ///returns a new heap of the elements trailing the head, O(log n)
+    ///O(log n). Returns a new heap of the elements trailing the head.
     member this.Tail() = 
         BinomialHeap<'a>(this.IsDescending, (BinomialHeap.tail this.IsDescending this.heap))
        
-    ///returns option heap of the elements trailing the head, O(log n)
+    ///O(log n). Returns option heap of the elements trailing the head.
     member this.TryGetTail() = 
         if this.heap.IsEmpty then None
         else Some(BinomialHeap<'a>(this.IsDescending, (BinomialHeap.tail this.IsDescending this.heap)))
 
-    ///returns the head element and tail, O(log n)
+    ///O(log n). Returns the head element and tail.
     member this.Uncons() = BinomialHeap.uncons this.IsDescending this.heap
 
-    ///returns option head element and tail, O(log n)
+    ///O(log n). Returns option head element and tail.
     member this.TryUncons() = 
         if this.heap.IsEmpty then None
         else Some(BinomialHeap.uncons this.IsDescending this.heap)
@@ -236,44 +236,44 @@ module BinomialHeap =
     //pattern discriminator
     let (|Cons|Nil|) (h: BinomialHeap<'a>) = match h.TryUncons() with Some(a,b) -> Cons(a,b) | None -> Nil
   
-    ///returns a empty heap, O(1)
+    ///O(1). Returns a empty heap.
     let empty (descending: bool) = BinomialHeap.empty descending
 
-    ///returns the min or max element, O(log n)
+    ///O(log n). Returns the min or max element.
     let inline head (xs: BinomialHeap<'a>)  = xs.Head()
 
-    ///returns option first min or max element, O(log n)
+    ///O(log n). Returns option first min or max element.
     let inline tryGetHead (xs: BinomialHeap<'a>)  = xs.TryGetHead()
 
-    ///returns a new heap with the element inserted, O(log n)
+    ///O(log n). Returns a new heap with the element inserted.
     let inline insert x (xs: BinomialHeap<'a>) = xs.Insert x   
 
-    ///returns true if the heap has no elements, O(1)
+    ///O(1). Returns true if the heap has no elements.
     let inline isEmpty (xs: BinomialHeap<'a>) = xs.IsEmpty
 
-    ///returns true if the heap has max element at head, O(1)
+    ///O(1). Returns true if the heap has max element at head.
     let inline isDescending (xs: BinomialHeap<'a>) = xs.IsDescending
 
-    ///returns the count of elememts, O(log n)
+    ///O(log n). Returns the count of elememts.
     let inline length (xs: BinomialHeap<'a>) = xs.Length() 
 
-    ///returns heap from merging two heaps, both must have same isDescending, O(log n)
+    ///O(log n) Returns heap from merging two heaps, both must have same isDescending.
     let inline merge (xs: BinomialHeap<'a>) (ys: BinomialHeap<'a>) = xs.Merge ys
 
-    ///returns heap option from merging two heaps, O(log n)
+    ///O(log n). Returns heap option from merging two heaps.
     let inline tryMerge (xs: BinomialHeap<'a>) (ys: BinomialHeap<'a>) = xs.TryMerge ys
 
-    ///returns heap from the sequence, O(log n)
+    ///O(log n). Returns heap from the sequence.
     let ofSeq descending s = BinomialHeap.ofSeq descending s
 
-    ///returns a new heap of the elements trailing the head, O(log n)
+    ///O(log n). Returns a new heap of the elements trailing the head.
     let inline tail (xs: BinomialHeap<'a>) = xs.Tail()
 
-    ///returns option heap of the elements trailing the head, O(log n)
+    ///O(log n). Returns option heap of the elements trailing the head
     let inline tryGetTail (xs: BinomialHeap<'a>) = xs.TryGetTail()
 
-    ///returns the head element and tail, O(log n)
+    /// O(log n). Returns the head element and tail.
     let inline uncons (xs: BinomialHeap<'a>) = xs.Uncons()
 
-    ///returns option head element and tail, O(log n)
+    /// O(log n). Returns option head element and tail.
     let inline tryUncons (xs: BinomialHeap<'a>) = xs.TryUncons()
