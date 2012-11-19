@@ -11,6 +11,7 @@ let ``test should verify empty is Nil``() =
   empty<_> |> should equal Nil
 
 let expected = Join(Unit 0, Join(Unit 1, Join(Unit 2, Join(Unit 3, Unit 4, 2), 3), 4), 5)
+let expected2 = Join(Unit 1, Join(Unit 2, Join(Unit 3, Unit 4, 2), 3), 4)
 
 [<Test>]
 let ``test length should return 5``() =
@@ -49,7 +50,11 @@ let ``test subsequent cons should create a DList just as the constructor functio
 
 [<Test>]
 let ``test append should join two DLists together``() =
-  append expected expected |> should equal (Join(expected, expected, 10))
+  append expected expected2 |> should equal (Join(expected, expected2, 9))
+
+[<Test>]
+let ``test snoc should join DList and one element together``() =
+  snoc expected 5 |> should equal (Join(expected, Unit 5, 6))
 
 [<Test>]
 let ``test head should return the first item in the DList``() =
