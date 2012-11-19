@@ -28,6 +28,7 @@ type DList<'a> =
 
     static member op_Nil() = Nil
 
+    ///O(1). Returns the count of elememts.
     member x.Length =
         match x with
         | Nil -> 0 
@@ -46,14 +47,21 @@ type DList<'a> =
                | Nil -> left
                | _ -> Join(left, right, left.Length + right.Length)
 
+    ///O(1). Returns true if the DList has no elements.
     member x.IsEmpty = match x with Nil -> true | _ -> false
 
+    ///O(log n). Returns the first element.
     member x.Head =
         match x with
         | Unit x' -> x'
         | Join(x',y,_) -> x'.Head
         | _ -> failwith "DList.head: empty list"
 
+    ///O(1). Returns a new DList with the element added to the end.
+    member x.snoc (a:'a) =
+        DList<_>.op_Append(x, Unit a)
+
+    ///O(log n). Returns a new DList of the elements trailing the first element.
     member x.Tail =
         let rec step (xs:DList<'a>) (acc:DList<'a>) : DList<'a> =
             match xs with
@@ -85,28 +93,41 @@ type DList<'a> =
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module DList =
+    ///O(1). Returns DList of no elements.
     let empty<'a> : DList<'a> = Nil
 
+    ///O(1). Returns true if the DList has no elements.
     let isEmpty (l:DList<_>) = l.IsEmpty
 
+    ///O(1). Returns the count of elememts.
     let length (l:DList<_>) = l.Length
 
+    ///O(1). Returns DList of one elements.
     let singleton x = Unit x
 
+    ///O(n). Returns a DList of the seq.
     let ofSeq s = Seq.fold (fun xs x ->
         match xs with 
         | Nil -> Unit x
         | Unit _ -> Join(xs, Unit x, 2)
         | Join(_,_,l) -> Join(xs, Unit x, l+1)) Nil s
 
+    ///O(n). Returns a seq of the DList elements.
     let toSeq (l:DList<_>) = l :> seq<_>
 
+    ///O(1). Returns a new DList with the element added to the beginning.
     let cons hd tl = DList<_>.op_Cons(hd, tl)
 
-    let append right left = DList<_>.op_Append(left, right)
+    ///O(1). Returns a new DList of two lists.
+    let append left right = DList<_>.op_Append(left, right)
 
+    ///O(log n). Returns the first element.
     let head (l:DList<_>) = l.Head
 
+    ///O(1). Returns a new DList with the element added to the end.
+    let snoc (l:DList<_>) x = l.snoc x
+
+    ///O(log n). Returns a new DList of the elements trailing the first element.
     let tail (l:DList<_>) = l.Tail
 
     /// Fold walks the DList using constant stack space. Implementation is from Norman Ramsey.
