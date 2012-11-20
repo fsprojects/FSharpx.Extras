@@ -134,7 +134,17 @@ module Seq =
             then 
                 while e.MoveNext() do
                     yield e.Current
-            else () //empty list                
+            else invalidArg "source" "source sequence cannot be empty"              
+        }
+
+    let tailNoFail (source : seq<_>) = 
+        seq {
+            use e = source.GetEnumerator()
+            if e.MoveNext()
+            then 
+                while e.MoveNext() do
+                    yield e.Current
+            else ()             
         }
 
     /// The same as Seq.nth except returns None if the sequence is empty or does not have enough elements
@@ -178,7 +188,7 @@ module Seq =
               match values |> tryNth 0 with
               | Some(v) -> 
                     yield v
-                    yield! contract n (tail values)
+                    yield! contract n (tailNoFail values)
               | None -> ()
         }
 
