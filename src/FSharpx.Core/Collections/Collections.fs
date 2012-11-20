@@ -155,19 +155,7 @@ module Seq =
     /// Alias for Enumerable.Skip
     let inline skipNoFail count (source: seq<_>) = 
         Enumerable.Skip(source, count)
-    
-    /// The same as Seq.take except returns None if the sequence is empty or does not have enough elements
-    let takeNoFail count (source : seq<'T>)    = 
-        if Unchecked.equals null source then invalidArg "source" "input seq cannot be null"
-        if count < 0 then invalidArg "count" "count must be non negative"
-        if count = 0 then Seq.empty else  
-        seq { use e = source.GetEnumerator() 
-              for _ in 0 .. count - 1 do
-                  if (e.MoveNext()) 
-                  then yield e.Current
-                  else ()
-             }
-    
+        
     /// Creates an infinite sequence of the given value
     let repeat a = seq { while true do yield a }
 
@@ -200,7 +188,7 @@ module Seq =
 
     /// Pages the underlying sequence
     let page page pageSize (source : seq<_>) =
-          source |> skipNoFail (page * pageSize) |> takeNoFail pageSize
+          source |> skipNoFail (page * pageSize) |> Seq.truncate pageSize
         
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]

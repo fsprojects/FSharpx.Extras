@@ -118,16 +118,6 @@ let ``I should get Some when trySkip``() =
     Seq.skipNoFail 5 data
     |> should equal [6.;7.;8.;9.;10.]
 
-[<Test>]
-let ``I should get none when tryTake past the end of the seq``() =
-    Seq.takeNoFail 20 data
-    |> should equal data
-
-[<Test>]
-let ``I should get Some when tryTake``() =
-    Seq.takeNoFail 5 data
-    |> should equal [1.;2.;3.;4.;5.]
-
 [<Test>] 
 let ``I should be able to repeat a single value infinitely``() =
     Seq.repeat 1 |> Seq.take 5
