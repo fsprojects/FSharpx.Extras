@@ -111,22 +111,14 @@ module Seq =
                 yield! next()
             }
         next()
-    
-    /// Converts a System.Collections.IEnumerable to a seq 
-    let ofEnumerable<'a> (a : System.Collections.IEnumerable) = 
-         let enum = a.GetEnumerator()
-         seq {
-             while enum.MoveNext() do yield unbox<'a> enum.Current
-         }
-    
+        
     /// A safe version of seq head
     let tryHead (source : seq<_>) = 
         use e = source.GetEnumerator()
         if e.MoveNext()
         then Some(e.Current)
         else None //empty list                
-        
-      
+              
     let tail (source : seq<_>) = 
         seq {
             use e = source.GetEnumerator()
