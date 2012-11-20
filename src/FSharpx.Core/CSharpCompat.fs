@@ -197,6 +197,12 @@ type FSharpOption =
         | _ -> other.Invoke()
 
     [<Extension>]
+    static member GetOrDefault (o: Option<_>) =
+        match o with
+        | Some x -> x
+        | _ -> Unchecked.defaultof<_>
+
+    [<Extension>]
     static member ToFSharpChoice (o, other) =
         match o with
         | Some v -> Choice1Of2 v

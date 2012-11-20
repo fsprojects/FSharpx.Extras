@@ -225,6 +225,22 @@ namespace FSharpx.CSharpTests {
         }
 
         [Test]
+        public void GetOrDefault_ReferenceType()
+        {
+            var a = FSharpOption<string>.None;
+            var b = a.GetOrDefault();
+            Assert.AreEqual(null, b);
+        }
+
+        [Test]
+        public void GetOrDefault_ValueType()
+        {
+            var a = FSharpOption<int>.None;
+            var b = a.GetOrDefault();
+            Assert.AreEqual(0, b);
+        }
+
+        [Test]
         public void Sequence_Some() {
             var r = FSharpList.Create(1.Some(), 2.Some(), 3.Some()).Sequence();
             Assert.AreEqual(FSharpList.Create(1,2,3).Some(), r);
