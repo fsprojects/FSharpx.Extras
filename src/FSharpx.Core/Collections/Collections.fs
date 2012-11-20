@@ -170,7 +170,8 @@ module Seq =
               | None -> ()
         }
 
-    /// Combines to sequences using the given function
+    /// Creates a new collection whose elements are the results of applying the given function to the corresponding pairs of elements from the two sequences. 
+    /// Unlike Seq.map2, if one input sequence is shorter than the other then the remaining elements of the longer sequence are not ignored, they are yielded at the end of the resulting sequence.
     let rec combine f (a : seq<_>) (b : seq<_>) =
         seq {
             use e = a.GetEnumerator()
