@@ -225,6 +225,14 @@ namespace FSharpx.CSharpTests {
         }
 
         [Test]
+        public void GetOrDefault_WithValue()
+        {
+            var a = FSharpOption<string>.Some("hello");
+            var b = a.GetOrDefault();
+            Assert.AreEqual("hello", b);
+        }
+
+        [Test]
         public void GetOrDefault_ReferenceType()
         {
             var a = FSharpOption<string>.None;
