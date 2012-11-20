@@ -139,8 +139,14 @@ let ``I should be able to get the tail of a sequence``() =
     |> should equal [2;3;4]
 
 [<Test>]
-let ``I should be able to get the tail of a empty sequence``() =
+[<ExpectedException(typeof<ArgumentException>)>]
+let ``I should not be able to get the tail of a empty sequence``() =
     Seq.tail []
+    |> should equal []
+
+[<Test>]
+let ``I should be able to get the tail of a empty sequence without a fail``() =
+    Seq.tailNoFail []
     |> should equal []
 
 [<Test>]
