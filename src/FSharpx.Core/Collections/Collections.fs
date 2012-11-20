@@ -1,6 +1,7 @@
 namespace FSharpx
 
 open System
+open System.Linq
 open System.Collections
 open System.Collections.Generic
 #if NET40
@@ -150,13 +151,10 @@ module Seq =
          use e = source.GetEnumerator()
          tryNth' index e
     
-    /// The same as Seq.skip except returns None if the sequence is empty or does not have enough elements
-    let skipNoFail count (source: seq<_>) =
-        seq { use e = source.GetEnumerator() 
-              for _ in 1 .. count do
-                  if not (e.MoveNext()) then ()
-              while e.MoveNext() do
-                  yield e.Current }
+    /// The same as Seq.skip except it returns empty if the sequence is empty or does not have enough elements.
+    /// Alias for Enumerable.Skip
+    let inline skipNoFail count (source: seq<_>) = 
+        Enumerable.Skip(source, count)
     
     /// The same as Seq.take except returns None if the sequence is empty or does not have enough elements
     let takeNoFail count (source : seq<'T>)    = 
