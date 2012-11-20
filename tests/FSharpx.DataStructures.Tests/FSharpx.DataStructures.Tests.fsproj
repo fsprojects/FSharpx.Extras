@@ -62,6 +62,7 @@
     <Compile Include="BankersDequeTest.fs" />
     <Compile Include="RealTimeDequeTest.fs" />
     <Compile Include="LeftistHeapTest.fs" />
+	<Compile Include="PairingHeapTest.fs" />
     <Compile Include="BinomialHeapTest.fs" />
     <Compile Include="HeapPriorityQueueTest.fs" />
     <Compile Include="RoseTreeTest.fs" />
