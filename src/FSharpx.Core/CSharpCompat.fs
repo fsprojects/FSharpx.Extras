@@ -463,7 +463,7 @@ type Dictionary =
 [<Extension>]
 type EnumerableEx =
     [<Extension>]
-    static member FirstOrNone source = Seq.tryFind (konst true) source
+    static member FirstOrNone source = Seq.tryHead source
 
 [<Extension>]
 type FSharpAsyncEx =

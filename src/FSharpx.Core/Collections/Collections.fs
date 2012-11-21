@@ -1,6 +1,7 @@
 namespace FSharpx
 
 open System
+open System.Linq
 open System.Collections
 open System.Collections.Generic
 #if NET40
@@ -111,22 +112,14 @@ module Seq =
                 yield! next()
             }
         next()
-    
-    /// Converts a System.Collections.IEnumerable to a seq 
-    let ofEnumerable<'a> (a : System.Collections.IEnumerable) = 
-         let enum = a.GetEnumerator()
-         seq {
-             while enum.MoveNext() do yield unbox<'a> enum.Current
-         }
-    
+        
     /// A safe version of seq head
     let tryHead (source : seq<_>) = 
         use e = source.GetEnumerator()
         if e.MoveNext()
         then Some(e.Current)
         else None //empty list                
-        
-      
+              
     let tail (source : seq<_>) = 
         seq {
             use e = source.GetEnumerator()
@@ -158,26 +151,11 @@ module Seq =
          use e = source.GetEnumerator()
          tryNth' index e
     
-    /// The same as Seq.skip except returns None if the sequence is empty or does not have enough elements
-    let skipNoFail count (source: seq<_>) =
-        seq { use e = source.GetEnumerator() 
-              for _ in 1 .. count do
-                  if not (e.MoveNext()) then ()
-              while e.MoveNext() do
-                  yield e.Current }
-    
-    /// The same as Seq.take except returns None if the sequence is empty or does not have enough elements
-    let takeNoFail count (source : seq<'T>)    = 
-        if Unchecked.equals null source then invalidArg "source" "input seq cannot be null"
-        if count < 0 then invalidArg "count" "count must be non negative"
-        if count = 0 then Seq.empty else  
-        seq { use e = source.GetEnumerator() 
-              for _ in 0 .. count - 1 do
-                  if (e.MoveNext()) 
-                  then yield e.Current
-                  else ()
-             }
-    
+    /// The same as Seq.skip except it returns empty if the sequence is empty or does not have enough elements.
+    /// Alias for Enumerable.Skip
+    let inline skipNoFail count (source: seq<_>) = 
+        Enumerable.Skip(source, count)
+        
     /// Creates an infinite sequence of the given value
     let repeat a = seq { while true do yield a }
 
@@ -192,7 +170,8 @@ module Seq =
               | None -> ()
         }
 
-    /// Combines to sequences using the given function
+    /// Creates a new collection whose elements are the results of applying the given function to the corresponding pairs of elements from the two sequences. 
+    /// Unlike Seq.map2, if one input sequence is shorter than the other then the remaining elements of the longer sequence are not ignored, they are yielded at the end of the resulting sequence.
     let rec combine f (a : seq<_>) (b : seq<_>) =
         seq {
             use e = a.GetEnumerator()
@@ -210,7 +189,7 @@ module Seq =
 
     /// Pages the underlying sequence
     let page page pageSize (source : seq<_>) =
-          source |> skipNoFail (page * pageSize) |> takeNoFail pageSize
+          source |> skipNoFail (page * pageSize) |> Seq.truncate pageSize
         
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
