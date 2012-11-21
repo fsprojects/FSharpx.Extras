@@ -150,6 +150,24 @@ type PairingHeap<'a when 'a : comparison> =
     ///O(log n) amortized time. Returns option head element and tail.
     member this.TryUncons() = PairingHeap.tryUncons this
 
+    interface IEnumerable<'a> with
+
+        member this.GetEnumerator() = 
+            let e = 
+                let listH = this::[]
+                if this.IsDescending
+//WARNING! List.sort |> List.rev significantly faster (caveat: on 32-bit Win 7) than List.sortwith...go figure!
+//            PairingHeap.inOrder this |> List.sortWith (fun x y -> if (x > y) then -1
+//                                                                             else 
+//                                                                               if (x = y) then 0
+//                                                                               else 1) |> List.fold f state
+                then PairingHeap.inOrder listH |> List.sort |> List.rev |> List.toSeq
+                else PairingHeap.inOrder listH |> List.sort |> List.toSeq
+
+            e.GetEnumerator()
+
+        member this.GetEnumerator() = (this :> _ seq).GetEnumerator() :> IEnumerator
+
     interface IHeap<PairingHeap<'a>, 'a> with
         
         member this.Count() = this.Length()
@@ -188,21 +206,22 @@ type PairingHeap<'a when 'a : comparison> =
             | None -> None
             | Some(x, xs) -> Some(x, xs)
 
-        member this.GetEnumerator() = 
-            let e = 
-                let listH = this::[]
-                if this.IsDescending
-//WARNING! List.sort |> List.rev significantly faster (caveat: on 32-bit Win 7) than List.sortwith...go figure!
-//            PairingHeap.inOrder this |> List.sortWith (fun x y -> if (x > y) then -1
-//                                                                             else 
-//                                                                               if (x = y) then 0
-//                                                                               else 1) |> List.fold f state
-                then PairingHeap.inOrder listH |> List.sort |> List.rev |> List.toSeq
-                else PairingHeap.inOrder listH |> List.sort |> List.toSeq
+    interface IPriorityQueue<'a>
 
-            e.GetEnumerator()
+        with
+        member this.IsEmpty = this.IsEmpty
+        member this.Insert element = this.Insert element :> IPriorityQueue<'a>
+        member this.TryPeek() = this.TryGetHead()
+        member this.Peek() = this.Head()
 
-        member this.GetEnumerator() = (this :> _ seq).GetEnumerator() :> IEnumerator  
+        member this.TryPop() = 
+            match this.TryUncons() with
+            | Some(element,newHeap) -> Some(element,newHeap  :> IPriorityQueue<'a>)
+            | None -> None
+
+        member this.Pop() = 
+            let element,newHeap = this.Uncons()
+            element,(newHeap  :> IPriorityQueue<'a>)
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module PairingHeap =   

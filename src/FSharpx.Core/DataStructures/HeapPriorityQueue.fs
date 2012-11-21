@@ -1,9 +1,9 @@
 ﻿namespace FSharpx.DataStructures
 
-open FSharpx.DataStructures.BinomialHeap
+open FSharpx.DataStructures.PairingHeap
 
 module HeapPriorityQueue =
-    let empty<'a when 'a : comparison> maxQueue = BinomialHeap<'a>.empty maxQueue :> IPriorityQueue<'a>
+    let empty<'a when 'a : comparison> maxQueue = PairingHeap.empty maxQueue :> IPriorityQueue<'a>
 
     let inline isEmpty (pq:IPriorityQueue<'a>) = pq.IsEmpty
 
