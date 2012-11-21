@@ -117,3 +117,55 @@ IHeap generators from random ofSeq and/or snoc elements from random list
               let! x =  Gen.listString n
               let! y =  Gen.listString n2
               return ( (BinomialHeap.ofSeq false x |> insertThruList y), ((x @ y) |> List.sort) ) }
+
+//PairingHeap
+(*
+IHeap generators from random ofSeq and/or snoc elements from random list 
+*)
+    let maxPairingHeapIntGen =
+        gen { let! n = Gen.length2thru12
+              let! n2 = Gen.length1thru12
+              let! x =  Gen.listInt n
+              let! y =  Gen.listInt n2
+              return ( (PairingHeap.ofSeq true x |> insertThruList y), ((x @ y) |> List.sort |> List.rev) ) }
+
+    let maxPairingHeapIntOfSeqGen =
+        gen { let! n = Gen.length1thru12
+              let! x =  Gen.listInt n
+              return ( (PairingHeap.ofSeq true x), (x |> List.sort |> List.rev) ) }
+
+    let maxPairingHeapIntInsertGen =
+        gen { let! n = Gen.length1thru12
+              let! x =  Gen.listInt n
+              return ( (PairingHeap.empty true |> insertThruList x), (x |> List.sort |> List.rev) ) }
+
+    let maxPairingHeapStringGen =
+        gen { let! n = Gen.length1thru12
+              let! n2 = Gen.length2thru12
+              let! x =  Gen.listString n
+              let! y =  Gen.listString n2
+              return ( (PairingHeap.ofSeq true x |> insertThruList y), ((x @ y) |> List.sort |> List.rev) ) }
+
+    let minPairingHeapIntGen =
+        gen { let! n = Gen.length2thru12
+              let! n2 = Gen.length1thru12
+              let! x =  Gen.listInt n
+              let! y =  Gen.listInt n2
+              return ( (PairingHeap.ofSeq false x |> insertThruList y), ((x @ y) |> List.sort) ) }
+
+    let minPairingHeapIntOfSeqGen =
+        gen { let! n = Gen.length1thru12
+              let! x =  Gen.listInt n
+              return ( (PairingHeap.ofSeq false x), (x |> List.sort) ) }
+
+    let minPairingHeapIntInsertGen =
+        gen { let! n = Gen.length1thru12
+              let! x =  Gen.listInt n
+              return ( (PairingHeap.empty false |> insertThruList x), (x |> List.sort) ) }
+
+    let minPairingHeapStringGen =
+        gen { let! n = Gen.length1thru12
+              let! n2 = Gen.length2thru12
+              let! x =  Gen.listString n
+              let! y =  Gen.listString n2
+              return ( (PairingHeap.ofSeq false x |> insertThruList y), ((x @ y) |> List.sort) ) }

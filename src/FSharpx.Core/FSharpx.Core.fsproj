@@ -70,6 +70,7 @@
     <Compile Include="DataStructures\SkewBinaryRandomAccessList.fs" />
     <Compile Include="DataStructures\LeftistHeap.fs" />
     <Compile Include="DataStructures\BinomialHeap.fs" />
+	<Compile Include="DataStructures\PairingHeap.fs" />
     <Compile Include="DataStructures\HeapPriorityQueue.fs" />
     <Compile Include="DataStructures\BinaryTreeZipper.fs" />
     <Compile Include="DataStructures\ListZipper.fs" />
