@@ -39,3 +39,6 @@ FSharp.Monad_mm_cache.bin
 manualNuget/lib/
 build.AndDeploy.bat
 *.sln.ide
+
+*.userprefs
+.DS_Store
