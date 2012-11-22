@@ -18,3 +18,13 @@ let ``toListDistance example``() =
     |> BKTree.ByteString.ofList
     |> BKTree.ByteString.toListDistance 2 (BS "sitting"B)
     |> should equal [BS "setting"B; BS "getting"B]
+
+
+let inline toBS(text:string) = ByteString(System.Text.Encoding.ASCII.GetBytes text)
+
+let calcEditDistance text1 text2 = BKTree.ByteString.distance (toBS text1) (toBS text2)
+    
+[<Test>]
+let ``String distance example``() =
+    calcEditDistance "meilenstein" "levenshtein"
+    |> should equal 4
