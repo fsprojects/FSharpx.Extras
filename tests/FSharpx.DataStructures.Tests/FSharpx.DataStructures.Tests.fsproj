@@ -64,12 +64,13 @@
     <Compile Include="BankersDequeTest.fs" />
     <Compile Include="RealTimeDequeTest.fs" />
     <Compile Include="LeftistHeapTest.fs" />
-	<Compile Include="PairingHeapTest.fs" />
+    <Compile Include="PairingHeapTest.fs" />
     <Compile Include="BinomialHeapTest.fs" />
     <Compile Include="HeapPriorityQueueTest.fs" />
     <Compile Include="RoseTreeTest.fs" />
     <Compile Include="IQueueTest.fs" />
     <Compile Include="BKTreeTest.fs" />
+    <Compile Include="EditDistanceTest.fs" />
     <Compile Include="IntMapTest.fs" />
     <None Include="packages.config" />
   </ItemGroup>
