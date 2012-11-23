@@ -25,6 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{EFB3
 		samples\CircularBuffer.fsx = samples\CircularBuffer.fsx
 		samples\Crawler.fsx = samples\Crawler.fsx
 		samples\MouseFollow.fsx = samples\MouseFollow.fsx
+		samples\StmSample.fsx = samples\StmSample.fsx
 		samples\StockStream.fsx = samples\StockStream.fsx
 		samples\WebProxy.fsx = samples\WebProxy.fsx
 	EndProjectSection
