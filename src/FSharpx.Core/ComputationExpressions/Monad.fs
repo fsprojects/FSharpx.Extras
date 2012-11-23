@@ -148,7 +148,7 @@ module Option =
     /// Right-to-left Kleisli composition
     let inline (<=<) x = flip (>=>) x
     /// Maps a Nullable to Option
-    let fromNullable (n: _ Nullable) = 
+    let ofNullable (n: _ Nullable) = 
         if n.HasValue
             then Some n.Value
             else None
@@ -159,7 +159,7 @@ module Option =
         | Some x -> Nullable(x)
 
     /// True -> Some(), False -> None
-    let inline fromBool b = if b then Some() else None
+    let inline ofBool b = if b then Some() else None
 
     /// Converts a function returning bool,value to a function returning value option.
     /// Useful to process TryXX style functions.
@@ -169,13 +169,13 @@ module Option =
     
     /// If true,value then returns Some value. Otherwise returns None.
     /// Useful to process TryXX style functions.
-    let inline fromBoolAndValue b = 
+    let inline ofBoolAndValue b = 
         match b with
         | true,v -> Some v
         | _ -> None
 
     /// Maps Choice 1Of2 to Some value, otherwise None.
-    let fromChoice =
+    let ofChoice =
         function
         | Choice1Of2 a -> Some a
         | _ -> None
@@ -250,9 +250,9 @@ module Nullable =
     /// If no value, throws.
     let get (x: _ Nullable) = x.Value
     /// Converts option to nullable
-    let fromOption = Option.toNullable
+    let ofOption = Option.toNullable
     /// Converts nullable to option
-    let toOption = Option.fromNullable
+    let toOption = Option.ofNullable
     /// Monadic bind
     let bind f x =
         match x with
@@ -743,10 +743,10 @@ module Choice =
         member this.Bind(m,f) = bind f m
 
     /// If Choice is 1Of2, returns Some value. Otherwise, returns None.
-    let toOption = Option.fromChoice
+    let toOption = Option.ofChoice
 
     /// If Some value, returns Choice1Of2 value. Otherwise, returns the supplied default value.
-    let fromOption o = 
+    let ofOption o = 
         function
         | Some a -> Choice1Of2 a
         | None -> Choice2Of2 o

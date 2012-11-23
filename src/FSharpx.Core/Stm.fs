@@ -347,7 +347,7 @@ module ArrayQueue =
                       |> mapM readTVar 
                       |> liftM Seq.toList }
     
-    let fromList n list =
+    let ofList n list =
         let l = list |> List.toArray
         let a = Array.zeroCreate n  
         Array.blit l 0 a 0 l.Length
@@ -400,7 +400,7 @@ module ListQueue =
                           | Nil -> stm.Return(list) }
         f queue.head [] |> liftM List.rev
     
-    let fromList list =
+    let ofList list =
         let f item (head, last) = 
             let newHead = Cons (item, newTVar head)
             newHead, match last with
@@ -410,8 +410,8 @@ module ListQueue =
         { head = newTVar head; last = newTVar last }
     
     let test l1 l2 num_threads =
-        let q1 = fromList l1
-        let q2 = fromList l2
+        let q1 = ofList l1
+        let q2 = ofList l2
         let move_item q1 q2 =
             stm { let! x = dequeue q1
                   do! enqueue q2 x 
