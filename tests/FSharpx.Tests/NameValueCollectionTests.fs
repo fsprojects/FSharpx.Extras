@@ -8,8 +8,8 @@ open System.Collections.Specialized
 open System.Linq
 
 [<Test>]
-let fromSeq() =
-  let n1 = NameValueCollection.fromSeq ["1","uno"; "1","one"; "2","two"]
+let ofSeq() =
+  let n1 = NameValueCollection.ofSeq ["1","uno"; "1","one"; "2","two"]
   let n2 = NameValueCollection()
   n2.Add("1", "uno")
   n2.Add("1", "one")
@@ -19,21 +19,21 @@ let fromSeq() =
 [<Test>]
 let toSeq() =
   let r = ["1","uno"; "1","one"; "2","two"]
-  let a = NameValueCollection.fromSeq r
+  let a = NameValueCollection.ofSeq r
   let s = NameValueCollection.toSeq a
   Assert.AreEqual(r,s)
 
 [<Test>]
 let toArray() =
   let r = [|"1","uno"; "1","one"; "2","two"|]
-  let a = NameValueCollection.fromSeq r
+  let a = NameValueCollection.ofSeq r
   let s = NameValueCollection.toArray a
   Assert.AreEqual(r,s)
   
 [<Test>]
 let toList() =
   let r = ["1","uno"; "1","one"; "2","two"]
-  let a = NameValueCollection.fromSeq r
+  let a = NameValueCollection.ofSeq r
   let s = NameValueCollection.toList a
   Assert.AreEqual(r,s)
 
@@ -53,7 +53,7 @@ let assertKeyIs (l: ILookup<_,_>) a key =
 
 [<Test>]
 let toLookup() =
-  let n1 = NameValueCollection.fromSeq ["1","uno"; "1","one"; "2","two"]
+  let n1 = NameValueCollection.ofSeq ["1","uno"; "1","one"; "2","two"]
   let l = NameValueCollection.toLookup n1
   "1" |> assertKeyIs l ["uno"; "one"]
   "2" |> assertKeyIs l ["two"]
@@ -63,7 +63,7 @@ let toLookup() =
 
 [<Test>]
 let asLookup() =
-  let n1 = NameValueCollection.fromSeq ["1","uno"; "1","one"; "2","two"]
+  let n1 = NameValueCollection.ofSeq ["1","uno"; "1","one"; "2","two"]
   let l = NameValueCollection.asLookup n1
   "1" |> assertKeyIs l ["uno"; "one"]
   "2" |> assertKeyIs l ["two"]
@@ -73,7 +73,7 @@ let asLookup() =
 
 [<Test>]
 let asDictionary() =
-  let n1 = NameValueCollection.fromSeq ["1","uno"; "1","one"; "2","two"]
+  let n1 = NameValueCollection.ofSeq ["1","uno"; "1","one"; "2","two"]
   let d = NameValueCollection.asDictionary n1
   Assert.AreEqual([|"uno";"one"|], d.["1"])
   Assert.AreEqual([|"two"|], d.["2"])
