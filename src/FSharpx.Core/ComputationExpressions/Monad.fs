@@ -159,7 +159,7 @@ module Option =
         | Some x -> Nullable(x)
 
     /// True -> Some(), False -> None
-    let inline fromBool b = if b then Some() else None
+    let inline ofBool b = if b then Some() else None
 
     /// Converts a function returning bool,value to a function returning value option.
     /// Useful to process TryXX style functions.
@@ -169,7 +169,7 @@ module Option =
     
     /// If true,value then returns Some value. Otherwise returns None.
     /// Useful to process TryXX style functions.
-    let inline fromBoolAndValue b = 
+    let inline ofBoolAndValue b = 
         match b with
         | true,v -> Some v
         | _ -> None

@@ -24,7 +24,7 @@ let ``kleisli composition``() =
 let ``from bool and value``() =
     let parse x = 
         Int32.TryParse(x, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture) 
-        |> Option.fromBoolAndValue
+        |> Option.ofBoolAndValue
     Assert.AreEqual(Some 34, parse "34")
     Assert.AreEqual(None, parse "xx")
 
