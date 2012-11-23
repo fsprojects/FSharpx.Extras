@@ -289,7 +289,7 @@ type FSharpChoice =
     static member Cast (o: obj) = Choice.cast o
 
     [<Extension>]
-    static member ToFSharpOption c = Option.fromChoice c
+    static member ToFSharpOption c = Option.ofChoice c
 
     [<Extension>]
     static member Try (f: Func<_,_>) = Func<_,_>(Choice.protect f.Invoke)

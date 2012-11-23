@@ -175,7 +175,7 @@ module Option =
         | _ -> None
 
     /// Maps Choice 1Of2 to Some value, otherwise None.
-    let fromChoice =
+    let ofChoice =
         function
         | Choice1Of2 a -> Some a
         | _ -> None
@@ -743,10 +743,10 @@ module Choice =
         member this.Bind(m,f) = bind f m
 
     /// If Choice is 1Of2, returns Some value. Otherwise, returns None.
-    let toOption = Option.fromChoice
+    let toOption = Option.ofChoice
 
     /// If Some value, returns Choice1Of2 value. Otherwise, returns the supplied default value.
-    let fromOption o = 
+    let ofOption o = 
         function
         | Some a -> Choice1Of2 a
         | None -> Choice2Of2 o
