@@ -148,7 +148,7 @@ module Option =
     /// Right-to-left Kleisli composition
     let inline (<=<) x = flip (>=>) x
     /// Maps a Nullable to Option
-    let fromNullable (n: _ Nullable) = 
+    let ofNullable (n: _ Nullable) = 
         if n.HasValue
             then Some n.Value
             else None
@@ -250,9 +250,9 @@ module Nullable =
     /// If no value, throws.
     let get (x: _ Nullable) = x.Value
     /// Converts option to nullable
-    let fromOption = Option.toNullable
+    let ofOption = Option.toNullable
     /// Converts nullable to option
-    let toOption = Option.fromNullable
+    let toOption = Option.ofNullable
     /// Monadic bind
     let bind f x =
         match x with
