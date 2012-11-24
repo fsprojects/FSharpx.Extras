@@ -77,7 +77,18 @@ let frameworkParams portable frameworkVersion =
         ["TargetFramework", "portable47"
          "TargetFrameworkVersion", frameworkVersion
          "TypeProviderRuntimeFramework", "portable47"
-         "DefineConstants", "NET" + normalizeFrameworkVersion frameworkVersion + ";FX_NO_LOCAL_FILESYSTEM;FX_NO_CONCURRENT;NO_SYSTEM_ENVIRONMENT_GETENVIRONMENTVARIABLE;FX_NO_CUSTOMTYPEDESCRIPTOR;FX_NO_CUSTOMATTRIBUTEDATA;FX_NO_SYNC_WEBRESPONSE;FX_NO_WEBREQUEST_CONTENTLENGTH;FX_NO_GETCURRENTMETHOD;FX_NO_WEBHEADERS_ADD;TYPE_PROVIDER_RUNTIME_FX_PORTABLE47;TRACE"]
+         "DefineConstants", "NET" + normalizeFrameworkVersion frameworkVersion
+         "DefineConstants", "FX_NO_LOCAL_FILESYSTEM"
+         "DefineConstants", "FX_NO_CONCURRENT"
+         "DefineConstants", "NO_SYSTEM_ENVIRONMENT_GETENVIRONMENTVARIABLE"
+         "DefineConstants", "FX_NO_CUSTOMTYPEDESCRIPTOR"
+         "DefineConstants", "FX_NO_CUSTOMATTRIBUTEDATA"
+         "DefineConstants", "FX_NO_SYNC_WEBRESPONSE"
+         "DefineConstants", "FX_NO_WEBREQUEST_CONTENTLENGTH"
+         "DefineConstants", "FX_NO_GETCURRENTMETHOD"
+         "DefineConstants", "FX_NO_WEBHEADERS_ADD"
+         "DefineConstants", "TYPE_PROVIDER_RUNTIME_FX_PORTABLE47"
+         "DefineConstants", "TRACE"]
     else
         ["TargetFrameworkVersion", frameworkVersion
          "DefineConstants", "NET" + normalizeFrameworkVersion frameworkVersion]
@@ -104,14 +115,19 @@ let appReferences portable frameworkVersion =
                     yield "./src/**/*.Async.fsproj"
                     yield "./src/**/*.Http.fsproj" // TODO: why is that?
                     yield "./src/**/*.Observable.fsproj" // TODO: why is that?
-                      ] }
+                 if isUnix then
+                    yield "./src/**/*.TypeProviders.Excel.*proj"
+                    yield "./src/**/*.TypeProviders.Xaml.*proj"] }
         |> Scan
 
 let testReferences frameworkVersion =
     { (!+ "./tests/**/*.*proj") with 
         Excludes = [if not (buildTypeProviders frameworkVersion) then
                         yield "./tests/**/*.TypeProviders.*proj"
-                        yield "./tests/**/*.TypeProviders.*.*proj"] }
+                        yield "./tests/**/*.TypeProviders.*.*proj"
+                    if isUnix then
+                        yield "./tests/**/*.TypeProviders.Excel.*proj"
+                        yield "./tests/**/*.TypeProviders.Xaml.*proj"] }
     |> Scan
 
 // targets
