@@ -501,7 +501,7 @@ module NameValueCollection =
     /// Creates a <see cref="NameValueCollection"/> from a list of key-value pairs
     /// </summary>
     /// <param name="l"></param>
-    let fromSeq l =
+    let ofSeq l =
         let x = NameValueCollection()
         Seq.iter (addInPlace x) l
         x
