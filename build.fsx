@@ -1,4 +1,4 @@
-#r "./packages/FAKE.1.64.18/tools/FakeLib.dll"
+#r "./packages/FAKE.1.64.18.0/tools/FakeLib.dll"
 
 open Fake 
 open Fake.Git
