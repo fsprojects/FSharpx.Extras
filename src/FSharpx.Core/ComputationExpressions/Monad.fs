@@ -740,7 +740,28 @@ module Choice =
 
     type EitherBuilder() =
         member this.Return a = returnM a
-        member this.Bind(m,f) = bind f m
+        member this.Bind (m, f) = bind f m
+        member this.ReturnFrom m = m
+        member this.Zero () = returnM ()
+        member this.Combine (m, f)  = bind f m
+        member this.Delay f = f
+        member this.Run f = f ()
+        member this.TryWith (m, h) =
+            try this.ReturnFrom m
+            with e -> h e
+        member this.TryFinally (m, compensation) =
+            try this.ReturnFrom m
+            finally compensation()
+        member this.Using (resource : #IDisposable, body) = 
+            this.TryFinally (body resource, fun () -> match resource with null -> () | disp -> disp.Dispose())
+        member this.While (guard, f) = 
+            if not (guard()) then this.Zero() else
+            this.Bind(f(), fun _ -> this.While(guard, f))
+        member this.For (sequence:seq<_>, body) =
+            this.Using (sequence.GetEnumerator(),
+                        fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current)))
+
+    let choose = EitherBuilder()
 
     /// If Choice is 1Of2, returns Some value. Otherwise, returns None.
     let toOption = Option.ofChoice
