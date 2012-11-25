@@ -236,10 +236,14 @@ let parse source =
             |> (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddMilliseconds 
             |> (fun x -> Date(x))
         else
+            let dateTimeStylesForUtc = function
+                | true -> DateTimeStyles.AssumeUniversal ||| DateTimeStyles.AdjustToUniversal
+                | false -> DateTimeStyles.AssumeLocal ||| DateTimeStyles.AllowWhiteSpaces
+                
             let matches = iso8601Regex.Match(input)
             if matches.Success then
                 input 
-                |> fun s -> DateTime.TryParse(s, CultureInfo.InvariantCulture, (if matches.Groups.["IsUTC"].Success then DateTimeStyles.AssumeUniversal ||| DateTimeStyles.AdjustToUniversal else DateTimeStyles.AssumeLocal))
+                |> fun s -> DateTime.TryParse(s, CultureInfo.InvariantCulture, dateTimeStylesForUtc matches.Groups.["IsUTC"].Success)
                 |> (fun (parsed, d) -> if parsed then 
                                          Date(d)
                                        else

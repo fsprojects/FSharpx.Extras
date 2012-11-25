@@ -63,6 +63,11 @@ let ``Can parse document with UTC iso date``() =
     let j = parse "{\"anniversary\": \"2009-05-19 14:39:22Z\"}"
     (j.GetDate "anniversary").ToUniversalTime() |> should equal (new System.DateTime(2009, 05, 19, 14, 39, 22, System.DateTimeKind.Utc))
     (j.GetDate "anniversary").Kind |> should equal System.DateTimeKind.Utc
+
+[<Test>]    
+let ``Can parse document with timezone and fraction iso date``() =
+    let j = parse "{\"anniversary\": \"1997-07-16T19:20:30.45+01:00\"}"
+    (j.GetDate "anniversary").ToUniversalTime() |> should equal (new System.DateTime(1997, 07, 16, 18, 20, 30, 450, System.DateTimeKind.Utc))
     
 // TODO: Due to limitations in the current ISO 8601 datetime parsing these fail, and should be made to pass
 //[<Test>]
