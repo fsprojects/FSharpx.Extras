@@ -33,3 +33,38 @@ let ``Desugared else branch should be None``() =
         if false then 
           return 4 } 
       |> should equal None
+
+open FsCheck
+open FsCheck.NUnit
+
+[<Test>]
+let ``monad laws``() =
+    let ret (x: int) = maybe.Return x
+    let n = sprintf "Maybe : monad %s"
+    let inline (>>=) m f = maybe.Combine(m,f)
+    fsCheck "left identity" <| 
+        fun f a -> ret a >>= f = f a
+    fsCheck "right identity" <| 
+        fun x -> x >>= ret = x
+    fsCheck "associativity" <| 
+        fun f g v ->
+            let a = (v >>= f) >>= g
+            let b = v >>= (fun x -> f x >>= g)
+            a = b
+
+[<Test>]
+let ``monadplus laws``() =
+    // http://www.haskell.org/haskellwiki/MonadPlus
+    let mzero = maybe.Zero()
+    let mplus x = orElse x
+    let inline (>>=) m f = maybe.Combine(m,f)
+    fsCheck "monoid left identity" <|
+        fun a -> mplus a mzero = a
+    fsCheck "monoid right identity" <|
+        fun a -> mplus mzero a = a
+    fsCheck "monoid associativity" <|
+        fun a b c -> mplus (mplus a b) c = mplus a (mplus b c)
+    fsCheck "left zero" <|
+        fun a -> mzero >>= a = mzero
+    fsCheck "left distribution" <|
+        fun a b c -> mplus a b >>= c = mplus (a >>= c) (b >>= c)
