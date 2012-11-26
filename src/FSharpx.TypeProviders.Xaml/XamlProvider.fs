@@ -13,11 +13,12 @@ open System.Xml
 open System.Linq.Expressions
 open FSharpx.TypeProviders.Helper
 
-let wpfAssembly = typeof<System.Windows.Controls.Button>.Assembly
+let private wpfAssembly = typeof<System.Windows.Controls.Button>.Assembly
 
 /// Simple type wrapping Xaml file
-type XamlFile(root:FrameworkElement) =
+type XamlFile(schema: string) =
     let dict = new Dictionary<_,_>()
+    let root = XamlReader.Parse(schema) :?> FrameworkElement
 
     member this.GetChild name = 
         match dict.TryGetValue name with
@@ -46,10 +47,9 @@ let internal posOfReader filename (xaml:XmlReader) =
       Column = lineInfo.LinePosition
       FileName = filename }
 
-let internal createXamlNode filename isRoot (xaml:XmlReader) =
+let internal createXamlNode (schemaContext: Xaml.XamlSchemaContext) filename isRoot (xaml:XmlReader) =
     let pos = posOfReader filename xaml
-    try
-        let typeName = xaml.Name
+    try 
         let name =                        
             match xaml.GetAttribute("Name") with
             | name when name <> null -> Some name
@@ -62,13 +62,11 @@ let internal createXamlNode filename isRoot (xaml:XmlReader) =
         | None -> None
         | Some name -> 
             let propertyType =
-                match typeName with
-                | "Window" -> typeof<Window>
-                | other ->
-                    match wpfAssembly.GetType(sprintf "System.Windows.Controls.%s" other) with
-                    | null -> typeof<obj>
-                    | st -> st
-
+                let r = schemaContext.GetAllXamlTypes(xaml.NamespaceURI)
+                let xamltype = r |> Seq.tryFind (fun xt -> xt.Name = xaml.LocalName)
+                match xamltype with
+                | None   -> typeof<obj>
+                | Some t -> t.UnderlyingType
             { Position = pos
               IsRoot = isRoot
               Name = name
@@ -77,13 +75,13 @@ let internal createXamlNode filename isRoot (xaml:XmlReader) =
     with
     | :? XmlException -> failwithf "Error near %A" pos
 
-let internal readXamlFile filename (xaml:XmlReader) =    
+let internal readXamlFile (schemaContext: Xaml.XamlSchemaContext) filename (xaml:XmlReader) =    
     seq {
         let isRoot = ref true
         while xaml.Read() do
             match xaml.NodeType with
             | XmlNodeType.Element ->               
-                match createXamlNode filename (!isRoot) xaml with
+                match createXamlNode schemaContext filename (!isRoot) xaml with
                 | Some node ->
                     yield node
                     isRoot := false
@@ -94,11 +92,11 @@ let internal readXamlFile filename (xaml:XmlReader) =
 let createXmlReader(textReader:TextReader) =
     XmlReader.Create(textReader, XmlReaderSettings(IgnoreProcessingInstructions = true, IgnoreWhitespace = true))
 
-let internal createTypeFromReader typeName fileName schema (reader: TextReader) =
+let internal createTypeFromReader (schemaContext: Xaml.XamlSchemaContext) typeName fileName schema (reader: TextReader) =
     let elements = 
         reader
         |> createXmlReader 
-        |> readXamlFile fileName
+        |> readXamlFile schemaContext fileName
         |> Seq.toList
 
     let root = List.head elements
@@ -114,7 +112,7 @@ let internal createTypeFromReader typeName fileName schema (reader: TextReader) 
     let ctor = 
         ProvidedConstructor(
             parameters = [], 
-            InvokeCode = (fun args -> <@@ XamlFile(XamlReader.Parse(schema) :?> FrameworkElement) @@>))
+            InvokeCode = (fun args -> <@@ XamlFile(schema) @@>))
 
     ctor.AddXmlDoc (sprintf "Initializes typed access to %s" fileName)
     ctor.AddDefinitionLocation(root.Position.Line,root.Position.Column,root.Position.FileName)
@@ -134,15 +132,35 @@ let internal createTypeFromReader typeName fileName schema (reader: TextReader) 
 
 /// Infer schema from the loaded data and generate type with properties     
 let internal xamlType (ownerType:TypeProviderForNamespaces)  (cfg:TypeProviderConfig) =
+
+    cfg.ReferencedAssemblies 
+    |> Seq.map (fun a -> System.IO.FileInfo(a).DirectoryName)
+    |> Set.ofSeq
+    |> Set.iter (fun p -> ownerType.RegisterProbingFolder p)
+   
+    let assemblies = 
+        cfg.ReferencedAssemblies 
+        |> Seq.map (fun r -> Assembly.Load(IO.File.ReadAllBytes r))
+        |> Seq.append [wpfAssembly]
+        |> Array.ofSeq
+    let ss = Xaml.XamlSchemaContextSettings()
+    ss.FullyQualifyAssemblyNamesInClrNamespaces <- false
+    ss.SupportMarkupExtensionsWithDuplicateArity <- false
+    let schemaContext = System.Xaml.XamlSchemaContext(assemblies, ss)//  (assemblies)
+
     let createTypeFromFileName typeName (fileName:string) =        
         use reader = new StreamReader(fileName)
-        createTypeFromReader typeName fileName (File.ReadAllText fileName) reader
+        createTypeFromReader schemaContext typeName fileName (File.ReadAllText fileName) reader
 
     let createTypeFromSchema typeName (schema:string) =        
         use reader = new StringReader(schema)
-        createTypeFromReader typeName null schema reader
+        createTypeFromReader schemaContext typeName null schema reader
 
     let missingValue = "@@@missingValue###"
+    
+
+
+    
     let xamlType = erasedType<obj> thisAssembly rootNamespace "XAML"
     xamlType.DefineStaticParameters(
         parameters = [ProvidedStaticParameter("FileName", typeof<string>, missingValue) // Parameterize the type by the file to use as a template
