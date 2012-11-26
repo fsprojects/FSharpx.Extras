@@ -1,5 +1,6 @@
 ﻿module FSharpx.Tests.MaybeTest
 
+open FSharpx
 open FSharpx.Option
 open NUnit.Framework
 open FsUnit
@@ -56,7 +57,8 @@ let ``monad laws``() =
 let ``monadplus laws``() =
     // http://www.haskell.org/haskellwiki/MonadPlus
     let mzero = maybe.Zero()
-    let mplus x = orElse x
+    let ret = maybe.Return
+    let mplus x = flip orElse x
     let inline (>>=) m f = maybe.Combine(m,f)
     fsCheck "monoid left identity" <|
         fun a -> mplus a mzero = a
@@ -66,5 +68,7 @@ let ``monadplus laws``() =
         fun a b c -> mplus (mplus a b) c = mplus a (mplus b c)
     fsCheck "left zero" <|
         fun a -> mzero >>= a = mzero
-    fsCheck "left distribution" <|
-        fun a b c -> mplus a b >>= c = mplus (a >>= c) (b >>= c)
+    fsCheck "left catch" <|
+        fun a b -> mplus (ret a) b = ret a
+//    fsCheck "left distribution" <|
+//        fun a b f -> (mplus a b >>= f) = (mplus (a >>= f) (b >>= f))
