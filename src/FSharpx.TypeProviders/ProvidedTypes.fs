@@ -1873,14 +1873,21 @@ type TypeProviderForNamespaces(namespacesAndTypes : list<(string * list<Provided
 #else
     abstract member ResolveAssembly : args : System.ResolveEventArgs -> Assembly
     default this.ResolveAssembly(args) = 
-        let expectedName = (AssemblyName(args.Name)).Name + ".dll"
-        let expectedLocationOpt = 
-            probingFolders 
-            |> Seq.map (fun f -> IO.Path.Combine(f, expectedName))
-            |> Seq.tryFind IO.File.Exists
-        match expectedLocationOpt with
-        | Some f -> Assembly.LoadFrom f
-        | None -> null
+        let name = AssemblyName(args.Name)
+        let existingAssembly = 
+            System.AppDomain.CurrentDomain.GetAssemblies()
+            |> Seq.tryFind(fun a -> System.Reflection.AssemblyName.ReferenceMatchesDefinition(name, a.GetName()))
+        match existingAssembly with
+        | Some a -> a
+        | None -> 
+           let expectedName = (AssemblyName(args.Name)).Name + ".dll"
+           let expectedLocationOpt = 
+               probingFolders 
+               |> Seq.map (fun f -> IO.Path.Combine(f, expectedName))
+               |> Seq.tryFind IO.File.Exists
+           match expectedLocationOpt with
+           | Some f -> Assembly.Load(IO.File.ReadAllBytes f)
+           | None -> null
 
     member this.RegisterProbingFolder (folder) = 
         // use GetFullPath to ensure that folder is valid
