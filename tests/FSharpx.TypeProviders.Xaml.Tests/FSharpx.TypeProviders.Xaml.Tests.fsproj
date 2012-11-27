@@ -35,6 +35,9 @@
     <Reference Include="FSharpx.TypeProviders.Xaml">
       <HintPath>..\..\src\FSharpx.TypeProviders.Xaml\bin\Debug\FSharpx.TypeProviders.Xaml.dll</HintPath>
     </Reference>
+    <Reference Include="FSharpx.TypeProviders.Xaml.Tests.ExternalControl">
+      <HintPath>FSharpx.TypeProviders.Xaml.Tests.ExternalControl.dll</HintPath>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>True</Private>
@@ -63,13 +66,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Compile Include="Xaml.Tests.fs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\FSharpx.TypeProviders.Xaml.Tests.ExternalControl\FSharpx.TypeProviders.Xaml.Tests.ExternalControl.fsproj">
-      <Name>FSharpx.TypeProviders.Xaml.Tests.ExternalControl</Name>
-      <Project>{94b8edad-06d1-44a8-ac44-906d7b6a37ab}</Project>
-      <Private>True</Private>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
