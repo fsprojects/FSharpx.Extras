@@ -1879,7 +1879,7 @@ type TypeProviderForNamespaces(namespacesAndTypes : list<(string * list<Provided
             |> Seq.map (fun f -> IO.Path.Combine(f, expectedName))
             |> Seq.tryFind IO.File.Exists
         match expectedLocationOpt with
-        | Some f -> Assembly.LoadFrom f
+        | Some f -> Assembly.Load(IO.File.ReadAllBytes f)
         | None -> null
 
     member this.RegisterProbingFolder (folder) = 
