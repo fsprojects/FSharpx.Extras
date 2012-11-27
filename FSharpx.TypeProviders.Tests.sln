@@ -1,5 +1,5 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2012
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "WPFSample", "samples\WPF\WPFSample\WPFSample.fsproj", "{4468E3E7-88CC-4B75-A17D-1FE46717A3AC}"
 EndProject
