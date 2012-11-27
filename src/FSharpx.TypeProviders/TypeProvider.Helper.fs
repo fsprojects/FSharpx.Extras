@@ -1,6 +1,6 @@
 ﻿/// Starting to implement some helpers on top of ProvidedTypes API
 module internal FSharpx.TypeProviders.Helper
-
+open System
 open System.IO
 open FSharpx.Strings
 open Samples.FSharp.ProvidedTypes
