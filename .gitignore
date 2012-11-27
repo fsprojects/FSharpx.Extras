@@ -38,6 +38,3 @@ FSharp.Monad_mm_cache.bin
 *.nupkg
 manualNuget/lib/
 build.AndDeploy.bat
-
-*.userprefs
-.DS_Store
