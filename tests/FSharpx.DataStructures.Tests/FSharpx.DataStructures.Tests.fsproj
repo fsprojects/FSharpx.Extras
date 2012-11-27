@@ -43,23 +43,35 @@
   </PropertyGroup>
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
+    <Compile Include="QueueGen.fs" />
+    <Compile Include="HeapGen.fs" />
     <Compile Include="DListTest.fs" />
     <Compile Include="TransientVectorTest.fs" />
     <Compile Include="PersistentVectorTest.fs" />
+    <Compile Include="RingBufferTest.fs" />
+    <Compile Include="TimeSeriesTest.fs" />
     <Compile Include="BootstrappedQueueTest.fs" />
     <Compile Include="ImplicitQueueTest.fs" />
     <Compile Include="RealTimeQueueTest.fs" />
     <Compile Include="NonEmptyListTests.fs" />
     <Compile Include="BottomUpMergeSortTest.fs" />
     <Compile Include="ListZipperTest.fs" />
-	<Compile Include="BinaryRandomAccessListTest.fs" />
+    <Compile Include="BinaryRandomAccessListTest.fs" />
     <Compile Include="AltBinaryRandomAccessListTest.fs" />
-	<Compile Include="SkewBinaryRandomAccessListTest.fs" />
-	<Compile Include="DequeTest.fs" />
-	<Compile Include="BatchedDequeTest.fs" />
-	<Compile Include="BankersDequeTest.fs" />
-	<Compile Include="RealTimeDequeTest.fs" />
-	<Compile Include="LeftistHeapTest.fs" />
+    <Compile Include="SkewBinaryRandomAccessListTest.fs" />
+    <Compile Include="DequeTest.fs" />
+    <Compile Include="BatchedDequeTest.fs" />
+    <Compile Include="BankersDequeTest.fs" />
+    <Compile Include="RealTimeDequeTest.fs" />
+    <Compile Include="LeftistHeapTest.fs" />
+    <Compile Include="PairingHeapTest.fs" />
+    <Compile Include="BinomialHeapTest.fs" />
+    <Compile Include="HeapPriorityQueueTest.fs" />
+    <Compile Include="RoseTreeTest.fs" />
+    <Compile Include="IQueueTest.fs" />
+    <Compile Include="BKTreeTest.fs" />
+    <Compile Include="EditDistanceTest.fs" />
+    <Compile Include="IntMapTest.fs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

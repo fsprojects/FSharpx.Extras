@@ -41,11 +41,13 @@
     </Compile>
     <Compile Include="Xml.Reader.Tests.fs" />
     <Compile Include="Xml.Writer.Tests.fs" />
+    <Compile Include="Xml.ProjectFile.Tests.fs" />
     <Compile Include="Xml.DocumentOverride.Tests.fs" />
     <Compile Include="JSON.Reader.Tests.fs" />
     <Compile Include="JSON.Writer.Tests.fs" />
     <Compile Include="JSON.WikiSample.Tests.fs" />
     <Compile Include="JSON.DocumentOverride.Tests.fs" />
+    <Compile Include="JSON.ProjectFile.Tests.fs" />
     <Compile Include="MiniCsv.Tests.fs" />
     <Content Include="OptionValues.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -66,6 +68,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Empty.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="projects.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="projects.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Philosophy.xml">

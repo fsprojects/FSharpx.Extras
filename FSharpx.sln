@@ -25,6 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{EFB3
 		samples\CircularBuffer.fsx = samples\CircularBuffer.fsx
 		samples\Crawler.fsx = samples\Crawler.fsx
 		samples\MouseFollow.fsx = samples\MouseFollow.fsx
+		samples\StmSample.fsx = samples\StmSample.fsx
 		samples\StockStream.fsx = samples\StockStream.fsx
 		samples\WebProxy.fsx = samples\WebProxy.fsx
 	EndProjectSection
@@ -48,6 +49,11 @@ EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.DataStructures.Tests", "tests\FSharpx.DataStructures.Tests\FSharpx.DataStructures.Tests.fsproj", "{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "DataStructures", "samples\DataStructures\DataStructures.fsproj", "{C6835309-26A4-4718-931F-FD533E08E1D6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{04FE33E9-D53A-4703-B86B-C84B64958D19}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

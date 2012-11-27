@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -42,11 +42,11 @@
     <Compile Include="JSON.fs" />
     <Compile Include="StateMachine.fs" />
     <Compile Include="IO.fs" />
+    <Compile Include="Monoid.fs" />
     <Compile Include="Collections\Collections.fs" />
     <Compile Include="Collections\ByteString.fs" />
     <Compile Include="Collections\CircularBuffer.fs" />
     <Compile Include="Collections\NonEmptyList.fs" />
-    <Compile Include="ComputationExpressions\Monoid.fs" />
     <Compile Include="ComputationExpressions\Monad.fs" />
     <Compile Include="ComputationExpressions\DistributionMonad.fs" />
     <Compile Include="ComputationExpressions\Continuation.fs" />
@@ -55,6 +55,8 @@
     <Compile Include="DataStructures\Infrastructure.fs" />
     <Compile Include="DataStructures\DList.fs" />
     <Compile Include="DataStructures\Vector.fs" />
+    <Compile Include="DataStructures\RingBuffer.fs" />
+    <Compile Include="DataStructures\TimeSeries.fs" />
     <Compile Include="DataStructures\BootstrappedQueue.fs" />
     <Compile Include="DataStructures\ImplicitQueue.fs" />
     <Compile Include="DataStructures\RealTimeQueue.fs" />
@@ -64,11 +66,21 @@
     <Compile Include="DataStructures\Deque.fs" />
     <Compile Include="DataStructures\BottomUpMergeSort.fs" />
     <Compile Include="DataStructures\AltBinaryRandomAccessList.fs" />
-	<Compile Include="DataStructures\BinaryRandomAccessList.fs" />
-	<Compile Include="DataStructures\SkewBinaryRandomAccessList.fs" />
-	<Compile Include="DataStructures\LeftistHeap.fs" />
+    <Compile Include="DataStructures\BinaryRandomAccessList.fs" />
+    <Compile Include="DataStructures\SkewBinaryRandomAccessList.fs" />
+    <Compile Include="DataStructures\LeftistHeap.fs" />
+    <Compile Include="DataStructures\BinomialHeap.fs" />
+	<Compile Include="DataStructures\PairingHeap.fs" />
+    <Compile Include="DataStructures\HeapPriorityQueue.fs" />
     <Compile Include="DataStructures\BinaryTreeZipper.fs" />
     <Compile Include="DataStructures\ListZipper.fs" />
+    <Compile Include="DataStructures\RoseTree.fs" />
+    <Compile Include="DataStructures\BankersQueue.fs" />
+    <Compile Include="DataStructures\BatchedQueue.fs" />
+    <Compile Include="DataStructures\PhysicistQueue.fs" />
+    <Compile Include="DataStructures\HoodMelvilleQueue.fs" />
+    <Compile Include="DataStructures\IntMap.fs" />
+    <Compile Include="DataStructures\BKTree.fs" />
     <Compile Include="Lens.fs" />
     <Compile Include="CSharpCompat.fs" />
     <Compile Include="Regex.fs" />

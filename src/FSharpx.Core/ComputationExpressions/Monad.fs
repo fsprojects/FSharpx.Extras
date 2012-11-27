@@ -90,7 +90,7 @@ module Option =
         member this.ReturnFrom(m: 'a option) = m
         member this.Bind(m, f) = Option.bind f m
         member this.Zero() = None
-        member this.Combine(m, f: unit -> _) = Option.bind f m
+        member this.Combine(m, f) = Option.bind f m
         member this.Delay(f: unit -> _) = f
         member this.Run(f) = f()
         member this.TryWith(m, h) =
@@ -108,6 +108,17 @@ module Option =
             this.Using(sequence.GetEnumerator(),
                                  fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current)))
     let maybe = MaybeBuilder()
+
+    /// Option wrapper monoid
+    let monoid (m: _ ISemigroup) =
+        { new Monoid<_>() with
+            override this.Zero() = None
+            override this.Combine(a, b) = 
+                match a,b with
+                | Some a, Some b -> Some (m.Combine(a,b))
+                | Some a, None   -> Some a
+                | None, Some a   -> Some a
+                | None, None     -> None }
     
     open Operators
     
@@ -137,7 +148,7 @@ module Option =
     /// Right-to-left Kleisli composition
     let inline (<=<) x = flip (>=>) x
     /// Maps a Nullable to Option
-    let fromNullable (n: _ Nullable) = 
+    let ofNullable (n: _ Nullable) = 
         if n.HasValue
             then Some n.Value
             else None
@@ -148,7 +159,7 @@ module Option =
         | Some x -> Nullable(x)
 
     /// True -> Some(), False -> None
-    let inline fromBool b = if b then Some() else None
+    let inline ofBool b = if b then Some() else None
 
     /// Converts a function returning bool,value to a function returning value option.
     /// Useful to process TryXX style functions.
@@ -158,13 +169,13 @@ module Option =
     
     /// If true,value then returns Some value. Otherwise returns None.
     /// Useful to process TryXX style functions.
-    let inline fromBoolAndValue b = 
+    let inline ofBoolAndValue b = 
         match b with
         | true,v -> Some v
         | _ -> None
 
     /// Maps Choice 1Of2 to Some value, otherwise None.
-    let fromChoice =
+    let ofChoice =
         function
         | Choice1Of2 a -> Some a
         | _ -> None
@@ -221,6 +232,11 @@ module Option =
 
     let inline mapM f x = sequence (List.map f x)
 
+    let inline getOrElseWith v f =
+        function
+        | Some x -> f x
+        | None -> v
+
 module Nullable =
     let (|Null|Value|) (x: _ Nullable) =
         if x.HasValue then Value x.Value else Null
@@ -234,9 +250,9 @@ module Nullable =
     /// If no value, throws.
     let get (x: _ Nullable) = x.Value
     /// Converts option to nullable
-    let fromOption = Option.toNullable
+    let ofOption = Option.toNullable
     /// Converts nullable to option
-    let toOption = Option.fromNullable
+    let toOption = Option.ofNullable
     /// Monadic bind
     let bind f x =
         match x with
@@ -553,11 +569,11 @@ module Writer =
         fun () ->
             let (a, w) = writer()
             let (a', w') = (k a)()
-            (a', m.mappend w w')
+            (a', m.Combine(w, w'))
 
     /// Inject a value into the Writer type
     let returnM (monoid: _ Monoid) a = 
-        fun () -> (a, monoid.mempty)
+        fun () -> (a, monoid.Zero())
     
     /// The writer monad.
     /// This monad comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.
@@ -584,7 +600,7 @@ module Writer =
             this.Using(sequence.GetEnumerator(), 
                 fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current)))
 
-    let writer = WriterBuilder(Monoid.ListMonoid<string>())
+    let writer = WriterBuilder(List.monoid<string>)
 
     let tell   w = fun () -> ((), w)
     let listen m = fun () -> let (a, w) = m() in ((a, w), w)
@@ -727,10 +743,10 @@ module Choice =
         member this.Bind(m,f) = bind f m
 
     /// If Choice is 1Of2, returns Some value. Otherwise, returns None.
-    let toOption = Option.fromChoice
+    let toOption = Option.ofChoice
 
     /// If Some value, returns Choice1Of2 value. Otherwise, returns the supplied default value.
-    let fromOption o = 
+    let ofOption o = 
         function
         | Some a -> Choice1Of2 a
         | None -> Choice2Of2 o
@@ -763,18 +779,35 @@ module Validation =
         | Choice1Of2 f, Choice2Of2 e     -> Choice2Of2 e
         | Choice2Of2 e1, Choice2Of2 e2 -> Choice2Of2 (append e1 e2)
 
-    /// Sequential application, parameterized by monoid
-    let inline apm (m: _ Monoid) = apa m.mappend
+    /// Sequential application, parameterized by semigroup
+    let inline apm (m: _ ISemigroup) = apa (curry m.Combine)
 
-    type CustomValidation<'a>(monoid: 'a Monoid) =
+    type CustomValidation<'a>(semigroup: 'a ISemigroup) =
         /// Sequential application
-        member this.ap x = apm monoid x
+        member this.ap x = apm semigroup x
+
         /// Promote a function to a monad/applicative, scanning the monadic/applicative arguments from left to right.
         member this.lift2 f a b = returnM f |> this.ap a |> this.ap b
+
         /// Sequence actions, discarding the value of the first argument.
         member this.apr b a = this.lift2 (fun _ z -> z) a b
+
         /// Sequence actions, discarding the value of the second argument.
         member this.apl b a = this.lift2 (fun z _ -> z) a b
+
+        member this.seqValidator f = 
+            let inline cons a b = this.lift2 (flip List.cons) a b
+            Seq.map f >> Seq.fold cons (returnM [])
+
+        member this.sequence s =
+            let inline cons a b = this.lift2 List.cons a b
+            List.foldBack cons s (returnM [])
+
+        member this.mapM f x = this.sequence (List.map f x)
+
+
+    type NonEmptyListValidation<'a>() = 
+        inherit CustomValidation<'a NonEmptyList>(NonEmptyList.NonEmptyListSemigroup<'a>())
 
     /// Sequential application
     let inline ap x = apa NonEmptyList.append x

@@ -225,6 +225,30 @@ namespace FSharpx.CSharpTests {
         }
 
         [Test]
+        public void GetOrDefault_WithValue()
+        {
+            var a = FSharpOption<string>.Some("hello");
+            var b = a.GetOrDefault();
+            Assert.AreEqual("hello", b);
+        }
+
+        [Test]
+        public void GetOrDefault_ReferenceType()
+        {
+            var a = FSharpOption<string>.None;
+            var b = a.GetOrDefault();
+            Assert.AreEqual(null, b);
+        }
+
+        [Test]
+        public void GetOrDefault_ValueType()
+        {
+            var a = FSharpOption<int>.None;
+            var b = a.GetOrDefault();
+            Assert.AreEqual(0, b);
+        }
+
+        [Test]
         public void Sequence_Some() {
             var r = FSharpList.Create(1.Some(), 2.Some(), 3.Some()).Sequence();
             Assert.AreEqual(FSharpList.Create(1,2,3).Some(), r);
@@ -238,5 +262,32 @@ namespace FSharpx.CSharpTests {
             Assert.AreEqual(noList, r);
         }
 
+        [Test]
+        public void ToFSharpList_None() {
+            FSharpOption<int> a = null;
+            FSharpList<int> b = a.ToFSharpList();
+            Assert.AreEqual(0, b.Length);
+        }
+
+        [Test]
+        public void ToFSharpList_Some() {
+            var a = 5.Some().ToFSharpList();
+            Assert.AreEqual(1, a.Length);
+            Assert.AreEqual(5, a[0]);
+        }
+
+        [Test]
+        public void ToArray_None() {
+            FSharpOption<int> a = null;
+            int[] b = a.ToArray();
+            Assert.AreEqual(0, b.Length);
+        }
+
+        [Test]
+        public void ToArray_Some() {
+            var a = 5.Some().ToArray();
+            Assert.AreEqual(1, a.Length);
+            Assert.AreEqual(5, a[0]);
+        }
     }
 }

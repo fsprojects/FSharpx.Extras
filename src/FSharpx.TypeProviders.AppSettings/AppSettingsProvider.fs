@@ -1,7 +1,8 @@
 ﻿module FSharpx.TypeProviders.AppSettingsTypeProvider
 
 open FSharpx
-open FSharpx.TypeProviders.DSL
+open FSharpx.Strings
+open FSharpx.TypeProviders.Helper
 open Microsoft.FSharp.Core.CompilerServices
 open Samples.FSharp.ProvidedTypes
 open System
@@ -22,40 +23,47 @@ let (|Double|_|) text =
     | true, value -> Some value
     | _ -> None
 
-let internal addTypedAppSettings (cfg:TypeProviderConfig) (configFileName:string) (tyDef:ProvidedTypeDefinition) = 
-    try        
-        let filePath = findConfigFile cfg.ResolutionFolder configFileName
-        let fileMap = ExeConfigurationFileMap(ExeConfigFilename=filePath)
-        let appSettings = ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None).AppSettings.Settings
 
-        tyDef
-          |++!>
-            (appSettings.AllKeys 
-              |> Seq.map (fun key -> 
+let internal typedAppSettings (cfg:TypeProviderConfig) =
+    let appSettings = erasedType<obj> thisAssembly rootNamespace "AppSettings"
+
+    appSettings.DefineStaticParameters(
+        parameters = [ProvidedStaticParameter("configFileName", typeof<string>)], 
+        instantiationFunction = (fun typeName parameterValues ->
+            match parameterValues with 
+            | [| :? string as configFileName |] ->
+                let typeDef = erasedType<obj> thisAssembly rootNamespace typeName
+                try
+                    let filePath = findConfigFile cfg.ResolutionFolder configFileName
+                    let fileMap = ExeConfigurationFileMap(ExeConfigFilename=filePath)
+                    let appSettings = ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None).AppSettings.Settings
+
+                    for key in appSettings.AllKeys do
                         let field =
                             match (appSettings.Item key).Value with
-                            | Int fieldValue -> literalField key fieldValue
-                            | Bool fieldValue -> literalField key fieldValue
-                            | Double fieldValue -> literalField key fieldValue
-                            | fieldValue -> literalField key fieldValue
-                        field
-                        |> addLiteralXmlDoc (sprintf "Returns the value from %s with key %s" configFileName key)
-                        |> addLiteralDefinitionLocation (fileStart configFileName)))
-    with 
-    | exn -> tyDef
-    
-let internal typedAppSettings (cfg:TypeProviderConfig) =
-    erasedType<obj> thisAssembly rootNamespace "AppSettings"
-      |> staticParameter "configFileName" (fun typeName configFileName -> 
-            erasedType<obj> thisAssembly rootNamespace typeName
-                |> addTypedAppSettings cfg configFileName )
+                            | Int fieldValue ->    ProvidedLiteralField(niceName key, typeof<int>, fieldValue)
+                            | Bool fieldValue ->   ProvidedLiteralField(niceName key, typeof<bool>, fieldValue)
+                            | Double fieldValue -> ProvidedLiteralField(niceName key, typeof<float>, fieldValue)
+                            | fieldValue ->        ProvidedLiteralField(niceName key, typeof<obj>, fieldValue)
+
+                        field.AddXmlDoc (sprintf "Returns the value from %s with key %s" configFileName key)
+                        field.AddDefinitionLocation(1,1,configFileName)
+
+                        typeDef.AddMember field
+
+                    typeDef
+                with 
+                | exn -> typeDef
+            | x -> failwithf "unexpected parameter values %A" x))
+
+    appSettings
 
 
 [<TypeProvider>]
 type public FSharpxProvider(cfg:TypeProviderConfig) as this =
     inherit TypeProviderForNamespaces()
 
-    do this.AddNamespace(DSL.rootNamespace,[typedAppSettings cfg])
+    do this.AddNamespace(rootNamespace,[typedAppSettings cfg])
 
 [<TypeProviderAssembly>]
 do ()

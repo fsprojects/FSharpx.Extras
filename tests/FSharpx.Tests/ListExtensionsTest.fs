@@ -45,3 +45,36 @@ let ``test List_span correctly breaks the list on the specified predicate``() =
 let lift2() =
     List.lift2 (+) [0;1] [0;2]
     |> should equal [0;2;1;3]
+
+[<Test>]
+let mapAccum() =
+  let list = [-5..-1]
+  let expected = (15, [5;4;3;2;1])
+  List.mapAccum (fun a b -> let c = abs b in (a+c,c)) 0 list |> should equal expected
+
+[<Test>]
+let ``Should be able to merge to lists``() =
+    let a,b = [1;2;3;4;5], [6;7;8;9;10]
+    List.mergeBy id a b
+    |> should equal [1;2;3;4;5;6;7;8;9;10]
+
+[<Test>]
+let ``Should be able to merge two lists II``() =
+    let a,b = [1;2;3;4;5], [6;7;8;9;10]
+    List.merge a b
+    |> should equal [1;2;3;4;5;6;7;8;9;10]
+
+[<Test>]
+let ``I should be able to transpose a list``() =
+    let a = 
+        [
+            [1;2;3];
+            [4;5;6]
+        ] 
+    let expected = 
+        [
+            [1;4];
+            [2;5];
+            [3;6]
+        ]
+    (a |> List.transpose) |> should equal expected

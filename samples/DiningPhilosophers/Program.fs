@@ -3,9 +3,9 @@ open System.Threading
 open FSharpx.Stm
 
 let check p =
-  match p with
-  | true -> stm.Return(())
-  | false -> retry ()
+    match p with
+    | true -> stm.Return(())
+    | false -> retry ()
 
 let forkIO (f : unit -> unit) = (new Thread(f)).Start()
 
@@ -34,16 +34,16 @@ let rng = new Random()
 
 let n = 7 ;
 
-let thinking = Array.create n ((uint64)0)
-let eating   = Array.create n ((uint64)0)
+let thinking = Array.zeroCreate n
+let eating   = Array.zeroCreate n
 
 let randomDelay () = 
-  let waitTime = rng.Next(1000)
-  Thread.Sleep(waitTime)
-  (uint64)waitTime    
+    let waitTime = rng.Next(1000)
+    Thread.Sleep waitTime
+    uint64 waitTime
 
 let eatOrThink i left_fork right_fork = 
-    if ((rng.Next(100)) > 50) 
+    if (rng.Next(100)) > 50
     then 
         adquire left_fork right_fork
         printf "philosopher [%d] is eating.\n" i
@@ -61,20 +61,19 @@ let timer = new System.Diagnostics.Stopwatch()
 timer.Start()
 
 let rec main () = 
-    let forks = Array.map (fun x -> newTVar(true)) [| 0..(n-1) |]
-    List.iter (fun i -> forkIO (philosofer i forks.[i] forks.[(i + 1) % n] )) [0..(n-1)]
+    let forks = Array.init n (fun _ -> newTVar(true))
+    for i in 0..n-1 do
+        forkIO (philosofer i forks.[i] forks.[(i + 1) % n])
     
 let onInterrupt _ _ =
     timer.Stop()
     printf "\ndone.\n"
-    let total = (float)timer.ElapsedMilliseconds
-    let p x  = 
-        (((float)x)*100.0)/(float)total
-    List.iter (fun i -> 
-        (printf "philosopher [%d] - percents: %.2f eating, %.2f thinking, %.2f obtaining forks\n"
-        i (p(eating.[i])) (p(thinking.[i])) ((float)100 - (p(eating.[i]) + p(thinking.[i]))))
-    ) [0 .. n-1]     
+    let total = float timer.ElapsedMilliseconds
+    let p x = ((float x) * 100.0) / (float total)
+    for i in 0..n-1 do
+        printf "philosopher [%d] - percents: %.2f eating, %.2f thinking, %.2f obtaining forks\n"
+            i (p eating.[i]) (p thinking.[i]) (100. - (p eating.[i] + p thinking.[i]))
     
 Console.CancelKeyPress.AddHandler( new ConsoleCancelEventHandler( onInterrupt ))
 
-do main ()
+main()

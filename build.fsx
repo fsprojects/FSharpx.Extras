@@ -1,12 +1,18 @@
-#r "./packages/FAKE.1.64.5/tools/FakeLib.dll"
+#r "./packages/FAKE.1.64.18.0/tools/FakeLib.dll"
 
 open Fake 
+open Fake.Git
 open System.IO
 
 // properties
 let currentDate = System.DateTime.UtcNow
 let projectName = "FSharpx"
-let version = if isLocalBuild then "1.6.77" else buildVersion
+
+let version =
+    if hasBuildParam "version" then getBuildParam "version" else
+    if isLocalBuild then getLastTag() else
+    buildVersion
+
 let coreSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let projectSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let authors = ["Steffen Forkmann"; "Daniel Mohl"; "Tomas Petricek"; "Ryan Riley"; "Mauricio Scheffer"; "Phil Trelford" ]
@@ -19,6 +25,7 @@ let net40 = "v4.0"
 
 // directories
 let buildDir = "./build/"
+let buildPortableDir = "./build-portable/"
 let packagesDir = "./packages/"
 let testDir = "./test/"
 let deployDir = "./deploy/"
@@ -49,7 +56,12 @@ let rec getPackageDesc = function
 | "TypeProviders.Regex" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type providers for regular expressions."
 | "TypeProviders.AppSettings" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing an AppSettings type provider."
 | "TypeProviders.Freebase" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a Freebase type provider."
-| _ -> projectDesc + "\r\n\r\nIt currently implements:\r\n\r\n* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n* Iteratee\r\n* Purely functional data structures: Queues, double-ended Queues, BottomUpMergeSort, RandomAccessList, Vector\r\n* Validation applicative functor\r\n* General functions like flip\r\n* Additional functions around collections\r\n* Functions to make C# - F# interop easier."
+| _ -> projectDesc + "\r\n\r\nIt currently implements:\r\n\r\n" + 
+                       "* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n" +
+                       "* Iteratee\r\n" +
+                       "* Purely functional data structures: Queues, double-ended Queues, BottomUpMergeSort, RandomAccessList, Vector, RoseTree, BKTree\r\n" +
+                       "* Validation applicative functor\r\n" + 
+                       "* General functions like flip\r\n* Additional functions around collections\r\n* Functions to make C# - F# interop easier."
 
 // params
 let target = getBuildParamOrDefault "target" "All"
@@ -60,7 +72,15 @@ let normalizeFrameworkVersion frameworkVersion =
     let v = ("[^\\d]" >=> "") frameworkVersion
     v.Substring(0,2)
 
-let frameworkParams frameworkVersion = ["TargetFrameworkVersion", frameworkVersion; "DefineConstants", "NET" + normalizeFrameworkVersion frameworkVersion]
+let frameworkParams portable frameworkVersion = 
+    if portable then
+        ["TargetFramework", "portable47"
+         "TargetFrameworkVersion", frameworkVersion
+         "TypeProviderRuntimeFramework", "portable47"
+         "DefineConstants", "NET" + normalizeFrameworkVersion frameworkVersion + ";FX_NO_LOCAL_FILESYSTEM;FX_NO_CONCURRENT;NO_SYSTEM_ENVIRONMENT_GETENVIRONMENTVARIABLE;FX_NO_CUSTOMTYPEDESCRIPTOR;FX_NO_CUSTOMATTRIBUTEDATA;FX_NO_SYNC_WEBRESPONSE;FX_NO_WEBREQUEST_CONTENTLENGTH;FX_NO_GETCURRENTMETHOD;FX_NO_WEBHEADERS_ADD;TYPE_PROVIDER_RUNTIME_FX_PORTABLE47;TRACE"]
+    else
+        ["TargetFrameworkVersion", frameworkVersion
+         "DefineConstants", "NET" + normalizeFrameworkVersion frameworkVersion]
 
 // tools
 let fakeVersion = GetPackageVersion packagesDir "FAKE"
@@ -70,19 +90,22 @@ let nunitVersion = GetPackageVersion packagesDir "NUnit.Runners"
 let nunitPath = sprintf "%sNUnit.Runners.%s/Tools" packagesDir nunitVersion
 
 // files
-let appReferences frameworkVersion =    
-    { (!+ "./src/**/*.*proj") with 
-        Excludes = 
-            [yield "./src/**/*.Silverlight.*proj"
-             if not (buildTypeProviders frameworkVersion) then                
-                yield "./src/**/*.TypeProviders.*.*proj"
-                yield "./src/**/*.TypeProviders.*proj"
-             if frameworkVersion = net35 then 
-                yield "./src/**/*.Async.fsproj"
-                yield "./src/**/*.Http.fsproj" // TODO: why is that?
-                yield "./src/**/*.Observable.fsproj" // TODO: why is that?
-                  ] }
-    |> Scan
+let appReferences portable frameworkVersion =
+    if portable then
+        !! "./src/**/*Freebase.fsproj"
+    else
+        { (!+ "./src/**/*.*proj") with 
+            Excludes = 
+                [yield "./src/**/*.Silverlight.*proj"
+                 if not (buildTypeProviders frameworkVersion) then                
+                    yield "./src/**/*.TypeProviders.*.*proj"
+                    yield "./src/**/*.TypeProviders.*proj"
+                 if frameworkVersion = net35 then 
+                    yield "./src/**/*.Async.fsproj"
+                    yield "./src/**/*.Http.fsproj" // TODO: why is that?
+                    yield "./src/**/*.Observable.fsproj" // TODO: why is that?
+                      ] }
+        |> Scan
 
 let testReferences frameworkVersion =
     { (!+ "./tests/**/*.*proj") with 
@@ -93,7 +116,7 @@ let testReferences frameworkVersion =
 
 // targets
 Target "Clean" (fun _ ->
-    CleanDirs [buildDir; testDir; deployDir; docsDir; nugetMainDir]
+    CleanDirs [buildDir; buildPortableDir; testDir; deployDir; docsDir; nugetMainDir]
 
     packages
     |> Seq.iter (fun x -> CleanDirs [nugetDir x; nugetLibDir x; nugetDocsDir x])
@@ -207,32 +230,23 @@ Target "AssemblyInfo" (fun _ ->
             AssemblyDescription = getPackageDesc "TypeProviders.AppSettings"
             Guid = "75A1B454-ED85-4FAB-939C-026891B758DB"
             OutputFileName = "./src/FSharpx.TypeProviders.AppSettings/AssemblyInfo.fs" })
-
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = version
-            AssemblyTitle = "FSharpx.TypeProviders.Freebase"
-            AssemblyDescription = getPackageDesc "TypeProviders.Freebase"
-            Guid = "9758C301-CC29-4D89-BE76-6C6BC0353867"
-            OutputFileName = "./src/FSharpx.TypeProviders.Freebase/AssemblyInfo.fs" })
-
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = version
-            AssemblyTitle = "FSharpx.TypeProviders.Freebase.DesignTime"
-            AssemblyDescription = getPackageDesc "TypeProviders.Freebase.DesignTime"
-            Guid = "028E461D-AA92-4E5F-8F0D-1C8778FBBD4F"
-            OutputFileName = "./src/FSharpx.TypeProviders.Freebase.DesignTime/AssemblyInfo.fs" })
 )
 
 let buildAppTarget = TargetTemplate (fun frameworkVersion ->
     CleanDir buildDir
+    CleanDir buildPortableDir
 
-    appReferences frameworkVersion
-    |> MSBuild buildDir "Build" (["Configuration","Release"] @ frameworkParams frameworkVersion)
+    appReferences false frameworkVersion
+    |> MSBuild buildDir "Build" (["Configuration","Release"] @ frameworkParams false frameworkVersion)
     |> Log "AppBuild-Output: "
+
+    if frameworkVersion = net40 then
+        appReferences true frameworkVersion
+        |> MSBuild buildPortableDir "Build" (["Configuration","Release"] @ frameworkParams true frameworkVersion)
+        |> Log "AppBuild-Output: "
+
+        !! (buildDir @@ "*DesignTime.*")
+            |> CopyTo buildPortableDir
 )
 
 let buildTestTarget = TargetTemplate (fun frameworkVersion ->
@@ -252,32 +266,26 @@ let testTarget = TargetTemplate (fun frameworkVersion ->
             OutputFile = testDir + sprintf "TestResults.%s.xml" frameworkVersion })
 )
 
-Target "GenerateDocumentation" (fun _ ->
-    !! (buildDir + "*.dll")
-    |> Docu (fun p ->
-        {p with
-            ToolPath = fakePath + "/docu.exe"
-            TemplatesPath = "./lib/templates"
-            OutputPath = docsDir })
-)
-
-Target "ZipDocumentation" (fun _ ->
-    !! (docsDir + "/**/*.*")
-    |> Zip docsDir (deployDir + sprintf "Documentation-%s.zip" version)
-)
-
 let prepareNugetTarget = TargetTemplate (fun frameworkVersion ->
     packages
     |> Seq.iter (fun package ->
         let frameworkSubDir = nugetLibDir package @@ normalizeFrameworkVersion frameworkVersion
+        let portableSubDir = nugetLibDir package @@ "portable-net4+sl4+wp71+win8"
         if not <| package.StartsWith "TypeProviders" || buildTypeProviders frameworkVersion then
             CleanDir frameworkSubDir
+            CleanDir portableSubDir
 
             [for ending in ["dll";"pdb";"xml"] do
                 yield sprintf "%sFsharpx.%s.%s" buildDir package ending
                 yield sprintf "%sFsharpx.%s.DesignTime.%s" buildDir package ending]
             |> Seq.filter (fun f -> File.Exists f)
-            |> CopyTo frameworkSubDir)
+            |> CopyTo frameworkSubDir
+
+            [for ending in ["dll";"pdb";"xml"] do
+                yield sprintf "%sFsharpx.%s.%s" buildPortableDir package ending
+                yield sprintf "%sFsharpx.%s.DesignTime.%s" buildPortableDir package ending]
+            |> Seq.filter (fun f -> File.Exists f)
+            |> CopyTo portableSubDir)
 )
 
 let buildFrameworkVersionTarget = TargetTemplate (fun frameworkVersion -> ())
@@ -301,13 +309,21 @@ let generateTargets() =
             buildAppTarget buildApp frameworkVersion
             buildTestTarget buildTest frameworkVersion
             testTarget test frameworkVersion
-            prepareNugetTarget prepareNuget frameworkVersion
+            prepareNugetTarget prepareNuget frameworkVersion            
             buildFrameworkVersionTarget buildFrameworkVersion frameworkVersion
 
             dependency ==> buildApp ==> buildTest ==> test ==> prepareNuget ==> buildFrameworkVersion)
             "AssemblyInfo"
 
 let nugetTarget = TargetTemplate (fun package ->
+    CleanDir docsDir
+    !! (buildDir @@ (sprintf "FSharpx.%s.dll" package))
+    |> Docu (fun p ->
+        {p with
+            ToolPath = fakePath + "/docu.exe"
+            TemplatesPath = "./lib/templates"
+            OutputPath = docsDir })
+
     XCopy (docsDir |> FullName) (nugetDocsDir package)
     [ "LICENSE.md" ] |> CopyTo (nugetDir package)
     NuGet (fun p -> 
@@ -332,6 +348,8 @@ let nugetTarget = TargetTemplate (fun package ->
       |> CopyTo deployDir
 )
 
+Target "TestAll" DoNothing
+
 let generateNugetTargets() =
     packages 
     |> Seq.fold
@@ -342,7 +360,7 @@ let generateNugetTargets() =
             nugetTarget buildPackage package
 
             dependency ==> buildPackage)
-            "ZipDocumentation"
+            "TestAll"
 
 Target "DeployZip" (fun _ ->
     !! (buildDir + "/**/*.*")
@@ -360,8 +378,7 @@ Target "All" DoNothing
 "Clean"
   ==> "AssemblyInfo"
   ==> (generateTargets())
-  ==> "GenerateDocumentation"
-  ==> "ZipDocumentation"
+  ==> "TestAll"
   ==> (generateNugetTargets())
   ==> "DeployZip"
   ==> "Deploy"

@@ -26,9 +26,9 @@ This library is for the .NET platform implementing a type provider for Xaml file
 
 [<assembly: AssemblyProduct ("FSharpx.TypeProviders.Xaml")>]
 
-[<assembly: AssemblyVersion ("1.6.71")>]
+[<assembly: AssemblyVersion ("1.6.83")>]
 
-[<assembly: AssemblyFileVersion ("1.6.71")>]
+[<assembly: AssemblyFileVersion ("1.6.83")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 

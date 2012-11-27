@@ -1,6 +1,9 @@
 <ProjectConfiguration>
   <CopyReferencedAssembliesToWorkspace>false</CopyReferencedAssembliesToWorkspace>
   <ConsiderInconclusiveTestsAsPassing>false</ConsiderInconclusiveTestsAsPassing>
+  <PreloadReferencedAssemblies>false</PreloadReferencedAssemblies>
+  <AllowDynamicCodeContractChecking>true</AllowDynamicCodeContractChecking>
+  <AllowStaticCodeContractChecking>false</AllowStaticCodeContractChecking>
   <IgnoreThisComponentCompletely>false</IgnoreThisComponentCompletely>
   <RunPreBuildEvents>false</RunPreBuildEvents>
   <RunPostBuildEvents>false</RunPostBuildEvents>
@@ -11,7 +14,13 @@
   <IncludeStaticReferencesInWorkspace>true</IncludeStaticReferencesInWorkspace>
   <DefaultTestTimeout>60000</DefaultTestTimeout>
   <UseBuildConfiguration></UseBuildConfiguration>
+  <UseBuildPlatform></UseBuildPlatform>
   <ProxyProcessPath></ProxyProcessPath>
   <UseCPUArchitecture>AutoDetect</UseCPUArchitecture>
+  <IgnoredTests>
+    <RegexTestSelector>
+      <RegularExpression>.*</RegularExpression>
+    </RegexTestSelector>
+  </IgnoredTests>
   <AdditionalFilesToInclude>..\..\lib\FSharp\*.dll;..\..\lib\FSharp\*.exe</AdditionalFilesToInclude>
 </ProjectConfiguration>

@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>bin\Debug\FSharpx.TypeProviders.Xaml.XML</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -56,8 +57,8 @@
     <Compile Include="..\FSharpx.Core\Strings.fs">
       <Link>Strings.fs</Link>
     </Compile>
-    <Compile Include="..\FSharpx.TypeProviders\TypeProviderDSL.fs">
-      <Link>TypeProviderDSL.fs</Link>
+    <Compile Include="..\FSharpx.TypeProviders\TypeProvider.Helper.fs">
+      <Link>TypeProvider.Helper.fs</Link>
     </Compile>
     <Compile Include="XamlProvider.fs" />
   </ItemGroup>

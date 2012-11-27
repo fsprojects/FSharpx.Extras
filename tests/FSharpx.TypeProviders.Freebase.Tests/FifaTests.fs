@@ -16,3 +16,9 @@ let ``Can access Australia's national anthem by Fifa code``() =
     let country = findCountryByFifaCode "AUS"
     let anthem = country.``National anthem`` |> Seq.head
     anthem.Anthem.Name |> should equal "Advance Australia Fair"
+
+[<Test>]
+let ``Can access Austrias national anthem by Fifa code``() =
+    let country = findCountryByFifaCode "AUT"
+    let anthem = country.``National anthem`` |> Seq.head
+    anthem.Anthem.Name |> should equal "Land der Berge, Land am Strome"

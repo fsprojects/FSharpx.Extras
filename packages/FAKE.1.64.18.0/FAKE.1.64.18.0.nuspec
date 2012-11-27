@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>FAKE</id>
+    <version>1.64.18.0</version>
+    <authors>Steffen Forkmann,  Mauricio Scheffer</authors>
+    <owners>Steffen Forkmann,  Mauricio Scheffer</owners>
+    <licenseUrl>https://github.com/forki/Fake/blob/master/License.txt</licenseUrl>
+    <projectUrl>https://github.com/forki/Fake</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>FAKE - F# Make - is a build automation tool for .NET. Tasks and dependencies are specified in a DSL which is integrated in F#.</description>
+    <language>en-US</language>
+    <tags>build</tags>
+  </metadata>
+</package>

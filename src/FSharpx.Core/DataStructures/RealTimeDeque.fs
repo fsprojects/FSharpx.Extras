@@ -121,27 +121,27 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
         new RealTimeDeque<'a>(c, (Seq.length xs), (LazyList.ofSeq xs), LazyList.empty, 0, LazyList.empty, LazyList.empty)
         |> RealTimeDeque.check2
 
-    ///returns a new deque with the element added to the beginning
+    ///O(1), worst case. Returns a new deque with the element added to the beginning.
     member this.Cons x =
         new RealTimeDeque<'a>(this.c, (this.frontLength+1), (LazyList.cons x this.front), (RealTimeDeque.exec1 this.streamFront), this.rBackLength, this.rBack, (RealTimeDeque.exec1 this.streamRBack)) 
         |> RealTimeDeque.check 
    
-    ///returns the first element
-    member this.Head() =
+    ///O(1), worst case. Returns the first element.
+    member this.Head =
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> raise Exceptions.Empty
         | LazyList.Nil, LazyList.Cons(x, _) -> x
         | LazyList.Cons(x, _), _ -> x
 
-    ///returns option first element
-    member this.TryGetHead() =
+    ///O(1), worst case. Returns option first element.
+    member this.TryGetHead =
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> None
         | LazyList.Nil, LazyList.Cons(x, _) -> Some(x)
         | LazyList.Cons(x, _), _ -> Some(x)
 
-    ///returns a new deque of the elements before the last element
-    member this.Init() = 
+    ///O(1), worst case. Returns a new deque of the elements before the last element.
+    member this.Init = 
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> raise Exceptions.Empty
         | _, LazyList.Nil -> RealTimeDeque.Empty this.c 
@@ -149,8 +149,8 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
             new RealTimeDeque<'a>(this.c, this.frontLength, this.front, (RealTimeDeque.exec2 this.streamFront), (this.rBackLength-1), xs, (RealTimeDeque.exec2 this.streamRBack))
             |> RealTimeDeque.check 
 
-    ///returns option deque of the elements before the last element
-    member this.TryGetInit() = 
+    ///O(1), worst case. Returns option deque of the elements before the last element.
+    member this.TryGetInit = 
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> None
         | _, LazyList.Nil -> Some(RealTimeDeque.Empty this.c)
@@ -158,28 +158,28 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
             Some(new RealTimeDeque<'a>(this.c, this.frontLength, this.front, (RealTimeDeque.exec2 this.streamFront), (this.rBackLength-1), xs, (RealTimeDeque.exec2 this.streamRBack))
             |> RealTimeDeque.check) 
           
-    ///returns true if the deque has no elements
-    member this.IsEmpty() =  
+    ///O(1). Returns true if the deque has no elements.
+    member this.IsEmpty =  
         ((this.frontLength = 0) && (this.rBackLength = 0))
 
-    ///returns the last element
-    member this.Last() = 
+    ///O(1), worst case. Returns the last element.
+    member this.Last = 
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> raise Exceptions.Empty
         | _, LazyList.Cons(x, _) ->  x
         | LazyList.Cons(x, _), LazyList.Nil-> x
 
-    ///returns option last element
-    member this.TryGetLast() = 
+    ///O(1), worst case. Returns option last element.
+    member this.TryGetLast = 
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> None
         | _, LazyList.Cons(x, _) ->  Some(x)
         | LazyList.Cons(x, _), LazyList.Nil-> Some(x)
 
-    ///returns the count of elememts
-    member this.Length() = RealTimeDeque.length this
+    ///O(1). Returns the count of elememts.
+    member this.Length = RealTimeDeque.length this
 
-    ///returns element by index
+    ///O(n/2), worst case. Returns element by index.
     member this.Lookup (i:int) =
         match frontLength, front, rBackLength, rBack with
         | lenF, front, lenR, rear when i > (lenF + lenR - 1) -> raise Exceptions.OutOfBounds
@@ -194,7 +194,7 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
                 | xs, i' -> loopF ((LazyList.tail xs), (i' - 1))
             loopF (rear, ((lenR - (i - lenF)) - 1))
 
-    ///returns option element by index
+    ///O(n/2), worst case. Returns option element by index.
     member this.TryLookup (i:int) =
         match frontLength, front, rBackLength, rBack with
         | lenF, front, lenR, rear when i > (lenF + lenR - 1) -> None
@@ -209,7 +209,7 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
                 | xs, i' -> loopF ((LazyList.tail xs), (i' - 1))
             loopF (rear, ((lenR - (i - lenF)) - 1))
 
-    ///returns deque with element removed by index
+    ///O(n/2), worst case. Returns deque with element removed by index.
     member this.Remove (i:int) =
         match frontLength, front, rBackLength, rBack with
         | lenF, front, lenR, rear when i > (lenF + lenR - 1) -> raise Exceptions.OutOfBounds
@@ -234,7 +234,7 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
             new RealTimeDeque<'a>(c, lenF, front, LazyList.empty, (lenR - 1), newRear, LazyList.empty)
             |> RealTimeDeque.check2
 
-    ///returns option deque with element removed by index
+    ///O(n/2), worst case. Returns option deque with element removed by index.
     member this.TryRemove (i:int) =
         match frontLength, front, rBackLength, rBack with
         | lenF, front, lenR, rear when i > (lenF + lenR - 1) -> None
@@ -259,17 +259,17 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
             let z = new RealTimeDeque<'a>(c, lenF, front, LazyList.empty, (lenR - 1), newRear, LazyList.empty) |> RealTimeDeque.check2
             Some(z)
 
-    ///returns deque reversed
-    member this.Rev() = 
+    ///O(1). Returns deque reversed.
+    member this.Rev = 
         (new RealTimeDeque<'a>(c, rBackLength, rBack, streamRBack, frontLength, front, streamFront))
 
-    ///returns a new deque with the element added to the end
+    ///O(1), worst case. Returns a new deque with the element added to the end.
     member this.Snoc x = 
         new RealTimeDeque<'a>(this.c, this.frontLength, this.front, (RealTimeDeque.exec1 this.streamFront), (this.rBackLength+1), (LazyList.cons x this.rBack), (RealTimeDeque.exec1 this.streamRBack))
         |> RealTimeDeque.check
 
-    ///returns a new deque of the elements trailing the first element
-    member this.Tail() =
+    ///O(1), worst case. Returns a new deque of the elements trailing the first element.
+    member this.Tail =
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> raise Exceptions.Empty
         | LazyList.Nil, LazyList.Cons(x, _) -> RealTimeDeque.Empty this.c 
@@ -277,8 +277,8 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
             new RealTimeDeque<'a>(this.c, (this.frontLength-1), xs, (RealTimeDeque.exec2 this.streamFront), this.rBackLength, this.rBack, (RealTimeDeque.exec2 this.streamRBack))
             |> RealTimeDeque.check
 
-    ///returns option deque of the elements trailing the first element
-    member this.TryGetTail() =
+    ///O(1), worst case. Returns option deque of the elements trailing the first element.
+    member this.TryGetTail =
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> None
         | LazyList.Nil, LazyList.Cons(x, _) -> Some(RealTimeDeque.Empty this.c )
@@ -286,31 +286,31 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
             Some(new RealTimeDeque<'a>(this.c, (this.frontLength-1), xs, (RealTimeDeque.exec2 this.streamFront), this.rBackLength, this.rBack, (RealTimeDeque.exec2 this.streamRBack))
             |> RealTimeDeque.check)
 
-    ///returns the first element and tail
-    member this.Uncons() =  
+    ///O(1), worst case. Returns the first element and tail
+    member this.Uncons =  
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> raise Exceptions.Empty
-        | _, _ -> this.Head(), this.Tail()
+        | _, _ -> this.Head, this.Tail
 
-    ///returns option first element and tail
-    member this.TryUncons() =  
+    ///O(1), worst case. Returns option first element and tail.
+    member this.TryUncons =  
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> None
-        | _, _ -> Some(this.Head(), this.Tail())
+        | _, _ -> Some(this.Head, this.Tail)
 
-    ///returns init and the last element
-    member this.Unsnoc() =  
+    ///O(1), worst case. Returns init and the last element.
+    member this.Unsnoc =  
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> raise Exceptions.Empty
-        | _, _ -> this.Init(), this.Last()
+        | _, _ -> this.Init, this.Last
 
-    ///returns option init and the last element
-    member this.TryUnsnoc() =  
+    ///O(1), worst case. Returns option init and the last element.
+    member this.TryUnsnoc =  
         match this.front, this.rBack with
         | LazyList.Nil, LazyList.Nil -> None
-        | _, _ -> Some(this.Init(), this.Last())
+        | _, _ -> Some(this.Init, this.Last)
           
-    ///returns deque with element updated by index
+    ///O(n/2), worst case. Returns deque with element updated by index.
     member this.Update (i:int) (y: 'a) =
         match frontLength, front, rBackLength, rBack with
         | lenF, front, lenR, rear when i > (lenF + lenR - 1) -> raise Exceptions.OutOfBounds
@@ -335,7 +335,7 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
             new RealTimeDeque<'a>(c, lenF, front, LazyList.empty, lenR, newRear, LazyList.empty)
             |> RealTimeDeque.check2
 
-    ///returns option deque with element updated by index
+    ///O(n/2), worst case. Returns option deque with element updated by index.
     member this.TryUpdate (i:int) (y: 'a) =
         match frontLength, front, rBackLength, rBack with
         | lenF, front, lenR, rear when i > (lenF + lenR - 1) -> None
@@ -364,23 +364,23 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
 
         member this.Cons x = this.Cons x :> _
 
-        member this.Count() = this.Length()
+        member this.Count = this.Length
 
-        member this.Head() = this.Head()
+        member this.Head = this.Head
 
-        member this.TryGetHead() = this.TryGetHead()
+        member this.TryGetHead = this.TryGetHead
 
-        member this.Init() = this.Init() :> _
+        member this.Init = this.Init :> _
 
-        member this.TryGetInit() = Some(this.TryGetInit().Value :> _)
+        member this.TryGetInit = Some(this.TryGetInit.Value :> _)
 
-        member this.IsEmpty() = this.IsEmpty()
+        member this.IsEmpty = this.IsEmpty
 
-        member this.Last() = this.Last()
+        member this.Last = this.Last
 
-        member this.TryGetLast() = this.TryGetLast()
+        member this.TryGetLast = this.TryGetLast
 
-        member this.Length() = this.Length()
+        member this.Length = this.Length
 
         member this.Lookup i = this.Lookup i
 
@@ -393,29 +393,32 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
             | None -> None
             | Some(q) -> Some(q :> _)
 
-        member this.Rev() = this.Rev() :> _
+        member this.Rev = this.Rev :> _
 
         member this.Snoc x = this.Snoc x :> _
 
-        member this.Tail() = this.Tail() :> _
+        member this.Tail = this.Tail :> _
 
-        member this.TryGetTail() = Some(this.TryGetTail().Value :> _)
+        member this.TryGetTail =
+            match this.TryGetTail with
+            | None -> None
+            | Some(q) -> Some(q :> _)
 
-        member this.Uncons() = 
-            let x, xs = this.Uncons() 
+        member this.Uncons = 
+            let x, xs = this.Uncons 
             x, xs :> _
 
-        member this.TryUncons() = 
-            match this.TryUncons() with
+        member this.TryUncons = 
+            match this.TryUncons with
             | None -> None
             | Some(x, q) -> Some(x, q :> _)
 
-        member this.Unsnoc() = 
-            let xs, x = this.Unsnoc() 
+        member this.Unsnoc = 
+            let xs, x = this.Unsnoc 
             xs :> _, x
 
-        member this.TryUnsnoc() = 
-            match this.TryUnsnoc() with
+        member this.TryUnsnoc = 
+            match this.TryUnsnoc with
             | None -> None
             | Some(q, x) -> Some(q :> _, x)
 
@@ -439,121 +442,110 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
 module RealTimeDeque =
     //pattern discriminators
 
-    let (|Cons|Nil|) (q : RealTimeDeque<'a>) = match q.TryUncons() with Some(a,b) -> Cons(a,b) | None -> Nil
+    let (|Cons|Nil|) (q : RealTimeDeque<'a>) = match q.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
 
-    let (|Snoc|Nil|) (q : RealTimeDeque<'a>) = match q.TryUnsnoc() with Some(a,b) -> Snoc(a,b) | None -> Nil
+    let (|Snoc|Nil|) (q : RealTimeDeque<'a>) = match q.TryUnsnoc with Some(a,b) -> Snoc(a,b) | None -> Nil
 
     let private stndC = 2
 
-    ///returns a deque of the two deques concatenated
-    ///front-back stream ratio constant defaulted to 2
+    ///O(|ys-xs|). Returns a deque of the two deques concatenated, front-back stream ratio constant defaulted to 2.
     let append (xs : RealTimeDeque<'a>) (ys : RealTimeDeque<'a>) = RealTimeDeque.AppendC stndC xs ys
 
-    ///returns a deque of the two deques concatenated
-    ///c is front-back stream ratio constant, should be at least 2
+    ///O(|ys-xs|). Returns a deque of the two deques concatenated, c is front-back stream ratio constant, should be at least 2.
     let appendC c (xs : RealTimeDeque<'a>) (ys : RealTimeDeque<'a>) = RealTimeDeque.AppendC c xs ys
 
-    ///returns a new deque with the element added to the beginning
+    ///O(1), worst case. Returns a new deque with the element added to the beginning.
     let inline cons (x : 'a) (q : RealTimeDeque<'a>) = q.Cons x 
 
-    ///returns deque of no elements
-    ///c is front-back stream ration constant, should be at least 2
+    ///O(1). Returns deque of no elements, c is front-back stream ration constant, should be at least 2.
     let empty c = RealTimeDeque.Empty c
 
-    ///returns the first element
-    let inline head (q : RealTimeDeque<'a>) = q.Head()
+    ///O(1), worst case. Returns the first element.
+    let inline head (q : RealTimeDeque<'a>) = q.Head
 
-    ///returns option first element
-    let inline tryGetHead (q : RealTimeDeque<'a>) = q.TryGetHead()
+    ///O(1), worst case. Returns option first element.
+    let inline tryGetHead (q : RealTimeDeque<'a>) = q.TryGetHead
 
-    ///returns a new deque of the elements before the last element
-    let inline init (q : RealTimeDeque<'a>) = q.Init() 
+    ///O(1), worst case. Returns a new deque of the elements before the last element.
+    let inline init (q : RealTimeDeque<'a>) = q.Init 
 
-    ///returns option deque of the elements before the last element
-    let inline tryGetInit (q : RealTimeDeque<'a>) = q.TryGetInit() 
+    ///O(1), worst case. Returns option deque of the elements before the last element.
+    let inline tryGetInit (q : RealTimeDeque<'a>) = q.TryGetInit 
 
-    ///returns true if the deque has no elements
-    let inline isEmpty (q : RealTimeDeque<'a>) = q.IsEmpty()
+    ///O(1). Returns true if the deque has no elements.
+    let inline isEmpty (q : RealTimeDeque<'a>) = q.IsEmpty
 
-    ///returns the last element
-    let inline last (q : RealTimeDeque<'a>) = q.Last()
+    ///O(1), worst case. Returns the last element.
+    let inline last (q : RealTimeDeque<'a>) = q.Last
 
-    ///returns option last element
-    let inline tryGetLast (q : RealTimeDeque<'a>) = q.TryGetLast()
+    ///O(1), worst case. Returns option last element.
+    let inline tryGetLast (q : RealTimeDeque<'a>) = q.TryGetLast
 
-    ///returns the count of elememts
-    let inline length (q : RealTimeDeque<'a>) = q.Length()
+    ///O(1). Returns the count of elememts.
+    let inline length (q : RealTimeDeque<'a>) = q.Length
 
-    ///returns option element by index
+    ///O(n/2), worst case. Returns option element by index.
     let inline lookup i (q : RealTimeDeque<'a>) = q.Lookup i
 
-    ///returns option element by index
+    ///O(n/2), worst case. Returns option element by index.
     let inline tryLookup i (q : RealTimeDeque<'a>) = q.TryLookup i
 
-    ///returns a deque of the two lists concatenated
-    ///front-back stream ratio constant defaulted to 2
+    ///O(|ys-xs|). Returns a deque of the two lists concatenated, front-back stream ratio constant defaulted to 2.
     let ofCatLists xs ys = RealTimeDeque.OfCatListsC stndC xs ys
 
-    ///returns a deque of the two lists concatenated
-    ///c is front-back stream ration constant, should be at least 2
+    ///O(|ys-xs|). Returns a deque of the two lists concatenated, c is front-back stream ration constant, should be at least 2.
     let ofCatListsC c xs ys = RealTimeDeque.OfCatListsC c xs ys
 
-    ///returns a deque of the two seqs concatenated
-    ///front-back stream ratio constant defaulted to 2
+    ///O(|ys-xs|). Returns a deque of the two seqs concatenated, front-back stream ratio constant defaulted to 2.
     let ofCatSeqs xs ys = RealTimeDeque.OfCatSeqsC stndC xs ys
 
-    ///returns a deque of the two seqs concatenated
-    ///c is front-back stream ratio constant, should be at least 2
+    ///O(|ys-xs|). Returns a deque of the two seqs concatenated, c is front-back stream ratio constant, should be at least 2.
     let ofCatSeqsC c xs ys = RealTimeDeque.OfCatSeqsC c xs ys
 
-    ///returns a deque of the seq
-    ///front-back stream ratio constant defaulted to 2
+    ///O(n). Returns a deque of the seq, front-back stream ratio constant defaulted to 2.
     let ofSeq xs = RealTimeDeque.OfSeqC stndC xs
 
-    ///returns a deque of the seq
-    ///c is front-back stream ratio constant, should be at least 2
+    ///O(n). Returns a deque of the seq, c is front-back stream ratio constant, should be at least 2.
     let ofSeqC c xs = RealTimeDeque.OfSeqC c xs
 
-    ///returns deque with element removed by index
+    ///O(n/2), worst case. Returns deque with element removed by index.
     let inline remove i (q : RealTimeDeque<'a>) = q.Remove i
 
-    ///returns option deque with element removed by index
+    ///O(n/2), worst case. Returns option deque with element removed by index.
     let inline tryRemove i (q : RealTimeDeque<'a>) = q.TryRemove i
 
-    ///returns deque reversed
-    let inline rev (q : RealTimeDeque<'a>) = q.Rev()
+    ///O(1). Returns deque reversed.
+    let inline rev (q : RealTimeDeque<'a>) = q.Rev
 
-    //returns a deque of one element
-    ///front-back stream ratio constant defaulted to 2
+    ///O(1). Returns a deque of one element, front-back stream ratio constant defaulted to 2.
     let singleton x = empty stndC |> cons x  
 
-    //returns a deque of one element
-    ///c is front-back stream ratio constant, should be at least 2
+    ///O(1). Returns a deque of one element, c is front-back stream ratio constant, should be at least 2.
     let singletonC c x = empty c |> cons x  
 
-    ///returns a new deque with the element added to the end
+    ///O(1), worst case. Returns a new deque with the element added to the end.
     let inline snoc (x : 'a) (q : RealTimeDeque<'a>) = (q.Snoc x) 
 
-    ///returns a new deque of the elements trailing the first element
-    let inline tail (q : RealTimeDeque<'a>) = q.Tail() 
+    ///O(1), worst case. Returns a new deque of the elements trailing the first element.
+    let inline tail (q : RealTimeDeque<'a>) = q.Tail 
 
-    ///returns option deque of the elements trailing the first element
-    let inline tryGetTail (q : RealTimeDeque<'a>) = q.TryGetTail() 
+    ///O(1), worst case. Returns option deque of the elements trailing the first element.
+    let inline tryGetTail (q : RealTimeDeque<'a>) = q.TryGetTail 
 
-    ///returns the first element and tail
-    let inline uncons (q : RealTimeDeque<'a>) = q.Uncons()
+    ///O(1), worst case. Returns the first element and tail.
+    let inline uncons (q : RealTimeDeque<'a>) = q.Uncons
 
-    ///returns option first element and tail
-    let inline tryUncons (q : RealTimeDeque<'a>) = q.TryUncons()
+    ///O(1), worst case. Returns option first element and tail.
+    let inline tryUncons (q : RealTimeDeque<'a>) = q.TryUncons
 
-    ///returns init and the last element
-    let inline unsnoc (q : RealTimeDeque<'a>) = q.Unsnoc()
+    ///O(1), worst case. Returns init and the last element.
+    let inline unsnoc (q : RealTimeDeque<'a>) = q.Unsnoc
 
-    ///returns option init and the last element
-    let inline tryUnsnoc (q : RealTimeDeque<'a>) = q.TryUnsnoc()
+    ///O(1), worst case. Returns option init and the last element.
+    let inline tryUnsnoc (q : RealTimeDeque<'a>) = q.TryUnsnoc
 
-    ///returns deque with element updated by index
+    ///O(n/2), worst case. Returns deque with element updated by index.
     let inline update i y (q : RealTimeDeque<'a>) = q.Update i y
 
-    ///returns option deque with element updated by index
+    ///O(n/2), worst case. Returns option deque with element updated by index.
     let inline tryUpdate i y (q : RealTimeDeque<'a>) = q.TryUpdate i y

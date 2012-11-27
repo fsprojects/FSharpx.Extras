@@ -2,16 +2,24 @@
 
 open System
 open System.IO
-open FSharpx.TypeProviders.DSL
+open FSharpx.TypeProviders.Helper
 open Microsoft.FSharp.Quotations
+open Microsoft.FSharp.Core.CompilerServices
 open Samples.FSharp.ProvidedTypes
 open FSharpx.TypeProviders.Inference
 open FSharpx.JSON.DocumentExtensions
 open FSharpx.JSON
 
+let dict = new System.Collections.Generic.Dictionary<_,_>()
+
 // Generates type for an inferred JSON document
 let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elementName,multiProperty,elementChildren,elementProperties)) =
-    let ty = runtimeType<IDocument> elementName
+    let append =
+        match dict.TryGetValue elementName with
+        | true,c -> dict.[elementName] <- c + 1; c.ToString()
+        | _ -> dict.Add(elementName,1); ""
+
+    let ty = runtimeType<IDocument> (elementName + append)
     ownerType.AddMember(ty)
 
     let accessExpr propertyName propertyType (args: Expr list) = 
@@ -80,18 +88,42 @@ open System.Xml
 open System.Xml.Linq
 
 /// Infer schema from the loaded data and generate type with properties
-let jsonType (ownerType:TypeProviderForNamespaces) cfg =     
-    let createTypeFromSchema typeName (jsonText:string) =
-        { Schema = JSONInference.provideElement "Document" false [parse jsonText]
-          EmptyConstructor = fun args -> <@@ parse jsonText @@>
-          FileNameConstructor = fun args -> <@@ (%%args.[0] : string) |> File.ReadAllText |> parse  @@>
-          DocumentContentConstructor = fun args -> <@@ (%%args.[0] : string) |> parse  @@>
-          RootPropertyGetter = fun args -> <@@ (%%args.[0] : IDocument) @@>
-          ToStringExpr = fun args -> <@@ (%%args.[0]: IDocument).ToString() @@> }
-        |> createParserType<IDocument> typeName generateType            
-        |+!> (provideMethod ("ToXml") [] typeof<XObject seq> (fun args -> <@@ (%%args.[0]: IDocument).ToXml() @@>)
-                |> addMethodXmlDoc "Gets the Xml representation")
+let jsonType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
+    let missingValue = "@@@missingValue###"
+    let jsonDocumentType = erasedType<obj> thisAssembly rootNamespace "StructuredJSON"
+    jsonDocumentType.DefineStaticParameters(
+        parameters = [ProvidedStaticParameter("FileName", typeof<string>, missingValue)   // Parameterize the type by the file to use as a template
+                      ProvidedStaticParameter("Schema" , typeof<string>, missingValue) ], // Allows to specify inlined schema
+        instantiationFunction = 
+            (fun typeName parameterValues ->
+                let schema = 
+                    match parameterValues with 
+                    | [| :? string as fileName; :? string |] when fileName <> missingValue ->        
+                        let resolvedFileName = findConfigFile cfg.ResolutionFolder fileName
+                        watchForChanges ownerType resolvedFileName
+                                       
+                        resolvedFileName |> File.ReadAllText
+                    | [| :? string; :? string as schema |] when schema <> missingValue -> schema
+                    | _ -> failwith "You have to specify a filename or inlined Schema"
+                    
+                let jsonDocumentType =
+                    { Schema = JSONInference.provideElement "Document" false [parse schema]
+                      EmptyConstructor = fun args -> <@@ parse schema @@>
+                      FileNameConstructor = fun args -> <@@ (%%args.[0] : string) |> File.ReadAllText |> parse  @@>
+                      DocumentContentConstructor = fun args -> <@@ (%%args.[0] : string) |> parse  @@>
+                      RootPropertyGetter = fun args -> <@@ (%%args.[0] : IDocument) @@>
+                      ToStringExpr = fun args -> <@@ (%%args.[0]: IDocument).ToString() @@> }
+                    |> createParserType<IDocument> typeName generateType     
+        
+                let converterMethod =
+                    ProvidedMethod(
+                        methodName = "ToXml",
+                        parameters = [],
+                        returnType = typeof<XObject seq>,
+                        InvokeCode = (fun args -> <@@ (%%args.[0]: IDocument).ToXml() @@>))
 
-    let createTypeFromFileName typeName = File.ReadAllText >> createTypeFromSchema typeName
+                converterMethod.AddXmlDoc "Gets the XML representation"
 
-    createStructuredParser thisAssembly rootNamespace "StructuredJSON" cfg ownerType createTypeFromFileName createTypeFromSchema
+                jsonDocumentType.AddMember converterMethod
+                jsonDocumentType))
+    jsonDocumentType

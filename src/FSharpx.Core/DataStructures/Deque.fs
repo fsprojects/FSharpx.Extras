@@ -46,27 +46,27 @@ type Deque<'a> (front, rBack) =
 
     static member internal Singleton x = Deque([x], List.Empty)
 
-    ///returns a new deque with the element added to the beginning
+    ///O(1) amortized, O(n), worst case. Returns a new deque with the element added to the beginning.
     member this.Cons x =
         let f, r = Deque.checkr (x::front, rBack)
         Deque (f, r) 
    
-    ///returns the first element
-    member this.Head() =
+    ///O(1) amortized, O(n), worst case. Returns the first element.
+    member this.Head =
         match front, rBack with
         | [], [] -> raise Exceptions.Empty
         | hd::tl, _ -> hd
         | [], xs -> List.rev xs |> List.head
 
-    ///returns option first element
-    member this.TryGetHead() =
+    ///O(1) amortized, O(n), worst case. Returns option first element.
+    member this.TryGetHead =
         match front, rBack with
         | [], [] -> None
         | hd::tl, _ -> Some(hd)
         | [], xs -> Some(List.rev xs |> List.head )
 
-    ///returns a new deque of the elements before the last element
-    member this.Init() = 
+    ///O(1) amortized, O(n), worst case. Returns a new deque of the elements before the last element.
+    member this.Init = 
         let rec loop : 'a list * 'a list -> Deque<'a> = function
             | [], [] -> raise Exceptions.Empty
             | f, hd::tl -> 
@@ -76,8 +76,8 @@ type Deque<'a> (front, rBack) =
             | f, [] ->  Deque.split f |> loop 
         loop (front, rBack)
 
-    ///returns option deque of the elements before the last element
-    member this.TryGetInit() = 
+    ///O(1) amortized, O(n), worst case. Returns option deque of the elements before the last element.
+    member this.TryGetInit = 
         let rec loop : 'a list * 'a list -> Deque<'a> option = function
             | [], [] -> None
             | f, hd::tl -> 
@@ -87,29 +87,29 @@ type Deque<'a> (front, rBack) =
             | f, [] ->  Deque.split f |> loop 
         loop (front, rBack)
          
-    ///returns true if the deque has no elements
-    member this.IsEmpty() =  
+    ///O(1). Returns true if the deque has no elements.
+    member this.IsEmpty =  
         match front, rBack with
         | [], [] -> true | _ -> false
 
-    ///returns the last element
-    member this.Last() = 
+    ///O(1) amortized, O(n), worst case. Returns the last element.
+    member this.Last = 
         match front, rBack with
         | [], [] -> raise Exceptions.Empty
         | xs, [] -> List.rev xs |> List.head
         | _, hd::tl -> hd
 
-    ///returns option last element
-    member this.TryGetLast() = 
+    ///O(1) amortized, O(n), worst case. Returns option last element.
+    member this.TryGetLast = 
         match front, rBack with
         | [], [] -> None
         | xs, [] -> Some(List.rev xs |> List.head)
         | _, hd::tl -> Some(hd)
 
-    ///returns the count of elememts
-    member this.Length() = front.Length + rBack.Length
+    ///O(1). Returns the count of elememts.
+    member this.Length = front.Length + rBack.Length
 
-    ///returns element by index
+    ///O(n), worst case. Returns element by index.
     member this.Lookup (i:int) =
         match (List.length front), front, (List.length rBack), rBack with
         | lenF, front, lenR, rear when i > (lenF + lenR - 1) -> raise Exceptions.OutOfBounds
@@ -124,7 +124,7 @@ type Deque<'a> (front, rBack) =
                 | xs, i' -> loopF ((List.tail xs), (i' - 1))
             loopF (rear, ((lenR - (i - lenF)) - 1))
 
-    ///returns option element by index
+    ///O(n), worst case. Returns option element by index.
     member this.TryLookup (i:int) =
         match (List.length front), front, (List.length rBack), rBack with
         | lenF, front, lenR, rear when i > (lenF + lenR - 1) -> None
@@ -139,7 +139,7 @@ type Deque<'a> (front, rBack) =
                 | xs, i' -> loopF ((List.tail xs), (i' - 1))
             loopF (rear, ((lenR - (i - lenF)) - 1))
 
-    ///returns deque with element removed by index
+    ///O(n), worst case. Returns deque with element removed by index.
     member this.Remove (i:int) =
 
         match (List.length front), front, (List.length rBack), rBack with
@@ -163,7 +163,7 @@ type Deque<'a> (front, rBack) =
 
             (new Deque<'a>(Deque.checkf(front, newRear)))
 
-    ///returns option deque with element removed by index
+    ///O(n), worst case. Returns option deque with element removed by index.
     member this.TryRemove (i:int) =
 
         match (List.length front), front, (List.length rBack), rBack with
@@ -187,17 +187,17 @@ type Deque<'a> (front, rBack) =
 
             Some((new Deque<'a>(Deque.checkf(front, newRear))))
 
-    ///returns deque reversed
-    member this.Rev() = 
+    ///O(1). Returns deque reversed.
+    member this.Rev = 
         new Deque<'a>(rBack, front)
 
-    ///returns a new deque with the element added to the end
+    ///O(1) amortized, O(n), worst case. Returns a new deque with the element added to the end.
     member this.Snoc x = 
         let f, r = Deque.checkf (front, x::rBack)
         Deque (f, r)
 
-    ///returns a new deque of the elements trailing the first element
-    member this.Tail() =
+    ///O(1) amortized, O(n), worst case. Returns a new deque of the elements trailing the first element.
+    member this.Tail =
         let rec loop : 'a list * 'a list -> Deque<'a> = function
             | [], [] -> raise Exceptions.Empty
             | hd::tl, r -> 
@@ -206,8 +206,8 @@ type Deque<'a> (front, rBack) =
             | [], r -> Deque.split r |> loop
         loop (front, rBack)
 
-    ///returns option deque of the elements trailing the first element
-    member this.TryGetTail() =
+    ///O(1) amortized, O(n), worst case. Returns option deque of the elements trailing the first element.
+    member this.TryGetTail =
         let rec loop : 'a list * 'a list -> Deque<'a> option = function
             | [], [] -> None
             | hd::tl, r -> 
@@ -216,31 +216,31 @@ type Deque<'a> (front, rBack) =
             | [], r -> Deque.split r |> loop
         loop (front, rBack)
 
-    ///returns the first element and tail
-    member this.Uncons() =  
+    ///O(1) amortized, O(n), worst case. Returns the first element and tail.
+    member this.Uncons =  
         match front, rBack with
         | [], [] -> raise Exceptions.Empty
-        | _, _ -> this.Head(), this.Tail()
+        | _, _ -> this.Head, this.Tail
 
-    ///returns option first element and tail
-    member this.TryUncons() =  
+    ///O(1) amortized, O(n), worst case. Returns option first element and tail.
+    member this.TryUncons =  
         match front, rBack with
         | [], [] -> None
-        | _, _ -> Some(this.Head(), this.Tail())
+        | _, _ -> Some(this.Head, this.Tail)
 
-    ///returns init and the last element
-    member this.Unsnoc() =  
+    ///O(1) amortized, O(n), worst case. Returns init and the last element.
+    member this.Unsnoc =  
         match front, rBack with
         | [], [] -> raise Exceptions.Empty
-        | _, _ -> this.Init(), this.Last()
+        | _, _ -> this.Init, this.Last
           
-    ///returns option init and the last element
-    member this.TryUnsnoc() =  
+    ///O(1) amortized, O(n), worst case. Returns option init and the last element.
+    member this.TryUnsnoc =  
         match front, rBack with
         | [], [] -> None
-        | _, _ -> Some(this.Init(), this.Last())
+        | _, _ -> Some(this.Init, this.Last)
     
-    ///returns deque with element updated by index
+    ///O(n), worst case. Returns deque with element updated by index.
     member this.Update (i:int) (y: 'a) =
         match (List.length front), front, (List.length rBack), rBack with
         | lenF, front, lenR, rear when i > (lenF + lenR - 1) -> raise Exceptions.OutOfBounds
@@ -263,7 +263,7 @@ type Deque<'a> (front, rBack) =
         
             new Deque<'a>(Deque.checkf(front, newRear))
 
-    ///returns option deque with element updated by index
+    ///O(n), worst case. Returns option deque with element updated by index.
     member this.TryUpdate (i:int) (y: 'a) =
         match (List.length front), front, (List.length rBack), rBack with
         | lenF, front, lenR, rear when i > (lenF + lenR - 1) -> None
@@ -291,23 +291,23 @@ type Deque<'a> (front, rBack) =
 
         member this.Cons x = this.Cons x :> _
 
-        member this.Count() = this.Length()
+        member this.Count = this.Length
 
-        member this.Head() = this.Head()
+        member this.Head = this.Head
 
-        member this.TryGetHead() = this.TryGetHead()
+        member this.TryGetHead = this.TryGetHead
 
-        member this.Init() = this.Init() :> _
+        member this.Init = this.Init :> _
 
-        member this.TryGetInit() = Some(this.TryGetInit().Value :> _)
+        member this.TryGetInit = Some(this.TryGetInit.Value :> _)
 
-        member this.IsEmpty() = this.IsEmpty()
+        member this.IsEmpty = this.IsEmpty
 
-        member this.Last() = this.Last()
+        member this.Last = this.Last
 
-        member this.TryGetLast() = this.TryGetLast()
+        member this.TryGetLast = this.TryGetLast
 
-        member this.Length() = this.Length()
+        member this.Length = this.Length
 
         member this.Lookup i = this.Lookup i
 
@@ -320,29 +320,32 @@ type Deque<'a> (front, rBack) =
             | None -> None
             | Some(q) -> Some(q :> _)
 
-        member this.Rev() = this.Rev() :> _
+        member this.Rev = this.Rev :> _
 
         member this.Snoc x = this.Snoc x :> _
 
-        member this.Tail() = this.Tail() :> _
+        member this.Tail = this.Tail :> _
 
-        member this.TryGetTail() = Some(this.TryGetTail().Value :> _)
+        member this.TryGetTail = 
+            match this.TryGetTail with
+            | None -> None
+            | Some(q) -> Some(q :> _)
 
-        member this.Uncons() = 
-            let x, xs = this.Uncons() 
+        member this.Uncons = 
+            let x, xs = this.Uncons 
             x, xs :> _
 
-        member this.TryUncons() = 
-            match this.TryUncons() with
+        member this.TryUncons = 
+            match this.TryUncons with
             | None -> None
             | Some(x, q) -> Some(x, q :> _)
 
-        member this.Unsnoc() = 
-            let xs, x = this.Unsnoc() 
+        member this.Unsnoc = 
+            let xs, x = this.Unsnoc 
             xs :> _, x
 
-        member this.TryUnsnoc() = 
-            match this.TryUnsnoc() with
+        member this.TryUnsnoc = 
+            match this.TryUnsnoc with
             | None -> None
             | Some(q, x) -> Some(q :> _, x)
 
@@ -368,87 +371,87 @@ module Deque =
 
 //pattern discriminators
 
-    let (|Cons|Nil|) (q : Deque<'a>) = match q.TryUncons() with Some(a,b) -> Cons(a,b) | None -> Nil
+    let (|Cons|Nil|) (q : Deque<'a>) = match q.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
 
-    let (|Snoc|Nil|) (q : Deque<'a>) = match q.TryUnsnoc() with Some(a,b) -> Snoc(a,b) | None -> Nil
+    let (|Snoc|Nil|) (q : Deque<'a>) = match q.TryUnsnoc with Some(a,b) -> Snoc(a,b) | None -> Nil
 
-    ///returns a new deque with the element added to the beginning
+    ///O(n), worst case. Returns a new deque with the element added to the beginning.
     let inline cons (x : 'a) (q : Deque<'a>) = q.Cons x 
 
-    ///returns deque of no elements
+    ///O(1). Returns deque of no elements.
     let empty() = Deque.Empty()
 
-    ///returns the first element
-    let inline head (q : Deque<'a>) = q.Head()
+    ///O(1) amortized, O(n), worst case. Returns the first element.
+    let inline head (q : Deque<'a>) = q.Head
 
-    ///returns option first element
-    let inline tryGetHead (q : Deque<'a>) = q.TryGetHead()
+    ///O(1) amortized, O(n), worst case. Returns option first element.
+    let inline tryGetHead (q : Deque<'a>) = q.TryGetHead
 
-    ///returns a new deque of the elements before the last element
-    let inline init (q : Deque<'a>) = q.Init() 
+    ///O(1) amortized, O(n), worst case. Returns a new deque of the elements before the last element.
+    let inline init (q : Deque<'a>) = q.Init 
 
-    ///returns option deque of the elements before the last element
-    let inline tryGetInit (q : Deque<'a>) = q.TryGetInit() 
+    ///O(1) amortized, O(n), worst case. Returns option deque of the elements before the last element.
+    let inline tryGetInit (q : Deque<'a>) = q.TryGetInit 
 
-    ///returns true if the deque has no elements
-    let inline isEmpty (q : Deque<'a>) = q.IsEmpty()
+    ///O(1). Returns true if the deque has no elements.
+    let inline isEmpty (q : Deque<'a>) = q.IsEmpty
 
-    ///returns the last element
-    let inline last (q : Deque<'a>) = q.Last()
+    ///O(1) amortized, O(n), worst case. Returns the last element.
+    let inline last (q : Deque<'a>) = q.Last
 
-    ///returns option last element
-    let inline tryGetLast (q : Deque<'a>) = q.TryGetLast()
+    ///O(1) amortized, O(n), worst case. Returns option last element.
+    let inline tryGetLast (q : Deque<'a>) = q.TryGetLast
 
-    ///returns the count of elememts
-    let inline length (q : Deque<'a>) = q.Length()
+    ///O(1). Returns the count of elememts.
+    let inline length (q : Deque<'a>) = q.Length
 
-    ///returns element by index
+    ///O(n), worst case. Returns element by index.
     let inline lookup i (q : Deque<'a>) = q.Lookup i
 
-    ///returns option element by index
+    ///O(n), worst case. Returns option element by index.
     let inline tryLookup i (q : Deque<'a>) = q.TryLookup i
 
-    ///returns a deque of the two lists concatenated
+    ///O(ys). Returns a deque of the two lists concatenated.
     let ofCatLists xs ys = Deque.OfCatLists xs ys
 
-    ///returns a deque of the seq
+    ///O(n/2). Returns a deque of the seq.
     let ofSeq xs = Deque.OfSeq xs
 
-    ///returns deque with element removed by index
+    ///O(n), worst case. Returns deque with element removed by index.
     let inline remove i (q : Deque<'a>) = q.Remove i
 
-    ///returns option deque with element removed by index
+    ///O(n), worst case. Returns option deque with element removed by index.
     let inline tryRemove i (q : Deque<'a>) = q.TryRemove i
 
-    ///returns deque reversed
-    let inline rev (q : Deque<'a>) = q.Rev()
+    ///O(1). Returns deque reversed.
+    let inline rev (q : Deque<'a>) = q.Rev
 
-    ///returns a deque of one element
+    ///O(1). Returns a deque of one element.
     let singleton x = Deque.Singleton x
 
-    ///returns a new deque with the element added to the end
+    ///O(1) amortized, O(n), worst case. Returns a new deque with the element added to the end.
     let inline snoc (x : 'a) (q : Deque<'a>) = (q.Snoc x) 
 
-    ///returns a new deque of the elements trailing the first element
-    let inline tail (q : Deque<'a>) = q.Tail() 
+    ///O(1) amortized, O(n), worst case. Returns a new deque of the elements trailing the first element.
+    let inline tail (q : Deque<'a>) = q.Tail 
 
-    ///returns option deque of the elements trailing the first element
-    let inline tryGetTail (q : Deque<'a>) = q.TryGetTail() 
+    ///O(1) amortized, O(n), worst case. Returns option deque of the elements trailing the first element.
+    let inline tryGetTail (q : Deque<'a>) = q.TryGetTail 
 
-    ///returns the first element and tail
-    let inline uncons (q : Deque<'a>) = q.Uncons()
+    ///O(1) amortized, O(n), worst case. Returns the first element and tail.
+    let inline uncons (q : Deque<'a>) = q.Uncons
 
-    ///returns option first element and tail
-    let inline tryUncons (q : Deque<'a>) = q.TryUncons()
+    ///O(1) amortized, /O(n), worst case. Returns option first element and tail.
+    let inline tryUncons (q : Deque<'a>) = q.TryUncons
 
-    ///returns init and the last element
-    let inline unsnoc (q : Deque<'a>) = q.Unsnoc()
+    ///O(1) amortized, O(n), worst case. Returns init and the last element.
+    let inline unsnoc (q : Deque<'a>) = q.Unsnoc
 
-    ///returns option init and the last element
-    let inline tryUnsnoc (q : Deque<'a>) = q.TryUnsnoc()
+    ///O(1) amortized, O(n), worst case. Returns option init and the last element.
+    let inline tryUnsnoc (q : Deque<'a>) = q.TryUnsnoc
 
-    ///returns deque with element updated by index
+    ///O(n), worst case. Returns deque with element updated by index.
     let inline update i y (q : Deque<'a>) = q.Update i y
 
-    ///returns option deque with element updated by index
+    ///O(n), worst case. Returns option deque with element updated by index.
     let inline tryUpdate i y (q : Deque<'a>) = q.TryUpdate i y
