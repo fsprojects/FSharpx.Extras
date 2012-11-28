@@ -62,4 +62,52 @@ let ChoiceFolding() =
     | Validation.Failure error -> 
         printfn "error: %s" error
         Assert.Fail("should not have failed: {0}", error)
+
+open FSharpx.Choice
+
+[<Test>]
+let ``computations are aborted on the first Choice2Of2``() = 
+    let success = Choice1Of2 1
+    let failure = Choice2Of2 "failed computation"
+    choose {
+        let! x = success
+        let! y = failure
+        failwith "should never be called"
+        return x + y }
+    |> (=) failure
+    |> should be True
     
+[<Test>]
+let ``multiple successful values propagate through``() =
+    let a = Choice1Of2 1
+    let b = Choice1Of2 2
+    choose {
+        let! x = a
+        let! y = b
+        return x + y }
+    |> should equal (Choice1Of2 3)
+    
+[<Test>]
+let ``return! allows binding the result``() =
+    let f = Choice1Of2
+    choose { return! f 6 }
+    |> should equal (Choice1Of2 6)    
+
+open FsCheck
+open FsCheck.NUnit
+
+[<Test>]
+let ``monad laws``() =
+    let ret (x: int) = choose.Return x
+    let n = sprintf "Choice : monad %s"
+    let inline (>>=) m f = choose.Bind(m,f)
+    fsCheck "left identity" <| 
+        fun f a -> ret a >>= f = f a
+    fsCheck "right identity" <| 
+        fun x -> x >>= ret = x
+    fsCheck "associativity" <| 
+        fun f g v ->
+            let a = (v >>= f) >>= g
+            let b = v >>= (fun x -> f x >>= g)
+            a = b
+

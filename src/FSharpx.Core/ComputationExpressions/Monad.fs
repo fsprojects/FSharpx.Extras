@@ -740,7 +740,10 @@ module Choice =
 
     type EitherBuilder() =
         member this.Return a = returnM a
-        member this.Bind(m,f) = bind f m
+        member this.Bind (m, f) = bind f m
+        member this.ReturnFrom m = m
+
+    let choose = EitherBuilder()
 
     /// If Choice is 1Of2, returns Some value. Otherwise, returns None.
     let toOption = Option.ofChoice
