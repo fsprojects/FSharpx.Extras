@@ -35,6 +35,14 @@ let ``Desugared else branch should be None``() =
           return 4 } 
       |> should equal None
 
+[<Test>]
+let ``is delayed``() =
+    let r = maybe {
+        if true then return! None
+        return 2 / 0
+    }
+    r |> should equal None
+
 open FsCheck
 open FsCheck.NUnit
 
