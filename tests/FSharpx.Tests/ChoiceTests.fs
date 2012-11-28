@@ -68,14 +68,13 @@ open FSharpx.Choice
 [<Test>]
 let ``computations are aborted on the first Choice2Of2``() = 
     let success = Choice1Of2 1
-    let failure = Choice2Of2 "failed computation"
+    let failure : Choice<int,string> = Choice2Of2 "failed computation"
     choose {
         let! x = success
         let! y = failure
         failwith "should never be called"
         return x + y }
-    |> (=) failure
-    |> should be True
+    |> should equal failure
     
 [<Test>]
 let ``multiple successful values propagate through``() =
