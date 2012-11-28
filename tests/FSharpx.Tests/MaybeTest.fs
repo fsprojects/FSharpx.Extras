@@ -50,7 +50,7 @@ open FsCheck.NUnit
 let ``monad laws``() =
     let ret (x: int) = maybe.Return x
     let n = sprintf "Maybe : monad %s"
-    let inline (>>=) m f = maybe.Combine(m,f)
+    let inline (>>=) m f = maybe.Bind(m,f)
     fsCheck "left identity" <| 
         fun f a -> ret a >>= f = f a
     fsCheck "right identity" <| 
