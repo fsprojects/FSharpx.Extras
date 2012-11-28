@@ -59,7 +59,7 @@ let ``monadplus laws``() =
     let mzero = maybe.Zero()
     let ret = maybe.Return
     let mplus x = flip orElse x
-    let inline (>>=) m f = maybe.Combine(m,f)
+    let inline (>>=) m f = maybe.Bind(m,f)
     fsCheck "monoid left identity" <|
         fun a -> mplus a mzero = a
     fsCheck "monoid right identity" <|
