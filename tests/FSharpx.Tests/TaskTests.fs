@@ -10,8 +10,6 @@ open System.Threading
 open System.Threading.Tasks
 open Microsoft.FSharp.Control.WebExtensions
 
-let task = Task.TaskBuilder(continuationOptions = TaskContinuationOptions.ExecuteSynchronously)
-
 type StreamReader with
     member x.ReadToEndAsync() = 
         x.AsyncReadToEnd() |> Async.StartAsTask
@@ -23,7 +21,8 @@ type File with
 let filename = @"table.csv"
 
 [<Test>]
-let loadprices() =
+let loadprices() =    
+    let task = Task.TaskBuilder(continuationOptions = TaskContinuationOptions.ExecuteSynchronously)
     let started = ref false
     let dummy = ref false
     let processTask() =
@@ -53,7 +52,24 @@ let loadprices() =
     Assert.True !started
 
 [<Test>]
-let ``exception in task``() =
+let ``waiting for a task``() =
+    use cts = new CancellationTokenSource()
+    let task = Task.TaskBuilder(cancellationToken = cts.Token)
+    let t() = 
+        task {
+            let! v = Task.Factory.StartNew(fun () -> 0)
+            return ()
+        }
+    cts.Cancel()
+    match Task.run t with
+    | Task.Canceled -> ()
+    | Task.Error e -> Assert.Fail("Task should have been canceled, but errored with exception {0}", e)
+    | Task.Successful a -> Assert.Fail("Task should have been canceled, but succeeded with result {0}", a)
+
+
+[<Test>]
+let ``exception in task``() =    
+    let task = Task.TaskBuilder(continuationOptions = TaskContinuationOptions.ExecuteSynchronously)
     let t() = 
         task {
             failwith "error"
@@ -93,7 +109,8 @@ let ``canceled task 2``() =
 
 [<Test>]
 let ``while``() = 
-    let i = ref 10
+    let i = ref 10    
+    let task = Task.TaskBuilder(continuationOptions = TaskContinuationOptions.ExecuteSynchronously)
     let t() =
         task {
             while !i > 0 do
@@ -106,7 +123,8 @@ let ``while``() =
 open FsCheck.NUnit
 
 [<Test>]
-let ``run delay law``() =
+let ``run delay law``() =    
+    let task = Task.TaskBuilder(continuationOptions = TaskContinuationOptions.ExecuteSynchronously)
     fsCheck "run delay law" (fun a -> (task.Run << task.Delay << konst) a = a)
 
 #endif
