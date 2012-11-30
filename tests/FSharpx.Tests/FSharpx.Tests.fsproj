@@ -77,6 +77,7 @@
     <Compile Include="PreludeTests.fs" />
     <Compile Include="LensTests.fs" />
     <Compile Include="LensExample.fs" />
+    <Compile Include="LinqExpression.Tests.fs" />
     <Compile Include="TimeMeasurementTests.fs" />
     <Compile Include="JSON.Tests.fs" />
     <Compile Include="JSON.Equality.Tests.fs" />

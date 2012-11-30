@@ -25,7 +25,7 @@ module QuotationEvaluation =
         static member Assembly = typeof<This>.Assembly
 
     let hashCompareType = typeof<list<_>>.Assembly.GetType("Microsoft.FSharp.Core.LanguagePrimitives+HashCompare")
-    let extraHashCompareType = This.Assembly.GetType("Microsoft.FSharp.Linq.ExtraHashCompare")
+    let extraHashCompareType = This.Assembly.GetType("FSharpx.Linq.ExtraHashCompare")
     let genericEqualityIntrinsic = "GenericEqualityIntrinsic" |> hashCompareType.GetMethod
     let genericNotEqualIntrinsic = "GenericNotEqualIntrinsic" |> extraHashCompareType.GetMethod
     let genericLessThanIntrinsic = "GenericLessThanIntrinsic" |> hashCompareType.GetMethod
@@ -854,12 +854,6 @@ module QuotationEvaluation =
             let f = Compile(x)  
             (fun () -> (f()) :?> 'T)
         member x.Eval() = (Eval(x) :?> 'T)
-
-    /// Converts a Lambda quotation into a Linq Lamba Expression with 1 parameter
-    let toLinqExpression (exp : Quotations.Expr<'a -> 'b>) =
-        let linq = exp.ToLinqExpression() :?> MethodCallExpression
-        let lambda = linq.Arguments.[0] :?> LambdaExpression
-        Expression.Lambda<Func<'a, 'b>>(lambda.Body, lambda.Parameters)
   
 open QuotationEvaluation
   
@@ -880,6 +874,12 @@ type QuotationEvaluator() =
     static member Evaluate (e : Microsoft.FSharp.Quotations.Expr<'T>) = e.Eval()
 
 
-
+[<AutoOpen>]
+module QuotationHelpers =
+    /// Converts a Lambda quotation into a Linq Lamba Expression with 1 parameter
+    let toLinqExpression (exp : Quotations.Expr<'a -> 'b>) =
+        let linq = Conv(exp, false) :?> MethodCallExpression
+        let lambda = linq.Arguments.[0] :?> LambdaExpression
+        Expression.Lambda<Func<'a, 'b>>(lambda.Body, lambda.Parameters)
 
     
