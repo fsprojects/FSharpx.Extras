@@ -43,6 +43,8 @@
     <Compile Include="StateMachine.fs" />
     <Compile Include="IO.fs" />
     <Compile Include="Monoid.fs" />
+    <Compile Include="Linq\Linq.fsi" />    
+    <Compile Include="Linq\Linq.fs" />        
     <Compile Include="Collections\Collections.fs" />
     <Compile Include="Collections\ByteString.fs" />
     <Compile Include="Collections\CircularBuffer.fs" />
