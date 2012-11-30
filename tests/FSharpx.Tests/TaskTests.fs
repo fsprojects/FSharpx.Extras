@@ -133,11 +133,20 @@ let ``while``() =
     Task.run t |> ignore
     Assert.AreEqual(0, !i)
 
-open FsCheck.NUnit
-
 [<Test>]
-let ``run delay law``() =    
+let ``run delay with obj task``() =    
     let task = Task.TaskBuilder(continuationOptions = TaskContinuationOptions.ExecuteSynchronously)
-    fsCheck "run delay law" (fun a -> (task.Run << task.Delay << konst) a = a)
+    let objTask = Task.Factory.StartNew(fun () -> 0 :> obj)
+    let c = konst objTask
+    let delayed = task.Delay c
+    let result = task.Run delayed
+    Assert.AreSame(objTask,result)
+
+//open FsCheck.NUnit
+//
+//[<Test>]
+//let ``run delay law``() =    
+//    let task = Task.TaskBuilder(continuationOptions = TaskContinuationOptions.ExecuteSynchronously)
+//    fsCheck "run delay law" (fun a -> (task.Run << task.Delay << konst) a = a)
 
 #endif
