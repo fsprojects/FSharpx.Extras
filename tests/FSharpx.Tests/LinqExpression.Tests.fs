@@ -18,7 +18,7 @@ type IWeatherInfoService =
     abstract HandleRequest: WeatherInfoRequest -> WeatherInfoResponse
 
 [<Test>]
-let ``It should convert a quoted lambda eith 1 parameter to a Linq lambda``() = 
+let ``It should convert a quoted lambda with 1 parameter to a Linq lambda``() = 
     let weatherInfoRequest = { City = "Hamburg" } : WeatherInfoRequest
     let quote = <@ fun (service:IWeatherInfoService) -> service.HandleRequest(weatherInfoRequest) @>
     let lambda = toLinqExpression quote
