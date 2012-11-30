@@ -1,4 +1,7 @@
-﻿module FSharpx.Tests.AsyncOperatorsTest
+﻿// First version copied from the F# Power Pack 
+// https://raw.github.com/fsharp/powerpack/master/src/FSharp.PowerPack.Unittests/AsyncOperatorsTest.fs
+
+module FSharpx.Tests.AsyncOperatorsTest
 
 open FSharpx
 open FSharpx.Async

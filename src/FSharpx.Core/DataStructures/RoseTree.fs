@@ -1,5 +1,6 @@
 ﻿namespace FSharpx.DataStructures
 
+open FSharpx
 open System
 open System.Linq
 open System.Runtime.CompilerServices

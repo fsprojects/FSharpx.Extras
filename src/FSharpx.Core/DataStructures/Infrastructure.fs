@@ -1,5 +1,7 @@
 ﻿namespace FSharpx.DataStructures
 
+open FSharpx
+
 module Exceptions = 
     let Empty = new System.Exception("Queue is empty") // TODO: make this a better exception
 

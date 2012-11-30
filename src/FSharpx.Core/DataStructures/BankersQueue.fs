@@ -6,6 +6,7 @@
 
 namespace FSharpx.DataStructures
 
+open FSharpx
 open LazyListHelpr
 open System.Collections
 open System.Collections.Generic
