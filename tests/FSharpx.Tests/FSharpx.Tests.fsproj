@@ -21,7 +21,7 @@
     <Optimize>false</Optimize>
     <Tailcalls>false</Tailcalls>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;NET40</DefineConstants>
     <WarningLevel>3</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -84,6 +84,10 @@
     <Compile Include="JSON.Serialization.Tests.fs" />
     <Compile Include="JSON.XMLConversion.Tests.fs" />
     <Compile Include="RegexTests.fs" />
+    <None Include="table.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Compile Include="TaskTests.fs" />
     <Compile Include="MapExtensionsTest.fs" />
   </ItemGroup>
   <ItemGroup>
