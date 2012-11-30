@@ -855,6 +855,11 @@ module QuotationEvaluation =
             (fun () -> (f()) :?> 'T)
         member x.Eval() = (Eval(x) :?> 'T)
 
+    /// Converts a Lambda quotation into a Linq Lamba Expression with 1 parameter
+    let toLinqExpression (exp : Quotations.Expr<'a -> 'b>) =
+        let linq = exp.ToLinqExpression() :?> MethodCallExpression
+        let lambda = linq.Arguments.[0] :?> LambdaExpression
+        Expression.Lambda<Func<'a, 'b>>(lambda.Body, lambda.Parameters)
   
 open QuotationEvaluation
   
@@ -873,5 +878,8 @@ type QuotationEvaluator() =
     static member Compile (e : Microsoft.FSharp.Quotations.Expr<'T>) = e.Compile()
 
     static member Evaluate (e : Microsoft.FSharp.Quotations.Expr<'T>) = e.Eval()
+
+
+
 
     
