@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -43,8 +43,8 @@
     <Compile Include="StateMachine.fs" />
     <Compile Include="IO.fs" />
     <Compile Include="Monoid.fs" />
-    <Compile Include="Linq\Linq.fsi" />    
-    <Compile Include="Linq\Linq.fs" />        
+    <Compile Include="Linq\Linq.fsi" />
+    <Compile Include="Linq\Linq.fs" />
     <Compile Include="Collections\Collections.fs" />
     <Compile Include="Collections\ByteString.fs" />
     <Compile Include="Collections\CircularBuffer.fs" />
@@ -72,7 +72,7 @@
     <Compile Include="DataStructures\SkewBinaryRandomAccessList.fs" />
     <Compile Include="DataStructures\LeftistHeap.fs" />
     <Compile Include="DataStructures\BinomialHeap.fs" />
-	<Compile Include="DataStructures\PairingHeap.fs" />
+    <Compile Include="DataStructures\PairingHeap.fs" />
     <Compile Include="DataStructures\HeapPriorityQueue.fs" />
     <Compile Include="DataStructures\BinaryTreeZipper.fs" />
     <Compile Include="DataStructures\ListZipper.fs" />
@@ -86,6 +86,7 @@
     <Compile Include="Lens.fs" />
     <Compile Include="CSharpCompat.fs" />
     <Compile Include="Regex.fs" />
+    <Compile Include="TaskMonad.fs" />
     <Compile Include="TimeMeasurement.fs" />
     <Compile Include="Stm.fs" />
     <Compile Include="Agents\Agent.fs" />
