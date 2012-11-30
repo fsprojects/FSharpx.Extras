@@ -21,7 +21,7 @@
     <Optimize>false</Optimize>
     <Tailcalls>false</Tailcalls>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NET40</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -40,6 +40,15 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <OutputPath>bin\DataStructures\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(TargetFrameworkVersion) == 'v3.5'">
+    <DefineConstants>NET35</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(TargetFrameworkVersion) == 'v4.0'">
+    <DefineConstants>NET40</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(TargetFrameworkVersion) == 'v4.5'">
+    <DefineConstants>NET45</DefineConstants>
   </PropertyGroup>
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
