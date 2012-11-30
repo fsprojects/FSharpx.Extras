@@ -96,11 +96,8 @@ type Text(text:string) =
 type Date(date:DateTime) =
     let mutable v = date
 
-    let escape s = 
-        s|> replace "\"" "\\\""
-
     member this.Value with get() = v and set (value) = v <- value
-    override this.ToString() = sprintf "\"%s\"" (v.ToString("o"))
+    override this.ToString() = sprintf "\"%s\"" (v.ToString())
 
     override this.Equals other =
         match other with
@@ -109,7 +106,7 @@ type Date(date:DateTime) =
 
     interface IDocument
     interface Infrastucture with
-        member this.Serialize sb = sb.AppendFormat("\"{0}\"", (escape <| v.ToString("o")))
+        member this.Serialize sb = sb.Append(v.ToString(System.Globalization.CultureInfo.InvariantCulture))
         member this.ToXml() = v :> obj
 
 
