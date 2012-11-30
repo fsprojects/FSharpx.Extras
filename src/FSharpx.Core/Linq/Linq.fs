@@ -1,7 +1,7 @@
 // First version copied from the F# Power Pack 
 // https://raw.github.com/fsharp/powerpack/master/src/FSharp.PowerPack.Linq/Linq.fs
 
-namespace Microsoft.FSharp.Linq
+namespace FSharpx.Linq
 
 open System
 open System.Linq
