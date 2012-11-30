@@ -69,8 +69,6 @@
     <Compile Include="UndoTest.fs" />
     <Compile Include="WriterTest.fs" />
     <Compile Include="ContinuationTest.fs" />
-    <Compile Include="DistributionTest.fs" />
-    <Compile Include="PokerDistributionTest.fs" />
     <Compile Include="IterateeTest.fs" />
     <Compile Include="ListIterateeTest.fs" />
     <Compile Include="BinaryIterateeTest.fs" />
@@ -98,6 +96,11 @@
     </None>
     <Compile Include="TaskTests.fs" />
     <Compile Include="MapExtensionsTest.fs" />
+    <Compile Include="Utilities.fs" />
+    <Compile Include="LazyListTests.fs" />
+    <Compile Include="ColllectionTests.fs" />
+    <Compile Include="ControlTests.fs" />
+    <Compile Include="AsyncStreamReaderTest.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FsCheck">
@@ -110,34 +113,6 @@
     <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' == 'v4.5'">
       <HintPath>..\..\lib\FSharp\Net45\FSharp.Core.dll</HintPath>
     </Reference>
-    <Reference Include="FSharp.PowerPack" Condition="$(TargetFrameworkVersion) != 'v3.5'">
-      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="FSharp.PowerPack.Linq" Condition="$(TargetFrameworkVersion) != 'v3.5'">
-      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.Linq.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="FSharp.PowerPack.Metadata" Condition="$(TargetFrameworkVersion) != 'v3.5'">
-      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.Metadata.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="FSharp.PowerPack.Parallel.Seq" Condition="$(TargetFrameworkVersion) != 'v3.5'">
-      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net40\FSharp.PowerPack.Parallel.Seq.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="FSharp.PowerPack" Condition="$(TargetFrameworkVersion) == 'v3.5'">
-      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net20\FSharp.PowerPack.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="FSharp.PowerPack.Linq" Condition="$(TargetFrameworkVersion) == 'v3.5'">
-      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net20\FSharp.PowerPack.Linq.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="FSharp.PowerPack.Metadata" Condition="$(TargetFrameworkVersion) == 'v3.5'">
-      <HintPath>..\..\packages\FSPowerPack.Community.2.1.1.1\Lib\Net20\FSharp.PowerPack.Metadata.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="nunit.framework, Version=2.6.0.12054, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
       <SpecificVersion>False</SpecificVersion>
@@ -148,6 +123,8 @@
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\FSharpx.Core\FSharpx.Core.fsproj">
