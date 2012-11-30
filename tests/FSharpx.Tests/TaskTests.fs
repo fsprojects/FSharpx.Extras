@@ -1,5 +1,4 @@
-﻿#if NET40
-module FSharpx.Tests.TaskTests
+﻿module FSharpx.Tests.TaskTests
 
 open System
 open System.IO
@@ -7,6 +6,8 @@ open System.Net
 open NUnit.Framework
 open FSharpx
 open System.Threading
+
+#if NET40
 open System.Threading.Tasks
 open Microsoft.FSharp.Control.WebExtensions
 
