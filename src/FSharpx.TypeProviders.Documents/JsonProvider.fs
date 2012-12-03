@@ -30,6 +30,8 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
             <@@ (%%args.[0]: IDocument).GetBoolean propertyName @@>
         | x when x = typeof<int> -> 
             <@@ (%%args.[0]: IDocument).GetNumber propertyName |> int @@>
+        | x when x = typeof<int64> -> 
+            <@@ (%%args.[0]: IDocument).GetNumber propertyName |> int64 @@>
         | x when x = typeof<float> -> 
             <@@ (%%args.[0]: IDocument).GetNumber propertyName @@>
         | x when x = typeof<DateTime> -> 
@@ -46,6 +48,8 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
             <@@ (%%args.[0]: IDocument).AddBoolProperty(propertyName,(%%args.[1]:bool)) |> ignore @@>
         | x when x = typeof<int> ->
             <@@ (%%args.[0]: IDocument).AddNumberProperty(propertyName,float (%%args.[1]:int)) |> ignore @@>
+        | x when x = typeof<int64> ->
+            <@@ (%%args.[0]: IDocument).AddNumberProperty(propertyName,float (%%args.[1]:int64)) |> ignore @@>
         | x when x = typeof<float> ->
             <@@ (%%args.[0]: IDocument).AddNumberProperty(propertyName,(%%args.[1]:float)) |> ignore @@>
         | x when x = typeof<DateTime> -> 
@@ -63,6 +67,10 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
                 | None -> (%%args.[0]: IDocument).RemoveProperty propertyName @@>
         | x when x = typeof<int> -> 
             <@@ match (%%args.[1]:int option) with
+                | Some number -> (%%args.[0]: IDocument).AddNumberProperty(propertyName,float number) |> ignore
+                | None -> (%%args.[0]: IDocument).RemoveProperty propertyName @@>
+        | x when x = typeof<int64> -> 
+            <@@ match (%%args.[1]:int64 option) with
                 | Some number -> (%%args.[0]: IDocument).AddNumberProperty(propertyName,float number) |> ignore
                 | None -> (%%args.[0]: IDocument).RemoveProperty propertyName @@>
         | x when x = typeof<float> -> 

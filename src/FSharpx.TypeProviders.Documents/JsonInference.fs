@@ -21,7 +21,12 @@ module internal JSONInference =
                 for prop in jObject.Properties do
                     match prop.Value with
                     | :? Text -> yield prop.Key, typeof<string>
-                    | (:? Number as n) -> yield prop.Key, if n.Value = Math.Round n.Value then typeof<int> else typeof<float>
+                    | (:? Number as n) -> 
+                            let t =
+                                if n.Value = float (int n.Value) then typeof<int> else
+                                if n.Value = float (int64 n.Value) then typeof<int64> else
+                                typeof<float>
+                            yield prop.Key, t
                     | :? Boolean -> yield prop.Key, typeof<bool>
                     | (:? Date as d) -> yield prop.Key, typeof<DateTime>
                     | _ -> ()              

@@ -89,8 +89,11 @@ module Strings =
         let l = s.ToLower()
         l = "true" || l = "false" || l = "yes" || l = "no"
 
-    /// Checks whether the string is an int
+    /// Checks whether the string is an int32
     let isInt (s:string) = Int32.TryParse s |> fst
+
+    /// Checks whether the string is an int64
+    let isInt64 (s:string) = Int64.TryParse s |> fst
 
     /// Checks whether the string is a float
     let isFloat (s:string) =
@@ -101,5 +104,6 @@ module Strings =
     let inferType values =     
         if Seq.forall isBool values then typeof<bool>
         elif Seq.forall isInt values then typeof<int>
+        elif Seq.forall isInt64 values then typeof<int64>
         elif Seq.forall isFloat values then typeof<float>
         else typeof<string>

@@ -34,6 +34,9 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
         | x when x = typeof<int> ->
             <@@  (%%args.[0]:TypedXElement).Element.Attribute(XName.op_Implicit propertyName).Value
                     |> Int32.Parse @@> 
+        | x when x = typeof<int64> ->
+            <@@  (%%args.[0]:TypedXElement).Element.Attribute(XName.op_Implicit propertyName).Value
+                    |> Int64.Parse @@> 
         | x when x = typeof<float> ->
             <@@  (%%args.[0]:TypedXElement).Element.Attribute(XName.op_Implicit propertyName).Value
                     |> Double.Parse @@> 
@@ -49,6 +52,8 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
             <@@  (%%args.[0]:TypedXElement).Element.SetAttributeValue(XName.op_Implicit propertyName, (%%args.[1]:bool).ToString()) @@>
         | x when x = typeof<int> ->
             <@@  (%%args.[0]:TypedXElement).Element.SetAttributeValue(XName.op_Implicit propertyName, (%%args.[1]:int).ToString()) @@>
+        | x when x = typeof<int64> ->
+            <@@  (%%args.[0]:TypedXElement).Element.SetAttributeValue(XName.op_Implicit propertyName, (%%args.[1]:int64).ToString()) @@>
         | x when x = typeof<float> ->
             <@@  (%%args.[0]:TypedXElement).Element.SetAttributeValue(XName.op_Implicit propertyName, (%%args.[1]:float).ToString()) @@>
         | x when x = typeof<string> ->
