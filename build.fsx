@@ -237,12 +237,12 @@ let buildAppTarget = TargetTemplate (fun frameworkVersion ->
     CleanDir buildPortableDir
 
     appReferences false frameworkVersion
-    |> MSBuild buildDir "Build" (["Configuration","Release"] @ frameworkParams false frameworkVersion)
+    |> MSBuild buildDir "Rebuild" (["Configuration","Release"] @ frameworkParams false frameworkVersion)
     |> Log "AppBuild-Output: "
 
     if frameworkVersion = net40 then
         appReferences true frameworkVersion
-        |> MSBuild buildPortableDir "Build" (["Configuration","Release"] @ frameworkParams true frameworkVersion)
+        |> MSBuild buildPortableDir "Rebuild" (["Configuration","Release"] @ frameworkParams true frameworkVersion)
         |> Log "AppBuild-Output: "
 
         !! (buildDir @@ "*DesignTime.*")
