@@ -48,6 +48,7 @@
     <Compile Include="JSON.WikiSample.Tests.fs" />
     <Compile Include="JSON.DocumentOverride.Tests.fs" />
     <Compile Include="JSON.ProjectFile.Tests.fs" />
+    <Compile Include="InferenceTests.fs" />
     <Compile Include="MiniCsv.Tests.fs" />
     <Content Include="OptionValues.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
