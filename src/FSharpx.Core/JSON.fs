@@ -1,5 +1,6 @@
 ﻿namespace FSharpx.JSON
 
+open System.Text
 
 // Copyright (c) Microsoft Corporation 2005-2012.
 // This sample code is provided "as is" without warranty of any kind. 
@@ -32,6 +33,31 @@ type JsonValue =
     static member GetArrayVal f            s = match s with Array v -> List.map f v | Null -> [ ]                                 | _ -> failwith (sprintf "The JSON item had value '%+A' when an array was expected" s)
     member this.GetArrayValWithKey         s = match this.GetValWithKey s with | Array v -> v | Null -> [ ]                        | v -> failwith (sprintf "key '%s' had value '%+A' when a string was expected" s v)
     member this.GetOptionalArrayValWithKey s = match this.TryGetValWithKey s with | None -> [ ] | Some (Array v) -> v | Some Null -> [ ] | Some v -> failwith (sprintf "key '%s' had value '%+A' when a string was expected" s v)
+
+    member private this.Serialize (sb:StringBuilder) =
+        match this with
+        | JsonValue.Null -> sb.Append "null"
+        | JsonValue.Bool b -> sb.Append(b.ToString().ToLower())
+        | JsonValue.NumDecimal number -> sb.Append(number.ToString(System.Globalization.CultureInfo.InvariantCulture))
+        | JsonValue.NumDouble number -> sb.Append(number.ToString(System.Globalization.CultureInfo.InvariantCulture))
+        | JsonValue.String t -> sb.AppendFormat("\"{0}\"", t.Replace("\"","\\\""))
+        | JsonValue.Obj map -> 
+            let isNotFirst = ref false
+            sb.Append "{"  |> ignore
+            for property in map do
+                if !isNotFirst then sb.Append "," |> ignore else isNotFirst := true
+                sb.AppendFormat("\"{0}\":",property.Key)  |> ignore
+                property.Value.Serialize(sb) |> ignore
+            sb.Append "}"
+        | JsonValue.Array elements -> 
+            let isNotFirst = ref false
+            sb.Append "[" |> ignore
+            for element in elements do
+                if !isNotFirst then sb.Append "," |> ignore else isNotFirst := true
+                element.Serialize(sb) |> ignore
+            sb.Append "]"
+
+    override this.ToString() = this.Serialize(new StringBuilder()).ToString()
 
 type internal Parser(jsonText:string) =
     let mutable i = 0
