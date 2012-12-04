@@ -78,7 +78,6 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
     generateSublements ty ownerType multiAccessExpr addChildExpr newChildExpr singleAccessExpr generateType elementChildren   
 
 open FSharpx.JSON
-open FSharpx.JSON.DocumentExtensions
 
 /// Infer schema from the loaded data and generate type with properties
 let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =  
@@ -113,7 +112,7 @@ let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
                     ProvidedMethod(
                         methodName = "ToJson",
                         parameters = [],
-                        returnType = typeof<IDocument>,
+                        returnType = typeof<JsonValue>,
                         InvokeCode = (fun args -> <@@ (%%args.[0]: TypedXDocument).Document.ToJson() @@>))
 
                 converterMethod.AddXmlDoc "Gets the JSON representation"

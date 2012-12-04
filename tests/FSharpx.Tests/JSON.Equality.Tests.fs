@@ -11,10 +11,10 @@ let ``Can compare empty documents``() =
 
 [<Test>] 
 let ``Can compare documents with single property``() =
-    let a = emptyObject |> addStringProperty "firstName" "John"
-    let b = emptyObject |> addStringProperty "firstName" "John"
-    let c = emptyObject |> addStringProperty "firstName" "Fred"
-    let d = emptyObject |> addStringProperty "lastName" "Fred"
+    let a = emptyObject.AddStringProperty("firstName","John")
+    let b = emptyObject.AddStringProperty("firstName","John")
+    let c = emptyObject.AddStringProperty("firstName","Fred")
+    let d = emptyObject.AddStringProperty("lastName","Fred")
 
     Assert.AreEqual(a,b)
     Assert.AreNotEqual(a,c)
@@ -22,10 +22,10 @@ let ``Can compare documents with single property``() =
 
 [<Test>]
 let ``Can compare documents with multiple properties``() =
-    let a = emptyObject |> addBoolProperty "aa" true |> addDecimalProperty "bb" (decimal 42.42)
-    let b = emptyObject |> addBoolProperty "aa" true |> addDecimalProperty "bb" (decimal 42.42)
-    let c = emptyObject |> addBoolProperty "aa" true |> addDecimalProperty "bb" (decimal 42.43)
-    let d = emptyObject |> addBoolProperty "aa" true |> addDecimalProperty "bb" (decimal 42.42) |> addDecimalProperty "c" (decimal 42.42)
+    let a = emptyObject.AddBoolProperty("aa",true).AddDecimalProperty("bb",decimal 42.42)
+    let b = emptyObject.AddBoolProperty("aa",true).AddDecimalProperty("bb",decimal 42.42)
+    let c = emptyObject.AddBoolProperty("aa",true).AddDecimalProperty("bb",decimal 42.43)
+    let d = emptyObject.AddBoolProperty("aa",true).AddDecimalProperty("bb",decimal 42.42).AddDecimalProperty("c",decimal 42.42)
       
     Assert.AreEqual(a,b)
     Assert.AreNotEqual(a,c)
@@ -33,10 +33,10 @@ let ``Can compare documents with multiple properties``() =
 
 [<Test>]
 let ``Can compare documents with JObjects``() =
-    let a = emptyObject |> addProperty "sub" (emptyObject |> addStringProperty "t" "test")
-    let b = emptyObject |> addProperty "sub" (emptyObject |> addStringProperty "t" "test")
-    let c = emptyObject |> addProperty "sub1" (emptyObject |> addStringProperty "t" "test")
-    let d = emptyObject |> addProperty "sub" (emptyObject |> addStringProperty "t" "test1")
+    let a = emptyObject.AddProperty("sub",emptyObject.AddStringProperty("t","test"))
+    let b = emptyObject.AddProperty("sub",emptyObject.AddStringProperty("t","test"))
+    let c = emptyObject.AddProperty("sub1",emptyObject.AddStringProperty("t","test"))
+    let d = emptyObject.AddProperty("sub",emptyObject.AddStringProperty("t","test1"))
       
     Assert.AreEqual(a,b)
     Assert.AreNotEqual(a,c)
@@ -44,11 +44,11 @@ let ``Can compare documents with JObjects``() =
 
 [<Test>]
 let ``Can compare documents with JArray``() =
-    let a = emptyArray |> addElement (emptyObject |> addStringProperty "t" "test")
-    let b = emptyArray |> addElement (emptyObject |> addStringProperty "t" "test")
-    let c = emptyArray |> addElement (emptyObject |> addStringProperty "t" "test1")
-    let d = emptyArray |> addElement (emptyObject |> addStringProperty "t" "test") |> addElement (emptyObject |> addStringProperty "t1" "test1")
-    let e = emptyArray |> addElement (emptyObject |> addStringProperty "t" "test") |> addElement (emptyObject |> addStringProperty "t1" "test1")
+    let a = emptyArray.AddElement(emptyObject.AddStringProperty("t","test"))
+    let b = emptyArray.AddElement(emptyObject.AddStringProperty("t","test"))
+    let c = emptyArray.AddElement(emptyObject.AddStringProperty("t","test1"))
+    let d = emptyArray.AddElement(emptyObject.AddStringProperty("t","test")).AddElement(emptyObject.AddStringProperty("t1","test1"))
+    let e = emptyArray.AddElement(emptyObject.AddStringProperty("t","test")).AddElement(emptyObject.AddStringProperty("t1","test1"))
       
     Assert.AreEqual(a,b)
     Assert.AreEqual(d,e)

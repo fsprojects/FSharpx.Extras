@@ -10,25 +10,26 @@ open FSharpx.TypeProviders.Inference
 // ------------------------------------------------------------------------------------------------
 
 module internal JSONInference = 
-    let rec provideElement name multi (childs:seq<IDocument>) = 
+    let rec provideElement name multi (childs:seq<JsonValue>) = 
         CompoundProperty(name,multi,collectElements childs,collectProperties childs)
 
-    and collectProperties (elements:seq<IDocument>) =
+    and collectProperties (elements:seq<JsonValue>) =
         let props =
           [for el in elements do
             match el with
-            | (:? JObject as jObject) -> 
-                for prop in jObject.Properties do
+            | JsonValue.Obj map -> 
+                for prop in map do
                     match prop.Value with
-                    | :? Text -> yield prop.Key, typeof<string>
-                    | (:? Number as n) -> 
+                    | JsonValue.String _ -> yield prop.Key, typeof<string>
+                    | JsonValue.NumDecimal n -> 
                             let t =
-                                if n.Value = float (int n.Value) then typeof<int> else
-                                if n.Value = float (int64 n.Value) then typeof<int64> else
+                                if n = decimal (int n) then typeof<int> else
+                                if n = decimal (int64 n) then typeof<int64> else
                                 typeof<float>
                             yield prop.Key, t
-                    | :? Boolean -> yield prop.Key, typeof<bool>
-                    | (:? Date as d) -> yield prop.Key, typeof<DateTime>
+                    | JsonValue.NumDouble n -> yield prop.Key, typeof<float>
+                    | JsonValue.Bool _ -> yield prop.Key, typeof<bool>
+                    //| JsonValue.Date _ -> yield prop.Key, typeof<DateTime>
                     | _ -> ()              
             | _ -> ()]
         props
@@ -41,15 +42,15 @@ module internal JSONInference =
                 |> Seq.head,
               Seq.length attrs < Seq.length elements))
 
-    and collectElements (elements:seq<IDocument>)  =
+    and collectElements (elements:seq<JsonValue>)  =
         [ for el in elements do
             match el with
-            | (:? JObject as jObject) -> 
-                for prop in jObject.Properties do            
+            | JsonValue.Obj map -> 
+                for prop in map do            
                     match prop.Value with
-                    | :? JObject -> yield prop.Key, false, prop.Value
-                    | (:? JArray as jArray) -> 
-                        for child in jArray.Elements do
+                    | JsonValue.Obj _ -> yield prop.Key, false, prop.Value
+                    | JsonValue.Array a -> 
+                        for child in a do
                             yield prop.Key, true, child
                     | _ -> ()              
             | _ -> ()]

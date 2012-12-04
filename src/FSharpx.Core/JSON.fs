@@ -35,6 +35,60 @@ type JsonValue =
     member this.GetArrayValWithKey         s = match this.GetValWithKey s with | Array v -> v | Null -> [ ]                        | v -> failwith (sprintf "key '%s' had value '%+A' when a string was expected" s v)
     member this.GetOptionalArrayValWithKey s = match this.TryGetValWithKey s with | None -> [ ] | Some (Array v) -> v | Some Null -> [ ] | Some v -> failwith (sprintf "key '%s' had value '%+A' when a string was expected" s v)
 
+    member this.GetProperty propertyName =
+        match this with
+        | JsonValue.Obj(map) -> Map.find propertyName map
+
+    member this.HasProperty propertyName =
+        match this with
+        | JsonValue.Obj(map) -> Map.containsKey propertyName map
+
+    member this.GetText propertyName =
+        match this.GetProperty propertyName with
+        | JsonValue.String text -> text
+
+    member this.GetBoolean propertyName =
+        match this.GetProperty propertyName with
+        | JsonValue.Bool b -> b
+
+    member this.GetDecimal propertyName =
+        match this.GetProperty propertyName with
+        | JsonValue.NumDecimal d -> d
+
+    member this.GetDouble propertyName =
+        match this.GetProperty propertyName with
+        | JsonValue.NumDouble d -> d
+
+    member this.GetArrayElements propertyName =
+        match this.GetProperty propertyName with
+        | JsonValue.Array(a) -> a
+
+    member this.AddArrayElement(propertyName,element) =
+        match this.GetProperty propertyName with
+        | JsonValue.Array(a) -> element::a;element
+  
+    member this.AddElement(element) =
+        match this with
+        | JsonValue.Array(a) -> JsonValue.Array(element :: a)     
+   
+
+    member this.GetDate propertyName =
+        failwith "NotImplemented"
+
+    member this.AddProperty(propertyName,subDocument) = 
+        match this with
+        | JsonValue.Obj map -> JsonValue.Obj(Map.add propertyName subDocument map)
+
+    member this.AddStringProperty(propertyName,text) = this.AddProperty(propertyName,JsonValue.String text)
+    member this.AddBoolProperty(propertyName,boolean) = this.AddProperty(propertyName,JsonValue.Bool boolean)
+    member this.AddDecimalProperty(propertyName,number) = this.AddProperty(propertyName,JsonValue.NumDecimal number)
+    member this.AddDoubleProperty(propertyName,number) = this.AddProperty(propertyName,JsonValue.NumDouble number)
+    member this.AddDateProperty(propertyName,date:System.DateTime) : JsonValue = failwith "NotImplemented"
+
+    member this.RemoveProperty(propertyName) = 
+        match this with
+        | JsonValue.Obj map -> JsonValue.Obj(Map.remove propertyName map)
+
     member private this.Serialize (sb:StringBuilder) =
         match this with
         | JsonValue.Null -> sb.Append "null"
@@ -202,30 +256,23 @@ module Helper =
 
     let emptyObject = JsonValue.Obj(Map.empty)
 
-    let inline addProperty propertyName subDocument (JsonValue.Obj map) = JsonValue.Obj(Map.add propertyName subDocument map)
-
-    let inline addStringProperty propertyName text = addProperty propertyName (JsonValue.String text)
-    let inline addBoolProperty propertyName boolean = addProperty propertyName (JsonValue.Bool boolean)
-    let inline addDecimalProperty propertyName number = addProperty propertyName (JsonValue.NumDecimal number)
-
     let emptyArray = JsonValue.Array []
-    let inline addElement jsonValue (JsonValue.Array jsonArray) = JsonValue.Array(jsonValue :: jsonArray)        
 
     let fromXml(xml:XDocument) =        
         let rec createJArray (elements:XElement seq) =
             elements
-            |> Seq.fold (fun jsonArray element -> addElement (createJObject element) jsonArray) emptyArray
+            |> Seq.fold (fun (jsonArray:JsonValue)  element -> jsonArray.AddElement(createJObject element)) emptyArray
         and createJObject (element:XElement) =            
             let jObject = 
                 element.Attributes()
-                |> Seq.fold (fun jsonObject attr -> addStringProperty attr.Name.LocalName (attr.Value) jsonObject) emptyObject
+                |> Seq.fold (fun (jsonObject:JsonValue) attr -> jsonObject.AddStringProperty(attr.Name.LocalName,attr.Value)) emptyObject
 
             element.Elements()
             |> Seq.groupBy (fun x -> x.Name.LocalName)
-            |> Seq.fold (fun jsonObject (key,childs) ->
+            |> Seq.fold (fun (jsonObject:JsonValue) (key,childs) ->
                     match Seq.toList childs with
-                    | child::[] -> addProperty (FSharpx.Strings.singularize key) (createJObject child) jsonObject 
-                    | childs -> addProperty (FSharpx.Strings.pluralize key) (createJArray (List.rev childs)) jsonObject)
+                    | child::[] -> jsonObject.AddProperty(FSharpx.Strings.singularize key,createJObject child) 
+                    | childs -> jsonObject.AddProperty(FSharpx.Strings.pluralize key,createJArray (List.rev childs)))
                  jObject
 
         createJObject xml.Root

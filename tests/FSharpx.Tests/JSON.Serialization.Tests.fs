@@ -11,12 +11,12 @@ let ``Can serialize empty document``() =
 
 [<Test>] 
 let ``Can serialize document with single property``() =
-    (emptyObject |> addStringProperty "firstName" "John").ToString()
+    emptyObject.AddStringProperty("firstName","John").ToString()
     |> should equal "{\"firstName\":\"John\"}"
 
 [<Test>] 
 let ``Can serialize document with booleans``() =
-    (emptyObject |> addBoolProperty "aa" true |> addBoolProperty "bb" false).ToString()
+    emptyObject.AddBoolProperty("aa",true).AddBoolProperty("bb",false).ToString()
     |> should equal "{\"aa\":true,\"bb\":false}"
 
 [<Test>]

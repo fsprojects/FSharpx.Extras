@@ -7,7 +7,6 @@ open Microsoft.FSharp.Quotations
 open Microsoft.FSharp.Core.CompilerServices
 open Samples.FSharp.ProvidedTypes
 open FSharpx.TypeProviders.Inference
-open FSharpx.JSON.DocumentExtensions
 open FSharpx.JSON
 
 let dict = new System.Collections.Generic.Dictionary<_,_>()
@@ -19,76 +18,76 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
         | true,c -> dict.[elementName] <- c + 1; c.ToString()
         | _ -> dict.Add(elementName,1); ""
 
-    let ty = runtimeType<IDocument> (elementName + append)
+    let ty = runtimeType<JsonValue> (elementName + append)
     ownerType.AddMember(ty)
 
     let accessExpr propertyName propertyType (args: Expr list) = 
         match propertyType with
         | x when x = typeof<string> -> 
-            <@@ (%%args.[0]: IDocument).GetText propertyName @@>
+            <@@ (%%args.[0]: JsonValue).GetText propertyName @@>
         | x when x = typeof<bool> -> 
-            <@@ (%%args.[0]: IDocument).GetBoolean propertyName @@>
+            <@@ (%%args.[0]: JsonValue).GetBoolean propertyName @@>
         | x when x = typeof<int> -> 
-            <@@ (%%args.[0]: IDocument).GetNumber propertyName |> int @@>
+            <@@ (%%args.[0]: JsonValue).GetDecimal propertyName |> int @@>
         | x when x = typeof<int64> -> 
-            <@@ (%%args.[0]: IDocument).GetNumber propertyName |> int64 @@>
+            <@@ (%%args.[0]: JsonValue).GetDecimal propertyName |> int64 @@>
         | x when x = typeof<float> -> 
-            <@@ (%%args.[0]: IDocument).GetNumber propertyName @@>
+            <@@ (%%args.[0]: JsonValue).GetDecimal propertyName |> double @@>
         | x when x = typeof<DateTime> -> 
-            <@@ (%%args.[0]: IDocument).GetDate propertyName @@>
+            <@@ (%%args.[0]: JsonValue).GetDate propertyName @@>
 
     let checkIfOptional propertyName (args: Expr list) = 
-        <@@ (%%args.[0]: IDocument).HasProperty propertyName @@>
+        <@@ (%%args.[0]: JsonValue).HasProperty propertyName @@>
 
     let setterExpr propertyName propertyType (args: Expr list) = 
         match propertyType with
         | x when x = typeof<string> -> 
-            <@@ (%%args.[0]: IDocument).AddTextProperty(propertyName,(%%args.[1]:string)) |> ignore @@>
+            <@@ (%%args.[0]: JsonValue).AddStringProperty(propertyName,(%%args.[1]:string))  @@>
         | x when x = typeof<bool> -> 
-            <@@ (%%args.[0]: IDocument).AddBoolProperty(propertyName,(%%args.[1]:bool)) |> ignore @@>
+            <@@ (%%args.[0]: JsonValue).AddBoolProperty(propertyName,(%%args.[1]:bool))  @@>
         | x when x = typeof<int> ->
-            <@@ (%%args.[0]: IDocument).AddNumberProperty(propertyName,float (%%args.[1]:int)) |> ignore @@>
+            <@@ (%%args.[0]: JsonValue).AddDecimalProperty(propertyName,decimal (%%args.[1]:int))  @@>
         | x when x = typeof<int64> ->
-            <@@ (%%args.[0]: IDocument).AddNumberProperty(propertyName,float (%%args.[1]:int64)) |> ignore @@>
+            <@@ (%%args.[0]: JsonValue).AddDoubleProperty(propertyName,float (%%args.[1]:int64)) @@>
         | x when x = typeof<float> ->
-            <@@ (%%args.[0]: IDocument).AddNumberProperty(propertyName,(%%args.[1]:float)) |> ignore @@>
+            <@@ (%%args.[0]: JsonValue).AddDoubleProperty(propertyName,(%%args.[1]:float)) @@>
         | x when x = typeof<DateTime> -> 
-            <@@ (%%args.[0]: IDocument).AddDateProperty(propertyName,(%%args.[1]:DateTime)) |> ignore @@>
+            <@@ (%%args.[0]: JsonValue).AddDateProperty(propertyName,(%%args.[1]:DateTime))  @@>
 
     let optionalSetterExpr propertyName propertyType (args: Expr list) =         
         match propertyType with
         | x when x = typeof<string> -> 
             <@@ match (%%args.[1]:string option) with
-                | Some text -> (%%args.[0]: IDocument).AddTextProperty(propertyName,text) |> ignore
-                | None -> (%%args.[0]: IDocument).RemoveProperty propertyName @@>
+                | Some text -> (%%args.[0]: JsonValue).AddStringProperty(propertyName,text)
+                | None -> (%%args.[0]: JsonValue).RemoveProperty propertyName @@>
         | x when x = typeof<bool> -> 
             <@@ match (%%args.[1]:bool option) with
-                | Some boolean -> (%%args.[0]: IDocument).AddBoolProperty(propertyName,boolean) |> ignore
-                | None -> (%%args.[0]: IDocument).RemoveProperty propertyName @@>
+                | Some boolean -> (%%args.[0]: JsonValue).AddBoolProperty(propertyName,boolean) 
+                | None -> (%%args.[0]: JsonValue).RemoveProperty propertyName @@>
         | x when x = typeof<int> -> 
             <@@ match (%%args.[1]:int option) with
-                | Some number -> (%%args.[0]: IDocument).AddNumberProperty(propertyName,float number) |> ignore
-                | None -> (%%args.[0]: IDocument).RemoveProperty propertyName @@>
+                | Some number -> (%%args.[0]: JsonValue).AddDecimalProperty(propertyName,decimal number)
+                | None -> (%%args.[0]: JsonValue).RemoveProperty propertyName @@>
         | x when x = typeof<int64> -> 
             <@@ match (%%args.[1]:int64 option) with
-                | Some number -> (%%args.[0]: IDocument).AddNumberProperty(propertyName,float number) |> ignore
-                | None -> (%%args.[0]: IDocument).RemoveProperty propertyName @@>
+                | Some number -> (%%args.[0]: JsonValue).AddDoubleProperty(propertyName,float number)
+                | None -> (%%args.[0]: JsonValue).RemoveProperty propertyName @@>
         | x when x = typeof<float> -> 
             <@@ match (%%args.[1]:float option) with
-                | Some number -> (%%args.[0]: IDocument).AddNumberProperty(propertyName,number) |> ignore
-                | None -> (%%args.[0]: IDocument).RemoveProperty propertyName @@>
+                | Some number -> (%%args.[0]: JsonValue).AddDoubleProperty(propertyName,number) 
+                | None -> (%%args.[0]: JsonValue).RemoveProperty propertyName @@>
         | x when x = typeof<DateTime> -> 
             <@@ match (%%args.[1]:DateTime option) with
-                | Some date -> (%%args.[0]: IDocument).AddDateProperty(propertyName,date) |> ignore
-                | None -> (%%args.[0]: IDocument).RemoveProperty propertyName @@>
+                | Some date -> (%%args.[0]: JsonValue).AddDateProperty(propertyName,date) 
+                | None -> (%%args.[0]: JsonValue).RemoveProperty propertyName @@>
 
     generateProperties ty accessExpr checkIfOptional setterExpr optionalSetterExpr elementProperties
     
-    let multiAccessExpr childName (args: Expr list) = <@@ (%%args.[0]: IDocument).GetJArray(childName).Elements @@>
-    let singleAccessExpr childName (args: Expr list) = <@@ (%%args.[0]: IDocument).GetProperty childName @@>
-    let newChildExpr childName (args: Expr list) = <@@ JObject.New() @@>
+    let multiAccessExpr childName (args: Expr list) = <@@ (%%args.[0]: JsonValue).GetArrayElements childName @@>
+    let singleAccessExpr childName (args: Expr list) = <@@ (%%args.[0]: JsonValue).GetProperty childName @@>
+    let newChildExpr childName (args: Expr list) = <@@ JsonValue.Obj(Map.empty) @@>
 
-    let addChildExpr childName (args: Expr list) = <@@ (%%args.[0]: IDocument).GetJArray(childName).Elements.Add(%%args.[1]:IDocument) @@>
+    let addChildExpr childName (args: Expr list) = <@@ (%%args.[0]: JsonValue).AddArrayElement(childName,(%%args.[1]:JsonValue)) @@>
 
     generateSublements ty ownerType multiAccessExpr addChildExpr newChildExpr singleAccessExpr generateType elementChildren
 
@@ -119,16 +118,16 @@ let jsonType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
                       EmptyConstructor = fun args -> <@@ parse schema @@>
                       FileNameConstructor = fun args -> <@@ (%%args.[0] : string) |> File.ReadAllText |> parse  @@>
                       DocumentContentConstructor = fun args -> <@@ (%%args.[0] : string) |> parse  @@>
-                      RootPropertyGetter = fun args -> <@@ (%%args.[0] : IDocument) @@>
-                      ToStringExpr = fun args -> <@@ (%%args.[0]: IDocument).ToString() @@> }
-                    |> createParserType<IDocument> typeName generateType     
+                      RootPropertyGetter = fun args -> <@@ (%%args.[0] : JsonValue) @@>
+                      ToStringExpr = fun args -> <@@ (%%args.[0]: JsonValue).ToString() @@> }
+                    |> createParserType<JsonValue> typeName generateType     
         
                 let converterMethod =
                     ProvidedMethod(
                         methodName = "ToXml",
                         parameters = [],
                         returnType = typeof<XObject seq>,
-                        InvokeCode = (fun args -> <@@ (%%args.[0]: IDocument).ToXml() @@>))
+                        InvokeCode = (fun args -> <@@ (%%args.[0]: JsonValue).ToXml() @@>))
 
                 converterMethod.AddXmlDoc "Gets the XML representation"
 
