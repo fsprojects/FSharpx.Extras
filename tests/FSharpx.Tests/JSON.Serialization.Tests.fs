@@ -31,3 +31,10 @@ open FsUnit
 //    let text = "{\"items\":[{\"id\":\"Open\"},null,{\"id\":25}]}"
 //    let json = parse text
 //    json.ToString() |> should equal text
+//
+//
+//[<Test>]
+//let ``Quotes in strings are property escaped``() = 
+//    let jsonStr = "{\"short_description\":\"This a string with \\\"quotes\\\"\"}"
+//    let j = parse jsonStr
+//    j.ToString() |> should equal jsonStr
