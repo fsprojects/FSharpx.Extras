@@ -18,18 +18,22 @@ let ``Can parse document with single property``() =
         map |> Map.find "firstName" |> should equal (JsonValue.String "John")
     | _ -> failwith "parse error"
 
-//[<Test>] 
-//let ``Can parse document with text and integer``() =
-//    let j = parse "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"age\": 25}"
-//    j.GetText "firstName" |> should equal "John"
-//    j.GetText "lastName" |> should equal "Smith"
-//    j.GetNumber "age"  |> should equal 25
-//
-//[<Test>] 
-//let ``Can parse document with text and float``() =
-//    let j = parse "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"age\": 25.25}"
-//    j.GetNumber "age"  |> should equal 25.25
-//
+[<Test>] 
+let ``Can parse document with text and integer``() =
+    match parse "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"age\": 25}" with
+    | JsonValue.Obj(map) ->
+        map |> Map.find "firstName" |> should equal (JsonValue.String "John")
+        map |> Map.find "lastName" |> should equal (JsonValue.String "Smith")
+        map |> Map.find "age" |> should equal (JsonValue.NumDecimal (decimal 25))
+    | _ -> failwith "parse error"
+
+[<Test>] 
+let ``Can parse document with text and float``() =
+    match parse "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"age\": 25.25}" with
+    | JsonValue.Obj(map) ->
+        map |> Map.find "age" |> should equal (JsonValue.NumDecimal (decimal 25.25))
+    | _ -> failwith "parse error"
+
 //[<Test>]
 //let ``Can parse document with date``() =
 //    let j = parse "{\"anniversary\": \"\\/Date(869080830450)\\/\"}"
@@ -87,19 +91,21 @@ let ``Can parse document with single property``() =
 //    let j = parse "{\"anniversary\": \"2010-02-18T16.5:23.35:4\"}"
 //    j.GetText "anniversary" |> should equal "2010-02-18T16.5:23.35:4"
 //
-//open System.Globalization
-//open System.Threading
-//
-//[<Test>] 
-//let ``Can parse document with fractional numbers``() =
-//    let originalCulture = Thread.CurrentThread.CurrentCulture
-//    Thread.CurrentThread.CurrentCulture <- new CultureInfo("pt-PT") // use a culture that uses ',' instead o '.' for decimal separators
-//    try 
-//        let j = parse "{ \"age\": 25.5}"
-//        j.GetNumber "age" |> should equal 25.5
-//    finally
-//        Thread.CurrentThread.CurrentCulture <- originalCulture
-//
+open System.Globalization
+open System.Threading
+
+[<Test>] 
+let ``Can parse document with fractional numbers``() =
+    let originalCulture = Thread.CurrentThread.CurrentCulture
+    Thread.CurrentThread.CurrentCulture <- new CultureInfo("pt-PT") // use a culture that uses ',' instead o '.' for decimal separators
+    try 
+        match parse "{ \"age\": 25.5}" with
+        | JsonValue.Obj(map) ->
+            map |> Map.find "age" |> should equal (JsonValue.NumDecimal (decimal 25.5))
+        | _ -> failwith "parse error"        
+    finally
+        Thread.CurrentThread.CurrentCulture <- originalCulture
+
 //[<Test>]
 //let ``Can parse nested document`` () =
 //    let j = parse "{ \"main\": { \"title\": \"example\", \"nested\": { \"nestedTitle\": \"sub\" } } }"
