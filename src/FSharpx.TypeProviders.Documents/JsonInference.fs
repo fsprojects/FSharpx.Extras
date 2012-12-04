@@ -10,6 +10,11 @@ open FSharpx.TypeProviders.Inference
 // ------------------------------------------------------------------------------------------------
 
 module internal JSONInference = 
+    let int32Min = decimal Int32.MinValue
+    let int32Max = decimal Int32.MaxValue
+    let int64Min = decimal Int64.MinValue
+    let int64Max = decimal Int64.MaxValue
+    
     let rec provideElement name multi (childs:seq<JsonValue>) = 
         CompoundProperty(name,multi,collectElements childs,collectProperties childs)
 
@@ -23,9 +28,9 @@ module internal JSONInference =
                     | JsonValue.String _ -> yield prop.Key, typeof<string>
                     | JsonValue.NumDecimal n -> 
                             let t =
-                                if n = decimal (int n) then typeof<int> else
-                                if n = decimal (int64 n) then typeof<int64> else
-                                typeof<float>
+                                if (n <= int32Max) && (n >= int32Min) && (n = decimal (int n)) then typeof<int> else
+                                if (n <= int64Max) && (n >= int64Min) && (n = decimal (int64 n)) then typeof<int64> else
+                                typeof<decimal>
                             yield prop.Key, t
                     | JsonValue.NumDouble n -> yield prop.Key, typeof<float>
                     | JsonValue.Bool _ -> yield prop.Key, typeof<bool>
