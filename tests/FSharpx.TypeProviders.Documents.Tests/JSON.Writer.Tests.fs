@@ -4,7 +4,7 @@ open NUnit.Framework
 open FSharpx
 open FsUnit
 
-type InlinedJSON = StructuredJSON<Schema="""{ "firstName": "Max" "lastName": "Mustermann" "age": 26 "isCool": true, "size":42.42 }""">
+type InlinedJSON = StructuredJSON<Schema="""{ "firstName": "Max","lastName": "Mustermann", "age": 26, "isCool": true, "size":42.42 }""">
 
 [<Test>]
 let ``Can set properties in inlined properties``() = 
