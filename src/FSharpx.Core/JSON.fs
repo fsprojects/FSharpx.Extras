@@ -1,4 +1,4 @@
-﻿namespace FSharpx
+﻿namespace FSharpx.JSON
 
 
 // Copyright (c) Microsoft Corporation 2005-2012.
@@ -14,7 +14,7 @@ type JsonValue =
     | NumDecimal of decimal
     | NumDouble of System.Double // Some values are too big to fit in System.Decimal
     | Obj of Map<string,JsonValue>
-    | Array of JsonValue[]
+    | Array of JsonValue list
     | Bool of bool
     | Null
     member this.TryGetValWithKey s =
@@ -29,9 +29,9 @@ type JsonValue =
     member this.GetOptionalStringValWithKey s dflt = defaultArg (this.TryGetValWithKey s |> Option.map JsonValue.GetStringVal) dflt
     static member GetStringVal             s = match s with String v -> v | Bool b -> (if b then "true" else "false") | Null -> null | _ -> failwith (sprintf "The JSON item had value '%+A' when a string was expected" s)
     static member GetIntVal                s = match s with NumDecimal v -> int v | Null -> 0                                        | _ -> failwith (sprintf "The JSON item had value '%+A' when an integer was expected" s)
-    static member GetArrayVal f            s = match s with Array v -> Array.map f v | Null -> [| |]                                 | _ -> failwith (sprintf "The JSON item had value '%+A' when an array was expected" s)
-    member this.GetArrayValWithKey         s = match this.GetValWithKey s with | Array v -> v | Null -> [| |]                        | v -> failwith (sprintf "key '%s' had value '%+A' when a string was expected" s v)
-    member this.GetOptionalArrayValWithKey s = match this.TryGetValWithKey s with | None -> [| |] | Some (Array v) -> v | Some Null -> [| |] | Some v -> failwith (sprintf "key '%s' had value '%+A' when a string was expected" s v)
+    static member GetArrayVal f            s = match s with Array v -> List.map f v | Null -> [ ]                                 | _ -> failwith (sprintf "The JSON item had value '%+A' when an array was expected" s)
+    member this.GetArrayValWithKey         s = match this.GetValWithKey s with | Array v -> v | Null -> [ ]                        | v -> failwith (sprintf "key '%s' had value '%+A' when a string was expected" s v)
+    member this.GetOptionalArrayValWithKey s = match this.TryGetValWithKey s with | None -> [ ] | Some (Array v) -> v | Some Null -> [ ] | Some v -> failwith (sprintf "key '%s' had value '%+A' when a string was expected" s v)
 
 type internal Parser(jsonText:string) =
     let mutable i = 0
@@ -144,7 +144,7 @@ type internal Parser(jsonText:string) =
                 skipWhitespace()
         ensure(i < s.Length && s.[i] = ']')
         i <- i + 1
-        JsonValue.Array(vals |> Seq.toArray)
+        JsonValue.Array(vals |> Seq.toList)
     and parseLiteral(expected, r) =
         ensure(i+expected.Length < s.Length)
         for j in 0 .. expected.Length - 1 do
@@ -153,11 +153,23 @@ type internal Parser(jsonText:string) =
         r
     member __.Parse() = parseValue()
 
-module JSON =
+[<AutoOpen>]
+module Helper =
     let parse(jsonText : string) =
         let p = new Parser(jsonText)
         p.Parse()
 
+    let emptyObject = JsonValue.Obj(Map.empty)
+
+    let inline addProperty propertyName subDocument (JsonValue.Obj map) = JsonValue.Obj(Map.add propertyName subDocument map)
+
+    let inline addStringProperty propertyName text = addProperty propertyName (JsonValue.String text)
+    let inline addBoolProperty propertyName boolean = addProperty propertyName (JsonValue.Bool boolean)
+    let inline addDecimalProperty propertyName number = addProperty propertyName (JsonValue.NumDecimal number)
+
+    let emptyArray = JsonValue.Array []
+    let inline addElement jsonValue (JsonValue.Array jsonArray) = JsonValue.Array(jsonValue :: jsonArray)
+        
 
 //let fromXml(xml:XDocument) =
 //    let rec createJArray (elements:XElement seq) =
@@ -201,8 +213,8 @@ module JSON =
 //
 //        member this.AddProperty(propertyName,document) = (this :?> JObject).Properties.[propertyName] <- document; this
 //        member this.AddTextProperty(propertyName,text) = (this :?> JObject).Properties.[propertyName] <- Text(text); this
-//        member this.AddBoolProperty(propertyName,boolean) = (this :?> JObject).Properties.[propertyName] <- Boolean(boolean); this
-//        member this.AddNumberProperty(propertyName,number) = (this :?> JObject).Properties.[propertyName] <- Number(number); this
+//        member this.addBoolProperty propertyName,boolean) = (this :?> JObject).Properties.[propertyName] <- Boolean(boolean); this
+//        member thisaddDecimalProperty propertyName,number) = (this :?> JObject).Properties.[propertyName] <- Number(number); this
 //        member this.AddDateProperty(propertyName,date) = (this :?> JObject).Properties.[propertyName] <- Date(date); this
 //        member this.AddElement element = (this :?> JArray).Elements.Add element; this
 //        

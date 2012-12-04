@@ -1,7 +1,6 @@
 ﻿module FSharpx.Tests.JSON.ParserTests
 
 open NUnit.Framework
-open FSharpx
 open FSharpx.JSON
 open FsUnit
 

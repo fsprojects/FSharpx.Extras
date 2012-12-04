@@ -6,7 +6,7 @@ open FsUnit
 
 //[<Test>]
 //let ``Can serialize empty document``() = 
-//    JObject.New().ToString()
+//    emptyObject |> ToString()
 //    |> should equal "{}"
 //
 //[<Test>] 
@@ -21,8 +21,8 @@ open FsUnit
 //let ``Can serialize document with booleans``() =
 //    JObject
 //      .New()
-//      .AddBoolProperty("aa",true)
-//      .AddBoolProperty("bb",false)
+//      .addBoolProperty "aa",true)
+//      .addBoolProperty "bb",false)
 //      .ToString()
 //    |> should equal "{\"aa\":true,\"bb\":false}"
 //
