@@ -46,45 +46,59 @@ let ``Can't parse document with no comma between properties ``() =
     
 //[<Test>]
 //let ``Can parse document with date``() =
-//    let j = parse "{\"anniversary\": \"\\/Date(869080830450)\\/\"}"
-//    j.GetDate "anniversary" |> should equal (new System.DateTime(1997, 07, 16, 19, 20, 30, 450, System.DateTimeKind.Utc))
-//    (j.GetDate "anniversary").Kind |> should equal System.DateTimeKind.Utc
-//
-//[<Test>]
-//let ``Can parse document with iso date``() =
-//    let j = parse "{\"anniversary\": \"2009-05-19 14:39:22.500\"}"
-//    j.GetDate "anniversary" |> should equal (new System.DateTime(2009, 05, 19, 14, 39, 22, 500, System.DateTimeKind.Local))
-//    (j.GetDate "anniversary").Kind |> should equal System.DateTimeKind.Local
-//
-//[<Test>]
-//[<SetCulture("zh-CN")>]
-//let ``Can parse document with iso date in local culture``() =
-//    let j = parse "{\"anniversary\": \"2009-05-19 14:39:22.500\"}"
-//    j.GetDate "anniversary" |> should equal (new System.DateTime(2009, 05, 19, 14, 39, 22, 500, System.DateTimeKind.Local))
-//    (j.GetDate "anniversary").Kind |> should equal System.DateTimeKind.Local
-//
-//[<Test>]
-//let ``Can parse document with partial iso date``() =
-//    let j = parse "{\"anniversary\": \"2009-05-19\"}"
-//    j.GetDate "anniversary" |> should equal (new System.DateTime(2009, 05, 19, 0, 0, 0, System.DateTimeKind.Local))
-//    (j.GetDate "anniversary").Kind |> should equal System.DateTimeKind.Local
+//    match parse "{\"anniversary\": \"\\/Date(869080830450)\\/\"}" with
+//    | JsonValue.Obj(map) as jsonObject ->
+//        map |> Map.find "anniversary" |> should equal (JsonValue.Date (new System.DateTime(1997, 07, 16, 19, 20, 30, 450, System.DateTimeKind.Utc)))
+//        jsonObject.GetDate("anniversary").Kind |> should equal System.DateTimeKind.Utc
+//    | _ -> failwith "parse error"
+
+[<Test>]
+let ``Can parse document with iso date``() =
+    match parse "{\"anniversary\": \"2009-05-19 14:39:22.500\"}" with
+    | JsonValue.Obj(map) as jsonObject ->
+        map |> Map.find "anniversary" |> should equal (JsonValue.Date (new System.DateTime(2009, 05, 19, 14, 39, 22, 500, System.DateTimeKind.Local)))
+        jsonObject.GetDate("anniversary").Kind |> should equal System.DateTimeKind.Local
+    | _ -> failwith "parse error"
+
+[<Test>]
+[<SetCulture("zh-CN")>]
+let ``Can parse document with iso date in local culture``() =
+    match parse "{\"anniversary\": \"2009-05-19 14:39:22.500\"}" with
+    | JsonValue.Obj(map) as jsonObject ->
+        map |> Map.find "anniversary" |> should equal (JsonValue.Date (new System.DateTime(2009, 05, 19, 14, 39, 22, 500, System.DateTimeKind.Local)))
+        jsonObject.GetDate("anniversary").Kind |> should equal System.DateTimeKind.Local
+    | _ -> failwith "parse error"
+
+[<Test>]
+let ``Can parse document with partial iso date``() =
+    match parse "{\"anniversary\": \"2009-05-19\"}" with
+    | JsonValue.Obj(map) as jsonObject ->
+        map |> Map.find "anniversary" |> should equal (JsonValue.Date (new System.DateTime(2009, 05, 19, 0, 0, 0, System.DateTimeKind.Local)))
+        jsonObject.GetDate("anniversary").Kind |> should equal System.DateTimeKind.Local
+    | _ -> failwith "parse error"
 //
 //[<Test>]
 //let ``Can parse document with timezone iso date``() =
-//    let j = parse "{\"anniversary\": \"2009-05-19 14:39:22+0600\"}"
-//    (j.GetDate "anniversary").ToUniversalTime() |> should equal (new System.DateTime(2009, 05, 19, 8, 39, 22, System.DateTimeKind.Utc))
+//    match parse "{\"anniversary\": \"2009-05-19 14:39:22+0600\"}" with
+//    | JsonValue.Obj(map) ->
+//        map |> Map.find "anniversary" |> should equal (JsonValue.Date (new System.DateTime(2009, 05, 19, 8, 39, 22, System.DateTimeKind.Utc)))
+//    | _ -> failwith "parse error"
 //    
-//[<Test>]
-//let ``Can parse document with UTC iso date``() =
-//    let j = parse "{\"anniversary\": \"2009-05-19 14:39:22Z\"}"
-//    (j.GetDate "anniversary").ToUniversalTime() |> should equal (new System.DateTime(2009, 05, 19, 14, 39, 22, System.DateTimeKind.Utc))
-//    (j.GetDate "anniversary").Kind |> should equal System.DateTimeKind.Utc
-//
-//[<Test>]    
-//let ``Can parse document with timezone and fraction iso date``() =
-//    let j = parse "{\"anniversary\": \"1997-07-16T19:20:30.45+01:00\"}"
-//    (j.GetDate "anniversary").ToUniversalTime() |> should equal (new System.DateTime(1997, 07, 16, 18, 20, 30, 450, System.DateTimeKind.Utc))
-//    
+[<Test>]
+let ``Can parse document with UTC iso date``() =
+    match parse "{\"anniversary\": \"2009-05-19 14:39:22Z\"}" with
+    | JsonValue.Obj(map) as jsonObject ->
+        map |> Map.find "anniversary" |> should equal (JsonValue.Date (new System.DateTime(2009, 05, 19, 14, 39, 22, System.DateTimeKind.Utc)))
+        jsonObject.GetDate("anniversary").Kind |> should equal System.DateTimeKind.Utc
+    | _ -> failwith "parse error"
+
+[<Test>]    
+let ``Can parse document with timezone and fraction iso date``() =
+    match parse "{\"anniversary\": \"1997-07-16T19:20:30.45+01:00\"}" with
+    | JsonValue.Obj(map) as jsonObject ->
+        (jsonObject.GetDate "anniversary").ToUniversalTime() |> should equal (new System.DateTime(1997, 07, 16, 18, 20, 30, 450, System.DateTimeKind.Utc))
+    | _ -> failwith "parse error"
+    
 //// TODO: Due to limitations in the current ISO 8601 datetime parsing these fail, and should be made to pass
 ////[<Test>]
 ////let ``Cant Yet parse document with basic iso date``() =
@@ -95,12 +109,12 @@ let ``Can't parse document with no comma between properties ``() =
 ////let ``Cant Yet parse weird iso date``() =
 ////    let j = parse "{\"anniversary\": \"2010-02-18T16.5\"}"
 ////    j.GetDate "anniversary" |> should equal (new System.DateTime(2010, 02, 18, 16, 30, 00))
-//
-//[<Test>]
-//let ``Can parse completely invalid, but close, date as string``() =
-//    let j = parse "{\"anniversary\": \"2010-02-18T16.5:23.35:4\"}"
-//    j.GetText "anniversary" |> should equal "2010-02-18T16.5:23.35:4"
-//
+
+[<Test>]
+let ``Can parse completely invalid, but close, date as string``() =
+    let j = parse "{\"anniversary\": \"2010-02-18T16.5:23.35:4\"}"
+    j.GetText "anniversary" |> should equal "2010-02-18T16.5:23.35:4"
+
 open System.Globalization
 open System.Threading
 

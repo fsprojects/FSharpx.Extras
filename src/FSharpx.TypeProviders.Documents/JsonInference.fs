@@ -34,7 +34,7 @@ module internal JSONInference =
                             yield prop.Key, t
                     | JsonValue.NumDouble n -> yield prop.Key, typeof<float>
                     | JsonValue.Bool _ -> yield prop.Key, typeof<bool>
-                    //| JsonValue.Date _ -> yield prop.Key, typeof<DateTime>
+                    | JsonValue.Date _ -> yield prop.Key, typeof<DateTime>
                     | _ -> ()              
             | _ -> ()]
         props
