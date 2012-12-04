@@ -4,16 +4,15 @@ open NUnit.Framework
 open FSharpx.JSON
 open FsUnit
 open System.Xml.Linq
-//open FSharpx.JSON.DocumentExtensions
-//
-//[<Test>]
-//let ``Can serialize JSON to XML``() =
-//    let text = "{\"items\": [{\"id\": \"Open\"}, null, {\"id\": 25}]}"
-//    let json = parse text
-//    let xml = json.ToXml() |> Seq.head 
-//    let expectedXml = XDocument.Parse("<items><item id=\"Open\" /><item /><item id=\"25\" /></items>")
-//    xml.ToString() |> should equal (expectedXml.ToString())
-//
+
+[<Test>]
+let ``Can serialize JSON to XML``() =
+    let text = "{\"items\": [{\"id\": \"Open\"}, null, {\"id\": 25}]}"
+    let json = parse text
+    let xml = json.ToXml() |> Seq.head
+    let expectedXml = XDocument.Parse("<items><item id=\"Open\" /><item /><item id=\"25\" /></items>")
+    xml.ToString() |> should equal (expectedXml.ToString())
+
 //[<Test>]
 //let ``Can serialize single XML node to JSON``() =
 //    let text = "<item name=\"Steffen\" />" 

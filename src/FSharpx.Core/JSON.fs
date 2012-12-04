@@ -1,6 +1,7 @@
 ﻿namespace FSharpx.JSON
 
 open System.Text
+open System.Xml.Linq
 
 // Copyright (c) Microsoft Corporation 2005-2012.
 // This sample code is provided "as is" without warranty of any kind. 
@@ -58,6 +59,19 @@ type JsonValue =
             sb.Append "]"
 
     override this.ToString() = this.Serialize(new StringBuilder()).ToString()
+    member this.ToXml() = 
+        match this with
+        | JsonValue.Null -> null
+        | JsonValue.Obj map -> 
+            map 
+            |> Seq.map (fun kv -> 
+                    match kv.Value with
+                    | JsonValue.String t -> new XAttribute(XName.Get kv.Key, t) :> XObject
+                    | JsonValue.Bool b  -> new XAttribute(XName.Get kv.Key, b) :> XObject
+                    | JsonValue.NumDecimal number-> new XAttribute(XName.Get kv.Key, number) :> XObject
+                    | JsonValue.NumDouble number-> new XAttribute(XName.Get kv.Key, number) :> XObject
+                    | _ -> new XElement(XName.Get kv.Key, kv.Value.ToXml()) :> XObject) 
+        | JsonValue.Array elements -> elements |> Seq.map (fun item -> new XElement(XName.Get "item", item.ToXml()) :> XObject)
 
 type internal Parser(jsonText:string) =
     let mutable i = 0
