@@ -21,10 +21,10 @@ let ``Can serialize single XML node to JSON``() =
     let expectedJSON = "{\"name\":\"Steffen\"}"
     generatedJSON.ToString() |> should equal expectedJSON
 
-//[<Test>]
-//let ``Can serialize XML to JSON``() =
-//    let text = "<items><item id=\"Open\" /><item /><item id=\"25\" /></items>"    
-//    let xml = XDocument.Parse text
-//    let generatedJSON = xml.ToJson()
-//    let expectedJSON = "{\"items\":[{\"id\":\"Open\"},{},{\"id\":\"25\"}]}"
-//    generatedJSON.ToString() |> should equal expectedJSON
+[<Test>]
+let ``Can serialize XML to JSON``() =
+    let text = "<items><item id=\"Open\" /><item /><item id=\"25\" /></items>"    
+    let xml = XDocument.Parse text
+    let generatedJSON = xml.ToJson()
+    let expectedJSON = "{\"items\":[{\"id\":\"Open\"},{},{\"id\":\"25\"}]}"
+    generatedJSON.ToString() |> should equal expectedJSON

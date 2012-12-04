@@ -225,39 +225,11 @@ module Helper =
             |> Seq.fold (fun jsonObject (key,childs) ->
                     match Seq.toList childs with
                     | child::[] -> addProperty (FSharpx.Strings.singularize key) (createJObject child) jsonObject 
-                    | childs -> addProperty (FSharpx.Strings.pluralize key) (createJArray childs) jsonObject)
+                    | childs -> addProperty (FSharpx.Strings.pluralize key) (createJArray (List.rev childs)) jsonObject)
                  jObject
 
         createJObject xml.Root
     
-//module DocumentExtensions =
-//    type IDocument with 
-//        member this.GetProperty propertyName = (this :?> JObject).Properties.[propertyName]
-//        member this.HasProperty propertyName = (this :?> JObject).Properties.ContainsKey propertyName
-//        member this.GetText propertyName = (this.GetProperty(propertyName) :?> Text).Value
-//        member this.GetDate propertyName = (this.GetProperty(propertyName) :?> Date).Value
-//        member this.GetNumber propertyName = (this.GetProperty(propertyName) :?> Number).Value
-//        member this.GetBoolean propertyName = (this.GetProperty(propertyName) :?> Boolean).Value
-//        member this.GetJObject propertyName = this.GetProperty(propertyName) :?> JObject
-//        member this.GetJArray propertyName = 
-//            let this = (this :?> JObject)
-//            match this.Properties.TryGetValue propertyName with
-//            | true,jArray -> jArray :?> JArray 
-//            | _ -> 
-//                let jArray = JArray.New()
-//                this.Properties.[propertyName] <- jArray
-//                jArray
-//
-//        member this.AddProperty(propertyName,document) = (this :?> JObject).Properties.[propertyName] <- document; this
-//        member this.AddTextProperty(propertyName,text) = (this :?> JObject).Properties.[propertyName] <- Text(text); this
-//        member this.addBoolProperty propertyName,boolean) = (this :?> JObject).Properties.[propertyName] <- Boolean(boolean); this
-//        member thisaddDecimalProperty propertyName,number) = (this :?> JObject).Properties.[propertyName] <- Number(number); this
-//        member this.AddDateProperty(propertyName,date) = (this :?> JObject).Properties.[propertyName] <- Date(date); this
-//        member this.AddElement element = (this :?> JArray).Elements.Add element; this
-//        
-//        member this.RemoveProperty propertyName = (this :?> JObject).Properties.Remove propertyName |> ignore
-//
-//        member this.ToXml() = (this :?> Infrastucture).ToXml() :?> XObject seq
-//
-//    type System.Xml.Linq.XDocument with
-//        member this.ToJson() = fromXml this
+
+    type System.Xml.Linq.XDocument with
+        member this.ToJson() = fromXml this
