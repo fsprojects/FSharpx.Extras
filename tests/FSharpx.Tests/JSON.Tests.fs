@@ -43,9 +43,30 @@ let ``Can't parse document with no comma between properties ``() =
 
     Assert.IsTrue(!exnRaised)
 
-    
+[<Test>] 
+let ``Can parse document with double backslashes in text``() =
+    match parse "{\"myText\": \"\\\\John\"}" with
+    | JsonValue.Obj(map) ->
+        map |> Map.find "myText" |> should equal (JsonValue.String "\\John")
+    | _ -> failwith "parse error"
+
+[<Test>] 
+let ``Can't parse document with one backslashes in text``() =
+    let exnRaised = ref false
+    try
+        parse "{\"myText\": \"\\John\"}" |> ignore
+    with 
+    | _ -> exnRaised := true
+
+    Assert.IsTrue(!exnRaised)
+
+[<Test>]
+let ``Can detect MS date``() =
+    let matchesMS = FSharpx.Strings.msDateRegex.Match("\\/Date(869080830450)\\/")
+    matchesMS.Success |> should equal true
+
 //[<Test>]
-//let ``Can parse document with date``() =
+//let ``Can parse document with MS date``() =
 //    match parse "{\"anniversary\": \"\\/Date(869080830450)\\/\"}" with
 //    | JsonValue.Obj(map) as jsonObject ->
 //        map |> Map.find "anniversary" |> should equal (JsonValue.Date (new System.DateTime(1997, 07, 16, 19, 20, 30, 450, System.DateTimeKind.Utc)))
@@ -99,16 +120,16 @@ let ``Can parse document with timezone and fraction iso date``() =
         (jsonObject.GetDate "anniversary").ToUniversalTime() |> should equal (new System.DateTime(1997, 07, 16, 18, 20, 30, 450, System.DateTimeKind.Utc))
     | _ -> failwith "parse error"
     
-//// TODO: Due to limitations in the current ISO 8601 datetime parsing these fail, and should be made to pass
-////[<Test>]
-////let ``Cant Yet parse document with basic iso date``() =
-////    let j = parse "{\"anniversary\": \"19810405\"}"
-////    j.GetDate "anniversary" |> should equal (new System.DateTime(1981, 04, 05))
-////
-////[<Test>]
-////let ``Cant Yet parse weird iso date``() =
-////    let j = parse "{\"anniversary\": \"2010-02-18T16.5\"}"
-////    j.GetDate "anniversary" |> should equal (new System.DateTime(2010, 02, 18, 16, 30, 00))
+// TODO: Due to limitations in the current ISO 8601 datetime parsing these fail, and should be made to pass
+//[<Test>]
+//let ``Cant Yet parse document with basic iso date``() =
+//    let j = parse "{\"anniversary\": \"19810405\"}"
+//    j.GetDate "anniversary" |> should equal (new System.DateTime(1981, 04, 05))
+//
+//[<Test>]
+//let ``Cant Yet parse weird iso date``() =
+//    let j = parse "{\"anniversary\": \"2010-02-18T16.5\"}"
+//    j.GetDate "anniversary" |> should equal (new System.DateTime(2010, 02, 18, 16, 30, 00))
 
 [<Test>]
 let ``Can parse completely invalid, but close, date as string``() =

@@ -1,6 +1,7 @@
 ﻿namespace FSharpx
 
 open System
+open System.Text
 open System.Globalization
 
 module Strings =
@@ -107,3 +108,6 @@ module Strings =
         elif Seq.forall isInt64 values then typeof<int64>
         elif Seq.forall isFloat values then typeof<float>
         else typeof<string>
+
+    let msDateRegex = new RegularExpressions.Regex(@"^\\\/Date\((-?\d+)(?:-\d+)?\)\\\/$",RegularExpressions.RegexOptions.Compiled)
+    let iso8601Regex = new RegularExpressions.Regex(@"^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?((?<IsUTC>[zZ])|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$",RegularExpressions.RegexOptions.Compiled)
