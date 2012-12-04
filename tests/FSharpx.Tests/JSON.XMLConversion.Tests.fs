@@ -13,14 +13,14 @@ let ``Can serialize JSON to XML``() =
     let expectedXml = XDocument.Parse("<items><item id=\"Open\" /><item /><item id=\"25\" /></items>")
     xml.ToString() |> should equal (expectedXml.ToString())
 
-//[<Test>]
-//let ``Can serialize single XML node to JSON``() =
-//    let text = "<item name=\"Steffen\" />" 
-//    let xml = XDocument.Parse text
-//    let generatedJSON = fromXml xml
-//    let expectedJSON = "{\"name\":\"Steffen\"}"
-//    generatedJSON.ToString() |> should equal expectedJSON
-//
+[<Test>]
+let ``Can serialize single XML node to JSON``() =
+    let text = "<item name=\"Steffen\" />" 
+    let xml = XDocument.Parse text
+    let generatedJSON = fromXml xml
+    let expectedJSON = "{\"name\":\"Steffen\"}"
+    generatedJSON.ToString() |> should equal expectedJSON
+
 //[<Test>]
 //let ``Can serialize XML to JSON``() =
 //    let text = "<items><item id=\"Open\" /><item /><item id=\"25\" /></items>"    

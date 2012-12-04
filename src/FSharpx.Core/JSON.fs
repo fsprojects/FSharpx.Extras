@@ -73,6 +73,7 @@ type JsonValue =
                     | _ -> new XElement(XName.Get kv.Key, kv.Value.ToXml()) :> XObject) 
         | JsonValue.Array elements -> elements |> Seq.map (fun item -> new XElement(XName.Get "item", item.ToXml()) :> XObject)
 
+
 type internal Parser(jsonText:string) =
     let mutable i = 0
     let s = jsonText
@@ -208,31 +209,27 @@ module Helper =
     let inline addDecimalProperty propertyName number = addProperty propertyName (JsonValue.NumDecimal number)
 
     let emptyArray = JsonValue.Array []
-    let inline addElement jsonValue (JsonValue.Array jsonArray) = JsonValue.Array(jsonValue :: jsonArray)
-        
+    let inline addElement jsonValue (JsonValue.Array jsonArray) = JsonValue.Array(jsonValue :: jsonArray)        
 
-//let fromXml(xml:XDocument) =
-//    let rec createJArray (elements:XElement seq) =
-//        let jArray = JArray.New()
-//        for element in elements do
-//            createJObject element 
-//            |> jArray.Elements.Add
-//        jArray
-//    and createJObject (element:XElement) =
-//        let jObject = JObject.New()
-//        for attribute in element.Attributes() do
-//            jObject.Properties.[attribute.Name.LocalName] <- Text (attribute.Value)
-//
-//        element.Elements()
-//        |> Seq.groupBy (fun x -> x.Name.LocalName)
-//        |> Seq.iter (fun (key,childs) ->
-//                match Seq.toList childs with
-//                | child::[] -> jObject.Properties.[singularize key] <- createJObject child
-//                | childs -> jObject.Properties.[pluralize key] <- createJArray childs)
-//        jObject
-//
-//    createJObject xml.Root :> IDocument
-//    
+    let fromXml(xml:XDocument) =        
+        let rec createJArray (elements:XElement seq) =
+            elements
+            |> Seq.fold (fun jsonArray element -> addElement (createJObject element) jsonArray) emptyArray
+        and createJObject (element:XElement) =            
+            let jObject = 
+                element.Attributes()
+                |> Seq.fold (fun jsonObject attr -> addStringProperty attr.Name.LocalName (attr.Value) jsonObject) emptyObject
+
+            element.Elements()
+            |> Seq.groupBy (fun x -> x.Name.LocalName)
+            |> Seq.fold (fun jsonObject (key,childs) ->
+                    match Seq.toList childs with
+                    | child::[] -> addProperty (FSharpx.Strings.singularize key) (createJObject child) jsonObject 
+                    | childs -> addProperty (FSharpx.Strings.pluralize key) (createJArray childs) jsonObject)
+                 jObject
+
+        createJObject xml.Root
+    
 //module DocumentExtensions =
 //    type IDocument with 
 //        member this.GetProperty propertyName = (this :?> JObject).Properties.[propertyName]
