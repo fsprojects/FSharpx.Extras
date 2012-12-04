@@ -33,6 +33,17 @@ let ``Can parse document with text and float``() =
         map |> Map.find "age" |> should equal (JsonValue.NumDecimal (decimal 25.25))
     | _ -> failwith "parse error"
 
+[<Test>] 
+let ``Can't parse document with no comma between properties ``() =    
+    let exnRaised = ref false
+    try
+        parse "{ \"firstName\": \"Max\" \"lastName\": \"Mustermann\" \"age\": 26 \"isCool\": true }" |> ignore
+    with 
+    | _ -> exnRaised := true
+
+    Assert.IsTrue(!exnRaised)
+
+    
 //[<Test>]
 //let ``Can parse document with date``() =
 //    let j = parse "{\"anniversary\": \"\\/Date(869080830450)\\/\"}"
