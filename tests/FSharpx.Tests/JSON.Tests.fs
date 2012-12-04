@@ -8,16 +8,15 @@ open FsUnit
 [<Test>]
 let ``Can parse empty document``() = 
     match parse "{}" with
-    | JsonValue.Obj([||]) -> ()
+    | JsonValue.Obj(map) when map = Map.empty -> ()
     | _ -> failwith "parse error"
 
 [<Test>] 
 let ``Can parse document with single property``() =
     match parse "{\"firstName\": \"John\"}" with
-    | JsonValue.Obj([|name,value|]) -> 
-        name |> should equal "firstName"
-        name |> should equal "John"
-    | _ -> failwith "type error"
+    | JsonValue.Obj(map) ->
+        map |> Map.find "firstName" |> should equal (JsonValue.String "John")
+    | _ -> failwith "parse error"
 
 //[<Test>] 
 //let ``Can parse document with text and integer``() =

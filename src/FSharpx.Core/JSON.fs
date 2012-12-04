@@ -13,20 +13,17 @@ type JsonValue =
     | String of string
     | NumDecimal of decimal
     | NumDouble of System.Double // Some values are too big to fit in System.Decimal
-    | Obj of (string * JsonValue)[]
+    | Obj of Map<string,JsonValue>
     | Array of JsonValue[]
     | Bool of bool
     | Null
     member this.TryGetValWithKey s =
         match this with
-        | Obj kvps -> kvps |> Array.tryFind (fun (k,_) -> k=s) |> Option.map snd // assumes no duplicate keys
+        | Obj kvps -> kvps |> Map.tryFind s
         | _ -> None
     member this.GetValWithKey s =
         match this with
-        | Obj kvps -> 
-            match kvps |> Array.tryPick (fun (k,v) -> if k=s then Some v else None) with 
-            | Some res -> res
-            | None -> failwith (sprintf "didn't find key '%s' in %A" s kvps)
+        | Obj kvps -> Map.find s kvps
         | _ -> failwith (sprintf "expected an object when looking for find key '%s' in JsonValue %A" s this)
     member this.GetStringValWithKey s = this.GetValWithKey s |> JsonValue.GetStringVal
     member this.GetOptionalStringValWithKey s dflt = defaultArg (this.TryGetValWithKey s |> Option.map JsonValue.GetStringVal) dflt
@@ -131,7 +128,7 @@ type internal Parser(jsonText:string) =
                 skipWhitespace()
         ensure(i < s.Length && s.[i] = '}')
         i <- i + 1
-        JsonValue.Obj(pairs |> Seq.toArray)
+        JsonValue.Obj(pairs |> Map.ofSeq)
     and parseArray() =
         ensure(i < s.Length && s.[i] = '[')
         i <- i + 1
