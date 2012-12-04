@@ -22,9 +22,9 @@ let ``Can set properties in inlined properties``() =
 
     person.IsCool <- false
     person.IsCool |> should equal false
-//
-//    person.Size <- 43.43
-//    person.Size |> should equal 43.43
+
+    person.Size <- (decimal 43.43)
+    person.Size |> should equal (decimal 43.43)
 
 type AuthorsJSON = StructuredJSON<Schema="""{ "authors": [{ "name": "Steffen" }, { "name": "Tomas", "age": 29, "isCool": true, "size":42.42 }]}""">
 
@@ -46,11 +46,11 @@ let ``Can set optional properties in inlined JSON``() =
     author.IsCool <- Some true
     author.IsCool |> should equal (Some true)
 
-//    author.Size <- None
-//    author.Size |> should equal None
-//
-//    author.Size <- Some 42.45
-//    author.Size |> should equal (Some 42.45)
+    author.Size <- None
+    author.Size |> should equal None
+
+    author.Size <- Some (decimal 42.45)
+    author.Size |> should equal (Some (decimal 42.45))
 
 [<Test>]
 let ``Can add author in inlined JSON``() = 

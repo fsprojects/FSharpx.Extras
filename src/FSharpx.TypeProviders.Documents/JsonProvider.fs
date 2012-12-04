@@ -31,8 +31,10 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
             <@@ (%%args.[0]: JsonValue).GetDecimal propertyName |> int @@>
         | x when x = typeof<int64> -> 
             <@@ (%%args.[0]: JsonValue).GetDecimal propertyName |> int64 @@>
+        | x when x = typeof<decimal> -> 
+            <@@ (%%args.[0]: JsonValue).GetDecimal propertyName @@>
         | x when x = typeof<float> -> 
-            <@@ (%%args.[0]: JsonValue).GetDecimal propertyName |> double @@>
+            <@@ (%%args.[0]: JsonValue).GetDouble propertyName @@>
         | x when x = typeof<DateTime> -> 
             <@@ (%%args.[0]: JsonValue).GetDate propertyName @@>
 
@@ -47,8 +49,10 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
             <@@ (%%args.[0]: JsonValue).AddBoolProperty(propertyName,(%%args.[1]:bool))  @@>
         | x when x = typeof<int> ->
             <@@ (%%args.[0]: JsonValue).AddDecimalProperty(propertyName,decimal (%%args.[1]:int))  @@>
+        | x when x = typeof<decimal> ->
+            <@@ (%%args.[0]: JsonValue).AddDecimalProperty(propertyName,(%%args.[1]:decimal))  @@>
         | x when x = typeof<int64> ->
-            <@@ (%%args.[0]: JsonValue).AddDoubleProperty(propertyName,float (%%args.[1]:int64)) @@>
+            <@@ (%%args.[0]: JsonValue).AddDecimalProperty(propertyName,decimal (%%args.[1]:int64)) @@>
         | x when x = typeof<float> ->
             <@@ (%%args.[0]: JsonValue).AddDoubleProperty(propertyName,(%%args.[1]:float)) @@>
         | x when x = typeof<DateTime> -> 
@@ -70,11 +74,15 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
                 | None -> (%%args.[0]: JsonValue).RemoveProperty propertyName @@>
         | x when x = typeof<int64> -> 
             <@@ match (%%args.[1]:int64 option) with
-                | Some number -> (%%args.[0]: JsonValue).AddDoubleProperty(propertyName,float number)
+                | Some number -> (%%args.[0]: JsonValue).AddDecimalProperty(propertyName,decimal number)
                 | None -> (%%args.[0]: JsonValue).RemoveProperty propertyName @@>
         | x when x = typeof<float> -> 
             <@@ match (%%args.[1]:float option) with
                 | Some number -> (%%args.[0]: JsonValue).AddDoubleProperty(propertyName,number) 
+                | None -> (%%args.[0]: JsonValue).RemoveProperty propertyName @@>
+        | x when x = typeof<decimal> -> 
+            <@@ match (%%args.[1]:decimal option) with
+                | Some number -> (%%args.[0]: JsonValue).AddDecimalProperty(propertyName,number) 
                 | None -> (%%args.[0]: JsonValue).RemoveProperty propertyName @@>
         | x when x = typeof<DateTime> -> 
             <@@ match (%%args.[1]:DateTime option) with
