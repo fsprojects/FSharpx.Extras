@@ -240,3 +240,4 @@ module Helper =
     let emptyObject = JsonValue.Obj(Map.empty)
 
     let emptyArray = JsonValue.Array []
+    let inline serialize (jsonValue:JsonValue) = jsonValue.ToString()

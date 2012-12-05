@@ -90,6 +90,7 @@
     <Compile Include="JSON.Equality.Tests.fs" />
     <Compile Include="JSON.Serialization.Tests.fs" />
     <Compile Include="JSON.XMLConversion.Tests.fs" />
+    <Compile Include="Json.Zipper.Tests.fs" />
     <Compile Include="RegexTests.fs" />
     <None Include="table.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
