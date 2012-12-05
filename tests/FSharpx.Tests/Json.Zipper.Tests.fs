@@ -172,7 +172,7 @@ let ``Can remove a property in a simple document``() =
     |> should equal "{\"id\":\"Open\",\"id3\":\"Tataa\"}"
 
 [<Test>]
-let ``Can remove all properties in a simple document``() = 
+let ``Can remove the last in a simple document``() = 
     parse "{\"id\": \"Open\"}"
     |> toZipper
     |> remove

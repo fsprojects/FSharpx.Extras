@@ -13,11 +13,26 @@ let inline focus zipper =
     | ListZipper(Some f,_,_,_) -> f
     | MapZipper(Some f,_,_,_) -> f
 
-/// Returns the parent of the current zipper
-let inline parent zipper = 
+/// Creates a Json zipper with the given parent
+let toZipperWithParent parent jsonValue =  
+    match jsonValue with
+    | JsonValue.Array a -> 
+        match a with
+        | [] -> ListZipper(None,parent,[],[])
+        | x::xs -> ListZipper(Some x,parent,[],xs)
+    | JsonValue.Obj map -> 
+        if Map.isEmpty map then MapZipper(None,parent,"",map) else
+        let e = Seq.head map
+        MapZipper(Some e.Value,parent,e.Key,Map.remove e.Key map)
+
+/// Returns the parent of the zipper
+let parent zipper =  
     match zipper with
     | ListZipper(_,p,_,_) -> p
     | MapZipper(_,p,_,_) -> p
+
+/// Creates a Json zipper
+let toZipper jsonValue = toZipperWithParent None jsonValue
 
 /// Changes the element under the focus
 let inline update jsonValue zipper = 
@@ -97,18 +112,6 @@ let up zipper =
         match p with
         | Some (ListZipper(_,p_p,p_ls,p_rs)) -> ListZipper(Some(JsonValue.Obj m),p_p,p_ls,p_rs)
         | Some (MapZipper(Some p_f,p_p,p_n,p_m)) -> MapZipper(Some(JsonValue.Obj m),p_p,p_n,p_m)
-
-/// Creates a Json zipper
-let toZipper jsonValue =  
-    match jsonValue with
-    | JsonValue.Array a -> 
-        match a with
-        | [] -> ListZipper(None,None,[],[])
-        | x::xs -> ListZipper(Some x,None,[],xs)
-    | JsonValue.Obj map -> 
-        if Map.isEmpty map then MapZipper(None,None,"",map) else
-        let e = Seq.head map
-        MapZipper(Some e.Value,None,e.Key,Map.remove e.Key map)
 
 /// Returns the whole Json document from the zipper
 let rec fromZipper zipper = 
