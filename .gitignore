@@ -42,3 +42,4 @@ build.AndDeploy.bat
 
 *.userprefs
 .DS_Store
+*.test-cache
