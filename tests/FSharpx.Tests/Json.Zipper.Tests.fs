@@ -15,7 +15,10 @@ type JSONZipper = { Focus : JsonValue; Path : Context }
 let focus zipper = zipper.Focus     
 
 /// Changes the element under the focus
-let modifyText newText zipper = { zipper with Focus = JsonValue.String newText } 
+let modifyText newValue zipper = { zipper with Focus = JsonValue.String newValue } 
+
+/// Changes the element under the focus
+let modifyDecimal newValue zipper = { zipper with Focus = JsonValue.NumDecimal newValue } 
 
 /// Moves the zipper to a property
 let toProperty name zipper = 
@@ -46,11 +49,21 @@ let zipper jsonValue = { Focus = jsonValue; Path = Top }
 let getJson zipper = (top zipper).Focus 
 
 [<Test>]
-let ``Can modify a property in a simple document``() = 
-    parse "{\"age\": 25,\"firstName\":\"John\",\"lastName\":\"Smith\"}"
+let ``Can modify a text property in a simple document``() = 
+    parse "{\"age\":25,\"firstName\":\"John\",\"lastName\":\"Smith\"}"
     |> zipper 
     |> toProperty "firstName"
     |> modifyText "Johnny"
     |> getJson
     |> serialize 
     |> should equal "{\"age\":25,\"firstName\":\"Johnny\",\"lastName\":\"Smith\"}"
+
+[<Test>]
+let ``Can modify a decimal property in a simple document``() = 
+    parse "{\"age\":25,\"firstName\":\"John\",\"lastName\":\"Smith\"}"
+    |> zipper 
+    |> toProperty "age"
+    |> modifyDecimal (decimal 26)
+    |> getJson
+    |> serialize 
+    |> should equal "{\"age\":26,\"firstName\":\"John\",\"lastName\":\"Smith\"}"
