@@ -20,6 +20,9 @@ let modifyText newValue zipper = { zipper with Focus = JsonValue.String newValue
 /// Changes the element under the focus
 let modifyDecimal newValue zipper = { zipper with Focus = JsonValue.NumDecimal newValue } 
 
+/// Changes the element under the focus
+let modifyBool newValue zipper = { zipper with Focus = JsonValue.Bool newValue } 
+
 /// Moves the zipper to a property
 let toProperty name zipper = 
     match zipper.Focus with
@@ -57,6 +60,16 @@ let ``Can modify a text property in a simple document``() =
     |> getJson
     |> serialize 
     |> should equal "{\"age\":25,\"firstName\":\"Johnny\",\"lastName\":\"Smith\"}"
+
+[<Test>]
+let ``Can modify a bool property in a simple document``() = 
+    parse "{\"age\":25,\"firstName\":\"John\",\"lastName\":\"Smith\",\"isCool\":true}"
+    |> zipper 
+    |> toProperty "isCool"
+    |> modifyBool false
+    |> getJson
+    |> serialize 
+    |> should equal "{\"age\":25,\"firstName\":\"John\",\"isCool\":false,\"lastName\":\"Smith\"}"
 
 [<Test>]
 let ``Can modify a decimal property in a simple document``() = 
