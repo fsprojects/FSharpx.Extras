@@ -111,3 +111,22 @@ module Strings =
 
     let msDateRegex = new RegularExpressions.Regex(@"^\\\/Date\((-?\d+)(?:-\d+)?\)\\\/$",RegularExpressions.RegexOptions.Compiled)
     let iso8601Regex = new RegularExpressions.Regex(@"^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?((?<IsUTC>[zZ])|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$",RegularExpressions.RegexOptions.Compiled)
+
+    let (|JsonString|JsonDate|) input =        
+        let matchesMS = msDateRegex.Match(input)
+        if matchesMS.Success then
+            matchesMS.Groups.[1].Value 
+            |> Double.Parse 
+            |> (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddMilliseconds 
+            |> (fun x -> JsonDate(x))
+        else
+            let dateTimeStylesForUtc = function
+                | true -> DateTimeStyles.AssumeUniversal ||| DateTimeStyles.AdjustToUniversal
+                | false -> DateTimeStyles.AssumeLocal ||| DateTimeStyles.AllowWhiteSpaces
+                
+            let matches = iso8601Regex.Match(input)
+            if matches.Success then
+                input 
+                |> fun s -> DateTime.TryParse(s, CultureInfo.InvariantCulture, dateTimeStylesForUtc matches.Groups.["IsUTC"].Success)
+                |> (fun (parsed, d) -> if parsed then JsonDate(d) else JsonString(input))
+            else JsonString(input)

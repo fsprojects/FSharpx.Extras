@@ -2,6 +2,7 @@
 
 open System
 open FSharpx.JSON
+open FSharpx.Strings
 open System.Collections.Generic
 open FSharpx.TypeProviders.Inference
 
@@ -25,7 +26,10 @@ module internal JSONInference =
             | JsonValue.Obj map -> 
                 for prop in map do
                     match prop.Value with
-                    | JsonValue.String _ -> yield prop.Key, typeof<string>
+                    | JsonValue.String text -> 
+                            match text with
+                            | JsonDate d -> yield prop.Key,typeof<System.DateTime>
+                            | JsonString s -> yield prop.Key,typeof<string>
                     | JsonValue.NumDecimal n -> 
                             let t =
                                 if (n <= int32Max) && (n >= int32Min) && (n = decimal (int n)) then typeof<int> else
@@ -34,7 +38,6 @@ module internal JSONInference =
                             yield prop.Key, t
                     | JsonValue.NumDouble n -> yield prop.Key, typeof<float>
                     | JsonValue.Bool _ -> yield prop.Key, typeof<bool>
-                    | JsonValue.Date _ -> yield prop.Key, typeof<DateTime>
                     | _ -> ()              
             | _ -> ()]
         props

@@ -20,7 +20,6 @@ type JsonValue =
     | Obj of Map<string,JsonValue>
     | Array of JsonValue list
     | Bool of bool
-    | Date of DateTime
     | Null
     member this.TryGetValWithKey s =
         match this with
@@ -72,11 +71,13 @@ type JsonValue =
   
     member this.AddElement(element) =
         match this with
-        | JsonValue.Array(a) -> JsonValue.Array(element :: a)     
-   
+        | JsonValue.Array(a) -> JsonValue.Array(element :: a)  
+        
     member this.GetDate propertyName =
         match this.GetProperty propertyName with
-        | JsonValue.Date d -> d
+        | JsonValue.String text -> 
+            match text with
+            | FSharpx.Strings.JsonDate d -> d
 
     member this.AddProperty(propertyName,subDocument) = 
         match this with
@@ -96,7 +97,6 @@ type JsonValue =
         match this with
         | JsonValue.Null -> sb.Append "null"
         | JsonValue.Bool b -> sb.Append(b.ToString().ToLower())
-        | JsonValue.Date d -> sb.Append(d.ToString(System.Globalization.CultureInfo.InvariantCulture))
         | JsonValue.NumDecimal number -> sb.Append(number.ToString(System.Globalization.CultureInfo.InvariantCulture))
         | JsonValue.NumDouble number -> sb.Append(number.ToString(System.Globalization.CultureInfo.InvariantCulture))
         | JsonValue.String t -> sb.AppendFormat("\"{0}\"", t.Replace("\"","\\\""))
@@ -146,7 +146,7 @@ type internal Parser(jsonText:string) =
         skipWhitespace()
         ensure(i < s.Length)
         match s.[i] with
-        | '"' -> parseDateOrString()
+        | '"' -> JsonValue.String(parseString())
         | '-' -> parseNum()
         | c when System.Char.IsDigit(c) -> parseNum()
         | '{' -> parseObject()
@@ -155,26 +155,6 @@ type internal Parser(jsonText:string) =
         | 'f' -> parseLiteral("false", JsonValue.Bool false)
         | 'n' -> parseLiteral("null", JsonValue.Null)
         | _ -> throw()
-    and parseDateOrString() =
-        let input = parseString()
-        
-        let matchesMS = FSharpx.Strings.msDateRegex.Match(input)
-        if matchesMS.Success then
-            matchesMS.Groups.[1].Value 
-            |> Double.Parse 
-            |> (new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).AddMilliseconds 
-            |> (fun x -> JsonValue.Date(x))
-        else
-            let dateTimeStylesForUtc = function
-                | true -> DateTimeStyles.AssumeUniversal ||| DateTimeStyles.AdjustToUniversal
-                | false -> DateTimeStyles.AssumeLocal ||| DateTimeStyles.AllowWhiteSpaces
-                
-            let matches = FSharpx.Strings.iso8601Regex.Match(input)
-            if matches.Success then
-                input 
-                |> fun s -> DateTime.TryParse(s, CultureInfo.InvariantCulture, dateTimeStylesForUtc matches.Groups.["IsUTC"].Success)
-                |> (fun (parsed, d) -> if parsed then JsonValue.Date(d) else JsonValue.String(input))
-            else JsonValue.String(input)
     and parseString() =
         ensure(i < s.Length && s.[i] = '"')
         i <- i + 1
