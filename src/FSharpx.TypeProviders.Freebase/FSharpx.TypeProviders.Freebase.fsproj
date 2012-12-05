@@ -54,7 +54,9 @@
     <Compile Include="DefaultVersionAttribute.fs" />
     <Compile Include="Cache.fsi" />
     <Compile Include="Cache.fs" />
-    <Compile Include="JsonParser.fs" />
+    <Compile Include="..\FSharpx.Core\JSON.fs">
+      <Link>JSON.fs</Link>
+    </Compile>
     <Compile Include="FreebaseRequests.fs" />
     <Compile Include="FreebaseSchema.fs" />
     <Compile Include="FreebaseRuntime.fs" />

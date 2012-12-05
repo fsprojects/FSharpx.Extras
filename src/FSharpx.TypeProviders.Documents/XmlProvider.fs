@@ -78,6 +78,7 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
     generateSublements ty ownerType multiAccessExpr addChildExpr newChildExpr singleAccessExpr generateType elementChildren   
 
 open FSharpx.JSON
+open FSharpx.JSON.Conversion
 
 /// Infer schema from the loaded data and generate type with properties
 let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =  

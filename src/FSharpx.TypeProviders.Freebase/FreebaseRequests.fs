@@ -12,7 +12,7 @@ open System.IO
 open System.Net 
 open System.Text 
 open System.Collections.Generic
-open Utilities.Json
+open FSharpx.JSON
 open Utilities.Caching
 #if BROWSER
 open System.Windows.Browser // HttpUtility
@@ -131,7 +131,7 @@ type FreebaseQueries(apiKey: string, proxy:string, serviceUrl:string, localCache
 
     let queryString(queryUrl, fromJson) : FreebaseResult<'T> = 
         let resultText = queryRawText queryUrl
-        let fbr = JsonParser.parseJsonValue resultText
+        let fbr = parse resultText
         let result = FreebaseResult<'T>.FromJson fromJson fbr
         if freebaseV0 && result.Code <> "/api/status/ok" then raise (InvalidOperationException(sprintf "failed query, error: '%s': \n----\n%s\n----" result.Message queryUrl))
         result
@@ -174,7 +174,7 @@ type FreebaseQueries(apiKey: string, proxy:string, serviceUrl:string, localCache
             else serviceUrl + "/text"+articleId+"?maxlength=1200&format=plain"
         try 
             let resultText = queryRawText queryUrl
-            let fbr = JsonParser.parseJsonValue resultText
+            let fbr = parse resultText
             let result = FreebaseResult<string>.FromJson JsonValue.GetStringVal fbr
             Some result.Result
         with e -> None

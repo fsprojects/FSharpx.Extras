@@ -48,6 +48,7 @@
     <Compile Include="Prelude.fs" />
     <Compile Include="Strings.fs" />
     <Compile Include="JSON.fs" />
+    <Compile Include="JSON.XML.Conversion.fs" />
     <Compile Include="StateMachine.fs" />
     <Compile Include="IO.fs" />
     <Compile Include="Monoid.fs" />

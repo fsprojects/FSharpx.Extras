@@ -50,8 +50,8 @@
     <Compile Include="..\FSharpx.TypeProviders.Freebase\Cache.fs">
       <Link>Cache.fs</Link>
     </Compile>
-    <Compile Include="..\FSharpx.TypeProviders.Freebase\JsonParser.fs">
-      <Link>JsonParser.fs</Link>
+    <Compile Include="..\FSharpx.Core\JSON.fs">
+      <Link>JSON.fs</Link>
     </Compile>
     <Compile Include="..\FSharpx.TypeProviders\ProvidedTypes.fsi">
       <Link>ProvidedTypes.fsi</Link>

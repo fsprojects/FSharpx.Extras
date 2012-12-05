@@ -56,6 +56,9 @@
     <Compile Include="..\FSharpx.Core\JSON.fs">
       <Link>JSON.fs</Link>
     </Compile>
+    <Compile Include="..\FSharpx.Core\JSON.XML.Conversion.fs">
+      <Link>JSON.XML.Conversion.fs</Link>
+    </Compile>
     <Compile Include="..\FSharpx.TypeProviders\TypeProvider.Helper.fs">
       <Link>TypeProvider.Helper.fs</Link>
     </Compile>

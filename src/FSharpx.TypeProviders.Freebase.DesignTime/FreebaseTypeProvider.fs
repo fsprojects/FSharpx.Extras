@@ -115,7 +115,7 @@ type public FreebaseTypeProvider(config : TypeProviderConfig) as this =
             lazy 
                 [ for nsk in fbSchema.GetDomainStructure().NamespaceKeys do 
                     if String.IsNullOrWhiteSpace nsk.Namespace.Hidden then
-                     if nsk.Namespace.NamespaceKinds |> Array.exists (fun s -> s = "/type/domain") then
+                     if nsk.Namespace.NamespaceKinds |> List.exists (fun s -> s = "/type/domain") then
                       yield nsk.Namespace ]
                 |> Seq.distinctBy (fun nsp -> (nsp.Id, nsp.DomainName))
 

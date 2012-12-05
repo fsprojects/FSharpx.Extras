@@ -50,7 +50,7 @@ open System.Collections.Generic
 open Microsoft.FSharp.Core.CompilerServices
 open FSharpx.TypeProviders.Freebase.FreebaseReflection
 open FSharpx.TypeProviders.Freebase.FreebaseRequests
-open Utilities.Json
+open FSharpx.JSON
 
 /// Represents data for a single object
 type internal FreebasePropertyBag(dict : IDictionary<string,JsonValue>) =
@@ -108,7 +108,7 @@ type internal FreebaseDataConnection (fb:FreebaseQueries, fbSchema: FreebaseSche
          |> String.concat ""
 
     member __.GetInitialDataForObjects (query, explicitLimit) =
-        seq { for obj in fb.QuerySequence<IDictionary<string,JsonValue> >(query, dictionaryFromJson, explicitLimit) do
+        seq { for obj in fb.QuerySequence<Map<string,JsonValue> >(query, dictionaryFromJson, explicitLimit) do
                 yield FreebasePropertyBag(obj) } 
 
     /// Get property bags for all the objects of the given type, at the given type
@@ -229,7 +229,10 @@ type public FreebaseObject internal (fb:FreebaseDataConnection, objProps:Freebas
         let extractPrimValue v = 
             match v with 
             // Some constraints cause Freebase primitives to be extracted to { 'value' : 3 }
-            | JsonValue.Obj [|("value", v )|] -> convJsonPrimValue v
+            | JsonValue.Obj(map) -> 
+                match Map.toArray map with
+                | [|("value", v )|] -> convJsonPrimValue v
+                | _ -> convJsonPrimValue v
             | v -> convJsonPrimValue v
         
         if objProps.Dictionary.ContainsKey propertyId then 
