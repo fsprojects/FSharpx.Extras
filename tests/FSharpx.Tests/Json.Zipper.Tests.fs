@@ -64,7 +64,7 @@ let ``Can modify a bool property in a simple document``() =
     |> update (JsonValue.Bool false)
     |> fromZipper
     |> serialize 
-    |> should equal "{\"age\":25,\"firstName\":\"John\",\"isCool\":false,\"lastName\":\"Smith\"}"
+    |> should equal "{\"age\":25,\"firstName\":\"John\",\"lastName\":\"Smith\",\"isCool\":false}"
 
 [<Test>]
 let ``Can modify a decimal property in a simple document``() = 
@@ -147,7 +147,7 @@ let ``Can create a new object in a nested document``() =
     parse "[{\"id\": \"Open\"}, null, {\"id\": \"Pause\"}]"
     |> toZipper 
     |> right
-    |> update (JsonValue.Obj(Map.add "id" (JsonValue.String "Tataa") Map.empty))
+    |> update (JsonValue.Obj(["id",JsonValue.String "Tataa"]))
     |> fromZipper
     |> serialize 
     |> should equal "[{\"id\":\"Open\"},{\"id\":\"Tataa\"},{\"id\":\"Pause\"}]"

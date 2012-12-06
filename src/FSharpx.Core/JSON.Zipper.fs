@@ -5,13 +5,13 @@
 
 type JsonZipper = 
 | ListZipper of JsonValue option * JsonZipper option * JsonValue list * JsonValue list
-| MapZipper of JsonValue option * JsonZipper option * string * Map<string,JsonValue>
+| MapZipper of (string*JsonValue) option * JsonZipper option * list<string*JsonValue> * list<string*JsonValue>
 
 /// Returns the JsonValue under focus
 let inline focus zipper = 
     match zipper with
     | ListZipper(Some f,_,_,_) -> f
-    | MapZipper(Some f,_,_,_) -> f
+    | MapZipper(Some (n,f),_,_,_) -> f
 
 /// Creates a Json zipper with the given parent
 let toZipperWithParent parent jsonValue =  
@@ -20,10 +20,10 @@ let toZipperWithParent parent jsonValue =
         match a with
         | [] -> ListZipper(None,parent,[],[])
         | x::xs -> ListZipper(Some x,parent,[],xs)
-    | JsonValue.Obj map -> 
-        if Map.isEmpty map then MapZipper(None,parent,"",map) else
-        let e = Seq.head map
-        MapZipper(Some e.Value,parent,e.Key,Map.remove e.Key map)
+    | JsonValue.Obj properties -> 
+        match properties with
+        | [] -> MapZipper(None,parent,[],[])
+        | x::xs -> MapZipper(Some x,parent,[],xs)
 
 /// Returns the parent of the zipper
 let parent zipper =  
@@ -38,7 +38,7 @@ let toZipper jsonValue = toZipperWithParent None jsonValue
 let inline update jsonValue zipper = 
     match zipper with
     | ListZipper(Some f,p,ls,rs) -> ListZipper(Some jsonValue,p,ls,rs)
-    | MapZipper(Some f,p,n,m) -> MapZipper(Some jsonValue,p,n,m)
+    | MapZipper(Some (n,f),p,ls,rs)-> MapZipper(Some (n,jsonValue),p,ls,rs)
 
 /// Inserts an element at the current position
 let insert element zipper =
@@ -49,8 +49,8 @@ let insert element zipper =
 /// Inserts a property with the given name and value into the current focus
 let addProperty name element zipper =
     match zipper with
-    | MapZipper(None,p,n,m) -> MapZipper(Some element,p,name,m)
-    | MapZipper(Some f,p,n,m) -> MapZipper(Some element,p,name,Map.add n f m)
+    | MapZipper(None,p,ls,rs) -> MapZipper(Some (name,element),p,ls,rs)
+    | MapZipper(Some f,p,ls,rs) -> MapZipper(Some (name,element),p,f::ls,rs)
 
 /// Moves the zipper to the left
 let left zipper = 
@@ -58,6 +58,9 @@ let left zipper =
     | ListZipper(Some f,p,ls,rs) -> 
         match ls with
         | x::xs -> ListZipper(Some x,p,xs,f::rs)    
+    | MapZipper(Some f,p,ls,rs) -> 
+        match ls with
+        | x::xs -> MapZipper(Some x,p,xs,f::rs)    
 
 /// Moves the zipper to the right
 let right zipper = 
@@ -66,32 +69,48 @@ let right zipper =
         match rs with
         | x::xs -> ListZipper(Some x,p,f::ls,xs)
         | _ -> ListZipper(None,p,f::ls,[])
+    | ListZipper(None,p,ls,rs) -> 
+        match rs with
+        | x::xs -> ListZipper(Some x,p,ls,xs)
+    | MapZipper(Some f,p,ls,rs) -> 
+        match rs with
+        | x::xs -> MapZipper(Some x,p,f::ls,xs)
+        | _ -> MapZipper(None,p,f::ls,[])
+    | MapZipper(None,p,ls,rs) -> 
+        match rs with
+        | x::xs -> MapZipper(Some x,p,ls,xs)
+
 
 /// Moves the zipper down
 let down zipper =
     match focus zipper with
-    | JsonValue.Obj map ->
-        if Map.isEmpty map then MapZipper(None,Some zipper,"",map) else
-        let e = Seq.head map
-        MapZipper(Some e.Value,Some zipper,e.Key,Map.remove e.Key map)
+    | JsonValue.Obj [] -> MapZipper(None,Some zipper,[],[])
+    | JsonValue.Obj (x::xs) -> MapZipper(Some x,Some zipper,[],xs)
+    | JsonValue.Array [] -> ListZipper(None,Some zipper,[],[])
     | JsonValue.Array (x::xs) -> ListZipper(Some x,Some zipper,[],xs)    
 
 /// Moves the zipper to the property with the given name on the same level
 let toProperty name zipper =
-    match zipper with
-    | MapZipper(Some f,p,n,m) ->
-        let map = Map.add n f m
-        MapZipper(Map.tryFind name map,p,name,Map.remove name map)
-    | MapZipper(None,p,n,m) ->
-        MapZipper(Map.tryFind name m,p,name,Map.remove name m)
+    let properties,p =
+        match zipper with
+        | MapZipper(Some f,p,ls,rs) -> (List.rev ls) @ f :: rs,p
+        | MapZipper(None,p,ls,rs) -> (List.rev ls) @ rs,p
+
+    let rec loop z =
+        match z with
+        | MapZipper(Some (k,_),_,_,_) -> if k = name then z else right z |> loop
+        | MapZipper(None,_,_,x::_) -> right z |> loop
+        | MapZipper(None,_,_,_) -> z
+
+    loop (MapZipper(None,p,[],properties))
 
 /// Removes the element or property from the current level
 let remove zipper =
     match zipper with
-    | MapZipper(_,p,n,m) ->  
-        if m = Map.empty then MapZipper(None,p,"",m) else
-        let kv = Seq.head m
-        MapZipper(Some kv.Value,p,kv.Key,Map.remove kv.Key m)
+    | MapZipper(Some (k,v),p,ls,rs) ->  
+        match (List.rev ls) @ rs with
+        | x::xs -> MapZipper(Some x,p,[],xs)
+        | _ -> MapZipper(None,p,[],[])
 
 /// Moves the zipper upwards
 let up zipper =
@@ -99,27 +118,27 @@ let up zipper =
     | ListZipper(Some f,p,ls,rs) ->
         match p with
         | Some (ListZipper(_,p_p,p_ls,p_rs)) -> ListZipper(Some(JsonValue.Array ((List.rev ls) @ f :: rs)),p_p,p_ls,p_rs)
-        | Some (MapZipper(Some p_f,p_p,p_n,p_m)) -> MapZipper(Some(JsonValue.Array((List.rev ls) @ f :: rs)),p_p,p_n,p_m)
+        | Some (MapZipper(Some (n,_),p_p,p_ls,p_rs)) -> MapZipper(Some(n,JsonValue.Array((List.rev ls) @ f :: rs)),p_p,p_ls,p_rs)
     | ListZipper(None,p,ls,rs) ->
         match p with
         | Some (ListZipper(_,p_p,p_ls,p_rs)) -> ListZipper(Some(JsonValue.Array ((List.rev ls) @ rs)),p_p,p_ls,p_rs)
-        | Some (MapZipper(Some p_f,p_p,p_n,p_m)) -> MapZipper(Some(JsonValue.Array((List.rev ls) @ rs)),p_p,p_n,p_m)
-    | MapZipper(Some f,p,n,m) -> 
+        | Some (MapZipper(Some (n,_),p_p,p_ls,p_rs)) -> MapZipper(Some(n,JsonValue.Array((List.rev ls) @ rs)),p_p,p_ls,p_rs)
+    | MapZipper(Some f,p,ls,rs) -> 
         match p with
-        | Some (ListZipper(_,p_p,p_ls,p_rs)) -> ListZipper(Some(JsonValue.Obj(Map.add n f m)),p_p,p_ls,p_rs)
-        | Some (MapZipper(Some p_f,p_p,p_n,p_m)) -> MapZipper(Some(JsonValue.Obj(Map.add n f m)),p_p,p_n,p_m)
-    | MapZipper(None,p,n,m) -> 
+        | Some (ListZipper(_,p_p,p_ls,p_rs)) -> ListZipper(Some(JsonValue.Obj((List.rev ls) @ f :: rs)),p_p,p_ls,p_rs)
+        | Some (MapZipper(Some (n,_),p_p,p_ls,p_rs)) -> MapZipper(Some(n,JsonValue.Obj((List.rev ls) @ f :: rs)),p_p,p_ls,p_rs)
+    | MapZipper(None,p,ls,rs) -> 
         match p with
-        | Some (ListZipper(_,p_p,p_ls,p_rs)) -> ListZipper(Some(JsonValue.Obj m),p_p,p_ls,p_rs)
-        | Some (MapZipper(Some p_f,p_p,p_n,p_m)) -> MapZipper(Some(JsonValue.Obj m),p_p,p_n,p_m)
+        | Some (ListZipper(_,p_p,p_ls,p_rs)) -> ListZipper(Some(JsonValue.Obj((List.rev ls) @ rs)),p_p,p_ls,p_rs)
+        | Some (MapZipper(Some (n,_),p_p,p_ls,p_rs)) -> MapZipper(Some(n,JsonValue.Obj((List.rev ls) @ rs)),p_p,p_ls,p_rs)
 
 /// Returns the whole Json document from the zipper
 let rec fromZipper zipper = 
     match parent zipper with
     | None ->         
         match zipper with
-        | MapZipper(Some f,p,n,m) -> JsonValue.Obj (Map.add n f m)
-        | MapZipper(None,p,n,m) -> JsonValue.Obj m
+        | MapZipper(Some f,p,ls,rs) -> JsonValue.Obj((List.rev ls) @ f :: rs)
+        | MapZipper(None,p,ls,rs) -> JsonValue.Obj((List.rev ls) @ rs)
         | ListZipper(Some f,_,ls,rs) -> JsonValue.Array((List.rev ls) @ f :: rs)
-        | ListZipper(None,_,_,_) -> JsonValue.Array []
+        | ListZipper(None,_,ls,rs) -> JsonValue.Array((List.rev ls) @ rs)
     | Some parent -> up zipper |> fromZipper

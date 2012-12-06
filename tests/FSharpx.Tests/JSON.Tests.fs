@@ -7,20 +7,22 @@ open FsUnit
 [<Test>]
 let ``Can parse empty document``() = 
     match parse "{}" with
-    | JsonValue.Obj(map) when map = Map.empty -> ()
+    | JsonValue.Obj([]) -> ()
     | _ -> failwith "parse error"
 
 [<Test>] 
 let ``Can parse document with single property``() =
     match parse "{\"firstName\": \"John\"}" with
-    | JsonValue.Obj(map) ->
+    | JsonValue.Obj(properties) ->
+        let map = properties |> Map.ofSeq
         map |> Map.find "firstName" |> should equal (JsonValue.String "John")
     | _ -> failwith "parse error"
 
 [<Test>] 
 let ``Can parse document with text and integer``() =
     match parse "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"age\": 25}" with
-    | JsonValue.Obj(map) ->
+    | JsonValue.Obj(properties) ->
+        let map = properties |> Map.ofSeq
         map |> Map.find "firstName" |> should equal (JsonValue.String "John")
         map |> Map.find "lastName" |> should equal (JsonValue.String "Smith")
         map |> Map.find "age" |> should equal (JsonValue.NumDecimal (decimal 25))
@@ -29,7 +31,8 @@ let ``Can parse document with text and integer``() =
 [<Test>] 
 let ``Can parse document with text and float``() =
     match parse "{\"firstName\": \"John\", \"lastName\": \"Smith\", \"age\": 25.25}" with
-    | JsonValue.Obj(map) ->
+    | JsonValue.Obj(properties) ->
+        let map = properties |> Map.ofSeq
         map |> Map.find "age" |> should equal (JsonValue.NumDecimal (decimal 25.25))
     | _ -> failwith "parse error"
 
@@ -46,7 +49,8 @@ let ``Can't parse document with no comma between properties ``() =
 [<Test>] 
 let ``Can parse document with double backslashes in text``() =
     match parse "{\"myText\": \"\\\\John\"}" with
-    | JsonValue.Obj(map) ->
+    | JsonValue.Obj(properties) ->
+        let map = properties |> Map.ofSeq
         map |> Map.find "myText" |> should equal (JsonValue.String "\\John")
     | _ -> failwith "parse error"
 
@@ -145,7 +149,8 @@ let ``Can parse document with fractional numbers``() =
     Thread.CurrentThread.CurrentCulture <- new CultureInfo("pt-PT") // use a culture that uses ',' instead o '.' for decimal separators
     try 
         match parse "{ \"age\": 25.5}" with
-        | JsonValue.Obj(map) ->
+        | JsonValue.Obj(properties) ->
+            let map = properties |> Map.ofSeq
             map |> Map.find "age" |> should equal (JsonValue.NumDecimal (decimal 25.5))
         | _ -> failwith "parse error"        
     finally
@@ -154,12 +159,15 @@ let ``Can parse document with fractional numbers``() =
 [<Test>]
 let ``Can parse nested document`` () =
     match parse "{ \"main\": { \"title\": \"example\", \"nested\": { \"nestedTitle\": \"sub\" } } }" with
-    | JsonValue.Obj(map) ->
-        match  map |> Map.find "main" with
-        | JsonValue.Obj(main) ->
+    | JsonValue.Obj(properties) ->
+        let map = properties |> Map.ofSeq
+        match map |> Map.find "main" with
+        | JsonValue.Obj(mainProperties) ->
+            let main = mainProperties |> Map.ofSeq
             main |> Map.find "title" |> should equal (JsonValue.String "example")
             match  main |> Map.find "nested" with
-            | JsonValue.Obj(nested) ->
+            | JsonValue.Obj(nestedProperties) ->
+                let nested = nestedProperties |> Map.ofSeq
                 nested |> Map.find "nestedTitle" |> should equal (JsonValue.String "sub")
             | _ -> failwith "parse error"   
         | _ -> failwith "parse error"       
@@ -168,7 +176,8 @@ let ``Can parse nested document`` () =
 [<Test>] 
 let ``Can parse document with booleans``() =
     match parse "{ \"hasTrue\": true, \"hasFalse\": false }" with
-    | JsonValue.Obj(map) ->
+    | JsonValue.Obj(properties) ->
+        let map = properties |> Map.ofSeq
         map |> Map.find "hasTrue" |> should equal (JsonValue.Bool true)
         map |> Map.find "hasFalse" |> should equal (JsonValue.Bool false)
     | _ -> failwith "parse error"
@@ -176,12 +185,13 @@ let ``Can parse document with booleans``() =
 [<Test>] 
 let ``Can parse document with null``() =    
     match parse "{ \"items\": [{\"id\": \"Open\"}, null, {\"id\": \"Pause\"}] }" with
-    | JsonValue.Obj(map) ->
+    | JsonValue.Obj(properties) ->
+        let map = properties |> Map.ofSeq
         match map |> Map.find "items" with
         | JsonValue.Array a ->
-            a.[0] |> should equal (JsonValue.Obj(Map.add "id" (JsonValue.String "Open") Map.empty)) 
+            a.[0] |> should equal (JsonValue.Obj(["id",JsonValue.String "Open"]))
             a.[1] |> should equal JsonValue.Null 
-            a.[2] |> should equal (JsonValue.Obj(Map.add "id" (JsonValue.String "Pause") Map.empty)) 
+            a.[2] |> should equal (JsonValue.Obj(["id",JsonValue.String "Pause"]))
         | _ -> failwith "parse error"        
     | _ -> failwith "parse error"
 
@@ -189,9 +199,9 @@ let ``Can parse document with null``() =
 let ``Can parse array in outermost scope``() =
     match parse "[{\"id\": \"Open\"}, null, {\"id\": \"Pause\"}]" with
     | JsonValue.Array a ->
-        a.[0] |> should equal (JsonValue.Obj(Map.add "id" (JsonValue.String "Open") Map.empty)) 
+        a.[0] |> should equal (JsonValue.Obj(["id",JsonValue.String "Open"]))
         a.[1] |> should equal JsonValue.Null 
-        a.[2] |> should equal (JsonValue.Obj(Map.add "id" (JsonValue.String "Pause") Map.empty)) 
+        a.[2] |> should equal (JsonValue.Obj(["id",JsonValue.String "Pause"]))
     | _ -> failwith "parse error"        
 
 [<Test>]

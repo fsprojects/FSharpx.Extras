@@ -32,7 +32,7 @@ module Conversion =
 
     type JsonValue with
         member this.GetDate propertyName =
-            match this.GetProperty propertyName with
+            match this.GetValWithKey propertyName with
             | JsonValue.String text -> 
                 match text with
                 | FSharpx.Strings.JsonDate d -> d
@@ -40,13 +40,13 @@ module Conversion =
         member this.ToXml() = 
             match this with
             | JsonValue.Null -> null
-            | JsonValue.Obj map -> 
-                map 
-                |> Seq.map (fun kv -> 
-                        match kv.Value with
-                        | JsonValue.String t -> new XAttribute(XName.Get kv.Key, t) :> XObject
-                        | JsonValue.Bool b  -> new XAttribute(XName.Get kv.Key, b) :> XObject
-                        | JsonValue.NumDecimal number-> new XAttribute(XName.Get kv.Key, number) :> XObject
-                        | JsonValue.NumDouble number-> new XAttribute(XName.Get kv.Key, number) :> XObject
-                        | _ -> new XElement(XName.Get kv.Key, kv.Value.ToXml()) :> XObject) 
+            | JsonValue.Obj properties -> 
+                properties 
+                |> Seq.map (fun (k,v) -> 
+                        match v with
+                        | JsonValue.String t -> new XAttribute(XName.Get k, t) :> XObject
+                        | JsonValue.Bool b  -> new XAttribute(XName.Get k, b) :> XObject
+                        | JsonValue.NumDecimal number-> new XAttribute(XName.Get k, number) :> XObject
+                        | JsonValue.NumDouble number-> new XAttribute(XName.Get k, number) :> XObject
+                        | _ -> new XElement(XName.Get k, v.ToXml()) :> XObject) 
             | JsonValue.Array elements -> elements |> Seq.map (fun item -> new XElement(XName.Get "item", item.ToXml()) :> XObject)

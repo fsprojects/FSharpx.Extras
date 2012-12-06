@@ -23,21 +23,21 @@ module internal JSONInference =
         let props =
           [for el in elements do
             match el with
-            | JsonValue.Obj map -> 
-                for prop in map do
-                    match prop.Value with
+            | JsonValue.Obj properties -> 
+                for (k,v) in properties do
+                    match v with
                     | JsonValue.String text -> 
                             match text with
-                            | JsonDate d -> yield prop.Key,typeof<System.DateTime>
-                            | JsonString s -> yield prop.Key,typeof<string>
+                            | JsonDate d -> yield k,typeof<System.DateTime>
+                            | JsonString s -> yield k,typeof<string>
                     | JsonValue.NumDecimal n -> 
                             let t =
                                 if (n <= int32Max) && (n >= int32Min) && (n = decimal (int n)) then typeof<int> else
                                 if (n <= int64Max) && (n >= int64Min) && (n = decimal (int64 n)) then typeof<int64> else
                                 typeof<decimal>
-                            yield prop.Key, t
-                    | JsonValue.NumDouble n -> yield prop.Key, typeof<float>
-                    | JsonValue.Bool _ -> yield prop.Key, typeof<bool>
+                            yield k, t
+                    | JsonValue.NumDouble n -> yield k, typeof<float>
+                    | JsonValue.Bool _ -> yield k, typeof<bool>
                     | _ -> ()              
             | _ -> ()]
         props
@@ -53,13 +53,13 @@ module internal JSONInference =
     and collectElements (elements:seq<JsonValue>)  =
         [ for el in elements do
             match el with
-            | JsonValue.Obj map -> 
-                for prop in map do            
-                    match prop.Value with
-                    | JsonValue.Obj _ -> yield prop.Key, false, prop.Value
+            | JsonValue.Obj properties -> 
+                for (k,v) in properties do            
+                    match v with
+                    | JsonValue.Obj _ -> yield k, false, v
                     | JsonValue.Array a -> 
                         for child in a do
-                            yield prop.Key, true, child
+                            yield k, true, child
                     | _ -> ()              
             | _ -> ()]
         |> Seq.groupBy (fun (fst,_,_) -> fst)

@@ -6,8 +6,8 @@ open FsUnit
 
 [<Test>]
 let ``Can compare empty documents``() = 
-    JsonValue.Obj(Map.empty) |> should equal (JsonValue.Obj(Map.empty))
-    JsonValue.Obj(Map.empty) |> should equal emptyObject
+    JsonValue.Obj([]) |> should equal (JsonValue.Obj([]))
+    JsonValue.Obj([]) |> should equal emptyObject
 
 [<Test>] 
 let ``Can compare documents with single property``() =

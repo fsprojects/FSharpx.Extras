@@ -77,8 +77,8 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
     generateProperties ty accessExpr checkIfOptional elementProperties
     
     let multiAccessExpr childName (args: Expr list) = <@@ (%%args.[0]: JsonValue).GetArrayElements childName @@>
-    let singleAccessExpr childName (args: Expr list) = <@@ (%%args.[0]: JsonValue).GetProperty childName @@>
-    let newChildExpr childName (args: Expr list) = <@@ JsonValue.Obj(Map.empty) @@>
+    let singleAccessExpr childName (args: Expr list) = <@@ (%%args.[0]: JsonValue).GetValWithKey childName @@>
+    let newChildExpr childName (args: Expr list) = <@@ JsonValue.Obj([]) @@>
 
     let addChildExpr childName (args: Expr list) = <@@ (%%args.[0]: JsonValue).AddArrayElement(childName,(%%args.[1]:JsonValue)) @@>
 

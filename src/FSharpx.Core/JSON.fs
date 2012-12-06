@@ -16,17 +16,17 @@ type JsonValue =
     | String of string
     | NumDecimal of decimal
     | NumDouble of System.Double // Some values are too big to fit in System.Decimal
-    | Obj of Map<string,JsonValue>
+    | Obj of list<string*JsonValue>
     | Array of JsonValue list
     | Bool of bool
     | Null
     member this.TryGetValWithKey s =
         match this with
-        | Obj kvps -> kvps |> Map.tryFind s
+        | Obj kvps -> kvps |> List.tryPick (fun (k,v) -> if k=s then Some v else None) 
         | _ -> None
     member this.GetValWithKey s =
         match this with
-        | Obj kvps -> Map.find s kvps
+        | Obj kvps -> kvps |> List.pick (fun (k,v) -> if k=s then Some v else None) 
         | _ -> failwith (sprintf "expected an object when looking for find key '%s' in JsonValue %A" s this)
     member this.GetStringValWithKey s = this.GetValWithKey s |> JsonValue.GetStringVal
     member this.GetOptionalStringValWithKey s dflt = defaultArg (this.TryGetValWithKey s |> Option.map JsonValue.GetStringVal) dflt
@@ -36,36 +36,33 @@ type JsonValue =
     member this.GetArrayValWithKey         s = match this.GetValWithKey s with | Array v -> v | Null -> [ ]                        | v -> failwith (sprintf "key '%s' had value '%+A' when a string was expected" s v)
     member this.GetOptionalArrayValWithKey s = match this.TryGetValWithKey s with | None -> [ ] | Some (Array v) -> v | Some Null -> [ ] | Some v -> failwith (sprintf "key '%s' had value '%+A' when a string was expected" s v)
 
-    member this.GetProperty propertyName =
+    member this.HasProperty s =
         match this with
-        | JsonValue.Obj(map) -> Map.find propertyName map
-
-    member this.HasProperty propertyName =
-        match this with
-        | JsonValue.Obj(map) -> Map.containsKey propertyName map
+        | Obj kvps -> (kvps |> List.tryFind (fun (k,v) -> k=s)) <> None
+        | _ -> failwith (sprintf "expected an object when looking for find key '%s' in JsonValue %A" s this)
 
     member this.GetText propertyName =
-        match this.GetProperty propertyName with
+        match this.GetValWithKey propertyName with
         | JsonValue.String text -> text
 
     member this.GetBoolean propertyName =
-        match this.GetProperty propertyName with
+        match this.GetValWithKey propertyName with
         | JsonValue.Bool b -> b
 
     member this.GetDecimal propertyName =
-        match this.GetProperty propertyName with
+        match this.GetValWithKey propertyName with
         | JsonValue.NumDecimal d -> d
 
     member this.GetDouble propertyName =
-        match this.GetProperty propertyName with
+        match this.GetValWithKey propertyName with
         | JsonValue.NumDouble d -> d
 
     member this.GetArrayElements propertyName =
-        match this.GetProperty propertyName with
+        match this.GetValWithKey propertyName with
         | JsonValue.Array(a) -> a
 
     member this.AddArrayElement(propertyName,element) =
-        match this.GetProperty propertyName with
+        match this.GetValWithKey propertyName with
         | JsonValue.Array(a) -> element::a;element // TODO: This is not right ;-)
   
     member this.AddElement(element) =
@@ -74,7 +71,7 @@ type JsonValue =
 
     member this.AddProperty(propertyName,subDocument) = 
         match this with
-        | JsonValue.Obj map -> JsonValue.Obj(Map.add propertyName subDocument map)
+        | JsonValue.Obj properties -> JsonValue.Obj(properties @ [propertyName,subDocument])
 
     member this.AddStringProperty(propertyName,text) = this.AddProperty(propertyName,JsonValue.String text)
     member this.AddBoolProperty(propertyName,boolean) = this.AddProperty(propertyName,JsonValue.Bool boolean)
@@ -84,7 +81,7 @@ type JsonValue =
 
     member this.RemoveProperty(propertyName) = 
         match this with
-        | JsonValue.Obj map -> JsonValue.Obj(Map.remove propertyName map)
+        | JsonValue.Obj properties -> JsonValue.Obj(List.filter (fun (k,_) -> k <> propertyName) properties)
 
     member private this.Serialize (sb:StringBuilder) =
         match this with
@@ -93,13 +90,13 @@ type JsonValue =
         | JsonValue.NumDecimal number -> sb.Append(number.ToString(System.Globalization.CultureInfo.InvariantCulture))
         | JsonValue.NumDouble number -> sb.Append(number.ToString(System.Globalization.CultureInfo.InvariantCulture))
         | JsonValue.String t -> sb.AppendFormat("\"{0}\"", t.Replace("\"","\\\""))
-        | JsonValue.Obj map -> 
+        | JsonValue.Obj properties -> 
             let isNotFirst = ref false
             sb.Append "{"  |> ignore
-            for property in map do
+            for (k,v) in properties do
                 if !isNotFirst then sb.Append "," |> ignore else isNotFirst := true
-                sb.AppendFormat("\"{0}\":",property.Key)  |> ignore
-                property.Value.Serialize(sb) |> ignore
+                sb.AppendFormat("\"{0}\":",k)  |> ignore
+                v.Serialize(sb) |> ignore
             sb.Append "}"
         | JsonValue.Array elements -> 
             let isNotFirst = ref false
@@ -206,7 +203,7 @@ type internal Parser(jsonText:string) =
                 skipWhitespace()
         ensure(i < s.Length && s.[i] = '}')
         i <- i + 1
-        JsonValue.Obj(pairs |> Map.ofSeq)
+        JsonValue.Obj(pairs |> List.ofSeq)
     and parseArray() =
         ensure(i < s.Length && s.[i] = '[')
         i <- i + 1
@@ -237,7 +234,7 @@ module Helper =
         let p = new Parser(jsonText)
         p.Parse()
 
-    let emptyObject = JsonValue.Obj(Map.empty)
+    let emptyObject = JsonValue.Obj []
 
     let emptyArray = JsonValue.Array []
     let inline serialize (jsonValue:JsonValue) = jsonValue.ToString()
