@@ -36,6 +36,15 @@ let ``Can update two properties in a simple JSON``() =
     updated.ToString() |> should equal """{"a":"blub","b":2}"""
     original.ToString() |> should equal """{"a":"b","b":1}"""
     
+type Simple3 = JsonZipper<Schema="""{ "b": "blub", "a": 1}""">
+
+[<Test>]
+let ``Update preserves the order in a JSON document``() = 
+    let original = new Simple3()
+    let updated = original.B.Update("bla").Up().A.Update(3)
+    updated.ToString() |> should equal """{"b":"bla","a":3}"""
+    original.ToString() |> should equal """{"b":"blub","a":1}"""
+    
 type Nested = JsonZipper<Schema="""{ "a": "b", "b": { "c": "text" }}""">
 
 [<Test>]
