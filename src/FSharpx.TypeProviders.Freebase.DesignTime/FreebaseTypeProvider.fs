@@ -19,15 +19,18 @@ open Utilities.Caching
 
 [<AutoOpen>]
 module AssemblyResolver =
-    let handler = ResolveEventHandler(fun _ args ->
-        if args.Name.Split(',').[0] = "FSharp.Core" && AssemblyName(args.Name).Version.ToString() = "2.3.5.0" then 
-            let dir = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86)
-            let (++) a b = System.IO.Path.Combine(a,b)
-            try 
+    let handler = 
+      ResolveEventHandler(fun _ args ->
+        try 
+            let assemName = AssemblyName(args.Name)
+
+            if assemName.Name = "FSharp.Core" && assemName.Version.ToString() = "2.3.5.0" then 
+                let dir = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86)
+                let (++) a b = System.IO.Path.Combine(a,b)
                 Assembly.LoadFrom(dir ++ "Reference Assemblies" ++ "Microsoft" ++ "FSharp" ++ "3.0" ++ "Runtime" ++ ".NETPortable" ++ "FSharp.Core.dll")
-            with e -> 
+            else 
                 null
-        else 
+        with e ->  
             null)
     AppDomain.CurrentDomain.add_AssemblyResolve(handler)
 
