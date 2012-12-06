@@ -132,6 +132,12 @@ let up zipper =
         | Some (ListZipper(_,p_p,p_ls,p_rs)) -> ListZipper(Some(JsonValue.Obj((List.rev ls) @ rs)),p_p,p_ls,p_rs)
         | Some (MapZipper(Some (n,_),p_p,p_ls,p_rs)) -> MapZipper(Some(n,JsonValue.Obj((List.rev ls) @ rs)),p_p,p_ls,p_rs)
 
+/// Moves the zipper to the top
+let rec top zipper = 
+    match parent zipper with
+    | None -> zipper
+    | Some parent -> up zipper |> top
+
 /// Returns the whole Json document from the zipper
 let rec fromZipper zipper = 
     match parent zipper with
@@ -141,4 +147,4 @@ let rec fromZipper zipper =
         | MapZipper(None,p,ls,rs) -> JsonValue.Obj((List.rev ls) @ rs)
         | ListZipper(Some f,_,ls,rs) -> JsonValue.Array((List.rev ls) @ f :: rs)
         | ListZipper(None,_,ls,rs) -> JsonValue.Array((List.rev ls) @ rs)
-    | Some parent -> up zipper |> fromZipper
+    | Some parent -> top zipper |> fromZipper

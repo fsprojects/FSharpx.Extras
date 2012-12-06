@@ -28,19 +28,19 @@ let rec generateType (ownerType:ProvidedTypeDefinition) elementName =
     ownerType.AddMember(ty)
     ty
 
-let createToString (newType:ProvidedTypeDefinition) =
+let createTopF topType (newType:ProvidedTypeDefinition) =
     let toStringMethod =
         ProvidedMethod(
-            methodName = "ToString",
+            methodName = "Top",
             parameters = [],
-            returnType = typeof<string>,
-            InvokeCode = (fun args -> <@@ (fromZipper (%%args.[0]: JsonZipper)).ToString() @@>))
+            returnType = topType,
+            InvokeCode = (fun args -> <@@ top (%%args.[0]: JsonZipper) @@>))
 
-    toStringMethod.AddXmlDoc "Gets the string representation"
+    toStringMethod.AddXmlDoc "Moves the zipper to the top"
 
     newType.AddMember toStringMethod
 
-let createProperty parentType name propertyType = 
+let createProperty topType parentType name propertyType = 
     let newType = generateType parentType name
 
     let property =
@@ -51,7 +51,7 @@ let createProperty parentType name propertyType =
 
     property.AddXmlDoc (sprintf "Gets the property named \"%s\"" name)
 
-    createToString newType
+    createTopF topType newType
     
     let upF =
         ProvidedMethod(
@@ -85,7 +85,7 @@ let createProperty parentType name propertyType =
     parentType.AddMember property
 
 
-let rec generateObj mainLevel parentType (CompoundProperty(elementName,multi,elementChildren,elementProperties)) =
+let rec generateObj mainLevel topType parentType (CompoundProperty(elementName,multi,elementChildren,elementProperties)) =
     let typeToModify =
         if mainLevel then parentType else
         let newType = generateType parentType elementName
@@ -99,7 +99,7 @@ let rec generateObj mainLevel parentType (CompoundProperty(elementName,multi,ele
         property.AddXmlDoc (sprintf "Gets the property named \"%s\"" elementName)
         parentType.AddMember property
 
-        createToString newType
+        createTopF topType newType
 
         let upF =
             ProvidedMethod(
@@ -115,10 +115,10 @@ let rec generateObj mainLevel parentType (CompoundProperty(elementName,multi,ele
         newType
 
     for children in elementChildren do
-        generateObj false typeToModify children
+        generateObj false topType typeToModify children
 
     for (SimpleProperty(propertyName,propertyType,optional)) in elementProperties do
-        createProperty typeToModify propertyName propertyType                            
+        createProperty topType typeToModify propertyName propertyType                            
 
 
 /// Infer schema from the loaded data and generate type with properties
@@ -167,10 +167,19 @@ let jsonType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
 
                 parserType.AddMember inlinedDocumentConstructor
                 
-                createToString parserType
+                let toStringMethod =
+                    ProvidedMethod(
+                        methodName = "ToString",
+                        parameters = [],
+                        returnType = typeof<string>,
+                        InvokeCode = (fun args -> <@@ (fromZipper (%%args.[0]: JsonZipper)).ToString() @@>))
+
+                toStringMethod.AddXmlDoc "Gets the string representation"
+
+                parserType.AddMember toStringMethod
 
                 let schema = JSONInference.provideElement "Document" false [parse schema]
-                generateObj true parserType schema
+                generateObj true parserType parserType schema
 
                 let converterMethod =
                     ProvidedMethod(

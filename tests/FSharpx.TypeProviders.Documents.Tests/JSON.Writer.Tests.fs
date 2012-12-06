@@ -4,14 +4,14 @@ open NUnit.Framework
 open FSharpx
 open FsUnit
 
-//type InlinedJSON = StructuredJSONZipper<Schema="""{ "firstName": "Max","lastName": "Mustermann", "age": 26, "isCool": true, "size":42.42 }""">
+type InlinedJSON = JsonZipper<Schema="""{ "firstName": "Max","lastName": "Mustermann", "age": 26, "isCool": true, "size":42.42 }""">
+
+[<Test>]
+let ``Can set properties in inlined properties``() = 
+    let person = new InlinedJSON()
+
+    person.FirstName.Update("John")
 //
-//[<Test>]
-//let ``Can set properties in inlined properties``() = 
-//    let inlined = new InlinedJSON()
-//    let person = inlined.Root
-//
-//    person.FirstName <- "John"
 //    person.FirstName |> should equal "John"
 //
 //    person.LastName <- "Doe"
