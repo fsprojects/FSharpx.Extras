@@ -281,6 +281,9 @@ let prepareNugetTarget = TargetTemplate (fun frameworkVersion ->
             |> Seq.filter (fun f -> File.Exists f)
             |> CopyTo frameworkSubDir
 
+            !! ("/lib/FSharp/portable/*.*")
+            |> CopyTo portableSubDir
+
             [for ending in ["dll";"pdb";"xml"] do
                 yield sprintf "%sFsharpx.%s.%s" buildPortableDir package ending
                 yield sprintf "%sFsharpx.%s.DesignTime.%s" buildPortableDir package ending]
