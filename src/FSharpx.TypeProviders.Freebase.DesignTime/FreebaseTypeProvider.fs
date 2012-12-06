@@ -17,6 +17,21 @@ open FSharpx.TypeProviders.Freebase.FreebaseRequests
 open FSharpx.TypeProviders.Freebase.FreebaseReflection
 open Utilities.Caching
 
+[<AutoOpen>]
+module AssemblyResolver =
+    let handler = ResolveEventHandler(fun _ args ->
+        let simpleAssemName = args.RequestingAssembly.FullName.Split(',').[0]
+        if simpleAssemName = "FSharp.Core" then 
+            let dir = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86)
+            let (++) a b = System.IO.Path.Combine(a,b)
+            try 
+                Assembly.LoadFrom(dir ++ "Reference Assemblies" ++ "Microsoft" ++ "FSharp" ++ "3.0" ++ "Runtime" ++ ".NETPortable" ++ "FSharp.Core.dll")
+            with e -> 
+                null
+        else 
+            null)
+    AppDomain.CurrentDomain.add_AssemblyResolve(handler)
+
 #if BROWSER
 module AsyncUtilities = 
     let SwitchToDispatcher() : Async<unit> = 
