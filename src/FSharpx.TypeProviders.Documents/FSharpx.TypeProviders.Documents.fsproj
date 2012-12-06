@@ -62,6 +62,9 @@
     <Compile Include="..\FSharpx.Core\JSON.XML.Conversion.fs">
       <Link>JSON.XML.Conversion.fs</Link>
     </Compile>
+    <Compile Include="..\FSharpx.Core\JSON.Zipper.fs">
+      <Link>JSON.Zipper.fs</Link>
+    </Compile>
     <Compile Include="..\FSharpx.TypeProviders\TypeProvider.Helper.fs">
       <Link>TypeProvider.Helper.fs</Link>
     </Compile>
@@ -70,6 +73,7 @@
     <Compile Include="XmlProvider.fs" />
     <Compile Include="JsonInference.fs" />
     <Compile Include="JsonProvider.fs" />
+    <Compile Include="JsonZipperProvider.fs" />
     <Compile Include="MiniCsvProvider.fs" />
     <Compile Include="NamespaceProvider.fs" />
   </ItemGroup>

@@ -12,8 +12,43 @@ open Microsoft.FSharp.Core.CompilerServices
 open Samples.FSharp.ProvidedTypes
 open FSharpx.TypeProviders.Inference
 open System.Xml.Linq
+open FSharpx.Strings
 
 let dict = new System.Collections.Generic.Dictionary<_,_>()
+
+/// Generate property for every inferred property
+let generateProperties (ownerType:ProvidedTypeDefinition) accessExpr checkIfOptional setterExpr optionalSetterExpr elementProperties =   
+    for SimpleProperty(propertyName,propertyType,optional) in elementProperties do
+        let property =
+            if optional then
+                let newType = optionType propertyType
+                // For optional elements, we return Option value
+                let cases = Reflection.FSharpType.GetUnionCases newType
+                let some = cases |> Seq.find (fun c -> c.Name = "Some")
+                let none = cases |> Seq.find (fun c -> c.Name = "None")
+
+                let optionalAccessExpr =
+                    (fun args ->
+                        Expr.IfThenElse
+                            (checkIfOptional propertyName args,
+                            Expr.NewUnionCase(some, [accessExpr propertyName propertyType args]),
+                            Expr.NewUnionCase(none, [])))
+
+                ProvidedProperty(
+                    propertyName = niceName propertyName,
+                    propertyType = newType,
+                    GetterCode = optionalAccessExpr,
+                    SetterCode = optionalSetterExpr propertyName propertyType)
+            else
+                ProvidedProperty(
+                    propertyName = niceName propertyName,
+                    propertyType = propertyType,
+                    GetterCode = accessExpr propertyName propertyType,
+                    SetterCode = setterExpr propertyName propertyType)
+
+        property.AddXmlDoc(sprintf "Gets the %s attribute" propertyName)
+
+        ownerType.AddMember property
 
 /// Generates type for an inferred XML element
 let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elementName,multi,elementChildren,elementProperties)) =

@@ -44,6 +44,7 @@
     <Compile Include="Xml.ProjectFile.Tests.fs" />
     <Compile Include="Xml.DocumentOverride.Tests.fs" />
     <Compile Include="JSON.Reader.Tests.fs" />
+    <Compile Include="JSON.Zipper.Tests.fs" />
     <Compile Include="JSON.Writer.Tests.fs" />
     <Compile Include="JSON.WikiSample.Tests.fs" />
     <Compile Include="JSON.DocumentOverride.Tests.fs" />

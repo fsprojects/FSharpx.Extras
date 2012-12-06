@@ -8,8 +8,41 @@ open Microsoft.FSharp.Core.CompilerServices
 open Samples.FSharp.ProvidedTypes
 open FSharpx.TypeProviders.Inference
 open FSharpx.JSON
+open FSharpx.Strings
 
 let dict = new System.Collections.Generic.Dictionary<_,_>()
+
+/// Generate property for every inferred property
+let generateProperties (ownerType:ProvidedTypeDefinition) accessExpr checkIfOptional elementProperties =   
+    for SimpleProperty(propertyName,propertyType,optional) in elementProperties do
+        let property =
+            if optional then
+                let newType = optionType propertyType
+                // For optional elements, we return Option value
+                let cases = Reflection.FSharpType.GetUnionCases newType
+                let some = cases |> Seq.find (fun c -> c.Name = "Some")
+                let none = cases |> Seq.find (fun c -> c.Name = "None")
+
+                let optionalAccessExpr =
+                    (fun args ->
+                        Expr.IfThenElse
+                            (checkIfOptional propertyName args,
+                            Expr.NewUnionCase(some, [accessExpr propertyName propertyType args]),
+                            Expr.NewUnionCase(none, [])))
+
+                ProvidedProperty(
+                    propertyName = niceName propertyName,
+                    propertyType = newType,
+                    GetterCode = optionalAccessExpr)
+            else
+                ProvidedProperty(
+                    propertyName = niceName propertyName,
+                    propertyType = propertyType,
+                    GetterCode = accessExpr propertyName propertyType)
+
+        property.AddXmlDoc(sprintf "Gets the %s attribute" propertyName)
+
+        ownerType.AddMember property
 
 // Generates type for an inferred JSON document
 let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elementName,multiProperty,elementChildren,elementProperties)) =
@@ -41,55 +74,7 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
     let checkIfOptional propertyName (args: Expr list) = 
         <@@ (%%args.[0]: JsonValue).HasProperty propertyName @@>
 
-    let setterExpr propertyName propertyType (args: Expr list) = 
-        match propertyType with
-        | x when x = typeof<string> -> 
-            <@@ (%%args.[0]: JsonValue).AddStringProperty(propertyName,(%%args.[1]:string))  @@>
-        | x when x = typeof<bool> -> 
-            <@@ (%%args.[0]: JsonValue).AddBoolProperty(propertyName,(%%args.[1]:bool))  @@>
-        | x when x = typeof<int> ->
-            <@@ (%%args.[0]: JsonValue).AddDecimalProperty(propertyName,decimal (%%args.[1]:int))  @@>
-        | x when x = typeof<decimal> ->
-            <@@ (%%args.[0]: JsonValue).AddDecimalProperty(propertyName,(%%args.[1]:decimal))  @@>
-        | x when x = typeof<int64> ->
-            <@@ (%%args.[0]: JsonValue).AddDecimalProperty(propertyName,decimal (%%args.[1]:int64)) @@>
-        | x when x = typeof<float> ->
-            <@@ (%%args.[0]: JsonValue).AddDoubleProperty(propertyName,(%%args.[1]:float)) @@>
-        | x when x = typeof<DateTime> -> 
-            <@@ (%%args.[0]: JsonValue).AddDateProperty(propertyName,(%%args.[1]:DateTime))  @@>
-
-    let optionalSetterExpr propertyName propertyType (args: Expr list) =         
-        match propertyType with
-        | x when x = typeof<string> -> 
-            <@@ match (%%args.[1]:string option) with
-                | Some text -> (%%args.[0]: JsonValue).AddStringProperty(propertyName,text)
-                | None -> (%%args.[0]: JsonValue).RemoveProperty propertyName @@>
-        | x when x = typeof<bool> -> 
-            <@@ match (%%args.[1]:bool option) with
-                | Some boolean -> (%%args.[0]: JsonValue).AddBoolProperty(propertyName,boolean) 
-                | None -> (%%args.[0]: JsonValue).RemoveProperty propertyName @@>
-        | x when x = typeof<int> -> 
-            <@@ match (%%args.[1]:int option) with
-                | Some number -> (%%args.[0]: JsonValue).AddDecimalProperty(propertyName,decimal number)
-                | None -> (%%args.[0]: JsonValue).RemoveProperty propertyName @@>
-        | x when x = typeof<int64> -> 
-            <@@ match (%%args.[1]:int64 option) with
-                | Some number -> (%%args.[0]: JsonValue).AddDecimalProperty(propertyName,decimal number)
-                | None -> (%%args.[0]: JsonValue).RemoveProperty propertyName @@>
-        | x when x = typeof<float> -> 
-            <@@ match (%%args.[1]:float option) with
-                | Some number -> (%%args.[0]: JsonValue).AddDoubleProperty(propertyName,number) 
-                | None -> (%%args.[0]: JsonValue).RemoveProperty propertyName @@>
-        | x when x = typeof<decimal> -> 
-            <@@ match (%%args.[1]:decimal option) with
-                | Some number -> (%%args.[0]: JsonValue).AddDecimalProperty(propertyName,number) 
-                | None -> (%%args.[0]: JsonValue).RemoveProperty propertyName @@>
-        | x when x = typeof<DateTime> -> 
-            <@@ match (%%args.[1]:DateTime option) with
-                | Some date -> (%%args.[0]: JsonValue).AddDateProperty(propertyName,date) 
-                | None -> (%%args.[0]: JsonValue).RemoveProperty propertyName @@>
-
-    generateProperties ty accessExpr checkIfOptional setterExpr optionalSetterExpr elementProperties
+    generateProperties ty accessExpr checkIfOptional elementProperties
     
     let multiAccessExpr childName (args: Expr list) = <@@ (%%args.[0]: JsonValue).GetArrayElements childName @@>
     let singleAccessExpr childName (args: Expr list) = <@@ (%%args.[0]: JsonValue).GetProperty childName @@>
