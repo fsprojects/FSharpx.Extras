@@ -61,3 +61,10 @@ let ``Can access toString in a nested JSON``() =
     original.B.ToString() |> should equal """{"a":"b","b":{"c":{"d":"down here"}}}"""
     original.B.C.ToString() |> should equal """{"a":"b","b":{"c":{"d":"down here"}}}"""
     original.ToString() |> should equal """{"a":"b","b":{"c":{"d":"down here"}}}"""
+
+
+[<Test>]
+let ``Can access up in a nested JSON``() = 
+    let original = new DoubleNested()
+    original.B.Up().ToString() |> should equal """{"a":"b","b":{"c":{"d":"down here"}}}"""
+    original.B.Up().B.C.Up().C.ToString() |> should equal """{"a":"b","b":{"c":{"d":"down here"}}}"""

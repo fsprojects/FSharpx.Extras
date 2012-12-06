@@ -40,7 +40,6 @@ let createToString (newType:ProvidedTypeDefinition) =
 
     newType.AddMember toStringMethod
 
-
 let createProperty parentType name propertyType = 
     let newType = generateType parentType name
 
@@ -53,6 +52,17 @@ let createProperty parentType name propertyType =
     property.AddXmlDoc (sprintf "Gets the property named \"%s\"" name)
 
     createToString newType
+    
+    let upF =
+        ProvidedMethod(
+            methodName = "Up",
+            parameters = [],
+            returnType = parentType,
+            InvokeCode = (fun args -> <@@ (%%args.[0]: JsonZipper)  @@>))
+
+    upF.AddXmlDoc "Moves the zipper one level up"
+
+    newType.AddMember upF
                     
     let updateF =
         ProvidedMethod(
@@ -66,18 +76,7 @@ let createProperty parentType name propertyType =
 
     updateF.AddXmlDoc (sprintf "Updates the value of the property named \"%s\"" name)
 
-    newType.AddMember updateF
-
-    let upF =
-        ProvidedMethod(
-            methodName = "Up",
-            parameters = [],
-            returnType = parentType,
-            InvokeCode = (fun args -> <@@ (%%args.[0]: JsonZipper)  @@>))
-
-    upF.AddXmlDoc "Moves the zipper one level up"
-
-    newType.AddMember upF
+    newType.AddMember updateF    
 
     parentType.AddMember property
 
@@ -97,6 +96,17 @@ let rec generateObj mainLevel parentType (CompoundProperty(elementName,multi,ele
         parentType.AddMember property
 
         createToString newType
+
+        let upF =
+            ProvidedMethod(
+                methodName = "Up",
+                parameters = [],
+                returnType = parentType,
+                InvokeCode = (fun args -> <@@ (%%args.[0]: JsonZipper) |> up  @@>))
+
+        upF.AddXmlDoc "Moves the zipper one level up"
+
+        newType.AddMember upF
 
         newType
 
