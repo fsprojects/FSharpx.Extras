@@ -20,9 +20,7 @@ open Utilities.Caching
 [<AutoOpen>]
 module AssemblyResolver =
     let handler = ResolveEventHandler(fun _ args ->
-        let simpleAssemName = args.RequestingAssembly.FullName.Split(',').[0]
-
-        if simpleAssemName = "FSharp.Core" && AssemblyName(args.Name).Version.ToString() = "2.3.5.0" then 
+        if args.Name = "FSharp.Core" && AssemblyName(args.Name).Version.ToString() = "2.3.5.0" then 
             let dir = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86)
             let (++) a b = System.IO.Path.Combine(a,b)
             try 
