@@ -72,6 +72,10 @@ let createProperty parentType name propertyType =
             InvokeCode =
                 (match propertyType with
                     | x when x = typeof<int> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.NumDecimal (decimal (%%args.[1]: int))) @@>
+                    | x when x = typeof<int64> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.NumDecimal (decimal (%%args.[1]: int64))) @@>
+                    | x when x = typeof<decimal> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.NumDecimal (%%args.[1]: decimal)) @@>
+                    | x when x = typeof<float> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.NumDouble (%%args.[1]: float)) @@>
+                    | x when x = typeof<bool> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.Bool (%%args.[1]: bool)) @@>
                     | x when x = typeof<string> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.String (%%args.[1]: string)) @@>))
 
     updateF.AddXmlDoc (sprintf "Updates the value of the property named \"%s\"" name)
