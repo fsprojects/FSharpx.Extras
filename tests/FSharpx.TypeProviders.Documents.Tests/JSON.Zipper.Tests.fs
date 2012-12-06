@@ -35,3 +35,29 @@ let ``Can update two properties in a simple JSON``() =
     let updated = original.B.Update(2).Up().A.Update("blub")
     updated.ToString() |> should equal """{"a":"blub","b":2}"""
     original.ToString() |> should equal """{"a":"b","b":1}"""
+    
+type Nested = JsonZipper<Schema="""{ "a": "b", "b": { "c": "text" }}""">
+
+[<Test>]
+let ``Can update a property in a nested JSON``() = 
+    let original = new Nested()
+    let updated = original.B.C.Update("blub")
+    updated.ToString() |> should equal """{"a":"b","b":{"c":"blub"}}"""
+    original.ToString() |> should equal """{"a":"b","b":{"c":"text"}}"""
+
+type DoubleNested = JsonZipper<Schema="""{ "a": "b", "b": { "c": { "d" : "down here" } }}""">
+
+[<Test>]
+let ``Can update a property in a deeply nested JSON``() = 
+    let original = new DoubleNested()
+    let updated = original.B.C.D.Update("blub")
+    updated.ToString() |> should equal """{"a":"b","b":{"c":{"d":"blub"}}}"""
+    original.ToString() |> should equal """{"a":"b","b":{"c":{"d":"down here"}}}"""
+
+
+[<Test>]
+let ``Can access toString in a nested JSON``() = 
+    let original = new DoubleNested()
+    original.B.ToString() |> should equal """{"a":"b","b":{"c":{"d":"down here"}}}"""
+    original.B.C.ToString() |> should equal """{"a":"b","b":{"c":{"d":"down here"}}}"""
+    original.ToString() |> should equal """{"a":"b","b":{"c":{"d":"down here"}}}"""

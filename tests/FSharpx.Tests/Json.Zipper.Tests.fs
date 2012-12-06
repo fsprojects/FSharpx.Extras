@@ -152,6 +152,17 @@ let ``Can create a new object in a nested document``() =
     |> serialize 
     |> should equal "[{\"id\":\"Open\"},{\"id\":\"Tataa\"},{\"id\":\"Pause\"}]"
 
+
+[<Test>]
+let ``Can create update a text in a nested document``() = 
+    parse "{\"a\":{\"id\": \"Open\"}}"
+    |> toZipper 
+    |> down
+    |> update (JsonValue.String "Tataa")
+    |> fromZipper
+    |> serialize 
+    |> should equal "{\"a\":{\"id\":\"Tataa\"}}"
+
 [<Test>]
 let ``Can create a new property in a simple document``() = 
     parse "{\"id\": \"Open\"}"
