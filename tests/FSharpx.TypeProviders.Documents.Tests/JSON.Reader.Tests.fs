@@ -4,140 +4,140 @@ open NUnit.Framework
 open FSharpx
 open FsUnit
 
-type InlinedJSON = StructuredJSON<Schema="""{ "firstName": "Max","lastName": "Mustermann","age": 26,"isCool": true }""">
+type InlinedJSON = JsonZipper<Schema="""{ "firstName": "Max","lastName": "Mustermann","age": 26,"isCool": true }""">
 
 [<Test>]
 let ``Can parse inlined properties``() = 
-    let inlined = InlinedJSON().Root
-    inlined.FirstName
+    let inlined = InlinedJSON()
+    inlined.FirstName.GetValue()
     |> should equal "Max"
 
-    inlined.LastName
+    inlined.LastName.GetValue()
     |> should equal "Mustermann"
 
-    inlined.Age
+    inlined.Age.GetValue()
     |> should equal 26
 
-    inlined.IsCool
+    inlined.IsCool.GetValue()
     |> should equal true
 
 [<Test>]
 let ``Can parse inlined properties but read from file``() = 
-    let inlined = InlinedJSON(filename="Simple.json").Root
-    inlined.FirstName
+    let inlined = InlinedJSON(filename="Simple.json")
+    inlined.FirstName.GetValue()
     |> should equal "John"
 
-    inlined.LastName
+    inlined.LastName.GetValue()
     |> should equal "Doe"
 
-    inlined.Age
+    inlined.Age.GetValue()
     |> should equal 25
 
-    inlined.IsCool
+    inlined.IsCool.GetValue()
     |> should equal true
 
 
-type SimpleJSON = StructuredJSON<"Simple.json">
+type SimpleJSON = JsonZipper<"Simple.json">
 
-let simple = SimpleJSON().Root
+let simple = SimpleJSON()
 
 [<Test>]
 let ``Can parse properties``() = 
-    simple.FirstName
+    simple.FirstName.GetValue()
     |> should equal "John"
 
-    simple.LastName
+    simple.LastName.GetValue()
     |> should equal "Doe"
 
-    simple.Age
+    simple.Age.GetValue()
     |> should equal 25
 
-    simple.IsCool
+    simple.IsCool.GetValue()
     |> should equal true
 
-type NestedJSON = StructuredJSON<"Nested.json">
+type NestedJSON = JsonZipper<"Nested.json">
 
-let nested = NestedJSON().Root
+let nested = NestedJSON()
 
 [<Test>]
 let ``Can parse nested properties``() = 
-    nested.Main.FirstName
+    nested.Main.FirstName.GetValue()
     |> should equal "John"
 
-    nested.Main.LastName
+    nested.Main.LastName.GetValue()
     |> should equal "Doe"
 
-    nested.Main.Age
+    nested.Main.Age.GetValue()
     |> should equal 25
 
-    nested.Main.IsCool
+    nested.Main.IsCool.GetValue()
     |> should equal true
 
-type DoubleNestedJSON = StructuredJSON<"DoubleNested.json">
+type DoubleNestedJSON = JsonZipper<"DoubleNested.json">
 
-let doubleNested = DoubleNestedJSON().Root
+let doubleNested = DoubleNestedJSON()
 
 [<Test>]
 let ``Can parse double nested properties``() = 
-    doubleNested.Main.Title
+    doubleNested.Main.Title.GetValue()
     |> should equal "example"
 
-    doubleNested.Main.Nested.NestedTitle
+    doubleNested.Main.Nested.NestedTitle.GetValue()
     |> should equal "sub"
 
-type SimpleArrayJSON = StructuredJSON<"SimpleArray.json">
+type SimpleArrayJSON = JsonZipper<"SimpleArray.json">
 
-let simpleArray = SimpleArrayJSON().Root
+let simpleArray = SimpleArrayJSON()
 
 [<Test>]
 let ``Can parse simple arrays``() = 
-    let items = simpleArray.GetItems() |> Seq.toList
-    items.[0].Id
+    let items = simpleArray.Items
+    items.GetElement(0).Id.GetValue()
     |> should equal "Open"
 
-    items.[1].Id
+    items.GetElement(1).Id.GetValue()
     |> should equal "Pause"
 
-type OptionalValuesInJSON = StructuredJSON<"OptionValues.json">
+type OptionalValuesInJSON = JsonZipper<"OptionValues.json">
 
-let optionalValuesInJSON = OptionalValuesInJSON().Root
+let optionalValuesInJSON = OptionalValuesInJSON()
 
 [<Test>]
 let ``Can parse optional values in arrays``() = 
-    let authors = optionalValuesInJSON.GetAuthors() |> Seq.toList
-    authors.[0].Name
+    let authors = optionalValuesInJSON.Authors
+    authors.GetElement(0).Name.GetValue()
     |> should equal "Steffen"
 
-    authors.[0].Age
+    authors.GetElement(0).Age.GetValue()
     |> should equal (Some 29)
 
-    authors.[1].Name
+    authors.GetElement(1).Name.GetValue()
     |> should equal "Tomas"
 
-    authors.[1].Age
+    authors.GetElement(1).Age.GetValue()
     |> should equal None
 
 [<Test>]
 let ``Can compare typed JSON documents``() = 
-    let simple1 = SimpleJSON().Root
-    let simple2 = SimpleJSON().Root
-    let nested = NestedJSON().Root
+    let simple1 = SimpleJSON()
+    let simple2 = SimpleJSON()
+    let nested = NestedJSON()
 
     Assert.AreEqual(simple1,simple2)
     Assert.AreNotEqual(nested,simple2)
 
-type JsonArray = StructuredJSON<Schema="""["Adam","Eve","Bonnie","Clyde","Donald","Daisy","Han","Leia"]""">
+type JsonArray = JsonZipper<Schema="""["Adam","Eve","Bonnie","Clyde","Donald","Daisy","Han","Leia"]""">
 
 [<Test>]
 let ``Can parse simple array``() = 
-    let inlined = JsonArray().Root    
+    let inlined = JsonArray() 
     inlined.ToString()
       |> should equal """["Adam","Eve","Bonnie","Clyde","Donald","Daisy","Han","Leia"]"""
 
-type MultipleJsonArray = StructuredJSON<Schema="""[["Adam","Eve"],["Bonnie","Clyde"],["Donald","Daisy"],["Han","Leia"]]""">
+type MultipleJsonArray = JsonZipper<Schema="""[["Adam","Eve"],["Bonnie","Clyde"],["Donald","Daisy"],["Han","Leia"]]""">
 
 [<Test>]
 let ``Can parse multidimensional arrays``() = 
-    let inlined = MultipleJsonArray().Root
+    let inlined = MultipleJsonArray()
     inlined.ToString()
       |> should equal """[["Adam","Eve"],["Bonnie","Clyde"],["Donald","Daisy"],["Han","Leia"]]"""

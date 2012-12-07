@@ -11,7 +11,6 @@ type public DocumentProvider(cfg:TypeProviderConfig) as this =
     do this.AddNamespace(
         rootNamespace, 
         [XmlTypeProvider.xmlType this cfg
-         JsonTypeProvider.jsonType this cfg
          JsonZipperTypeProvider.jsonType this cfg
          MiniCsvProvider.csvType this cfg])
 

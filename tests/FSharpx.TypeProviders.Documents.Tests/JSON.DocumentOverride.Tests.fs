@@ -6,7 +6,7 @@ open System.Xml
 open FsUnit
 
 type WikiSample =
-    StructuredJSON<Schema=
+    JsonZipper<Schema=
         """{  
                  "firstName": "John",
                  "lastName" : "Smith",
@@ -27,29 +27,29 @@ let newJson2 =
             "age"      : 24
     }"""
 
-let document = WikiSample(documentContent=newJson).Root
-let document2 = WikiSample(documentContent=newJson2).Root
+let document = WikiSample(documentContent=newJson)
+let document2 = WikiSample(documentContent=newJson2)
 
 [<Test>]
 let ``Jane should have first name of Jane``() = 
-    document.FirstName |> should equal "Jane"
+    document.FirstName.GetValue() |> should equal "Jane"
 
 [<Test>]
 let ``Jane should have a last name of Doe``() = 
-    document.LastName |> should equal "Doe"
+    document.LastName.GetValue() |> should equal "Doe"
 
 [<Test>]
 let ``Jane should have an age of 23``() = 
-    document.Age |> should equal 23
+    document.Age.GetValue() |> should equal 23
 
 [<Test>]
 let ``Jim should have a first name of Jim``() = 
-    document2.FirstName |> should equal "Jim"
+    document2.FirstName.GetValue() |> should equal "Jim"
 
 [<Test>]
 let ``Jim should have a last name of Smith``() = 
-    document2.LastName |> should equal "Smith"
+    document2.LastName.GetValue() |> should equal "Smith"
 
 [<Test>]
 let ``Jim should have an age of 24``() = 
-    document2.Age |> should equal 24
+    document2.Age.GetValue() |> should equal 24

@@ -72,7 +72,6 @@
     <Compile Include="XmlInference.fs" />
     <Compile Include="XmlProvider.fs" />
     <Compile Include="JsonInference.fs" />
-    <Compile Include="JsonProvider.fs" />
     <Compile Include="JsonZipperProvider.fs" />
     <Compile Include="MiniCsvProvider.fs" />
     <Compile Include="NamespaceProvider.fs" />

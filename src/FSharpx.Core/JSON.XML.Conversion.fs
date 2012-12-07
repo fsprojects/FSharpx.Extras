@@ -31,8 +31,8 @@ module Conversion =
         member this.ToJson() = fromXml this
 
     type JsonValue with
-        member this.GetDate propertyName =
-            match this.GetValWithKey propertyName with
+        member this.GetDate() =
+            match this with
             | JsonValue.String text -> 
                 match text with
                 | FSharpx.Strings.JsonDate d -> d

@@ -59,6 +59,7 @@ let createSimpleType topType parentType name propertyType =
                 | x when x = typeof<decimal> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.NumDecimal (%%args.[1]: decimal)) @@>
                 | x when x = typeof<float> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.NumDouble (%%args.[1]: float))  @@>
                 | x when x = typeof<bool> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.Bool (%%args.[1]: bool))  @@>
+                | x when x = typeof<DateTime> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.String((%%args.[1]: DateTime).ToString()))  @@>
                 | x when x = typeof<string> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.String (%%args.[1]: string)) @@>)
 
     updateF.AddXmlDoc (sprintf "Updates the value of the property named \"%s\"." name)
@@ -77,6 +78,7 @@ let createSimpleType topType parentType name propertyType =
                 | x when x = typeof<decimal> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetDecimal() @@>
                 | x when x = typeof<float> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetDouble() @@>
                 | x when x = typeof<bool> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetBoolean() @@>
+                | x when x = typeof<DateTime> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetDate() @@>
                 | x when x = typeof<string> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetText() @@>)
 
     getValueF.AddXmlDoc (sprintf "Gets the value of the property named \"%s\"." name)
@@ -98,19 +100,25 @@ let createProperty topType parentType name propertyType =
     parentType.AddMember property
 
 let rec generateObj mainLevel topType (parentType:ProvidedTypeDefinition) (CompoundProperty(elementName,multi,elementChildren,elementProperties))  =
-    if multi then 
-        let arrayElementType = createSimpleType topType parentType (elementName + "Element") typeof<int>
+    if multi then         
+        let newType = generateType parentType elementName
+        let arrayElementType = generateType newType (elementName + "Element")
+        
+        for (SimpleProperty(propertyName,propertyType,optional)) in elementProperties do
+            createProperty topType arrayElementType propertyName propertyType   
+             
+        for children in elementChildren do
+            generateObj false topType arrayElementType children
 
         let getValueF =
             ProvidedMethod(
                 methodName =  "GetElement",
                 parameters = [ProvidedParameter("index",typeof<int>)],
                 returnType = arrayElementType,
-                InvokeCode = fun args -> <@@ (%%args.[0]: JsonZipper) |> moveRight (%%args.[1]:int) @@>)
+                InvokeCode = fun args -> <@@ (%%args.[0]: JsonZipper) |> down |> moveRight (%%args.[1]:int)|> down @@>)
 
         getValueF.AddXmlDoc "Gets the element at the specified position." 
 
-        let newType = generateType parentType elementName
         newType.HideObjectMethods <- true
 
         newType.AddMember getValueF
@@ -123,7 +131,6 @@ let rec generateObj mainLevel topType (parentType:ProvidedTypeDefinition) (Compo
 
         property.AddXmlDoc (sprintf "Gets the property named \"%s\"" elementName)
         parentType.AddMember property
-
     else
         let typeToModify =
             if mainLevel then parentType else

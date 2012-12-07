@@ -138,7 +138,7 @@ let ``Can detect MS date``() =
 [<Test>]
 let ``Can parse completely invalid, but close, date as string``() =
     let j = parse "{\"anniversary\": \"2010-02-18T16.5:23.35:4\"}"
-    j.GetText "anniversary" |> should equal "2010-02-18T16.5:23.35:4"
+    (j.GetValWithKey "anniversary").GetText() |> should equal "2010-02-18T16.5:23.35:4"
 
 open System.Globalization
 open System.Threading

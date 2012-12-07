@@ -5,7 +5,7 @@ open FSharpx
 open FsUnit
 
 //type WikiSample =
-//    StructuredJSONZipper<Schema=
+//    JsonZipperZipper<Schema=
 //        """{  
 //                 "firstName": "John",
 //                 "lastName" : "Smith",

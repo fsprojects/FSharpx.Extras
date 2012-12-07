@@ -108,8 +108,8 @@ type internal FreebaseDataConnection (fb:FreebaseQueries, fbSchema: FreebaseSche
          |> String.concat ""
 
     member __.GetInitialDataForObjects (query, explicitLimit) =
-        seq { for obj in fb.QuerySequence<Map<string,JsonValue> >(query, dictionaryFromJson, explicitLimit) do
-                yield FreebasePropertyBag(obj) } 
+        seq { for obj in fb.QuerySequence<list<string*JsonValue> >(query, dictionaryFromJson, explicitLimit) do
+                yield FreebasePropertyBag(dict obj) } 
 
     /// Get property bags for all the objects of the given type, at the given type
     member fbDataConn.GetInitialDataForObjectsFromQueryText(queryConstraints:(string * string) list, typeId:string, objectLimit) =
@@ -229,9 +229,9 @@ type public FreebaseObject internal (fb:FreebaseDataConnection, objProps:Freebas
         let extractPrimValue v = 
             match v with 
             // Some constraints cause Freebase primitives to be extracted to { 'value' : 3 }
-            | JsonValue.Obj(map) -> 
-                match Map.toArray map with
-                | [|("value", v )|] -> convJsonPrimValue v
+            | JsonValue.Obj(props) -> 
+                match props with
+                | [("value", v )] -> convJsonPrimValue v
                 | _ -> convJsonPrimValue v
             | v -> convJsonPrimValue v
         
