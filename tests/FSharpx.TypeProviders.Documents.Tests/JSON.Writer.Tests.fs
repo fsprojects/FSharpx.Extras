@@ -32,9 +32,9 @@ let ``Can set properties in inlined JSON``() =
 
     updated.ToString() |> should equal """{"firstName":"John","lastName":"Doe","age":30,"isCool":false,"size":43.43}"""
 
-//
-//type AuthorsJSON = JsonZipper<Schema="""{ "authors": [{ "name": "Steffen" }, { "name": "Tomas", "age": 29, "isCool": true, "size":42.42 }]}""">
-//
+
+type AuthorsJSON = JsonZipper<Schema="""{ "authors": [{ "name": "Steffen" }, { "name": "Tomas", "age": 29, "isCool": true, "size":42.42 }]}""">
+
 //[<Test>]
 //let ``Can set optional properties in inlined JSON``() = 
 //    let inlined = new AuthorsJSON()
@@ -74,18 +74,18 @@ let ``Can set properties in inlined JSON``() =
 //    authors.[0].Name |> should equal "Steffen"
 //    authors.[1].Name |> should equal "Tomas"
 //    authors.[2].Name |> should equal "John"
-//
-//[<Test>]
-//let ``Can serialize the json``() =
-//    let inlined = new AuthorsJSON()
-//    let json = inlined.ToString()
-//    json |> should equal """{"authors":[{"name":"Steffen"},{"age":29,"isCool":true,"name":"Tomas","size":42.42}]}"""
-//
-//open System.Xml.Linq
-//
-//[<Test>]
-//let ``Can convert the json to xml``() =
-//    let inlined = new AuthorsJSON()
-//    let xml = inlined.ToXml() |> Seq.head 
-//    let expectedXml = XDocument.Parse("<authors><item name=\"Steffen\" /><item size=\"42.42\" isCool=\"true\" age=\"29\" name=\"Tomas\" /></authors>")
-//    xml.ToString() |> should equal (expectedXml.ToString())
+
+[<Test>]
+let ``Can serialize the json``() =
+    let inlined = new AuthorsJSON()
+    let json = inlined.ToString()
+    json |> should equal """{"authors":[{"name":"Steffen"},{"name":"Tomas","age":29,"isCool":true,"size":42.42}]}"""
+
+open System.Xml.Linq
+
+[<Test>]
+let ``Can convert the json to xml``() =
+    let inlined = new AuthorsJSON()
+    let xml = inlined.ToXml() |> Seq.head 
+    let expectedXml = XDocument.Parse("<authors><item name=\"Steffen\" /><item name=\"Tomas\" age=\"29\" isCool=\"true\" size=\"42.42\" /></authors>")
+    xml.ToString() |> should equal (expectedXml.ToString())
