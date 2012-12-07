@@ -99,18 +99,31 @@ let createProperty topType parentType name propertyType =
 
 let rec generateObj mainLevel topType (parentType:ProvidedTypeDefinition) (CompoundProperty(elementName,multi,elementChildren,elementProperties))  =
     if multi then 
+        let arrayElementType = createSimpleType topType parentType (elementName + "Element") typeof<int>
 
-        let newType = createSimpleType topType parentType elementName typeof<int>
         let getValueF =
             ProvidedMethod(
-                methodName = "GetElement",
+                methodName =  "GetElement",
                 parameters = [ProvidedParameter("index",typeof<int>)],
-                returnType = newType,
-                InvokeCode = fun args -> <@@ (%%args.[0]: JsonZipper) |> down |> moveRight (%%args.[1]:int) @@>)
+                returnType = arrayElementType,
+                InvokeCode = fun args -> <@@ (%%args.[0]: JsonZipper) |> moveRight (%%args.[1]:int) @@>)
 
         getValueF.AddXmlDoc "Gets the element at the specified position." 
 
-        parentType.AddMember getValueF
+        let newType = generateType parentType elementName
+        newType.HideObjectMethods <- true
+
+        newType.AddMember getValueF
+        
+        let property =
+            ProvidedProperty(
+                propertyName = niceName elementName,
+                propertyType = newType,
+                GetterCode = (fun args -> <@@ (%%args.[0]: JsonZipper) |> toProperty elementName @@>))
+
+        property.AddXmlDoc (sprintf "Gets the property named \"%s\"" elementName)
+        parentType.AddMember property
+
     else
         let typeToModify =
             if mainLevel then parentType else
