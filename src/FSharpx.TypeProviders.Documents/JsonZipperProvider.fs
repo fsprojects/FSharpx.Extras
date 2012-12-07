@@ -125,20 +125,31 @@ let createProperty topType parentType isOptional name propertyType =
 
 let createArrayProperty topType (parentType:ProvidedTypeDefinition) (CompoundProperty(elementName,multi,elementChildren,elementProperties)) =
     let newType = generateType parentType elementName
+    newType.HideObjectMethods <- true
+
     let arrayElementType = generateType newType (elementName + "Element")
         
-    let getValueF =
+    let getElementF =
         ProvidedMethod(
             methodName =  "GetElement",
             parameters = [ProvidedParameter("index",typeof<int>)],
             returnType = arrayElementType,
             InvokeCode = fun args -> <@@ (%%args.[0]: JsonZipper) |> down |> moveRight (%%args.[1]:int)|> down @@>)
 
-    getValueF.AddXmlDoc "Gets the element at the specified position." 
+    getElementF.AddXmlDoc "Gets the element at the specified position."  
 
-    newType.HideObjectMethods <- true
+    newType.AddMember getElementF
 
-    newType.AddMember getValueF
+    let getCountF =
+        ProvidedMethod(
+            methodName =  "GetCount",
+            parameters = [],
+            returnType = typeof<int>,
+            InvokeCode = fun args -> <@@ (%%args.[0]: JsonZipper) |> countSubElements @@>)
+
+    getCountF.AddXmlDoc "Gets the element count"  
+
+    newType.AddMember getCountF
         
     let property =
         ProvidedProperty(

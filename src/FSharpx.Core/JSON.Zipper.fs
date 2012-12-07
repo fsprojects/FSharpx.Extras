@@ -12,6 +12,7 @@ let inline focus zipper =
     match zipper with
     | ListZipper(Some f,_,_,_) -> f
     | MapZipper(Some (n,f),_,_,_) -> f
+    | _ -> failwith "The document contains no value at the current position"
 
 /// Checks if the the zipper is focused on a value
 let inline isFocused zipper = 
@@ -99,6 +100,13 @@ let down zipper =
     | JsonValue.Obj (x::xs) -> MapZipper(Some x,Some zipper,[],xs)
     | JsonValue.Array [] -> ListZipper(None,Some zipper,[],[])
     | JsonValue.Array (x::xs) -> ListZipper(Some x,Some zipper,[],xs)    
+
+/// Retrieves the element count
+let countSubElements zipper =
+    if isFocused zipper |> not then 0 else
+    match down zipper with
+    | ListZipper(Some f,p,ls,rs) -> List.length ls + List.length rs + 1
+    | ListZipper(None,p,ls,rs) -> List.length ls + List.length rs
 
 /// Moves the zipper to the property with the given name on the same level
 let toProperty name zipper =
