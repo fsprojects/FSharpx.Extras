@@ -7,7 +7,7 @@ open FsUnit
 type InlinedJSON = JsonZipper<Schema="""{ "firstName": "Max","lastName": "Mustermann", "age": 26, "isCool": true, "size":42.42 }""">
 
 [<Test>]
-let ``Can set properties in inlined properties``() = 
+let ``Can set properties in inlined JSON``() = 
     let person = new InlinedJSON()
 
     person
@@ -20,13 +20,13 @@ let ``Can set properties in inlined properties``() =
      |> should equal """{"firstName":"John","lastName":"Doe","age":30,"isCool":false,"size":43.43}"""
 
 //
-//type AuthorsJSON = StructuredJSONZipper<Schema="""{ "authors": [{ "name": "Steffen" }, { "name": "Tomas", "age": 29, "isCool": true, "size":42.42 }]}""">
+//type AuthorsJSON = JsonZipper<Schema="""{ "authors": [{ "name": "Steffen" }, { "name": "Tomas", "age": 29, "isCool": true, "size":42.42 }]}""">
 //
 //[<Test>]
 //let ``Can set optional properties in inlined JSON``() = 
 //    let inlined = new AuthorsJSON()
 //
-//    let author = inlined.Root.GetAuthors() |> Seq.head
+//    let author = inlined.GetAuthors() |> Seq.head
 //
 //    author.Age <- None
 //    author.Age |> should equal None
@@ -45,7 +45,7 @@ let ``Can set properties in inlined properties``() =
 //
 //    author.Size <- Some (decimal 42.45)
 //    author.Size |> should equal (Some (decimal 42.45))
-//
+
 //[<Test>]
 //let ``Can add author in inlined JSON``() = 
 //    let inlined = new AuthorsJSON()

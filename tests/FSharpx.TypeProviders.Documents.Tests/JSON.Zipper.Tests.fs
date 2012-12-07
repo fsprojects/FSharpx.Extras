@@ -12,6 +12,12 @@ let ``Can create a zipper from inlined JSON``() =
     original.ToString() |> should equal """{"a":"b"}"""
 
 [<Test>]
+let ``Can read a text property in a simple JSON``() = 
+    let original = new Simple()
+    original.A.GetValue() |> should equal "c"
+    original.ToString() |> should equal """{"a":"b"}"""
+
+[<Test>]
 let ``Can update a text property in a simple JSON without changing the original``() = 
     let original = new Simple()
     let updated = original.A.Update("c")
