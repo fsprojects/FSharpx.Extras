@@ -13,6 +13,13 @@ let inline focus zipper =
     | ListZipper(Some f,_,_,_) -> f
     | MapZipper(Some (n,f),_,_,_) -> f
 
+/// Checks if the the zipper is focused on a value
+let inline isFocused zipper = 
+    match zipper with
+    | ListZipper(Some _,_,_,_) -> true
+    | MapZipper(Some _,_,_,_) -> true
+    | _ -> false
+
 /// Creates a Json zipper with the given parent
 let toZipperWithParent parent jsonValue =  
     match jsonValue with
