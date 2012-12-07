@@ -10,21 +10,15 @@ type InlinedJSON = JsonZipper<Schema="""{ "firstName": "Max","lastName": "Muster
 let ``Can set properties in inlined properties``() = 
     let person = new InlinedJSON()
 
-    person.FirstName.Update("John")
-//
-//    person.FirstName |> should equal "John"
-//
-//    person.LastName <- "Doe"
-//    person.LastName |> should equal "Doe"
-//
-//    person.Age <- 30
-//    person.Age |> should equal 30
-//
-//    person.IsCool <- false
-//    person.IsCool |> should equal false
-//
-//    person.Size <- (decimal 43.43)
-//    person.Size |> should equal (decimal 43.43)
+    person
+     .FirstName.Update("John").Up()
+     .LastName.Update("Doe").Up()
+     .Age.Update(30).Up()
+     .IsCool.Update(false).Up()
+     .Size.Update(decimal 43.43).Up()
+     .ToString()
+     |> should equal """{"firstName":"John","lastName":"Doe","age":30,"isCool":false,"size":43.43}"""
+
 //
 //type AuthorsJSON = StructuredJSONZipper<Schema="""{ "authors": [{ "name": "Steffen" }, { "name": "Tomas", "age": 29, "isCool": true, "size":42.42 }]}""">
 //
