@@ -46,7 +46,6 @@
     <Compile Include="QueueGen.fs" />
     <Compile Include="HeapGen.fs" />
     <Compile Include="DListTest.fs" />
-    <Compile Include="TransientVectorTest.fs" />
     <Compile Include="PersistentVectorTest.fs" />
     <Compile Include="RingBufferTest.fs" />
     <Compile Include="TimeSeriesTest.fs" />

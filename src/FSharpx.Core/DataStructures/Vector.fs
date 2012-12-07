@@ -6,15 +6,15 @@ open System.Threading
 
 
 [<Literal>]
-let blockSizeShift = 5 // TODO: what can we do in 64Bit case?
+let internal blockSizeShift = 5 // TODO: what can we do in 64Bit case?
 
 [<Literal>]
-let blockSize = 32
+let internal blockSize = 32
 
 [<Literal>]
-let blockIndexMask = 0x01f
+let internal blockIndexMask = 0x01f
 
-type Node(thread,array:obj[]) =
+type internal Node(thread,array:obj[]) =
     let thread = thread
     new() = Node(ref null,Array.create blockSize null)
     with
@@ -23,7 +23,7 @@ type Node(thread,array:obj[]) =
         member this.Thread = thread
         member this.SetThread t = thread := t
 
-type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
+type internal TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
     let mutable count = count
     let mutable root = root
     let mutable tail = tail
@@ -235,7 +235,7 @@ type TransientVector<'a> (count,shift:int,root:Node,tail:obj[]) =
                 elif i = count then this.conj x :> IVector<'a>
                 else raise Exceptions.OutOfBounds
 
-and PersistentVector<[<EqualityConditionalOn>]'a> (count,shift:int,root:Node,tail:obj[])  =
+and internal PersistentVector<[<EqualityConditionalOn>]'a> (count,shift:int,root:Node,tail:obj[])  =
     let hashCode = ref None
     let tailOff = 
         if count < blockSize then 0 else
@@ -438,15 +438,15 @@ let inline pop (vector:'a vector) = vector.Pop()
 /// Returns a new vector that contains the given value at the index. Note - index must be <= vector.Count.
 let inline assocN i (x:'a) (vector:'a vector) : 'a vector = vector.AssocN(i,x)
 
-let inline ofSeq (items:'a seq) = PersistentVector.ofSeq items :> 'a vector
+let ofSeq (items:'a seq) = PersistentVector.ofSeq items :> 'a vector
  
-let inline map (f:'a -> 'b) (vector:'a vector) : 'b vector = 
+let map (f:'a -> 'b) (vector:'a vector) : 'b vector = 
     let mutable ret = TransientVector()
     for item in vector do
         ret <- ret.conj(f item)
     ret.persistent() :> 'b vector
 
-let inline init count (f: int -> 'a) : 'a vector =
+let init count (f: int -> 'a) : 'a vector =
     let mutable ret = TransientVector()
     for i in 0..(count-1) do
         ret <- ret.conj(f i)

@@ -138,27 +138,6 @@ let ``vector with 3 elements can be compared``() =
     vector1 = vector3 |> should equal false
 
 [<Test>]
-let ``vectors which where created by TransientVector can be compared``() =
-    let vector1 = TransientVector()
-    for i in 0..10000 do
-        vector1.conj i |> ignore
-    let vector1 = vector1.persistent()
-
-    let vector2 = TransientVector()
-    for i in 0..10000 do
-        vector2.conj i |> ignore
-    let vector2 = vector2.persistent()
-
-    let vector3 = TransientVector()
-    for i in 0..10000 do
-        vector3.conj (10000 - i) |> ignore
-    let vector3 = vector3.persistent()
-
-    vector1 = vector1 |> should equal true
-    vector1 = vector2 |> should equal true
-    vector1 = vector3 |> should equal false
-
-[<Test>]
 let ``vector should allow map``() =
     let vector = ref empty
     for i in 1..30000 do
