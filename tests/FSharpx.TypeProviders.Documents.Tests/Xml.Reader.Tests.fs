@@ -35,3 +35,12 @@ let ``Can get Descartes books in philosophy.xml``() =
     let books = authors.[0].GetBooks() |> Seq.toList
     books.[0].Title |> should equal "Tractatus Logico-Philosophicus"
     books.[1].Title |> should equal "Philosophical Investigations"
+
+    
+let topicDocument = new StructuredXml<Schema="""<topics><topic><title>My Topic Title</title></topic><topic><title>Another Topic Title</title></topic></topics>""">()
+
+[<Test>]
+let ``Can get a title of the first topic``() = 
+    let topics = topicDocument.Root.GetTopics() |> Seq.toList
+    (topics.[0].GetTitles() |> Seq.head).Element.Value |> should equal "My Topic Title"
+    (topics.[1].GetTitles() |> Seq.head).Element.Value |> should equal "Another Topic Title"
