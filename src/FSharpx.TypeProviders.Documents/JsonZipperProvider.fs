@@ -53,32 +53,21 @@ let createProperty topType parentType name propertyType =
 
     createTopF topType newType
     
-    let upF =
-        ProvidedMethod(
-            methodName = "Up",
-            parameters = [],
-            returnType = parentType,
-            InvokeCode = (fun args -> <@@ (%%args.[0]: JsonZipper)  @@>))
-
-    upF.AddXmlDoc "Moves the zipper one level up"
-
-    newType.AddMember upF
-                    
     let updateF =
         ProvidedMethod(
             methodName = "Update",
             parameters = [ProvidedParameter("newValue",propertyType)],
             returnType = parentType,
             InvokeCode =
-                (match propertyType with
-                    | x when x = typeof<int> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.NumDecimal (decimal (%%args.[1]: int))) |> up @@>
-                    | x when x = typeof<int64> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.NumDecimal (decimal (%%args.[1]: int64))) |> up @@>
-                    | x when x = typeof<decimal> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.NumDecimal (%%args.[1]: decimal)) |> up @@>
-                    | x when x = typeof<float> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.NumDouble (%%args.[1]: float)) |> up @@>
-                    | x when x = typeof<bool> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.Bool (%%args.[1]: bool)) |> up @@>
-                    | x when x = typeof<string> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.String (%%args.[1]: string)) |> up @@>))
+                match propertyType with
+                | x when x = typeof<int> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.NumDecimal (decimal (%%args.[1]: int))) @@>
+                | x when x = typeof<int64> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.NumDecimal (decimal (%%args.[1]: int64)))  @@>
+                | x when x = typeof<decimal> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.NumDecimal (%%args.[1]: decimal)) @@>
+                | x when x = typeof<float> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.NumDouble (%%args.[1]: float))  @@>
+                | x when x = typeof<bool> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.Bool (%%args.[1]: bool))  @@>
+                | x when x = typeof<string> -> fun args -> <@@ (%%args.[0]: JsonZipper) |> update (JsonValue.String (%%args.[1]: string)) @@>)
 
-    updateF.AddXmlDoc (sprintf "Updates the value of the property named \"%s\" and moves one level up" name)
+    updateF.AddXmlDoc (sprintf "Updates the value of the property named \"%s\"." name)
 
     newType.AddMember updateF    
 
@@ -88,15 +77,15 @@ let createProperty topType parentType name propertyType =
             parameters = [],
             returnType = propertyType,
             InvokeCode =
-                (match propertyType with
-                    | x when x = typeof<int> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetDecimal() |> int @@>
-                    | x when x = typeof<int64> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetDecimal() |> int64 @@>
-                    | x when x = typeof<decimal> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetDecimal() @@>
-                    | x when x = typeof<float> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetDouble() @@>
-                    | x when x = typeof<bool> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetBoolean() @@>
-                    | x when x = typeof<string> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetText() @@>))
+                match propertyType with
+                | x when x = typeof<int> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetDecimal() |> int @@>
+                | x when x = typeof<int64> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetDecimal() |> int64 @@>
+                | x when x = typeof<decimal> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetDecimal() @@>
+                | x when x = typeof<float> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetDouble() @@>
+                | x when x = typeof<bool> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetBoolean() @@>
+                | x when x = typeof<string> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetText() @@>)
 
-    getValueF.AddXmlDoc (sprintf "Gets the value of the property named \"%s\"" name)
+    getValueF.AddXmlDoc (sprintf "Gets the value of the property named \"%s\"." name)
 
     newType.AddMember getValueF    
 
@@ -148,6 +137,7 @@ let jsonType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
                       ProvidedStaticParameter("Schema" , typeof<string>, missingValue) ], // Allows to specify inlined schema
         instantiationFunction = 
             (fun typeName parameterValues ->
+                 
                 let schema = 
                     match parameterValues with 
                     | [| :? string as fileName; :? string |] when fileName <> missingValue ->        

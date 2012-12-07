@@ -27,7 +27,13 @@ let ``Can update a text property in a simple JSON without changing the original`
 type Simple1 = JsonZipper<Schema="""{ "b": 1}""">
 
 [<Test>]
-let ``Can update a int property in a simple JSON``() = 
+let ``Can read an int property``() = 
+    let original = new Simple1()
+    original.B.GetValue() |> should equal 1
+    original.ToString() |> should equal """{"b":1}"""
+
+[<Test>]
+let ``Can update an int property in a simple JSON``() = 
     let original = new Simple1()
     let updated = original.B.Update(2)
     updated.ToString() |> should equal """{"b":2}"""
@@ -59,6 +65,33 @@ let ``Can update a property in a nested JSON``() =
     let updated = original.B.C.Update("blub")
     updated.Top().ToString() |> should equal """{"a":"b","b":{"c":"blub"}}"""
     original.ToString() |> should equal """{"a":"b","b":{"c":"text"}}"""
+
+[<Test>]
+let ``Can update a property in a nested JSON multiple times``() = 
+    let original = new Nested()
+    let updated = original.B.C.Update("blub").C.Update("foo").C.Update("bar")
+    updated.Top().ToString() |> should equal """{"a":"b","b":{"c":"bar"}}"""
+    original.ToString() |> should equal """{"a":"b","b":{"c":"text"}}"""
+     
+type Nested2 = JsonZipper<Schema="""{ "a": "b", "b": { "c": 1.3,"d" : true }}""">
+
+[<Test>]
+let ``Can access a decimal property in a nested JSON``() = 
+    let original = new Nested2()
+    let updated = original.B.C.Update 4.55m
+    updated.C.GetValue() |> should equal 4.55m
+    original.B.C.GetValue() |> should equal 1.3m
+    updated.Top().ToString() |> should equal """{"a":"b","b":{"c":4.55,"d":true}}"""
+    
+    original.ToString() |> should equal """{"a":"b","b":{"c":1.3,"d":true}}"""
+
+[<Test>]
+let ``Can access a boolean property in a nested JSON``() = 
+    let original = new Nested2()
+    let updated = original.B.D.Update false
+    updated.Top().ToString() |> should equal """{"a":"b","b":{"c":1.3,"d":false}}"""
+    original.ToString() |> should equal """{"a":"b","b":{"c":1.3,"d":true}}"""
+
 
 type DoubleNested = JsonZipper<Schema="""{ "a": "b", "b": { "c": { "d" : "down here" } }}""">
 
