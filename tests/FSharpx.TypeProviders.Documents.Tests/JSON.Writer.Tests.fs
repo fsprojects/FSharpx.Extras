@@ -10,14 +10,27 @@ type InlinedJSON = JsonZipper<Schema="""{ "firstName": "Max","lastName": "Muster
 let ``Can set properties in inlined JSON``() = 
     let person = new InlinedJSON()
 
-    person
-     .FirstName.Update("John")
-     .LastName.Update("Doe")
-     .Age.Update(30)
-     .IsCool.Update(false)
-     .Size.Update(decimal 43.43)
-     .ToString()
-     |> should equal """{"firstName":"John","lastName":"Doe","age":30,"isCool":false,"size":43.43}"""
+    let updated =
+        person
+            .FirstName.Update("John")
+            .LastName.Update("Doe")
+            .Age.Update(30)
+            .IsCool.Update(false)
+            .Size.Update(decimal 43.43)
+
+    updated.FirstName.GetValue() |> should equal "John"
+    updated.LastName.GetValue() |> should equal "Doe"
+    updated.Age.GetValue() |> should equal 30
+    updated.IsCool.GetValue() |> should equal false
+    updated.Size.GetValue() |> should equal 43.43
+
+    person.FirstName.GetValue() |> should equal "Max"
+    person.LastName.GetValue() |> should equal "Mustermann"
+    person.Age.GetValue() |> should equal 26
+    person.IsCool.GetValue() |> should equal true
+    person.Size.GetValue() |> should equal 42.42
+
+    updated.ToString() |> should equal """{"firstName":"John","lastName":"Doe","age":30,"isCool":false,"size":43.43}"""
 
 //
 //type AuthorsJSON = JsonZipper<Schema="""{ "authors": [{ "name": "Steffen" }, { "name": "Tomas", "age": 29, "isCool": true, "size":42.42 }]}""">

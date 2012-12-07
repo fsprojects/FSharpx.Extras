@@ -41,29 +41,25 @@ type JsonValue =
         | Obj kvps -> (kvps |> List.tryFind (fun (k,v) -> k=s)) <> None
         | _ -> failwith (sprintf "expected an object when looking for find key '%s' in JsonValue %A" s this)
 
-    member this.GetText propertyName =
-        match this.GetValWithKey propertyName with
+    member this.GetText() =
+        match this with
         | JsonValue.String text -> text
 
-    member this.GetBoolean propertyName =
-        match this.GetValWithKey propertyName with
+    member this.GetBoolean() =
+        match this with
         | JsonValue.Bool b -> b
 
-    member this.GetDecimal propertyName =
-        match this.GetValWithKey propertyName with
+    member this.GetDecimal() =
+        match this with
         | JsonValue.NumDecimal d -> d
 
-    member this.GetDouble propertyName =
-        match this.GetValWithKey propertyName with
+    member this.GetDouble()=
+        match this with
         | JsonValue.NumDouble d -> d
 
-    member this.GetArrayElements propertyName =
-        match this.GetValWithKey propertyName with
+    member this.GetArrayElements() =
+        match this with
         | JsonValue.Array(a) -> a
-
-    member this.AddArrayElement(propertyName,element) =
-        match this.GetValWithKey propertyName with
-        | JsonValue.Array(a) -> element::a;element // TODO: This is not right ;-)
   
     member this.AddElement(element) =
         match this with

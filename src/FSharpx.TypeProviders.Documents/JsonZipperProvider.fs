@@ -82,6 +82,24 @@ let createProperty topType parentType name propertyType =
 
     newType.AddMember updateF    
 
+    let getValueF =
+        ProvidedMethod(
+            methodName = "GetValue",
+            parameters = [],
+            returnType = propertyType,
+            InvokeCode =
+                (match propertyType with
+                    | x when x = typeof<int> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetDecimal() |> int @@>
+                    | x when x = typeof<int64> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetDecimal() |> int64 @@>
+                    | x when x = typeof<decimal> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetDecimal() @@>
+                    | x when x = typeof<float> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetDouble() @@>
+                    | x when x = typeof<bool> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetBoolean() @@>
+                    | x when x = typeof<string> -> fun args -> <@@ ((%%args.[0]: JsonZipper) |> focus).GetText() @@>))
+
+    getValueF.AddXmlDoc (sprintf "Gets the value of the property named \"%s\"" name)
+
+    newType.AddMember getValueF    
+
     parentType.AddMember property
 
 

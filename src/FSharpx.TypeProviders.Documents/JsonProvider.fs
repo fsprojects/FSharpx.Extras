@@ -57,17 +57,17 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
     let accessExpr propertyName propertyType (args: Expr list) = 
         match propertyType with
         | x when x = typeof<string> -> 
-            <@@ (%%args.[0]: JsonValue).GetText propertyName @@>
+            <@@ (%%args.[0]: JsonValue).GetValWithKey(propertyName).GetText() @@>
         | x when x = typeof<bool> -> 
-            <@@ (%%args.[0]: JsonValue).GetBoolean propertyName @@>
+            <@@ (%%args.[0]: JsonValue).GetValWithKey(propertyName).GetBoolean() @@>
         | x when x = typeof<int> -> 
-            <@@ (%%args.[0]: JsonValue).GetDecimal propertyName |> int @@>
+            <@@ (%%args.[0]: JsonValue).GetValWithKey(propertyName).GetDecimal() |> int @@>
         | x when x = typeof<int64> -> 
-            <@@ (%%args.[0]: JsonValue).GetDecimal propertyName |> int64 @@>
+            <@@ (%%args.[0]: JsonValue).GetValWithKey(propertyName).GetDecimal() |> int64 @@>
         | x when x = typeof<decimal> -> 
-            <@@ (%%args.[0]: JsonValue).GetDecimal propertyName @@>
+            <@@ (%%args.[0]: JsonValue).GetValWithKey(propertyName).GetDecimal() @@>
         | x when x = typeof<float> -> 
-            <@@ (%%args.[0]: JsonValue).GetDouble propertyName @@>
+            <@@ (%%args.[0]: JsonValue).GetValWithKey(propertyName).GetDouble() @@>
         | x when x = typeof<DateTime> -> 
             <@@ (%%args.[0]: JsonValue).GetDate propertyName @@>
 
@@ -76,11 +76,11 @@ let rec generateType (ownerType:ProvidedTypeDefinition) (CompoundProperty(elemen
 
     generateProperties ty accessExpr checkIfOptional elementProperties
     
-    let multiAccessExpr childName (args: Expr list) = <@@ (%%args.[0]: JsonValue).GetArrayElements childName @@>
+    let multiAccessExpr childName (args: Expr list) = <@@ (%%args.[0]: JsonValue).GetValWithKey(childName).GetArrayElements() @@>
     let singleAccessExpr childName (args: Expr list) = <@@ (%%args.[0]: JsonValue).GetValWithKey childName @@>
     let newChildExpr childName (args: Expr list) = <@@ JsonValue.Obj([]) @@>
 
-    let addChildExpr childName (args: Expr list) = <@@ (%%args.[0]: JsonValue).AddArrayElement(childName,(%%args.[1]:JsonValue)) @@>
+    let addChildExpr childName (args: Expr list) = <@@ (%%args.[0]: JsonValue).GetValWithKey(childName).AddElement(%%args.[1]:JsonValue) @@>
 
     generateSublements ty ownerType multiAccessExpr addChildExpr newChildExpr singleAccessExpr generateType elementChildren
 
