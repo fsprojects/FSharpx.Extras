@@ -66,6 +66,7 @@
     <Compile Include="JsonProvider.fs" />
     <Compile Include="MiniCsvProvider.fs" />
     <Compile Include="NamespaceProvider.fs" />
+    <None Include="TestDocumentProviders.fsx" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
