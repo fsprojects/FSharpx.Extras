@@ -153,7 +153,7 @@ let createArrayProperty topType (parentType:ProvidedTypeDefinition) (CompoundPro
         
     let property =
         ProvidedProperty(
-            propertyName = niceName elementName,
+            propertyName = pluralize (niceName elementName),
             propertyType = newType,
             GetterCode = (fun args -> <@@ (%%args.[0]: JsonZipper) |> toProperty elementName @@>))
 

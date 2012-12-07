@@ -35,7 +35,7 @@ let ``Can parse wiki sample``() =
     let document = WikiSample()
     document.FirstName.GetValue() |> should equal "John"
 
-    let phones = document.PhoneNumber
+    let phones = document.PhoneNumbers
     phones.GetCount() |> should equal 2
 
     let home = phones.GetElement(0)
@@ -52,7 +52,7 @@ let ``Can load and manipulate wiki data``() =
     document.FirstName.GetValue() |> should equal "John"
     document.LastName.GetValue() |> should equal "Doe"
 
-    let phone = document.PhoneNumber
+    let phone = document.PhoneNumbers
     phone.GetCount() |> should equal 0
 
 //    document.NewPhoneNumber(Type="home",Number="456 123-4567")
