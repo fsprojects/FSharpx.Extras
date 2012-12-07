@@ -115,6 +115,8 @@ let remove zipper =
 /// Moves the zipper upwards
 let up zipper =
     match zipper with
+    | ListZipper(_,None,_,_) -> zipper
+    | MapZipper(_,None,_,_) -> zipper
     | ListZipper(Some f,p,ls,rs) ->
         match p with
         | Some (ListZipper(_,p_p,p_ls,p_rs)) -> ListZipper(Some(JsonValue.Array ((List.rev ls) @ f :: rs)),p_p,p_ls,p_rs)

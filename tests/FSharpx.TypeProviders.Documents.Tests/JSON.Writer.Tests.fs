@@ -11,11 +11,11 @@ let ``Can set properties in inlined properties``() =
     let person = new InlinedJSON()
 
     person
-     .FirstName.Update("John").Up()
-     .LastName.Update("Doe").Up()
-     .Age.Update(30).Up()
-     .IsCool.Update(false).Up()
-     .Size.Update(decimal 43.43).Up()
+     .FirstName.Update("John")
+     .LastName.Update("Doe")
+     .Age.Update(30)
+     .IsCool.Update(false)
+     .Size.Update(decimal 43.43)
      .ToString()
      |> should equal """{"firstName":"John","lastName":"Doe","age":30,"isCool":false,"size":43.43}"""
 
