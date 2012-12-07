@@ -80,6 +80,10 @@ let right zipper =
         match rs with
         | x::xs -> MapZipper(Some x,p,ls,xs)
 
+/// Moves the zippern positions to the right
+let rec moveRight n zipper = 
+    if n <= 0 then zipper else
+    zipper |> right |> moveRight (n-1)
 
 /// Moves the zipper down
 let down zipper =

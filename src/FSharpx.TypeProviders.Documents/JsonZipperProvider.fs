@@ -40,16 +40,10 @@ let createTopF topType (newType:ProvidedTypeDefinition) =
 
     newType.AddMember toStringMethod
 
-let createProperty topType parentType name propertyType = 
+
+let createSimpleType topType parentType name propertyType = 
     let newType = generateType parentType name
-
-    let property =
-        ProvidedProperty(
-            propertyName = niceName name,
-            propertyType = newType,
-            GetterCode = (fun args -> <@@ (%%args.[0]: JsonZipper) |> toProperty name @@>))
-
-    property.AddXmlDoc (sprintf "Gets the property named \"%s\"" name)
+    newType.HideObjectMethods <- true
 
     createTopF topType newType
     
@@ -89,44 +83,69 @@ let createProperty topType parentType name propertyType =
 
     newType.AddMember getValueF    
 
+    newType
+
+let createProperty topType parentType name propertyType = 
+    let newType = createSimpleType topType parentType name propertyType
+
+    let property =
+        ProvidedProperty(
+            propertyName = niceName name,
+            propertyType = newType,
+            GetterCode = (fun args -> <@@ (%%args.[0]: JsonZipper) |> toProperty name @@>))
+
+    property.AddXmlDoc (sprintf "Gets the property named \"%s\"" name)
     parentType.AddMember property
 
+let rec generateObj mainLevel topType (parentType:ProvidedTypeDefinition) (CompoundProperty(elementName,multi,elementChildren,elementProperties))  =
+    if multi then 
 
-let rec generateObj mainLevel topType parentType (CompoundProperty(elementName,multi,elementChildren,elementProperties)) =
-    let typeToModify =
-        if mainLevel then parentType else
-        let newType = generateType parentType elementName
-
-        let property =
-            ProvidedProperty(
-                propertyName = niceName elementName,
-                propertyType = newType,
-                GetterCode = (fun args -> <@@ (%%args.[0]: JsonZipper) |> toProperty elementName |> down @@>))
-
-        property.AddXmlDoc (sprintf "Gets the property named \"%s\"" elementName)
-        parentType.AddMember property
-
-        createTopF topType newType
-
-        let upF =
+        let newType = createSimpleType topType parentType elementName typeof<int>
+        let getValueF =
             ProvidedMethod(
-                methodName = "Up",
-                parameters = [],
-                returnType = parentType,
-                InvokeCode = (fun args -> <@@ (%%args.[0]: JsonZipper) |> up  @@>))
+                methodName = "GetElement",
+                parameters = [ProvidedParameter("index",typeof<int>)],
+                returnType = newType,
+                InvokeCode = fun args -> <@@ (%%args.[0]: JsonZipper) |> down |> moveRight (%%args.[1]:int) @@>)
 
-        upF.AddXmlDoc "Moves the zipper one level up"
+        getValueF.AddXmlDoc "Gets the element at the specified position." 
 
-        newType.AddMember upF
+        parentType.AddMember getValueF
+    else
+        let typeToModify =
+            if mainLevel then parentType else
+            let newType = generateType parentType elementName
+            newType.HideObjectMethods <- true
 
-        newType
+            let property =
+                ProvidedProperty(
+                    propertyName = niceName elementName,
+                    propertyType = newType,
+                    GetterCode = (fun args -> <@@ (%%args.[0]: JsonZipper) |> toProperty elementName |> down @@>))
 
-    for children in elementChildren do
-        generateObj false topType typeToModify children
+            property.AddXmlDoc (sprintf "Gets the property named \"%s\"" elementName)
+            parentType.AddMember property
 
-    for (SimpleProperty(propertyName,propertyType,optional)) in elementProperties do
-        createProperty topType typeToModify propertyName propertyType                            
+            createTopF topType newType
 
+            let upF =
+                ProvidedMethod(
+                    methodName = "Up",
+                    parameters = [],
+                    returnType = parentType,
+                    InvokeCode = (fun args -> <@@ (%%args.[0]: JsonZipper) |> up  @@>))
+
+            upF.AddXmlDoc "Moves the zipper one level up"
+
+            newType.AddMember upF
+
+            newType
+
+        for children in elementChildren do
+            generateObj false topType typeToModify children
+
+        for (SimpleProperty(propertyName,propertyType,optional)) in elementProperties do
+            createProperty topType typeToModify propertyName propertyType    
 
 /// Infer schema from the loaded data and generate type with properties
 let jsonType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
@@ -150,6 +169,7 @@ let jsonType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
                     
 
                 let parserType = erasedType<JsonZipper> thisAssembly rootNamespace typeName
+                parserType.HideObjectMethods <- true
      
                 let defaultConstructor = 
                     ProvidedConstructor(
@@ -186,8 +206,10 @@ let jsonType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
 
                 parserType.AddMember toStringMethod
 
-                let schema = JSONInference.provideElement "Document" false [parse schema]
-                generateObj true parserType parserType schema
+                let schema = parse schema
+                
+                generateObj true parserType parserType (JSONInference.provideElement "Document" false [schema])
+                |> ignore
 
                 let converterMethod =
                     ProvidedMethod(

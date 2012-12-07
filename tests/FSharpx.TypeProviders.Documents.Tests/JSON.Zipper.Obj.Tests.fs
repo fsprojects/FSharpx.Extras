@@ -1,4 +1,4 @@
-﻿module FSharpx.TypeProviders.Tests.JsonZipper.ZipperTests
+﻿module FSharpx.TypeProviders.Tests.JsonZipper.Obj.ZipperTests
 
 open NUnit.Framework
 open FSharpx
