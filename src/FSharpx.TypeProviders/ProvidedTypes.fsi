@@ -318,6 +318,8 @@ type internal ProvidedTypeDefinition =
     [<Experimental("SuppressRelocation is a workaround and likely to be removed")>]
     member SuppressRelocation : bool  with get,set
 
+    member MakeParametricType : name:string * args:obj[] -> ProvidedTypeDefinition
+
 /// A provided generated assembly
 type ProvidedAssembly =
     new : assemblyFileName:string -> ProvidedAssembly

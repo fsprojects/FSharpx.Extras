@@ -24,7 +24,7 @@ let (|Double|_|) text =
     | _ -> None
 
 
-let internal typedAppSettings (cfg:TypeProviderConfig) =
+let internal typedAppSettings (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
     let appSettings = erasedType<obj> thisAssembly rootNamespace "AppSettings"
 
     appSettings.DefineStaticParameters(
@@ -63,7 +63,7 @@ let internal typedAppSettings (cfg:TypeProviderConfig) =
 type public FSharpxProvider(cfg:TypeProviderConfig) as this =
     inherit TypeProviderForNamespaces()
 
-    do this.AddNamespace(rootNamespace,[typedAppSettings cfg])
+    do this.AddNamespace(rootNamespace, [typedAppSettings this cfg])
 
 [<TypeProviderAssembly>]
 do ()

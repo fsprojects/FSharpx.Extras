@@ -46,6 +46,7 @@
       <Link>Strings.fs</Link>
     </Compile>
     <Compile Include="TypeProvider.Helper.fs" />
+    <None Include="SetupTesting.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Data.TypeProviders, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
