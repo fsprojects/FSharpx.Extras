@@ -276,14 +276,14 @@ let prepareNugetTarget = TargetTemplate (fun frameworkVersion ->
             CleanDir portableSubDir
 
             [for ending in ["dll";"pdb";"xml"] do
-                yield sprintf "%sFsharpx.%s.%s" buildDir package ending
-                yield sprintf "%sFsharpx.%s.DesignTime.%s" buildDir package ending]
+                yield sprintf "%sFSharpx.%s.%s" buildDir package ending
+                yield sprintf "%sFSharpx.%s.DesignTime.%s" buildDir package ending]
             |> Seq.filter (fun f -> File.Exists f)
             |> CopyTo frameworkSubDir
 
             [for ending in ["dll";"pdb";"xml"] do
-                yield sprintf "%sFsharpx.%s.%s" buildPortableDir package ending
-                yield sprintf "%sFsharpx.%s.DesignTime.%s" buildPortableDir package ending]
+                yield sprintf "%sFSharpx.%s.%s" buildPortableDir package ending
+                yield sprintf "%sFSharpx.%s.DesignTime.%s" buildPortableDir package ending]
             |> Seq.filter (fun f -> File.Exists f)
             |> CopyTo portableSubDir)
 )
