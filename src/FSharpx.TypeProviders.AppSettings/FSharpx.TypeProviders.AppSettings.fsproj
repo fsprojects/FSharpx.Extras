@@ -56,6 +56,7 @@
       <Link>TypeProvider.Helper.fs</Link>
     </Compile>
     <Compile Include="AppSettingsProvider.fs" />
+    <None Include="TestAppSettingsProvider.fsx" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
