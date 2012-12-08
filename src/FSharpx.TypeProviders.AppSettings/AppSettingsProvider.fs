@@ -24,7 +24,7 @@ let (|Double|_|) text =
     | _ -> None
 
 
-let internal typedAppSettings (cfg:TypeProviderConfig) =
+let internal typedAppSettings (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
     let appSettings = erasedType<obj> thisAssembly rootNamespace "AppSettings"
 
     appSettings.DefineStaticParameters(
@@ -35,6 +35,7 @@ let internal typedAppSettings (cfg:TypeProviderConfig) =
                 let typeDef = erasedType<obj> thisAssembly rootNamespace typeName
                 try
                     let filePath = findConfigFile cfg.ResolutionFolder configFileName
+                    watchForChanges ownerType filePath
                     let fileMap = ExeConfigurationFileMap(ExeConfigFilename=filePath)
                     let appSettings = ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None).AppSettings.Settings
 
@@ -63,7 +64,7 @@ let internal typedAppSettings (cfg:TypeProviderConfig) =
 type public FSharpxProvider(cfg:TypeProviderConfig) as this =
     inherit TypeProviderForNamespaces()
 
-    do this.AddNamespace(rootNamespace,[typedAppSettings cfg])
+    do this.AddNamespace(rootNamespace,[typedAppSettings this cfg])
 
 [<TypeProviderAssembly>]
 do ()
