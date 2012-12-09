@@ -156,11 +156,6 @@ let internal xamlType (ownerType:TypeProviderForNamespaces)  (cfg:TypeProviderCo
         use reader = new StringReader(schema)
         createTypeFromReader schemaContext typeName null schema reader
 
-    let missingValue = "@@@missingValue###"
-    
-
-
-    
     let xamlType = erasedType<obj> thisAssembly rootNamespace "XAML"
     xamlType.DefineStaticParameters(
         parameters = [ProvidedStaticParameter("FileName", typeof<string>, missingValue) // Parameterize the type by the file to use as a template

@@ -57,6 +57,7 @@
     <Compile Include="FileSystemProvider.fs" />
     <Compile Include="RegistryProvider.fs" />
     <Compile Include="SystemProvider.fs" />
+    <None Include="TestMachineProviders.fsx" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>

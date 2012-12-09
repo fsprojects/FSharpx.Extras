@@ -56,6 +56,7 @@
       <Link>TypeProvider.Helper.fs</Link>
     </Compile>
     <Compile Include="ExcelProvider.fs" />
+    <None Include="TestExcelProvider.fsx" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>

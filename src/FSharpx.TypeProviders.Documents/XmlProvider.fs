@@ -82,7 +82,6 @@ open FSharpx.JSON.DocumentExtensions
 
 /// Infer schema from the loaded data and generate type with properties
 let xmlType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =  
-    let missingValue = "@@@missingValue###"
     let xmlDocumentType = erasedType<obj> thisAssembly rootNamespace "StructuredXml"
     xmlDocumentType.DefineStaticParameters(
         parameters = [ProvidedStaticParameter("FileName", typeof<string>, missingValue)   // Parameterize the type by the file to use as a template
