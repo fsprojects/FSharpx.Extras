@@ -59,6 +59,12 @@
     <Compile Include="..\FSharpx.TypeProviders\ProvidedTypes.fs">
       <Link>ProvidedTypes.fs</Link>
     </Compile>
+    <Compile Include="..\FSharpx.Core\Strings.fs">
+      <Link>Strings.fs</Link>
+    </Compile>
+    <Compile Include="..\FSharpx.TypeProviders\TypeProvider.Helper.fs">
+      <Link>TypeProvider.Helper.fs</Link>
+    </Compile>
     <Compile Include="..\FSharpx.TypeProviders.Freebase\FreebaseRequests.fs">
       <Link>FreebaseRequests.fs</Link>
     </Compile>
@@ -69,6 +75,7 @@
       <Link>Strings.fs</Link>
     </Compile>
     <Compile Include="FreebaseTypeProvider.fs" />
+    <None Include="TestFreebaseTypeProvider.fsx" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>

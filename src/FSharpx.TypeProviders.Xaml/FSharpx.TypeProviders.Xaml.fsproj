@@ -61,6 +61,7 @@
       <Link>TypeProvider.Helper.fs</Link>
     </Compile>
     <Compile Include="XamlProvider.fs" />
+    <None Include="TestXamlProvider.fsx" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>

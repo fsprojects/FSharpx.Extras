@@ -7,11 +7,11 @@ SetupTesting.generateSetupScript __SOURCE_DIRECTORY__
 open System
 open System.IO
 open FSharpx.TypeProviders.Helper
-open FSharpx.TypeProviders.AppSettingsTypeProvider
+open FSharpx.TypeProviders.ExcelProvider
 
 let (++) a b = Path.Combine(a, b)
-let resolutionFolder = __SOURCE_DIRECTORY__ ++ ".." ++ ".." ++ "tests" ++ "FSharpx.TypeProviders.AppSettings.Tests"
+let resolutionFolder = __SOURCE_DIRECTORY__ ++ ".." ++ ".." ++ "tests" ++ "FSharpx.TypeProviders.Excel.Tests"
 
-generate typedAppSettings resolutionFolder [| "Test.App.Config" |] 
+generate (fun _ cfg -> typExcel cfg) resolutionFolder [| box "BookTest.xls"; box "Sheet1"; box true |] 
 |> prettyPrint 
 |> Console.WriteLine

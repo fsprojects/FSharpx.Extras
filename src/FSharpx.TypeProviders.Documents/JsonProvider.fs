@@ -97,7 +97,6 @@ open System.Xml.Linq
 
 /// Infer schema from the loaded data and generate type with properties
 let jsonType (ownerType:TypeProviderForNamespaces) (cfg:TypeProviderConfig) =
-    let missingValue = "@@@missingValue###"
     let jsonDocumentType = erasedType<obj> thisAssembly rootNamespace "StructuredJSON"
     jsonDocumentType.DefineStaticParameters(
         parameters = [ProvidedStaticParameter("FileName", typeof<string>, missingValue)   // Parameterize the type by the file to use as a template

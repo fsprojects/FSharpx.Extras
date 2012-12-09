@@ -4,7 +4,7 @@ open System
 open System.IO
 open System.Xml.Linq
 
-let setup dir = 
+let generateSetupScript dir = 
     let proj = Directory.GetFiles(dir, "*.fsproj") |> Seq.head
 
     let getElemName name = XName.Get(name, "http://schemas.microsoft.com/developer/msbuild/2003")
