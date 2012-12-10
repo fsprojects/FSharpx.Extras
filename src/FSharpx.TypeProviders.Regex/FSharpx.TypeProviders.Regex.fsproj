@@ -55,6 +55,7 @@
       <Link>TypeProvider.Helper.fs</Link>
     </Compile>
     <Compile Include="RegexProvider.fs" />
+    <None Include="TestRegexProvider.fsx" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>

@@ -14,7 +14,6 @@ let scale x factor : float[] = Array.map ((*) factor) x
 let subtract x y : float[] = Array.map2 (-) x y
    
 let internal vectorTypeProvider =
-    let missingValue = "@@@missingValue###"
     let vectorType = erasedType<obj> thisAssembly rootNamespace "Vector"
     vectorType.DefineStaticParameters(
         parameters = [ for p in 1..7 -> ProvidedStaticParameter("axis" + p.ToString(), typeof<string>, missingValue)], 
