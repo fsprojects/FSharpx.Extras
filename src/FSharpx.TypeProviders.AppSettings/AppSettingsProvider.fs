@@ -45,7 +45,7 @@ let internal typedAppSettings (ownerType:TypeProviderForNamespaces) (cfg:TypePro
                             | Int fieldValue ->    ProvidedLiteralField(niceName key, typeof<int>, fieldValue)
                             | Bool fieldValue ->   ProvidedLiteralField(niceName key, typeof<bool>, fieldValue)
                             | Double fieldValue -> ProvidedLiteralField(niceName key, typeof<float>, fieldValue)
-                            | fieldValue ->        ProvidedLiteralField(niceName key, typeof<obj>, fieldValue)
+                            | fieldValue ->        ProvidedLiteralField(niceName key, typeof<string>, fieldValue)
 
                         field.AddXmlDoc (sprintf "Returns the value from %s with key %s" configFileName key)
                         field.AddDefinitionLocation(1,1,configFileName)
