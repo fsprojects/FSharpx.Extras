@@ -25,11 +25,11 @@ let ``Internal components have obj at design-time but correct at run-time``() =
    let int = StackPanel().InternalComponent
    int.GetType() |> should equal typedefof<any.MyButton>
 
-[<Test>][<RequiresSTA>]
-let ``External components have proper types``() =      
-   let ext = StackPanel().ExternalComponent
-   let clickmode = ext.ClickMode // Check compile-time type by accessing something
-   ext.GetType() |> should equal typedefof<TypeProviders.Tests.Xaml.MyExternalButton> // Check run-time type
+//[<Test>][<RequiresSTA>]
+//let ``External components have proper types``() =      
+//   let ext = StackPanel().ExternalComponent
+//   let clickmode = ext.ClickMode // Check compile-time type by accessing something
+//   ext.GetType() |> should equal typedefof<TypeProviders.Tests.Xaml.MyExternalButton> // Check run-time type
 
 [<Test>][<RequiresSTA>]
 let ``Can access the first button``() =      
