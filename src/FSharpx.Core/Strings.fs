@@ -23,17 +23,15 @@ module Strings =
     let inline isNullOrEmpty text = String.IsNullOrEmpty text
 
     /// Returns the pluralized version of a noun
-    let inline pluralize(s:string) =
-        if s.Contains " of " || s.Contains " Of " || s.EndsWith "s" then s
-        elif s.EndsWith "ch" then s + "es"
-        elif s.EndsWith "y" then (s.TrimEnd 'y') + "ies"
-        else s + "s"
+    let pluralize (noun: string) =        
+        if noun.Contains " of " || noun.Contains " Of " then 
+            noun
+        else
+            Pluralizer.toPlural noun
 
     /// Returns the singularized version of a noun
-    let inline singularize(name:string) =
-        if name.EndsWith("ies") then name.Substring(0,name.Length-3) + "y" else
-        if name.EndsWith("s") then name.Substring(0,name.Length-1) else
-        name
+    let singularize (noun: string) =
+        Pluralizer.toSingular noun
 
     // Active patterns & operators for parsing strings
     let (@?) (s:string) i = if i >= s.Length then None else Some s.[i]

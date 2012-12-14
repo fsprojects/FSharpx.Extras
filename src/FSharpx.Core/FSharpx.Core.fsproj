@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Prelude.fs" />
+    <Compile Include="Pluralizer.fs" />
     <Compile Include="Strings.fs" />
     <Compile Include="JSON.fs" />
     <Compile Include="StateMachine.fs" />
