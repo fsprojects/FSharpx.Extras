@@ -97,7 +97,7 @@ type FreebaseQueries(apiKey: string, proxy:string, serviceUrl:string, localCache
                 req.ContentLength <- contentLength
 #endif
 #if FX_NO_WEBHEADERS_ADD
-                if not freebaseV0 then req.Headers.["X-HTTP-Method-Override:GET"] <- ""
+                if not freebaseV0 then req.Headers.["X-HTTP-Method-Override"] <- "GET"
 #else
                 if not freebaseV0 then req.Headers.Add("X-HTTP-Method-Override:GET")
 #endif

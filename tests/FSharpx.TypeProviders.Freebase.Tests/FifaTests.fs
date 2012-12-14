@@ -1,4 +1,4 @@
-﻿module FSharpx.TypeProviders.Tests.FifaTests
+﻿module FSharpx.TypeProviders.Tests.FreebaseTests.Fifa
 
 open NUnit.Framework
 open FsUnit

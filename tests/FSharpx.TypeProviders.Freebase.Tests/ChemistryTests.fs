@@ -1,4 +1,4 @@
-﻿module FSharpx.TypeProviders.Tests.FreebaseTests
+﻿module FSharpx.TypeProviders.Tests.FreebaseTests.Chemistry
 
 open NUnit.Framework
 open FsUnit
