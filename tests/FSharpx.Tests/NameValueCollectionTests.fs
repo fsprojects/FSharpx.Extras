@@ -1,7 +1,7 @@
 ﻿module FSharpx.Tests.NameValueCollectionTests
 
 open FsUnit
-open FSharpx
+open FSharpx.Collections
 open NUnit.Framework
 open System.Collections.Generic
 open System.Collections.Specialized

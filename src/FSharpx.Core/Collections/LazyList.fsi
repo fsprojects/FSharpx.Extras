@@ -3,7 +3,7 @@
 
 // (c) Microsoft Corporation 2005-2009. 
 
-namespace FSharpx
+namespace FSharpx.Collections
 
 open System.Collections.Generic
 

@@ -2,7 +2,7 @@
 // original implementation taken from http://lepensemoi.free.fr/index.php/2010/01/07/real-time-queue
 module FSharpx.DataStructures.RealTimeQueue
 
-open FSharpx
+open FSharpx.Collections
 
 type RealTimeQueue<'a> = {
     F: LazyList<'a> 

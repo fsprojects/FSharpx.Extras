@@ -1,4 +1,4 @@
-namespace FSharpx
+namespace FSharpx.Collections
 
 open System
 open System.Linq
@@ -8,6 +8,7 @@ open System.Collections.Generic
 open System.Diagnostics.Contracts
 #endif
 open System.Runtime.CompilerServices
+open FSharpx
             
 module Seq =
     /// <summary>

@@ -2,7 +2,7 @@ module FSharpx.Tests.BinaryIterateeTest
 
 open System
 open FSharpx
-open FSharpx.ByteString
+open FSharpx.Collections.ByteString
 open FSharpx.Iteratee
 open FSharpx.Iteratee.Binary
 open NUnit.Framework

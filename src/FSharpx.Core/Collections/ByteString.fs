@@ -1,4 +1,4 @@
-namespace FSharpx
+namespace FSharpx.Collections
 
 open System
 open System.Collections
@@ -6,6 +6,7 @@ open System.Collections.Generic
 #if NET40
 open System.Diagnostics.Contracts
 #endif
+open FSharpx
             
 /// An ArraySegment with structural comparison and equality.
 [<CustomEquality; CustomComparison; SerializableAttribute; StructAttribute>]

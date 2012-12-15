@@ -7,6 +7,7 @@ open System.Collections.Generic
 open System.Runtime.CompilerServices
 open Microsoft.FSharp.Control.StreamReaderExtensions
 open Microsoft.FSharp.Control.WebExtensions
+open FSharpx.Collections
 open FSharpx.DataStructures
 
 /// Helps the C# compiler with Func type inference.

@@ -2,7 +2,7 @@
 module FSharpx.Tests.MapTests
 
 open System
-open FSharpx
+open FSharpx.Collections
 open NUnit.Framework
 open FsUnit
 
