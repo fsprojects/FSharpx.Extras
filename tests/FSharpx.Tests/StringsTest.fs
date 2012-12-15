@@ -13,6 +13,18 @@ let ``Can pluralize names``() =
    check "Item" "Items"
    check "Items" "Items"
    check "Entity" "Entities"
+   check "goose" "geese"
+   check "deer" "deer"
+   check "sheep" "sheep"
+   check "wolf" "wolves"
+   check "volcano" "volcanoes"
+   check "aircraft" "aircraft"
+   check "alumna" "alumnae"
+   check "alumnus" "alumni"
+   check "house" "houses"
+   check "fungus" "fungi"
+   check "woman" "women"
+   check "index" "indices"
 
 [<Test>]
 let ``Can singularize names``() =
@@ -22,6 +34,20 @@ let ``Can singularize names``() =
    check "Item" "Item"
    check "Items" "Item"
    check "Entities" "Entity"
+   check "geese" "goose" 
+   check "deer" "deer"
+   check "sheep" "sheep"
+   check "wolves" "wolf"
+   check "volcanoes" "volcano"
+   check "aircraft" "aircraft"
+   check "alumnae" "alumna"
+   check "alumni" "alumnus"
+   check "houses" "house"
+   check "fungi" "fungus"
+   check "funguses" "fungus"
+   check "women" "woman"
+   check "indices" "index"
+   check "indexes" "index"
 
 [<Test>]
 let ``Can simplify the type names``() = 
