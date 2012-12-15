@@ -2,7 +2,7 @@
 
 open System
 open FSharpx
-open FSharpx.ByteString
+open FSharpx.Collections.ByteString
 open NUnit.Framework
 open FsUnit
 

@@ -3,7 +3,7 @@
 
 namespace FSharpx.Tests
 
-open FSharpx
+open FSharpx.Collections
 open NUnit.Framework
 
 #nowarn "40"

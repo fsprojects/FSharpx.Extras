@@ -1,5 +1,6 @@
 ﻿using Microsoft.FSharp.Collections;
 using NUnit.Framework;
+using FSharpx.Collections;
 
 
 namespace FSharpx.CSharpTests {

@@ -1,6 +1,6 @@
 ﻿module FSharpx.NonEmptyListTests
 
-open FSharpx
+open FSharpx.Collections
 open NUnit.Framework
 open FsCheck
 open FsCheck.NUnit

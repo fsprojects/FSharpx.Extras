@@ -1,6 +1,7 @@
 namespace FSharpx.DataStructures
 
 open FSharpx
+open FSharpx.Collections
 open System.Collections
 open System.Collections.Generic
 

@@ -4,7 +4,8 @@ using System.Linq;
 using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
 using NUnit.Framework;
-using Errors = FSharpx.NonEmptyList<string>;
+using Errors = FSharpx.Collections.NonEmptyList<string>;
+using FSharpx.Collections;
 
 namespace FSharpx.CSharpTests {
     [TestFixture]

@@ -1,4 +1,4 @@
-namespace FSharpx
+namespace FSharpx.Collections.Mutable
 
 open System
 open System.Collections

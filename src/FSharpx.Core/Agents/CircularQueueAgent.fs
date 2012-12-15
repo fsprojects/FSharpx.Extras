@@ -6,7 +6,7 @@ namespace FSharp.Control
 
 open System
 open System.Collections.Generic
-open FSharpx
+open FSharpx.Collections.Mutable
 
 // ----------------------------------------------------------------------------
 

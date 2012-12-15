@@ -5,6 +5,7 @@
 open System.Collections
 open System.Collections.Generic
 open FSharpx
+open FSharpx.Collections
 
 type 'a IntMap =
     | Nil

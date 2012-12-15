@@ -144,7 +144,7 @@ let ``test dropUntil should drop anything before the first space when chunked``(
 [<Sequential>]
 let ``test take should take the first n items``([<Values(0,1,2,3,4,5,6,7,8,9,10)>] x) =
   let input = [0..9]
-  let expected = FSharpx.List.take x input
+  let expected = FSharpx.Collections.List.take x input
   let actual = enumerate input (take x) |> run
   actual |> should equal expected
 
@@ -152,7 +152,7 @@ let ``test take should take the first n items``([<Values(0,1,2,3,4,5,6,7,8,9,10)
 [<Sequential>]
 let ``test take should take the first n items at once``([<Values(0,1,2,3,4,5,6,7,8,9,10)>] x) =
   let input = [0..9]
-  let expected = FSharpx.List.take x input
+  let expected = FSharpx.Collections.List.take x input
   let actual = enumeratePure1Chunk input (take x) |> run
   actual |> should equal expected
   
@@ -160,7 +160,7 @@ let ``test take should take the first n items at once``([<Values(0,1,2,3,4,5,6,7
 [<Sequential>]
 let ``test take should take the first n items when chunked``([<Values(0,1,2,3,4,5,6,7,8,9,10)>] x) =
   let input = [0..9]
-  let expected = FSharpx.List.take x input
+  let expected = FSharpx.Collections.List.take x input
   let actual = enumeratePureNChunk 2 input (take x) |> run
   actual |> should equal expected
 
@@ -333,7 +333,7 @@ let ``test consume should consume all items when enumerating in chunks``([<Value
 [<Sequential>]
 let ``test isolate and consume should take the first n items from the stream``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
   let input = [ 0..9 ]
-  let expected = FSharpx.List.take x input
+  let expected = FSharpx.Collections.List.take x input
   let actual = enumerate input (joinI (isolate x consume)) |> run
   actual |> should equal expected
 
@@ -341,7 +341,7 @@ let ``test isolate and consume should take the first n items from the stream``([
 [<Sequential>]
 let ``test isolate and consume should take the first n items from the stream at once``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
   let input = [ 0..9 ]
-  let expected = FSharpx.List.take x input
+  let expected = FSharpx.Collections.List.take x input
   let actual = enumeratePure1Chunk input (joinI (isolate x consume)) |> run
   actual |> should equal expected
 
@@ -349,7 +349,7 @@ let ``test isolate and consume should take the first n items from the stream at 
 [<Sequential>]
 let ``test isolate and consume should take the first n items when chunked``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
   let input = [ 0..9 ]
-  let expected = FSharpx.List.take x input
+  let expected = FSharpx.Collections.List.take x input
   let actual = enumeratePureNChunk 5 input (joinI (isolate x consume)) |> run
   actual |> should equal expected
 
