@@ -42,6 +42,9 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="ProvidedTypes.fsi" />
     <Compile Include="ProvidedTypes.fs" />
+    <Compile Include="..\FSharpx.Core\Pluralizer.fs">
+      <Link>Pluralizer.fs</Link>
+    </Compile>
     <Compile Include="..\FSharpx.Core\Strings.fs">
       <Link>Strings.fs</Link>
     </Compile>
