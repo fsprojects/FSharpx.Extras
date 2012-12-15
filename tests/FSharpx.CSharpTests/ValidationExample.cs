@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.FSharp.Core;
 using Microsoft.FSharp.Collections;
 using NUnit.Framework;
+using FSharpx.Collections;
 
 namespace FSharpx.CSharpTests.ValidationExample {
     // ported from original in Scalaz: https://gist.github.com/970717

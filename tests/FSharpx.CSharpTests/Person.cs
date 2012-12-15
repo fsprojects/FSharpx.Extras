@@ -1,6 +1,6 @@
 using System;
 using Microsoft.FSharp.Core;
-using Errors = FSharpx.NonEmptyList<string>;
+using Errors = FSharpx.Collections.NonEmptyList<string>;
 
 namespace FSharpx.CSharpTests {
     public class Person {

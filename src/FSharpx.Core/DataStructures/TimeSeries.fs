@@ -4,7 +4,7 @@ namespace FSharpx.DataStructures
 open System
 open System.Collections
 open System.Collections.Generic
-open FSharpx
+open FSharpx.Collections
 
 type Timeseries<'a>(startDate:DateTimeOffset, granularity:TimeSpan, position:int, values:seq<'a>) = 
     let buffer = RingBuffer<'a>(position, values)

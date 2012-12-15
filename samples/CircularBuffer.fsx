@@ -13,7 +13,7 @@ open System
 open System.Diagnostics
 open FSharp.Control
 open FSharp.IO
-open FSharpx
+open FSharpx.Collections.Mutable
 
 // [snippet: Using CircularBuffer]
 let queue = CircularBuffer(5)

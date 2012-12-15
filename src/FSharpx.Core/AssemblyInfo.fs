@@ -40,4 +40,8 @@ It currently implements:
 
 [<assembly: AssemblyDelaySign (false)>]
 
+[<assembly: AutoOpen ("FSharpx.Collections")>]
+
+[<assembly: AutoOpen ("FSharpx.Collections.Mutable")>]
+
 ()

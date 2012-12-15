@@ -1,5 +1,7 @@
 ﻿namespace FSharpx
 
+open FSharpx.Collections
+
 type Lens<'a,'b> = {
     Get: 'a -> 'b
     Set: 'b -> 'a -> 'a

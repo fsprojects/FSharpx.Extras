@@ -1,6 +1,6 @@
 ﻿module FSharpx.DataStructures.Tests.EditDistanceTest
 
-open FSharpx
+open FSharpx.Collections
 open FSharpx.DataStructures
 open NUnit.Framework
 open FsUnit

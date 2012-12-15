@@ -1,9 +1,10 @@
-﻿namespace FSharpx
+﻿namespace FSharpx.Collections
 
 open System
 open System.Collections
 open System.Collections.Generic
 open System.Runtime.CompilerServices
+open FSharpx
 
 type 'a NonEmptyList = {
     Head: 'a

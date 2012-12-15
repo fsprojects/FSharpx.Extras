@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using NUnit.Framework;
+using FSharpx.Collections;
 
 namespace FSharpx.CSharpTests {
     [TestFixture]
