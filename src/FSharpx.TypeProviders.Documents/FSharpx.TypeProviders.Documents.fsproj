@@ -50,6 +50,9 @@
     <Compile Include="..\FSharpx.TypeProviders\ProvidedTypes.fs">
       <Link>ProvidedTypes.fs</Link>
     </Compile>
+    <Compile Include="..\FSharpx.Core\Pluralizer.fs">
+      <Link>Pluralizer.fs</Link>
+    </Compile>
     <Compile Include="..\FSharpx.Core\Strings.fs">
       <Link>Strings.fs</Link>
     </Compile>
