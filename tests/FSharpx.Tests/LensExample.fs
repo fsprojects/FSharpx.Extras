@@ -3,6 +3,7 @@
 // http://stackoverflow.com/questions/8179485/updating-nested-immutable-data-structures
 
 open FSharpx
+open FSharpx.Collections
 
 type Monster = {
     Awake: bool

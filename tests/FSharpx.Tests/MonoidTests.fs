@@ -4,6 +4,7 @@ open NUnit.Framework
 open FsCheck
 open FsCheck.NUnit
 open FSharpx
+open FSharpx.Collections
 open FSharpx.Tests.Properties
 open FSharpx.Monoid
 

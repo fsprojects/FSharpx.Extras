@@ -1,6 +1,7 @@
 ﻿module FSharpx.DataStructures.Tests.RoseTreeTest
 
 open FSharpx
+open FSharpx.Collections
 open FSharpx.DataStructures
 open NUnit.Framework
 

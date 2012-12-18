@@ -6,6 +6,7 @@ open NUnit.Framework
 open FsUnit
 
 open FSharpx
+open FSharpx.Collections
 open FSharpx.Choice
 open FSharpx.Validation
 

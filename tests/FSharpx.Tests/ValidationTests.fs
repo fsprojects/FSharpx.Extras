@@ -4,6 +4,7 @@ open System
 open FsUnit
 open Microsoft.FSharp.Core
 open FSharpx
+open FSharpx.Collections
 open FSharpx.CSharpTests
 open FSharpx.Choice
 open FSharpx.Validation

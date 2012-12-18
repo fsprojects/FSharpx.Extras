@@ -1,6 +1,7 @@
 ﻿module FSharpx.Tests.Properties
 
 open FSharpx
+open FSharpx.Collections
 open FsCheck
 open FsCheck.NUnit
 
