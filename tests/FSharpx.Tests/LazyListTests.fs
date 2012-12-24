@@ -68,6 +68,11 @@ type public LazyListTests() =
         test "trySkip -1" ((LazyList.trySkip -1 nats) = None)
         test "trySkip 4 from list of 3" ((LazyList.trySkip 4 (LazyList.tryTake 3 nats).Value) = None)
 
+        let ll = LazyList.ofList [-5..-1]
+        let expected = (15, [5;4;3;2;1])
+        let x, y = LazyList.mapAccum (fun a b -> let c = abs b in (a+c,c)) 0 ll
+        test "mapAccum" ((x, (LazyList.toList y)) = expected)
+
         test "repeat" (LazyList.toList (LazyList.take 4 (LazyList.repeat 1)) = [1;1;1;1])
         test "append" (LazyList.toList (LazyList.take 4 (LazyList.append (LazyList.cons 77 (LazyList.empty)) nats)) = [77;0;1;2])
         test "zip"  (LazyList.toList (LazyList.take 3 (LazyList.zip nats (LazyList.skip 6 nats))) = [0,6;1,7; 2,8])

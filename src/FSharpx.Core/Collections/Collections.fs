@@ -422,20 +422,6 @@ module Map =
             override this.Zero() = Map.empty
             override this.Combine(a,b) = union a b }
 
-module LazyList =
-    /// Behaves like a combination of map and fold; 
-    /// it applies a function to each element of a list, 
-    /// passing an accumulating parameter from left to right, 
-    /// and returning a final value of this accumulator together with the new list.
-    let mapAccum f s l =
-        let rec loop s l cont =
-            match l with
-            | LazyList.Nil -> cont (s, LazyList.empty)
-            | LazyList.Cons(x,xs) ->
-                let s, y = f s x
-                loop s xs (fun (s,ys) -> cont (s, LazyList.cons y ys))
-        loop s l id
-
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 [<Extension>]
 module NameValueCollection =

@@ -70,6 +70,12 @@ module LazyList =
     /// the input list.  
     val trySkip     : count:int -> source:LazyList<'T> -> LazyList<'T> option
 
+    ///O(n). Behaves like a combination of map and fold; 
+    /// it applies a function to each element of a list, 
+    /// passing an accumulating parameter from left to right, 
+    /// and returning a final value of this accumulator together with the new list.
+    val mapAccum     : f:('T1 -> 'T2 -> 'T1 * 'T3) -> s:'T1 -> l:LazyList<'T2> -> 'T1 * LazyList<'T3>
+
     ///O(n), worst case. Apply the given function to successive elements of the list, returning the first
     /// result where function returns <c>Some(x)</c> for some x. If the function never returns
     /// true, 'None' is returned.
