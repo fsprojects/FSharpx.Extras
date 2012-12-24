@@ -68,6 +68,23 @@ type public LazyListTests() =
         test "trySkip -1" ((LazyList.trySkip -1 nats) = None)
         test "trySkip 4 from list of 3" ((LazyList.trySkip 4 (LazyList.tryTake 3 nats).Value) = None)
 
+        test "tryUncons empty" ((LazyList.tryUncons LazyList.empty) = None)
+        let x, y = (LazyList.tryUncons (LazyList.take 1 nats)).Value
+        //LazyList has [<NoEquality; NoComparison>], so we cannot compare to LazyList.empty
+//        test "tryUncons 1" ((x, y) = (0, LazyList.empty<int>))
+        test "tryUncons 1" ((x, (LazyList.isEmpty y)) = (0, true))
+        let x2, y2 = (LazyList.tryUncons (LazyList.take 2 nats)).Value
+        test "tryUncons 2" ((x2, (LazyList.toList y2)) = (0, [1]))
+        let x3, y3 = (LazyList.tryUncons (LazyList.take 3 nats)).Value
+        test "tryUncons 2" ((x3, (LazyList.toList y3)) = (0, [1;2]))
+
+        let xa, ya = LazyList.uncons (LazyList.take 1 nats)
+        test "uncons 1" ((xa, (LazyList.isEmpty ya)) = (0, true))
+        let xa2, ya2 = LazyList.uncons (LazyList.take 2 nats)
+        test "uncons 2" ((xa2, (LazyList.toList ya2)) = (0, [1]))
+        let xa3, ya3 = LazyList.uncons (LazyList.take 3 nats)
+        test "uncons 2" ((xa3, (LazyList.toList ya3)) = (0, [1;2]))
+
         let ll = LazyList.ofList [-5..-1]
         let expected = (15, [5;4;3;2;1])
         let x, y = LazyList.mapAccum (fun a b -> let c = abs b in (a+c,c)) 0 ll

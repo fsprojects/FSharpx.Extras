@@ -84,6 +84,13 @@ module LazyList =
     let consDelayed x l = lzy(fun () -> (consc x (lzy(fun () ->  (force (l()))))))
     let consf x l = consDelayed x l
 
+    let uncons (x : LazyList<'T>) = 
+        match force x with 
+        |CellCons (a,b) -> a,b
+        | CellEmpty -> invalidArg "x" "the list does not contain head and tail"
+
+    let tryUncons (x : LazyList<'T>) = match force x with CellCons (a,b) -> Some(a,b) | CellEmpty -> None
+
     let rec unfold f z = 
       lzy(fun () -> 
           match f z with

@@ -51,8 +51,14 @@ module LazyList =
     /// Forces the evaluation of the first cell of the list if it is not already evaluated.
     val tryTail       : LazyList<'T> -> LazyList<'T> option
 
-    ///O(1). Get the first cell of the list.
+    [<System.Obsolete("This function has been renamed. Use 'LazyList.tryUncons' instead")>]
     val get      : LazyList<'T> -> ('T * LazyList<'T>) option  
+
+    ///O(1). Returns tuple of head element and tail of the list.
+    val uncons      : LazyList<'T> -> 'T * LazyList<'T>
+
+    ///O(1). Returns option tuple of head element and tail of the list.
+    val tryUncons      : LazyList<'T> -> ('T * LazyList<'T>) option
 
     ///O(n), where n is count. Return the list which on consumption will consist of at most 'n' elements of 
     /// the input list.  
