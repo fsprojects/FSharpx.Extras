@@ -39,9 +39,17 @@ module LazyList =
     /// the first cell of the list if it is not already evaluated.
     val head       : LazyList<'T> -> 'T
 
+    ///O(1). Return option the first element of the list.  Forces the evaluation of
+    /// the first cell of the list if it is not already evaluated.
+    val tryHead       : LazyList<'T> -> 'T option
+
     ///O(1). Return the list corresponding to the remaining items in the sequence.  
     /// Forces the evaluation of the first cell of the list if it is not already evaluated.
     val tail       : LazyList<'T> -> LazyList<'T>
+
+    ///O(1). Return option the list corresponding to the remaining items in the sequence.  
+    /// Forces the evaluation of the first cell of the list if it is not already evaluated.
+    val tryTail       : LazyList<'T> -> LazyList<'T> option
 
     ///O(1). Get the first cell of the list.
     val get      : LazyList<'T> -> ('T * LazyList<'T>) option  
@@ -50,9 +58,17 @@ module LazyList =
     /// the input list.  
     val take     : count:int -> source:LazyList<'T> -> LazyList<'T>
 
+    ///O(n), where n is count. Return the list which on consumption will consist of at most 'n' elements of 
+    /// the input list.  
+    val tryTake     : count:int -> source:LazyList<'T> -> LazyList<'T> option
+
     ///O(n), where n is count. Return the list which on consumption will skip the first 'n' elements of 
     /// the input list.  
     val skip     : count:int -> source:LazyList<'T> -> LazyList<'T>
+
+    ///O(n), where n is count. Return option the list which skips the first 'n' elements of 
+    /// the input list.  
+    val trySkip     : count:int -> source:LazyList<'T> -> LazyList<'T> option
 
     ///O(n), worst case. Apply the given function to successive elements of the list, returning the first
     /// result where function returns <c>Some(x)</c> for some x. If the function never returns

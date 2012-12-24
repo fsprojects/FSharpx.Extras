@@ -158,10 +158,20 @@ module LazyList =
       | CellCons(a,_) -> a
       | CellEmpty -> invalidArg "s" "the list is empty"
 
+    let tryHead s = 
+      match getCell s with
+      | CellCons(a,_) -> Some a
+      | CellEmpty -> None
+
     let tail s = 
       match getCell s with
       | CellCons(_,b) -> b
       | CellEmpty -> invalidArg "s" "the list is empty"
+
+    let tryTail s = 
+      match getCell s with
+      | CellCons(_,b) -> Some b
+      | CellEmpty -> None
 
     let isEmpty s =
       match getCell s with
@@ -177,6 +187,14 @@ module LazyList =
           | CellCons(a,s) -> consc a (take (n-1) s)
           | CellEmpty -> invalidArg "n" "not enough items in the list" )
 
+    let rec tryTake n s = 
+        if n < 0 then None
+        elif n = 0 then Some empty
+        else
+            match getCell s with
+            | CellCons(a,s) -> Some (consDelayed a ( fun () -> match (tryTake (n-1) s) with Some x -> x | None -> empty ) )
+            | CellEmpty -> None
+
     let rec skipc n s =
       if n = 0 then force s 
       else  
@@ -188,6 +206,17 @@ module LazyList =
       lzy(fun () -> 
         if n < 0 then invalidArg "n" "the value must not be negative"
         else skipc n s)
+
+    let rec skipcOpt n s =
+      if n = 0 then Some s
+      else  
+        match getCell s with
+        | CellCons(_,s) -> match (skipcOpt (n-1) s) with Some x -> Some x | None -> None
+        | CellEmpty -> None
+
+    let rec trySkip n s = 
+        if n < 0 then None
+        else skipcOpt n s
 
     let rec ofList l = 
       lzy(fun () -> 
