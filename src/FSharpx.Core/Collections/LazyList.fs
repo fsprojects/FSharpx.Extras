@@ -76,13 +76,12 @@ module LazyList =
     [<NoEquality; NoComparison>]
     type LazyItem<'T> = Cons of 'T * LazyList<'T> | Empty
     type 'T item = 'T LazyItem
-    let get (x : LazyList<'T>) = match force x with CellCons (a,b) -> Some(a,b) | CellEmpty -> None
+
     let getCell (x : LazyList<'T>) = force x 
     let empty<'T> : LazyList<'T> = EmptyValue<'T>.Value
     let consc x l = CellCons(x,l)
     let cons x l = lzy(fun () -> (consc x l))
     let consDelayed x l = lzy(fun () -> (consc x (lzy(fun () ->  (force (l()))))))
-    let consf x l = consDelayed x l
 
     let uncons (x : LazyList<'T>) = 
         match force x with 
@@ -124,7 +123,6 @@ module LazyList =
         match getCell s1, getCell s2  with
         | CellCons(a1,b1),CellCons(a2,b2) -> consc (a1,a2) (zip b1 b2)
         | _ -> CellEmpty)
-    let combine s1 s2 = zip s1 s2
 
     let rec concat s1 = 
       lzy(fun () -> 
@@ -143,8 +141,6 @@ module LazyList =
         | CellCons(a,b) -> if p a then Some a else tryFind p b
         | CellEmpty -> None
 
-    let first p s1 = tryFind p s1
-
     let indexNotFound() = raise (new System.Collections.Generic.KeyNotFoundException("An index satisfying the predicate was not found in the collection"))
 
     let find p s1 =
@@ -157,8 +153,6 @@ module LazyList =
         match getCell s1 with
         | CellCons(a,b) -> let acc' = f acc a in consc acc (scan f acc' b)
         | CellEmpty -> consc acc empty)
-
-    let folds f acc s1 = scan f acc s1 // deprecated
 
     let head s = 
       match getCell s with
@@ -285,26 +279,3 @@ module LazyList =
       ofFreshIEnumerator (c.GetEnumerator()) 
       
     let (|Cons|Nil|) l = match getCell l with CellCons(a,b) -> Cons(a,b) | CellEmpty -> Nil
-
-
-    let hd s = head s
-
-    let tl s = tail s
-
-    let drop n s = skip n s
-
-    let nonempty s = not (isEmpty s)
-
-    let of_list l = ofList l
-
-    let of_seq l = ofSeq l
-
-    let of_array l = ofArray l
-
-    let to_seq l = toSeq l
-
-    let to_list l = toList l
-
-    let to_array l = toArray l
-
-

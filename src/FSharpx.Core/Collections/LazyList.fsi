@@ -51,9 +51,6 @@ module LazyList =
     /// Forces the evaluation of the first cell of the list if it is not already evaluated.
     val tryTail       : LazyList<'T> -> LazyList<'T> option
 
-    [<System.Obsolete("This function has been renamed. Use 'LazyList.tryUncons' instead")>]
-    val get      : LazyList<'T> -> ('T * LazyList<'T>) option  
-
     ///O(1). Returns tuple of head element and tail of the list.
     val uncons      : LazyList<'T> -> 'T * LazyList<'T>
 
@@ -170,48 +167,6 @@ module LazyList =
 
     ///O(1). Build a new collection from the given enumerable object
     val ofSeq: seq<'T> -> LazyList<'T>
-
-    [<System.Obsolete("This function has been renamed. Use 'LazyList.consDelayed' instead")>]
-    val consf    : 'T -> (unit -> LazyList<'T>)     -> LazyList<'T>
-
-    [<System.Obsolete("This function has been renamed. Use 'LazyList.head' instead")>]
-    val hd: LazyList<'T> -> 'T
-
-    [<System.Obsolete("This function has been renamed. Use 'LazyList.tail' instead")>]
-    val tl     : LazyList<'T> -> LazyList<'T>
-
-    [<System.Obsolete("This function will be removed. Use 'not (LazyList.isEmpty list)' instead")>]
-    val nonempty : LazyList<'T> -> bool
-
-    [<System.Obsolete("This function has been renamed. Use 'LazyList.skip' instead")>]
-    val drop     : count:int -> source:LazyList<'T> -> LazyList<'T>
-
-    [<System.Obsolete("This function has been renamed to 'tryFind'")>]
-    val first    : predicate:('T -> bool) -> source:LazyList<'T> -> 'T option
-
-    [<System.Obsolete("This function has been renamed. Use 'LazyList.ofArray' instead")>]
-    val of_array : 'T array -> LazyList<'T>
-
-    [<System.Obsolete("This function has been renamed. Use 'LazyList.toArray' instead")>]
-    val to_array : LazyList<'T> -> 'T array
-
-    [<System.Obsolete("This function has been renamed. Use 'LazyList.ofList' instead")>]
-    val of_list  : list<'T> -> LazyList<'T>
-
-    [<System.Obsolete("This function has been renamed. Use 'LazyList.toList' instead")>]
-    val to_list  : LazyList<'T> -> list<'T>
-
-    [<System.Obsolete("This function has been renamed. Use 'LazyList.toSeq' instead")>]
-    val to_seq: LazyList<'T> -> seq<'T>
-
-    [<System.Obsolete("This function has been renamed. Use 'LazyList.ofSeq' instead")>]
-    val of_seq: seq<'T> -> LazyList<'T>
-
-    [<System.Obsolete("This function has been renamed to 'scan'")>]
-    val folds    : folder:('State -> 'T -> 'State) -> 'State -> source:LazyList<'T> -> LazyList<'State>  
-
-    [<System.Obsolete("This function has been renamed to 'zip'")>]
-    val combine  : LazyList<'T1> -> LazyList<'T2> -> LazyList<'T1 * 'T2>
 
     //--------------------------------------------------------------------------
     // Lazy list active patterns
