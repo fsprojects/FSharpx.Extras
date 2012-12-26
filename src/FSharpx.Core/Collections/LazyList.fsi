@@ -27,6 +27,34 @@ type LazyList<'T> =
     interface IEnumerable<'T>
     interface System.Collections.IEnumerable
     
+    ///O(1). Test if a list is empty.  Forces the evaluation of
+    /// the first element of the stream if it is not already evaluated.
+    member IsEmpty : bool
+
+    ///O(1). Return the first element of the list.  Forces the evaluation of
+    /// the first cell of the list if it is not already evaluated.
+    member Head : 'T
+
+    ///O(n). Return the length of the list
+    member Length : unit -> int
+
+    ///O(1). Return option the first element of the list.  Forces the evaluation of
+    /// the first cell of the list if it is not already evaluated.
+    member TryHead : 'T option
+
+    ///O(1). Return the list corresponding to the remaining items in the sequence.  
+    /// Forces the evaluation of the first cell of the list if it is not already evaluated.
+    member Tail : LazyList<'T>
+
+    ///O(1). Return option the list corresponding to the remaining items in the sequence.  
+    /// Forces the evaluation of the first cell of the list if it is not already evaluated.
+    member TryTail : LazyList<'T> option
+
+    ///O(1). Returns tuple of head element and tail of the list.
+    member Uncons : 'T * LazyList<'T>
+
+    ///O(1). Returns option tuple of head element and tail of the list.
+    member TryUncons : ('T * LazyList<'T>) option
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module LazyList =
