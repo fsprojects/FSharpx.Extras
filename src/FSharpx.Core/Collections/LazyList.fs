@@ -35,6 +35,49 @@ type LazyList<'T> =
                 | LazyCellStatus.Value v -> v
                 | LazyCellStatus.Exception e -> raise e)
     
+    static member inline force (x: LazyList<'T>) = x.Value
+    static member inline getCell (x : LazyList<'T>) = LazyList.force x
+
+    member this.IsEmpty =
+      match LazyList.getCell this with
+      | CellCons _ -> false
+      | CellEmpty -> true
+
+    member this.Head = 
+      match LazyList.getCell this with
+      | CellCons(a,_) -> a
+      | CellEmpty -> invalidArg "s" "the list is empty"
+      
+    member this.TryHead = 
+      match LazyList.getCell this with
+      | CellCons(a,_) -> Some a
+      | CellEmpty -> None
+
+    member this.Length() = 
+        let rec lengthAux n s = 
+          match LazyList.getCell s with
+          | CellEmpty -> n
+          | CellCons(_,b) -> lengthAux (n+1) b
+
+        lengthAux 0 this
+
+    member this.Tail = 
+      match LazyList.getCell this with
+      | CellCons(_,b) -> b
+      | CellEmpty -> invalidArg "s" "the list is empty"
+
+    member this.TryTail = 
+      match LazyList.getCell this with
+      | CellCons(_,b) -> Some b
+      | CellEmpty -> None
+
+    member this.Uncons = 
+        match LazyList.force this with 
+        | CellCons (a,b) -> a,b
+        | CellEmpty -> invalidArg "x" "the list does not contain head and tail"
+
+    member this.TryUncons = match LazyList.force this with CellCons (a,b) -> Some(a,b) | CellEmpty -> None
+
     member s.GetEnumeratorImpl() = 
         let getCell (x : LazyList<'T>) = x.Value
         let toSeq s = Seq.unfold (fun ll -> match getCell ll with CellEmpty -> None | CellCons(a,b) -> Some(a,b)) s 
@@ -76,13 +119,16 @@ module LazyList =
     [<NoEquality; NoComparison>]
     type LazyItem<'T> = Cons of 'T * LazyList<'T> | Empty
     type 'T item = 'T LazyItem
-    let get (x : LazyList<'T>) = match force x with CellCons (a,b) -> Some(a,b) | CellEmpty -> None
+
     let getCell (x : LazyList<'T>) = force x 
     let empty<'T> : LazyList<'T> = EmptyValue<'T>.Value
     let consc x l = CellCons(x,l)
     let cons x l = lzy(fun () -> (consc x l))
     let consDelayed x l = lzy(fun () -> (consc x (lzy(fun () ->  (force (l()))))))
-    let consf x l = consDelayed x l
+
+    let uncons (s : LazyList<'T>) = s.Uncons
+
+    let tryUncons (s : LazyList<'T>) = s.TryUncons
 
     let rec unfold f z = 
       lzy(fun () -> 
@@ -117,7 +163,6 @@ module LazyList =
         match getCell s1, getCell s2  with
         | CellCons(a1,b1),CellCons(a2,b2) -> consc (a1,a2) (zip b1 b2)
         | _ -> CellEmpty)
-    let combine s1 s2 = zip s1 s2
 
     let rec concat s1 = 
       lzy(fun () -> 
@@ -136,8 +181,6 @@ module LazyList =
         | CellCons(a,b) -> if p a then Some a else tryFind p b
         | CellEmpty -> None
 
-    let first p s1 = tryFind p s1
-
     let indexNotFound() = raise (new System.Collections.Generic.KeyNotFoundException("An index satisfying the predicate was not found in the collection"))
 
     let find p s1 =
@@ -151,22 +194,15 @@ module LazyList =
         | CellCons(a,b) -> let acc' = f acc a in consc acc (scan f acc' b)
         | CellEmpty -> consc acc empty)
 
-    let folds f acc s1 = scan f acc s1 // deprecated
+    let head (s : LazyList<'T>) = s.Head
 
-    let head s = 
-      match getCell s with
-      | CellCons(a,_) -> a
-      | CellEmpty -> invalidArg "s" "the list is empty"
+    let tryHead (s : LazyList<'T>) = s.TryHead 
 
-    let tail s = 
-      match getCell s with
-      | CellCons(_,b) -> b
-      | CellEmpty -> invalidArg "s" "the list is empty"
+    let tail (s : LazyList<'T>) = s.Tail
 
-    let isEmpty s =
-      match getCell s with
-      | CellCons _ -> false
-      | CellEmpty -> true
+    let tryTail (s : LazyList<'T>) = s.TryTail
+
+    let isEmpty (s : LazyList<'T>) = s.IsEmpty
 
     let rec take n s = 
       lzy(fun () -> 
@@ -176,6 +212,14 @@ module LazyList =
           match getCell s with
           | CellCons(a,s) -> consc a (take (n-1) s)
           | CellEmpty -> invalidArg "n" "not enough items in the list" )
+
+    let rec tryTake n s = 
+        if n < 0 then None
+        elif n = 0 then Some empty
+        else
+            match getCell s with
+            | CellCons(a,s) -> Some (consDelayed a ( fun () -> match (tryTake (n-1) s) with Some x -> x | None -> empty ) )
+            | CellEmpty -> None
 
     let rec skipc n s =
       if n = 0 then force s 
@@ -188,6 +232,26 @@ module LazyList =
       lzy(fun () -> 
         if n < 0 then invalidArg "n" "the value must not be negative"
         else skipc n s)
+
+    let rec skipcOpt n s =
+      if n = 0 then Some s
+      else  
+        match getCell s with
+        | CellCons(_,s) -> match (skipcOpt (n-1) s) with Some x -> Some x | None -> None
+        | CellEmpty -> None
+
+    let rec trySkip n s = 
+        if n < 0 then None
+        else skipcOpt n s
+
+    let mapAccum f s l =
+        let rec loop s l cont =
+            match  getCell l with
+            | CellEmpty -> cont (s, empty)
+            | CellCons(x,xs) ->
+                let s, y = f s x
+                loop s xs (fun (s,ys) -> cont (s, cons y ys))
+        loop s l id
 
     let rec ofList l = 
       lzy(fun () -> 
@@ -223,7 +287,7 @@ module LazyList =
       | CellEmpty -> n
       | CellCons(_,b) -> lengthAux (n+1) b
 
-    let length s = lengthAux 0 s
+    let length (s : LazyList<'T>) = s.Length()
 
     let toSeq (s: LazyList<'T>) = (s :> IEnumerable<_>)
 
@@ -240,26 +304,3 @@ module LazyList =
       ofFreshIEnumerator (c.GetEnumerator()) 
       
     let (|Cons|Nil|) l = match getCell l with CellCons(a,b) -> Cons(a,b) | CellEmpty -> Nil
-
-
-    let hd s = head s
-
-    let tl s = tail s
-
-    let drop n s = skip n s
-
-    let nonempty s = not (isEmpty s)
-
-    let of_list l = ofList l
-
-    let of_seq l = ofSeq l
-
-    let of_array l = ofArray l
-
-    let to_seq l = toSeq l
-
-    let to_list l = toList l
-
-    let to_array l = toArray l
-
-
