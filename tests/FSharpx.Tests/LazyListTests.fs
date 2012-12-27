@@ -43,10 +43,52 @@ type public LazyListTests() =
         test "seq2" (LazyList.head (LazyList.cons 1 (LazyList.cons 2 LazyList.empty)) = 1)
         test "seq3" (LazyList.head (LazyList.tail (LazyList.cons 1 (LazyList.cons 2 LazyList.empty))) = 2)
 
+        test "tryHead empty" ((LazyList.tryHead LazyList.empty) = None)
+        test "tryHead seq1" ((LazyList.tryHead (LazyList.cons 1 LazyList.empty)).Value = 1)
+        test "tryHead seq2" ((LazyList.tryHead (LazyList.cons 1 (LazyList.cons 2 LazyList.empty))).Value = 1)
+
+        test "tryTail empty" ((LazyList.tryTail LazyList.empty) = None)
+        test "tryTail seq1" (LazyList.isEmpty (LazyList.tryTail (LazyList.cons 1 LazyList.empty)).Value)
+        test "tryTail seq2" (LazyList.toList ((LazyList.tryTail (LazyList.cons 1 (LazyList.cons 2 LazyList.empty))).Value) = [2])
+        test "tryTail seq3" (LazyList.toList ((LazyList.tryTail (LazyList.cons 1 (LazyList.cons 2 (LazyList.cons 3 LazyList.empty)))).Value) = [2;3])
+
         let nats = LazyList.unfold (fun z -> Some (z,z+1)) 0 
         test "take1" (LazyList.toList (LazyList.take 4 nats) = [0;1;2;3])
         test "drop1" (LazyList.head (LazyList.skip 4 nats) = 4)
         test "drop1" (LazyList.head (LazyList.skip 0 nats) = 0)
+
+        test "tryTake empty" ((LazyList.tryTake 4 LazyList.empty) = None)
+        test "tryTake0" (LazyList.isEmpty (LazyList.tryTake 0 LazyList.empty).Value)
+        test "tryTake1" (LazyList.toList (LazyList.tryTake 1 nats).Value = [0])
+        test "tryTake4" (LazyList.toList (LazyList.tryTake 4 nats).Value = [0;1;2;3])
+        test "tryTake4 from list of 3" (LazyList.toList (LazyList.tryTake 4 (LazyList.tryTake 3 nats).Value).Value = [0;1;2])
+
+        test "trySkip 0" (LazyList.head (LazyList.trySkip 0 nats).Value = 0)
+        test "trySkip 4" (LazyList.head (LazyList.trySkip 4 nats).Value = 4)
+        test "trySkip -1" ((LazyList.trySkip -1 nats) = None)
+        test "trySkip 4 from list of 3" ((LazyList.trySkip 4 (LazyList.tryTake 3 nats).Value) = None)
+
+        test "tryUncons empty" ((LazyList.tryUncons LazyList.empty) = None)
+        let x, y = (LazyList.tryUncons (LazyList.take 1 nats)).Value
+        //LazyList has [<NoEquality; NoComparison>], so we cannot compare to LazyList.empty
+//        test "tryUncons 1" ((x, y) = (0, LazyList.empty<int>))
+        test "tryUncons 1" ((x, (LazyList.isEmpty y)) = (0, true))
+        let x2, y2 = (LazyList.tryUncons (LazyList.take 2 nats)).Value
+        test "tryUncons 2" ((x2, (LazyList.toList y2)) = (0, [1]))
+        let x3, y3 = (LazyList.tryUncons (LazyList.take 3 nats)).Value
+        test "tryUncons 2" ((x3, (LazyList.toList y3)) = (0, [1;2]))
+
+        let xa, ya = LazyList.uncons (LazyList.take 1 nats)
+        test "uncons 1" ((xa, (LazyList.isEmpty ya)) = (0, true))
+        let xa2, ya2 = LazyList.uncons (LazyList.take 2 nats)
+        test "uncons 2" ((xa2, (LazyList.toList ya2)) = (0, [1]))
+        let xa3, ya3 = LazyList.uncons (LazyList.take 3 nats)
+        test "uncons 2" ((xa3, (LazyList.toList ya3)) = (0, [1;2]))
+
+        let ll = LazyList.ofList [-5..-1]
+        let expected = (15, [5;4;3;2;1])
+        let x, y = LazyList.mapAccum (fun a b -> let c = abs b in (a+c,c)) 0 ll
+        test "mapAccum" ((x, (LazyList.toList y)) = expected)
 
         test "repeat" (LazyList.toList (LazyList.take 4 (LazyList.repeat 1)) = [1;1;1;1])
         test "append" (LazyList.toList (LazyList.take 4 (LazyList.append (LazyList.cons 77 (LazyList.empty)) nats)) = [77;0;1;2])
