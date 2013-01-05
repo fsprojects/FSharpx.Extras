@@ -74,6 +74,49 @@ it aims to be compatible with all .NET languages wherever possible. FSharpx.Core
 <li>FSharpx.TypeProviders.Freebase - allows to access the Freebase database with strong typing</li>
 </ul><p>All type providers work with .NET 4.0 and .NET 4.5 and F# 3.0.</p>
 
+<h3>Samples</h3>
+<h4>JSON</h4>
+<pre>
+  type PersonJSON = StructuredJSON&lt;Schema="""{ "firstName": "Max" "lastName": "Mustermann" "age": 26 "isCool": true }"""&gt;
+  let person = PersonJSON().Root
+  
+  person.FirstName
+  |> should equal "Max"
+  
+  person.FirstName <- "John"
+  person.FirstName |> should equal "John"  
+</pre>
+
+<h4>CSV</h4>
+
+<p>DistanceTime.csv:</p>
+Distance (meter),Time (second)<br />
+50,3.7<br />
+100,5.2<br />
+150,6.4<br />
+
+<pre>
+type SmallCsv = MinCsv&lt;"DistanceTime.csv"&gt;
+
+let row1 = SmallCsv().Data |> Seq.head 
+row1.Distance |> should equal 50.&lt;meter&gt;  
+</pre>
+
+<h4>RegEx</h4>
+<pre>
+type PhoneRegex = Regex&lt; @"(?&lt;AreaCode&gt;^\d{3})-(?&lt;PhoneNumber&gt;\d{3}-\d{4}$)"&gt;
+
+PhoneRegex.IsMatch "425-123-2345"
+|> should equal true
+
+PhoneRegex().Match("425-123-2345").CompleteMatch.Value
+|> should equal "425-123-2345"
+
+PhoneRegex().Match("425-123-2345").PhoneNumber.Value
+|> should equal "123-2345"  
+</pre>
+
+
 <h2>FSharpx.Observable</h2>
 <p>A small package containing helpers related to programming with observables</p>
 
