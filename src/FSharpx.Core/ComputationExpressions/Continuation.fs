@@ -92,7 +92,7 @@ module Continuation =
 
 /// The coroutine type from http://fssnip.net/7M
 type Coroutine() =
-    let tasks = new Queue<Cont<unit,unit>>()
+    let tasks = new System.Collections.Generic.Queue<Cont<unit,unit>>()
 
     member this.Put(task) =
         let withYield = Continuation.cont {
