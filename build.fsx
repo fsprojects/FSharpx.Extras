@@ -83,8 +83,6 @@ let frameworkParams portable frameworkVersion =
          "DefineConstants", "NET" + normalizeFrameworkVersion frameworkVersion]
 
 // tools
-let fakeVersion = GetPackageVersion packagesDir "FAKE"
-let fakePath = sprintf "%sFAKE.%s/tools" packagesDir fakeVersion
 let nugetPath = "./lib/Nuget/nuget.exe"
 let nunitVersion = GetPackageVersion packagesDir "NUnit.Runners"
 let nunitPath = sprintf "%sNUnit.Runners.%s/Tools" packagesDir nunitVersion
