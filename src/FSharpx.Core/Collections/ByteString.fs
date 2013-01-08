@@ -20,7 +20,7 @@ type ByteString =
     static member Compare (a:ByteString, b:ByteString) =
         let x,o,l = a.Array, a.Offset, a.Count
         let x',o',l' = b.Array, b.Offset, b.Count
-        if x = x' && o = o' && l = l' then 0
+        if o = o' && l = l' && x = x' then 0
         elif x = x' then
             if o = o' then if l < l' then -1 else 1
             else if o < o' then -1 else 1 

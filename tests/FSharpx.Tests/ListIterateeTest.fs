@@ -449,8 +449,9 @@ let readCsvLine = many (takeUntilComma <* drop 1)
 [<Test>]
 let ``test readCsvLine should take chunks until no commas remain``() =
   let csvSample = List.ofSeq "blah,blah,blah"
-  let actual = enumerate csvSample readCsvLine |> run
-  actual |> should equal [List.ofSeq "blah";List.ofSeq "blah";List.ofSeq "blah"]
+  let actual = enumerate csvSample readCsvLine |> run |> sprintf "%A"
+  let expected = [List.ofSeq "blah";List.ofSeq "blah";List.ofSeq "blah"] |> sprintf "%A"
+  actual |> should equal expected
 
 [<Test>]
 let ``test readCsvLine should return the empty byte string when that's all it is passed``() =
