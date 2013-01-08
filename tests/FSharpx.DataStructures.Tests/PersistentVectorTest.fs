@@ -72,7 +72,8 @@ let ``vector with 30000 elements should allow assocN``() =
     for i in 1..30000 do
         vector := assocN (i-1) (i*2) (!vector)
 
-    !vector |> Seq.toList |> should equal [for i in 1..30000 -> i*2]
+    let a = !vector |> Seq.toArray 
+    for i in 1..30000 do i * 2 |> should equal a.[i-1]
 
 [<Test>]
 let ``can peek elements from a vector``() =
@@ -145,7 +146,8 @@ let ``vector should allow map``() =
 
     let vector2 = map (fun x -> x * 2) (!vector)
 
-    vector2 |> Seq.toList |> should equal [for i in 1..30000 -> i * 2]
+    let a = vector2 |> Seq.toArray 
+    for i in 1..30000 do i * 2 |> should equal a.[i-1]
 
 [<Test>]
 let ``vector should allow init``() =

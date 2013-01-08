@@ -32,7 +32,7 @@ type ByteString =
         | :? ByteString as other' -> ByteString.Compare(x, other') = 0
         | _ -> false
     /// Gets the hash code for the byte string.
-    override x.GetHashCode() = hash x
+    override x.GetHashCode() = hash (x.Array,x.Offset,x.Count)
     /// Gets an enumerator for the bytes stored in the byte string.
     member x.GetEnumerator() =
         if x.Count = 0 then
