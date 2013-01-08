@@ -39,9 +39,6 @@
   <PropertyGroup Condition="$(TargetFrameworkVersion) == 'v4.0'">
     <DefineConstants>NET40</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="$(TargetFrameworkVersion) == 'v4.5'">
-    <DefineConstants>NET45</DefineConstants>
-  </PropertyGroup>
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
@@ -126,9 +123,6 @@
     </Reference>
     <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
       <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' == 'v4.5'">
-      <HintPath>..\..\lib\FSharp\Net45\FSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />

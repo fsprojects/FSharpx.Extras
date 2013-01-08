@@ -47,9 +47,6 @@
   <PropertyGroup Condition="$(TargetFrameworkVersion) == 'v4.0'">
     <DefineConstants>NET40</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="$(TargetFrameworkVersion) == 'v4.5'">
-    <DefineConstants>NET45</DefineConstants>
-  </PropertyGroup>
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
     <None Include="packages.config" />
@@ -107,11 +104,12 @@
       <HintPath>..\..\packages\FsCheck.0.8.3.0\lib\net40-Client\FsCheck.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) != 'v4.5'">
-      <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
+    <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
+      <HintPath>..\..\lib\FSharp\Net20\FSharp.Core.dll</HintPath>
     </Reference>
-    <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' == 'v4.5'">
-      <HintPath>..\..\lib\FSharp\Net45\FSharp.Core.dll</HintPath>
+    <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
+      <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="nunit.framework, Version=2.6.0.12054, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
@@ -133,7 +131,7 @@
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\FSharpx.CSharpTests\FSharpx.CSharpTests.csproj">
-      <Name>FSharp.Core.CS.Tests</Name>
+      <Name>FSharpx.CSharpTests</Name>
       <Project>{4354a199-6acf-4db5-a8fa-bad638d1d0e3}</Project>
       <Private>True</Private>
     </ProjectReference>
