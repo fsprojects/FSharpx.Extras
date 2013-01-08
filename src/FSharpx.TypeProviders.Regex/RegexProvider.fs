@@ -50,7 +50,7 @@ let internal typedRegex() =
                         parameters = [ProvidedParameter("input", typeof<string>)],
                         returnType = matchType,
                         InvokeCode = (fun args -> <@@ (%%args.[0]:Regex).Match(%%args.[1]) @@>))
-                isMatchMethod.AddXmlDoc "Searches the specified input string for the first occurence of this regular expression"
+                matchMethod.AddXmlDoc "Searches the specified input string for the first occurence of this regular expression"
 
                 regexType.AddMember matchMethod
                 
