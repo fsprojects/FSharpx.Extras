@@ -56,7 +56,8 @@ let ``vector with 30000 elements should be convertable to a seq``() =
     for i in 1..30000 do
         vector := conj i (!vector)
 
-    !vector |> Seq.toList |> should equal [1..30000]
+    let a = !vector |> Seq.toArray 
+    for i in 1..30000 do i |> should equal a.[i-1]
 
 [<Test>]
 let ``vector can be created from a seq``() =
