@@ -92,6 +92,7 @@
     <Compile Include="JSON.XMLConversion.Tests.fs" />
     <Compile Include="RegexTests.fs" />
 	<Compile Include="QueueTest.fs" />
+	<Compile Include="DListTest.fs" />
     <None Include="table.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

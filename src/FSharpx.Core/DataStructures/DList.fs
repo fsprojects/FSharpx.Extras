@@ -1,7 +1,6 @@
 namespace FSharpx.DataStructures
 
 open FSharpx
-open FSharpx.Collections
 open System.Collections
 open System.Collections.Generic
 
@@ -145,6 +144,6 @@ module DList =
             | t::ts -> walk ts t xs
         in walk [] l seed
 
-    let toList l = fold (flip List.cons) [] l
+    let toList l = fold (flip FSharpx.Collections.List.cons) [] l
 
     let toArray l = l |> toList |> Array.ofList
