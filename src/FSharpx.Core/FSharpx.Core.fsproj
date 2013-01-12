@@ -66,6 +66,8 @@
     <Compile Include="Collections\NonEmptyList.fs" />
 	<Compile Include="Collections\Queue.fsi" />
 	<Compile Include="Collections\Queue.fs" />
+	<Compile Include="Collections\Vector.fsi" />
+	<Compile Include="Collections\Vector.fs" />
     <Compile Include="ComputationExpressions\Monad.fs" />
     <Compile Include="ComputationExpressions\Continuation.fs" />
     <Compile Include="ComputationExpressions\Enumerator.fs" />

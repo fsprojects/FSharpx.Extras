@@ -93,6 +93,7 @@
     <Compile Include="RegexTests.fs" />
 	<Compile Include="QueueTest.fs" />
 	<Compile Include="DListTest.fs" />
+	<Compile Include="VectorTest.fs" />
     <None Include="table.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
