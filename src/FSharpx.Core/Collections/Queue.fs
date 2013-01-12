@@ -7,6 +7,11 @@ type Queue<'T> (front : list<'T>, rBack : list<'T>) =
     member internal this.front = front
     member internal this.rBack = rBack
 
+    member this.Conj x = 
+        match front, x::rBack with
+        | [], r -> Queue((List.rev r), [])
+        | f, r -> Queue(f, r)
+
     member this.Head = 
         match front with
         | hd::_ -> hd
@@ -23,11 +28,6 @@ type Queue<'T> (front : list<'T>, rBack : list<'T>) =
 
     member this.Rev() = 
         match rBack, front with
-        | [], r -> Queue((List.rev r), [])
-        | f, r -> Queue(f, r)
-
-    member this.Snoc x = 
-        match front, x::rBack with
         | [], r -> Queue((List.rev r), [])
         | f, r -> Queue(f, r)
 
@@ -80,6 +80,8 @@ module Queue =
     //pattern discriminators  (active pattern)
     let (|Cons|Nil|) (q : Queue<'T>) = match q.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
 
+    let inline conj (x : 'T) (q : Queue<'T>) = (q.Conj x) 
+
     let empty<'T> : Queue<'T> = Queue<_>([], []) 
 
     let fold (f : ('State -> 'T -> 'State)) (state : 'State) (q : Queue<'T>) = 
@@ -103,8 +105,6 @@ module Queue =
     let ofSeq xs = Queue<'T>((List.ofSeq xs), [])
 
     let inline rev (q : Queue<'T>) = q.Rev()
-
-    let inline snoc (x : 'T) (q : Queue<'T>) = (q.Snoc x) 
 
     let inline tail (q : Queue<'T>) = q.Tail
 

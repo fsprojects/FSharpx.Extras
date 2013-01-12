@@ -13,8 +13,8 @@ let emptyQueue = Queue.empty
 let enqueueThruList l q  =
     let rec loop (q' : 'a Queue) (l' : 'a list) = 
         match l' with
-        | hd :: [] -> q'.Snoc hd
-        | hd :: tl -> loop (q'.Snoc hd) tl
+        | hd :: [] -> q'.Conj hd
+        | hd :: tl -> loop (q'.Conj hd) tl
         | [] -> q'
         
     loop q l
@@ -29,7 +29,7 @@ let queueOfListGen =
             return ( (Queue.ofList x), x) }
 
 (*
-IQueue generators from random ofSeq and/or snoc elements from random list 
+IQueue generators from random ofSeq and/or conj elements from random list 
 *)
 let queueIntGen =
     gen {   let! n = Gen.length1thru12
@@ -43,7 +43,7 @@ let queueIntOfSeqGen =
             let! x = Gen.listInt n
             return ( (Queue.ofSeq x), x) }
 
-let queueIntSnocGen =
+let queueIntConjGen =
     gen {   let! n = Gen.length1thru12
             let! x = Gen.listInt n
             return ( (Queue.empty |> enqueueThruList x), x) }
@@ -66,7 +66,7 @@ let queueStringGen =
 let intGens start =
     let v = Array.create 3 (box (queueIntGen, "Queue"))
     v.[1] <- box ((queueIntOfSeqGen |> Gen.suchThat (fun (q, l) -> l.Length >= start)), "Queue OfSeq")
-    v.[2] <- box ((queueIntSnocGen |> Gen.suchThat (fun (q, l) -> l.Length >= start)), "Queue Enqueue") 
+    v.[2] <- box ((queueIntConjGen |> Gen.suchThat (fun (q, l) -> l.Length >= start)), "Queue Enqueue") 
     v
 
 let intGensStart1 =
@@ -77,11 +77,11 @@ let intGensStart2 =
 
 [<Test>]
 let ``allow to dequeue``() =
-    emptyQueue |> snoc 1 |> tail |> isEmpty |> should equal true
+    emptyQueue |> conj 1 |> tail |> isEmpty |> should equal true
 
 [<Test>]
 let ``allow to enqueue``() =
-    emptyQueue |> snoc 1 |> snoc 2 |> isEmpty |> should equal false
+    emptyQueue |> conj 1 |> conj 2 |> isEmpty |> should equal false
 
 [<Test>]
 let ``cons pattern discriminator - Queue``() =
@@ -117,7 +117,7 @@ let ``fold matches build list rev``() =
 //executes faster; classifyCollect for debugging
         (fun ((q :Queue<int>), (l : int list)) -> q |> fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) ))
 
-    fsCheck "Queue Snoc" (Prop.forAll (Arb.fromGen queueIntSnocGen) 
+    fsCheck "Queue Conj" (Prop.forAll (Arb.fromGen queueIntConjGen) 
 //        (fun ((q :Queue<int>), (l : int list)) -> q |> fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) |> classifyCollect q q.Length))
          (fun ((q :Queue<int>), (l : int list)) -> q |> fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) ))
 
@@ -132,7 +132,7 @@ let ``foldback matches build list``() =
 //        (fun ((q : Queue<int>), (l : int list)) -> foldBack (fun (elem : int) (l' : int list) -> elem::l') q [] = l |> classifyCollect q q.Length))
         (fun ((q : Queue<int>), (l : int list)) -> foldBack (fun (elem : int) (l' : int list) -> elem::l') q [] = l |> classifyCollect q q.Length))
 
-    fsCheck "Queue Snoc" (Prop.forAll (Arb.fromGen queueIntSnocGen) 
+    fsCheck "Queue Conj" (Prop.forAll (Arb.fromGen queueIntConjGen) 
 //        (fun ((q : Queue<int>), (l : int list)) -> foldBack (fun (elem : int) (l' : int list) -> elem::l') q [] = l |> classifyCollect q q.Length))
         (fun ((q : Queue<int>), (l : int list)) -> foldBack (fun (elem : int) (l' : int list) -> elem::l') q [] = l ))
 

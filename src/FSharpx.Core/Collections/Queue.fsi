@@ -9,6 +9,9 @@ type Queue<'T> =
     interface System.Collections.Generic.IEnumerable<'T>
     interface System.Collections.IEnumerable
 
+    ///O(1). Returns a new queue with the element added to the end. (Enqueue)
+    member Conj : 'T ->  Queue<'T>
+
     ///O(1). Returns the first element. (Peek)
     member Head : 'T 
 
@@ -23,9 +26,6 @@ type Queue<'T> =
 
     ///O(n). Returns queue reversed.
     member Rev : unit -> Queue<'T>
-
-    ///O(1). Returns a new queue with the element added to the end. (Enqueue)
-    member Snoc : 'T ->  Queue<'T>
 
     ///O(1) amortized, O(n) worst-case. Returns a new queue of the elements trailing the first element. (Dequeue)
     member Tail : Queue<'T>
@@ -43,6 +43,9 @@ type Queue<'T> =
 module Queue =
     //pattern discriminators (active pattern)
     val (|Cons|Nil|) : Queue<'T> -> Choice<('T * Queue<'T>),unit>
+
+    ///O(1). Returns a new queue with the element added to the end. (enqueue)
+    val inline conj : 'T -> Queue<'T> -> Queue<'T>
 
     ///O(1). Returns queue of no elements.
     [<GeneralizableValue>]
@@ -74,9 +77,6 @@ module Queue =
 
     ///O(n). Returns queue reversed.
     val inline rev : Queue<'T> -> Queue<'T>
-
-    ///O(1). Returns a new queue with the element added to the end. (enqueue)
-    val inline snoc : 'T -> Queue<'T> -> Queue<'T>
 
     ///O(1) amortized, O(n) worst-case. Returns a new queue of the elements trailing the first element. (dequeue)
     val inline tail : Queue<'T> -> Queue<'T>
