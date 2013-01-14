@@ -13,8 +13,8 @@ let emptyDList = DList.empty
 let enDListThruList l q  =
     let rec loop (q' : 'a DList) (l' : 'a list) = 
         match l' with
-        | hd :: [] -> q'.Snoc hd
-        | hd :: tl -> loop (q'.Snoc hd) tl
+        | hd :: [] -> q'.Conj hd
+        | hd :: tl -> loop (q'.Conj hd) tl
         | [] -> q'
         
     loop q l
@@ -29,7 +29,7 @@ let DListOfListGen =
             return ( (DList.ofSeq x), x) }
 
 (*
-IDList generators from random ofSeq and/or snoc elements from random list 
+IDList generators from random ofSeq and/or conj elements from random list 
 *)
 let DListIntGen =
     gen {   let! n = Gen.length1thru12
@@ -43,7 +43,7 @@ let DListIntOfSeqGen =
             let! x = Gen.listInt n
             return ( (DList.ofSeq x), x) }
 
-let DListIntSnocGen =
+let DListIntConjGen =
     gen {   let! n = Gen.length1thru12
             let! x = Gen.listInt n
             return ( (DList.empty |> enDListThruList x), x) }
@@ -66,7 +66,7 @@ let DListStringGen =
 let intGens start =
     let v = Array.create 3 (box (DListIntGen, "DList"))
     v.[1] <- box ((DListIntOfSeqGen |> Gen.suchThat (fun (q, l) -> l.Length >= start)), "DList OfSeq")
-    v.[2] <- box ((DListIntSnocGen |> Gen.suchThat (fun (q, l) -> l.Length >= start)), "DList snocDList") 
+    v.[2] <- box ((DListIntConjGen |> Gen.suchThat (fun (q, l) -> l.Length >= start)), "DList conjDList") 
     v
 
 let intGensStart1 =
@@ -77,19 +77,19 @@ let intGensStart2 =
 
 [<Test>]
 let ``allow to tail to work``() =
-    emptyDList |> snoc 1 |> tail |> isEmpty |> should equal true
+    emptyDList |> conj 1 |> tail |> isEmpty |> should equal true
 
 [<Test>]
-let ``snoc to work``() =
-    emptyDList |> snoc 1 |> snoc 2 |> isEmpty |> should equal false
+let ``conj to work``() =
+    emptyDList |> conj 1 |> conj 2 |> isEmpty |> should equal false
 
 [<Test>]
 let ``cons to work``() =
     emptyDList |> cons 1 |> cons 2 |> length |> should equal 2
 
 [<Test>]
-let ``allow to cons and snoc to work``() =
-    emptyDList |> cons 1 |> cons 2 |> snoc 3 |> length |> should equal 3
+let ``allow to cons and conj to work``() =
+    emptyDList |> cons 1 |> cons 2 |> conj 3 |> length |> should equal 3
 
 [<Test>]
 let ``cons pattern discriminator - DList``() =
@@ -123,7 +123,7 @@ let ``fold matches build list rev``() =
     fsCheck "DList OfSeq" (Prop.forAll (Arb.fromGen DListIntGen) 
         (fun ((q :DList<int>), (l : int list)) -> q |> fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) ))
 
-    fsCheck "DList Snoc" (Prop.forAll (Arb.fromGen DListIntGen) 
+    fsCheck "DList Conj" (Prop.forAll (Arb.fromGen DListIntGen) 
          (fun ((q :DList<int>), (l : int list)) -> q |> fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) ))
 
 [<Test>]
@@ -135,7 +135,7 @@ let ``foldBack matches build list``() =
     fsCheck "DList OfSeq" (Prop.forAll (Arb.fromGen DListIntOfSeqGen) 
         (fun ((q :DList<int>), (l : int list)) -> foldBack (fun (elem : int) (l' : int list) -> elem::l') q [] = l ))
 
-    fsCheck "DList Snoc" (Prop.forAll (Arb.fromGen DListIntSnocGen) 
+    fsCheck "DList Conj" (Prop.forAll (Arb.fromGen DListIntConjGen) 
          (fun ((q :DList<int>), (l : int list)) -> foldBack (fun (elem : int) (l' : int list) -> elem::l') q [] = l ))
 
 [<Test>]

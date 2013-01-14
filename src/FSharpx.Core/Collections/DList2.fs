@@ -90,7 +90,7 @@ type DList<'T>(length : int , data : DListData<'T> ) =
 
     member this.IsEmpty = match data with Nil -> true | _ -> false
 
-    member this.Snoc (x:'T) = DList( (length + 1), DList<'T>.append(data, Unit x) )
+    member this.Conj (x:'T) = DList( (length + 1), DList<'T>.append(data, Unit x) )
 
     member this.Tail =
         let rec step (xs:DListData<'T>) (acc:DListData<'T>) =
@@ -177,7 +177,7 @@ module DList =
     
     let singleton x = DList(1, Unit x )
 
-    let inline snoc x (l:DList<'T>) = l.Snoc x
+    let inline conj x (l:DList<'T>) = l.Conj x
 
     let inline tail (l:DList<'T>) = l.Tail
 

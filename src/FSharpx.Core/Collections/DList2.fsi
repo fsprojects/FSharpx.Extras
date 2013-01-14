@@ -29,7 +29,7 @@ type DList<'T> =
     member IsEmpty : bool
 
     ///O(1). Returns a new DList with the element added to the end.
-    member Snoc : 'T ->  DList<'T>
+    member Conj : 'T ->  DList<'T>
 
     ///O(log n). Returns a new DList of the elements trailing the first element.
     member Tail : DList<'T>
@@ -80,7 +80,7 @@ module DList =
     val singleton : 'T -> DList<'T>
 
     ///O(1). Returns a new DList with the element added to the end.
-    val inline snoc : 'T -> DList<'T> -> DList<'T>
+    val inline conj : 'T -> DList<'T> -> DList<'T>
 
     ///O(log n). Returns a new DList of the elements trailing the first element.
     val inline tail : DList<'T> -> DList<'T>
