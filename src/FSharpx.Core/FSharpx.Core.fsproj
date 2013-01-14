@@ -59,6 +59,8 @@
     <Compile Include="Collections\ResizeArray.fsi" />
     <Compile Include="Collections\ResizeArray.fs" />
     <Compile Include="Collections\Collections.fs" />
+	<Compile Include="Collections\Deque2.fsi" />
+	<Compile Include="Collections\Deque2.fs" />
 	<Compile Include="Collections\DList2.fsi" />
     <Compile Include="Collections\DList2.fs" />
     <Compile Include="Collections\ByteString.fs" />
