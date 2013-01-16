@@ -65,7 +65,11 @@
     <Compile Include="Collections\DList2.fs" />
     <Compile Include="Collections\ByteString.fs" />
     <Compile Include="Collections\CircularBuffer.fs" />
+	<Compile Include="Collections\IPriorityQueue.fs" />
+	<Compile Include="Collections\Heap.fsi" />
+	<Compile Include="Collections\Heap.fs" />
     <Compile Include="Collections\NonEmptyList.fs" />
+	<Compile Include="Collections\PriorityQueue.fs" />
 	<Compile Include="Collections\Queue.fsi" />
 	<Compile Include="Collections\Queue.fs" />
 	<Compile Include="Collections\Vector.fsi" />
