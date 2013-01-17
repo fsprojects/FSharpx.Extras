@@ -203,12 +203,35 @@ module internal Misc =
                 let tagNumber = uc.Tag
                 trans <@@ (%%(tagExpr) : int) = tagNumber @@>
 
+            // Explicitly handle weird byref variables in lets (used to populate out parameters), since the generic handlers can't deal with byrefs
+            | Quotations.Patterns.Let(v,vexpr,bexpr) when v.Type.IsByRef ->
+
+                // the binding must have leaves that are themselves variables (due to the limited support for byrefs in expressions)
+                // therefore, we can perform inlining to translate this to a form that can be compiled
+                inlineByref v vexpr bexpr
+
             // Handle the generic cases
             | Quotations.ExprShape.ShapeLambda(v,body) -> 
                 Quotations.Expr.Lambda(v, trans body)
             | Quotations.ExprShape.ShapeCombination(comb,args) -> 
                 Quotations.ExprShape.RebuildShapeCombination(comb,List.map trans args)
             | Quotations.ExprShape.ShapeVar _ -> q
+        and inlineByref v vexpr bexpr =
+            match vexpr with
+            | Quotations.Patterns.Sequential(e',vexpr') ->
+                (* let v = (e'; vexpr') in bexpr => e'; let v = vexpr' in bexpr *)
+                Quotations.Expr.Sequential(e', inlineByref v vexpr' bexpr)
+                |> trans
+            | Quotations.Patterns.IfThenElse(c,b1,b2) ->
+                (* let v = if c then b1 else b2 in bexpr => if c then let v = b1 in bexpr else let v = b2 in bexpr *)
+                Quotations.Expr.IfThenElse(c, inlineByref v b1 bexpr, inlineByref v b2 bexpr)
+                |> trans
+            | Quotations.Patterns.Var _ -> 
+                (* let v = v1 in bexpr => bexpr[v/v1] *)
+                bexpr.Substitute(fun v' -> if v = v' then Some vexpr else None)
+                |> trans
+            | _ -> 
+                failwith (sprintf "Unexpected byref binding: %A = %A" v vexpr)
         and transValue (v : obj, tyOfValue : Type, expectedTy : Type) = 
             let rec transArray (o : Array, ty : Type) = 
                 let elemTy = ty.GetElementType()
@@ -876,7 +899,7 @@ type ProvidedTypeDefinition(container:TypeContainer,className : string, baseType
         enum (int32 TypeProviderTypeAttributes.IsErased)
 
 
-    let mutable baseType   = baseType
+    let mutable baseType   =  lazy baseType
     let mutable membersKnown   = ResizeArray<MemberInfo>()
     let mutable membersQueue   = ResizeArray<(unit -> list<MemberInfo>)>()       
     let mutable staticParams = [ ] 
@@ -981,7 +1004,8 @@ type ProvidedTypeDefinition(container:TypeContainer,className : string, baseType
     new (className,baseType) = new ProvidedTypeDefinition(TypeContainer.TypeToBeDecided, className, baseType)
     // state ops
 
-    member this.SetBaseType t = baseType <- Some t
+    member this.SetBaseType t = baseType <- lazy Some t
+    member this.SetBaseTypeDelayed t = baseType <- t
     member this.SetAttributes x = attributes <- x
     // Add MemberInfos
     member this.AddMembersDelayed(makeMS : unit -> list<#MemberInfo>) =
@@ -1060,7 +1084,7 @@ type ProvidedTypeDefinition(container:TypeContainer,className : string, baseType
     member this.SetAssemblyLazy assembly = theAssembly <- assembly
     override this.FullName = fullName.Force()
     override this.Namespace = rootNamespace.Force()
-    override this.BaseType = match baseType with Some ty -> ty | None -> null
+    override this.BaseType = match baseType.Value with Some ty -> ty | None -> null
     // Constructors
     override this.GetConstructors bindingAttr = 
         [| for m in this.GetMembers bindingAttr do                
@@ -1773,7 +1797,6 @@ type AssemblyGenerator(assemblyFileName) =
 #else
         assembly.Save (Path.GetFileName assemblyFileName)
 #endif
-        printfn "final bytes in '%s'" assemblyFileName
 
         let assemblyLoadedInMemory = assemblyMainModule.Assembly 
 
@@ -1879,7 +1902,7 @@ type TypeProviderForNamespaces(namespacesAndTypes : list<(string * list<Provided
             |> Seq.map (fun f -> IO.Path.Combine(f, expectedName))
             |> Seq.tryFind IO.File.Exists
         match expectedLocationOpt with
-        | Some f -> Assembly.Load(IO.File.ReadAllBytes f)
+        | Some f -> Assembly.LoadFrom f
         | None -> null
 
     member this.RegisterProbingFolder (folder) = 

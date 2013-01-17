@@ -113,7 +113,7 @@ type internal ProvidedProperty =
     member AddXmlDocComputed   : xmlDocFunction: (unit -> string) -> unit   
     
     /// Get or set a flag indicating if the property is static.
-    member IsStatic             : bool with get, set
+    member IsStatic             : bool with get,set
 
     /// Set the quotation used to compute the implementation of gets of this property.
     member GetterCode           : (Quotations.Expr list -> Quotations.Expr) with set
@@ -273,6 +273,9 @@ type internal ProvidedTypeDefinition =
 
     /// Set the base type
     member SetBaseType             : Type -> unit    
+
+    /// Set the base type to a lazily evaluated value
+    member SetBaseTypeDelayed      : Lazy<Type option> -> unit    
 
     /// Add XML documentation information to this provided constructor, where the computation of the documentation is delayed until necessary.
     /// The documentation is only computed once.
