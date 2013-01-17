@@ -50,6 +50,7 @@
     <Reference Include="System.Windows.Browser" Condition="'$(TargetFramework)' == 'sl5' OR '$(TargetFramework)' == 'sl5-compiler'" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyInfo.fs" />
     <Compile Include="DefaultVersionAttribute.fs" />
     <Compile Include="Cache.fsi" />
     <Compile Include="Cache.fs" />

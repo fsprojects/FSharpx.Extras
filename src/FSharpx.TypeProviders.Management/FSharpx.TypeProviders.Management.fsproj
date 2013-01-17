@@ -44,6 +44,7 @@
     <Reference Include="System.Management" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyInfo.fs" />
     <Compile Include="..\FSharpx.TypeProviders.Freebase\DefaultVersionAttribute.fs">
       <Link>DefaultVersionAttribute.fs</Link>
     </Compile>
