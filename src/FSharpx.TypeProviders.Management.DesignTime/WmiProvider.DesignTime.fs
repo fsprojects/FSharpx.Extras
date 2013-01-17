@@ -122,8 +122,10 @@ type public WmiExtender(config : TypeProviderConfig) as this =
    let rootNamespace = "FSharpx.TypeProviders.Management"
 
    let getWmiClasses machineName nmspace = 
+       let options = new ConnectionOptions()
+       options.Locale <- "MS_409"
        
-       let scope = ManagementScope(sprintf @"\\%s\%s" machineName nmspace) 
+       let scope = ManagementScope(sprintf @"\\%s\%s" machineName nmspace,options)       
        let rootClass = new ManagementClass(scope, ManagementPath(""), ObjectGetOptions()) 
        // UseAmendedQualifiers ensures descriptions, values, value maps etc are provided
        let options = EnumerationOptions(EnumerateDeep=true , UseAmendedQualifiers=true)
