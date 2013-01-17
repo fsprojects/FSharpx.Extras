@@ -232,23 +232,24 @@ Target "AssemblyInfo" (fun _ ->
             Guid = "75A1B454-ED85-4FAB-939C-026891B758DB"
             OutputFileName = "./src/FSharpx.TypeProviders.AppSettings/AssemblyInfo.fs" })
 
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = version
-            AssemblyTitle = "FSharpx.TypeProviders.Freebase"
-            AssemblyDescription = getPackageDesc "TypeProviders.Freebase"
-            Guid = "9da9a11a-f58e-4660-8faf-feb7ba5d9713"
-            OutputFileName = "./src/FSharpx.TypeProviders.Freebase/AssemblyInfo.fs" })
-
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = version
-            AssemblyTitle = "FSharpx.TypeProviders.Management"
-            AssemblyDescription = getPackageDesc "TypeProviders.Management"
-            Guid = "a19058ba-54bf-498f-bed3-6564d5117842"
-            OutputFileName = "./src/FSharpx.TypeProviders.Management/AssemblyInfo.fs" })
+            // TODO: COMVISIBLE is not working with portable
+//    AssemblyInfo (fun p ->
+//        {p with 
+//            CodeLanguage = FSharp
+//            AssemblyVersion = version
+//            AssemblyTitle = "FSharpx.TypeProviders.Freebase"
+//            AssemblyDescription = getPackageDesc "TypeProviders.Freebase"
+//            Guid = "9da9a11a-f58e-4660-8faf-feb7ba5d9713"
+//            OutputFileName = "./src/FSharpx.TypeProviders.Freebase/AssemblyInfo.fs" })
+//
+//    AssemblyInfo (fun p ->
+//        {p with 
+//            CodeLanguage = FSharp
+//            AssemblyVersion = version
+//            AssemblyTitle = "FSharpx.TypeProviders.Management"
+//            AssemblyDescription = getPackageDesc "TypeProviders.Management"
+//            Guid = "a19058ba-54bf-498f-bed3-6564d5117842"
+//            OutputFileName = "./src/FSharpx.TypeProviders.Management/AssemblyInfo.fs" })
 )
 
 let buildAppTarget = TargetTemplate (fun frameworkVersion ->
