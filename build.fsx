@@ -92,7 +92,7 @@ let nunitPath = sprintf "%sNUnit.Runners.%s/Tools" packagesDir nunitVersion
 let appReferences portable frameworkVersion =
     if portable then
         !+ "./src/**/*Freebase.fsproj"
-          ++ "./src/**/*Management.fsproj"
+      //    ++ "./src/**/*Management.fsproj"
           |> Scan
     else
         { (!+ "./src/**/*.*proj") with 
