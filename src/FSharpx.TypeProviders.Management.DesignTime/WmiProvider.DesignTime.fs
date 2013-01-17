@@ -3,7 +3,7 @@
 // We disclaim all warranties, either express or implied, including the 
 // warranties of merchantability and fitness for a particular purpose. 
 
-namespace Samples.Management.TypeProvider.DesignTime
+namespace FSharpx.TypeProviders.Management.DesignTime
 
 open System
 open System.Linq.Expressions
@@ -20,7 +20,7 @@ open Microsoft.FSharp.Quotations
 type internal RuntimeInfo (config : TypeProviderConfig) =
     let runtimeAssembly = Assembly.LoadFrom(config.RuntimeAssembly)
 
-    let RuntimeAPI = runtimeAssembly.GetType("Samples.Management.TypeProvider.Runtime.RuntimeAPI")
+    let RuntimeAPI = runtimeAssembly.GetType("FSharpx.TypeProviders.Management.Runtime.RuntimeAPI")
     member val InvokeInstanceManagementMethod = RuntimeAPI.GetMethod("InvokeManagementMethod")
     member val InvokeStaticManagementMethod = RuntimeAPI.GetMethod("InvokeStaticManagementMethod")
     member val GetManagementProp = RuntimeAPI.GetMethod("GetManagementProp")
@@ -32,14 +32,14 @@ type internal RuntimeInfo (config : TypeProviderConfig) =
     member val Set = RuntimeAPI.GetMethod("Set")
     member val IntrinsicEventMethod = RuntimeAPI.GetMethod("IntrinsicEventMethod")
     member val ExtrinsicEventMethod = RuntimeAPI.GetMethod("ExtrinsicEventMethod")
-    member val InstanceOperationClass = runtimeAssembly.GetType("Samples.Management.TypeProvider.Runtime.InstanceOperation`1")
-    member val InstanceModificationClass = runtimeAssembly.GetType("Samples.Management.TypeProvider.Runtime.InstanceModification`1")
-    member val DataContextClass = runtimeAssembly.GetType("Samples.Management.TypeProvider.Runtime.DataContext")
-    member val MethodInvocationClass = runtimeAssembly.GetType("Samples.Management.TypeProvider.Runtime.MethodInvocation`1")
-    member val WmiEventClass = runtimeAssembly.GetType("Samples.Management.TypeProvider.Runtime.WmiEvent`2")
-    member val WmiCollectionClass = runtimeAssembly.GetType("Samples.Management.TypeProvider.Runtime.WmiCollection`1")
-    member val RequiresWithin = runtimeAssembly.GetType("Samples.Management.TypeProvider.Runtime.RequiresWithin")
-    member val DoesntRequireWithin = runtimeAssembly.GetType("Samples.Management.TypeProvider.Runtime.DoesntRequireWithin")
+    member val InstanceOperationClass = runtimeAssembly.GetType("FSharpx.TypeProviders.Management.Runtime.InstanceOperation`1")
+    member val InstanceModificationClass = runtimeAssembly.GetType("FSharpx.TypeProviders.Management.Runtime.InstanceModification`1")
+    member val DataContextClass = runtimeAssembly.GetType("FSharpx.TypeProviders.Management.Runtime.DataContext")
+    member val MethodInvocationClass = runtimeAssembly.GetType("FSharpx.TypeProviders.Management.Runtime.MethodInvocation`1")
+    member val WmiEventClass = runtimeAssembly.GetType("FSharpx.TypeProviders.Management.Runtime.WmiEvent`2")
+    member val WmiCollectionClass = runtimeAssembly.GetType("FSharpx.TypeProviders.Management.Runtime.WmiCollection`1")
+    member val RequiresWithin = runtimeAssembly.GetType("FSharpx.TypeProviders.Management.Runtime.RequiresWithin")
+    member val DoesntRequireWithin = runtimeAssembly.GetType("FSharpx.TypeProviders.Management.Runtime.DoesntRequireWithin")
     member this.RuntimeAssembly = runtimeAssembly
 
 // we used to have the following logic:
@@ -119,7 +119,7 @@ type public WmiExtender(config : TypeProviderConfig) as this =
 
     let runtimeInfo = RuntimeInfo(config)
     let thisAssembly = runtimeInfo.RuntimeAssembly
-    let rootNamespace = "Samples.Management.TypeProvider"
+    let rootNamespace = "FSharpx.TypeProviders.Management"
 
     let getWmiClasses machineName nmspace = 
         
@@ -432,6 +432,3 @@ type public WmiExtender(config : TypeProviderConfig) as this =
 
 [<assembly:TypeProviderAssembly>]
 do()
-
-
-

@@ -6,7 +6,7 @@
 
 /// Contains runtime functionality (generally extensions to System.Management.dll)
 /// to support the code and types provided statically by WmiProvider.DesignTime.fs
-namespace Samples.Management.TypeProvider.Runtime
+namespace FSharpx.TypeProviders.Management.Runtime
 
 open System
 open System.Management
@@ -509,7 +509,7 @@ type WmiQueryBuilder() =
 
 namespace System.Management
 
-open Samples.Management.TypeProvider.Runtime
+open FSharpx.TypeProviders.Management.Runtime
 
 [<AutoOpen>]
 module WmiQuery =
@@ -520,7 +520,7 @@ module WmiQuery =
   
 // This declaration points the compiler to the right design-time DLL for the selected runtime DLL.
 open Microsoft.FSharp.Core.CompilerServices
-[<assembly:TypeProviderAssembly("Samples.Management.TypeProvider.DesignTime")>]
+[<assembly:TypeProviderAssembly("FSharpx.TypeProviders.Management.DesignTime")>]
 
 do()
 
