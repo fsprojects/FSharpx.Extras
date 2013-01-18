@@ -121,9 +121,10 @@ type public WmiExtender(config : TypeProviderConfig) as this =
    let thisAssembly = runtimeInfo.RuntimeAssembly
    let rootNamespace = "FSharpx.TypeProviders.Management"
 
-   let getWmiClasses machineName nmspace = 
+   let getWmiClasses locale machineName nmspace = 
        let options = new ConnectionOptions()
-       options.Locale <- "MS_409"
+       if String.IsNullOrEmpty locale |> not then
+           options.Locale <- locale
        
        let scope = ManagementScope(sprintf @"\\%s\%s" machineName nmspace,options)       
        let rootClass = new ManagementClass(scope, ManagementPath(""), ObjectGetOptions()) 
@@ -340,9 +341,9 @@ type public WmiExtender(config : TypeProviderConfig) as this =
            ])
        t, companionD
 
-   let machineType (typeNameForMachine, machineName, nmspace) =
+   let machineType (locale,typeNameForMachine, machineName, nmspace) =
        let t = ProvidedTypeDefinition(thisAssembly, rootNamespace, typeNameForMachine, Some runtimeInfo.DataContextClass)
-       let wmiClasses = getWmiClasses machineName nmspace |> Seq.cache
+       let wmiClasses = getWmiClasses locale machineName nmspace |> Seq.cache
        let theClassesType, companionD = classesType wmiClasses 
 
        t.AddMembersDelayed(fun () ->
@@ -421,14 +422,17 @@ type public WmiExtender(config : TypeProviderConfig) as this =
    let remoteType = 
        let t = ProvidedTypeDefinition(thisAssembly, rootNamespace, "WmiProvider", Some typeof<obj>)
        t.DefineStaticParameters( [ ProvidedStaticParameter("MachineName", typeof<string>); 
-                                   ProvidedStaticParameter("Namespace", typeof<string>, @"root\cimv2") ], (fun typeName staticArgs -> 
+                                   ProvidedStaticParameter("Namespace", typeof<string>, @"root\cimv2")
+                                   ProvidedStaticParameter("Locale", typeof<string>, "MS_409") ], (fun typeName staticArgs -> 
               match staticArgs with 
-              | [| :? string as machineName; :? string as nmSpace |] -> machineType (typeName, machineName, nmSpace)
+              | [| :? string as machineName; :? string as nmSpace; :? string as locale |] -> 
+                    machineType (locale, typeName, machineName, nmSpace)
               | _ -> failwith (sprintf "unexpected shape for static arguments: %A" staticArgs)))
        let helpText = 
           """<summary>Accesses management information using the schema of the indicated machine. Use 'localhost' for the local machine.</summary>
              <param name='MachineName'>The name of the remote machine to connect to. Use 'localhost' for the local machine.</param>
-             <param name='Namespace'>The root WMI namespace (e.g. root\cimv2)</param>"""
+             <param name='Namespace'>The root WMI namespace (e.g. root\cimv2)</param>
+             <param name='Locale'>The used language for WMI (default is 'MS_409' which is en-US)</param>"""
        t.AddXmlDoc(helpText)
        t
 
