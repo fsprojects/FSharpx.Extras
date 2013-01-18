@@ -123,8 +123,7 @@ type public WmiExtender(config : TypeProviderConfig) as this =
 
    let getWmiClasses locale machineName nmspace = 
        let options = new ConnectionOptions()
-       if String.IsNullOrEmpty locale |> not then
-           options.Locale <- locale
+       options.Locale <- locale
        
        let scope = ManagementScope(sprintf @"\\%s\%s" machineName nmspace,options)       
        let rootClass = new ManagementClass(scope, ManagementPath(""), ObjectGetOptions()) 
