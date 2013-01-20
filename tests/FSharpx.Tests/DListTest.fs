@@ -120,10 +120,10 @@ let ``fold matches build list rev``() =
     fsCheck "DList" (Prop.forAll (Arb.fromGen DListIntGen) 
         (fun ((q :DList<int>), (l : int list)) -> q |> fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) ))
               
-    fsCheck "DList OfSeq" (Prop.forAll (Arb.fromGen DListIntGen) 
+    fsCheck "DList OfSeq" (Prop.forAll (Arb.fromGen DListIntOfSeqGen) 
         (fun ((q :DList<int>), (l : int list)) -> q |> fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) ))
 
-    fsCheck "DList Conj" (Prop.forAll (Arb.fromGen DListIntGen) 
+    fsCheck "DList Conj" (Prop.forAll (Arb.fromGen DListIntConjGen) 
          (fun ((q :DList<int>), (l : int list)) -> q |> fold (fun (l' : int list) (elem : int) -> elem::l') [] = (List.rev l) ))
 
 [<Test>]
