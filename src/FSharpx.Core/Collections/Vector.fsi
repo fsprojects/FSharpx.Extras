@@ -8,6 +8,9 @@ type Vector<[<EqualityConditionalOn>]'T when 'T : equality> =
     interface System.Collections.Generic.IEnumerable<'T>
     interface System.Collections.IEnumerable
 
+    /// O(1). Returns a new vector with the element added at the end.
+    member Conj : 'T -> Vector<'T>
+         
     /// O(1). Returns a new vector without the last item. If the collection is empty it throws an exception.
     member Initial : Vector<'T>
 
@@ -29,9 +32,9 @@ type Vector<[<EqualityConditionalOn>]'T when 'T : equality> =
     /// O(1). Returns the number of items in the vector.
     member Length : int
 
-    /// O(1). Returns a new vector with the element added at the end.
-    member Conj : 'T -> Vector<'T>
-         
+    ///O(n). Returns random access list reversed.
+    member Rev : unit -> Vector<'T>
+
     /// O(1). Returns tuple last element and vector without last item  
     member Unconj : Vector<'T> * 'T
 
@@ -41,6 +44,9 @@ type Vector<[<EqualityConditionalOn>]'T when 'T : equality> =
     /// O(log32n). Returns a new vector that contains the given value at the index.
     member Update : int * 'T -> Vector<'T> 
             
+    /// O(log32n). Returns option vector that contains the given value at the index.
+    member TryUpdate : int * 'T -> Vector<'T> option
+
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Vector = 
     //pattern discriminators (active pattern)
@@ -86,8 +92,14 @@ module Vector =
     /// O(log32n). Returns the value at the index. If the index is out of bounds it throws an exception.
     val inline nth : int -> Vector<'T> -> 'T
  
+    /// O(log32n). Returns option value at the index. 
+    val inline tryNth : int -> Vector<'T> -> 'T option
+
     /// O(n). Returns a vector of the seq.
     val ofSeq : seq<'T> -> Vector<'T>
+
+    ///O(n). Returns vector reversed.
+    val inline rev : Vector<'T> -> Vector<'T>
 
     /// O(1). Returns tuple last element and vector without last item
     val inline unconj : Vector<'T> -> Vector<'T> * 'T
@@ -97,3 +109,6 @@ module Vector =
 
     /// O(log32n). Returns a new vector that contains the given value at the index. 
     val inline update : int -> 'T -> Vector<'T> -> Vector<'T>
+
+    /// O(log32n). Returns option vector that contains the given value at the index. 
+    val inline tryUpdate : int -> 'T -> Vector<'T> -> Vector<'T> option

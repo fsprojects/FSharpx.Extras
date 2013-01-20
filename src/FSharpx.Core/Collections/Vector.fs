@@ -78,7 +78,7 @@ type TransientVector<'T when 'T : equality> (count,shift:int,root:Node,tail:obj[
                     node.Array
             else raise (new System.IndexOutOfRangeException())
 
-        member this.snoc<'T> (x:'T) =
+        member this.conj<'T> (x:'T) =
             this.EnsureEditable()
 
             //room in tail?
@@ -161,7 +161,7 @@ and Vector<[<EqualityConditionalOn>]'T when 'T : equality> (count,shift:int,root
         static member ofSeq(items:'T seq) =
             let mutable ret = TransientVector()
             for item in items do
-                ret <- ret.snoc item
+                ret <- ret.conj item
             ret.persistent()
 
         override this.GetHashCode() =
@@ -315,6 +315,28 @@ and Vector<[<EqualityConditionalOn>]'T when 'T : equality> (count,shift:int,root
 
         member this.Length : int = count
 
+        member this.Rev() =
+            if count = 0 then Vector.Empty() :> Vector<'T>
+            else
+                let i = ref (count - 1)
+                let array = ref (this.ArrayFor !i)
+
+                let items = seq {
+                    while !i > - 1 do
+                        if (!i + 1) % Literals.blockSize  = 0 then
+                            array := this.ArrayFor !i
+
+                        yield (!array).[!i &&& Literals.blockIndexMask] :?> 'T
+                        i := !i - 1 
+                   }
+
+                let mutable ret = TransientVector()
+
+                for item in items do
+                    ret <- ret.conj item
+
+                ret.persistent()
+
         member this.Unconj = if count > 0 then this.Initial, this.[count - 1] else failwith "Can't peek empty vector"
 
         member this.TryUnconj = if count > 0 then Some(this.Initial, this.[count - 1])  else None
@@ -329,6 +351,10 @@ and Vector<[<EqualityConditionalOn>]'T when 'T : equality> (count,shift:int,root
                     Vector(count, shift, this.doAssoc(shift, root, i, x),tail)
             elif i = count then this.Conj x 
             else raise (new System.IndexOutOfRangeException())
+
+        member this.TryUpdate(i, x : 'T) =
+            if i >= 0 && i < count then Some(this.Update (i,x))
+            else None
 
         interface System.Collections.Generic.IEnumerable<'T> with
             member this.GetEnumerator () =
@@ -365,7 +391,7 @@ module Vector =
     let init count (f: int -> 'T) : 'T Vector =
         let mutable ret = TransientVector()
         for i in 0..(count-1) do
-            ret <- ret.snoc(f i)
+            ret <- ret.conj(f i)
         ret.persistent() 
 
     let inline initial (vector :'T Vector) = vector.Initial
@@ -383,15 +409,23 @@ module Vector =
     let map (f : 'T -> 'T1) (vector :'T Vector) : 'T1 Vector = 
         let mutable ret = TransientVector()
         for item in vector do
-            ret <- ret.snoc(f item)
+            ret <- ret.conj(f item)
         ret.persistent() 
 
     let inline nth i (vector :'T Vector) : 'T = vector.[i]
  
+    let inline tryNth i (vector :'T Vector) =
+        if i >= 0 && i < vector.Length then Some(vector.[i])
+        else None
+
     let ofSeq (items : 'T seq) = Vector.ofSeq items 
+
+    let inline rev (vector :'T Vector) = vector.Rev()
 
     let inline unconj (vector :'T Vector) = vector.Unconj
 
     let inline tryUnconj (vector :'T Vector) = vector.TryUnconj
 
     let inline update i (x : 'T) (vector : 'T Vector) : 'T Vector = vector.Update(i, x)
+
+    let inline tryUpdate i (x : 'T) (vector : 'T Vector) = vector.TryUpdate(i, x)

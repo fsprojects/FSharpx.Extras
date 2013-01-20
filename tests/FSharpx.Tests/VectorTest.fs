@@ -19,34 +19,35 @@ let conjThruList l v  =
 
 (*
 Vector generators from random ofSeq and/or conj elements from random list 
+//vector blocksizej of 32, need to generate lists up to 100
 *)
 let vectorIntGen =
-    gen {   let! n = Gen.length1thru12
-            let! n2 = Gen.length2thru12
+    gen {   let! n = Gen.length1thru100
+            let! n2 = Gen.length2thru100
             let! x =  Gen.listInt n
             let! y =  Gen.listInt n2
             return ( (Vector.ofSeq x |> conjThruList y), (x @ y) ) }
 
 let vectorIntOfSeqGen =
-    gen {   let! n = Gen.length1thru12
+    gen {   let! n = Gen.length1thru100
             let! x = Gen.listInt n
             return ( (Vector.ofSeq x), x) }
 
 let vectorIntConjGen =
-    gen {   let! n = Gen.length1thru12
+    gen {   let! n = Gen.length1thru100
             let! x = Gen.listInt n
             return ( (Vector.empty |> conjThruList x), x) }
 
 let vectorObjGen =
-    gen {   let! n = Gen.length2thru12
-            let! n2 = Gen.length1thru12
+    gen {   let! n = Gen.length2thru100
+            let! n2 = Gen.length1thru100
             let! x =  Gen.listObj n
             let! y =  Gen.listObj n2
             return ( (Vector.ofSeq x |> conjThruList y), (x @ y) ) }
 
 let vectorStringGen =
-    gen {   let! n = Gen.length1thru12
-            let! n2 = Gen.length2thru12
+    gen {   let! n = Gen.length1thru100
+            let! n2 = Gen.length2thru100
             let! x =  Gen.listString n
             let! y =  Gen.listString n2  
             return ( (Vector.ofSeq x |> conjThruList y), (x @ y) ) }
@@ -151,6 +152,12 @@ let ``assoc an element to a nonempty vector should not change the original vecto
 
     v |> update 2 "5" |> nth 2 |> should equal "5"
     v |> nth 2 |> should equal "25"
+
+[<Test>]
+let ``tryupdate of long vector``() =
+    let v = ofSeq [1..100]
+
+    v |> update 99 5 |> nth 99 |> should equal 5
 
 [<Test>]
 let ``vector should should be convertable to a seq``() =
@@ -297,3 +304,42 @@ let ``Unconj wind-down to None``() =
     loop v
 
     true |> should equal true
+
+[<Test>]
+let ``rev empty``() =
+    isEmpty (empty |> rev) |> should equal true
+    
+[<Test>]
+let ``rev elements length 5``() =
+    let a = ofSeq ["a";"b";"c";"d";"e"]
+
+    let b = rev a
+
+    let c = List.ofSeq b
+    a.Last |> should equal "e"
+    b.Last |> should equal "a"
+    c.Head |> should equal "e"
+    b |> List.ofSeq |> should equal (["a";"b";"c";"d";"e"] |> List.rev)
+
+[<Test>]
+let ``rev elements length 15``() =
+    let a = ofSeq ["a";"b";"c";"d";"e"; "f"; "g"; "h"; "i"; "j"; "l"; "m"; "n"; "o"; "p"]
+    let b = rev a
+    b |> List.ofSeq |> should equal (["a";"b";"c";"d";"e"; "f"; "g"; "h"; "i"; "j"; "l"; "m"; "n"; "o"; "p"] |> List.rev)
+
+[<Test>]
+let ``rev 30000``() =
+    let x = ofSeq [1..30000]
+    x.Rev() |> List.ofSeq  |> should equal (List.rev [1..30000])
+
+[<Test>]
+let ``rev matches build list rev``() =
+
+    fsCheck "Vector" (Prop.forAll (Arb.fromGen vectorIntGen) 
+        (fun ((q :Vector<int>), (l : int list)) -> q |> rev |> List.ofSeq = (List.rev l) ))
+              
+    fsCheck "Vector OfSeq" (Prop.forAll (Arb.fromGen vectorIntOfSeqGen) 
+        (fun ((q :Vector<int>), (l : int list)) -> q |> rev |> List.ofSeq = (List.rev l) ))
+
+    fsCheck "Vector Cons" (Prop.forAll (Arb.fromGen vectorIntConjGen) 
+         (fun ((q :Vector<int>), (l : int list)) -> q |> rev |> List.ofSeq = (List.rev l) ))
