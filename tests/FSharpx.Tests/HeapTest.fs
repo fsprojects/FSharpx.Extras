@@ -131,6 +131,20 @@ let ``seq enumerate matches build list``() =
         (fun (h, l) -> h |> List.ofSeq = l |> classifyCollect h (h.Length)))
 
 [<Test>]
+let ``rev works``() =
+
+    let h = empty true
+    h |> rev |> isEmpty |> should equal true
+    let h' = empty false
+    h' |> rev |> isEmpty |> should equal true
+
+    fsCheck "isDescending" (Prop.forAll (Arb.fromGen maxHeapIntGen) 
+        (fun (h, l) -> h |> rev |> List.ofSeq = (h |> List.ofSeq |> List.rev) ))
+
+    fsCheck "ascending" (Prop.forAll (Arb.fromGen minHeapIntGen) 
+        (fun (h, l) -> h |> rev |> List.ofSeq = (h |> List.ofSeq |> List.rev) ))
+
+[<Test>]
 let ``length of empty is 0``() =
     (Heap.empty true).Length |> should equal 0
 

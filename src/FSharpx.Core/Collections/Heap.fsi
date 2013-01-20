@@ -36,6 +36,9 @@ type Heap<'T when 'T : comparison> =
     ///O(log n) amortized time. Returns heap option from merging two heaps.
     member TryMerge : Heap<'T> -> Heap<'T> option
 
+    ///O(n). Returns heap reversed.
+    member Rev : unit -> Heap<'T>
+
     ///O(log n) amortized time. Returns a new heap of the elements trailing the head.
     member Tail : unit -> Heap<'T>
 
@@ -83,6 +86,9 @@ module Heap =
 
     ///O(n). Returns heap from the sequence.
     val ofSeq : bool -> seq<'T> -> Heap<'T>
+
+    ///O(n). Returns heap reversed.
+    val inline rev : Heap<'T> -> Heap<'T>
 
     ///O(log n) amortized time. Returns a new heap of the elements trailing the head.
     val inline tail : Heap<'T> -> Heap<'T>

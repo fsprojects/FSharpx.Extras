@@ -100,6 +100,10 @@ type Heap<'T when 'T : comparison>(isDescending : bool, length : int, data : Hea
         if isDescending = xs.IsDescending then Some(Heap.merge isDescending (length + xs.heapLength) data xs.heapData)
         else None
 
+    member this.Rev() = 
+        if isDescending then Heap<'T>.ofSeq false (this :> seq<'T>)
+        else  Heap<'T>.ofSeq true (this :> seq<'T>)
+
     member this.Tail() =
 
         let mergeData (h1 : HeapData<'T>) (h2 : HeapData<'T>) : HeapData<'T> = 
@@ -197,6 +201,8 @@ module Heap =
 
     let ofSeq isDescending s  = Heap<'T>.ofSeq isDescending s 
     
+    let inline rev (xs: Heap<'T>) = xs.Rev()
+
     let inline tail (xs: Heap<'T>) = xs.Tail()
 
     let inline tryTail (xs: Heap<'T>) = xs.TryTail()
