@@ -102,3 +102,5 @@ module DList =
 
     ///O(n). Returns a seq of the DList elements.
     val inline toSeq  : DList<'T> ->  seq<'T>
+
+    val monoid<'a> : FSharpx.Monoid<DList<'a>>

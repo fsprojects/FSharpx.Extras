@@ -267,3 +267,31 @@ let ``test toSeq``() =
 let ``test toList``() =
     let q = ofSeq ["f";"e";"d";"c";"b";"a"] 
     DList.toList q |> should equal ["f";"e";"d";"c";"b";"a"]
+
+type DListGen =
+    static member DList() =
+        let rec dListGen() = 
+            gen {
+                let! xs = Arb.generate
+                return DList.ofSeq (Seq.ofList xs)
+            }
+        Arb.fromGen (dListGen())
+
+let registerGen = lazy (Arb.register<DListGen>() |> ignore)
+
+[<Test>]
+let ``structural equality``() =
+
+    let l1 = ofSeq [1..100]
+    let l2 = ofSeq [1..100]
+
+    l1 = l2 |> should equal true
+
+    let l3 = ofSeq [1..99] |> conj 7
+
+    l1 = l3 |> should equal false
+            
+[<Test>]
+let ``monoid law``() =
+    registerGen.Force()
+    checkMonoid "DList" (DList.monoid)

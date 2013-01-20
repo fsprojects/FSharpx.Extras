@@ -7,16 +7,7 @@ open System.Collections
 open System.Collections.Generic
 
 type DList<'T>(length : int , data : DListData<'T> ) =
-
-//    static member op_Equality(left, right) =
-//        match left with
-//        | Nil -> match right with Nil -> true | _ -> false
-//        | Unit x -> match right with Unit y -> x = y | _ -> false
-//        | Join(x,y,l) ->
-//            match right with
-//            | Join(x',y',l') -> l = l' && x = x' && y = y' // TODO: || iterate each and compare the values.
-//            | _ -> false 
-
+    let hashCode = ref None
     member internal this.dc = data
 
     static member ofSeq (s : seq<'T>) =
@@ -25,6 +16,25 @@ type DList<'T>(length : int , data : DListData<'T> ) =
                     | Nil -> Unit x
                     | Unit _ -> Join(state, Unit x)
                     | Join(_,_) as xs -> Join(state, Unit x)) Nil s))
+
+    override this.GetHashCode() =
+            match !hashCode with
+            | None ->
+                let mutable hash = 1
+                for x in this do
+                    hash <- 31 * hash + Unchecked.hash x
+                hashCode := Some hash
+                hash
+            | Some hash -> hash
+
+    override this.Equals(other) =
+        match other with
+        | :? DList<'T> as y -> 
+            if this.Length <> y.Length then false 
+            else
+                if this.GetHashCode() <> y.GetHashCode() then false
+                else Seq.forall2 (Unchecked.equals) this y
+        | _ -> false
 
     member this.Length = length
 
@@ -192,3 +202,8 @@ module DList =
     let inline toList l = foldBack (List.cons) l [] 
 
     let inline toSeq (l:DList<'T>) = l :> seq<'T>
+
+    let monoid<'a> = 
+        { new Monoid<'a DList>() with
+            override x.Zero() = empty
+            override x.Combine(a,b) = append a b }
