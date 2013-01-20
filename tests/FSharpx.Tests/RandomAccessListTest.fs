@@ -666,6 +666,13 @@ let ``tryUpdate length 10``() =
     && ((d.Value |> nth 6) = "dd") && ((c.Value |> nth 7) = "cc") && ((b.Value |> nth 8) = "bb")
     && ((a.Value |> nth 9) = "aa")) |> should equal true
 
+
+[<Test>]
+let ``tryupdate of long RAL``() =
+    let v = ofSeq [1..100]
+
+    v |> update 99 5 |> nth 99 |> should equal 5
+
 [<Test>]
 let ``length of empty is 0``() =
     empty |> length |> should equal 0
