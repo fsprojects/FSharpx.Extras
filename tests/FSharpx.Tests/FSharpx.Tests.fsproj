@@ -97,6 +97,7 @@
 	<Compile Include="DequeTest.fs" />
 	<Compile Include="HeapTest.fs" />
 	<Compile Include="PriorityQueueTest.fs" />
+	<Compile Include="RandomAccessListTest.fs" />
     <None Include="table.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

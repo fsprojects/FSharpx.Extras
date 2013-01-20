@@ -70,6 +70,8 @@
 	<Compile Include="Collections\Heap.fs" />
     <Compile Include="Collections\NonEmptyList.fs" />
 	<Compile Include="Collections\PriorityQueue.fs" />
+	<Compile Include="Collections\RandomAccessList.fsi" />
+	<Compile Include="Collections\RandomAccessList.fs" />
 	<Compile Include="Collections\Queue.fsi" />
 	<Compile Include="Collections\Queue.fs" />
 	<Compile Include="Collections\Vector.fsi" />
