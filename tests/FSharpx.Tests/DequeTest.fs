@@ -794,3 +794,15 @@ let ``tryTail on empty``() =
 let ``tryTail on q``() =
     let q = ofSeq ["a";"b";"c";"d"]
     (tryTail q).Value |> head |> should equal "b"
+
+[<Test>]
+let ``structural equality``() =
+
+    let l1 = ofSeq [1..100]
+    let l2 = ofSeq [1..100]
+
+    l1 = l2 |> should equal true
+
+    let l3 = ofSeq [1..99] |> conj 7
+
+    l1 = l3 |> should equal false

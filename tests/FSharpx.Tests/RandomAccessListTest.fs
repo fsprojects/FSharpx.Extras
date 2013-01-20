@@ -711,6 +711,18 @@ let ``cons pattern discriminator - randomAccessList``() =
     ((h1 = "f") && (t1.Length = 5)) |> should equal true
 
 [<Test>]
+let ``structural equality``() =
+
+    let l1 = ofSeq [1..100]
+    let l2 = ofSeq [1..100]
+
+    l1 = l2 |> should equal true
+
+    let l3 = l2 |> update 98 7
+
+    l1 = l3 |> should equal false
+
+[<Test>]
 let ``ofSeq``() =
     let x = ofSeq ["a";"b";"c";"d";"e";"f";"g";"h";"i";"j"]
 

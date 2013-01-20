@@ -185,6 +185,18 @@ let ``tryMerge max and mis should be None``() =
     tryMerge h1 h2 |> should equal None
 
 [<Test>]
+let ``structural equality``() =
+
+    let l1 = ofSeq true [1..100]
+    let l2 = ofSeq true [1..100]
+
+    l1 = l2 |> should equal true
+
+    let l3 = ofSeq true [1..99] |> insert 7
+
+    l1 = l3 |> should equal false
+
+[<Test>]
 [<TestCaseSource("intGensStart2")>]
 let ``tryUncons 1 element``(x : obj) =
     let genAndName = unbox x 
@@ -203,3 +215,23 @@ let ``uncons 1 element``(x : obj) =
     fsCheck (snd genAndName) (Prop.forAll (Arb.fromGen (fst genAndName)) (fun ((h : Heap<int>), (l : int list)) ->    
                                                                             let x, tl = h.Uncons()
                                                                             ((x = l.Head) && (tl.Length = (l.Length - 1))) ))
+
+type HeapGen =
+    static member Heap() =
+        let rec heapGen() = 
+            gen {
+                let! n = Gen.length1thru100
+                let! xs =  Gen.listInt n
+                return Heap.ofSeq true xs
+            }
+        Arb.fromGen (heapGen())
+
+let registerGen = lazy (Arb.register<HeapGen>() |> ignore)
+
+//fsCheck having trouble with Heap
+//FSharpx.Tests.HeapTest.monoid law:
+//System.Exception : Geneflect: type not handled FSharpx.Collections.Heap`1[System.IComparable]
+//[<Test>]
+//let ``monoid law``() =
+//    registerGen.Force()
+//    checkMonoid "Heap" (Heap.monoid)

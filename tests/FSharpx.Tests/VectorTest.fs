@@ -343,3 +343,15 @@ let ``rev matches build list rev``() =
 
     fsCheck "Vector Cons" (Prop.forAll (Arb.fromGen vectorIntConjGen) 
          (fun ((q :Vector<int>), (l : int list)) -> q |> rev |> List.ofSeq = (List.rev l) ))
+
+[<Test>]
+let ``structural equality``() =
+
+    let l1 = ofSeq [1..100]
+    let l2 = ofSeq [1..100]
+
+    l1 = l2 |> should equal true
+
+    let l3 = l2 |> update 98 7
+
+    l1 = l3 |> should equal false

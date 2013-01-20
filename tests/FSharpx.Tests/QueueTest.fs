@@ -220,3 +220,15 @@ let ``Uncons wind-down to None``() =
     loop q
 
     true |> should equal true
+
+[<Test>]
+let ``structural equality``() =
+
+    let l1 = ofSeq [1..100]
+    let l2 = ofSeq [1..100]
+
+    l1 = l2 |> should equal true
+
+    let l3 = ofSeq [1..99] |> conj 7
+
+    l1 = l3 |> should equal false

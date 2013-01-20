@@ -4,13 +4,33 @@
 
 namespace FSharpx.Collections
 
+open FSharpx
 open System.Collections
 open System.Collections.Generic
 
 type Heap<'T when 'T : comparison>(isDescending : bool, length : int, data : HeapData<'T> ) =
-
+    let hashCode = ref None
     member internal this.heapData = data
     member internal this.heapLength = length
+
+    override this.GetHashCode() =
+            match !hashCode with
+            | None ->
+                let mutable hash = 1
+                for x in this do
+                    hash <- 31 * hash + Unchecked.hash x
+                hashCode := Some hash
+                hash
+            | Some hash -> hash
+
+    override this.Equals(other) =
+        match other with
+        | :? Heap<'T> as y -> 
+            if this.Length <> y.Length then false 
+            else
+                if this.GetHashCode() <> y.GetHashCode() then false
+                else Seq.forall2 (Unchecked.equals) this y
+        | _ -> false
 
     static member private merge isDescending newLength (h1 : HeapData<'T>) (h2 : HeapData<'T>) : Heap<'T> = 
         match h1, h2 with
@@ -184,3 +204,8 @@ module Heap =
     let inline uncons (xs: Heap<'T>) = xs.Uncons()
 
     let inline tryUncons (xs: Heap<'T>) = xs.TryUncons()
+
+    let monoid<'a when 'a :comparison> = 
+        { new Monoid<Heap<'a>>() with
+            override x.Zero() = empty true
+            override x.Combine(a,b) = merge a b }

@@ -95,3 +95,5 @@ module Heap =
 
     ///O(log n) amortized time. Returns option head element and tail.
     val inline tryUncons : Heap<'T> -> ('T * Heap<'T>) option
+
+    val monoid<'a when 'a :comparison> : FSharpx.Monoid<Heap<'a>>

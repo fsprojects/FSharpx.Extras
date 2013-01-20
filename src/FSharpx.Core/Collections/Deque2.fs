@@ -6,9 +6,28 @@ open System.Collections
 open System.Collections.Generic
 
 type Deque<'T> (front, rBack) = 
-
+    let hashCode = ref None
     member internal this.front = front
     member internal this.rBack = rBack
+
+    override this.GetHashCode() =
+            match !hashCode with
+            | None ->
+                let mutable hash = 1
+                for x in this do
+                    hash <- 31 * hash + Unchecked.hash x
+                hashCode := Some hash
+                hash
+            | Some hash -> hash
+
+    override this.Equals(other) =
+        match other with
+        | :? Deque<'T> as y -> 
+            if this.Length <> y.Length then false 
+            else
+                if this.GetHashCode() <> y.GetHashCode() then false
+                else Seq.forall2 (Unchecked.equals) this y
+        | _ -> false
 
     member this.Conj x = Deque(front, x::rBack)
 
