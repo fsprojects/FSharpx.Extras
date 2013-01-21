@@ -1,7 +1,9 @@
 ﻿namespace FSharpx.Collections
 
-/// A RandomAccessList is an indexed linear collection of elements. Access to any element is O(log32n). Length is O(1). conj puts the element at the end of the RandomAccessList.
-/// Original adaptation from the clojure implementation by Steffen Forkmann.
+/// RandomAccessList is an ordered linear structure implementing the List signature 
+/// (head, tail, cons), as well as inspection (lookup) and update (returning a new 
+/// immutable instance) of any element in the structure by index. Ordering is by insertion history.
+/// Adapted from Steffen Forkmann's F# implementation of Clojure Vector..
 [<Class>]
 type RandomAccessList<[<EqualityConditionalOn>]'T when 'T : equality> =
 

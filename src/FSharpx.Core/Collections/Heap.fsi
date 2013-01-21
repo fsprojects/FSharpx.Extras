@@ -1,8 +1,9 @@
 ﻿namespace FSharpx.Collections
 
-/// Heap is like a queue or list data structure, but with an ascending or descending 
-/// ordering of the elements. Depending on the ordering head retrieves either the highest or lowest 
-/// ordered element in the heap.
+/// Heap is an ordered linear structure where the ordering is either ascending or descending. 
+/// "head" inspects the first element in the ordering, "tail" takes the remaining structure 
+/// after head, and "insert" places elements within the ordering. PriorityQueue is available 
+/// as an alternate interface.
 /// According to Okasaki the time complexity of the heap functions in this Heap implementation 
 /// (based on the "pairing" heap) have "resisted" time complexity analysis. 
 [<Class>]

@@ -1,6 +1,11 @@
 ﻿namespace FSharpx.Collections
 
-/// Purely functional (immutable) Queue based on Okasaki's batched queue. First in, first out (fifo).
+/// Queue is an ordered linear data structure where elements are added at the end (right) 
+/// and inspected and removed at the beginning (left). Ordering is by insertion history. 
+/// The qualities of the Queue structure make elements first in, first out (fifo).
+/// "head" inspects the first or left-most element in the structure, while "conj" 
+/// inserts an element at the end, or right of the structure.
+/// Purely functional (immutable) Queue based on Okasaki's batched queue. 
 /// Value and function naming standard based on consistent List-like naming: http://jackfoxy.com/semantics-and-list-like-data-structures
 /// Original F# implementation http://lepensemoi.free.fr/index.php/2009/12/10/batched-queue
 [<Class>]

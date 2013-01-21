@@ -1,9 +1,9 @@
 ﻿namespace FSharpx.Collections
 
-/// Double-ended queue is a linear data representation implementing the same basic signature as
-/// queue (head, tail, conj) as well as mirror-image values (last, initial, cons). "head" takes 
-/// the first or left-most element in the structure, while "last" takes the last or right-most
-/// element. "rev" (reverse) has time complexity O(1).
+/// Double-ended queue is an ordered linear linear structure implementing the signature of List
+/// (head, tail, cons) as well as the mirror-image Vector signature (last, initial, conj). "head" inspects 
+/// the first or left-most element in the structure, while "last" inspects the last or 
+/// right-most element. "rev" (reverse) has time complexity O(1). Ordering is by insertion history.
 [<Class>]
 type Deque<'T> = 
   

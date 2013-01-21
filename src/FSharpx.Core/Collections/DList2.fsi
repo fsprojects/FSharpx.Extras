@@ -1,7 +1,8 @@
 namespace FSharpx.Collections
 
-/// The DList is an implementation of John Hughes' append list.
-/// It offers standare list structure with O(1) append.
+/// DList is an ordered linear structure implementing the List signature (head, tail, cons), 
+/// end-insertion (conj), and O(1) append. Ordering is by insertion history.
+/// DList is an implementation of John Hughes' append list.
 /// See http://dl.acm.org/citation.cfm?id=8475 for more information.
 /// An example can be found at http://stackoverflow.com/questions/5324623/functional-o1-append-and-on-iteration-from-first-element-list-data-structure/5327209#5327209
 /// List-like structure naming semantics: http://jackfoxy.com/semantics-and-list-like-data-structures
