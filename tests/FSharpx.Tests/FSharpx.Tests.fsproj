@@ -89,6 +89,13 @@
     <Compile Include="JSON.Serialization.Tests.fs" />
     <Compile Include="JSON.XMLConversion.Tests.fs" />
     <Compile Include="RegexTests.fs" />
+	<Compile Include="QueueTest.fs" />
+	<Compile Include="DListTest.fs" />
+	<Compile Include="VectorTest.fs" />
+	<Compile Include="DequeTest.fs" />
+	<Compile Include="HeapTest.fs" />
+	<Compile Include="PriorityQueueTest.fs" />
+	<Compile Include="RandomAccessListTest.fs" />
     <None Include="table.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

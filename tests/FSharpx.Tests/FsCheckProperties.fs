@@ -68,3 +68,7 @@ important that every structure size up to a certain value (let us say "8" for ar
     let length1thru12 = Gen.choose (1, 12)
 
     let length2thru12 = Gen.choose (2, 12)
+
+    let length1thru100 = Gen.choose (1, 100)
+
+    let length2thru100 = Gen.choose (2, 100)
