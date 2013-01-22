@@ -165,12 +165,12 @@ let ``vector should should be convertable to a seq``() =
     empty |> conj 1 |> conj 4 |> conj 25  |> Seq.toList |> should equal [1;4;25]
 
 [<Test>]
-let ``vector with 30000 elements should be convertable to a seq``() =
+let ``vector with 300 elements should be convertable to a seq``() =
     let vector = ref empty
-    for i in 1..30000 do
+    for i in 1..300 do
         vector := conj i (!vector)
 
-    !vector |> Seq.toList |> should equal [1..30000]
+    !vector |> Seq.toList |> should equal [1..300]
 
 [<Test>]
 let ``vector can be created from a seq``() =
@@ -178,15 +178,15 @@ let ``vector can be created from a seq``() =
     ofSeq xs |> Seq.toList |> should equal xs
 
 [<Test>]
-let ``vector with 30000 elements should allow update``() =
+let ``vector with 300 elements should allow update``() =
     let vector = ref empty
-    for i in 1..30000 do
+    for i in 1..300 do
         vector := conj i (!vector)
 
-    for i in 1..30000 do
+    for i in 1..300 do
         vector := update (i-1) (i*2) (!vector)
 
-    !vector |> Seq.toList |> should equal [for i in 1..30000 -> i*2]
+    !vector |> Seq.toList |> should equal [for i in 1..300 -> i*2]
 
 [<Test>]
 let ``access last element from a vector``() =
@@ -205,12 +205,12 @@ let ``can get initial elements from a vector``() =
     vector |> initial |> initial |> length |> should equal 1
 
 [<Test>]
-let ``vector with 30000 elements should allow initial``() =
+let ``vector with 300 elements should allow initial``() =
     let vector = ref empty
-    for i in 1..30000 do
+    for i in 1..300 do
         vector := conj i (!vector)
 
-    for i in 1..30000 do
+    for i in 1..300 do
         vector := initial (!vector)
 
     !vector |> Seq.toList |> should equal []
@@ -254,12 +254,12 @@ let ``vector with 3 elements can be compared``() =
 [<Test>]
 let ``vector should allow map``() =
     let vector = ref empty
-    for i in 1..30000 do
+    for i in 1..300 do
         vector := conj i (!vector)
 
     let vector2 = map (fun x -> x * 2) (!vector)
 
-    vector2 |> Seq.toList |> should equal [for i in 1..30000 -> i * 2]
+    vector2 |> Seq.toList |> should equal [for i in 1..300 -> i * 2]
 
 [<Test>]
 let ``vector should allow init``() =
@@ -329,9 +329,9 @@ let ``rev elements length 15``() =
     b |> List.ofSeq |> should equal (["a";"b";"c";"d";"e"; "f"; "g"; "h"; "i"; "j"; "l"; "m"; "n"; "o"; "p"] |> List.rev)
 
 [<Test>]
-let ``rev 30000``() =
-    let x = ofSeq [1..30000]
-    x.Rev() |> List.ofSeq  |> should equal (List.rev [1..30000])
+let ``rev 300``() =
+    let x = ofSeq [1..300]
+    x.Rev() |> List.ofSeq  |> should equal (List.rev [1..300])
 
 [<Test>]
 let ``rev matches build list rev``() =

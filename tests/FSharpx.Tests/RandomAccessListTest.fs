@@ -291,9 +291,9 @@ let ``rev elements length 15``() =
     b |> List.ofSeq |> should equal (["a";"b";"c";"d";"e"; "f"; "g"; "h"; "i"; "j"; "l"; "m"; "n"; "o"; "p"] |> List.rev)
 
 [<Test>]
-let ``rev 30000``() =
-    let x = ofSeq [1..30000]
-    x.Rev() |> List.ofSeq  |> should equal (List.rev [1..30000])
+let ``rev 300``() =
+    let x = ofSeq [1..300]
+    x.Rev() |> List.ofSeq  |> should equal (List.rev [1..300])
 
 [<Test>]
 let ``rev matches build list rev``() =
@@ -696,9 +696,9 @@ let ``length of 1 - 10 good``() =
 
 [<Test>]
 let ``allow map``() =
-    let x = ofSeq [1..30000]
+    let x = ofSeq [1..300]
     let randomAccessList2 = map (fun x -> x * 2) x
-    randomAccessList2 |> Seq.toList |> should equal [for i in 1..30000 -> i * 2]
+    randomAccessList2 |> Seq.toList |> should equal [for i in 1..300 -> i * 2]
 
 [<Test>]
 let ``cons pattern discriminator - randomAccessList``() =

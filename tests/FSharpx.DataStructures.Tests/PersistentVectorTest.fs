@@ -51,13 +51,13 @@ let ``vector should should be convertable to a seq``() =
     empty |> conj 1 |> conj 4 |> conj 25  |> Seq.toList |> should equal [1;4;25]
 
 [<Test>]
-let ``vector with 30000 elements should be convertable to a seq``() =
+let ``vector with 300 elements should be convertable to a seq``() =
     let vector = ref empty
-    for i in 1..30000 do
+    for i in 1..300 do
         vector := conj i (!vector)
 
     let a = !vector |> Seq.toArray 
-    for i in 1..30000 do i |> should equal a.[i-1]
+    for i in 1..300 do i |> should equal a.[i-1]
 
 [<Test>]
 let ``vector can be created from a seq``() =
@@ -65,16 +65,16 @@ let ``vector can be created from a seq``() =
     ofSeq xs |> Seq.toList |> should equal xs
 
 [<Test>]
-let ``vector with 30000 elements should allow assocN``() =
+let ``vector with 300 elements should allow assocN``() =
     let vector = ref empty
-    for i in 1..30000 do
+    for i in 1..300 do
         vector := conj i (!vector)
 
-    for i in 1..30000 do
+    for i in 1..300 do
         vector := assocN (i-1) (i*2) (!vector)
 
     let a = !vector |> Seq.toArray 
-    for i in 1..30000 do i * 2 |> should equal a.[i-1]
+    for i in 1..300 do i * 2 |> should equal a.[i-1]
 
 [<Test>]
 let ``can peek elements from a vector``() =
@@ -93,12 +93,12 @@ let ``can pop elements from a vector``() =
     vector |> pop |> pop |> count |> should equal 1
 
 [<Test>]
-let ``vector with 30000 elements should allow pop``() =
+let ``vector with 300 elements should allow pop``() =
     let vector = ref empty
-    for i in 1..30000 do
+    for i in 1..300 do
         vector := conj i (!vector)
 
-    for i in 1..30000 do
+    for i in 1..300 do
         vector := pop (!vector)
 
     !vector |> Seq.toList |> should equal []
@@ -142,13 +142,13 @@ let ``vector with 3 elements can be compared``() =
 [<Test>]
 let ``vector should allow map``() =
     let vector = ref empty
-    for i in 1..30000 do
+    for i in 1..300 do
         vector := conj i (!vector)
 
     let vector2 = map (fun x -> x * 2) (!vector)
 
     let a = vector2 |> Seq.toArray 
-    for i in 1..30000 do i * 2 |> should equal a.[i-1]
+    for i in 1..300 do i * 2 |> should equal a.[i-1]
 
 [<Test>]
 let ``vector should allow init``() =
