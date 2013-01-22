@@ -1,6 +1,7 @@
 ﻿module FSharpx.Tests.DListTest
 
 open System
+open FSharpx.Collections
 open FSharpx.Collections.DList
 open FSharpx.Tests.Properties
 open NUnit.Framework

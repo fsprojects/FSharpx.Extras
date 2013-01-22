@@ -1,6 +1,7 @@
 ﻿module FSharpx.Tests.VectorTest
 
 open System
+open FSharpx.Collections
 open FSharpx.Collections.Vector
 open FSharpx.Tests.Properties
 open NUnit.Framework

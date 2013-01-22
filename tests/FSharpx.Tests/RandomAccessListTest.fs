@@ -1,6 +1,7 @@
 ﻿module FSharpx.Tests.RandomAccessListTest
 
 open System
+open FSharpx.Collections
 open FSharpx.Collections.RandomAccessList
 open FSharpx.Tests.Properties
 open NUnit.Framework

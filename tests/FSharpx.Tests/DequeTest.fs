@@ -1,6 +1,7 @@
 ﻿module FSharpx.Tests.Deque
 
 open System
+open FSharpx.Collections
 open FSharpx.Collections.Deque
 open FSharpx.Tests.Properties
 open NUnit.Framework

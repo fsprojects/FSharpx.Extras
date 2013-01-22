@@ -1,6 +1,7 @@
 ﻿module FSharpx.Tests.HeapTest
 
 open FSharpx
+open FSharpx.Collections
 open FSharpx.Collections.Heap
 open FSharpx.Tests.Properties
 open NUnit.Framework
