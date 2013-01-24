@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>4b763738-cf1a-4dec-a888-7d3d15054231</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>FSharpx.Collections.Experimental.Tests</RootNamespace>
+    <AssemblyName>FSharpx.Collections.Experimental.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <Name>FSharpx.Collections.Experimental.Tests</Name>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <Tailcalls>false</Tailcalls>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <WarningLevel>3</WarningLevel>
+    <DocumentationFile>bin\Debug\FSharpx.Collections.Experimental.Tests.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <Tailcalls>true</Tailcalls>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <WarningLevel>3</WarningLevel>
+    <DocumentationFile>bin\Release\FSharpx.Collections.Experimental.Tests.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FsCheck">
+      <HintPath>..\..\packages\FsCheck.0.8.3.0\lib\net40-Client\FsCheck.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="FSharp.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\packages\NUnit.2.6.0.12054\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="QueueGen.fs" />
+    <Compile Include="HeapGen.fs" />
+    <Compile Include="AltBinaryRandomAccessListTest.fs" />
+    <Compile Include="BankersDequeTest.fs" />
+    <Compile Include="BatchedDequeTest.fs" />
+    <Compile Include="BinaryRandomAccessListTest.fs" />
+    <Compile Include="BinomialHeapTest.fs" />
+    <Compile Include="BKTreeTest.fs" />
+    <Compile Include="BootstrappedQueueTest.fs" />
+    <Compile Include="BottomUpMergeSortTest.fs" />
+    <Compile Include="DequeTest.fs" />
+    <Compile Include="DListTest.fs" />
+    <Compile Include="EditDistanceTest.fs" />
+    <Compile Include="HeapPriorityQueueTest.fs" />
+    <Compile Include="ImplicitQueueTest.fs" />
+    <Compile Include="IntMapTest.fs" />
+    <Compile Include="IQueueTest.fs" />
+    <Compile Include="LeftistHeapTest.fs" />
+    <Compile Include="ListZipperTest.fs" />
+    <Compile Include="NonEmptyListTests.fs" />
+    <Compile Include="PairingHeapTest.fs" />
+    <Compile Include="PersistentVectorTest.fs" />
+    <Compile Include="RingBufferTest.fs" />
+    <Compile Include="SkewBinaryRandomAccessListTest.fs" />
+    <Compile Include="RealTimeDequeTest.fs" />
+    <Compile Include="RealTimeQueueTest.fs" />
+    <Compile Include="RoseTreeTest.fs" />
+    <Compile Include="TimeSeriesTest.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\FSharpx.Collections.Experimental\FSharpx.Collections.Experimental.fsproj">
+      <Name>FSharpx.Collections.Experimental</Name>
+      <Project>{ad3c8e86-f4cf-426f-a31d-015056227777}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\FSharpx.Core\FSharpx.Core.fsproj">
+      <Name>FSharpx.Core</Name>
+      <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\FSharpx.Tests\FSharpx.Tests.fsproj">
+      <Name>FSharpx.Tests</Name>
+      <Project>{26d9d3ee-e882-43e6-a79e-5d1d89e92c4f}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets" Condition=" Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
