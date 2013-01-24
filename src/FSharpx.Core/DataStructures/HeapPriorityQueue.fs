@@ -1,5 +1,6 @@
 ﻿namespace FSharpx.DataStructures
 
+#nowarn "44"
 open FSharpx.DataStructures.PairingHeap
 
 module HeapPriorityQueue =

@@ -1,5 +1,6 @@
 ﻿namespace FSharpx.DataStructures
 
+#nowarn "44"
 open FSharpx.Collections
 open System
 open System.Linq
@@ -7,6 +8,7 @@ open System.Runtime.CompilerServices
 
 /// Multi-way tree, also known as rose tree.
 // Ported from http://hackage.haskell.org/packages/archive/containers/latest/doc/html/src/Data-Tree.html
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 [<CustomEquality; NoComparison>]
 type 'a RoseTree = { Root: 'a; Children: 'a RoseForest }
     with

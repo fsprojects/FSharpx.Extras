@@ -1,11 +1,13 @@
 ﻿/// Originally from https://bitbucket.org/colinbul/fsharpent
 namespace FSharpx.DataStructures
 
+#nowarn "44"
 open System
 open System.Collections
 open System.Collections.Generic
 open FSharpx
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type RingBuffer<'a>(position:int, values:seq<'a>) =
     let buffer = values |> Seq.toArray     
     let mutable position = position

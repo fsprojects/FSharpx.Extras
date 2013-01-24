@@ -4,9 +4,11 @@
 
 namespace FSharpx.DataStructures
 
+#nowarn "44"
 open System.Collections
 open System.Collections.Generic
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type AltBinRndAccList<'a> = 
     | Nil
     | Zero of AltBinRndAccList<'a * 'a>

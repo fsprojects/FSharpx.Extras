@@ -6,9 +6,12 @@
 
 namespace FSharpx.DataStructures
 
+#nowarn "44"
 open System.Collections
 open System.Collections.Generic
  
+
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type PhysicistQueue<'a> (prefix : list<'a>, frontLength : int, front : Lazy<list<'a>>, rBackLength : int, rBack : list<'a>) = 
 
     member internal this.prefix = prefix

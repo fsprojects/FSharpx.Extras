@@ -2,8 +2,10 @@
 // original implementation taken from http://lepensemoi.free.fr/index.php/2010/01/07/real-time-queue
 module FSharpx.DataStructures.RealTimeQueue
 
+#nowarn "44"
 open FSharpx.Collections
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type RealTimeQueue<'a> = {
     F: LazyList<'a> 
     R: list<'a>

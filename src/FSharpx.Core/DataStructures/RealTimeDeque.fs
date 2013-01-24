@@ -8,11 +8,13 @@
 
 namespace FSharpx.DataStructures
 
+#nowarn "44"
 open FSharpx.Collections
 open LazyListHelpr
 open System.Collections
 open System.Collections.Generic
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  streamFront : LazyList<'a>,  rBackLength : int, rBack : LazyList<'a>, streamRBack : LazyList<'a>) = 
    
     member private this.c = c
