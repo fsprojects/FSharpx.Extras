@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx.Collections.Experimental</RootNamespace>
     <AssemblyName>FSharpx.Collections.Experimental</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <Name>FSharpx.Collections.Experimental</Name>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
