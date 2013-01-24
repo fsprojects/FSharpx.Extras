@@ -46,8 +46,6 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "UndoSample", "samples\UndoS
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "DiningPhilosophers", "samples\DiningPhilosophers\DiningPhilosophers.fsproj", "{330FD61A-B9FE-4AA7-9595-F7BDAB3DDC44}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.DataStructures.Tests", "tests\FSharpx.DataStructures.Tests\FSharpx.DataStructures.Tests.fsproj", "{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}"
-EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "DataStructures", "samples\DataStructures\DataStructures.fsproj", "{C6835309-26A4-4718-931F-FD533E08E1D6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{04FE33E9-D53A-4703-B86B-C84B64958D19}"
@@ -230,21 +228,6 @@ Global
 		{330FD61A-B9FE-4AA7-9595-F7BDAB3DDC44}.Release|Mixed Platforms.Build.0 = Release|x86
 		{330FD61A-B9FE-4AA7-9595-F7BDAB3DDC44}.Release|x86.ActiveCfg = Release|x86
 		{330FD61A-B9FE-4AA7-9595-F7BDAB3DDC44}.Release|x86.Build.0 = Release|x86
-		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.DataStructures|Any CPU.ActiveCfg = DataStructures|Any CPU
-		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.DataStructures|Any CPU.Build.0 = DataStructures|Any CPU
-		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.DataStructures|Mixed Platforms.ActiveCfg = DataStructures|Any CPU
-		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.DataStructures|Mixed Platforms.Build.0 = DataStructures|Any CPU
-		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.DataStructures|x86.ActiveCfg = DataStructures|Any CPU
-		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{BC245BB1-EF72-4307-B35C-D8675EDFE0FB}.Release|x86.ActiveCfg = Release|Any CPU
 		{C6835309-26A4-4718-931F-FD533E08E1D6}.DataStructures|Any CPU.ActiveCfg = DataStructures|Any CPU
 		{C6835309-26A4-4718-931F-FD533E08E1D6}.DataStructures|Any CPU.Build.0 = DataStructures|Any CPU
 		{C6835309-26A4-4718-931F-FD533E08E1D6}.DataStructures|Mixed Platforms.ActiveCfg = DataStructures|Any CPU
