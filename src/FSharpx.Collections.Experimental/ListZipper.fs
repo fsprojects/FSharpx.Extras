@@ -2,6 +2,7 @@
 /// original implementation taken from http://learnyouahaskell.com/zippers
 module FSharpx.Collections.Experimental.ListZipper
 
+#nowarn "25"
 /// A zipper for lists
 type 'a ListZipper = { Focus : 'a list; Path : 'a list } 
 

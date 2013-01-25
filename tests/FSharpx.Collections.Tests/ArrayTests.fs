@@ -1,4 +1,4 @@
-﻿module FSharpx.Tests.ArrayTests
+﻿module FSharpx.Collections.Tests.ArrayTests
 
 open FSharpx.Collections
 open NUnit.Framework

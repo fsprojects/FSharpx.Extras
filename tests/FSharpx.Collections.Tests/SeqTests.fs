@@ -1,4 +1,4 @@
-﻿module FSharpx.Tests.SeqTests
+﻿module FSharpx.Collections.Tests.SeqTests
 
 open System
 open FSharpx.Collections

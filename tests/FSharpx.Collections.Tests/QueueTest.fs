@@ -1,4 +1,4 @@
-﻿module FSharpx.Tests.QueueTest
+﻿module FSharpx.Collections.Tests.QueueTest
 
 open FSharpx.Collections
 open FSharpx.Collections.Queue

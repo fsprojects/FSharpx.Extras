@@ -1,4 +1,4 @@
-﻿module FSharpx.Tests.NameValueCollectionTests
+﻿module FSharpx.Collections.Tests.NameValueCollectionTests
 
 open FsUnit
 open FSharpx.Collections

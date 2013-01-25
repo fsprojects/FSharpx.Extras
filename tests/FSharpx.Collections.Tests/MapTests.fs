@@ -1,5 +1,5 @@
 ﻿// originally from https://bitbucket.org/colinbul/fsharpent
-module FSharpx.Tests.MapTests
+module FSharpx.Collections.Tests.MapTests
 
 open System
 open FSharpx.Collections

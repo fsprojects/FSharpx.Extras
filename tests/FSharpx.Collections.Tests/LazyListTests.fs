@@ -1,12 +1,14 @@
 ﻿// First version copied from the F# Power Pack 
 // https://raw.github.com/fsharp/powerpack/master/src/FSharp.PowerPack.Unittests/LazyListTests.fs
 
-namespace FSharpx.Tests
+namespace FSharpx.Collections.Tests
 
 open FSharpx.Collections
+open FSharpx.Tests
 open NUnit.Framework
 
 #nowarn "40"
+#nowarn "49"
 
 [<TestFixture>]
 type public LazyListTests() =
@@ -70,8 +72,6 @@ type public LazyListTests() =
 
         test "tryUncons empty" ((LazyList.tryUncons LazyList.empty) = None)
         let x, y = (LazyList.tryUncons (LazyList.take 1 nats)).Value
-        //LazyList has [<NoEquality; NoComparison>], so we cannot compare to LazyList.empty
-//        test "tryUncons 1" ((x, y) = (0, LazyList.empty<int>))
         test "tryUncons 1" ((x, (LazyList.isEmpty y)) = (0, true))
         let x2, y2 = (LazyList.tryUncons (LazyList.take 2 nats)).Value
         test "tryUncons 2" ((x2, (LazyList.toList y2)) = (0, [1]))
@@ -100,7 +100,7 @@ type public LazyListTests() =
                               try
                                 LazyList.find (fun x -> x>=8) (LazyList.take 5 nats)
                               with
-                                  Not_found -> 9999
+                                Not_found -> 9999
                        res = 9999) (* testing for exception *)
 
         let rec diverge () = diverge ()

@@ -1,4 +1,4 @@
-﻿module FSharpx.Tests.ListExtensionsTest
+﻿module FSharpx.Collections.Tests.ListExtensionsTest
 
 open FSharpx.Collections
 open NUnit.Framework

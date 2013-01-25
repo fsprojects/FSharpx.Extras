@@ -1,4 +1,4 @@
-﻿module FSharpx.Tests.DListTest
+﻿module FSharpx.Collections.Tests.DListTest
 
 open System
 open FSharpx.Collections.DList

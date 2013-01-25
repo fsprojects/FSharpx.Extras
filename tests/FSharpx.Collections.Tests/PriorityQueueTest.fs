@@ -1,4 +1,4 @@
-﻿module FSharpx.Tests.PriorityQueueTest
+﻿module FSharpx.Collections.Tests.PriorityQueueTest
 
 open FSharpx
 open FSharpx.Collections.PriorityQueue

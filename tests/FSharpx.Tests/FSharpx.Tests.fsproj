@@ -58,9 +58,6 @@
     <Compile Include="FsCheckProperties.fs" />
     <Compile Include="StringsTest.fs" />
     <Compile Include="MonoidTests.fs" />
-    <Compile Include="ListExtensionsTest.fs" />
-    <Compile Include="DictionaryExtensionsTests.fs" />
-    <Compile Include="ByteStringTest.fs" />
     <Compile Include="OperatorsTest.fs" />
     <Compile Include="AsyncOperatorsTest.fs" />
     <Compile Include="MaybeTest.fs" />
@@ -75,10 +72,6 @@
     <Compile Include="ValidationTests.fs" />
     <Compile Include="ValidationExample.fs" />
     <Compile Include="ZipListTests.fs" />
-    <Compile Include="NameValueCollectionTests.fs" />
-    <Compile Include="ArrayTests.fs" />
-    <Compile Include="SeqTests.fs" />
-    <Compile Include="MapTests.fs" />
     <Compile Include="OptionTests.fs" />
     <Compile Include="ChoiceTests.fs" />
     <Compile Include="PreludeTests.fs" />
@@ -91,21 +84,11 @@
     <Compile Include="JSON.Serialization.Tests.fs" />
     <Compile Include="JSON.XMLConversion.Tests.fs" />
     <Compile Include="RegexTests.fs" />
-	<Compile Include="QueueTest.fs" />
-	<Compile Include="DListTest.fs" />
-	<Compile Include="VectorTest.fs" />
-	<Compile Include="DequeTest.fs" />
-	<Compile Include="HeapTest.fs" />
-	<Compile Include="PriorityQueueTest.fs" />
-	<Compile Include="RandomAccessListTest.fs" />
     <None Include="table.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Compile Include="TaskTests.fs" />
-    <Compile Include="MapExtensionsTest.fs" />
     <Compile Include="Utilities.fs" />
-    <Compile Include="LazyListTests.fs" />
-    <Compile Include="ColllectionTests.fs" />
     <Compile Include="ControlTests.fs" />
     <Compile Include="AsyncStreamReaderTest.fs" />
   </ItemGroup>

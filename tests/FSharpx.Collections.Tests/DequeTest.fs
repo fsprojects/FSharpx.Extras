@@ -1,4 +1,4 @@
-﻿module FSharpx.Tests.Deque
+﻿module FSharpx.Collections.Tests.Deque
 
 open System
 open FSharpx.Collections.Deque

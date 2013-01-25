@@ -1,4 +1,4 @@
-﻿module FSharpx.Tests.VectorTest
+﻿module FSharpx.Collections.Tests.VectorTest
 
 open System
 open FSharpx.Collections.Vector

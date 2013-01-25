@@ -1,4 +1,4 @@
-﻿module FSharpx.Tests.RandomAccessListTest
+﻿module FSharpx.Collections.Tests.RandomAccessListTest
 
 open System
 open FSharpx.Collections.RandomAccessList

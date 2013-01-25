@@ -1,5 +1,6 @@
-﻿namespace FSharpx.Tests
+﻿namespace FSharpx.Collections.Tests
 
+open FSharpx.Tests
 open Microsoft.FSharp.Collections
 open NUnit.Framework
 

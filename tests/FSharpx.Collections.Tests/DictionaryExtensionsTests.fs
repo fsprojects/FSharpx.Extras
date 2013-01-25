@@ -1,4 +1,4 @@
-﻿module FSharpx.Tests.DictionaryExtensionsTest
+﻿module FSharpx.Collections.Tests.DictionaryExtensionsTest
 
 open FSharpx.Collections
 open NUnit.Framework

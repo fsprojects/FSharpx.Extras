@@ -1,4 +1,4 @@
-﻿module FSharpx.Tests.HeapTest
+﻿module FSharpx.Collections.Tests.HeapTest
 
 open FSharpx
 open FSharpx.Collections.Heap

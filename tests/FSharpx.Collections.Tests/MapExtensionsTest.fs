@@ -1,4 +1,4 @@
-﻿module FSharpx.Tests.MapExtensionsTest
+﻿module FSharpx.Collections.Tests.MapExtensionsTest
 
 open FSharpx.Collections
 open NUnit.Framework

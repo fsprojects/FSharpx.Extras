@@ -7,6 +7,8 @@ open System.Collections.Generic
 open FSharpx
 open FSharpx.Collections
 
+#nowarn "25"
+
 type 'a IntMap =
     | Nil
     | Tip of int * 'a
