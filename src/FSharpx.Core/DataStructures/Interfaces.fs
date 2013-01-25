@@ -1,6 +1,8 @@
 ﻿[<AutoOpen>]
 module FSharpx.DataStructures.Interfaces
 
+#nowarn "44"
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type IVector<'a> =
     inherit System.Collections.IEnumerable
     inherit System.Collections.Generic.IEnumerable<'a>
@@ -23,6 +25,7 @@ type IVector<'a> =
     /// Returns a new vector that contains the given value at the index. Note - index must be <= vector.Count.
     abstract member AssocN : int*'a -> IVector<'a>
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type IDeque<'a> =
     inherit System.Collections.IEnumerable
     inherit System.Collections.Generic.IEnumerable<'a>
@@ -99,6 +102,7 @@ type IDeque<'a> =
     ///returns option deque with element updated by index
     abstract member TryUpdate : int -> 'a -> IDeque<'a> option
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type IHeap<'a when 'a : comparison> =
     inherit System.Collections.IEnumerable
     inherit System.Collections.Generic.IEnumerable<'a>
@@ -121,6 +125,7 @@ type IHeap<'a when 'a : comparison> =
     ///returns the count of elememts
     abstract member Length : unit -> int
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type IHeap<'c, 'a when 'c :> IHeap<'c, 'a> and 'a : comparison> =
     inherit IHeap<'a>
 
@@ -145,6 +150,7 @@ type IHeap<'c, 'a when 'c :> IHeap<'c, 'a> and 'a : comparison> =
     ///returns option head element and tail
     abstract member TryUncons : unit -> ('a * 'c) option
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type IQueue<'a> =
     inherit System.Collections.IEnumerable
     inherit System.Collections.Generic.IEnumerable<'a>
@@ -179,6 +185,7 @@ type IQueue<'a> =
     //returns the option first element and tail
     abstract member TryUncons : ('a * IQueue<'a>) option with get
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type IPriorityQueue<'a when 'a : comparison> =
     inherit System.Collections.IEnumerable
     inherit System.Collections.Generic.IEnumerable<'a>
@@ -201,6 +208,7 @@ type IPriorityQueue<'a when 'a : comparison> =
     ///returns the first element and tail
     abstract member Pop : unit -> 'a * IPriorityQueue<'a> 
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type IRandomAccessList<'a> =
     inherit System.Collections.IEnumerable
     inherit System.Collections.Generic.IEnumerable<'a>

@@ -4,10 +4,12 @@
 
 namespace FSharpx.DataStructures
 
+#nowarn "44"
 open System.Collections
 open System.Collections.Generic
 open ListHelpr
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type BatchedDeque<'a> (front, rBack) = 
   
     static member internal Empty() = BatchedDeque(List.Empty, List.Empty)

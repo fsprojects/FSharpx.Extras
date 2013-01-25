@@ -6,11 +6,13 @@
 
 namespace FSharpx.DataStructures
 
+#nowarn "44"
 open FSharpx.Collections
 open LazyListHelpr
 open System.Collections
 open System.Collections.Generic
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type BankersQueue<'a> (frontLength : int, front : LazyList<'a>, backLength : int, back : LazyList<'a>) = 
 
     member private this.frontLength = frontLength

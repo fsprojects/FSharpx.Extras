@@ -6,6 +6,7 @@
 
 namespace FSharpx.DataStructures
 
+#nowarn "44"
 open System.Collections
 open System.Collections.Generic
 
@@ -15,6 +16,7 @@ type RotationState<'a> =
     | Appending of int *list<'a> * list<'a>
     | Done of list<'a>
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type HoodMelvilleQueue<'a> (frontLength : int, front : list<'a>, state : RotationState<'a>, rBackLength : int, rBack : list<'a>) = 
 
     member private this.frontLength = frontLength

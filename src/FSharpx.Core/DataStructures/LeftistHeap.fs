@@ -4,9 +4,11 @@
 
 namespace FSharpx.DataStructures
 
+#nowarn "44"
 open System.Collections
 open System.Collections.Generic
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type LeftistHeap<'a when 'a : comparison> =
     | E of bool
     | T of bool * int * int * 'a * LeftistHeap<'a> * LeftistHeap<'a> 

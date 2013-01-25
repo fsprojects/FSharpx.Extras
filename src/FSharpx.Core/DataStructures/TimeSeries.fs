@@ -1,11 +1,13 @@
 ﻿/// Originally from https://bitbucket.org/colinbul/fsharpent
 namespace FSharpx.DataStructures
 
+#nowarn "44"
 open System
 open System.Collections
 open System.Collections.Generic
 open FSharpx.Collections
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type Timeseries<'a>(startDate:DateTimeOffset, granularity:TimeSpan, position:int, values:seq<'a>) = 
     let buffer = RingBuffer<'a>(position, values)
     let mutable startDate = startDate

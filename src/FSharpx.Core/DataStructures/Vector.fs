@@ -4,7 +4,7 @@ module FSharpx.DataStructures.Vector
 open FSharpx
 open System.Threading
 
-
+#nowarn "44"
 [<Literal>]
 let internal blockSizeShift = 5 // TODO: what can we do in 64Bit case?
 

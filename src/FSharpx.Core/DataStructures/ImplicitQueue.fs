@@ -2,6 +2,7 @@
 // original implementation taken from http://lepensemoi.free.fr/index.php/2010/02/18/implicit-queue
 module FSharpx.DataStructures.ImplicitQueue
 
+#nowarn "44"
 open FSharpx
 
 type Digit<'a> = 
@@ -19,6 +20,7 @@ let empty = Shallow Zero
 ///O(1). Returns true if the queue has no elements
 let isEmpty = function Shallow Zero -> true | _ -> false
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type ImplicitQueue<'a> with
     //polymorphic recursion cannot be achieved through let-bound functions
     //hence we use static member methods

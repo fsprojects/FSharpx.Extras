@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>b397365b-f6ef-4abc-94f1-8f6ea900bf20</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>FSharpx.Collections.Tests</RootNamespace>
+    <AssemblyName>FSharpx.Collections.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <Name>FSharpx.Collections.Tests</Name>
+    <FscToolPath>..\..\lib\FSharp\</FscToolPath>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <Tailcalls>false</Tailcalls>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <WarningLevel>3</WarningLevel>
+    <DocumentationFile>bin\Debug\FSharpx.Collections.Tests.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <Tailcalls>true</Tailcalls>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <WarningLevel>3</WarningLevel>
+    <DocumentationFile>bin\Release\FSharpx.Collections.Tests.XML</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(TargetFrameworkVersion) == 'v3.5'">
+    <DefineConstants>NET35</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(TargetFrameworkVersion) == 'v4.0'">
+    <DefineConstants>NET40</DefineConstants>
+  </PropertyGroup>
+  <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
+
+  <ItemGroup>
+    <Reference Include="FsCheck">
+      <HintPath>..\..\packages\FsCheck.0.8.3.0\lib\net40-Client\FsCheck.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharpx.Tests">
+      <HintPath>..\FSharpx.Tests\bin\Debug\FSharpx.Tests.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
+      <HintPath>..\..\lib\FSharp\Net20\FSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
+      <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ArrayTests.fs" />
+    <Compile Include="ByteStringTest.fs" />
+    <Compile Include="ColllectionTests.fs" />
+    <Compile Include="DequeTest.fs" />
+    <Compile Include="DictionaryExtensionsTests.fs" />
+    <Compile Include="DListTest.fs" />
+    <Compile Include="HeapTest.fs" />
+    <Compile Include="LazyListTests.fs" />
+    <Compile Include="ListExtensionsTest.fs" />
+    <Compile Include="MapExtensionsTest.fs" />
+    <Compile Include="MapTests.fs" />
+    <Compile Include="NameValueCollectionTests.fs" />
+    <Compile Include="PriorityQueueTest.fs" />
+    <Compile Include="QueueTest.fs" />
+    <Compile Include="RandomAccessListTest.fs" />
+    <Compile Include="SeqTests.fs" />
+    <Compile Include="VectorTest.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\FSharpx.Core\FSharpx.Core.fsproj">
+      <Name>FSharpx.Core</Name>
+      <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\FSharpx.Collections.Experimental.Tests\FSharpx.Collections.Experimental.Tests.fsproj">
+      <Name>FSharpx.Collections.Experimental.Tests</Name>
+      <Project>{4b763738-cf1a-4dec-a888-7d3d15054231}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

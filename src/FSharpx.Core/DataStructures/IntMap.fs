@@ -2,11 +2,13 @@
 
 // Ported from http://hackage.haskell.org/packages/archive/containers/latest/doc/html/src/Data-IntMap-Base.html
 
+#nowarn "44"
 open System.Collections
 open System.Collections.Generic
 open FSharpx
 open FSharpx.Collections
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type 'a IntMap =
     | Nil
     | Tip of int * 'a

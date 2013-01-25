@@ -7,10 +7,12 @@
 
 namespace FSharpx.DataStructures
 
+#nowarn "44"
 open System.Collections
 open System.Collections.Generic
 open ListHelpr
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type Deque<'a> (front, rBack) = 
 
     static member private splitAux n (r:'a list) (acc:'a list) =

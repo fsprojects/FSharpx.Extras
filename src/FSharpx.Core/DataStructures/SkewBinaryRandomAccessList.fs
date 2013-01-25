@@ -4,6 +4,7 @@
 
 namespace FSharpx.DataStructures
 
+#nowarn "44"
 open System.Collections
 open System.Collections.Generic
 
@@ -11,6 +12,7 @@ type TreeSBRAL<'a> =
     | Leaf of 'a
     | Node of 'a * TreeSBRAL<'a> * TreeSBRAL<'a>
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type SkewBinaryRandomAccessList<'a> (randomAccessList) =
 
     member this.randomAccessList = randomAccessList
