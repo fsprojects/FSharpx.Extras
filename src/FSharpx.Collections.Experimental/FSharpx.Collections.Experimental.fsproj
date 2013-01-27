@@ -10,7 +10,8 @@
     <AssemblyName>FSharpx.Collections.Experimental</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <Name>FSharpx.Collections.Experimental</Name>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FscToolPath>..\..\lib\FSharp\</FscToolPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -40,7 +41,6 @@
   </PropertyGroup>
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
-    
     <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
       <HintPath>..\..\lib\FSharp\Net20\FSharp.Core.dll</HintPath>
     </Reference>
@@ -52,6 +52,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Interfaces.fs" />
     <Compile Include="Infrastructure.fs" />
     <Compile Include="AltBinaryRandomAccessList.fs" />

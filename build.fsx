@@ -39,12 +39,13 @@ let nugetLibDir package = nugetDir package @@ "lib"
 let nugetDocsDir package = nugetDir package @@ "docs"
 
 let typeProvidersPackages = ["TypeProviders.Graph"; "TypeProviders.Documents"; "TypeProviders.Xaml"; "TypeProviders.Math"; "TypeProviders.Excel"; "TypeProviders.Machine"; "TypeProviders.Regex"; "TypeProviders.AppSettings"; "TypeProviders.Freebase"; "TypeProviders.Management"]
-let packages = ["Core"; "Http"; "Observable"; "TypeProviders"] @ typeProvidersPackages
+let packages = ["Core"; "Http"; "Observable"; "Collections.Experimental"; "TypeProviders"] @ typeProvidersPackages
 
 let projectDesc = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible."
 
 let rec getPackageDesc = function
 | "Http" -> projectDesc + "\r\n\r\nThis library provides common features for working with HTTP applications."
+| "Collections.Experimental" -> projectDesc + "\r\n\r\nThis library provides experimental data structures."
 | "Observable" -> projectDesc + "\r\n\r\nThis library implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford."
 | "TypeProviders" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing common type providers on top of the FSharpx.Core."
 | "TypeProviders.Graph" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a state machine type provider."
@@ -132,6 +133,15 @@ Target "AssemblyInfo" (fun _ ->
             AssemblyDescription = getPackageDesc "Core"
             Guid = "1e95a279-c2a9-498b-bc72-6e7a0d6854ce"
             OutputFileName = "./src/FSharpx.Core/AssemblyInfo.fs" })
+
+    AssemblyInfo (fun p ->
+        {p with 
+            CodeLanguage = FSharp
+            AssemblyVersion = version
+            AssemblyTitle = projectName
+            AssemblyDescription = getPackageDesc "Collections.Experimental"
+            Guid = "4C646C09-6925-47D0-B187-8A5C3D061329"
+            OutputFileName = "./src/FSharpx.Collections.Experimental/AssemblyInfo.fs" })
 
     AssemblyInfo (fun p ->
         {p with 
