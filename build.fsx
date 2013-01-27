@@ -350,11 +350,11 @@ let nugetTarget = TargetTemplate (fun package ->
     !! (buildDir @@ (sprintf "FSharpx.%s.dll" package))
     |> Docu (fun p ->
         {p with
-            ToolPath = @".\lib\FAKE\tools\docu.exe"
+            ToolPath = "./lib/FAKE/tools/docu.exe"
             TemplatesPath = "./lib/templates"
             OutputPath = docsDir })
 
-    XCopy (docsDir |> FullName) (nugetDocsDir package)
+    XCopy (FullName docsDir) (nugetDocsDir package)
     [ "LICENSE.md" ] |> CopyTo (nugetDir package)
     NuGet (fun p -> 
         {p with               
