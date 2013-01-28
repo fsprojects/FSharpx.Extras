@@ -1,1 +1,1 @@
-call build.bat v40 %*
+call build.bat all v40 %*
