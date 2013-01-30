@@ -127,6 +127,16 @@ PhoneRegex().Match("425-123-2345").PhoneNumber.Value
 </pre>
 
 
+<h4>Management (WMI)</h4>
+
+<pre>
+type LocalHost = FSharpx.TypeProviders.Management.WmiProvider<"localhost">
+
+let ctxt = LocalHost.GetDataContext()
+let batteryInfo = [ for x in ctxt.Win32_Battery -> x.Name, x.BatteryRechargeTime ]
+</pre>
+
+
 <h2>FSharpx.Observable</h2>
 <p>A small package containing helpers related to programming with observables</p>
 
