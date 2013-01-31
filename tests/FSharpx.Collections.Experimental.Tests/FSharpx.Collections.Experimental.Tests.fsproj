@@ -79,6 +79,7 @@
     <Compile Include="BottomUpMergeSortTest.fs" />
     <Compile Include="DequeTest.fs" />
     <Compile Include="DListTest.fs" />
+    <Compile Include="EagerRoseTreeTest.fs" />
     <Compile Include="EditDistanceTest.fs" />
     <Compile Include="HeapPriorityQueueTest.fs" />
     <Compile Include="ImplicitQueueTest.fs" />
