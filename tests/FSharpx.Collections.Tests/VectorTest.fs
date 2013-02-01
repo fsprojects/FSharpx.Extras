@@ -323,6 +323,13 @@ let ``rev elements length 5``() =
     b |> List.ofSeq |> should equal (["a";"b";"c";"d";"e"] |> List.rev)
 
 [<Test>]
+let ``append works``() =
+    let a = ofSeq ["a";"b";"c";"d";"e"]
+    let b = ofSeq ["f";"g";"h";"i";"j"]
+
+    append a b |> List.ofSeq |> should equal ["a";"b";"c";"d";"e";"f";"g";"h";"i";"j"]
+
+[<Test>]
 let ``rev elements length 15``() =
     let a = ofSeq ["a";"b";"c";"d";"e"; "f"; "g"; "h"; "i"; "j"; "l"; "m"; "n"; "o"; "p"]
     let b = rev a

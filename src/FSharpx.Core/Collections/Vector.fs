@@ -370,6 +370,14 @@ module Vector =
     //pattern discriminators  (active pattern)
     let (|Conj|Nil|) (v : Vector<'T>) = match v.TryUnconj with Some(a,b) -> Conj(a,b) | None -> Nil
      
+    let append (vectorA : 'T Vector) (vectorB : 'T Vector) = 
+        let mutable ret = TransientVector()
+        for i in 0..(vectorA.Length - 1) do
+            ret <- ret.conj vectorA.[i]
+        for i in 0..(vectorB.Length - 1) do
+            ret <- ret.conj vectorB.[i]
+        ret.persistent() 
+
     let inline conj (x : 'T) (vector : 'T Vector) = vector.Conj x
 
     let empty<'T when 'T : equality> = Vector.Empty() :> Vector<'T>

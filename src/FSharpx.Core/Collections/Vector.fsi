@@ -55,6 +55,9 @@ module Vector =
     //pattern discriminators (active pattern)
     val (|Conj|Nil|) : Vector<'T> ->  Choice<(Vector<'T> * 'T),unit>
     
+    /// O(n). Returns a new vector with the elements of the second vector added at the end.
+    val append : Vector<'T> -> Vector<'T> -> Vector<'T>
+
     /// O(1). Returns a new vector with the element added at the end.   
     val inline conj : 'T -> Vector<'T> -> Vector<'T>
 
