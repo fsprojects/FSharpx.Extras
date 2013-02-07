@@ -161,10 +161,93 @@ namespace Microsoft.FSharp.Control
     module WebClientExtensions =
         open System.Net
         open Microsoft.FSharp.Control.WebExtensions
+        open System.ComponentModel
+        open FSharpx
         
         let callFSharpCoreAsyncDownloadString (req: System.Net.WebClient) address = req.AsyncDownloadString address
 
+        let fromEventPattern (event : IEvent<_, #AsyncCompletedEventArgs>) start result cancel =
+            async {
+                let userToken = new obj()
+                start userToken
+
+                let rec loop() =
+                    async {
+                        let! args = Async.AwaitEvent(event, cancel)
+                        if args.UserState <> userToken then
+                            return! loop()
+                        else
+                            let asyncResult =
+                                if args.Cancelled then
+                                    AsyncCanceled (new OperationCanceledException())
+                                elif args.Error <> null then AsyncException args.Error
+                                else  AsyncOk (result args)
+                            return! AsyncResult.Commit(asyncResult)
+                    }
+                return! loop()
+            }
+
         type WebClient with
             member this.AsyncDownloadString address = callFSharpCoreAsyncDownloadString this address
+
+            member private this.buildAsyncAction(event, start, result) =
+                fromEventPattern event start result (fun () -> this.CancelAsync())
+
+            member inline private this.buildAsyncAction<'t, 'a, 'd when 'd : delegate<'a, unit> and 'd :> Delegate and
+                                                                        ^a : (member get_Result : unit -> 't) and
+                                                                        'a :> AsyncCompletedEventArgs> (event: IEvent<'d, 'a>, start) =
+                let result args = (^a : (member get_Result : unit -> 't) args)
+                this.buildAsyncAction(event, start, result)
+
+            member this.AsyncUploadValues(address, data) = this.AsyncUploadValues(address, null, data)
+
+            member this.AsyncUploadValues(address, uploadMethod, data) =
+                this.buildAsyncAction(
+                    this.UploadValuesCompleted,
+                    (fun token -> this.UploadValuesAsync(address, uploadMethod, data, token)))
+
+            member this.AsyncUploadString(address, data) = this.AsyncUploadString(address, null, data)
+
+            member this.AsyncUploadString(address, uploadMethod, data) =
+                this.buildAsyncAction(
+                    this.UploadStringCompleted,
+                    (fun token -> this.UploadStringAsync(address, uploadMethod, data, token)))
+
+            member this.AsyncUploadFile(address, fileName) = this.AsyncUploadFile(address, null, fileName)
+
+            member this.AsyncUploadFile(address, uploadMethod, fileName) =
+                this.buildAsyncAction(
+                    this.UploadFileCompleted,
+                    (fun token -> this.UploadFileAsync(address, uploadMethod, fileName, token)))
+
+            member this.AsyncUploadData(address, data) = this.AsyncUploadData(address, null, data)
+
+            member this.AsyncUploadData(address, uploadMethod, data) =
+                this.buildAsyncAction(
+                    this.UploadDataCompleted,
+                    (fun token -> this.UploadDataAsync(address, uploadMethod, data, token)))
+
+            member this.AsyncOpenWrite address = this.AsyncOpenWrite(address, null)
+
+            member this.AsyncOpenWrite(address, uploadMethod) =
+                this.buildAsyncAction(
+                    this.OpenWriteCompleted,
+                    (fun token -> this.OpenWriteAsync(address, uploadMethod, token)))
+
+            member this.AsyncOpenRead address =
+                this.buildAsyncAction(
+                    this.OpenReadCompleted,
+                    (fun token -> this.OpenReadAsync(address, token)))
+
+            member this.AsyncDownloadFile(address, fileName) =
+                this.buildAsyncAction(
+                    this.DownloadFileCompleted,
+                    (fun token -> this.DownloadFileAsync(address, fileName, token)),
+                    konst ())
+
+            member this.AsyncDownloadData address =
+                this.buildAsyncAction(
+                    this.DownloadDataCompleted,
+                    (fun token -> this.DownloadDataAsync(address, token)))
 #endif
 
