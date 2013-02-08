@@ -83,6 +83,7 @@
     <Compile Include="EditDistanceTest.fs" />
     <Compile Include="HeapPriorityQueueTest.fs" />
     <Compile Include="ImplicitQueueTest.fs" />
+	<Compile Include="IndexedRoseTreeTest.fs" />
     <Compile Include="IntMapTest.fs" />
     <None Include="packages.config" />
     <Compile Include="IQueueTest.fs" />

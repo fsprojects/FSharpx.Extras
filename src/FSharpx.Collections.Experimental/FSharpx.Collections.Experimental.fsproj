@@ -70,6 +70,7 @@
     <Compile Include="Deque.fs" />
     <Compile Include="DList.fs" />
     <Compile Include="EagerRoseTree.fs" />
+	<Compile Include="IndexedRoseTree.fs" />
     <Compile Include="PairingHeap.fs" />
     <Compile Include="HeapPriorityQueue.fs" />
     <Compile Include="HoodMelvilleQueue.fs" />
