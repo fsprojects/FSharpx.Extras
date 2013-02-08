@@ -596,49 +596,45 @@ type public WebClientTests() =
             async {
                 let wc = new WebClient()
                 use! stream = wc.AsyncOpenWrite(new Uri(uri))
-                do!  stream.AsyncWrite(data)
-                use reader = new StreamReader(stream)
-                return! reader.AsyncReadToEnd() }
+                do!  stream.AsyncWrite(data) }
 
         let data = Encoding.ASCII.GetBytes("FSharpx test AsyncOpenWrite")
-        let response = write "http://httpbin.org/post" data |> Async.RunSynchronously
-        
-        Assert.IsTrue(response.Contains("FSharpx test AsyncOpenWrite"))
+        write "http://httpbin.org/post" data |> Async.RunSynchronously                
 
     [<Test>]
     member this.AsyncOpenRead() = 
-        let read =
+        let read uri =
             async {
                 let wc = new WebClient()
-                use! stream = wc.AsyncOpenRead(new Uri("http://bing.com"))
+                use! stream = wc.AsyncOpenRead(new Uri(uri))
                 use reader = new StreamReader(stream)
                 return! reader.AsyncReadToEnd() }
 
-        let html = read |> Async.RunSynchronously
+        let html = read "http://bing.com" |> Async.RunSynchronously
 
         let rx = new Regex(@"<html")
         Assert.AreEqual(1, rx.Matches(html).Count)
 
     [<Test>]
     member this.AsyncDownloadFile() = 
-        let download =
+        let download uri localFile =
             async {
                 let wc = new WebClient()
-                return! wc.AsyncDownloadFile(new Uri("http://www.gnu.org/licenses/gpl-2.0.txt"), "gpl.txt") }
+                return! wc.AsyncDownloadFile(new Uri(uri), localFile) }
 
-        download |> Async.RunSynchronously
+        download "http://www.gnu.org/licenses/gpl-2.0.txt" "gpl.txt" |> Async.RunSynchronously
 
         let text = File.ReadAllText("gpl.txt")
         Assert.IsTrue(text.Contains("GNU GENERAL PUBLIC LICENSE"))
 
     [<Test>]
     member this.AsyncDownloadData() = 
-        let read =
+        let read uri =
             async {
                 let wc = new WebClient()
-                return! wc.AsyncDownloadData(new Uri("http://bing.com")) }
+                return! wc.AsyncDownloadData(new Uri(uri)) }
 
-        let bytes = read |> Async.RunSynchronously
+        let bytes = read "http://bing.com" |> Async.RunSynchronously
 
         let html = Encoding.ASCII.GetString(bytes)
         let rx = new Regex(@"<html")
