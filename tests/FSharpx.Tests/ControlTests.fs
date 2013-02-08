@@ -8,6 +8,9 @@ open NUnit.Framework
 open System
 open System.IO
 open System.Threading
+open System.Net
+open System.Text
+open System.Text.RegularExpressions
 
 #nowarn "40"
 
@@ -529,4 +532,111 @@ type public ControlTests() =
                     |> Async.RunSynchronously 
 
         check "Chamenos" (Seq.sum meets) (meetings*2)
+
+[<TestFixture>]
+type public WebClientTests() =        
+    [<Test>]
+    member this.AsyncUploadValues() = 
+        let upload uri data =
+            async {
+                let wc = new WebClient()
+                return! wc.AsyncUploadValues(new Uri(uri), data) }
+
+        let values = new System.Collections.Specialized.NameValueCollection();
+        values.Add("value1", "FSharpx test AsyncUploadValues")
+        values.Add("value2", "second value")
+
+        let bytes = upload "http://httpbin.org/post" values |> Async.RunSynchronously
+        let response = Encoding.ASCII.GetString(bytes)
+        
+        Assert.IsTrue(response.Contains("value1\": \"FSharpx test AsyncUploadValues\""))
+        Assert.IsTrue(response.Contains("value2\": \"second value\""))
+
+    [<Test>]
+    member this.AsyncUploadString() = 
+        let upload uri data =
+            async {
+                let wc = new WebClient()
+                return! wc.AsyncUploadString(new Uri(uri), data) }
+        
+        let response = upload "http://httpbin.org/post" "FSharpx test AsyncUploadString" |> Async.RunSynchronously        
+        
+        Assert.IsTrue(response.Contains("FSharpx test AsyncUploadString"))
+
+    [<Test>]
+    member this.AsyncUploadFile() = 
+        let upload uri fileName =
+            async {
+                let wc = new WebClient()
+                return! wc.AsyncUploadFile(new Uri(uri), fileName) }
+        
+        File.WriteAllText("tmp.bin", "FSharpx test AsyncUploadFile")
+
+        let bytes = upload "http://httpbin.org/post" "tmp.bin" |> Async.RunSynchronously        
+        
+        let response = Encoding.ASCII.GetString(bytes)
+        Assert.IsTrue(response.Contains("FSharpx test AsyncUploadFile"))
+
+    [<Test>]
+    member this.AsyncUploadData() = 
+        let upload uri data =
+            async {
+                let wc = new WebClient()
+                return! wc.AsyncUploadData(new Uri(uri), data) }
+        
+        let data = Encoding.ASCII.GetBytes("FSharpx test AsyncUploadData")
+        let bytes = upload "http://httpbin.org/post" data |> Async.RunSynchronously
+        
+        let response = Encoding.ASCII.GetString(bytes)
+        Assert.IsTrue(response.Contains("FSharpx test AsyncUploadData"))        
+
+    [<Test>]
+    member this.AsyncOpenWrite() = 
+        let write uri data =
+            async {
+                let wc = new WebClient()
+                use! stream = wc.AsyncOpenWrite(new Uri(uri))
+                do!  stream.AsyncWrite(data) }
+
+        let data = Encoding.ASCII.GetBytes("FSharpx test AsyncOpenWrite")
+        write "http://httpbin.org/post" data |> Async.RunSynchronously                
+
+    [<Test>]
+    member this.AsyncOpenRead() = 
+        let read uri =
+            async {
+                let wc = new WebClient()
+                use! stream = wc.AsyncOpenRead(new Uri(uri))
+                use reader = new StreamReader(stream)
+                return! reader.AsyncReadToEnd() }
+
+        let html = read "http://bing.com" |> Async.RunSynchronously
+
+        let rx = new Regex(@"<html")
+        Assert.AreEqual(1, rx.Matches(html).Count)
+
+    [<Test>]
+    member this.AsyncDownloadFile() = 
+        let download uri localFile =
+            async {
+                let wc = new WebClient()
+                return! wc.AsyncDownloadFile(new Uri(uri), localFile) }
+
+        download "http://www.gnu.org/licenses/gpl-2.0.txt" "gpl.txt" |> Async.RunSynchronously
+
+        let text = File.ReadAllText("gpl.txt")
+        Assert.IsTrue(text.Contains("GNU GENERAL PUBLIC LICENSE"))
+
+    [<Test>]
+    member this.AsyncDownloadData() = 
+        let read uri =
+            async {
+                let wc = new WebClient()
+                return! wc.AsyncDownloadData(new Uri(uri)) }
+
+        let bytes = read "http://bing.com" |> Async.RunSynchronously
+
+        let html = Encoding.ASCII.GetString(bytes)
+        let rx = new Regex(@"<html")
+        Assert.AreEqual(1, rx.Matches(html).Count) 
 
