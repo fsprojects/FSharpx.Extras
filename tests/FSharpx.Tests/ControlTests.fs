@@ -570,12 +570,15 @@ type public WebClientTests() =
                 let wc = new WebClient()
                 return! wc.AsyncUploadFile(new Uri(uri), fileName) }
         
-        File.WriteAllText("tmp.bin", "FSharpx test AsyncUploadFile")
-
-        let bytes = upload "http://httpbin.org/post" "tmp.bin" |> Async.RunSynchronously        
+        let filename = "tmp.bin"
+        try
+            File.WriteAllText(filename, "FSharpx test AsyncUploadFile")
+            let bytes = upload "http://httpbin.org/post" filename |> Async.RunSynchronously
         
-        let response = Encoding.ASCII.GetString(bytes)
-        Assert.IsTrue(response.Contains("FSharpx test AsyncUploadFile"))
+            let response = Encoding.ASCII.GetString(bytes)
+            Assert.IsTrue(response.Contains("FSharpx test AsyncUploadFile"))
+        finally
+            File.Delete filename
 
     [<Test>]
     member this.AsyncUploadData() = 
@@ -622,10 +625,14 @@ type public WebClientTests() =
                 let wc = new WebClient()
                 return! wc.AsyncDownloadFile(new Uri(uri), localFile) }
 
-        download "http://www.gnu.org/licenses/gpl-2.0.txt" "gpl.txt" |> Async.RunSynchronously
+        let filename = "gpl.txt"
+        try
+            download "http://www.gnu.org/licenses/gpl-2.0.txt" filename |> Async.RunSynchronously
+            let text = File.ReadAllText filename
+            Assert.IsTrue(text.Contains("GNU GENERAL PUBLIC LICENSE"))
+        finally
+            File.Delete filename
 
-        let text = File.ReadAllText("gpl.txt")
-        Assert.IsTrue(text.Contains("GNU GENERAL PUBLIC LICENSE"))
 
     [<Test>]
     member this.AsyncDownloadData() = 
