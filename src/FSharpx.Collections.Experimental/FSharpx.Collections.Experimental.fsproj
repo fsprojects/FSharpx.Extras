@@ -61,6 +61,7 @@
     <Compile Include="BatchedDeque.fs" />
     <Compile Include="BatchedQueue.fs" />
     <Compile Include="BinaryRandomAccessList.fs" />
+	<Compile Include="BinaryRoseTree.fs" />
     <Compile Include="BinaryTreeZipper.fs" />
     <Compile Include="BinomialHeap.fs" />
     <Compile Include="IntMap.fs" />
@@ -74,6 +75,7 @@
     <Compile Include="HeapPriorityQueue.fs" />
     <Compile Include="HoodMelvilleQueue.fs" />
     <Compile Include="ImplicitQueue.fs" />
+	<Compile Include="IndexedRoseTree.fs" />
     <Compile Include="LeftistHeap.fs" />
     <Compile Include="ListZipper.fs" />
     <Compile Include="PhysicistQueue.fs" />
