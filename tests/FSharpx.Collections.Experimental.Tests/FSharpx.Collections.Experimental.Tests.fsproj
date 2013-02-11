@@ -73,6 +73,7 @@
     <Compile Include="BankersDequeTest.fs" />
     <Compile Include="BatchedDequeTest.fs" />
     <Compile Include="BinaryRandomAccessListTest.fs" />
+	<Compile Include="BinaryRoseTreeTest.fs" />
     <Compile Include="BinomialHeapTest.fs" />
     <Compile Include="BKTreeTest.fs" />
     <Compile Include="BootstrappedQueueTest.fs" />
@@ -83,6 +84,7 @@
     <Compile Include="EditDistanceTest.fs" />
     <Compile Include="HeapPriorityQueueTest.fs" />
     <Compile Include="ImplicitQueueTest.fs" />
+	<Compile Include="IndexedRoseTreeTest.fs" />
     <Compile Include="IntMapTest.fs" />
     <None Include="packages.config" />
     <Compile Include="IQueueTest.fs" />
