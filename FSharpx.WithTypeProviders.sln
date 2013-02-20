@@ -76,6 +76,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Manag
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.Collections.Experimental.Tests", "tests\FSharpx.Collections.Experimental.Tests\FSharpx.Collections.Experimental.Tests.fsproj", "{4B763738-CF1A-4DEC-A888-7D3D15054231}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.Collections.Experimental", "src\FSharpx.Collections.Experimental\FSharpx.Collections.Experimental.fsproj", "{AD3C8E86-F4CF-426F-A31D-015056227777}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		DataStructures|Any CPU = DataStructures|Any CPU
@@ -461,6 +463,21 @@ Global
 		{4B763738-CF1A-4DEC-A888-7D3D15054231}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{4B763738-CF1A-4DEC-A888-7D3D15054231}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{4B763738-CF1A-4DEC-A888-7D3D15054231}.Release|x86.ActiveCfg = Release|Any CPU
+		{AD3C8E86-F4CF-426F-A31D-015056227777}.DataStructures|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD3C8E86-F4CF-426F-A31D-015056227777}.DataStructures|Any CPU.Build.0 = Debug|Any CPU
+		{AD3C8E86-F4CF-426F-A31D-015056227777}.DataStructures|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{AD3C8E86-F4CF-426F-A31D-015056227777}.DataStructures|Mixed Platforms.Build.0 = Debug|Any CPU
+		{AD3C8E86-F4CF-426F-A31D-015056227777}.DataStructures|x86.ActiveCfg = Debug|Any CPU
+		{AD3C8E86-F4CF-426F-A31D-015056227777}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD3C8E86-F4CF-426F-A31D-015056227777}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD3C8E86-F4CF-426F-A31D-015056227777}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{AD3C8E86-F4CF-426F-A31D-015056227777}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{AD3C8E86-F4CF-426F-A31D-015056227777}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AD3C8E86-F4CF-426F-A31D-015056227777}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD3C8E86-F4CF-426F-A31D-015056227777}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD3C8E86-F4CF-426F-A31D-015056227777}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{AD3C8E86-F4CF-426F-A31D-015056227777}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{AD3C8E86-F4CF-426F-A31D-015056227777}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
