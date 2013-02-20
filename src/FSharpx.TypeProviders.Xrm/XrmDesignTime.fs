@@ -3,10 +3,10 @@
 // We disclaim all warranties, either express or implied, including the 
 // warranties of merchantability and fitness for a particular purpose.
 
-namespace Samples.XrmProvider
+namespace FSharpx.TypeProviders.XrmProvider
 
-open Samples.XrmProvider.Runtime
-open Samples.XrmProvider.Runtime.Common
+open FSharpx.TypeProviders.XrmProvider.Runtime
+open FSharpx.TypeProviders.XrmProvider.Runtime.Common
 
 open System
 open System.Net
@@ -47,7 +47,7 @@ type internal XrmRuntimeInfo (config : TypeProviderConfig) =
 type XrmTypeProvider(config: TypeProviderConfig) as this = 
     inherit TypeProviderForNamespaces()
     let xrmRuntimeInfo = XrmRuntimeInfo(config)
-    let ns = "Samples.XrmProvider"     
+    let ns = "FSharpx.TypeProviders.XrmProvider"     
     let asm = Assembly.GetExecutingAssembly()
     
     let createOrgService uri creds =

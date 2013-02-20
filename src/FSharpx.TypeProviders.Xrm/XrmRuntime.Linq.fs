@@ -3,7 +3,7 @@
 // We disclaim all warranties, either express or implied, including the 
 // warranties of merchantability and fitness for a particular purpose.
 
-namespace Samples.XrmProvider.Runtime
+namespace FSharpx.TypeProviders.XrmProvider.Runtime
 
 open System
 open System.Linq
@@ -18,8 +18,8 @@ open Microsoft.Xrm.Sdk.Messages
 open Microsoft.Xrm.Sdk.Metadata
 open Microsoft.Xrm.Sdk.Client
 
-open Samples.XrmProvider.Runtime.QueryExpression                      
-open Samples.XrmProvider.Runtime.Common
+open FSharpx.TypeProviders.XrmProvider.Runtime.QueryExpression                      
+open FSharpx.TypeProviders.XrmProvider.Runtime.Common
 
 module internal QueryImplementation = 
     open System.Linq

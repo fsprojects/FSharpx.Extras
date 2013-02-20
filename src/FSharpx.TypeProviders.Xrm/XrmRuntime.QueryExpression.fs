@@ -3,15 +3,15 @@
 // We disclaim all warranties, either express or implied, including the 
 // warranties of merchantability and fitness for a particular purpose.
 
-namespace Samples.XrmProvider.Runtime.QueryExpression
+namespace FSharpx.TypeProviders.XrmProvider.Runtime.QueryExpression
 
 open System
 open System.Reflection
 open System.Linq.Expressions
 open System.Collections.Generic
 open Microsoft.Xrm.Sdk.Query
-open Samples.XrmProvider.Runtime.Common
-open Samples.XrmProvider.Runtime.Patterns
+open FSharpx.TypeProviders.XrmProvider.Runtime.Common
+open FSharpx.TypeProviders.XrmProvider.Runtime.Patterns
 
 module internal QueryExpressionTransformer =    
     /// Visitor has two uses - 1. extracting the attributes for each entity to retrieve

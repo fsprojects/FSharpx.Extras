@@ -3,7 +3,7 @@
 // We disclaim all warranties, either express or implied, including the 
 // warranties of merchantability and fitness for a particular purpose.
 
-namespace Samples.XrmProvider
+namespace FSharpx.TypeProviders.XrmProvider
 
 open System.Linq
 // Dummy operators, these are placeholders that are replaced in the expression tree traversal with special server-side operations such as In, Like

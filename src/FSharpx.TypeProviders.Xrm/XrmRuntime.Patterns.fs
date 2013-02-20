@@ -3,7 +3,7 @@
 // We disclaim all warranties, either express or implied, including the 
 // warranties of merchantability and fitness for a particular purpose.
 
-module internal Samples.XrmProvider.Runtime.Patterns
+module internal FSharpx.TypeProviders.XrmProvider.Runtime.Patterns
 
 open System
 open System.Linq.Expressions

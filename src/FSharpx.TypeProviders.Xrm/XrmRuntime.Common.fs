@@ -3,7 +3,7 @@
 // We disclaim all warranties, either express or implied, including the 
 // warranties of merchantability and fitness for a particular purpose.
 
-namespace Samples.XrmProvider.Runtime.Common
+namespace FSharpx.TypeProviders.XrmProvider.Runtime.Common
 
 open System
 open System.Collections.Generic
