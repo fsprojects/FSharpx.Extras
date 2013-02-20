@@ -314,6 +314,12 @@ let prepareNugetTarget = TargetTemplate (fun frameworkVersion ->
             CleanDir frameworkSubDir
             CleanDir portableSubDir
 
+            if package = "TypeProviders.Xrm" then
+                [for ending in ["dll";"xml"] do
+                    yield sprintf "%smicrosoft.xrm.sdk.%s" buildDir ending]
+                |> Seq.filter (fun f -> File.Exists f)
+                |> CopyTo frameworkSubDir
+
             [for ending in ["dll";"pdb";"xml"] do
                 yield sprintf "%sFSharpx.%s.%s" buildDir package ending
                 yield sprintf "%sFSharpx.%s.DesignTime.%s" buildDir package ending]
