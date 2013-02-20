@@ -26,9 +26,9 @@ This library is for the .NET platform implementing a type provider for JSON, XML
 
 [<assembly: AssemblyProduct ("FSharpx.TypeProviders.Documents")>]
 
-[<assembly: AssemblyVersion ("1.7.6")>]
+[<assembly: AssemblyVersion ("1.7.8")>]
 
-[<assembly: AssemblyFileVersion ("1.7.6")>]
+[<assembly: AssemblyFileVersion ("1.7.8")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 
