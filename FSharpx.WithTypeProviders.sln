@@ -78,6 +78,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.Collections.Experim
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.Collections.Experimental", "src\FSharpx.Collections.Experimental\FSharpx.Collections.Experimental.fsproj", "{AD3C8E86-F4CF-426F-A31D-015056227777}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Xrm", "src\FSharpx.TypeProviders.Xrm\FSharpx.TypeProviders.Xrm.fsproj", "{7D569323-71D4-4F6F-94EC-CD210C137359}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		DataStructures|Any CPU = DataStructures|Any CPU
@@ -478,6 +480,21 @@ Global
 		{AD3C8E86-F4CF-426F-A31D-015056227777}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{AD3C8E86-F4CF-426F-A31D-015056227777}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{AD3C8E86-F4CF-426F-A31D-015056227777}.Release|x86.ActiveCfg = Release|Any CPU
+		{7D569323-71D4-4F6F-94EC-CD210C137359}.DataStructures|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D569323-71D4-4F6F-94EC-CD210C137359}.DataStructures|Any CPU.Build.0 = Debug|Any CPU
+		{7D569323-71D4-4F6F-94EC-CD210C137359}.DataStructures|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{7D569323-71D4-4F6F-94EC-CD210C137359}.DataStructures|Mixed Platforms.Build.0 = Debug|Any CPU
+		{7D569323-71D4-4F6F-94EC-CD210C137359}.DataStructures|x86.ActiveCfg = Debug|Any CPU
+		{7D569323-71D4-4F6F-94EC-CD210C137359}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D569323-71D4-4F6F-94EC-CD210C137359}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D569323-71D4-4F6F-94EC-CD210C137359}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{7D569323-71D4-4F6F-94EC-CD210C137359}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{7D569323-71D4-4F6F-94EC-CD210C137359}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7D569323-71D4-4F6F-94EC-CD210C137359}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D569323-71D4-4F6F-94EC-CD210C137359}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D569323-71D4-4F6F-94EC-CD210C137359}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{7D569323-71D4-4F6F-94EC-CD210C137359}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{7D569323-71D4-4F6F-94EC-CD210C137359}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -496,6 +513,7 @@ Global
 		{72613558-B230-43F0-84D7-584030BF5316} = {9547EC26-72FD-43FE-9D91-7ECC1E73DAAD}
 		{A19058BA-54BF-498F-BED3-6564D5117842} = {9547EC26-72FD-43FE-9D91-7ECC1E73DAAD}
 		{C5BDEC68-56F5-447E-8386-BB82B1C76165} = {9547EC26-72FD-43FE-9D91-7ECC1E73DAAD}
+		{7D569323-71D4-4F6F-94EC-CD210C137359} = {9547EC26-72FD-43FE-9D91-7ECC1E73DAAD}
 		{41D22552-BAFB-47D5-B20A-D81E18C3C1E8} = {EFB3F0C2-10B4-4EF5-8FA7-CC39880067A1}
 		{EC2F35C2-6DC7-437B-9BD1-44DC1B6F7136} = {EFB3F0C2-10B4-4EF5-8FA7-CC39880067A1}
 		{3939EBF0-264F-480B-BFC4-25B21C8EEB1C} = {EFB3F0C2-10B4-4EF5-8FA7-CC39880067A1}
