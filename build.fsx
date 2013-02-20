@@ -38,7 +38,7 @@ let nugetDir package = sprintf "./nuget/%s/" package
 let nugetLibDir package = nugetDir package @@ "lib"
 let nugetDocsDir package = nugetDir package @@ "docs"
 
-let typeProvidersPackages = ["TypeProviders.Graph"; "TypeProviders.Documents"; "TypeProviders.Xaml"; "TypeProviders.Math"; "TypeProviders.Excel"; "TypeProviders.Machine"; "TypeProviders.Regex"; "TypeProviders.AppSettings"; "TypeProviders.Freebase"; "TypeProviders.Management"]
+let typeProvidersPackages = ["TypeProviders.Graph"; "TypeProviders.Documents"; "TypeProviders.Xaml"; "TypeProviders.Math"; "TypeProviders.Excel"; "TypeProviders.Machine"; "TypeProviders.Regex"; "TypeProviders.AppSettings"; "TypeProviders.Freebase"; "TypeProviders.Management"; "TypeProviders.Xrm"]
 let packages = ["Core"; "Http"; "Observable"; "Collections.Experimental"; "TypeProviders"] @ typeProvidersPackages
 
 let projectDesc = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible."
@@ -58,6 +58,7 @@ let rec getPackageDesc = function
 | "TypeProviders.AppSettings" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing an AppSettings type provider."
 | "TypeProviders.Freebase" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a Freebase type provider."
 | "TypeProviders.Management" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a WMI type provider."
+| "TypeProviders.Xrm" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type provider for Microsoft Dynamics CRM 2011"
 | _ -> projectDesc + "\r\n\r\nIt currently implements:\r\n\r\n" + 
                        "* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n" +
                        "* Iteratee\r\n" +
@@ -93,7 +94,6 @@ let nunitPath = sprintf "%sNUnit.Runners.%s/Tools" packagesDir nunitVersion
 let appReferences portable frameworkVersion =
     if portable then
         !+ "./src/**/*Freebase.fsproj"
-      //    ++ "./src/**/*Management.fsproj"
           |> Scan
     else
         { (!+ "./src/**/*.*proj") with 
@@ -241,6 +241,15 @@ Target "AssemblyInfo" (fun _ ->
             AssemblyDescription = getPackageDesc "TypeProviders.AppSettings"
             Guid = "75A1B454-ED85-4FAB-939C-026891B758DB"
             OutputFileName = "./src/FSharpx.TypeProviders.AppSettings/AssemblyInfo.fs" })
+
+    AssemblyInfo (fun p ->
+        {p with 
+            CodeLanguage = FSharp
+            AssemblyVersion = version
+            AssemblyTitle = "FSharpx.TypeProviders.Xrm"
+            AssemblyDescription = getPackageDesc "TypeProviders.Xrm"
+            Guid = "D69A0DB8-9D31-4CDD-8470-231A15313DBA"
+            OutputFileName = "./src/FSharpx.TypeProviders.Xrm/AssemblyInfo.fs" })
 
             // TODO: COMVISIBLE is not working with portable
 //    AssemblyInfo (fun p ->
