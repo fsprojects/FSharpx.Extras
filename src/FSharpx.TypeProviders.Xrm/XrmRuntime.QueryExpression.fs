@@ -76,7 +76,7 @@ module internal QueryExpressionTransformer =
                         Expression.Call(baseEntityParam,getSubEntityMi,Expression.Constant(alias),Expression.Constant(name))
                             ,exp.Type)   
                                      
-            else base.VisitMember exp
+            else base.VisitMember exp 
     
     let convertExpression exp (entityIndex:string ResizeArray) =        
         // first convert the abstract query tree into a more useful format
@@ -190,3 +190,4 @@ module internal QueryExpressionTransformer =
             addLinks (entityIndex.Find(fun x -> x = baseAlias)) (fun newLink -> query.LinkEntities.Add newLink)                
     
         (query,projectionDelegate)
+ 

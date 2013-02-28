@@ -36,7 +36,7 @@ module internal QueryImplementation =
     let (|RelDirection|_|)        = function Constant ((:? RelationshipDirection as s),_) -> Some s   | _ -> None
 
     let toXrmEntity (e:Entity) = 
-        let entity = XrmEntity(e.LogicalName)        
+        let entity = XrmEntity(e.LogicalName)
         entity.Attributes <- e.Attributes
         entity.Id <- e.Id  
         entity      
@@ -48,10 +48,27 @@ module internal QueryImplementation =
                
     type XrmQueryable<'T>(org:IOrganizationService,xrmQuery,tupleIndex) =       
         static member Create(entity,org) = XrmQueryable<'T>(org,BaseEntity("",entity),ResizeArray<_>()) :> IQueryable<'T> 
-        interface IOrderedQueryable<'T>
-        interface IOrderedQueryable with
+        interface IQueryable<'T>
+        interface IQueryable with
             member x.Provider = XrmQueryProvider.Provider
             member x.Expression =  Expression.Constant(x,typeof<IQueryable<'T>>) :> Expression 
+            member x.ElementType = typeof<'T>
+        interface seq<'T> with 
+             member x.GetEnumerator() = (Seq.cast<'T> (executeQuery org xrmQuery tupleIndex)).GetEnumerator()
+        interface System.Collections.IEnumerable with 
+             member x.GetEnumerator() = (x :> seq<'T>).GetEnumerator() :> System.Collections.IEnumerator
+        interface IWithOrgService with 
+             member x.OrgService = org
+             member x.XrmExpression = xrmQuery
+             member x.TupleIndex = tupleIndex
+
+    and  XrmOrderedQueryable<'T>(org:IOrganizationService,xrmQuery,tupleIndex) =       
+        static member Create(entity,org) = XrmQueryable<'T>(org,BaseEntity("",entity),ResizeArray<_>()) :> IQueryable<'T> 
+        interface IOrderedQueryable<'T>
+        interface IQueryable<'T> 
+        interface IQueryable with 
+            member x.Provider = XrmQueryProvider.Provider
+            member x.Expression =  Expression.Constant(x,typeof<IOrderedQueryable<'T>>) :> Expression 
             member x.ElementType = typeof<'T>
         interface seq<'T> with 
              member x.GetEnumerator() = (Seq.cast<'T> (executeQuery org xrmQuery tupleIndex)).GetEnumerator()
@@ -76,16 +93,22 @@ module internal QueryImplementation =
                         let ty = typedefof<XrmQueryable<_>>.MakeGenericType(meth.GetGenericArguments().[0]) 
                         ty.GetConstructors().[0].Invoke [| source.OrgService ; Take(amount,source.XrmExpression) ; source.TupleIndex |] :?> IQueryable<_>
 
-                    | MethodCall(None, (MethodWithName "OrderBy" as meth), [SourceWithQueryData source; OptionalQuote (Lambda([ParamName param], XrmAttributeGet(entity,key,_))) ]) ->
+                    | MethodCall(None, (MethodWithName "OrderBy" | MethodWithName "OrderByDescending" as meth), [SourceWithQueryData source; OptionalQuote (Lambda([ParamName param], XrmAttributeGet(entity,key,_))) ]) ->
                         let alias = if entity = "" then param else Utilities.resolveTuplePropertyName entity source.TupleIndex
-                        let ty = typedefof<XrmQueryable<_>>.MakeGenericType(meth.GetGenericArguments().[0]) 
-                        let x = ty.GetConstructors().[0].Invoke [| source.OrgService ; OrderBy(alias,key,false,source.XrmExpression) ; source.TupleIndex |] 
+                        let ty = typedefof<XrmOrderedQueryable<_>>.MakeGenericType(meth.GetGenericArguments().[0]) 
+                        let ascending = meth.Name = "OrderBy"
+                        let x = ty.GetConstructors().[0].Invoke [| source.OrgService ; OrderBy(alias,key,ascending,source.XrmExpression) ; source.TupleIndex |] 
                         x :?> IQueryable<_>
 
-                    | MethodCall(None, (MethodWithName "OrderByDescending" as meth), [ SourceWithQueryData source; OptionalQuote (Lambda([ParamName param], XrmAttributeGet(entity,key,_))) ]) ->
+                    | MethodCall(None, (MethodWithName "ThenBy" | MethodWithName "ThenByDescending" as meth), [SourceWithQueryData source; OptionalQuote (Lambda([ParamName param], XrmAttributeGet(entity,key,_))) ]) ->
                         let alias = if entity = "" then param else Utilities.resolveTuplePropertyName entity source.TupleIndex
-                        let ty = typedefof<XrmQueryable<_>>.MakeGenericType(meth.GetGenericArguments().[0])                            
-                        ty.GetConstructors().[0].Invoke [| source.OrgService ; OrderBy(alias,key,true,source.XrmExpression) ; source.TupleIndex |] :?> IQueryable<_>
+                        let ty = typedefof<XrmOrderedQueryable<_>>.MakeGenericType(meth.GetGenericArguments().[0]) 
+                        let ascending = meth.Name = "ThenBy"
+                        match source.XrmExpression with 
+                        | OrderBy(_) ->
+                            let x = ty.GetConstructors().[0].Invoke [| source.OrgService ; OrderBy(alias,key,ascending,source.XrmExpression) ; source.TupleIndex |] 
+                            x :?> IQueryable<_>
+                        | _ -> failwith (sprintf "'thenBy' operations must come immediately after a 'sortBy' operation in a query")
 
                     | MethodCall(None, (MethodWithName "Distinct" as meth), [ SourceWithQueryData source ]) ->
                         let ty = typedefof<XrmQueryable<_>>.MakeGenericType(meth.GetGenericArguments().[0])                            
@@ -222,23 +245,32 @@ module internal QueryImplementation =
                         | _ -> raise <| InvalidOperationException("Encountered more than one element in the input sequence")                  
                     | _ -> failwith "Unuspported execution expression" }                    
 
-type public XrmDataContext (orgService,user,password:string,domain,orgInstance:IOrganizationService) =   
+type public XrmDataContext (orgService,user,password:string,domain,crmOnline,orgInstance:IOrganizationService) =   
     static let mutable  org : IOrganizationService = null 
     do
         if orgInstance = null then 
-            let uri = Uri(orgService)
-            let credentials = new ClientCredentials()         
-            if user <> "" then credentials.Windows.ClientCredential <- NetworkCredential(user,password,domain)
-            else credentials.Windows.ClientCredential <- CredentialCache.DefaultNetworkCredentials            
-            let orgProxy = new OrganizationServiceProxy(uri, null, credentials, null);
+            let creds =
+                let creds = new ClientCredentials()
+                match crmOnline,user with
+                | true, _ -> 
+                    creds.Windows.ClientCredential <- CredentialCache.DefaultNetworkCredentials
+                    creds.UserName.UserName <- user
+                    creds.UserName.Password <- password
+                | false, null | false, "" -> 
+                    creds.Windows.ClientCredential <- CredentialCache.DefaultNetworkCredentials
+                | x ->  
+                    creds.Windows.ClientCredential <- new NetworkCredential(user,password,domain)
+                creds
+            let uri = Uri(orgService)            
+            let orgProxy = new OrganizationServiceProxy(uri, null, creds, (if crmOnline then Microsoft.Crm.Services.Utility.DeviceIdManager.LoadOrRegisterDevice() else null))
             org <- (orgProxy :> IOrganizationService)
         else
             org <-  orgInstance
     static member _CreateWithInstance(orgInstance) =    
-        XrmDataContext(null,null,null,null,orgInstance)
-    static member _Create(orgService,user,password,domain) =        
-        XrmDataContext(orgService,user,password,domain,null)    
+        XrmDataContext(null,null,null,null,false,orgInstance)
+    static member _Create(orgService,user,password,domain,crmOnline) =        
+        XrmDataContext(orgService,user,password,domain,crmOnline,null)    
     static member _CreateRelated(inst:XrmEntity,entity,pe,pk,fe,fk,ie,direction) : IQueryable<XrmEntity> =  
-        raise (NotImplementedException("this method is a dummy and can not be called directly"))
+        failwith "The CRM provider does not currently support the direct enumeration of relationships. please use a full query."
     static member _CreateEntities(entity) : IQueryable<XrmEntity> =  
-            QueryImplementation.XrmQueryable.Create(entity,org) 
+        QueryImplementation.XrmQueryable.Create(entity,org) 

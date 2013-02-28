@@ -16,7 +16,7 @@ type XrmEntity(schemaName) =
     
     let aliasCache = new Dictionary<string,XrmEntity>(HashIdentity.Structural)
 
-    member e.GetSchemaName() = schemaName
+    member e.SchemaName = schemaName
     
     member e.GetAttribute<'T>(key) = 
         let defaultValue() =                        

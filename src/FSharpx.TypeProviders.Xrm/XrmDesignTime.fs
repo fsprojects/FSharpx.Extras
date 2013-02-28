@@ -9,6 +9,7 @@ open FSharpx.TypeProviders.XrmProvider.Runtime
 open FSharpx.TypeProviders.XrmProvider.Runtime.Common
 
 open System
+open System.IO
 open System.Net
 open System.Reflection
 open System.Collections.Generic
@@ -22,6 +23,7 @@ open Microsoft.Xrm.Sdk.Query
 open Microsoft.Xrm.Sdk.Messages
 open Microsoft.Xrm.Sdk.Metadata
 open Microsoft.Xrm.Sdk.Client
+open Microsoft.Crm.Services.Utility
 
 open Samples.FSharp.ProvidedTypes
 
@@ -49,10 +51,10 @@ type XrmTypeProvider(config: TypeProviderConfig) as this =
     let xrmRuntimeInfo = XrmRuntimeInfo(config)
     let ns = "FSharpx.TypeProviders.XrmProvider"     
     let asm = Assembly.GetExecutingAssembly()
-    
-    let createOrgService uri creds =
+        
+    let createOrgService uri clientCreds deviceCreds =
         let uri = Uri(uri)        
-        let orgProxy = new OrganizationServiceProxy(uri, null, creds, null);
+        let orgProxy = new OrganizationServiceProxy(uri, null, clientCreds, deviceCreds);
         orgProxy :> IOrganizationService
     
     let extractDescription (input:Label) =
@@ -65,15 +67,39 @@ type XrmTypeProvider(config: TypeProviderConfig) as this =
             | None -> "No description available"
         else "No description available" 
         
-    let createTypes(orgService,user,pwd:string,domain,nullables,relationshipNameType,rootTypeName) =       
+    let createTypes(orgService,nullables,relationshipNameType,crmOnline,credentialsFile,usernameParam:string,passwordParam:string,domainParam,rootTypeName) =       
+        let absoluteCredentialsFile = 
+            if String.IsNullOrWhiteSpace credentialsFile then credentialsFile 
+            elif Path.IsPathRooted credentialsFile then Path.GetFullPath credentialsFile
+            else Path.GetFullPath(Path.Combine(config.ResolutionFolder, credentialsFile))
+        
+        let (username,password,domain) =
+            match absoluteCredentialsFile with
+            | "" -> (usernameParam,passwordParam,domainParam)
+            | _ -> 
+                if not (File.Exists absoluteCredentialsFile) then failwithf "Could not find credentials file at %s" absoluteCredentialsFile
+                let values = File.ReadAllLines absoluteCredentialsFile
+                match values.Length with
+                | 2 -> (values.[0],values.[1],"")
+                | 3 -> (values.[0],values.[1],values.[2])
+                | _ -> failwith "Credentials file should have between two to three lines, containing the username, password and domain respectively"
+
+        let anyCredentialsSupplied = not (String.IsNullOrWhiteSpace username && String.IsNullOrWhiteSpace password && String.IsNullOrWhiteSpace domain)        
+        
         let creds =
             let creds = new ClientCredentials()
-            match user with
-            | null | "" -> creds.Windows.ClientCredential <- CredentialCache.DefaultNetworkCredentials
-            | x ->  creds.Windows.ClientCredential <- new NetworkCredential(user,pwd,domain)
+            match crmOnline,username with
+            | true, _ -> // CRM online uses windows live authentication so the name / password go on the outer set of properties
+                creds.Windows.ClientCredential <- CredentialCache.DefaultNetworkCredentials
+                creds.UserName.UserName <- username
+                creds.UserName.Password <- password
+            | false, null | false, "" ->  // use AD implicitly
+                creds.Windows.ClientCredential <- CredentialCache.DefaultNetworkCredentials
+            | x ->                  
+                creds.Windows.ClientCredential <- new NetworkCredential(username,password,domain)
             creds
 
-        let org = createOrgService orgService creds
+        let org = createOrgService orgService creds (if crmOnline then DeviceIdManager.LoadOrRegisterDevice() else null)
         
         let createRelationshipName (meta:RelationshipMetadataBase) relationshipType = 
             match relationshipNameType with
@@ -104,7 +130,7 @@ type XrmTypeProvider(config: TypeProviderConfig) as this =
             lazy         
                 let ems = org.Execute(RetrieveAllEntitiesRequest()) :?> RetrieveAllEntitiesResponse
                 [for em in ems.EntityMetadata -> em]
-        
+                 
         let entityAttributes =
             lazy
                 dict
@@ -129,7 +155,7 @@ type XrmTypeProvider(config: TypeProviderConfig) as this =
                         t.AddMember <| ProvidedConstructor([], InvokeCode = fun _ ->  <@@ new XrmEntity(entity.LogicalName)  @@>) 
                         let desc = extractDescription entity.Description
                         t.AddXmlDoc desc
-                        yield entity.LogicalName,(t,desc) ]
+                        yield entity.LogicalName,(t,desc) ]               
 
         // add the attributes and relationships
         for KeyValue(key,(t,desc)) in baseTypes.Force() do 
@@ -199,7 +225,7 @@ type XrmTypeProvider(config: TypeProviderConfig) as this =
 
                         prop.AddXmlDocDelayed( fun () -> sprintf """<summary>Many to one relationship between %s &gt;--- %s from %s to %s
                                                                              <para>Relationship name : %s</para></summary>""" 
-                                                            r.ReferencedEntity r.ReferencingEntity r.ReferencedAttribute r.ReferencingAttribute r.SchemaName )                        
+                                                            r.ReferencedEntity r.ReferencingEntity r.ReferencedAttribute r.ReferencingAttribute r.SchemaName )
                         yield prop]
                     @
                     [for r in manyToMany do 
@@ -250,9 +276,13 @@ type XrmTypeProvider(config: TypeProviderConfig) as this =
                                 serviceType, IsStaticMethod=true,
                                 InvokeCode = (fun _ -> 
                                     let meth = typeof<XrmDataContext>.GetMethod "_Create"                                                         
-                                    Expr.Call(meth, [Expr.Value orgService;Expr.Value user;Expr.Value pwd;Expr.Value domain;])
+                                    Expr.Call(meth, [Expr.Value orgService;Expr.Value username;Expr.Value password;Expr.Value domain;Expr.Value crmOnline])
                                     ))
-              meth.AddXmlDoc "<summary>Retuns an instance of the CRM provider using the static parameters</summary>"
+              meth.AddXmlDoc "<summary>Returns an instance of the CRM provider using the static parameters</summary>"
+              
+              if anyCredentialsSupplied && not config.IsHostedExecution && not config.IsInvalidationSupported then 
+                meth.AddObsoleteAttribute("Compiled applications must supply credentials in the GetDataContext method when also supplying credentials as static parameters",true)
+
               yield meth
                                         
               let meth = ProvidedMethod ("GetDataContext", [ProvidedParameter("organizationService",typeof<IOrganizationService>)], 
@@ -268,7 +298,11 @@ type XrmTypeProvider(config: TypeProviderConfig) as this =
                                                             serviceType, IsStaticMethod=true,
                                                             InvokeCode = (fun args ->
                                                                 let meth = typeof<XrmDataContext>.GetMethod "_Create"
-                                                                Expr.Call(meth, [args.[0];Expr.Value "";Expr.Value "";Expr.Value ""])))
+                                                                Expr.Call(meth, [args.[0];Expr.Value "";Expr.Value "";Expr.Value ""; Expr.Value false])))
+            
+              if anyCredentialsSupplied && not config.IsHostedExecution && not config.IsInvalidationSupported then 
+                  meth.AddObsoleteAttribute("Compiled applications must supply credentials in the GetDataContext method when also supplying credentials as static parameters")
+
               meth.AddXmlDoc "<summary>Retuns an instance of the CRM provider</summary>
                               <param name='organizationServiceUrl'>The SOAP Endpoint address of the Microsoft Dynamics CRM 2011 organization service</param>"
               yield meth                                
@@ -276,37 +310,44 @@ type XrmTypeProvider(config: TypeProviderConfig) as this =
               let meth = ProvidedMethod ("GetDataContext", [ProvidedParameter("organizationServiceUrl",typeof<string>);
                                                             ProvidedParameter("username",typeof<string>);
                                                             ProvidedParameter("password",typeof<string>);
-                                                            ProvidedParameter("domain",typeof<string>)], 
+                                                            ProvidedParameter("domain",typeof<string>);
+                                                            ProvidedParameter("crmOnline",typeof<bool>)], 
                                                             serviceType, IsStaticMethod=true,
                                                             InvokeCode = (fun args ->
                                                                 let meth = typeof<XrmDataContext>.GetMethod "_Create"
-                                                                Expr.Call(meth, [args.[0];args.[1];args.[2];args.[3]])));
+                                                                Expr.Call(meth, [args.[0];args.[1];args.[2];args.[3];args.[4]])));
               meth.AddXmlDoc "<summary>Retuns an instance of the CRM provider</summary>
                               <param name='organizationServiceUrl'>The SOAP Endpoint address of the Microsoft Dynamics CRM 2011 organization service</param>
                               <param name='username'>The username for use with Windows Authentication</param>
                               <param name='password'>The password for use with Windows Authentication</param>
-                              <param name='domain'>The domain name for use with Windows Authentication</param>"
+                              <param name='domain'>The domain name for use with Windows Authentication</param>
+                              <param name='crmOnilne'>Set this to true if using a CRM Online deployment. This will change the authentication to use Windows Live.</param>"
+
               yield meth
             ])
         rootType
     
-    let paramXrmType   = ProvidedTypeDefinition(xrmRuntimeInfo.RuntimeAssembly, ns, "XrmDataProvider", Some(typeof<obj>), HideObjectMethods = true)        
-    let orgUri = ProvidedStaticParameter("organizationServiceUrl",typeof<string>)
-    let user = ProvidedStaticParameter("username",typeof<string>,"")
-    let pwd = ProvidedStaticParameter("password",typeof<string>,"")
-    let domain = ProvidedStaticParameter("domain",typeof<string>,"")
-    let nullables = ProvidedStaticParameter("useNullableValues",typeof<bool>,false)
-    let relationships = ProvidedStaticParameter("relationshipNamingType",typeof<RelationshipNamingType>,RelationshipNamingType.ParentChildPrefix)
+    let paramXrmType = ProvidedTypeDefinition(xrmRuntimeInfo.RuntimeAssembly, ns, "XrmDataProvider", Some(typeof<obj>), HideObjectMethods = true)        
+    let orgUri = ProvidedStaticParameter("OrganizationServiceUrl",typeof<string>)    
+    let nullables = ProvidedStaticParameter("UseNullableValues",typeof<bool>,false)
+    let relationships = ProvidedStaticParameter("RelationshipNamingType",typeof<RelationshipNamingType>,RelationshipNamingType.ParentChildPrefix)
+    let crmOnline = ProvidedStaticParameter("CrmOnline",typeof<bool>,false)    
+    let credentialsFile = ProvidedStaticParameter("CredentialsFile",typeof<string>,"")
+    let user = ProvidedStaticParameter("Username",typeof<string>,"")
+    let pwd = ProvidedStaticParameter("Password",typeof<string>,"")
+    let domain = ProvidedStaticParameter("Domain",typeof<string>,"")
     let helpText = "<summary>Typed representation of a Microsoft Dynamics CRM Organization</summary>                    
-                    <param name='organizationServiceUrl'>The SOAP Endpoint address of the Microsoft Dynamics CRM 2011 organization service</param>
-                    <param name='username'>The username for use with Windows Authentication</param>
-                    <param name='password'>The password for use with Windows Authentication</param>
-                    <param name='domain'>The domain name for use with Windows Authentication</param>
-                    <param name='useNullableValues'>If true, the provider will generate Nullable&lt;T&gt; for value types marked as not required in CRM. If false, value type attribtues selected that have no value will be returned as default(T).  In either case, missing strings are always represented by String.Empty, not null.</param>
-                    <param name='relationshipNamingType'>Determines how the relationships appear on the generated types. See comments on the RelationshipNameType for details.</param>"
+                    <param name='OrganizationServiceUrl'>The SOAP Endpoint address of the Microsoft Dynamics CRM 2011 organization service</param>                    
+                    <param name='UseNullableValues'>If true, the provider will generate Nullable&lt;T&gt; for value types marked as not required in CRM. If false, value type attribtues selected that have no value will be returned as default(T).  In either case, missing strings are always represented by String.Empty, not null.</param>
+                    <param name='RelationshipNamingType'>Determines how the relationships appear on the generated types. See comments on the RelationshipNameType for details.</param>
+                    <param name='CrmOnline'>Set this to true if using a CRM Online deployment. This will change the authentication to use Windows Live.</param>
+                    <param name='CredentialsFile'>Path to plain text file that includes username, password and optionally the domain. In the case of CRM Online these would be the relevant Windows Live username and password.</param>
+                    <param name='Username'>The username for use with Windows Authentication</param>
+                    <param name='Password'>The password for use with Windows Authentication</param>
+                    <param name='Domain'>The domain name for use with Windows Authentication</param>"                    
         
-    do paramXrmType.DefineStaticParameters([orgUri;user;pwd;domain;nullables;relationships], fun typeName args -> 
-        createTypes(args.[0] :?> string, args.[1] :?> string, args.[2] :?> string, args.[3] :?> string, args.[4] :?> bool, args.[5] :?> RelationshipNamingType,typeName))
+    do paramXrmType.DefineStaticParameters([orgUri;nullables;relationships;crmOnline;credentialsFile;user;pwd;domain;], fun typeName args -> 
+        createTypes(args.[0] :?> string, args.[1] :?> bool, args.[2] :?> RelationshipNamingType, args.[3] :?> bool, args.[4] :?> string, args.[5] :?> string, args.[6] :?> string,args.[7] :?> String, typeName))
 
     do paramXrmType.AddXmlDoc helpText               
 
