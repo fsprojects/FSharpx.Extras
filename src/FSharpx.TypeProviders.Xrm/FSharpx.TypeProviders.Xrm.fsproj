@@ -61,6 +61,9 @@
     <Content Include="readme.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Crm.Services.Utility">
+      <HintPath>..\..\lib\Xrm\Microsoft.Crm.Services.Utility.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Xrm.Sdk">
       <HintPath>..\..\lib\Xrm\microsoft.xrm.sdk.dll</HintPath>
     </Reference>
