@@ -946,4 +946,40 @@ module Task =
         member this.Delay (f: unit -> 'a Task) = f
         member this.Run (f: unit -> 'a Task) = f()
 
+    type TaskBuilderWithToken(?continuationOptions, ?scheduler) =
+        let contOptions = defaultArg continuationOptions TaskContinuationOptions.None
+        let scheduler = defaultArg scheduler TaskScheduler.Default
+
+        let konst x = fun (_: CancellationToken) -> x
+        
+        member this.Return x = konst (returnM x)
+        member this.ReturnFrom (t: Task<'a>) = konst t
+        member this.ReturnFrom (t: CancellationToken -> Task<'a>) = t
+        member this.Zero() = this.Return ()
+        
+        member this.Bind(t: CancellationToken -> Task<'a>, f: 'a -> (CancellationToken -> Task<'b>)) =
+            fun (token: CancellationToken) ->
+                (t token).ContinueWith((fun (x: Task<_>) -> f x.Result token), token, contOptions, scheduler).Unwrap()
+        
+        member this.Bind(t: Task<'a>, f: 'a -> (CancellationToken -> Task<'b>)) = this.Bind(this.ReturnFrom t, f)
+
+        member this.While(guard, m: CancellationToken -> Task<unit>) =
+                if not(guard()) then 
+                    this.Zero()
+                else
+                    this.Bind(m, (fun () -> this.While(guard, m)))
+
+        member this.TryFinally(t: CancellationToken -> Task<'a>, compensation) =
+            try t
+            finally compensation()
+
+        member this.Using(res: #IDisposable, body: #IDisposable -> (CancellationToken -> Task<'a>)) =
+            this.TryFinally(body res, fun () -> match res with null -> () | disp -> disp.Dispose())
+
+        member this.For(sequence: seq<'a>, body: 'a -> (CancellationToken -> Task<unit>)) =            
+                this.Using(sequence.GetEnumerator(),
+                                 fun enum -> this.While(enum.MoveNext, fun token -> body enum.Current token))
+        
+        member this.Delay f = this.Bind(this.Return (), f)
+
 #endif
