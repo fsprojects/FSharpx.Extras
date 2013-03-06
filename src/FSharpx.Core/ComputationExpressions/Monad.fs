@@ -950,10 +950,10 @@ module Task =
         let contOptions = defaultArg continuationOptions TaskContinuationOptions.None
         let scheduler = defaultArg scheduler TaskScheduler.Default
 
-        let konst x = fun (_: CancellationToken) -> x
+        let konstT x = fun (_: CancellationToken) -> x
         
-        member this.Return x = konst (returnM x)
-        member this.ReturnFrom (t: Task<'a>) = konst t
+        member this.Return x = konstT (returnM x)
+        member this.ReturnFrom (t: Task<'a>) = konstT t
         member this.ReturnFrom (t: CancellationToken -> Task<'a>) = t
         member this.Zero() = this.Return ()
         
@@ -962,6 +962,9 @@ module Task =
                 (t token).ContinueWith((fun (x: Task<_>) -> f x.Result token), token, contOptions, scheduler).Unwrap()
         
         member this.Bind(t: Task<'a>, f: 'a -> (CancellationToken -> Task<'b>)) = this.Bind(this.ReturnFrom t, f)
+        
+        member this.Combine(t1: CancellationToken -> Task<'a>, t2: CancellationToken -> Task<'b>) = 
+            this.Bind(t1, konst t2)
 
         member this.While(guard, m: CancellationToken -> Task<unit>) =
                 if not(guard()) then 

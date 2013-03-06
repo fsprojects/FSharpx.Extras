@@ -19,12 +19,15 @@ let checkSuccess (expected: 'a) (t: CancellationToken -> Task<'a>) =
     | Task.Error e -> Assert.Fail("Task should have been successful, but errored with exception {0}", e)
     | Task.Successful a -> Assert.AreEqual(expected, a)     
 
-let checkCancelledWithToken (cts: CancellationTokenSource) (t: CancellationToken -> Task<'a>) =    
-    cts.Cancel()
+let assertCancelled (cts: CancellationTokenSource) (t: CancellationToken -> Task<'a>) = 
     match Task.run (fun () -> t cts.Token) with
     | Task.Canceled -> ()
     | Task.Error e -> Assert.Fail("Task should have been canceled, but errored with exception {0}", e)
     | Task.Successful a -> Assert.Fail("Task should have been canceled, but succeeded with result {0}", a)
+
+let checkCancelledWithToken (cts: CancellationTokenSource) (t: CancellationToken -> Task<'a>) =
+    cts.Cancel()
+    assertCancelled cts t
 
 let checkCancelled (t: CancellationToken -> Task<'a>) =
     use cts = new CancellationTokenSource()
@@ -114,6 +117,30 @@ let ``bind should chain two tasks``() =
             return v2
         }    
     checkSuccess 101 t
+
+[<Test>]
+let ``bind should pass cancellation token``() =
+    let i = ref 0
+    let task = Task.TaskBuilderWithToken()
+    let cts = new CancellationTokenSource()
+    let t = 
+        task {
+            let! v1 = Task.Factory.StartNew(fun () -> 1)
+            let body2 x = 
+                incr i
+                cts.Cancel()
+                x
+            let! v2 = Task.Factory.StartNew(fun () -> body2 v1)
+            let body3 x =
+                incr i
+                x + 1
+            let! v3 = Task.Factory.StartNew(fun () -> body3 v2)
+            return v3
+        }
+    
+    assertCancelled cts t    
+    Assert.AreEqual(1, !i)
+
 
 [<Test>]
 let ``bind should chain two tasks parametrized by CancellationToken``() =
@@ -211,6 +238,19 @@ let ``for``() =
         }
     Task.run (fun () -> t CancellationToken.None) |> ignore
     Assert.AreEqual(10, !i)
+
+[<Test>]
+let ``combine``() =
+    let flag = ref false
+    let task = Task.TaskBuilderWithToken()
+    let t =
+        task {
+            if true then flag := true             
+            return! Task.Factory.StartNew(fun () -> "hello world")
+        }
+    
+    checkSuccess "hello world" t
+    Assert.AreEqual(true, !flag)
 
 #endif
 
