@@ -435,6 +435,3 @@ type public WmiExtender(config : TypeProviderConfig) as this =
         t
 
     do this.AddNamespace(rootNamespace, [remoteType])
-
-[<assembly:TypeProviderAssembly>]
-do()
