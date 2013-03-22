@@ -1169,12 +1169,13 @@ type ProvidedTypeDefinition(container:TypeContainer,className : string, baseType
                                     match mem with
                                     | :? FieldInfo as f -> f.IsStatic
                                     | :? MethodInfo as m -> m.IsStatic
+                                    | :? ConstructorInfo as c -> c.IsStatic
                                     | :? PropertyInfo as p -> if p.CanRead then p.GetGetMethod().IsStatic else p.GetSetMethod().IsStatic
                                     | :? EventInfo as e -> e.GetAddMethod().IsStatic
                                     | :? Type -> true
                                     | _ -> failwith (sprintf "Member %O is of unexpected type" mem)
                                 bindingAttr.HasFlag(if isStatic then BindingFlags.Static else BindingFlags.Instance))
-  
+
         if bindingAttr.HasFlag(BindingFlags.DeclaredOnly) || this.BaseType = null then mems
         else 
             let baseMems = this.BaseType.GetMembers bindingAttr
