@@ -89,10 +89,5 @@
       <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\FSharpx.Collections.Experimental.Tests\FSharpx.Collections.Experimental.Tests.fsproj">
-      <Name>FSharpx.Collections.Experimental.Tests</Name>
-      <Project>{4b763738-cf1a-4dec-a888-7d3d15054231}</Project>
-      <Private>True</Private>
-    </ProjectReference>
   </ItemGroup>
 </Project>

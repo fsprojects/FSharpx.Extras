@@ -56,7 +56,17 @@
       <HintPath>..\..\packages\FsCheck.0.8.3.0\lib\net40-Client\FsCheck.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="FSharpx.Tests">
+      <HintPath>..\FSharpx.Tests\bin\Debug\FSharpx.Tests.dll</HintPath>
+    </Reference>
     <Reference Include="mscorlib" />
+    <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
+      <HintPath>..\..\lib\FSharp\Net20\FSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
+      <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="nunit.framework">
       <Private>True</Private>
       <SpecificVersion>False</SpecificVersion>
@@ -67,6 +77,8 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="app.config" />
     <Compile Include="QueueGen.fs" />
     <Compile Include="HeapGen.fs" />
     <Compile Include="AltBinaryRandomAccessListTest.fs" />
@@ -86,7 +98,6 @@
     <Compile Include="ImplicitQueueTest.fs" />
     <Compile Include="IndexedRoseTreeTest.fs" />
     <Compile Include="IntMapTest.fs" />
-    <None Include="packages.config" />
     <Compile Include="IQueueTest.fs" />
     <Compile Include="LeftistHeapTest.fs" />
     <Compile Include="ListZipperTest.fs" />
@@ -99,15 +110,8 @@
     <Compile Include="RealTimeQueueTest.fs" />
     <Compile Include="RoseTreeTest.fs" />
     <Compile Include="TimeSeriesTest.fs" />
-    <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
-      <HintPath>..\..\lib\FSharp\Net20\FSharp.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
-      <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
