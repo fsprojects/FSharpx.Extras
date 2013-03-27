@@ -50,8 +50,6 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "DiningPhilosophers", "sampl
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Graph", "src\FSharpx.TypeProviders.Graph\FSharpx.TypeProviders.Graph.fsproj", "{D8999DF6-EC14-41CE-8E63-D37B90F3357C}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Documents", "src\FSharpx.TypeProviders.Documents\FSharpx.TypeProviders.Documents.fsproj", "{D8B350D6-2DD7-462D-B598-7DA663DC77F7}"
-EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Xaml", "src\FSharpx.TypeProviders.Xaml\FSharpx.TypeProviders.Xaml.fsproj", "{F4431F59-B9D3-4D3B-BF6E-3E29FCDCDA3C}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Math", "src\FSharpx.TypeProviders.Math\FSharpx.TypeProviders.Math.fsproj", "{97790318-92B5-4A6D-A367-498850D3A7A4}"
@@ -285,21 +283,6 @@ Global
 		{D8999DF6-EC14-41CE-8E63-D37B90F3357C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{D8999DF6-EC14-41CE-8E63-D37B90F3357C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{D8999DF6-EC14-41CE-8E63-D37B90F3357C}.Release|x86.ActiveCfg = Release|Any CPU
-		{D8B350D6-2DD7-462D-B598-7DA663DC77F7}.DataStructures|Any CPU.ActiveCfg = Debug|Any CPU
-		{D8B350D6-2DD7-462D-B598-7DA663DC77F7}.DataStructures|Any CPU.Build.0 = Debug|Any CPU
-		{D8B350D6-2DD7-462D-B598-7DA663DC77F7}.DataStructures|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{D8B350D6-2DD7-462D-B598-7DA663DC77F7}.DataStructures|Mixed Platforms.Build.0 = Debug|Any CPU
-		{D8B350D6-2DD7-462D-B598-7DA663DC77F7}.DataStructures|x86.ActiveCfg = Debug|Any CPU
-		{D8B350D6-2DD7-462D-B598-7DA663DC77F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D8B350D6-2DD7-462D-B598-7DA663DC77F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D8B350D6-2DD7-462D-B598-7DA663DC77F7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{D8B350D6-2DD7-462D-B598-7DA663DC77F7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{D8B350D6-2DD7-462D-B598-7DA663DC77F7}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D8B350D6-2DD7-462D-B598-7DA663DC77F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D8B350D6-2DD7-462D-B598-7DA663DC77F7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D8B350D6-2DD7-462D-B598-7DA663DC77F7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{D8B350D6-2DD7-462D-B598-7DA663DC77F7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{D8B350D6-2DD7-462D-B598-7DA663DC77F7}.Release|x86.ActiveCfg = Release|Any CPU
 		{F4431F59-B9D3-4D3B-BF6E-3E29FCDCDA3C}.DataStructures|Any CPU.ActiveCfg = Debug|Any CPU
 		{F4431F59-B9D3-4D3B-BF6E-3E29FCDCDA3C}.DataStructures|Any CPU.Build.0 = Debug|Any CPU
 		{F4431F59-B9D3-4D3B-BF6E-3E29FCDCDA3C}.DataStructures|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -501,7 +484,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D8999DF6-EC14-41CE-8E63-D37B90F3357C} = {9547EC26-72FD-43FE-9D91-7ECC1E73DAAD}
-		{D8B350D6-2DD7-462D-B598-7DA663DC77F7} = {9547EC26-72FD-43FE-9D91-7ECC1E73DAAD}
 		{F4431F59-B9D3-4D3B-BF6E-3E29FCDCDA3C} = {9547EC26-72FD-43FE-9D91-7ECC1E73DAAD}
 		{97790318-92B5-4A6D-A367-498850D3A7A4} = {9547EC26-72FD-43FE-9D91-7ECC1E73DAAD}
 		{CAE212FE-242B-4E56-8685-80C3245AB562} = {9547EC26-72FD-43FE-9D91-7ECC1E73DAAD}
