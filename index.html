@@ -38,7 +38,6 @@ Install-Package FSharpx.Http
 Install-Package FSharpx.Observable
 Install-Package FSharpx.Compatibility.OCaml  
 Install-Package FSharpx.TypeProviders
-Install-Package FSharpx.TypeProviders.Documents
 Install-Package FSharpx.TypeProviders.Freebase
 Install-Package FSharpx.TypeProviders.Graph
 Install-Package FSharpx.TypeProviders.AppSettings
@@ -73,7 +72,6 @@ it aims to be compatible with all .NET languages wherever possible. FSharpx.Core
 
 <ul>
 <li>FSharpx.TypeProviders.AppSettings - generates setters and getters for application settings files</li>
-<li>FSharpx.TypeProviders.Documents - allows strongly typed access to JSON, XML and CSV files</li>
 <li>FSharpx.TypeProviders.Excel - provides strongly typed access to Excel spread sheets</li>
 <li>FSharpx.TypeProviders.Graph - includes type providers for state machines and graphs</li>
 <li>FSharpx.TypeProviders.Math - contains a type provider for vector data structures</li>
@@ -85,32 +83,6 @@ it aims to be compatible with all .NET languages wherever possible. FSharpx.Core
 </ul><p>All type providers work with .NET 4.0 and .NET 4.5 and F# 3.0.</p>
 
 <h3>Samples</h3>
-<h4>JSON</h4>
-<pre>
-  type PersonJSON = StructuredJSON&lt;Schema="""{ "firstName": "Max" "lastName": "Mustermann" "age": 26 "isCool": true }"""&gt;
-  let person = PersonJSON().Root
-  
-  person.FirstName
-  |> should equal "Max"
-  
-  person.FirstName <- "John"
-  person.FirstName |> should equal "John"  
-</pre>
-
-<h4>CSV</h4>
-
-<p>DistanceTime.csv:</p>
-Distance (meter),Time (second)<br />
-50,3.7<br />
-100,5.2<br />
-150,6.4<br />
-
-<pre>
-type SmallCsv = MinCsv&lt;"DistanceTime.csv"&gt;
-
-let row1 = SmallCsv().Data |> Seq.head 
-row1.Distance |> should equal 50.&lt;meter&gt;  
-</pre>
 
 <h4>RegEx</h4>
 <pre>
