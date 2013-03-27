@@ -38,7 +38,7 @@ let nugetDir package = sprintf "./nuget/%s/" package
 let nugetLibDir package = nugetDir package @@ "lib"
 let nugetDocsDir package = nugetDir package @@ "docs"
 
-let typeProvidersPackages = ["TypeProviders.Graph"; "TypeProviders.Documents"; "TypeProviders.Xaml"; "TypeProviders.Math"; "TypeProviders.Excel"; "TypeProviders.Machine"; "TypeProviders.Regex"; "TypeProviders.AppSettings"; "TypeProviders.Freebase"; "TypeProviders.Management"; "TypeProviders.Xrm"]
+let typeProvidersPackages = ["TypeProviders.Graph"; "TypeProviders.Xaml"; "TypeProviders.Math"; "TypeProviders.Excel"; "TypeProviders.Machine"; "TypeProviders.Regex"; "TypeProviders.AppSettings"; "TypeProviders.Freebase"; "TypeProviders.Management"; "TypeProviders.Xrm"]
 let packages = ["Core"; "Http"; "Observable"; "Collections.Experimental"; "TypeProviders"] @ typeProvidersPackages
 
 let projectDesc = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible."
@@ -49,7 +49,6 @@ let rec getPackageDesc = function
 | "Observable" -> projectDesc + "\r\n\r\nThis library implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford."
 | "TypeProviders" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing common type providers on top of the FSharpx.Core."
 | "TypeProviders.Graph" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a state machine type provider."
-| "TypeProviders.Documents" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type provider for JSON, XML and CSV documents."
 | "TypeProviders.Xaml" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type provider for Xaml files."
 | "TypeProviders.Math" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type provider for vectors."
 | "TypeProviders.Excel" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a Excel type provider."
@@ -178,15 +177,6 @@ Target "AssemblyInfo" (fun _ ->
             AssemblyDescription = getPackageDesc "TypeProviders.Graph"
             Guid = "D68BF790-E641-4A40-9BC2-CCD8870D8C4B"
             OutputFileName = "./src/FSharpx.TypeProviders.Graph/AssemblyInfo.fs" })
-
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = version
-            AssemblyTitle = "FSharpx.TypeProviders.Documents"
-            AssemblyDescription = getPackageDesc "TypeProviders.Documents"
-            Guid = "39F68CD1-A6CC-4AF8-9734-3C2FE3E3B7D8"
-            OutputFileName = "./src/FSharpx.TypeProviders.Documents/AssemblyInfo.fs" })
 
     AssemblyInfo (fun p ->
         {p with 
