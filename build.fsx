@@ -38,7 +38,7 @@ let nugetDir package = sprintf "./nuget/%s/" package
 let nugetLibDir package = nugetDir package @@ "lib"
 let nugetDocsDir package = nugetDir package @@ "docs"
 
-let typeProvidersPackages = ["TypeProviders.Graph"; "TypeProviders.Xaml"; "TypeProviders.Math"; "TypeProviders.Excel"; "TypeProviders.Machine"; "TypeProviders.Regex"; "TypeProviders.AppSettings"; "TypeProviders.Freebase"; "TypeProviders.Management"; "TypeProviders.Xrm"]
+let typeProvidersPackages = ["TypeProviders.Graph"; "TypeProviders.Xaml"; "TypeProviders.Math"; "TypeProviders.Excel"; "TypeProviders.Machine"; "TypeProviders.Regex"; "TypeProviders.AppSettings"; "TypeProviders.Management"; "TypeProviders.Xrm"]
 let packages = ["Core"; "Http"; "Observable"; "Collections.Experimental"; "TypeProviders"] @ typeProvidersPackages
 
 let projectDesc = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible."
@@ -55,7 +55,6 @@ let rec getPackageDesc = function
 | "TypeProviders.Machine" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing type providers for the file system and the registry."
 | "TypeProviders.Regex" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type providers for regular expressions."
 | "TypeProviders.AppSettings" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing an AppSettings type provider."
-| "TypeProviders.Freebase" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a Freebase type provider."
 | "TypeProviders.Management" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a WMI type provider."
 | "TypeProviders.Xrm" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type provider for Microsoft Dynamics CRM 2011"
 | _ -> projectDesc + "\r\n\r\nIt currently implements:\r\n\r\n" + 
@@ -91,22 +90,18 @@ let nunitPath = sprintf "%sNUnit.Runners.%s/Tools" packagesDir nunitVersion
 
 // files
 let appReferences portable frameworkVersion =
-    if portable then
-        !+ "./src/**/*Freebase.fsproj"
-          |> Scan
-    else
-        { (!+ "./src/**/*.*proj") with 
-            Excludes = 
-                [yield "./src/**/*.Silverlight.*proj"
-                 if not (buildTypeProviders frameworkVersion) then                
-                    yield "./src/**/*.TypeProviders.*.*proj"
-                    yield "./src/**/*.TypeProviders.*proj"
-                 if frameworkVersion = net35 then 
-                    yield "./src/**/*.Async.fsproj"
-                    yield "./src/**/*.Http.fsproj" // TODO: why is that?
-                    yield "./src/**/*.Observable.fsproj" // TODO: why is that?
-                      ] }
-        |> Scan
+    { (!+ "./src/**/*.*proj") with 
+        Excludes = 
+            [yield "./src/**/*.Silverlight.*proj"
+             if not (buildTypeProviders frameworkVersion) then                
+                yield "./src/**/*.TypeProviders.*.*proj"
+                yield "./src/**/*.TypeProviders.*proj"
+             if frameworkVersion = net35 then 
+                yield "./src/**/*.Async.fsproj"
+                yield "./src/**/*.Http.fsproj" // TODO: why is that?
+                yield "./src/**/*.Observable.fsproj" // TODO: why is that?
+                    ] }
+    |> Scan
 
 let testReferences frameworkVersion =
     { (!+ "./tests/**/*.*proj") with 
@@ -242,15 +237,6 @@ Target "AssemblyInfo" (fun _ ->
             OutputFileName = "./src/FSharpx.TypeProviders.Xrm/AssemblyInfo.fs" })
 
             // TODO: COMVISIBLE is not working with portable
-//    AssemblyInfo (fun p ->
-//        {p with 
-//            CodeLanguage = FSharp
-//            AssemblyVersion = version
-//            AssemblyTitle = "FSharpx.TypeProviders.Freebase"
-//            AssemblyDescription = getPackageDesc "TypeProviders.Freebase"
-//            Guid = "9da9a11a-f58e-4660-8faf-feb7ba5d9713"
-//            OutputFileName = "./src/FSharpx.TypeProviders.Freebase/AssemblyInfo.fs" })
-//
 //    AssemblyInfo (fun p ->
 //        {p with 
 //            CodeLanguage = FSharp

@@ -44,7 +44,7 @@
     <Reference Include="System.Management" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\FSharpx.TypeProviders.Freebase\DefaultVersionAttribute.fs">
+    <Compile Include="..\FSharpx.TypeProviders.Management.DesignTime\DefaultVersionAttribute.fs">
       <Link>DefaultVersionAttribute.fs</Link>
     </Compile>
     <Compile Include="WmiProvider.Runtime.fs" />
