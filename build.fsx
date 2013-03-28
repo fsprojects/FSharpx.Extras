@@ -90,6 +90,7 @@ let nunitPath = sprintf "%sNUnit.Runners.%s/Tools" packagesDir nunitVersion
 
 // files
 let appReferences portable frameworkVersion =
+    if portable then Seq.empty else
     { (!+ "./src/**/*.*proj") with 
         Excludes = 
             [yield "./src/**/*.Silverlight.*proj"
