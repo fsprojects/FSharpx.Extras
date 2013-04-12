@@ -36,22 +36,30 @@ type RelationshipNamingType =
     /// Relationships will be named only with their schema name.  You will need to examine the intelliense comments to determine which direction the relationships point.                         
     | SchemaNameOnly = 2
 
+type OptionSetEnum  =
+    | Unused = 2147483647
+
+type internal XrmRuntimeInfo (config : TypeProviderConfig) =
+    let runtimeAssembly = Assembly.LoadFrom(config.RuntimeAssembly)    
+    member this.RuntimeAssembly = runtimeAssembly   
+
 type private RelationshipType =
     | OneToMany
     | ManyToOne
     | ManyToMany
-
-type internal XrmRuntimeInfo (config : TypeProviderConfig) =
-    let runtimeAssembly = Assembly.LoadFrom(config.RuntimeAssembly)    
-    member this.RuntimeAssembly = runtimeAssembly
     
+type private OptionSetType =
+    | Picklist of PicklistAttributeMetadata
+    | State of StateAttributeMetadata   
+    | Status of StatusAttributeMetadata 
+
 [<TypeProvider>]
-type XrmTypeProvider(config: TypeProviderConfig) as this = 
+type XrmTypeProvider(config: TypeProviderConfig) as this =     
     inherit TypeProviderForNamespaces()
     let xrmRuntimeInfo = XrmRuntimeInfo(config)
     let ns = "FSharpx.TypeProviders.XrmProvider"     
     let asm = Assembly.GetExecutingAssembly()
-        
+    
     let createOrgService uri clientCreds deviceCreds =
         let uri = Uri(uri)        
         let orgProxy = new OrganizationServiceProxy(uri, null, clientCreds, deviceCreds);
@@ -67,7 +75,7 @@ type XrmTypeProvider(config: TypeProviderConfig) as this =
             | None -> "No description available"
         else "No description available" 
         
-    let createTypes(orgService,nullables,relationshipNameType,crmOnline,credentialsFile,usernameParam:string,passwordParam:string,domainParam,rootTypeName) =       
+    let createTypes(orgService,nullables,relationshipNameType,dataBindingMode,crmOnline,individualsAmount,credentialsFile,usernameParam,passwordParam,domainParam,rootTypeName) =       
         let absoluteCredentialsFile = 
             if String.IsNullOrWhiteSpace credentialsFile then credentialsFile 
             elif Path.IsPathRooted credentialsFile then Path.GetFullPath credentialsFile
@@ -105,27 +113,19 @@ type XrmTypeProvider(config: TypeProviderConfig) as this =
             match relationshipNameType with
             | RelationshipNamingType.ParentChildPrefix -> 
                 match meta, relationshipType with
-                | :? OneToManyRelationshipMetadata as meta, OneToMany ->                    
-                    sprintf "Children of %s (%s)" meta.SchemaName meta.ReferencingEntity
-                | :? OneToManyRelationshipMetadata as meta, ManyToOne ->
-                    sprintf "Parent of %s (%s)" meta.SchemaName meta.ReferencedEntity
-                | :? ManyToManyRelationshipMetadata, ManyToMany ->
-                    // todo: work out what side we are on and display the other
-                    ("Many of %s" + meta.SchemaName)
+                | :? OneToManyRelationshipMetadata as meta, OneToMany -> sprintf "Children of %s (%s)" meta.SchemaName meta.ReferencingEntity
+                | :? OneToManyRelationshipMetadata as meta, ManyToOne -> sprintf "Parent of %s (%s)" meta.SchemaName meta.ReferencedEntity
+                | :? ManyToManyRelationshipMetadata, ManyToMany -> ("Many of %s" + meta.SchemaName) // todo: work out what side we are on and display the other
                 | _ -> failwith "invalid relationship type combination"
             | RelationshipNamingType.CrmStylePrefix -> 
                 match meta, relationshipType with
-                | :? OneToManyRelationshipMetadata, OneToMany ->
-                    ("1:N " + meta.SchemaName)  
-                | :? OneToManyRelationshipMetadata, ManyToOne ->
-                    ("N:1 " + meta.SchemaName)
-                | :? ManyToManyRelationshipMetadata, ManyToMany ->
-                    ("N:N " + meta.SchemaName)
+                | :? OneToManyRelationshipMetadata, OneToMany ->   ("1:N " + meta.SchemaName)  
+                | :? OneToManyRelationshipMetadata, ManyToOne ->   ("N:1 " + meta.SchemaName)
+                | :? ManyToManyRelationshipMetadata, ManyToMany -> ("N:N " + meta.SchemaName)
                 | _ -> failwith "invalid relationship type combination"
-            | RelationshipNamingType.SchemaNameOnly -> 
-                meta.SchemaName
+            | RelationshipNamingType.SchemaNameOnly -> meta.SchemaName
             | _ -> failwith "" // matching on enum
-
+        
         let entities =   
             lazy         
                 let ems = org.Execute(RetrieveAllEntitiesRequest()) :?> RetrieveAllEntitiesResponse
@@ -139,26 +139,80 @@ type XrmTypeProvider(config: TypeProviderConfig) as this =
                         lazy
                             let emeta = org.Execute(RetrieveEntityRequest(LogicalName=e.LogicalName,EntityFilters=(EntityFilters.Attributes ||| EntityFilters.Relationships))) :?> RetrieveEntityResponse
                             let attr = match emeta.EntityMetadata.Attributes with null -> [] | xs -> Array.toList xs
-                            let oneToMany =  match emeta.EntityMetadata.OneToManyRelationships with null -> [] | xs -> Array.toList xs
-                            let manyToOne =  match emeta.EntityMetadata.ManyToOneRelationships with null -> [] | xs -> Array.toList xs
-                            let manyToMany =  match emeta.EntityMetadata.ManyToManyRelationships with null -> [] | xs -> Array.toList xs
-                            (attr,oneToMany,manyToOne,manyToMany))]
-         
+                            let oneToMany = match emeta.EntityMetadata.OneToManyRelationships with null -> [] | xs -> Array.toList xs
+                            let manyToOne = match emeta.EntityMetadata.ManyToOneRelationships with null -> [] | xs -> Array.toList xs
+                            let manyToMany = match emeta.EntityMetadata.ManyToManyRelationships with null -> [] | xs -> Array.toList xs
+                            (attr,oneToMany,manyToOne,manyToMany))]       
+                      
         let getEntityAttibtues logicalName = entityAttributes.Force().[logicalName].Force()
         let serviceType = ProvidedTypeDefinition( "XrmService", Some typeof<XrmDataContext>, HideObjectMethods = true)
-
+        
         // first create all the types so we are able to recursively reference them in each other's definitions
         let baseTypes =
             lazy
                 dict [ for entity in entities.Force() do  
-                        let t = ProvidedTypeDefinition(entity.LogicalName, Some typeof<XrmEntity>, HideObjectMethods = true)
-                        t.AddMember <| ProvidedConstructor([], InvokeCode = fun _ ->  <@@ new XrmEntity(entity.LogicalName)  @@>) 
+                        let name = entity.LogicalName
+                        let t = ProvidedTypeDefinition(name, Some typeof<XrmEntity>, HideObjectMethods = false)
+                        t.AddMemberDelayed(fun () -> ProvidedConstructor([],InvokeCode = fun _ -> <@@ new XrmEntity(name,dataBindingMode) @@>  ))
                         let desc = extractDescription entity.Description
                         t.AddXmlDoc desc
-                        yield entity.LogicalName,(t,desc) ]               
+                        yield entity.LogicalName,(t,desc,entity.PrimaryNameAttribute) ]
 
-        // add the attributes and relationships
-        for KeyValue(key,(t,desc)) in baseTypes.Force() do 
+        let getOptionset =
+            let data = Dictionary<string,ProvidedTypeDefinition>()
+            fun optionSetType ->
+                let createType name (options:OptionMetadataCollection) = 
+                    let t = ProvidedTypeDefinition(name,Some typeof<OptionSetEnum>)
+                    t.AddMembers([for o in options -> ProvidedLiteralField(extractDescription o.Label,t,o.Value.Value)] )
+                    let values = [|for o in options -> extractDescription o.Label|]
+                    t.AddMember(ProvidedMethod("GetProvidedValues",[],typeof<string array>,InvokeCode = fun _ -> <@@ values @@> ))
+                    data.[name] <- t
+                match optionSetType with
+                | Picklist(attribute) -> 
+                    if not (data.ContainsKey attribute.OptionSet.Name) then createType attribute.OptionSet.Name attribute.OptionSet.Options
+                    data.[attribute.OptionSet.Name]
+                | Status(attribute) -> 
+                    if not (data.ContainsKey attribute.OptionSet.Name) then createType attribute.OptionSet.Name attribute.OptionSet.Options
+                    data.[attribute.OptionSet.Name]
+                | State(attribute) -> 
+                    if not (data.ContainsKey attribute.OptionSet.Name) then createType attribute.OptionSet.Name attribute.OptionSet.Options
+                    data.[attribute.OptionSet.Name]
+
+        let createIndividualsType entity =
+            let (et,_,pa) = baseTypes.Force().[entity]
+            let t = ProvidedTypeDefinition(entity + "Individuals", Some typeof<obj>, HideObjectMethods = true)
+            t.AddXmlDocDelayed(fun _ -> sprintf "A sample of %s individuals from the CRM organization as supplied in the static parameters" entity)
+            t.AddMembersDelayed( fun _ -> 
+                let q = QueryExpression(entity)
+                q.ColumnSet <- new ColumnSet([|pa|])
+                q.PageInfo.Count <- individualsAmount
+                q.PageInfo.PageNumber <- 1
+                org.RetrieveMultiple(q).Entities
+                |> Seq.choose(fun e -> match box (e.GetAttributeValue pa) with
+                                       | :? String as v when not(String.IsNullOrWhiteSpace v) -> 
+                                            Some(ProvidedProperty(v,et,GetterCode = fun _ -> let id = e.Id.ToString()
+                                                                                             <@@ XrmDataContext._GetIndividual(entity,id,dataBindingMode) @@> ))
+                                       | _ -> None)
+                |> Seq.toList )            
+            t
+            
+        let baseCollectionTypes =
+            lazy
+                dict [ for entity in entities.Force() do  
+                        let name = entity.LogicalName 
+                        let (et,_,_) = baseTypes.Force().[name]
+                        let ct = ProvidedTypeDefinition(entity.LogicalName + "Set", Some typeof<obj>,HideObjectMethods=true)
+                        ct.AddInterfaceImplementationsDelayed( fun () -> [ProvidedTypeBuilder.MakeGenericType(typedefof<System.Linq.IQueryable<_>>,[et :> Type])])
+                        let it = createIndividualsType name
+                        let prop = ProvidedProperty("Individuals",it, GetterCode = fun _ -> <@@ new obj() @@> )
+                        prop.AddXmlDoc(sprintf "A sample of %s individuals from the CRM organization as supplied in the static parameters" name)
+                        let meth = ProvidedMethod("Create",[],et, IsStaticMethod = false, InvokeCode = fun _ -> <@@ XrmEntity(name,dataBindingMode) @@>)
+                        meth.AddXmlDoc(sprintf "Creates a new instance of the %s entity" name)
+                        ct.AddMembersDelayed( fun () -> [prop :> MemberInfo;meth :> MemberInfo])
+                        yield entity.LogicalName,(ct,it) ]  
+        
+       // add the attributes and relationships
+        for KeyValue(key,(t,desc,_)) in baseTypes.Force() do 
             t.AddMembersDelayed(fun () -> 
                 let makeNullable (a:AttributeMetadata) ty = 
                     if nullables && a.RequiredLevel.Value = AttributeRequiredLevel.None then typedefof<Nullable<_>>.MakeGenericType([|ty|])
@@ -166,45 +220,86 @@ type XrmTypeProvider(config: TypeProviderConfig) as this =
 
                 let (attr,oneToMany,manyToOne,manyToMany) = getEntityAttibtues key
                 let attProps = 
-                    [for a in attr do
-                        let name = a.LogicalName  
-                        let ty =
-                            match a.AttributeType.HasValue with
-                            | false -> typeof<string>
-                            | true -> match a.AttributeType.Value  with
-                                        // TODO: This list is not yet exhaustive and doesn't cover all special XRM types
-                                        | AttributeTypeCode.BigInt           -> makeNullable a typeof<int64>
-                                        | AttributeTypeCode.Boolean          -> makeNullable a typeof<bool>
-                                        | AttributeTypeCode.DateTime         -> makeNullable a typeof<DateTime>
-                                        | AttributeTypeCode.Decimal          -> makeNullable a typeof<Decimal>
-                                        | AttributeTypeCode.Double           -> makeNullable a typeof<double>
-                                        | AttributeTypeCode.Integer          -> makeNullable a typeof<int>
-                                        | AttributeTypeCode.String           -> typeof<string>
-                                        | AttributeTypeCode.Uniqueidentifier -> typeof<Guid>
-                                        | AttributeTypeCode.Lookup           -> typeof<EntityReference>
-                                        | AttributeTypeCode.Money            -> typeof<Money>
-                                        | _                                  -> typeof<string>
-                        
-                        let prop = ProvidedProperty(name,ty,GetterCode = fun args -> 
-                            let meth = typeof<XrmEntity>.GetMethod "GetAttribute"
-                            let meth = meth.MakeGenericMethod [|ty|]
-                            Expr.Call(args.[0],meth,[Expr.Value name]))  
+                    let createAttributeProperty ty name description isOptionSet =
+                        let enumQ t e = // have to do a bit of reflection magic and type gymnastics here to get provided enums to work 
+                            let (Quotations.Patterns.Call(None, enum, [_])) = <@ enum<OptionSetEnum>(0) @> 
+                            Quotations.Expr.Call(ProvidedTypeBuilder.MakeGenericMethod(enum.GetGenericMethodDefinition(), [t]), [e])
+
+                        let prop = 
+                            ProvidedProperty(
+                                name,ty,
+                                GetterCode = (fun args -> 
+                                    if isOptionSet then enumQ ty <@@ ((%%args.[0]:>XrmEntity).GetEnumValue name) @@>
+                                    else let meth = typeof<XrmEntity>.GetMethod("GetAttribute").MakeGenericMethod([|ty|])
+                                         Expr.Call(args.[0],meth,[Expr.Value name])),
+                                SetterCode = (fun args ->
+                                    let meth = typeof<XrmEntity>.GetMethod "SetAttribute"                                                                                                                
+                                    if isOptionSet then // for some reason quoted version(s) of this simply refuse to work !                                          
+                                        Expr.Call(args.[0],meth,[Expr.Value name; Expr.NewObject(typeof<OptionSetValue>.GetConstructor([|typeof<int>|]),[ <@@int (%%args.[1]:OptionSetEnum)@@>])])
+                                    else Expr.Call(args.[0],meth,[Expr.Value name;Expr.Coerce(args.[1], typeof<obj>)])))
                             
-                        prop.AddXmlDocDelayed( fun () -> extractDescription a.Description )
-                        yield prop ] 
-                
+                        prop.AddXmlDocDelayed( fun () -> extractDescription description )
+                        prop
+                    
+                    let chooseAttribute (a:AttributeMetadata) =
+                        match a.AttributeType.HasValue with
+                        | false-> None
+                        | true -> match a.AttributeType.Value  with
+                                  | AttributeTypeCode.BigInt           -> Some (makeNullable a typeof<int64>,false)
+                                  | AttributeTypeCode.Boolean          -> Some (makeNullable a typeof<bool>,false)
+                                  | AttributeTypeCode.DateTime         -> Some (makeNullable a typeof<DateTime>,false)
+                                  | AttributeTypeCode.Decimal          -> Some (makeNullable a typeof<Decimal>,false)
+                                  | AttributeTypeCode.Double           -> Some (makeNullable a typeof<double>,false)
+                                  | AttributeTypeCode.Integer          -> Some (makeNullable a typeof<int>,false)
+                                  | AttributeTypeCode.String           -> Some (typeof<string>,false)
+                                  | AttributeTypeCode.Uniqueidentifier -> Some (typeof<Guid>,false)
+                                  | AttributeTypeCode.Lookup           -> Some (typeof<EntityReference>,false)
+                                  | AttributeTypeCode.Money            -> Some (typeof<Money>,false)
+                                  | AttributeTypeCode.State            -> Some (makeNullable a (getOptionset (State(a:?>StateAttributeMetadata)) :> Type), true)
+                                  | AttributeTypeCode.Status           -> Some (makeNullable a (getOptionset (Status(a:?>StatusAttributeMetadata)) :> Type),true)
+                                  | AttributeTypeCode.Picklist         -> Some (makeNullable a (getOptionset (Picklist(a:?>PicklistAttributeMetadata)) :> Type),true)
+                                  | AttributeTypeCode.Virtual          -> None
+                                  | _                                  -> Some (typeof<string>,false)
+                                  |> Option.map(fun (ty,isOptionSet)  -> createAttributeProperty ty a.LogicalName a.Description isOptionSet )
+                    
+                    attr |> List.choose chooseAttribute
+
+                let formattedValuesProp = 
+                    let formattedType = ProvidedTypeDefinition(key + "Formatted",Some(typeof<obj>),HideObjectMethods=true)
+                    formattedType.AddMemberDelayed( fun () -> ProvidedConstructor([ProvidedParameter("values",typeof<XrmEntity>)], 
+                                                                InvokeCode = fun args ->  <@@ (%%args.[0]:XrmEntity) :> obj @@>  ))
+                    formattedType.AddMembersDelayed( fun () ->
+                        attr |> List.choose(fun at -> match at.AttributeType.Value with                                                                 
+                                                      | AttributeTypeCode.Lookup     | AttributeTypeCode.Decimal  
+                                                      | AttributeTypeCode.Customer   | AttributeTypeCode.Integer  
+                                                      | AttributeTypeCode.Owner      | AttributeTypeCode.Memo
+                                                      | AttributeTypeCode.BigInt     | AttributeTypeCode.Money    
+                                                      | AttributeTypeCode.Boolean    | AttributeTypeCode.State          
+                                                      | AttributeTypeCode.DateTime   | AttributeTypeCode.Status         
+                                                      | AttributeTypeCode.Picklist ->
+                                                        Some(ProvidedProperty(
+                                                                at.LogicalName,typeof<string>,
+                                                                GetterCode = (fun args -> 
+                                                                    let key = at.LogicalName
+                                                                    <@@ ((%%args.[0]:obj):?>XrmEntity).GetFormattedValue(key) @@>)))
+                                                      | _ -> None ))
+                                                    
+                    serviceType.AddMember formattedType
+                    ProvidedProperty("Formatted",formattedType, GetterCode = (fun args -> <@@ (%%args.[0]:XrmEntity):>obj @@> ))
+                                            
                 let relProps =
                     [for r in oneToMany do 
                         let name = r.SchemaName
+                        let (et,_,_) = (baseTypes.Force().[r.ReferencingEntity])
                         let ty = typedefof<System.Linq.IQueryable<_>>
-                        let ty = ty.MakeGenericType(fst (baseTypes.Force().[r.ReferencingEntity]))
+                        let ty = ty.MakeGenericType et
                         let friendlyName = createRelationshipName r OneToMany
                         let prop = ProvidedProperty(friendlyName ,ty,GetterCode = fun args ->
                             let pe = r.ReferencedEntity     
                             let pk = r.ReferencedAttribute
                             let fe = r.ReferencingEntity 
                             let fk = r.ReferencingAttribute
-                            <@@ XrmDataContext._CreateRelated((%%(args.[0]) : XrmEntity),name,pe,pk,fe,fk,"" ,RelationshipDirection.Children) @@> )
+                            <@@ XrmDataContext._CreateRelated((%%(args.[0]) : XrmEntity),name,pe,pk,fe,fk,"" ,RelationshipDirection.Children,dataBindingMode) @@> )
 
                         prop.AddXmlDocDelayed( fun () -> sprintf """<summary>One to many relationship between %s ---&lt; %s from %s to %s
                                                                            <para>Relationship name : %s</para></summary>"""
@@ -213,15 +308,16 @@ type XrmTypeProvider(config: TypeProviderConfig) as this =
                     @
                     [for r in manyToOne do 
                         let name = r.SchemaName
+                        let (et,_,_) = (baseTypes.Force().[r.ReferencedEntity])
                         let ty = typedefof<System.Linq.IQueryable<_>>
-                        let ty = ty.MakeGenericType(fst (baseTypes.Force().[r.ReferencedEntity]))
+                        let ty = ty.MakeGenericType et
                         let friendlyName = createRelationshipName r ManyToOne
                         let prop = ProvidedProperty(friendlyName ,ty,GetterCode = fun args -> 
                             let pe = r.ReferencedEntity    
                             let pk = r.ReferencedAttribute
                             let fe = r.ReferencingEntity 
                             let fk = r.ReferencingAttribute
-                            <@@ XrmDataContext._CreateRelated((%%(args.[0]) : XrmEntity), name,pe,pk,fe,fk,"",RelationshipDirection.Parents) @@> )
+                            <@@ XrmDataContext._CreateRelated((%%(args.[0]) : XrmEntity), name,pe,pk,fe,fk,"",RelationshipDirection.Parents,dataBindingMode) @@> )
 
                         prop.AddXmlDocDelayed( fun () -> sprintf """<summary>Many to one relationship between %s &gt;--- %s from %s to %s
                                                                              <para>Relationship name : %s</para></summary>""" 
@@ -231,7 +327,8 @@ type XrmTypeProvider(config: TypeProviderConfig) as this =
                     [for r in manyToMany do 
                         let name = r.SchemaName
                         let ty = typedefof<System.Linq.IQueryable<_>>
-                        let ty = ty.MakeGenericType(fst (baseTypes.Force().[if key = r.Entity1LogicalName then r.Entity2LogicalName else r.Entity1LogicalName]))
+                        let (et,_,_) = (baseTypes.Force().[if key = r.Entity1LogicalName then r.Entity2LogicalName else r.Entity1LogicalName])
+                        let ty = ty.MakeGenericType et
                         let friendlyName = ("M:M " + name)
                         let prop = ProvidedProperty(friendlyName ,ty,GetterCode = fun args -> 
                             // this is a little different, need to work out which side of the relationship we are on 
@@ -249,24 +346,24 @@ type XrmTypeProvider(config: TypeProviderConfig) as this =
                                      r.Entity2IntersectAttribute,
                                      r.IntersectEntityName)
 
-                            <@@ XrmDataContext._CreateRelated((%%(args.[0]) : XrmEntity), name,pe,pk,fe,fk,ie,RelationshipDirection.Children) @@> )
+                            <@@ XrmDataContext._CreateRelated((%%(args.[0]) : XrmEntity), name,pe,pk,fe,fk,ie,RelationshipDirection.Children,dataBindingMode) @@> )
                           
                         prop.AddXmlDocDelayed( fun () -> sprintf """<summary>Many to many relationship between %s &gt;--&lt; %s via intersection entity %s
                                                                             <para>Relationship name : %s</para> %s %s </summary>""" 
                                                             r.Entity1LogicalName r.Entity2LogicalName r.IntersectEntityName r.SchemaName r.Entity1IntersectAttribute r.Entity2IntersectAttribute )
                         
                         yield prop]
-                attProps @ relProps)
+                [formattedValuesProp] @ attProps @ relProps)
 
         serviceType.AddMembersDelayed( fun () ->
-            [ for (KeyValue(key,(t,desc))) in baseTypes.Force() do
-                let name = key
-                let ty = typedefof<System.Linq.IQueryable<_>>
-                let ty = ty.MakeGenericType(t)
-                let prop = (ProvidedProperty(key, ty, IsStatic=false, GetterCode = fun args -> <@@ XrmDataContext._CreateEntities(name) @@> ))
-                prop.AddXmlDoc (sprintf "<summary>The set of %s entities.<para>Entity description : %s</para></summary>" key desc)
-                serviceType.AddMember prop
-                yield t ] )
+            [ for (KeyValue(key,(t,desc,_))) in baseTypes.Force() do
+                let (ct,it) = baseCollectionTypes.Force().[key]                
+                let prop = ProvidedProperty(key + "Set",ct, GetterCode = fun args -> <@@ XrmDataContext._CreateEntities(key,dataBindingMode) @@> )
+                prop.AddXmlDoc (sprintf "<summary>The set of %s entities.<para>Entity description : %s</para></summary>" key desc)                
+                yield t :> MemberInfo
+                yield ct :> MemberInfo
+                yield it :> MemberInfo
+                yield prop :> MemberInfo ] )
                       
         let rootType = ProvidedTypeDefinition(xrmRuntimeInfo.RuntimeAssembly,ns,rootTypeName,baseType=Some typeof<obj>, HideObjectMethods=true)
         rootType.AddMembers [ serviceType ]
@@ -275,7 +372,7 @@ type XrmTypeProvider(config: TypeProviderConfig) as this =
                 ProvidedMethod ("GetDataContext", [],
                                 serviceType, IsStaticMethod=true,
                                 InvokeCode = (fun _ -> 
-                                    let meth = typeof<XrmDataContext>.GetMethod "_Create"                                                         
+                                    let meth = typeof<XrmDataContext>.GetMethod "_Create"
                                     Expr.Call(meth, [Expr.Value orgService;Expr.Value username;Expr.Value password;Expr.Value domain;Expr.Value crmOnline])
                                     ))
               meth.AddXmlDoc "<summary>Returns an instance of the CRM provider using the static parameters</summary>"
@@ -289,7 +386,7 @@ type XrmTypeProvider(config: TypeProviderConfig) as this =
                                                             serviceType, IsStaticMethod=true,
                                                             InvokeCode = (fun args ->
                                                                 let meth = typeof<XrmDataContext>.GetMethod "_CreateWithInstance"
-                                                                Expr.Call(meth, [args.[0]])));
+                                                                Expr.Call(meth, [args.[0];])));
               meth.AddXmlDoc "<summary>Retuns an instance of the CRM provider</summary>
                               <param name='organizationService'>An instance of the Microsoft Dynamics CRM 2011 organization service, this could be from a plugin or workflow</param>"
               yield meth
@@ -311,7 +408,7 @@ type XrmTypeProvider(config: TypeProviderConfig) as this =
                                                             ProvidedParameter("username",typeof<string>);
                                                             ProvidedParameter("password",typeof<string>);
                                                             ProvidedParameter("domain",typeof<string>);
-                                                            ProvidedParameter("crmOnline",typeof<bool>)], 
+                                                            ProvidedParameter("crmOnline",typeof<bool>,false,crmOnline)], 
                                                             serviceType, IsStaticMethod=true,
                                                             InvokeCode = (fun args ->
                                                                 let meth = typeof<XrmDataContext>.GetMethod "_Create"
@@ -327,11 +424,14 @@ type XrmTypeProvider(config: TypeProviderConfig) as this =
             ])
         rootType
     
-    let paramXrmType = ProvidedTypeDefinition(xrmRuntimeInfo.RuntimeAssembly, ns, "XrmDataProvider", Some(typeof<obj>), HideObjectMethods = true)        
+    let paramXrmType = ProvidedTypeDefinition(xrmRuntimeInfo.RuntimeAssembly, ns, "XrmDataProvider", Some(typeof<obj>), HideObjectMethods = true)
+    
     let orgUri = ProvidedStaticParameter("OrganizationServiceUrl",typeof<string>)    
     let nullables = ProvidedStaticParameter("UseNullableValues",typeof<bool>,false)
     let relationships = ProvidedStaticParameter("RelationshipNamingType",typeof<RelationshipNamingType>,RelationshipNamingType.ParentChildPrefix)
+    let bindingMode = ProvidedStaticParameter("DataBindingMode",typeof<DataBindingMode>,DataBindingMode.NormalValues)
     let crmOnline = ProvidedStaticParameter("CrmOnline",typeof<bool>,false)    
+    let individualsAmount = ProvidedStaticParameter("IndividualsAmount",typeof<int>,1000)    
     let credentialsFile = ProvidedStaticParameter("CredentialsFile",typeof<string>,"")
     let user = ProvidedStaticParameter("Username",typeof<string>,"")
     let pwd = ProvidedStaticParameter("Password",typeof<string>,"")
@@ -340,14 +440,26 @@ type XrmTypeProvider(config: TypeProviderConfig) as this =
                     <param name='OrganizationServiceUrl'>The SOAP Endpoint address of the Microsoft Dynamics CRM 2011 organization service</param>                    
                     <param name='UseNullableValues'>If true, the provider will generate Nullable&lt;T&gt; for value types marked as not required in CRM. If false, value type attribtues selected that have no value will be returned as default(T).  In either case, missing strings are always represented by String.Empty, not null.</param>
                     <param name='RelationshipNamingType'>Determines how the relationships appear on the generated types. See comments on the RelationshipNameType for details.</param>
+                    <param name='DataBindingMode'>Determines how attributes are presented when using data binding.</param>
                     <param name='CrmOnline'>Set this to true if using a CRM Online deployment. This will change the authentication to use Windows Live.</param>
+                    <param name='IndividualsAmount'>The amount of sample entities to project into the type system for each CRM entity type. Default 1000.</param>
                     <param name='CredentialsFile'>Path to plain text file that includes username, password and optionally the domain. In the case of CRM Online these would be the relevant Windows Live username and password.</param>
                     <param name='Username'>The username for use with Windows Authentication</param>
                     <param name='Password'>The password for use with Windows Authentication</param>
-                    <param name='Domain'>The domain name for use with Windows Authentication</param>"                    
+                    <param name='Domain'>The domain name for use with Windows Authentication</param>"
         
-    do paramXrmType.DefineStaticParameters([orgUri;nullables;relationships;crmOnline;credentialsFile;user;pwd;domain;], fun typeName args -> 
-        createTypes(args.[0] :?> string, args.[1] :?> bool, args.[2] :?> RelationshipNamingType, args.[3] :?> bool, args.[4] :?> string, args.[5] :?> string, args.[6] :?> string,args.[7] :?> String, typeName))
+    do paramXrmType.DefineStaticParameters([orgUri;nullables;relationships;bindingMode;crmOnline;individualsAmount;credentialsFile;user;pwd;domain;], fun typeName args -> 
+        createTypes(args.[0] :?> string,                  // OrganizationServiceUrl
+                    args.[1] :?> bool,                    // useNullable 
+                    args.[2] :?> RelationshipNamingType,  // relationship naming
+                    args.[3] :?> DataBindingMode,         // data binding
+                    args.[4] :?> bool,                    // CrmOnline 
+                    args.[5] :?> int,                     // Indivudals Amount
+                    args.[6] :?> string,                  // creds file 
+                    args.[7] :?> string,                  // user name
+                    args.[8] :?> string,                  // pasword 
+                    args.[9] :?> String,                  // domain
+                    typeName))
 
     do paramXrmType.AddXmlDoc helpText               
 
