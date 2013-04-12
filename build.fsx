@@ -110,6 +110,7 @@ let testReferences frameworkVersion =
                         yield "./tests/**/*.TypeProviders.*proj"
                         yield "./tests/**/*.TypeProviders.*.*proj"
                     if frameworkVersion = net35 then
+                        yield "./tests/**/FSharpx.Collections.Tests.fsproj" // FsCheck is no longer available for .NET 3.5
                         yield "./tests/**/FSharpx.Collections.Experimental.Tests.fsproj" // FsCheck is no longer available for .NET 3.5
                     ] }
     |> Scan
