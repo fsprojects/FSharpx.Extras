@@ -7,26 +7,62 @@ namespace FSharpx.TypeProviders.XrmProvider.Runtime.Common
 
 open System
 open System.Collections.Generic
+open System.ComponentModel
 open System.Linq.Expressions
 open Microsoft.Xrm.Sdk
 open Microsoft.Xrm.Sdk.Query
 
-type XrmEntity(schemaName) =
+/// Determines how attribute data is extracted when using data binding
+type DataBindingMode =
+    /// Attributes will appear with their raw types and values
+    | NormalValues = 0
+    /// Where possible, the formatted version of the attributes will be used. This means option sets and boolean options will be returned as strings, along with locallized datetimes, currency with correct symbols and so on.
+    | FormattedValues = 1
+
+[<System.Runtime.Serialization.DataContractAttribute(Name = "Entity", Namespace = "http://schemas.microsoft.com/xrm/2011/Contracts");System.Reflection.DefaultMemberAttribute("Item")>]
+type XrmEntity(schemaName,dataBindingMode:DataBindingMode) =
     inherit Microsoft.Xrm.Sdk.Entity(schemaName)
     
     let aliasCache = new Dictionary<string,XrmEntity>(HashIdentity.Structural)
 
+    let propertyChanged = Event<_,_>()
+
+    member internal e.TriggerPropertyChange(name) = 
+        propertyChanged.Trigger(e,PropertyChangedEventArgs(name))
+
     member e.SchemaName = schemaName
     
+    member e.GetEnumValue(key) = 
+        let os = e.GetAttributeValue<OptionSetValue>(key)
+        os.Value     
+
     member e.GetAttribute<'T>(key) = 
         let defaultValue() =                        
             if typeof<'T> = typeof<string> then (box String.Empty) :?> 'T
             else Unchecked.defaultof<'T>
         if e.Attributes = null then defaultValue()
-        elif e.Attributes.ContainsKey key then e.GetAttributeValue(key) 
+        elif e.Attributes.ContainsKey key then 
+            e.GetAttributeValue(key) 
         else defaultValue()            
 
+    member e.SetAttribute(key,value) =
+        if not (e.Contains key) then e.Attributes.Add(KeyValuePair(key,value))
+        else e.Attributes.[key] <- value
+        e.TriggerPropertyChange key
+
+    member e.GetFormattedValue(key) =
+        match e.FormattedValues.TryGetValue key with
+        | true, value -> value
+        | _ -> String.Empty
+
     member e.HasValue(key) = e.Attributes.ContainsKey key
+    
+    static member internal FromEntity(e:Entity,dataBindingMode) =
+        let entity = XrmEntity(e.LogicalName,dataBindingMode)        
+        entity.Attributes <- e.Attributes
+        entity.FormattedValues.AddRange(e.FormattedValues) // TODO: look at ways of avoiding this copy ...
+        entity.Id <- e.Id  
+        entity   
 
     /// creates a new XrmEntity from alias data in this entity
     member internal e.GetSubEntity(alias:string,logicalName) =
@@ -34,24 +70,20 @@ type XrmEntity(schemaName) =
         | true, entity -> entity
         | false, _ -> 
             let logicalName = if logicalName <> "" then logicalName else e.LogicalName
-            let newEntity = XrmEntity(logicalName)
+            let newEntity = XrmEntity(logicalName,dataBindingMode)
             let pk = sprintf "%sid" logicalName
             // attributes names cannot have a period in them unless they are an alias
-            let pred = match alias with
-                       | "" -> (fun (kvp:KeyValuePair<string,_>) -> if kvp.Key.Contains(".") then None else Some kvp )
-                       | alias -> let prefix = alias + "."
-                                  (fun (kvp:KeyValuePair<string,obj>) -> 
-                                    if kvp.Key.StartsWith prefix then 
-                                        // strip the prefix so the entity appears normal in its new home
-                                        let newValue =
-                                            match kvp.Value with
-                                            | :? Microsoft.Xrm.Sdk.AliasedValue as av -> av.Value
-                                            | _ -> kvp.Value
-                                        Some(KeyValuePair<string,_>(kvp.Key.Replace(prefix,""),newValue)) 
-                                    else None) 
+            let pred mutator = 
+                match alias with
+                | "" -> (fun (kvp:KeyValuePair<string,_>) -> if kvp.Key.Contains(".") then None else Some kvp )
+                | alias -> let prefix = alias + "."
+                           (fun (kvp:KeyValuePair<string,_>) -> 
+                           if kvp.Key.StartsWith prefix then Some(KeyValuePair<string,_>(kvp.Key.Replace(prefix,""),mutator kvp.Value))
+                           else None) 
                         
-            newEntity.Attributes.AddRange(e.Attributes |> Seq.choose pred)        
-            
+            newEntity.Attributes.AddRange(e.Attributes |> Seq.choose (pred (function :? Microsoft.Xrm.Sdk.AliasedValue as av -> av.Value | v -> v)))
+            newEntity.FormattedValues.AddRange(e.FormattedValues |> Seq.choose (pred id)) 
+
             // using left joins can mean parents don't exist, in which case this will return a blank, correctly named entity (should we return null here?)
             match newEntity.Attributes |> Seq.tryFind(fun a -> a.Key = pk) with
             | Some(KeyValue(_,v)) -> newEntity.Id <- match v with
@@ -61,7 +93,47 @@ type XrmEntity(schemaName) =
             | None -> ()
             aliasCache.Add(alias,newEntity)
             newEntity
+    
+    interface System.ComponentModel.INotifyPropertyChanged with
+        [<CLIEvent>] member x.PropertyChanged = propertyChanged.Publish
 
+    interface System.ComponentModel.ICustomTypeDescriptor with
+        member e.GetComponentName() = TypeDescriptor.GetComponentName(e,true)
+        member e.GetDefaultEvent() = TypeDescriptor.GetDefaultEvent(e,true)
+        member e.GetClassName() = e.SchemaName
+        member e.GetEvents(attributes) = TypeDescriptor.GetEvents(e,true)
+        member e.GetEvents() = TypeDescriptor.GetEvents(e,null,true)
+        member e.GetConverter() = TypeDescriptor.GetConverter(e,true)
+        member e.GetPropertyOwner(_) = upcast e.Attributes 
+        member e.GetAttributes() = TypeDescriptor.GetAttributes(e,true)
+        member e.GetEditor(typeBase) = TypeDescriptor.GetEditor(e,typeBase,true)
+        member e.GetDefaultProperty() = null
+        member e.GetProperties()  = (e :> ICustomTypeDescriptor).GetProperties(null)
+        member e.GetProperties(attributes) = 
+            PropertyDescriptorCollection(e.Attributes.Keys 
+                                         |> Seq.map(fun key -> AttributeCollectionPropertyDescriptor(e.Attributes.[key].GetType(),key,dataBindingMode)) 
+                                         |> Seq.cast<PropertyDescriptor> |> Seq.toArray )
+
+and internal AttributeCollectionPropertyDescriptor(attrType,attrKey,dataBindingMode) =
+    inherit PropertyDescriptor(attrKey,null)
+    override __.PropertyType with get() = attrType
+    override __.SetValue(e,value) = (e :?> XrmEntity).SetAttribute(attrKey,value)        
+    override __.GetValue(e) = 
+        let e = e:?>XrmEntity
+        match dataBindingMode with
+        | DataBindingMode.FormattedValues ->
+            match (attrType = typeof<bool>,e.FormattedValues.TryGetValue attrKey) with
+            | false,(true,value) -> upcast value
+            | _ -> match box(e.GetAttribute(attrKey)) with
+                   | :? EntityReference as er -> upcast sprintf "%s : %s" er.LogicalName (er.Id.ToString())
+                   | v -> v                   
+        | _ -> e.GetAttribute(attrKey)
+    override __.IsReadOnly with get() = false
+    override __.ComponentType with get () = null
+    override __.CanResetValue(_) = false
+    override __.ResetValue(_) = ()
+    override __.ShouldSerializeValue(_) = false
+         
 type RelationshipDirection = Children = 0 | Parents = 1 
 
 type LinkData =
@@ -99,13 +171,14 @@ type internal XrmQuery =
       Aliases       : Map<string, string>
       Ordering      : (alias * string * bool) list
       Projection    : Expression option
+      ApproxCount   : bool
       Distinct      : bool
       UltimateChild : (string * string) option
       Skip          : int option
       Take          : int option }
     with
-        static member Blank() = { Filters = Map.empty; Links = Map.empty; Aliases = Map.empty; Ordering = [];
-                                  Projection = None; Distinct = false; UltimateChild = None; Skip = None; Take = None }
+        static member Empty = { Filters = Map.empty; Links = Map.empty; Aliases = Map.empty; Ordering = [];
+                                Projection = None; Distinct = false; ApproxCount=false; UltimateChild = None; Skip = None; Take = None }
 
         static member ofXrmExp(exp,entityIndex: string ResizeArray) =
             let add key item map =
@@ -152,29 +225,25 @@ type internal XrmQuery =
                          convert { q with Filters = q.Filters |> add (entityIndex.[0]) c } rest
                     else convert { q with Filters = q.Filters |> add a c } rest 
                 | Projection(exp,rest) as e ->  
-                    match q.Projection with
-                    | Some(_) -> failwith "the type provider currently only supports a single projection"
-                    | None -> convert { q with Projection = Some exp } rest
+                    if q.Projection.IsSome then failwith "the type provider only supports a single projection"
+                    else convert { q with Projection = Some exp } rest
                 | Distinct(rest) ->
-                    match q.Distinct with
-                    | true -> failwith "distinct is applied to the entire query and can only be supplied once"                
-                    | _    -> convert { q with Distinct = true } rest
+                    if q.Distinct then failwith "distinct is applied to the entire query and can only be supplied once"                
+                    else convert { q with Distinct = true } rest
                 | OrderBy(alias,key,desc,rest) ->
                     convert { q with Ordering = (alias,key,desc)::q.Ordering } rest
                 | Skip(amount, rest) -> 
-                    match q.Skip with
-                    | Some(_) -> failwith "skip may only be specified once"
-                    | None -> convert { q with Skip = Some(amount) } rest
+                    if q.Skip.IsSome then failwith "skip may only be specified once"
+                    else convert { q with Skip = Some(amount) } rest
                 | Take(amount, rest) -> 
-                    match q.Take with
-                    | Some(_) -> failwith "take may only be specified once"
-                    | None -> convert { q with Take = Some(amount) } rest
-            convert (XrmQuery.Blank()) exp
+                    if q.Take.IsSome then failwith "take may only be specified once"
+                    else convert { q with Take = Some(amount) } rest
+            convert (XrmQuery.Empty) exp
 
 
 module Utilities =
     let resolveTuplePropertyName name (tupleIndex:string ResizeArray) =
-        match name with // could do this by parsing the number from the end of the string..
+        match name with // could do this by parsing the number from the end of the string...
         | "Item1" -> tupleIndex.[0] | "Item11" -> tupleIndex.[10]
         | "Item2" -> tupleIndex.[1] | "Item12" -> tupleIndex.[11]
         | "Item3" -> tupleIndex.[2] | "Item13" -> tupleIndex.[12]
