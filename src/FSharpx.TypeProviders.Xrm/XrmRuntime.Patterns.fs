@@ -91,6 +91,14 @@ let (|XrmAttributeGet|_|) = function
         | _ -> Some(String.Empty,key,meth.ReturnType) 
     | _ -> None
 
+let (|XrmOptionSetGet|_|) = function
+    | MethodCall(None, MethodWithName "ToEnum", [MethodCall(Some(o),(MethodWithName "GetEnumValue" as meth), [String key])]) ->
+        match o with
+        | :? ParameterExpression  as m -> Some(m.Name,key,meth.ReturnType )
+        | :? MemberExpression as m  -> Some(m.Member.Name,key,meth.ReturnType) 
+        | _ -> failwith "unsupported optionset access! the squirrels are in the system!"
+    | _ -> None
+
 let (|XrmSpecialOpArr|_|) = function
     | MethodCall(None,(|=|), [XrmAttributeGet(ti,key,_); NewArrayValues values] ) -> Some(ti,ConditionOperator.In,   key,values)
     | MethodCall(None,(|<>|),[XrmAttributeGet(ti,key,_); NewArrayValues values] ) -> Some(ti,ConditionOperator.NotIn,key,values)
