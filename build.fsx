@@ -67,7 +67,7 @@ let rec getPackageDesc = function
 // params
 let target = getBuildParamOrDefault "target" "All"
 
-let buildTypeProviders frameworkVersion = frameworkVersion <> net35
+let buildTypeProviders frameworkVersion = frameworkVersion <> net35 && buildServer = BuildServer.LocalBuild
 
 let normalizeFrameworkVersion frameworkVersion =
     let v = ("[^\\d]" >=> "") frameworkVersion
