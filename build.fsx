@@ -99,7 +99,6 @@ let appReferences portable frameworkVersion =
                 yield "./src/**/*.TypeProviders.*proj"
              if frameworkVersion = net35 then 
                 yield "./src/**/*.Async.fsproj"
-                yield "./src/**/*.Collections.Experimental.fsproj" // TODO: why is that?
                 yield "./src/**/*.Http.fsproj" // TODO: why is that?
                 yield "./src/**/*.Observable.fsproj" // TODO: why is that?
                     ] }
