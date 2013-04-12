@@ -49,10 +49,10 @@ module AsyncExtensions =
           then Some task.Result
           else None }
 
-#endif
-
   /// Implements an extension method that overloads the standard
   /// 'Bind' of the 'async' builder. The new overload awaits on 
   /// a standard .NET task
   type Microsoft.FSharp.Control.AsyncBuilder with
       member x.Bind(t:Tasks.Task<'T>, f:'T -> Async<'R>) : Async<'R> =  async.Bind(Async.AwaitTask t, f)
+
+#endif
