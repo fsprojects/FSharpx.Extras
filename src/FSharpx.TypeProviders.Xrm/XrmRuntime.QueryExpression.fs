@@ -28,6 +28,7 @@ module internal QueryExpressionTransformer =
         override x.VisitLambda(exp) = 
             if exp.Parameters.Count = 1 && exp.Parameters.[0].Type = typeof<XrmEntity> then
                 // this is a speical case when there were no select manys and as a result the projection parameter is just the single entity rather than a tuple
+                // this still includes cases where tuples are created by the user directly, that is fine - it is for avoiding linq auto generated tuples
                 singleEntityName <- exp.Parameters.[0].Name
                 match x.ProjectionMap.TryGetValue singleEntityName with
                 | true, values -> ()
@@ -37,11 +38,12 @@ module internal QueryExpressionTransformer =
             else base.VisitLambda exp
 
         override x.VisitMethodCall(exp) =
-            // match here on a tupled expression with GetAttribute or a single entity with GetAttribute
+            // match here on a tupled expression with GetAttribute/GetFormattedValue or a single entity with GetAttribute/GetFormattedValue
             let(|PropName|) (pi:PropertyInfo) = pi.Name
             match exp with
-            | MethodCall(Some(PropertyGet(_,PropName name)),MethodWithName "GetAttribute",[String key]) 
-            | MethodCall(Some(ParamName name),              MethodWithName "GetAttribute",[String key]) -> 
+            | MethodCall(Some(ParamName name | PropertyGet(_,PropName name)),(MethodWithName "GetAttribute"),[String key]) 
+            | MethodCall(Some(PropertyGet(Some(ParamName name| PropertyGet(_,PropName name)),PropertyWithName "FormattedValues")), MethodWithName "get_Item", [String key])
+            | MethodCall(Some(Lambda(_,MethodCall(_,MethodWithName "GetFormattedValue",[String key] ))),(MethodWithName "Invoke"),[(ParamName name | PropertyGet(_,PropName name))]) -> 
                 // add this attribute to the select list for the alias
                 let alias = if tupleIndex.Count = 0 then "" else Utilities.resolveTuplePropertyName name tupleIndex
                 match x.ProjectionMap.TryGetValue alias with
@@ -95,6 +97,7 @@ module internal QueryExpressionTransformer =
             conditions |> List.iter ( fun (attr,op,value) -> 
                 match value with
                 | Some(:? Array) as a -> filter.AddCondition <| ConditionExpression(attr,op,a.Value :?> Array) // for some reason when passing an array to this method it needs to first be unboxed ?                
+                | Some(value) when value.GetType().IsEnum -> filter.AddCondition(attr,op,Convert.ToInt32(value))
                 | Some(value) -> filter.AddCondition(attr,op,value)
                 | None -> filter.AddCondition(attr,op)) // handles using the Null and NotNull condition operators
 
@@ -170,7 +173,7 @@ module internal QueryExpressionTransformer =
         query.Distinct <- xrmQuery.Distinct
         
         xrmQuery.Ordering |> List.iter( fun (alias,key,desc) ->
-            if baseAlias <> "" && alias <> baseAlias then failwith "sorting is only supported on the ultimate child entity"
+            if baseAlias <> "" && alias <> baseAlias then failwithf "sorting is only supported on the ultimate child entity (in this case, %s)" baseEntity
             query.AddOrder(key,if desc then OrderType.Descending else OrderType.Ascending))
          
          // check that skip and take make sense if they have been supplied
@@ -188,6 +191,6 @@ module internal QueryExpressionTransformer =
         if entityIndex.Count > 0 then             
             // recusrively add all links and their criteria
             addLinks (entityIndex.Find(fun x -> x = baseAlias)) (fun newLink -> query.LinkEntities.Add newLink)                
-    
+            
         (query,projectionDelegate)
  
