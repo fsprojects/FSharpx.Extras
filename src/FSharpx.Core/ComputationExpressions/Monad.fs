@@ -950,36 +950,33 @@ module Task =
         let contOptions = defaultArg continuationOptions TaskContinuationOptions.None
         let scheduler = defaultArg scheduler TaskScheduler.Default
 
-        let konstT x = fun (_: CancellationToken) -> x
-        
-        member this.Return x = konstT (returnM x)
-        member this.ReturnFrom (t: Task<'a>) = konstT t
-        member this.ReturnFrom (t: CancellationToken -> Task<'a>) = t
-        member this.Zero() = this.Return ()
-        
-        member this.Bind(t: CancellationToken -> Task<'a>, f: 'a -> (CancellationToken -> Task<'b>)) =
+        let lift (t: Task<_>) = fun (_: CancellationToken) -> t
+        let bind (t: CancellationToken -> Task<'a>) (f: 'a -> (CancellationToken -> Task<'b>)) =
             fun (token: CancellationToken) ->
                 (t token).ContinueWith((fun (x: Task<_>) -> f x.Result token), token, contOptions, scheduler).Unwrap()
         
-        member this.Bind(t: Task<'a>, f: 'a -> (CancellationToken -> Task<'b>)) = this.Bind(this.ReturnFrom t, f)
-        
-        member this.Combine(t1: CancellationToken -> Task<'a>, t2: CancellationToken -> Task<'b>) = 
-            this.Bind(t1, konst t2)
+        member this.Return x = lift (returnM x)
+        member this.ReturnFrom t = lift t
+        member this.ReturnFrom (t: CancellationToken -> Task<'a>) = t
+        member this.Zero() = this.Return ()
+        member this.Bind(t, f) = bind t f            
+        member this.Bind(t, f) = bind (lift t) f                
+        member this.Combine(t1, t2) = bind t1 (konst t2)        
 
-        member this.While(guard, m: CancellationToken -> Task<unit>) =
+        member this.While(guard, m) =
                 if not(guard()) then 
                     this.Zero()
                 else
-                    this.Bind(m, (fun () -> this.While(guard, m)))
+                    bind m (fun () -> this.While(guard, m))                    
 
-        member this.TryFinally(t: CancellationToken -> Task<'a>, compensation) =
+        member this.TryFinally(t : CancellationToken -> Task<'a>, compensation) =
             try t
             finally compensation()
 
         member this.Using(res: #IDisposable, body: #IDisposable -> (CancellationToken -> Task<'a>)) =
             this.TryFinally(body res, fun () -> match res with null -> () | disp -> disp.Dispose())
 
-        member this.For(sequence: seq<'a>, body: 'a -> (CancellationToken -> Task<unit>)) =            
+        member this.For(sequence: seq<'a>, body) =            
                 this.Using(sequence.GetEnumerator(),
                                  fun enum -> this.While(enum.MoveNext, fun token -> body enum.Current token))
         
