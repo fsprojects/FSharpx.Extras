@@ -1,1 +1,1 @@
-call build.bat v35 %*
+call build.bat all v35 %*

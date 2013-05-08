@@ -4,6 +4,7 @@
 
 namespace FSharpx.DataStructures
 
+#nowarn "44"
 open System.Collections
 open System.Collections.Generic
 
@@ -15,6 +16,7 @@ type Digit<'a> =
     | Zero
     | One of TreeBRAL<'a>
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type BinaryRandomAccessList<'a> (randomAccessList) =
 
     member this.randomAccessList = randomAccessList

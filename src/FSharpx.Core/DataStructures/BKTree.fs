@@ -1,5 +1,6 @@
 ﻿namespace FSharpx.DataStructures
 
+#nowarn "44"
 open System.Collections
 open System.Collections.Generic
 open FSharpx
@@ -7,6 +8,7 @@ open FSharpx.Collections
 
 // Ported from http://hackage.haskell.org/packages/archive/bktrees/latest/doc/html/src/Data-Set-BKTree.html
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type 'a BKTree =
   | Node of 'a * int * IntMap<'a BKTree>
   | Empty

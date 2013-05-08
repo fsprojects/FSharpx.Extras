@@ -4,16 +4,21 @@
 
 namespace FSharpx.DataStructures
 
+#nowarn "44"
 open System.Collections
 open System.Collections.Generic
 open ListHelpr
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type BatchedDeque<'a> (front, rBack) = 
   
     static member internal Empty() = BatchedDeque(List.Empty, List.Empty)
 
     static member internal OfCatLists (xs : 'a list) (ys : 'a list) =
         new BatchedDeque<'a>(xs, (List.rev ys))
+
+    static member internal OfList (xs : 'a list) = 
+        new BatchedDeque<'a>(xs, [])
 
     static member internal OfSeq (xs:seq<'a>) = 
         new BatchedDeque<'a>((List.ofSeq xs), [])
@@ -46,7 +51,7 @@ type BatchedDeque<'a> (front, rBack) =
         | _ , x::xs -> BatchedDeque(front, xs)
         | _ ,   [] ->       //splits front in two, favoring frontbot for odd length
             let _, fronttop, frontbot = List.fold(fun (i, reartop, rearbot) e -> 
-                if i < rBack.Length /2
+                if i < front.Length /2
                 then (i+1, e::reartop, rearbot)
                 else (i+1, reartop, e::rearbot)) (0,[],[]) front
             let front', rear' = fronttop |> List.rev , frontbot
@@ -59,7 +64,7 @@ type BatchedDeque<'a> (front, rBack) =
         | _ , x::xs -> Some(BatchedDeque(front, xs))
         | _ ,   [] ->       //splits front in two, favoring frontbot for odd length
             let _, fronttop, frontbot = List.fold(fun (i, reartop, rearbot) e -> 
-                if i < rBack.Length /2
+                if i < front.Length /2
                 then (i+1, e::reartop, rearbot)
                 else (i+1, reartop, e::rearbot)) (0,[],[]) front
             let front', rear' = fronttop |> List.rev , frontbot
@@ -395,6 +400,9 @@ module BatchedDeque =
 
     ///O(n), worst case. Returns a deque of the two lists concatenated.
     let ofCatLists xs ys = BatchedDeque.OfCatLists xs ys
+
+    ///O(n), worst case. Returns a deque of the list.
+    let ofList xs = BatchedDeque.OfList xs
 
     ///O(n), worst case. Returns a deque of the seq.
     let ofSeq xs = BatchedDeque.OfSeq xs

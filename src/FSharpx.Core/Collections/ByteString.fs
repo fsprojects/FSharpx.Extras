@@ -20,7 +20,7 @@ type ByteString =
     static member Compare (a:ByteString, b:ByteString) =
         let x,o,l = a.Array, a.Offset, a.Count
         let x',o',l' = b.Array, b.Offset, b.Count
-        if x = x' && o = o' && l = l' then 0
+        if o = o' && l = l' && x = x' then 0
         elif x = x' then
             if o = o' then if l < l' then -1 else 1
             else if o < o' then -1 else 1 
@@ -32,7 +32,7 @@ type ByteString =
         | :? ByteString as other' -> ByteString.Compare(x, other') = 0
         | _ -> false
     /// Gets the hash code for the byte string.
-    override x.GetHashCode() = hash x
+    override x.GetHashCode() = hash (x.Array,x.Offset,x.Count)
     /// Gets an enumerator for the bytes stored in the byte string.
     member x.GetEnumerator() =
         if x.Count = 0 then

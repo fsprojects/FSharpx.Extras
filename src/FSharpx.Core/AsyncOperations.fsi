@@ -81,4 +81,38 @@ namespace Microsoft.FSharp.Control
         type System.Net.WebClient with
             [<System.Obsolete("The extension method now resides in the 'WebExtensions' module in the F# core library. Please add 'open Microsoft.FSharp.Control.WebExtensions' to access this method")>]
             member AsyncDownloadString : address:System.Uri -> Async<string>
+
+            /// Returns an asynchronous computation that, when run, will wait for the upload of the data in the specified name/value collection to the resource identified by the specified URI.
+            member AsyncUploadValues : address: System.Uri * data: Collections.Specialized.NameValueCollection -> Async<byte[]>
+            /// Returns an asynchronous computation that, when run, will wait for the upload of the data in the specified name/value collection to the resource identified by the specified URI, using the specified method.
+            member AsyncUploadValues : address: System.Uri * uploadMethod: string * data: Collections.Specialized.NameValueCollection -> Async<byte[]>
+
+            /// Returns an asynchronous computation that, when run, will wait for the upload of the specified string to the specified resource.
+            member AsyncUploadString : address: System.Uri * data: string -> Async<string>
+            /// Returns an asynchronous computation that, when run, will wait for the upload of the specified string to the specified resource, using the specified method.
+            member AsyncUploadString : address: System.Uri * uploadMethod: string * data: string -> Async<string>
+
+            /// Returns an asynchronous computation that, when run, will wait for the upload of the specified local file to the specified resource, using the POST method.
+            member AsyncUploadFile : address: System.Uri * fileName: string -> Async<byte[]>
+            /// Returns an asynchronous computation that, when run, will wait for the upload of the specified local file to the specified resource, using the specified method.
+            member AsyncUploadFile : address: System.Uri * uploadMethod: string * fileName: string -> Async<byte[]>
+
+            /// Returns an asynchronous computation that, when run, will wait for the upload of a data buffer to a resource identified by a URI, using the POST method.
+            member AsyncUploadData : address: System.Uri * data: byte[] -> Async<byte[]>
+            /// Returns an asynchronous computation that, when run, will wait for the upload of a data buffer to a resource identified by a URI, using the specified method.
+            member AsyncUploadData : address: System.Uri * uploadMethod: string * data: byte[] -> Async<byte[]>
+
+            /// Returns an asynchronous computation that, when run, will wait for the opening of a stream for writing data to the specified resource.
+            member AsyncOpenWrite : address: System.Uri -> Async<IO.Stream>
+            /// Returns an asynchronous computation that, when run, will wait for the opening of a stream for writing data to the specified resource.
+            member AsyncOpenWrite : address: System.Uri * uploadMethod: string -> Async<IO.Stream>
+
+            /// Returns an asynchronous computation that, when run, will wait for the opening of a readable stream containing the specified resource.
+            member AsyncOpenRead : address: System.Uri -> Async<IO.Stream>
+
+            /// Returns an asynchronous computation that, when run, will wait for the download of a resource with the specified URI to the local file.
+            member AsyncDownloadFile : address: System.Uri * fileName: string -> Async<unit>
+
+            /// Returns an asynchronous computation that, when run, will wait for the download of the specified resource as a data buffer.
+            member AsyncDownloadData : address: System.Uri -> Async<byte[]>
 #endif

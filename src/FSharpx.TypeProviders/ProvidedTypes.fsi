@@ -30,7 +30,7 @@ type internal ProvidedConstructor =
     new : parameters: ProvidedParameter list -> ProvidedConstructor
 
     /// Add a 'System.Obsolete' attribute to this provided constructor
-    member AddObsoleteAttribute : message: string -> unit    
+    member AddObsoleteAttribute : message: string * ?isError: bool -> unit    
     
     /// Add XML documentation information to this provided constructor
     member AddXmlDoc          : xmlDoc: string -> unit   
@@ -63,7 +63,7 @@ type internal ProvidedMethod =
     new : methodName:string * parameters: ProvidedParameter list * returnType: Type -> ProvidedMethod
 
     /// Add XML documentation information to this provided method
-    member AddObsoleteAttribute : message: string -> unit   
+    member AddObsoleteAttribute : message: string * ?isError: bool -> unit    
 
     /// Add XML documentation information to this provided constructor
     member AddXmlDoc            : xmlDoc: string -> unit    
@@ -100,7 +100,7 @@ type internal ProvidedProperty =
     new  : propertyName: string * propertyType: Type * ?parameters:ProvidedParameter list -> ProvidedProperty
 
     /// Add a 'System.Obsolete' attribute to this provided property
-    member AddObsoleteAttribute : message: string -> unit 
+    member AddObsoleteAttribute : message: string * ?isError: bool -> unit    
 
     /// Add XML documentation information to this provided constructor
     member AddXmlDoc            : xmlDoc: string -> unit    
@@ -113,7 +113,7 @@ type internal ProvidedProperty =
     member AddXmlDocComputed   : xmlDocFunction: (unit -> string) -> unit   
     
     /// Get or set a flag indicating if the property is static.
-    member IsStatic             : bool with get, set
+    member IsStatic             : bool with get,set
 
     /// Set the quotation used to compute the implementation of gets of this property.
     member GetterCode           : (Quotations.Expr list -> Quotations.Expr) with set
@@ -161,7 +161,7 @@ type internal ProvidedLiteralField =
     new  : fieldName: string * fieldType: Type * literalValue: obj -> ProvidedLiteralField
 
     /// Add a 'System.Obsolete' attribute to this provided field
-    member AddObsoleteAttribute : message: string -> unit    
+    member AddObsoleteAttribute : message: string * ?isError: bool -> unit    
 
     /// Add XML documentation information to this provided field
     member AddXmlDoc            : xmlDoc: string -> unit    
@@ -184,7 +184,7 @@ type internal ProvidedField =
     new  : fieldName: string * fieldType: Type -> ProvidedField
 
     /// Add a 'System.Obsolete' attribute to this provided field
-    member AddObsoleteAttribute : message: string -> unit    
+    member AddObsoleteAttribute : message: string * ?isError: bool -> unit    
 
     /// Add XML documentation information to this provided field
     member AddXmlDoc            : xmlDoc: string -> unit    
@@ -266,13 +266,16 @@ type internal ProvidedTypeDefinition =
     member DefineMethodOverride : methodInfoBody: ProvidedMethod * methodInfoDeclaration: MethodInfo -> unit
 
     /// Add a 'System.Obsolete' attribute to this provided type definition
-    member AddObsoleteAttribute : message: string -> unit 
+    member AddObsoleteAttribute : message: string * ?isError: bool -> unit    
 
     /// Add XML documentation information to this provided constructor
     member AddXmlDoc             : xmlDoc: string -> unit    
 
     /// Set the base type
     member SetBaseType             : Type -> unit    
+
+    /// Set the base type to a lazily evaluated value
+    member SetBaseTypeDelayed      : Lazy<Type option> -> unit    
 
     /// Add XML documentation information to this provided constructor, where the computation of the documentation is delayed until necessary.
     /// The documentation is only computed once.

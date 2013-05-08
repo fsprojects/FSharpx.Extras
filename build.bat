@@ -1,4 +1,5 @@
 @echo off
 cls
-"packages\FAKE.1.64.18.0\tools\FAKE.exe" "build.fsx" %*
+"lib\nuget\nuget.exe" "install" "FAKE" "-OutputDirectory" "lib" "-ExcludeVersion" "-Prerelease"
+"lib\FAKE\tools\FAKE.exe" "build.fsx" %*
 pause

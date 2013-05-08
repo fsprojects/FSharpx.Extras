@@ -393,7 +393,7 @@ module AsyncSeq =
   /// multiple times, the input will still be evaluated only once
   let rec cache (input : AsyncSeq<'T>) = 
     let agent = Agent<AsyncReplyChannel<_>>.Start(fun agent -> async {
-      let! repl = agent.Receive()
+      let! (repl:AsyncReplyChannel<AsyncSeqInner<'T>>) = agent.Receive()
       let! next = input
       let res = 
         match next with 
@@ -401,7 +401,7 @@ module AsyncSeq =
         | Cons(h, t) -> Cons(h, cache t)
       repl.Reply(res)
       while true do
-        let! repl = agent.Receive()
+        let! (repl:AsyncReplyChannel<AsyncSeqInner<'T>>) = agent.Receive()
         repl.Reply(res) })
     async { return! agent.PostAndAsyncReply(id) }
 

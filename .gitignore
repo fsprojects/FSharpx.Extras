@@ -39,3 +39,4 @@ manualNuget/lib/
 build.AndDeploy.bat
 *.sln.ide
 __setup__.fsx
+lib/FAKE/tools/

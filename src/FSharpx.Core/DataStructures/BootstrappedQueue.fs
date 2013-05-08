@@ -2,8 +2,10 @@
 // original implementation taken from http://lepensemoi.free.fr/index.php/2010/02/18/bootstrapped-queue
 module FSharpx.DataStructures.BootstrappedQueue
 
+#nowarn "44"
 open FSharpx
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type NonEmptyBootstrappedQueue<'a> = {
     FrontAndSuspensionsLength : int
     Front : list<'a>

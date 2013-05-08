@@ -8,6 +8,9 @@ open NUnit.Framework
 open System
 open System.IO
 open System.Threading
+open System.Net
+open System.Text
+open System.Text.RegularExpressions
 
 #nowarn "40"
 
@@ -529,4 +532,49 @@ type public ControlTests() =
                     |> Async.RunSynchronously 
 
         check "Chamenos" (Seq.sum meets) (meetings*2)
+
+[<TestFixture>]
+type public WebClientTests() =        
+    [<Test>]
+    member this.AsyncOpenRead() = 
+        let read uri =
+            async {
+                let wc = new WebClient()
+                use! stream = wc.AsyncOpenRead(new Uri(uri))
+                use reader = new StreamReader(stream)
+                return! reader.AsyncReadToEnd() }
+
+        let html = read "http://bing.com" |> Async.RunSynchronously
+
+        let rx = new Regex(@"<html")
+        Assert.AreEqual(1, rx.Matches(html).Count)
+
+    [<Test>]
+    member this.AsyncDownloadFile() = 
+        let download uri localFile =
+            async {
+                let wc = new WebClient()
+                return! wc.AsyncDownloadFile(new Uri(uri), localFile) }
+
+        let filename = "gpl.txt"
+        try
+            download "http://www.gnu.org/licenses/gpl-2.0.txt" filename |> Async.RunSynchronously
+            let text = File.ReadAllText filename
+            Assert.IsTrue(text.Contains("GNU GENERAL PUBLIC LICENSE"))
+        finally
+            File.Delete filename
+
+
+    [<Test>]
+    member this.AsyncDownloadData() = 
+        let read uri =
+            async {
+                let wc = new WebClient()
+                return! wc.AsyncDownloadData(new Uri(uri)) }
+
+        let bytes = read "http://bing.com" |> Async.RunSynchronously
+
+        let html = Encoding.ASCII.GetString(bytes)
+        let rx = new Regex(@"<html")
+        Assert.AreEqual(1, rx.Matches(html).Count) 
 

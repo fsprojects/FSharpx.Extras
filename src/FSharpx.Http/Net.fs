@@ -32,7 +32,7 @@ module HttpExtensions =
         listener.Prefixes.Add(url)
         listener.Start()
         while true do 
-          let! context = listener.AsyncGetContext()
+          let! (context:HttpListenerContext) = listener.AsyncGetContext()
           Async.Start
             ( handler (context.Request, context.Response), 
               ?cancellationToken = cancellationToken) }

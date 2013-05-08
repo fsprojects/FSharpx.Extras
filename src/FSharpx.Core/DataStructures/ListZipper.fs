@@ -2,7 +2,9 @@
 /// original implementation taken from http://learnyouahaskell.com/zippers
 module FSharpx.DataStructures.ListZipper
 
+#nowarn "44"
 /// A zipper for lists
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type 'a ListZipper = { Focus : 'a list; Path : 'a list } 
 
 /// Returns the head element from the list under focus

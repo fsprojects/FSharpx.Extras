@@ -312,8 +312,8 @@ let ``test readLines should return the lines from the input``(input, expected:BS
 [<TestCaseSource("readLinesTests")>]
 let ``test readLines should return the lines from the input when enumerated one byte at a time``(input, expected:BS list) =
   let input = ByteString.ofString input
-  let actual = enumerate input readLines |> run
-  actual |> should equal expected
+  let actual = enumerate input readLines |> run |> sprintf "%A" 
+  actual |> should equal (sprintf "%A" expected)
 
 [<Test>]
 [<TestCaseSource("readLinesTests")>]
@@ -456,8 +456,9 @@ let readCsvLine = many (takeUntilComma <* drop 1)
 [<Test>]
 let ``test readCsvLine should take chunks until no commas remain``() =
   let csvSample = BS("blah,blah,blah"B)
-  let actual = enumerate csvSample readCsvLine |> run
-  actual |> should equal [BS("blah"B);BS("blah"B);BS("blah"B)]
+  let actual = enumerate csvSample readCsvLine |> run |> sprintf "%A" 
+  let expected = [BS("blah"B);BS("blah"B);BS("blah"B)] |> sprintf "%A" 
+  actual |> should equal expected
 
 [<Test>]
 let ``test readCsvLine should return the empty byte string when that's all it is passed``() =

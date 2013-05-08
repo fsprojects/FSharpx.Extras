@@ -1,10 +1,10 @@
 namespace FSharpx.DataStructures
 
 open FSharpx
-open FSharpx.Collections
 open System.Collections
 open System.Collections.Generic
 
+#nowarn "44"
 /// The DList is an implementation of John Hughes' append list.
 /// See http://dl.acm.org/citation.cfm?id=8475 for more information.
 /// This implementation adds an additional parameter to allow a more
@@ -12,6 +12,7 @@ open System.Collections.Generic
 /// Note that an alternate form would represent the DList as:
 /// type DList<'a> = DList of ('a list -> 'a list)
 /// An example can be found at http://stackoverflow.com/questions/5324623/functional-o1-append-and-on-iteration-from-first-element-list-data-structure/5327209#5327209
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type DList<'a> =
     | Nil
     | Unit of 'a
@@ -145,6 +146,6 @@ module DList =
             | t::ts -> walk ts t xs
         in walk [] l seed
 
-    let toList l = fold (flip List.cons) [] l
+    let toList l = fold (flip FSharpx.Collections.List.cons) [] l
 
     let toArray l = l |> toList |> Array.ofList

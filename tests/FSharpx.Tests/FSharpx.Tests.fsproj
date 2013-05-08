@@ -47,20 +47,15 @@
   <PropertyGroup Condition="$(TargetFrameworkVersion) == 'v4.0'">
     <DefineConstants>NET40</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="$(TargetFrameworkVersion) == 'v4.5'">
-    <DefineConstants>NET45</DefineConstants>
-  </PropertyGroup>
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
     <Compile Include="FsUnit.fs" />
     <Compile Include="FsCheckRunner.fs" />
     <Compile Include="FsCheckProperties.fs" />
     <Compile Include="StringsTest.fs" />
     <Compile Include="MonoidTests.fs" />
-    <Compile Include="ListExtensionsTest.fs" />
-    <Compile Include="DictionaryExtensionsTests.fs" />
-    <Compile Include="ByteStringTest.fs" />
     <Compile Include="OperatorsTest.fs" />
     <Compile Include="AsyncOperatorsTest.fs" />
     <Compile Include="MaybeTest.fs" />
@@ -75,10 +70,6 @@
     <Compile Include="ValidationTests.fs" />
     <Compile Include="ValidationExample.fs" />
     <Compile Include="ZipListTests.fs" />
-    <Compile Include="NameValueCollectionTests.fs" />
-    <Compile Include="ArrayTests.fs" />
-    <Compile Include="SeqTests.fs" />
-    <Compile Include="MapTests.fs" />
     <Compile Include="OptionTests.fs" />
     <Compile Include="ChoiceTests.fs" />
     <Compile Include="PreludeTests.fs" />
@@ -95,10 +86,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Compile Include="TaskTests.fs" />
-    <Compile Include="MapExtensionsTest.fs" />
     <Compile Include="Utilities.fs" />
-    <Compile Include="LazyListTests.fs" />
-    <Compile Include="ColllectionTests.fs" />
     <Compile Include="ControlTests.fs" />
     <Compile Include="AsyncStreamReaderTest.fs" />
   </ItemGroup>
@@ -107,16 +95,18 @@
       <HintPath>..\..\packages\FsCheck.0.8.3.0\lib\net40-Client\FsCheck.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) != 'v4.5'">
-      <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
+    <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
+      <HintPath>..\..\lib\FSharp\Net20\FSharp.Core.dll</HintPath>
     </Reference>
-    <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' == 'v4.5'">
-      <HintPath>..\..\lib\FSharp\Net45\FSharp.Core.dll</HintPath>
+    <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
+      <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
-    <Reference Include="nunit.framework, Version=2.6.0.12054, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
+    <Reference Include="nunit.framework">
+      <Private>True</Private>
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\NUnit.2.6.0.12054\lib\nunit.framework.dll</HintPath>
+      <HintPath>..\..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -133,7 +123,7 @@
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\FSharpx.CSharpTests\FSharpx.CSharpTests.csproj">
-      <Name>FSharp.Core.CS.Tests</Name>
+      <Name>FSharpx.CSharpTests</Name>
       <Project>{4354a199-6acf-4db5-a8fa-bad638d1d0e3}</Project>
       <Private>True</Private>
     </ProjectReference>

@@ -2,8 +2,10 @@
 // original implementation taken from http://lepensemoi.free.fr/index.php/2010/01/07/bottom-up-merge-sort
 module FSharpx.DataStructures.BottomUpMergeSort
 
+#nowarn "44"
 open FSharpx
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type Sortable<'a> = {
     Size: int
     Segments: Lazy<list<list<'a>>> }

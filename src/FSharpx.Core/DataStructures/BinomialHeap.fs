@@ -5,11 +5,13 @@
 
 namespace FSharpx.DataStructures
 
+#nowarn "44"
 open System.Collections
 open System.Collections.Generic
 
 type BinomialTree<'a> = Node of (int * 'a * list<BinomialTree<'a>>)
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type BinomialHeap<'a when 'a : comparison> (isDescending : bool, heap : list<BinomialTree<'a>>) =
 
     member private this.heap = heap

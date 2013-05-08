@@ -26,7 +26,7 @@ It currently implements:
 
 * Several standard monads: State, Reader, Writer, Either, Continuation, Distribution
 * Iteratee
-* Purely functional data structures: Queues, double-ended Queues, BottomUpMergeSort, RandomAccessList, Vector
+* Purely functional data structures: Queues, double-ended Queues, BottomUpMergeSort, RandomAccessList, Vector, RoseTree, BKTree
 * Validation applicative functor
 * General functions like flip
 * Additional functions around collections
@@ -34,14 +34,10 @@ It currently implements:
 
 [<assembly: AssemblyProduct ("FSharpx")>]
 
-[<assembly: AssemblyVersion ("1.6.83")>]
+[<assembly: AssemblyVersion ("1.7.8")>]
 
-[<assembly: AssemblyFileVersion ("1.6.83")>]
+[<assembly: AssemblyFileVersion ("1.7.8")>]
 
 [<assembly: AssemblyDelaySign (false)>]
-
-[<assembly: AutoOpen ("FSharpx.Collections")>]
-
-[<assembly: AutoOpen ("FSharpx.Collections.Mutable")>]
 
 ()

@@ -98,14 +98,14 @@ module internal Misc =
                             CustomAttributeNamedArgument(typeof<TypeProviderDefinitionLocationAttribute>.GetProperty("Line"), CustomAttributeTypedArgument(typeof<int>, line)) ;
                             CustomAttributeNamedArgument(typeof<TypeProviderDefinitionLocationAttribute>.GetProperty("Column"), CustomAttributeTypedArgument(typeof<int>, column)) 
                         |] }
-    let mkObsoleteAttributeCustomAttributeData(message:string) = 
+    let mkObsoleteAttributeCustomAttributeData(message:string, isError: bool) = 
 #if FX_NO_CUSTOMATTRIBUTEDATA
         { new IProvidedCustomAttributeData with 
 #else
         { new CustomAttributeData() with 
 #endif
                 member __.Constructor =  typeof<System.ObsoleteAttribute>.GetConstructors() |> Array.find (fun x -> x.GetParameters().Length = 1)
-                member __.ConstructorArguments = upcast [|CustomAttributeTypedArgument(typeof<string>, message)  |]
+                member __.ConstructorArguments = upcast [|CustomAttributeTypedArgument(typeof<string>, message) ; CustomAttributeTypedArgument(typeof<bool>, isError)  |]
                 member __.NamedArguments = upcast [| |] }
 
     type CustomAttributesImpl() =
@@ -132,7 +132,7 @@ module internal Misc =
                   yield! customAttributes |]
 
         member __.AddDefinitionLocation(line:int,column:int,filePath:string) = customAttributes.Add(mkDefinitionLocationAttributeCustomAttributeData(line, column, filePath))
-        member __.AddObsolete(msg : string) = obsoleteMessage <- Some msg
+        member __.AddObsolete(msg : string, isError) = obsoleteMessage <- Some (msg,isError)
         member __.HasParamArray with get() = hasParamArray and set(v) = hasParamArray <- v
         member __.AddXmlDocComputed(xmlDoc : unit -> string) = xmlDocAlwaysRecomputed <- Some xmlDoc
         member __.AddXmlDocDelayed(xmlDoc : unit -> string) = xmlDocDelayed <- Some xmlDoc
@@ -203,12 +203,35 @@ module internal Misc =
                 let tagNumber = uc.Tag
                 trans <@@ (%%(tagExpr) : int) = tagNumber @@>
 
+            // Explicitly handle weird byref variables in lets (used to populate out parameters), since the generic handlers can't deal with byrefs
+            | Quotations.Patterns.Let(v,vexpr,bexpr) when v.Type.IsByRef ->
+
+                // the binding must have leaves that are themselves variables (due to the limited support for byrefs in expressions)
+                // therefore, we can perform inlining to translate this to a form that can be compiled
+                inlineByref v vexpr bexpr
+
             // Handle the generic cases
             | Quotations.ExprShape.ShapeLambda(v,body) -> 
                 Quotations.Expr.Lambda(v, trans body)
             | Quotations.ExprShape.ShapeCombination(comb,args) -> 
                 Quotations.ExprShape.RebuildShapeCombination(comb,List.map trans args)
             | Quotations.ExprShape.ShapeVar _ -> q
+        and inlineByref v vexpr bexpr =
+            match vexpr with
+            | Quotations.Patterns.Sequential(e',vexpr') ->
+                (* let v = (e'; vexpr') in bexpr => e'; let v = vexpr' in bexpr *)
+                Quotations.Expr.Sequential(e', inlineByref v vexpr' bexpr)
+                |> trans
+            | Quotations.Patterns.IfThenElse(c,b1,b2) ->
+                (* let v = if c then b1 else b2 in bexpr => if c then let v = b1 in bexpr else let v = b2 in bexpr *)
+                Quotations.Expr.IfThenElse(c, inlineByref v b1 bexpr, inlineByref v b2 bexpr)
+                |> trans
+            | Quotations.Patterns.Var _ -> 
+                (* let v = v1 in bexpr => bexpr[v/v1] *)
+                bexpr.Substitute(fun v' -> if v = v' then Some vexpr else None)
+                |> trans
+            | _ -> 
+                failwith (sprintf "Unexpected byref binding: %A = %A" v vexpr)
         and transValue (v : obj, tyOfValue : Type, expectedTy : Type) = 
             let rec transArray (o : Array, ty : Type) = 
                 let elemTy = ty.GetElementType()
@@ -317,7 +340,7 @@ type ProvidedConstructor(parameters : ProvidedParameter list) =
     member this.AddXmlDocComputed xmlDoc                    = customAttributesImpl.AddXmlDocComputed xmlDoc
     member this.AddXmlDocDelayed xmlDoc                     = customAttributesImpl.AddXmlDocDelayed xmlDoc
     member this.AddXmlDoc xmlDoc                            = customAttributesImpl.AddXmlDoc xmlDoc
-    member this.AddObsoleteAttribute msg                    = customAttributesImpl.AddObsolete msg
+    member this.AddObsoleteAttribute (msg,?isError)         = customAttributesImpl.AddObsolete (msg,defaultArg isError false)
     member this.AddDefinitionLocation(line,column,filePath) = customAttributesImpl.AddDefinitionLocation(line, column, filePath)
     member this.HideObjectMethods with set v                = customAttributesImpl.HideObjectMethods <- v
     member __.GetCustomAttributesDataImpl() = customAttributesImpl.GetCustomAttributesData()
@@ -382,7 +405,7 @@ type ProvidedMethod(methodName: string, parameters: ProvidedParameter list, retu
     member this.AddXmlDocComputed xmlDoc                    = customAttributesImpl.AddXmlDocComputed xmlDoc
     member this.AddXmlDocDelayed xmlDoc                     = customAttributesImpl.AddXmlDocDelayed xmlDoc
     member this.AddXmlDoc xmlDoc                            = customAttributesImpl.AddXmlDoc xmlDoc
-    member this.AddObsoleteAttribute msg                    = customAttributesImpl.AddObsolete msg
+    member this.AddObsoleteAttribute (msg,?isError)         = customAttributesImpl.AddObsolete (msg,defaultArg isError false)
     member this.AddDefinitionLocation(line,column,filePath) = customAttributesImpl.AddDefinitionLocation(line, column, filePath)
     member __.GetCustomAttributesDataImpl() = customAttributesImpl.GetCustomAttributesData()
 #if FX_NO_CUSTOMATTRIBUTEDATA
@@ -460,7 +483,7 @@ type ProvidedProperty(propertyName:string,propertyType:Type, ?parameters:Provide
     member this.AddXmlDocComputed xmlDoc                    = customAttributesImpl.AddXmlDocComputed xmlDoc
     member this.AddXmlDocDelayed xmlDoc                     = customAttributesImpl.AddXmlDocDelayed xmlDoc
     member this.AddXmlDoc xmlDoc                            = customAttributesImpl.AddXmlDoc xmlDoc
-    member this.AddObsoleteAttribute msg                    = customAttributesImpl.AddObsolete msg
+    member this.AddObsoleteAttribute (msg,?isError)         = customAttributesImpl.AddObsolete (msg,defaultArg isError false)
     member this.AddDefinitionLocation(line,column,filePath) = customAttributesImpl.AddDefinitionLocation(line, column, filePath)
     member __.GetCustomAttributesDataImpl() = customAttributesImpl.GetCustomAttributesData()
 #if FX_NO_CUSTOMATTRIBUTEDATA
@@ -566,7 +589,7 @@ type ProvidedLiteralField(fieldName:string,fieldType:Type,literalValue:obj) =
     member this.AddXmlDocComputed xmlDoc                    = customAttributesImpl.AddXmlDocComputed xmlDoc
     member this.AddXmlDocDelayed xmlDoc                     = customAttributesImpl.AddXmlDocDelayed xmlDoc
     member this.AddXmlDoc xmlDoc                            = customAttributesImpl.AddXmlDoc xmlDoc
-    member this.AddObsoleteAttribute msg                    = customAttributesImpl.AddObsolete msg
+    member this.AddObsoleteAttribute (msg,?isError)         = customAttributesImpl.AddObsolete (msg,defaultArg isError false)
     member this.AddDefinitionLocation(line,column,filePath) = customAttributesImpl.AddDefinitionLocation(line, column, filePath)
     member __.GetCustomAttributesDataImpl() = customAttributesImpl.GetCustomAttributesData()
 #if FX_NO_CUSTOMATTRIBUTEDATA
@@ -604,7 +627,7 @@ type ProvidedField(fieldName:string,fieldType:Type) =
     member this.AddXmlDocComputed xmlDoc                    = customAttributesImpl.AddXmlDocComputed xmlDoc
     member this.AddXmlDocDelayed xmlDoc                     = customAttributesImpl.AddXmlDocDelayed xmlDoc
     member this.AddXmlDoc xmlDoc                            = customAttributesImpl.AddXmlDoc xmlDoc
-    member this.AddObsoleteAttribute msg                    = customAttributesImpl.AddObsolete msg
+    member this.AddObsoleteAttribute (msg,?isError)         = customAttributesImpl.AddObsolete (msg,defaultArg isError false)
     member this.AddDefinitionLocation(line,column,filePath) = customAttributesImpl.AddDefinitionLocation(line, column, filePath)
     member __.GetCustomAttributesDataImpl() = customAttributesImpl.GetCustomAttributesData()
 #if FX_NO_CUSTOMATTRIBUTEDATA
@@ -876,7 +899,7 @@ type ProvidedTypeDefinition(container:TypeContainer,className : string, baseType
         enum (int32 TypeProviderTypeAttributes.IsErased)
 
 
-    let mutable baseType   = baseType
+    let mutable baseType   =  lazy baseType
     let mutable membersKnown   = ResizeArray<MemberInfo>()
     let mutable membersQueue   = ResizeArray<(unit -> list<MemberInfo>)>()       
     let mutable staticParams = [ ] 
@@ -966,7 +989,7 @@ type ProvidedTypeDefinition(container:TypeContainer,className : string, baseType
     member this.AddXmlDocComputed xmlDoc                    = customAttributesImpl.AddXmlDocComputed xmlDoc
     member this.AddXmlDocDelayed xmlDoc                     = customAttributesImpl.AddXmlDocDelayed xmlDoc
     member this.AddXmlDoc xmlDoc                            = customAttributesImpl.AddXmlDoc xmlDoc
-    member this.AddObsoleteAttribute msg                    = customAttributesImpl.AddObsolete msg
+    member this.AddObsoleteAttribute (msg,?isError)         = customAttributesImpl.AddObsolete (msg,defaultArg isError false)
     member this.AddDefinitionLocation(line,column,filePath) = customAttributesImpl.AddDefinitionLocation(line, column, filePath)
     member this.HideObjectMethods with set v                = customAttributesImpl.HideObjectMethods <- v
     member __.GetCustomAttributesDataImpl() = customAttributesImpl.GetCustomAttributesData()
@@ -981,7 +1004,8 @@ type ProvidedTypeDefinition(container:TypeContainer,className : string, baseType
     new (className,baseType) = new ProvidedTypeDefinition(TypeContainer.TypeToBeDecided, className, baseType)
     // state ops
 
-    member this.SetBaseType t = baseType <- Some t
+    member this.SetBaseType t = baseType <- lazy Some t
+    member this.SetBaseTypeDelayed t = baseType <- t
     member this.SetAttributes x = attributes <- x
     // Add MemberInfos
     member this.AddMembersDelayed(makeMS : unit -> list<#MemberInfo>) =
@@ -1060,7 +1084,7 @@ type ProvidedTypeDefinition(container:TypeContainer,className : string, baseType
     member this.SetAssemblyLazy assembly = theAssembly <- assembly
     override this.FullName = fullName.Force()
     override this.Namespace = rootNamespace.Force()
-    override this.BaseType = match baseType with Some ty -> ty | None -> null
+    override this.BaseType = match baseType.Value with Some ty -> ty | None -> null
     // Constructors
     override this.GetConstructors bindingAttr = 
         [| for m in this.GetMembers bindingAttr do                
@@ -1135,7 +1159,27 @@ type ProvidedTypeDefinition(container:TypeContainer,className : string, baseType
     override this.MakePointerType() = ProvidedSymbolType(SymbolKind.Pointer, [this]) :> Type
     override this.MakeByRefType() = ProvidedSymbolType(SymbolKind.ByRef, [this]) :> Type
 
-    override this.GetMembers _bindingAttr = getMembers() 
+    // The binding attributes are always set to DeclaredOnly ||| Static ||| Instance ||| Public when GetMembers is called directly by the F# compiler
+    // However, it's possible for the framework to generate other sets of flags in some corner cases (e.g. via use of `enum` with a provided type as the target)
+    override this.GetMembers bindingAttr = 
+        let mems = 
+            getMembers() 
+            |> Array.filter (fun mem -> 
+                                let isStatic = 
+                                    match mem with
+                                    | :? FieldInfo as f -> f.IsStatic
+                                    | :? MethodInfo as m -> m.IsStatic
+                                    | :? ConstructorInfo as c -> c.IsStatic
+                                    | :? PropertyInfo as p -> if p.CanRead then p.GetGetMethod().IsStatic else p.GetSetMethod().IsStatic
+                                    | :? EventInfo as e -> e.GetAddMethod().IsStatic
+                                    | :? Type -> true
+                                    | _ -> failwith (sprintf "Member %O is of unexpected type" mem)
+                                bindingAttr.HasFlag(if isStatic then BindingFlags.Static else BindingFlags.Instance))
+
+        if bindingAttr.HasFlag(BindingFlags.DeclaredOnly) || this.BaseType = null then mems
+        else 
+            let baseMems = this.BaseType.GetMembers bindingAttr
+            Array.append mems baseMems
 
     override this.GetNestedTypes bindingAttr = 
         this.GetMembers bindingAttr 
@@ -1489,6 +1533,8 @@ type AssemblyGenerator(assemblyFileName) =
                         let targetTy = convType ty
                         if argTy.IsValueType && not targetTy.IsValueType then
                           ilg.Emit(OpCodes.Box, argTy)
+                        elif not argTy.IsValueType && targetTy.IsValueType then
+                          ilg.Emit(OpCodes.Unbox_Any, targetTy)
                         elif not (targetTy.IsAssignableFrom(argTy)) then
                           ilg.Emit(OpCodes.Castclass, targetTy)
                               
@@ -1568,10 +1614,12 @@ type AssemblyGenerator(assemblyFileName) =
                             elif meth.DeclaringType.IsGenericType then 
                                 let gdty = convType (meth.DeclaringType.GetGenericTypeDefinition())
                                 let gdtym = gdty.GetMethods() |> Seq.find (fun x -> x.Name = meth.Name)
-                                assert (gdtym <> null)
-                                let dty = convType meth.DeclaringType
-                                let dtym = TypeBuilder.GetMethod(dty, gdtym)
-                                //System.Reflection.Emit.
+                                assert (gdtym <> null) // ?? will never happen - if method is not found - KeyNotFoundException will be raised
+                                let dtym =
+                                    match convType meth.DeclaringType with
+                                    | :? TypeBuilder as dty -> TypeBuilder.GetMethod(dty, gdtym)
+                                    | dty -> MethodBase.GetMethodFromHandle(meth.MethodHandle, dty.TypeHandle) :?> _
+                                
                                 assert (dtym <> null)
                                 dtym
                             else
@@ -1773,7 +1821,6 @@ type AssemblyGenerator(assemblyFileName) =
 #else
         assembly.Save (Path.GetFileName assemblyFileName)
 #endif
-        printfn "final bytes in '%s'" assemblyFileName
 
         let assemblyLoadedInMemory = assemblyMainModule.Assembly 
 
@@ -1879,7 +1926,7 @@ type TypeProviderForNamespaces(namespacesAndTypes : list<(string * list<Provided
             |> Seq.map (fun f -> IO.Path.Combine(f, expectedName))
             |> Seq.tryFind IO.File.Exists
         match expectedLocationOpt with
-        | Some f -> Assembly.Load(IO.File.ReadAllBytes f)
+        | Some f -> Assembly.LoadFrom f
         | None -> null
 
     member this.RegisterProbingFolder (folder) = 

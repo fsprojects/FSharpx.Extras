@@ -2,6 +2,7 @@
 /// original implementation taken from http://blog.xquant.net/?p=156
 module FSharpx.DataStructures.BinaryTreeZipper
 
+#nowarn "44"
 /// A simple binary tree
 type 'a BinaryTree=
    | Leaf
@@ -13,6 +14,7 @@ let branch x = Branch(x,Leaf,Leaf)
 type TreeDirection =  Left | Right
 
 /// The zipper datastructure for binary trees
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 type 'a BinaryTreeZipper  = { 
   Focus:'a BinaryTree
   Path: (TreeDirection * 'a * 'a BinaryTree) list }

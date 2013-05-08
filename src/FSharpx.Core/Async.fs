@@ -10,7 +10,6 @@ open System.Threading
 
 [<AutoOpen>]
 module AsyncExtensions = 
-
   type Microsoft.FSharp.Control.Async with 
 
     /// Creates an asynchronous workflow that runs the asynchronous workflow
@@ -36,7 +35,6 @@ module AsyncExtensions =
       { new IDisposable with 
           member x.Dispose() = ct.Cancel() }
 
-
 #if NET40
 
     /// Starts a Task<'a> with the timeout and cancellationToken and
@@ -50,5 +48,11 @@ module AsyncExtensions =
           if task.Wait(timeout, cancel) && not task.IsCanceled && not task.IsFaulted
           then Some task.Result
           else None }
+
+  /// Implements an extension method that overloads the standard
+  /// 'Bind' of the 'async' builder. The new overload awaits on 
+  /// a standard .NET task
+  type Microsoft.FSharp.Control.AsyncBuilder with
+      member x.Bind(t:Tasks.Task<'T>, f:'T -> Async<'R>) : Async<'R> =  async.Bind(Async.AwaitTask t, f)
 
 #endif

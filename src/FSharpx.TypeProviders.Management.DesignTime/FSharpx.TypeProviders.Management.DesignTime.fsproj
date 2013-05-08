@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>c5bdec68-56f5-447e-8386-bb82b1c76165</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>FSharpx.TypeProviders.Management.DesignTime</RootNamespace>
+    <AssemblyName>FSharpx.TypeProviders.Management.DesignTime</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <Name>FSharpx.TypeProviders.Management.DesignTime</Name>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <Tailcalls>false</Tailcalls>
+    <OutputPath>..\FSharpx.TypeProviders.Management\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <WarningLevel>3</WarningLevel>
+    <DocumentationFile>..\FSharpx.TypeProviders.Management\bin\Debug\FSharpx.TypeProviders.Management.DesignTime.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <Tailcalls>true</Tailcalls>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <WarningLevel>3</WarningLevel>
+    <DocumentationFile>bin\Release\FSharpx.TypeProviders.Management.DesignTime.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
+      <HintPath>..\..\lib\FSharp\Net20\FSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
+      <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DefaultVersionAttribute.fs" />
+    <Compile Include="..\FSharpx.TypeProviders\ProvidedTypes.fsi">
+      <Link>ProvidedTypes.fsi</Link>
+    </Compile>
+    <Compile Include="..\FSharpx.TypeProviders\ProvidedTypes.fs">
+      <Link>ProvidedTypes.fs</Link>
+    </Compile>
+    <Compile Include="..\FSharpx.Core\Pluralizer.fs">
+      <Link>Pluralizer.fs</Link>
+    </Compile>
+    <Compile Include="..\FSharpx.Core\Strings.fs">
+      <Link>Strings.fs</Link>
+    </Compile>
+    <Compile Include="..\FSharpx.TypeProviders\TypeProvider.Helper.fs">
+      <Link>TypeProvider.Helper.fs</Link>
+    </Compile>
+    <Compile Include="WmiProvider.DesignTime.fs" />
+  </ItemGroup>
+  <PropertyGroup>
+    <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,4 +1,4 @@
-#r "./packages/FAKE.1.64.18.0/tools/FakeLib.dll"
+#r @"lib\FAKE\tools\FakeLib.dll"
 
 open Fake 
 open Fake.Git
@@ -38,24 +38,25 @@ let nugetDir package = sprintf "./nuget/%s/" package
 let nugetLibDir package = nugetDir package @@ "lib"
 let nugetDocsDir package = nugetDir package @@ "docs"
 
-let typeProvidersPackages = ["TypeProviders.Graph"; "TypeProviders.Documents"; "TypeProviders.Xaml"; "TypeProviders.Math"; "TypeProviders.Excel"; "TypeProviders.Machine"; "TypeProviders.Regex"; "TypeProviders.AppSettings"; "TypeProviders.Freebase"]
-let packages = ["Core"; "Http"; "Observable"; "TypeProviders"] @ typeProvidersPackages
+let typeProvidersPackages = ["TypeProviders.Graph"; "TypeProviders.Xaml"; "TypeProviders.Math"; "TypeProviders.Excel"; "TypeProviders.Machine"; "TypeProviders.Regex"; "TypeProviders.AppSettings"; "TypeProviders.Management"; "TypeProviders.Xrm"]
+let packages = ["Core"; "Http"; "Observable"; "Collections.Experimental"; "TypeProviders"] @ typeProvidersPackages
 
 let projectDesc = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible."
 
 let rec getPackageDesc = function
 | "Http" -> projectDesc + "\r\n\r\nThis library provides common features for working with HTTP applications."
+| "Collections.Experimental" -> projectDesc + "\r\n\r\nThis library provides experimental data structures."
 | "Observable" -> projectDesc + "\r\n\r\nThis library implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford."
 | "TypeProviders" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing common type providers on top of the FSharpx.Core."
 | "TypeProviders.Graph" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a state machine type provider."
-| "TypeProviders.Documents" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type provider for JSON, XML and CSV documents."
 | "TypeProviders.Xaml" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type provider for Xaml files."
 | "TypeProviders.Math" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type provider for vectors."
 | "TypeProviders.Excel" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a Excel type provider."
 | "TypeProviders.Machine" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing type providers for the file system and the registry."
 | "TypeProviders.Regex" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type providers for regular expressions."
 | "TypeProviders.AppSettings" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing an AppSettings type provider."
-| "TypeProviders.Freebase" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a Freebase type provider."
+| "TypeProviders.Management" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a WMI type provider."
+| "TypeProviders.Xrm" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type provider for Microsoft Dynamics CRM 2011"
 | _ -> projectDesc + "\r\n\r\nIt currently implements:\r\n\r\n" + 
                        "* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n" +
                        "* Iteratee\r\n" +
@@ -83,35 +84,35 @@ let frameworkParams portable frameworkVersion =
          "DefineConstants", "NET" + normalizeFrameworkVersion frameworkVersion]
 
 // tools
-let fakeVersion = GetPackageVersion packagesDir "FAKE"
-let fakePath = sprintf "%sFAKE.%s/tools" packagesDir fakeVersion
 let nugetPath = "./lib/Nuget/nuget.exe"
 let nunitVersion = GetPackageVersion packagesDir "NUnit.Runners"
 let nunitPath = sprintf "%sNUnit.Runners.%s/Tools" packagesDir nunitVersion
 
 // files
 let appReferences portable frameworkVersion =
-    if portable then
-        !! "./src/**/*Freebase.fsproj"
-    else
-        { (!+ "./src/**/*.*proj") with 
-            Excludes = 
-                [yield "./src/**/*.Silverlight.*proj"
-                 if not (buildTypeProviders frameworkVersion) then                
-                    yield "./src/**/*.TypeProviders.*.*proj"
-                    yield "./src/**/*.TypeProviders.*proj"
-                 if frameworkVersion = net35 then 
-                    yield "./src/**/*.Async.fsproj"
-                    yield "./src/**/*.Http.fsproj" // TODO: why is that?
-                    yield "./src/**/*.Observable.fsproj" // TODO: why is that?
-                      ] }
-        |> Scan
+    if portable then Seq.empty else
+    { (!+ "./src/**/*.*proj") with 
+        Excludes = 
+            [yield "./src/**/*.Silverlight.*proj"
+             if not (buildTypeProviders frameworkVersion) then                
+                yield "./src/**/*.TypeProviders.*.*proj"
+                yield "./src/**/*.TypeProviders.*proj"
+             if frameworkVersion = net35 then 
+                yield "./src/**/*.Async.fsproj"
+                yield "./src/**/*.Http.fsproj" // TODO: why is that?
+                yield "./src/**/*.Observable.fsproj" // TODO: why is that?
+                    ] }
+    |> Scan
 
 let testReferences frameworkVersion =
     { (!+ "./tests/**/*.*proj") with 
         Excludes = [if not (buildTypeProviders frameworkVersion) then
                         yield "./tests/**/*.TypeProviders.*proj"
-                        yield "./tests/**/*.TypeProviders.*.*proj"] }
+                        yield "./tests/**/*.TypeProviders.*.*proj"
+                    if frameworkVersion = net35 then
+                        yield "./tests/**/FSharpx.Collections.Tests.fsproj" // FsCheck is no longer available for .NET 3.5
+                        yield "./tests/**/FSharpx.Collections.Experimental.Tests.fsproj" // FsCheck is no longer available for .NET 3.5
+                    ] }
     |> Scan
 
 // targets
@@ -131,6 +132,15 @@ Target "AssemblyInfo" (fun _ ->
             AssemblyDescription = getPackageDesc "Core"
             Guid = "1e95a279-c2a9-498b-bc72-6e7a0d6854ce"
             OutputFileName = "./src/FSharpx.Core/AssemblyInfo.fs" })
+
+    AssemblyInfo (fun p ->
+        {p with 
+            CodeLanguage = FSharp
+            AssemblyVersion = version
+            AssemblyTitle = projectName
+            AssemblyDescription = getPackageDesc "Collections.Experimental"
+            Guid = "4C646C09-6925-47D0-B187-8A5C3D061329"
+            OutputFileName = "./src/FSharpx.Collections.Experimental/AssemblyInfo.fs" })
 
     AssemblyInfo (fun p ->
         {p with 
@@ -167,15 +177,6 @@ Target "AssemblyInfo" (fun _ ->
             AssemblyDescription = getPackageDesc "TypeProviders.Graph"
             Guid = "D68BF790-E641-4A40-9BC2-CCD8870D8C4B"
             OutputFileName = "./src/FSharpx.TypeProviders.Graph/AssemblyInfo.fs" })
-
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = version
-            AssemblyTitle = "FSharpx.TypeProviders.Documents"
-            AssemblyDescription = getPackageDesc "TypeProviders.Documents"
-            Guid = "39F68CD1-A6CC-4AF8-9734-3C2FE3E3B7D8"
-            OutputFileName = "./src/FSharpx.TypeProviders.Documents/AssemblyInfo.fs" })
 
     AssemblyInfo (fun p ->
         {p with 
@@ -230,6 +231,25 @@ Target "AssemblyInfo" (fun _ ->
             AssemblyDescription = getPackageDesc "TypeProviders.AppSettings"
             Guid = "75A1B454-ED85-4FAB-939C-026891B758DB"
             OutputFileName = "./src/FSharpx.TypeProviders.AppSettings/AssemblyInfo.fs" })
+
+    AssemblyInfo (fun p ->
+        {p with 
+            CodeLanguage = FSharp
+            AssemblyVersion = version
+            AssemblyTitle = "FSharpx.TypeProviders.Xrm"
+            AssemblyDescription = getPackageDesc "TypeProviders.Xrm"
+            Guid = "D69A0DB8-9D31-4CDD-8470-231A15313DBA"
+            OutputFileName = "./src/FSharpx.TypeProviders.Xrm/AssemblyInfo.fs" })
+
+            // TODO: COMVISIBLE is not working with portable
+//    AssemblyInfo (fun p ->
+//        {p with 
+//            CodeLanguage = FSharp
+//            AssemblyVersion = version
+//            AssemblyTitle = "FSharpx.TypeProviders.Management"
+//            AssemblyDescription = getPackageDesc "TypeProviders.Management"
+//            Guid = "a19058ba-54bf-498f-bed3-6564d5117842"
+//            OutputFileName = "./src/FSharpx.TypeProviders.Management/AssemblyInfo.fs" })
 )
 
 let buildAppTarget = TargetTemplate (fun frameworkVersion ->
@@ -274,6 +294,13 @@ let prepareNugetTarget = TargetTemplate (fun frameworkVersion ->
         if not <| package.StartsWith "TypeProviders" || buildTypeProviders frameworkVersion then
             CleanDir frameworkSubDir
             CleanDir portableSubDir
+
+            if package = "TypeProviders.Xrm" then
+                [for ending in ["dll";"xml"] do
+                    yield sprintf "%smicrosoft.xrm.sdk.%s" buildDir ending
+                    yield sprintf "%sMicrosoft.Crm.Services.Utility.%s" buildDir ending]
+                |> Seq.filter (fun f -> File.Exists f)
+                |> CopyTo frameworkSubDir
 
             [for ending in ["dll";"pdb";"xml"] do
                 yield sprintf "%sFSharpx.%s.%s" buildDir package ending
@@ -320,11 +347,11 @@ let nugetTarget = TargetTemplate (fun package ->
     !! (buildDir @@ (sprintf "FSharpx.%s.dll" package))
     |> Docu (fun p ->
         {p with
-            ToolPath = fakePath + "/docu.exe"
+            ToolPath = "./lib/FAKE/tools/docu.exe"
             TemplatesPath = "./lib/templates"
             OutputPath = docsDir })
 
-    XCopy (docsDir |> FullName) (nugetDocsDir package)
+    XCopy (FullName docsDir) (nugetDocsDir package)
     [ "LICENSE.md" ] |> CopyTo (nugetDir package)
     NuGet (fun p -> 
         {p with               
