@@ -59,6 +59,7 @@
     <Compile Include="SeqTests.fs" />
     <Compile Include="VectorTest.fs" />
     <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FsCheck">
@@ -67,6 +68,10 @@
     </Reference>
     <Reference Include="FSharpx.Tests">
       <HintPath>..\FSharpx.Tests\bin\Debug\FSharpx.Tests.dll</HintPath>
+    </Reference>
+    <Reference Include="FsUnit.NUnit">
+      <HintPath>..\..\packages\FsUnit.1.2.1.0\Lib\Net40\FsUnit.NUnit.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
@@ -77,9 +82,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="nunit.framework">
-      <Private>True</Private>
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
