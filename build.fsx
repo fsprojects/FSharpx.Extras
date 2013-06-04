@@ -165,7 +165,7 @@ Target "AssemblyInfo" (fun _ ->
         {p with 
             CodeLanguage = FSharp
             AssemblyVersion = version
-            AssemblyTitle = "FSharpx.StructuredFormat"
+            AssemblyTitle = "FSharpx.Text.StructuredFormat"
             AssemblyDescription = getPackageDesc "Text.StructuredFormat"
             Guid = "65e077ed-f51a-42d7-8004-e90d60af8b8f"
             OutputFileName = "./src/FSharpx.Text.StructuredFormat/AssemblyInfo.fs" })
