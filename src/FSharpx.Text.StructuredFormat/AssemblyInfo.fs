@@ -16,7 +16,7 @@ exception ReturnNoneException183c26a427ae489c8fd92ec21a0c9a59
 
 [<assembly: CLSCompliant (false)>]
 
-[<assembly: Guid ("60F3BB81-5449-45DD-A217-B6045327680C")>]
+[<assembly: Guid ("65e077ed-f51a-42d7-8004-e90d60af8b8f")>]
 
 [<assembly: AssemblyTitle ("FSharpx.Text.StructuredFormat")>]
 
