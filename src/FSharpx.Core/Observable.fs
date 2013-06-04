@@ -252,41 +252,73 @@ module Observable =
     /// Behaves like AwaitObservable, but calls the specified guarding function
     /// after a subscriber is registered with the observable.
     static member GuardedAwaitObservable (ev1:IObservable<'T1>) guardFunction =
-      synchronize (fun f ->
-        Async.FromContinuations((fun (cont,econt,ccont) -> 
-          let rec finish cont value = 
-            remover.Dispose()
-            f (fun () -> cont value)
-          and remover : IDisposable = 
-            ev1.Subscribe
-              ({ new IObserver<_> with
-                   member x.OnNext(v) = finish cont v
-                   member x.OnError(e) = finish econt e
-                   member x.OnCompleted() = 
-                      let msg = "Cancelling the workflow, because the Observable awaited using AwaitObservable has completed."
-                      let exn = new OperationCanceledException(msg)
-                      finish ccont exn }) 
-          guardFunction() )))
+        let removeObj : IDisposable option ref = ref None
+        let removeLock = new obj()
+        let setRemover r = 
+            lock removeLock (fun () -> removeObj := Some r)
+        let remove() =
+            lock removeLock (fun () ->
+                match !removeObj with
+                | Some d -> removeObj := None
+                            d.Dispose()
+                | None   -> ())
+        synchronize (fun f ->
+        let workflow =
+            Async.FromContinuations((fun (cont,econt,ccont) ->
+                let rec finish cont value =
+                    remove()
+                    f (fun () -> cont value)
+                setRemover <|
+                    ev1.Subscribe
+                        ({ new IObserver<_> with
+                            member x.OnNext(v) = finish cont v
+                            member x.OnError(e) = finish econt e
+                            member x.OnCompleted() =
+                                let msg = "Cancelling the workflow, because the Observable awaited using AwaitObservable has completed."
+                                finish ccont (new System.OperationCanceledException(msg)) })
+                guardFunction() ))
+        async {
+            let! cToken = Async.CancellationToken
+            let token : CancellationToken = cToken
+            use registration = token.Register(fun () -> remove())
+            return! workflow
+        })
 
     /// Creates an asynchronous workflow that will be resumed when the 
     /// specified observables produces a value. The workflow will return 
     /// the value produced by the observable.
-    static member AwaitObservable(ev1:IObservable<'T1>) =
-      synchronize (fun f ->
-        Async.FromContinuations((fun (cont,econt,ccont) -> 
-          let rec finish cont value = 
-            remover.Dispose()
-            f (fun () -> cont value)
-          and remover : IDisposable = 
-            ev1.Subscribe
-              ({ new IObserver<_> with
-                   member x.OnNext(v) = finish cont v
-                   member x.OnError(e) = finish econt e
-                   member x.OnCompleted() = 
-                      let msg = "Cancelling the workflow, because the Observable awaited using AwaitObservable has completed."
-                      let exn = new OperationCanceledException(msg)
-                      finish ccont exn }) 
-          () )))
+    static member AwaitObservable(observable : IObservable<'T1>) =
+        let removeObj : IDisposable option ref = ref None
+        let removeLock = new obj()
+        let setRemover r = 
+            lock removeLock (fun () -> removeObj := Some r)
+        let remove() =
+            lock removeLock (fun () ->
+                match !removeObj with
+                | Some d -> removeObj := None
+                            d.Dispose()
+                | None   -> ())
+        synchronize (fun f ->
+        let workflow =
+            Async.FromContinuations((fun (cont,econt,ccont) ->
+                let rec finish cont value =
+                    remove()
+                    f (fun () -> cont value)
+                setRemover <|
+                    observable.Subscribe
+                        ({ new IObserver<_> with
+                            member x.OnNext(v) = finish cont v
+                            member x.OnError(e) = finish econt e
+                            member x.OnCompleted() =
+                                let msg = "Cancelling the workflow, because the Observable awaited using AwaitObservable has completed."
+                                finish ccont (new System.OperationCanceledException(msg)) })
+                () ))
+        async {
+            let! cToken = Async.CancellationToken
+            let token : CancellationToken = cToken
+            use registration = token.Register(fun () -> remove())
+            return! workflow
+        })
   
     /// Creates an asynchronous workflow that will be resumed when the 
     /// first of the specified two observables produces a value. The 
