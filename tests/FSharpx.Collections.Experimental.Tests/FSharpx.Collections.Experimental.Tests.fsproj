@@ -59,6 +59,10 @@
     <Reference Include="FSharpx.Tests">
       <HintPath>..\FSharpx.Tests\bin\Debug\FSharpx.Tests.dll</HintPath>
     </Reference>
+    <Reference Include="FsUnit.NUnit">
+      <HintPath>..\..\packages\FsUnit.1.2.1.0\Lib\Net40\FsUnit.NUnit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
       <HintPath>..\..\lib\FSharp\Net20\FSharp.Core.dll</HintPath>
@@ -93,7 +97,7 @@
     <Compile Include="DequeTest.fs" />
     <Compile Include="DListTest.fs" />
     <Compile Include="EagerRoseTreeTest.fs" />
-	<Compile Include="FlatListTest.fs" />
+    <Compile Include="FlatListTest.fs" />
     <Compile Include="EditDistanceTest.fs" />
     <Compile Include="HeapPriorityQueueTest.fs" />
     <Compile Include="ImplicitQueueTest.fs" />
