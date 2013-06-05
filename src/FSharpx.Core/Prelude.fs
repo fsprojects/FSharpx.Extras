@@ -134,3 +134,8 @@ module Prelude =
     let (|Boolean|_|) = Boolean.parse
     let (|Int32|_|) = Int32.parse
     let (|Double|_|) = Double.parse
+
+    /// Haskell-style maybe operator
+    let maybe (defaultValue : 'b) (map : 'a -> 'b) = function
+        | None   -> defaultValue
+        | Some a -> map a
