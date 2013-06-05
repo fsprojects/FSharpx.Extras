@@ -51,11 +51,6 @@ module Second =
 
 // --------------------------------------------------------------------------------------
 
-type internal ChatMessage = 
-  | GetContent of AsyncReplyChannel<string>
-  | SendMessage of string
-
-
 type ChatRoom() = 
   let agent = Agent.Start(fun agent -> 
     let rec loop messages = async {
