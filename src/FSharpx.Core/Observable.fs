@@ -280,7 +280,11 @@ module Observable =
         async {
             let! cToken = Async.CancellationToken
             let token : CancellationToken = cToken
+            #if NET40
             use registration = token.Register(fun () -> remove())
+            #else
+            use registration = token.Register((fun _ -> remove()), null)
+            #endif
             return! workflow
         })
 
@@ -316,7 +320,11 @@ module Observable =
         async {
             let! cToken = Async.CancellationToken
             let token : CancellationToken = cToken
+            #if NET40
             use registration = token.Register(fun () -> remove())
+            #else
+            use registration = token.Register((fun _ -> remove()), null)
+            #endif
             return! workflow
         })
   
