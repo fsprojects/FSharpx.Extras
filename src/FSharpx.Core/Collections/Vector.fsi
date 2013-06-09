@@ -14,10 +14,10 @@ type Vector<[<EqualityConditionalOn>]'T when 'T : equality> =
     /// O(1). Returns a new vector with the element added at the end.
     member Conj : 'T -> Vector<'T>
          
-    /// O(1). Returns a new vector without the last item. If the collection is empty it throws an exception.
+    /// O(n). Returns a new vector without the last item. If the collection is empty it throws an exception.
     member Initial : Vector<'T>
 
-    /// O(1). Returns option vector without the last item.
+    /// O(n). Returns option vector without the last item.
     member TryInitial : Vector<'T> option
 
     /// O(1). Returns true if the vector has no elements.
@@ -74,10 +74,10 @@ module Vector =
     /// O(n). Returns a vector of the supplied length using the supplied function operating on the index. 
     val init : int -> (int -> 'T) -> Vector<'T>
 
-    /// O(1). Returns a new vector without the last item. If the collection is empty it throws an exception.
+    /// O(n). Returns a new vector without the last item. If the collection is empty it throws an exception.
     val inline initial : Vector<'T> -> Vector<'T>
 
-    /// O(1). Returns option vector without the last item.
+    /// O(n). Returns option vector without the last item.
     val inline tryInitial : Vector<'T> -> Vector<'T> option
 
     /// O(1). Returns true if the vector has no elements.

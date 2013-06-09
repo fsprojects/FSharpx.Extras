@@ -262,6 +262,21 @@ let ``tryTail on len 2 should return``() =
     ((head a.Value) = 1) |> should equal true
 
 [<Test>]
+let ``randomAccessList of randomAccessLists constructed by consing tail``() =
+
+    let windowFun windowLength = 
+        fun (v : RandomAccessList<RandomAccessList<int>>) t ->
+        if v.Head.Length = windowLength then RandomAccessList.cons (RandomAccessList.empty.Cons(t)) v
+        else RandomAccessList.tail v |> RandomAccessList.cons (RandomAccessList.cons t (RandomAccessList.head v))
+
+    let windowed = 
+        seq{1..100}
+        |> Seq.fold (windowFun 5) (RandomAccessList.empty.Cons RandomAccessList.empty<int>)
+
+    windowed.Length |> should equal 20
+    windowed.[2].Length |> should equal 5
+
+[<Test>]
 let ``nth length 1``() =
     let x = empty |> cons "a" 
 //    let x = empty |> cons "a" 
