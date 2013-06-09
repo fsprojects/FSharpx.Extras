@@ -204,6 +204,23 @@ let ``can get initial elements from a vector``() =
     vector |> initial |> length |> should equal 2
     vector |> initial |> initial |> length |> should equal 1
 
+
+[<Test>]
+let ``vector of vectors constructed by conjing initial``() =
+
+    let windowFun windowLength = 
+        fun (v : Vector<Vector<int>>) t ->
+        if v.Last.Length = windowLength then Vector.conj (Vector.empty.Conj(t)) v
+        else Vector.initial v |> Vector.conj (Vector.conj t (Vector.last v))
+
+    let windowed = 
+        seq{1..100}
+        |> Seq.fold (windowFun 5) (Vector.empty.Conj Vector.empty<int>)
+
+    windowed.Length |> should equal 20
+    windowed.[2].Length |> should equal 5
+        
+
 [<Test>]
 let ``vector with 300 elements should allow initial``() =
     let vector = ref empty

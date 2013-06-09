@@ -287,20 +287,23 @@ and RandomAccessList<[<EqualityConditionalOn>]'T when 'T : equality> (count,shif
             if count = 0 then failwith "Can't tail empty randomAccessList" else
             if count = 1 then RandomAccessList<'T>.Empty() else
 
-            if count - tailOff > 1 then RandomAccessList(count - 1, shift, root, tail.[0..(tail.Length-1)]) else
+            if count - tailOff > 1 then 
+                let mutable newroot = NodeR(ref Thread.CurrentThread, root.Array.Clone() :?> obj[])
+                let mutable ret = TransientVect(count - 1, shift, newroot, tail.[0..(tail.Length-1)])
+                ret.persistent() 
+            else
+                let newtail = this.ArrayFor(count - 2)
 
-            let newtail = this.ArrayFor(count - 2)
+                let mutable newroot = this.PopTail(shift, root)
+                let mutable newshift = shift
+                if newroot = Unchecked.defaultof<NodeR> then
+                    newroot <- NodeR()
 
-            let mutable newroot = this.PopTail(shift, root)
-            let mutable newshift = shift
-            if newroot = Unchecked.defaultof<NodeR> then
-                newroot <- NodeR()
+                if shift > Literals2.blockSizeShift && newroot.Array.[1] = null then
+                    newroot <- newroot.Array.[0] :?> NodeR
+                    newshift <- newshift - Literals2.blockSizeShift
 
-            if shift > Literals2.blockSizeShift && newroot.Array.[1] = null then
-                newroot <- newroot.Array.[0] :?> NodeR
-                newshift <- newshift - Literals2.blockSizeShift
-
-            RandomAccessList(count - 1, newshift, newroot, newtail)
+                RandomAccessList(count - 1, newshift, newroot, newtail)
 
         member this.TryTail = if count = 0 then None else Some(this.Tail)
 

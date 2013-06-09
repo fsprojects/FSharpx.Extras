@@ -285,20 +285,23 @@ and Vector<[<EqualityConditionalOn>]'T when 'T : equality> (count,shift:int,root
             if count = 0 then failwith "Can't initial empty vector" else
             if count = 1 then Vector<'T>.Empty() else
 
-            if count - tailOff > 1 then Vector(count - 1, shift, root, tail.[0..(tail.Length-1)]) else
+            if count - tailOff > 1 then 
+                let mutable newroot = Node(ref Thread.CurrentThread, root.Array.Clone() :?> obj[])
+                let mutable ret = TransientVector(count - 1, shift, newroot, tail.[0..(tail.Length-1)])
+                ret.persistent() 
+            else
+                let newtail = this.ArrayFor(count - 2)
 
-            let newtail = this.ArrayFor(count - 2)
+                let mutable newroot = this.PopTail(shift, root)
+                let mutable newshift = shift
+                if newroot = Unchecked.defaultof<Node> then
+                    newroot <- Node()
 
-            let mutable newroot = this.PopTail(shift, root)
-            let mutable newshift = shift
-            if newroot = Unchecked.defaultof<Node> then
-                newroot <- Node()
+                if shift > Literals.blockSizeShift && newroot.Array.[1] = null then
+                    newroot <- newroot.Array.[0] :?> Node
+                    newshift <- newshift - Literals.blockSizeShift
 
-            if shift > Literals.blockSizeShift && newroot.Array.[1] = null then
-                newroot <- newroot.Array.[0] :?> Node
-                newshift <- newshift - Literals.blockSizeShift
-
-            Vector(count - 1, newshift, newroot, newtail)
+                Vector(count - 1, newshift, newroot, newtail)
 
         member this.TryInitial = if count = 0 then None else Some(this.Initial)
 
