@@ -238,6 +238,24 @@ module Option =
         | Some x -> f x
         | None -> v
 
+    // Additional Option-Module extensions
+
+    /// Haskell-style maybe operator
+    let option (defaultValue : 'b) (map : 'a -> 'b) = function
+        | None   -> defaultValue
+        | Some a -> map a
+
+    /// transforms a function in the Try...(input, out output) style
+    /// into a function of type: input -> output Option
+    /// Example: fromTryPattern(System.Double.TryParse)
+    /// See Examples.Option
+    let fromTryPattern (tryFun : ('input -> (bool * 'output))) =
+        fun input ->
+            match tryFun input with
+            | (true,  output) -> Some output
+            | (false,      _) -> None
+
+
 module Nullable =
     let (|Null|Value|) (x: _ Nullable) =
         if x.HasValue then Value x.Value else Null

@@ -55,6 +55,7 @@
     <Compile Include="ObservableMock.fs" />
     <Compile Include="AwaitHelpers.fs" />
     <Compile Include="AwaitObservableTests.fs" />
+    <Compile Include="OptionTests.fs" />
     <None Include="packages.config" />
     <None Include="app.config" />
   </ItemGroup>
