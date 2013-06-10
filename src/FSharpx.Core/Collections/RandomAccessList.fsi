@@ -31,10 +31,10 @@ type RandomAccessList<[<EqualityConditionalOn>]'T when 'T : equality> =
     ///O(n). Returns random access list reversed.
     member Rev : unit -> RandomAccessList<'T>
 
-    /// O(1). Returns a new random access list without the last item. If the collection is empty it throws an exception.
+    /// O(n). Returns a new random access list without the last item. If the collection is empty it throws an exception.
     member Tail : RandomAccessList<'T>
 
-    /// O(1). Returns option random access list without the last item.
+    /// O(n). Returns option random access list without the last item.
     member TryTail : RandomAccessList<'T> option
 
     /// O(1). Returns tuple last element and random access list without last item  
@@ -97,10 +97,10 @@ module RandomAccessList =
     ///O(n). Returns new random access list reversed.
     val inline rev : RandomAccessList<'T> -> RandomAccessList<'T>
 
-    /// O(1). Returns a new random access list without the last item. If the collection is empty it throws an exception.
+    /// O(n). Returns a new random access list without the last item. If the collection is empty it throws an exception.
     val inline tail : RandomAccessList<'T> -> RandomAccessList<'T>
 
-    /// O(1). Returns option random access list without the last item.
+    /// O(n). Returns option random access list without the last item.
     val inline tryTail : RandomAccessList<'T> -> RandomAccessList<'T> option
 
     /// O(1). Returns tuple last element and random access list without last item
