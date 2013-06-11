@@ -55,6 +55,7 @@ type internal ProvidedConstructor =
     /// Add definition location information to the provided constructor.
     member AddDefinitionLocation : line:int * column:int * filePath:string -> unit
     
+    member IsTypeInitializer : bool with get,set
 
 type internal ProvidedMethod = 
     inherit System.Reflection.MethodInfo
@@ -113,7 +114,7 @@ type internal ProvidedProperty =
     member AddXmlDocComputed   : xmlDocFunction: (unit -> string) -> unit   
     
     /// Get or set a flag indicating if the property is static.
-    member IsStatic             : bool with get,set
+    member IsStatic             : bool with set
 
     /// Set the quotation used to compute the implementation of gets of this property.
     member GetterCode           : (Quotations.Expr list -> Quotations.Expr) with set
@@ -199,6 +200,7 @@ type internal ProvidedField =
     /// Add definition location information to the provided field definition.
     member AddDefinitionLocation : line:int * column:int * filePath:string -> unit
 
+    member SetFieldAttributes : attributes : FieldAttributes -> unit
 
 /// Provides symbolic provided types
 [<Class>]
@@ -320,8 +322,6 @@ type internal ProvidedTypeDefinition =
     /// Get or set a flag indicating if the ProvidedTypeDefinition has type-relocation suppressed
     [<Experimental("SuppressRelocation is a workaround and likely to be removed")>]
     member SuppressRelocation : bool  with get,set
-
-    member MakeParametricType : name:string * args:obj[] -> ProvidedTypeDefinition
 
 /// A provided generated assembly
 type ProvidedAssembly =
