@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>ExcelDataReader</id>
+    <version>2.1.1</version>
+    <title>ExcelDataReader</title>
+    <authors>iciobanu</authors>
+    <owners>iciobanu</owners>
+    <projectUrl>http://exceldatareader.codeplex.com/</projectUrl>
+    <iconUrl>https://nugetgallery.blob.core.windows.net/icons/ExcelDataReader.2.1.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Lightweight and fast library written in C# for reading Microsoft Excel files ('97-2007).</description>
+    <summary>Lightweight and fast library written in C# for reading Microsoft Excel files ('97-2007).</summary>
+    <releaseNotes />
+    <copyright />
+    <language />
+    <tags>Excel</tags>
+    <dependencies>
+      <dependency id="SharpZipLib" version="0.86.0" />
+    </dependencies>
+  </metadata>
+</package>

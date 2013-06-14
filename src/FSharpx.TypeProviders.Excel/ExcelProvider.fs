@@ -4,50 +4,90 @@ open System.IO
 open System
 open Samples.FSharp.ProvidedTypes
 open Microsoft.FSharp.Core.CompilerServices
-open Microsoft.Office.Interop
 open FSharpx.TypeProviders.Helper
 open System.Collections.Generic
+open System.Data
+open System
+open Excel
 
-let ApplyMoveToRange (rg:Excel.Range) (move:Excel.XlDirection) = rg.Worksheet.Range(rg, rg.End(move))
+let parseExcelAddress cellAddress =
 
-let internal getRange (xlWorkBookInput : Excel.Workbook) sheetorrangename (headerRow : int) =
-    let mysheets = seq { for  sheet in xlWorkBookInput.Worksheets do yield sheet :?> Excel.Worksheet }
-    let names = seq { for name in xlWorkBookInput.Names do yield name :?> Excel.Name}
-    let hasWs =   Seq.exists (fun (ws:Excel.Worksheet) -> (ws.Name = sheetorrangename)) mysheets 
-    if hasWs  then 
-        let sheet = Seq.find (fun (ws:Excel.Worksheet) -> (ws.Name = sheetorrangename)) mysheets
-        let firstcell = sheet.Cells.Item(box headerRow, 1) :?> Excel.Range
-        ApplyMoveToRange (ApplyMoveToRange firstcell Excel.XlDirection.xlToRight) Excel.XlDirection.xlDown
+    let convertToBase radix digits =
+        let digitValue i digit = float digit * Math.Pow(float radix, float i)
+
+        digits
+        |> List.rev
+        |> List.mapi digitValue
+        |> Seq.sum
+        |> int
+        
+    let charToDigit char = ((int)(Char.ToUpper(char))) - 64
+
+    let column = 
+        cellAddress 
+        |> Seq.filter Char.IsLetter 
+        |> Seq.map charToDigit
+        |> Seq.toList
+        |> convertToBase 26
+
+    let row =
+        cellAddress
+        |> Seq.filter Char.IsNumber
+        |> Seq.map (string >> Int32.Parse)
+        |> Seq.toList
+        |> convertToBase 10
+
+    (row - 1), (column - 1)
+
+let internal getCells (workbook : DataSet) sheetOrRangeName headerRowIndex =
+    let worksheets = workbook.Tables
+    
+    //if sheetOrRangeName refers to a worksheet get the header row from the specified worksheet
+    if worksheets.Contains(sheetOrRangeName)  then
+        let sheet = worksheets.[sheetOrRangeName]
+
+        //remove unecessary leading rows
+        if headerRowIndex > 0 then do
+            for row in 0 .. headerRowIndex do
+                let removeRow = sheet.Rows.[headerRowIndex]
+                sheet.Rows.Remove(removeRow);
+        sheet
     else
-        let hasName =   Seq.exists (fun (ws:Excel.Name) -> (ws.Name = sheetorrangename)) names 
-        if hasName then
-        (Seq.find (fun (ws:Excel.Name) -> (ws.Name = sheetorrangename)) names ).RefersToRange
+        let sheet = worksheets.[0]
+        let topLeft = 0, 0
+        let bottomRight = 
+        if sheetOrRangeName.Contains(":") then
+            let addresses = sheetOrRangeName.Split(':');
+            let topLeft = parseExcelAddress addresses.[0]
+            let bottomRight = parseExcelAddress addresses.[1]
+
+            
         else
-        failwith (sprintf "Sheet or range %A was not found" sheetorrangename)
+            
+          
+        else
+        failwith (sprintf "Sheet or range %A was not found" sheetOrRangeName)
 
 // Simple type wrapping Excel data
 type  ExcelFileInternal(filename, sheetorrangename, headerRow : int) =
-      let data  = 
-         let xlApp = new Excel.ApplicationClass()
-         xlApp.Visible <- false
-         xlApp.ScreenUpdating <- false
-         xlApp.DisplayAlerts <- false;
-         let xlWorkBookInput = xlApp.Workbooks.Open(filename)
 
-         let xlRangeInput = getRange xlWorkBookInput sheetorrangename headerRow
+    let data  = 
+        use stream = File.OpenRead(filename)
+        let excelReader = 
+            if filename.EndsWith(".xlsx") then ExcelReaderFactory.CreateOpenXmlReader(stream)
+            else ExcelReaderFactory.CreateBinaryReader(stream)
 
-         let objRangeInput = xlRangeInput.Value2 :?> obj[,]
-         let res = seq { for irow  in 2 .. objRangeInput.GetLength(0)   do
-                           yield seq { for jcol in 1 .. objRangeInput.GetLength(1)   do
-                                          yield objRangeInput.[irow,jcol] }
-                                 |> Seq.toArray }
-                     |> Seq.toArray
+        let workbook = excelReader.AsDataSet()
+        let data = getCells workbook sheetorrangename headerRow
 
-         xlWorkBookInput.Close()
-         xlApp.Quit()
-         res
+        let res = seq { for irow  in 2 .. data.Rows.Count do
+                        yield seq { for jcol in 1 .. data.Columns.Count do
+                                        yield data.Rows.[irow].[jcol] }
+                                |> Seq.toArray }
+                    |> Seq.toArray
+        res
 
-      member __.Data = data
+    member __.Data = data
 
 type internal ReflectiveBuilder = 
    static member Cast<'a> (args:obj) =
@@ -102,9 +142,7 @@ let internal typExcel(cfg:TypeProviderConfig) =
       let resolvedFilename = Path.Combine(cfg.ResolutionFolder, filename)
 
       let ProvidedTypeDefinitionExcelCall (filename, sheetorrangename,  forcestring, headerRow)  =
-         let xlApp = new Excel.ApplicationClass()
-         let xlWorkBookInput = xlApp.Workbooks.Open(resolvedFilename)
-
+         
          let xlRangeInput = getRange xlWorkBookInput sheetorrangename headerRow
 
          let lines = (seq { for row in xlRangeInput.Rows do yield row } |> Seq.cache)
@@ -141,9 +179,6 @@ let internal typExcel(cfg:TypeProviderConfig) =
                 // Add metadata defining the property's location in the referenced file
                 prop.AddDefinitionLocation(1, i, filename)
                 rowTy.AddMember(prop)
-
-         xlWorkBookInput.Close()
-         xlApp.Quit()
 
          // define the provided type, erasing to excelFile
          let ty = ProvidedTypeDefinition(System.Reflection.Assembly.GetExecutingAssembly(), rootNamespace, tyName, Some(typeof<ExcelFileInternal>))
