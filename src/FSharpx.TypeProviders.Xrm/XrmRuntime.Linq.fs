@@ -294,6 +294,8 @@ type public XrmDataContext (orgService,user,password:string,domain,crmOnline,org
                     creds.Windows.ClientCredential <- CredentialCache.DefaultNetworkCredentials
                 | x ->  
                     creds.Windows.ClientCredential <- new NetworkCredential(user,password,domain)
+                    creds.UserName.UserName <- if (String.IsNullOrEmpty(domain)) then user else sprintf "%s\\%s" domain user
+                    creds.UserName.Password <- password
                 creds
             let uri = Uri(orgService)            
             let orgProxy = new OrganizationServiceProxy(uri, null, creds, (if crmOnline then Microsoft.Crm.Services.Utility.DeviceIdManager.LoadOrRegisterDevice() else null))

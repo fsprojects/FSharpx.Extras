@@ -105,6 +105,8 @@ type XrmTypeProvider(config: TypeProviderConfig) as this =
                 creds.Windows.ClientCredential <- CredentialCache.DefaultNetworkCredentials
             | x ->                  
                 creds.Windows.ClientCredential <- new NetworkCredential(username,password,domain)
+                creds.UserName.UserName <- if (String.IsNullOrEmpty(domain)) then username else sprintf "%s\\%s" domain username
+                creds.UserName.Password <- password
             creds
 
         let org = createOrgService orgService creds (if crmOnline then DeviceIdManager.LoadOrRegisterDevice() else null)
