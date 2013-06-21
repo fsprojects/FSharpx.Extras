@@ -70,6 +70,7 @@
     <Compile Include="..\FSharpx.TypeProviders\TypeProvider.Helper.fs">
       <Link>TypeProvider.Helper.fs</Link>
     </Compile>
+    <Compile Include="ExcelAddressing.fs" />
     <Compile Include="ExcelProvider.fs" />
     <None Include="TestExcelProvider.fsx" />
     <None Include="packages.config" />

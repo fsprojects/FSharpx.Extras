@@ -8,65 +8,10 @@ open FSharpx.TypeProviders.Helper
 open System.Collections.Generic
 open System.Data
 open System
+open ExcelAddressing
 open Excel
 
-let parseExcelAddress cellAddress =
 
-    let convertToBase radix digits =
-        let digitValue i digit = float digit * Math.Pow(float radix, float i)
-
-        digits
-        |> List.rev
-        |> List.mapi digitValue
-        |> Seq.sum
-        |> int
-        
-    let charToDigit char = ((int)(Char.ToUpper(char))) - 64
-
-    let column = 
-        cellAddress 
-        |> Seq.filter Char.IsLetter 
-        |> Seq.map charToDigit
-        |> Seq.toList
-        |> convertToBase 26
-
-    let row =
-        cellAddress
-        |> Seq.filter Char.IsNumber
-        |> Seq.map (string >> Int32.Parse)
-        |> Seq.toList
-        |> convertToBase 10
-
-    (row - 1), (column - 1)
-
-let internal getCells (workbook : DataSet) sheetOrRangeName headerRowIndex =
-    let worksheets = workbook.Tables
-    
-    //if sheetOrRangeName refers to a worksheet get the header row from the specified worksheet
-    if worksheets.Contains(sheetOrRangeName)  then
-        let sheet = worksheets.[sheetOrRangeName]
-
-        //remove unecessary leading rows
-        if headerRowIndex > 0 then do
-            for row in 0 .. headerRowIndex do
-                let removeRow = sheet.Rows.[headerRowIndex]
-                sheet.Rows.Remove(removeRow);
-        sheet
-    else
-        let sheet = worksheets.[0]
-        let topLeft = 0, 0
-        let bottomRight = 
-        if sheetOrRangeName.Contains(":") then
-            let addresses = sheetOrRangeName.Split(':');
-            let topLeft = parseExcelAddress addresses.[0]
-            let bottomRight = parseExcelAddress addresses.[1]
-
-            
-        else
-            
-          
-        else
-        failwith (sprintf "Sheet or range %A was not found" sheetOrRangeName)
 
 // Simple type wrapping Excel data
 type  ExcelFileInternal(filename, sheetorrangename, headerRow : int) =
