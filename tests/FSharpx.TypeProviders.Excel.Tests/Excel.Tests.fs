@@ -8,8 +8,8 @@ open System
 open System.IO
 
 type BookTest = ExcelFile<"BookTest.xls", "Sheet1", true>
-
-type HeaderTest = ExcelFile<"BookTestWithHeader", "Sheet1", true, 2>
+type HeaderTest = ExcelFile<"BookTestWithHeader.xls", "A2", true>
+type MultipleRegions = ExcelFile<"MultipleRegions.xlsx", "A1:C5,E3:G5", true>
 
 let file = BookTest()
 let row1 = file.Data |> Seq.head 
@@ -31,8 +31,7 @@ let ``Can pick an arbitrary header row``() =
 let ``Can load data from spreadsheet``() =
     let file = Path.Combine(Environment.CurrentDirectory, "BookTestDifferentData.xls")
 
-    printfn "%s" file
-    
+    printfn "%s" file   
 
     let otherBook = BookTest(file)
     let row = otherBook.Data |> Seq.head
@@ -43,3 +42,10 @@ let ``Can load data from spreadsheet``() =
     row.``STRIKE 2`` |> should equal "4"
     row.``STRIKE 3`` |> should equal "5"
     row.VOL |> should equal "322"
+
+[<Test>]
+let ``Can load from multiple ranges``() =
+    let file = MultipleRegions()
+    let firstRow = file.Data |> Seq.head
+
+    row.
