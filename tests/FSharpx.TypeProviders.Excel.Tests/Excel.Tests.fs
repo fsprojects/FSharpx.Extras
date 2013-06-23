@@ -68,19 +68,18 @@ let ``Can load from multiple ranges``() =
     rows.[2].Fifth |> should equal null
     rows.[2].Sixth |> should equal null
 
-    rows.[4].First |> should equal "A10"
-    rows.[4].Second |> should equal "A11"
-    rows.[4].Third |> should equal "A12"
-    rows.[4].Fourth |> should equal null
-    rows.[4].Fifth |> should equal null
-    rows.[4].Sixth |> should equal null
+    rows.[3].First |> should equal "A10"
+    rows.[3].Second |> should equal "A11"
+    rows.[3].Third |> should equal "A12"
+    rows.[3].Fourth |> should equal null
+    rows.[3].Fifth |> should equal null
+    rows.[3].Sixth |> should equal null
 
 [<Test>]
 let ``Can create fields with correct types``() =
     let file = new DataTypesTest()
     let row = file.Data |> Seq.head
     row.String.GetType() |> should equal typeof<string>
-    row.Int.GetType() |> should equal typeof<int>
     row.Float.GetType() |> should equal typeof<float>
     row.Boolean.GetType() |> should equal typeof<bool>
     row.Date.GetType() |> should equal typeof<DateTime>

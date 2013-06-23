@@ -65,17 +65,21 @@ let internal typExcel(cfg:TypeProviderConfig) =
          for column in 0 .. data.ColumnMappings.Count - 1 do            
             let header = getCell 0 column |> string
             if not (String.IsNullOrWhiteSpace(header)) then do
-                let firstValue = getCell 1 column
-                let readString = (fun [rowCellGetter] -> <@@ (%%rowCellGetter: int -> obj) column |> string @@>)
-                let readFloat = (fun [rowCellGetter] -> <@@ (%%rowCellGetter: int -> obj) column |> (fun v -> v :? float) @@>)
-                let valueType, gettercode  = 
-                   if  forcestring then
-                      typeof<string>, readString
-                   else
-                      match firstValue with
-                      | :? string -> typeof<string>, readString
-                      | :? float -> typeof<float> , readFloat
-                      |_ -> typeof<string>, readString
+                let valueType, gettercode =                    
+                    if forcestring then
+                        typeof<string>, (fun [rowCellGetter] -> 
+                            <@@ 
+                                let value = (%%rowCellGetter: int -> obj) column |> string
+                                if String.IsNullOrEmpty value then null
+                                else value
+                            @@>)
+                    else
+                        match getCell 1 column with
+                        | :? float -> typeof<double>, (fun [rowCellGetter] -> <@@ (%%rowCellGetter: int -> obj) column |> (fun v -> v :?> double) @@>)
+                        | :? bool -> typeof<bool>, (fun [rowCellGetter] -> <@@ (%%rowCellGetter: int -> obj) column |> (fun v -> v :?> bool) @@>)
+                        | :? DateTime -> typeof<DateTime>, (fun [rowCellGetter] -> <@@ (%%rowCellGetter: int -> obj) column |> (fun v -> v :?> DateTime) @@>)
+                        | :? string -> typeof<string>, (fun [rowCellGetter] -> <@@ (%%rowCellGetter: int -> obj) column |> (fun v -> v :?> string) @@>)
+                        | _ -> typeof<obj>, (fun [rowCellGetter] -> <@@ (%%rowCellGetter: int -> obj) column @@>)
 
                 let prop = ProvidedProperty(header, valueType, GetterCode = gettercode)
                 // Add metadata defining the property's location in the referenced file
