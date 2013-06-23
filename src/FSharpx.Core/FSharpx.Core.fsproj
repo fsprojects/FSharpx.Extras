@@ -131,6 +131,7 @@
     <Compile Include="Async.IO.fs" />
     <Compile Include="Iteratee.fs" />
     <Compile Include="CSharpCompat.fs" />
+    <Compile Include="Reflection.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
