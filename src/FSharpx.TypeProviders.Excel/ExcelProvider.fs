@@ -11,35 +11,31 @@ open System
 open FSharpx.TypeProviders.ExcelAddressing
 
 // Simple type wrapping Excel data
-type  ExcelFileInternal(filename, range) =
-    let data = openWorkbookView filename range
-    member internal __.Data = data
+type ExcelFileInternal(filename, range) =
+    let data  = 
+        let view = openWorkbookView filename range
+        seq{ 1 .. view.RowCount}
+        |> Seq.map (fun row -> getCellValue view row)
 
-type internal ReflectiveBuilder = 
-   static member Cast<'a> (args:obj) =
-      args :?> 'a
-   static member BuildTypedCast lType (args: obj) = 
-         typeof<ReflectiveBuilder>
-            .GetMethod("Cast")
-            .MakeGenericMethod([|lType|])
-            .Invoke(null, [|args|])
+    member __.Data = data    
 
 type internal GlobalSingleton private () =
    static let mutable instance = Dictionary<_, _>()
    static member Instance = instance
 
-let internal memoize f =
-      //let cache = Dictionary<_, _>()
-      fun x ->
-         if (GlobalSingleton.Instance).ContainsKey(x) then (GlobalSingleton.Instance).[x]
-         else let res = f x
-              (GlobalSingleton.Instance).[x] <- res
-              res
-
+let internal memoize f x =
+    if (GlobalSingleton.Instance).ContainsKey(x) then (GlobalSingleton.Instance).[x]
+    else 
+        let res = f x
+        (GlobalSingleton.Instance).[x] <- res
+        res
 
 let internal typExcel(cfg:TypeProviderConfig) =
+
+   let executingAssembly = System.Reflection.Assembly.GetExecutingAssembly()   
+   
    // Create the main provided type
-   let excTy = ProvidedTypeDefinition(System.Reflection.Assembly.GetExecutingAssembly(), rootNamespace, "ExcelFile", Some(typeof<obj>))
+   let excelFileProvidedType = ProvidedTypeDefinition(executingAssembly, rootNamespace, "ExcelFile", Some(typeof<ExcelFileInternal>))
 
    // Parameterize the type by the file to use as a template
    let filename = ProvidedStaticParameter("filename", typeof<string>)
@@ -47,7 +43,7 @@ let internal typExcel(cfg:TypeProviderConfig) =
    let forcestring = ProvidedStaticParameter("forcestring", typeof<bool>, false)
    let staticParams = [ filename; range; forcestring ]
 
-   do excTy.DefineStaticParameters(staticParams, fun tyName paramValues ->
+   do excelFileProvidedType.DefineStaticParameters(staticParams, fun tyName paramValues ->
       let (filename, range, forcestring) = 
             match paramValues with
             | [| :? string  as filename;   :? string as range;  :? bool as forcestring|] -> (filename, range, forcestring)
@@ -61,48 +57,53 @@ let internal typExcel(cfg:TypeProviderConfig) =
       let ProvidedTypeDefinitionExcelCall (filename, range, forcestring)  =         
          let data = openWorkbookView resolvedFilename range
 
-         // define a provided type for each row, erasing to a float[]
-         let rowTy = ProvidedTypeDefinition("Row", Some(typeof<obj[]>))         
-
+         // define a provided type for each row, erasing to a int -> obj
+         let providedRowType = ProvidedTypeDefinition("Row", Some(typeof<int -> obj>))
+         
          // add one property per Excel field
-         for i in 0 .. data.Columns - 1 do
-            let header = data.Item 0 i            
-            if header <> null then do
-                let headerText = header.ToString()
-            
+         let getCell = getCellValue data         
+         for column in 0 .. data.ColumnMappings.Count - 1 do            
+            let header = getCell 0 column |> string
+            if not (String.IsNullOrWhiteSpace(header)) then do
+                let firstValue = getCell 1 column
+                let readString = (fun [rowCellGetter] -> <@@ (%%rowCellGetter: int -> obj) column |> string @@>)
+                let readFloat = (fun [rowCellGetter] -> <@@ (%%rowCellGetter: int -> obj) column |> (fun v -> v :? float) @@>)
                 let valueType, gettercode  = 
                    if  forcestring then
-                      typeof<string>, (fun [row] -> <@@ ((%%row:obj[]).[i]) |> string  @@>)
+                      typeof<string>, readString
                    else
-                      match header with
-                      | :? string -> typeof<string>, (fun [row] -> <@@ ((%%row:obj[]).[i]) |> string  @@>)
-                      | :? float -> typeof<float> , (fun [row] -> <@@ ((%%row:obj[]).[i]) :?> float  @@>)
-                      |_ -> typeof<string>, (fun [row] -> <@@ ((%%row:obj[]).[i]) |> string  @@>)
+                      match firstValue with
+                      | :? string -> typeof<string>, readString
+                      | :? float -> typeof<float> , readFloat
+                      |_ -> typeof<string>, readString
 
-                //TODO : test w different types
-                let prop = ProvidedProperty(headerText, valueType, GetterCode = gettercode)
+                let prop = ProvidedProperty(header, valueType, GetterCode = gettercode)
                 // Add metadata defining the property's location in the referenced file
-                prop.AddDefinitionLocation(1, i, filename)
-                rowTy.AddMember(prop)
+                prop.AddDefinitionLocation(1, column, filename)
+                providedRowType.AddMember(prop)
 
-         // define the provided type, erasing to excelFile
-         let ty = ProvidedTypeDefinition(System.Reflection.Assembly.GetExecutingAssembly(), rootNamespace, tyName, Some(typeof<ExcelFileInternal>))
+         // define the provided type, erasing to an seq<int -> obj>
+         let providedExcelFileType = ProvidedTypeDefinition(executingAssembly, rootNamespace, tyName, Some(typeof<ExcelFileInternal>))
 
          // add a parameterless constructor which loads the file that was used to define the schema
-         ty.AddMember(ProvidedConstructor([], InvokeCode = fun [] -> <@@ ExcelFileInternal(resolvedFilename, range) @@>))
+         providedExcelFileType.AddMember(ProvidedConstructor([], InvokeCode = fun [] -> <@@ ExcelFileInternal(resolvedFilename, range) @@>))
+
          // add a constructor taking the filename to load
-         ty.AddMember(ProvidedConstructor([ProvidedParameter("filename", typeof<string>)], InvokeCode = fun [filename] -> <@@  ExcelFileInternal(%%filename, range) @@>))
+         providedExcelFileType.AddMember(ProvidedConstructor([ProvidedParameter("filename", typeof<string>)], InvokeCode = fun [filename] -> <@@  ExcelFileInternal(%%filename, range) @@>))
+
          // add a new, more strongly typed Data property (which uses the existing property at runtime)
-         ty.AddMember(ProvidedProperty("Data", typedefof<seq<_>>.MakeGenericType(rowTy), GetterCode = fun [excFile] -> <@@ (%%excFile:ExcelFileInternal).Data @@>))
+         providedExcelFileType.AddMember(ProvidedProperty("Data", typedefof<seq<_>>.MakeGenericType(providedRowType), GetterCode =fun [excFile] -> <@@ (%%excFile:ExcelFileInternal).Data @@>))
+
          // add the row type as a nested type
-         ty.AddMember(rowTy)
-         ty
+         providedExcelFileType.AddMember(providedRowType)
+         
+         providedExcelFileType
 
       (memoize ProvidedTypeDefinitionExcelCall)(filename, range, forcestring)
       )
 
    // add the type to the namespace
-   excTy
+   excelFileProvidedType
 
 [<TypeProvider>]
 type public ExcelProvider(cfg:TypeProviderConfig) as this =

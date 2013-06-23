@@ -10,20 +10,19 @@ open System.IO
 type BookTest = ExcelFile<"BookTest.xls", "Sheet1", true>
 type HeaderTest = ExcelFile<"BookTestWithHeader.xls", "A2", true>
 type MultipleRegions = ExcelFile<"MultipleRegions.xlsx", "A1:C5,E3:G5", true>
-
-let file = BookTest()
-let row1 = file.Data |> Seq.head 
+type DataTypesTest = ExcelFile<"DataTypes.xlsx">
 
 [<Test>]
 let ``Can access first row in typed excel data``() = 
-    row1.SEC |> should equal "ASI"
-    row1.BROKER |> should equal "TFS Derivatives HK"
+    let file = BookTest()
+    let row = file.Data |> Seq.head
+    row.SEC |> should equal "ASI"
+    row.BROKER |> should equal "TFS Derivatives HK"
 
 [<Test>]
 let ``Can pick an arbitrary header row``() =
     let file = HeaderTest()
     let row = file.Data |> Seq.head
-
     row.SEC |> should equal "ASI"
     row.BROKER |> should equal "TFS Derivatives HK"
 
@@ -46,6 +45,42 @@ let ``Can load data from spreadsheet``() =
 [<Test>]
 let ``Can load from multiple ranges``() =
     let file = MultipleRegions()
-    let firstRow = file.Data |> Seq.head
+    let rows = file.Data |> Seq.toArray
 
-    row.
+    rows.[0].First |> should equal "A1"
+    rows.[0].Second |> should equal "A2"
+    rows.[0].Third |> should equal "A3"
+    rows.[0].Fourth |> should equal "B1"
+    rows.[0].Fifth |> should equal "B2"
+    rows.[0].Sixth |> should equal "B3"
+
+    rows.[1].First |> should equal "A4"
+    rows.[1].Second |> should equal "A5"
+    rows.[1].Third |> should equal "A6"
+    rows.[1].Fourth |> should equal "B4"
+    rows.[1].Fifth |> should equal "B5"
+    rows.[1].Sixth |> should equal "B6"
+
+    rows.[2].First |> should equal "A7"
+    rows.[2].Second |> should equal "A8"
+    rows.[2].Third |> should equal "A9"
+    rows.[2].Fourth |> should equal null
+    rows.[2].Fifth |> should equal null
+    rows.[2].Sixth |> should equal null
+
+    rows.[4].First |> should equal "A10"
+    rows.[4].Second |> should equal "A11"
+    rows.[4].Third |> should equal "A12"
+    rows.[4].Fourth |> should equal null
+    rows.[4].Fifth |> should equal null
+    rows.[4].Sixth |> should equal null
+
+[<Test>]
+let ``Can create fields with correct types``() =
+    let file = new DataTypesTest()
+    let row = file.Data |> Seq.head
+    row.String.GetType() |> should equal typeof<string>
+    row.Int.GetType() |> should equal typeof<int>
+    row.Float.GetType() |> should equal typeof<float>
+    row.Boolean.GetType() |> should equal typeof<bool>
+    row.Date.GetType() |> should equal typeof<DateTime>

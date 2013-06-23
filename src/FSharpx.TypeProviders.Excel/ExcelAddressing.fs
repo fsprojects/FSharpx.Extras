@@ -4,11 +4,6 @@
     open System.Text.RegularExpressions
     open System.IO   
         
-        type View = {
-        Rows: int;
-        Columns: int;
-        Item : int -> int -> obj } 
-
     type Address = {
         Sheet: string;
         Row: int;
@@ -24,6 +19,10 @@
         StartRow: int;
         EndRow: int;
         Sheet: DataTable }    
+
+    type View = {
+        RowCount: int;
+        ColumnMappings: Map<int, int * RangeView> }
 
     ///Parses an excel row column address of the form <COLUMN LETTERS><ROW NUMBER> into a zero based row, column address.
     ///For example the address A1 would be parsed as 0, 0
@@ -118,7 +117,7 @@
 
         let minRow = ranges |> Seq.map (fun range -> range.StartRow) |> Seq.min
         let maxRow = ranges |> Seq.map (fun range -> range.EndRow) |> Seq.max
-        let rows = maxRow - minRow
+        let rowCount = maxRow - minRow
 
         let rangeViewOffsetRecord rangeView =
             seq{ rangeView.StartColumn .. rangeView.EndColumn }
@@ -139,11 +138,16 @@
             |> Seq.mapi (fun index entry -> (index, entry))
             |> Map.ofSeq
 
-        let getCell row column =
-            let sheetColumn, rangeView = columns.[column]
-            rangeView.Sheet.Rows.[row].Item(sheetColumn)
+        { RowCount = rowCount; ColumnMappings = columns }
 
-        { Rows = rows; Columns = columns.Count; Item = getCell }
+    ///Reads the value of a cell from a view
+    let getCellValue view row column = 
+        let columns = view.ColumnMappings
+        let sheetColumn, rangeView = columns.[column]
+        let row = rangeView.StartRow + row
+        let sheet = rangeView.Sheet
+        if row < sheet.Rows.Count && sheetColumn < sheet.Columns.Count then rangeView.Sheet.Rows.[row].Item(sheetColumn)
+        else null
 
     ///Reads the contents of an excel file into a DataSet
     let public openWorkbookView filename range =            
