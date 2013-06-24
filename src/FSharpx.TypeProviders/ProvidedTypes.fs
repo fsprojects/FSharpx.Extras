@@ -28,7 +28,8 @@ type internal ExpectedStackState =
 module internal Misc =
     let TypeBuilderInstantiationType = typeof<TypeBuilder>.Assembly.GetType("System.Reflection.Emit.TypeBuilderInstantiation")
     let GetTypeFromHandleMethod = typeof<Type>.GetMethod("GetTypeFromHandle")
-    
+    let LanguagePrimitivesType = typedefof<list<_>>.Assembly.GetType("Microsoft.FSharp.Core.LanguagePrimitives")
+    let ParseInt32Method = LanguagePrimitivesType.GetMethod "ParseInt32"
     let isEmpty s = s = ExpectedStackState.Empty
     let isAddress s = s = ExpectedStackState.Address
 
@@ -1119,9 +1120,9 @@ type ProvidedTypeDefinition(container:TypeContainer,className : string, baseType
                 if m.MemberType = MemberTypes.Constructor then
                     yield (m :?> ConstructorInfo) |]
     // Methods
-    override this.GetMethodImpl(name, _bindingAttr, _binderBinder, _callConvention, _types, _modifiers) : MethodInfo = 
+    override this.GetMethodImpl(name, bindingAttr, _binderBinder, _callConvention, _types, _modifiers) : MethodInfo = 
         let membersWithName = 
-            [ for m in getMembers() do                
+            [ for m in this.GetMembers(bindingAttr) do                
                 if m.MemberType.HasFlag(MemberTypes.Method) && m.Name = name then
                     yield  m ]
         match membersWithName with 
@@ -1300,6 +1301,13 @@ type AssemblyGenerator(assemblyFileName) =
 #endif
     let typeMap = Dictionary<ProvidedTypeDefinition,TypeBuilder>(HashIdentity.Reference)
     let typeMapExtra = Dictionary<string,TypeBuilder>(HashIdentity.Structural)
+    let uniqueLambdaTypeName = 
+        let counter = ref 0
+        fun () -> 
+            let n = !counter 
+            incr counter 
+            sprintf "Lambda%d" n
+
     member __.Assembly = assembly :> Assembly
     /// Emit the given provided type definitions into an assembly and adjust 'Assembly' property of all type definitions to return that
     /// assembly.
@@ -1483,12 +1491,6 @@ type AssemblyGenerator(assemblyFileName) =
                 [ for ctorArg in implictCtorArgs -> 
                       tb.DefineField(ctorArg.Name, convType ctorArg.ParameterType, FieldAttributes.Private) ]
             
-            let uniqueLambdaTypeName = 
-                let counter = ref 0
-                fun () -> 
-                    let n = !counter 
-                    incr counter 
-                    sprintf "Lambda%d" n
             let rec emitLambda(callSiteIlg : ILGenerator, v : Quotations.Var, body : Quotations.Expr, freeVars : seq<Quotations.Var>, locals : Dictionary<_, LocalBuilder>) =
                 let lambda = assemblyMainModule.DefineType(uniqueLambdaTypeName(), TypeAttributes.Class)
                 let baseType = typedefof<FSharpFunc<_, _>>.MakeGenericType(v.Type, body.Type)
@@ -1530,6 +1532,15 @@ type AssemblyGenerator(assemblyFileName) =
             and emitExpr (ilg: ILGenerator, locals:Dictionary<Quotations.Var,LocalBuilder>, parameterVars) expectedState expr = 
                 let pop () = ilg.Emit(OpCodes.Pop)
                 let popIfEmptyExpected s = if isEmpty s then pop()
+                let emitConvIfNecessary t1 = 
+                    if t1 = typeof<int16> then
+                        ilg.Emit(OpCodes.Conv_I2)
+                    elif t1 = typeof<uint16> then
+                        ilg.Emit(OpCodes.Conv_U2)
+                    elif t1 = typeof<sbyte> then
+                        ilg.Emit(OpCodes.Conv_I1)
+                    elif t1 = typeof<byte> then
+                        ilg.Emit(OpCodes.Conv_U1)
                 /// emits given expression to corresponding IL
                 let rec emit (expectedState : ExpectedStackState) (expr: Quotations.Expr) = 
                     match expr with 
@@ -1632,6 +1643,56 @@ type AssemblyGenerator(assemblyFileName) =
                           ilg.Emit(OpCodes.Castclass, targetTy)
                               
                         popIfEmptyExpected expectedState
+                    | Quotations.DerivedPatterns.SpecificCall <@ (-) @>(None, [t1; t2; t3], [a1; a2]) ->
+                        assert(t1 = t2)
+                        emit ExpectedStackState.Value a1
+                        emit ExpectedStackState.Value a2
+                        if t1 = typeof<decimal> then
+                            ilg.Emit(OpCodes.Call, typeof<decimal>.GetMethod "op_Subtraction")
+                        else
+                            ilg.Emit(OpCodes.Sub)
+                            emitConvIfNecessary t1
+
+                        popIfEmptyExpected expectedState
+
+                    | Quotations.DerivedPatterns.SpecificCall <@ (/) @> (None, [t1; t2; t3], [a1; a2]) ->
+                        assert (t1 = t2)
+                        emit ExpectedStackState.Value a1
+                        emit ExpectedStackState.Value a2
+                        if t1 = typeof<decimal> then
+                            ilg.Emit(OpCodes.Call, typeof<decimal>.GetMethod "op_Division")
+                        else
+                            match Type.GetTypeCode t1 with
+                            | TypeCode.UInt32
+                            | TypeCode.UInt64
+                            | TypeCode.UInt16
+                            | TypeCode.Byte
+                            | _ when t1 = typeof<unativeint> -> ilg.Emit (OpCodes.Div_Un)
+                            | _ -> ilg.Emit(OpCodes.Div)
+
+                            emitConvIfNecessary t1
+
+                        popIfEmptyExpected expectedState
+
+                    | Quotations.DerivedPatterns.SpecificCall <@ int @>(None, [sourceTy], [v]) ->
+                        emit ExpectedStackState.Value v
+                        match Type.GetTypeCode(sourceTy) with
+                        | TypeCode.String -> 
+                            ilg.Emit(OpCodes.Call, Misc.ParseInt32Method)
+                        | TypeCode.Single
+                        | TypeCode.Double
+                        | TypeCode.Int64 
+                        | TypeCode.UInt64
+                        | TypeCode.UInt16
+                        | TypeCode.Char
+                        | TypeCode.Byte
+                        | _ when sourceTy = typeof<nativeint> || sourceTy = typeof<unativeint> ->
+                            ilg.Emit(OpCodes.Conv_I4)
+                        | TypeCode.Int32
+                        | TypeCode.UInt32
+                        | TypeCode.Int16
+                        | TypeCode.SByte -> () // no op
+                        | _ -> failwith "TODO: search for op_Explicit on sourceTy"
 
                     | Quotations.DerivedPatterns.SpecificCall <@ LanguagePrimitives.IntrinsicFunctions.GetArray @> (None, [ty], [arr; index]) ->
                         // observable side-effect - IndexOutOfRangeException
@@ -1864,11 +1925,15 @@ type AssemblyGenerator(assemblyFileName) =
                         emitExpr (ilg, locals, parameterVars) ExpectedStackState.Value argExpr
                     ilg.Emit(OpCodes.Call,cinfo)
 
-                for ctorArgsAsFieldIdx,ctorArgsAsField in List.mapi (fun i x -> (i,x)) implicitCtorArgsAsFields do 
-                    ilg.Emit(OpCodes.Ldarg_0)
-                    ilg.Emit(OpCodes.Ldarg, ctorArgsAsFieldIdx+1)
-                    ilg.Emit(OpCodes.Stfld, ctorArgsAsField)
-                    
+                if pcinfo.IsImplicitCtor then
+                    for ctorArgsAsFieldIdx,ctorArgsAsField in List.mapi (fun i x -> (i,x)) implicitCtorArgsAsFields do 
+                        ilg.Emit(OpCodes.Ldarg_0)
+                        ilg.Emit(OpCodes.Ldarg, ctorArgsAsFieldIdx+1)
+                        ilg.Emit(OpCodes.Stfld, ctorArgsAsField)
+                else
+                    let code  = pcinfo.GetInvokeCodeInternal true
+                    let code = code parameters
+                    emitExpr (ilg, locals, parameterVars) ExpectedStackState.Empty code
                 ilg.Emit(OpCodes.Ret)
             
             match ptd.GetConstructors(ALL) |> Seq.tryPick (function :? ProvidedConstructor as pc when pc.IsTypeInitializer -> Some pc | _ -> None) with
