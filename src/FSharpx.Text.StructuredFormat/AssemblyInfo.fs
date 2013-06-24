@@ -1,4 +1,4 @@
-﻿module FSharpx.Text.StructuredFormat.AssemblyInfo
+module FSharpx.Text.StructuredFormat.AssemblyInfo
 #nowarn "49" // uppercase argument names
 #nowarn "67" // this type test or downcast will always hold
 #nowarn "66" // tis upast is unnecessary - the types are identical
@@ -26,9 +26,9 @@ This library provides data structures and functoins for pretty printers.")>]
 
 [<assembly: AssemblyProduct ("FSharpx.Text.StructuredFormat")>]
 
-[<assembly: AssemblyVersion ("1.7.8")>]
+[<assembly: AssemblyVersion ("1.8.44.0")>]
 
-[<assembly: AssemblyFileVersion ("1.7.8")>]
+[<assembly: AssemblyFileVersion ("1.8.44.0")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 
