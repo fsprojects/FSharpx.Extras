@@ -82,3 +82,7 @@ let ``Can create fields with correct types``() =
     row.String.GetType() |> should equal typeof<string>
     row.Float.GetType() |> should equal typeof<float>
     row.Boolean.GetType() |> should equal typeof<bool>
+    row.Date.GetType() |> should equal typeof<DateTime>
+    row.Time.GetType() |> should equal typeof<DateTime>
+    row.Currency.GetType() |> should equal typeof<Double>
+    
