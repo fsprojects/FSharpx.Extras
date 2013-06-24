@@ -4,6 +4,12 @@ open Fake
 open Fake.Git
 open System.IO
 
+let RestorePackage() =
+    !! "./**/packages.config"
+    |> Seq.iter (RestorePackage (fun p -> { p with ToolPath = "./lib/NuGet/NuGet.exe" }))
+
+RestorePackage()
+
 // properties
 let currentDate = System.DateTime.UtcNow
 let projectName = "FSharpx"
@@ -117,10 +123,7 @@ let testReferences frameworkVersion =
     |> Scan
 
 // targets
-Target "Clean" (fun _ ->
-    !! "./**/packages.config"
-    |> Seq.iter (RestorePackage (fun p -> { p with ToolPath = "./lib/NuGet/NuGet.exe" }))
-        
+Target "Clean" (fun _ ->       
     CleanDirs [buildDir; buildPortableDir; testDir; deployDir; docsDir; nugetMainDir]
 
     packages
