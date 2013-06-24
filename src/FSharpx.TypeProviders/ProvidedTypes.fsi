@@ -55,6 +55,7 @@ type internal ProvidedConstructor =
     /// Add definition location information to the provided constructor.
     member AddDefinitionLocation : line:int * column:int * filePath:string -> unit
     
+    member IsTypeInitializer : bool with get,set
 
 type internal ProvidedMethod = 
     inherit System.Reflection.MethodInfo
@@ -142,7 +143,7 @@ type internal ProvidedEvent =
     member AddXmlDocComputed   : xmlDocFunction: (unit -> string) -> unit   
     
     /// Get or set a flag indicating if the property is static.
-    member IsStatic             : bool with set
+    member IsStatic             : bool with get,set
 
     /// Set the quotation used to compute the implementation of gets of this property.
     member AdderCode           : (Quotations.Expr list -> Quotations.Expr) with set
@@ -199,6 +200,7 @@ type internal ProvidedField =
     /// Add definition location information to the provided field definition.
     member AddDefinitionLocation : line:int * column:int * filePath:string -> unit
 
+    member SetFieldAttributes : attributes : FieldAttributes -> unit
 
 /// Provides symbolic provided types
 [<Class>]
