@@ -124,6 +124,8 @@ Target "Clean" (fun _ ->
     |> Seq.iter (fun x -> CleanDirs [nugetDir x; nugetLibDir x; nugetDocsDir x])
 )
 
+Target "RestorePackages" RestorePackages
+
 Target "AssemblyInfo" (fun _ ->
     AssemblyInfo (fun p ->
         {p with 
@@ -413,6 +415,7 @@ Target "All" DoNothing
 
 // Build order
 "Clean"
+  ==> "RestorePackages"
   ==> "AssemblyInfo"
   ==> (generateTargets())
   ==> "TestAll"
