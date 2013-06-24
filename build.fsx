@@ -124,7 +124,10 @@ Target "Clean" (fun _ ->
     |> Seq.iter (fun x -> CleanDirs [nugetDir x; nugetLibDir x; nugetDocsDir x])
 )
 
-Target "RestorePackages" RestorePackages
+Target "RestorePackages" (fun _ ->
+    !! "./**/packages.config"
+    |> Seq.iter (RestorePackage (fun p -> { p with ToolPath = "./lib/NuGet/NuGet.exe" }))
+)
 
 Target "AssemblyInfo" (fun _ ->
     AssemblyInfo (fun p ->
