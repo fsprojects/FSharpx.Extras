@@ -78,11 +78,6 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.Text.StructuredForm
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.Text.StructuredFormat.Tests", "tests\FSharpx.Text.StructuredFormat.Tests\FSharpx.Text.StructuredFormat.Tests.fsproj", "{FBE1E618-4F32-4305-95C0-B0FFBAD24EF7}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{59FF50CE-3333-4394-831A-0152CFC41A74}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\packages.config = .nuget\packages.config
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		DataStructures|Any CPU = DataStructures|Any CPU
