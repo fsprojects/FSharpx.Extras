@@ -1,5 +1,4 @@
-﻿
-namespace FSharpx
+﻿namespace FSharpx
 
 //This uses some simple dynamic IL generation,
 //and a clever technique desribed by Jon Skeet here:
@@ -92,10 +91,11 @@ module internal ReflectImpl =
         let fields = unionCase.GetFields()
         preComputeFieldsReader fields bindingFlags
 
-namespace Microsoft.FSharp.Reflection
+namespace FSharpx.Reflection
 
 open System
 open System.Reflection
+open Microsoft.FSharp.Reflection
 
 type FSharpValue =
     static member PreComputeRecordConstructorFast(recordType:Type,?bindingFlags:BindingFlags) =
@@ -106,4 +106,3 @@ type FSharpValue =
         FSharpx.ReflectImpl.preComputeRecordReader(recordType,bindingFlags)
     static member PreComputeUnionReaderFast(unionCase:UnionCaseInfo, ?bindingFlags:BindingFlags) : obj -> obj[] =
         FSharpx.ReflectImpl.preComputeUnionReader(unionCase, bindingFlags)
-
