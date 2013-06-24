@@ -5,6 +5,7 @@ module ReflectionRecordTest =
     open NUnit.Framework
     open Microsoft.FSharp.Reflection
     open System.Reflection //for bindingflags
+    open FSharpx.Reflection
 
     //some test types
 
@@ -130,6 +131,7 @@ module ReflectionUnionTest =
 
     open NUnit.Framework
     open Microsoft.FSharp.Reflection
+    open FSharpx.Reflection
     open System.Reflection //for bindingflags
 
     type Straightforward =
@@ -254,6 +256,7 @@ module ReflectionPerformanceTest =
     open NUnit.Framework
     open Microsoft.FSharp.Reflection
     open System.Reflection //for bindingflags
+    open FSharpx.Reflection
 
     let [<Literal>] numRepeats = 400000
     let [<Literal>] expectedImprovementTestor = 1L //conservative
