@@ -108,7 +108,7 @@ type EagerRoseTreeGen =
     static member EagerRoseTree() =
         let rec EagerRoseTreeGen() = 
             gen {
-                let! root = Arb.generate<'a>
+                let! root = Arb.generate<int>
                 // need to set these frequencies to avoid blowing the stack
                 let! children = Gen.frequency [70, gen.Return List.empty; 1, finiteEagerRoseTreeForest()]
                 return EagerRoseTree.create root children

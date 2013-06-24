@@ -91,7 +91,7 @@ type IndexedRoseTreeGen =
     static member IndexedRoseTree() =
         let rec IndexedRoseTreeGen() = 
             gen {
-                let! root = Arb.generate<'a>
+                let! root = Arb.generate<int>
                 // need to set these frequencies to avoid blowing the stack
                 let! children = Gen.frequency [70, gen.Return Vector.empty; 1, finiteIndexedRoseTreeForest()]
                 return IndexedRoseTree.create root children
