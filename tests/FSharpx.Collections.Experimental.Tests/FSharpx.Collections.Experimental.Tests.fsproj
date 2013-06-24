@@ -14,13 +14,15 @@
     <FscToolPath>..\..\lib\FSharp\</FscToolPath>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <Tailcalls>true</Tailcalls>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\build\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>bin\Debug\FSharpx.Collections.Experimental.Tests.XML</DocumentationFile>
@@ -29,7 +31,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <Tailcalls>true</Tailcalls>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\build\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>bin\Release\FSharpx.Collections.Experimental.Tests.XML</DocumentationFile>
@@ -42,7 +44,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>bin\Debug\FSharpx.DataStructures.Tests.XML</DocumentationFile>
-    <OutputPath>bin\DataStructures\</OutputPath>
+    <OutputPath>..\..\build\DataStructures\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="$(TargetFrameworkVersion) == 'v3.5'">
     <DefineConstants>NET35</DefineConstants>
@@ -57,7 +59,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="FSharpx.Tests">
-      <HintPath>..\FSharpx.Tests\bin\Debug\FSharpx.Tests.dll</HintPath>
+      <HintPath>..\..\build\FSharpx.Tests.dll</HintPath>
     </Reference>
     <Reference Include="FsUnit.NUnit">
       <HintPath>..\..\packages\FsUnit.1.2.1.0\Lib\Net40\FsUnit.NUnit.dll</HintPath>
@@ -137,4 +139,5 @@
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
 </Project>
