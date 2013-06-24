@@ -118,16 +118,15 @@ let testReferences frameworkVersion =
 
 // targets
 Target "Clean" (fun _ ->
+    !! "./**/packages.config"
+    |> Seq.iter (RestorePackage (fun p -> { p with ToolPath = "./lib/NuGet/NuGet.exe" }))
+        
     CleanDirs [buildDir; buildPortableDir; testDir; deployDir; docsDir; nugetMainDir]
 
     packages
     |> Seq.iter (fun x -> CleanDirs [nugetDir x; nugetLibDir x; nugetDocsDir x])
 )
 
-Target "RestorePackages" (fun _ ->
-    !! "./**/packages.config"
-    |> Seq.iter (RestorePackage (fun p -> { p with ToolPath = "./lib/NuGet/NuGet.exe" }))
-)
 
 Target "AssemblyInfo" (fun _ ->
     AssemblyInfo (fun p ->
@@ -418,7 +417,6 @@ Target "All" DoNothing
 
 // Build order
 "Clean"
-  ==> "RestorePackages"
   ==> "AssemblyInfo"
   ==> (generateTargets())
   ==> "TestAll"
