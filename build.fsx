@@ -1,4 +1,4 @@
-#r @"lib\FAKE\tools\FakeLib.dll"
+#r @".\lib\FAKE\tools\FakeLib.dll"
 
 open Fake 
 open Fake.Git
