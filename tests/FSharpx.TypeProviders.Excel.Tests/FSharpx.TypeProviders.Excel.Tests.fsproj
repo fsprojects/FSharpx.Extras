@@ -40,6 +40,9 @@
       <Link>FsUnit.fs</Link>
     </Compile>
     <Compile Include="Excel.Tests.fs" />
+    <None Include="DataTypes.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Content Include="BookTest.xls">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
