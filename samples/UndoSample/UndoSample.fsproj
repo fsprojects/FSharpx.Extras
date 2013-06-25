@@ -10,7 +10,6 @@
     <RootNamespace>UndoSample</RootNamespace>
     <AssemblyName>UndoSample</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <Name>UndoSample</Name>
     <FscToolPath>..\..\lib\FSharp\</FscToolPath>
   </PropertyGroup>

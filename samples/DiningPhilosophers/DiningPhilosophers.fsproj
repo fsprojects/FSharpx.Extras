@@ -10,7 +10,6 @@
     <RootNamespace>DiningPhilosophers</RootNamespace>
     <AssemblyName>DiningPhilosophers</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <Name>DiningPhilosophers</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
