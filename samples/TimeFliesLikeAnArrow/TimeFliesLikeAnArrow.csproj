@@ -55,7 +55,12 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsBase" Condition="$(TargetFrameworkVersion) == 'v3.5'">
+      <HintPath>..\..\lib\Wpf\v3.5\WindowsBase.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" Condition="$(TargetFrameworkVersion) == 'v4.0'">
+      <HintPath>..\..\lib\Wpf\v4.0\WindowsBase.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" Condition="$(TargetFrameworkVersion) == 'v3.5'">
       <HintPath>..\..\lib\Wpf\v3.5\PresentationCore.dll</HintPath>
     </Reference>
