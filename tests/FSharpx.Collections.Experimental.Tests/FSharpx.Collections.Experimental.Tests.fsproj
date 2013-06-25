@@ -53,7 +53,7 @@
   <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
   <ItemGroup>
     <Reference Include="FsCheck">
-      <HintPath>..\..\packages\FsCheck.0.8.3.0\lib\net40\FsCheck.dll</HintPath>
+      <HintPath>..\..\packages\FsCheck.0.8.3.0\lib\net40-Client\FsCheck.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="FSharpx.Tests">
