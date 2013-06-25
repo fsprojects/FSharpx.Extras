@@ -56,8 +56,18 @@
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationCore" Condition="$(TargetFrameworkVersion) == 'v3.5'">
+      <HintPath>..\..\lib\Wpf\v3.5\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" Condition="$(TargetFrameworkVersion) == 'v4.0'">
+      <HintPath>..\..\lib\Wpf\v4.0\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework" Condition="$(TargetFrameworkVersion) == 'v3.5'">
+      <HintPath>..\..\lib\Wpf\v3.5\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework" Condition="$(TargetFrameworkVersion) == 'v4.0'">
+      <HintPath>..\..\lib\Wpf\v4.0\PresentationFramework.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
