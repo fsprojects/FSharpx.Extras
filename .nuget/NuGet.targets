@@ -45,13 +45,13 @@
         <NuGetCommand Condition=" '$(OS)' == 'Windows_NT'">"$(NuGetExePath)"</NuGetCommand>
         <NuGetCommand Condition=" '$(OS)' != 'Windows_NT' ">mono --runtime=v4.0.30319 $(NuGetExePath)</NuGetCommand>
 
-        <PackageOutputDir Condition="$(PackageOutputDir) == ''">$(TargetDir.Trim('\\'))</PackageOutputDir>
-        
+        <PackageOutputDir Condition="$(PackageOutputDir) == ''">$(TargetDir.Trim('\\'))</PackageOutputDir>        
+
         <RequireConsentSwitch Condition=" $(RequireRestoreConsent) == 'true' ">-RequireConsent</RequireConsentSwitch>
         <NonInteractiveSwitch Condition=" '$(VisualStudioVersion)' != '' AND '$(OS)' == 'Windows_NT' ">-NonInteractive</NonInteractiveSwitch>
         
         <!-- Commands -->
-        <RestoreCommand>$(NuGetCommand) install "$(PackagesConfig)" -source "$(PackageSources)"  $(NonInteractiveSwitch) $(RequireConsentSwitch) -solutionDir "$(SolutionDir)" </RestoreCommand>
+        <RestoreCommand>$(NuGetCommand) install "$(PackagesConfig)" -source "$(PackageSources)"  $(NonInteractiveSwitch) $(RequireConsentSwitch) -solutionDir "$(SolutionDir.Trim('\\'))" </RestoreCommand>
         <BuildCommand>$(NuGetCommand) pack "$(ProjectPath)" -Properties Configuration=$(Configuration) $(NonInteractiveSwitch) -OutputDirectory "$(PackageOutputDir)" -symbols</BuildCommand>
 
         <!-- We need to ensure packages are restored prior to assembly resolve -->
