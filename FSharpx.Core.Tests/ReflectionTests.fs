@@ -6,6 +6,8 @@ module ReflectionRecordTest =
     open Microsoft.FSharp.Reflection
     open System.Reflection //for bindingflags
 
+    open FSharpx.Reflection
+
     //some test types
 
     type Straightforward =
@@ -24,7 +26,6 @@ module ReflectionRecordTest =
     type private Private = private { Fp : float }
 
     type Generic<'a> = { Generic : 'a }
-
 
     [<Test>]
     let ``should construct Straightforward record``() =
@@ -132,6 +133,8 @@ module ReflectionUnionTest =
     open Microsoft.FSharp.Reflection
     open System.Reflection //for bindingflags
 
+    open FSharpx.Reflection
+
     type Straightforward =
         | Empty
         | S of string
@@ -145,11 +148,19 @@ module ReflectionUnionTest =
 
     type Generic<'a> = | Generic of 'a
 
+    type LargeDU = A | B | C | E | F | H | Eye | J | K | L | M
+
     let straightforwardCases = FSharpType.GetUnionCases typeof<Straightforward>
     let singletonCase = (FSharpType.GetUnionCases typeof<Singleton>).[0]
     let internalCase = (FSharpType.GetUnionCases(typeof<Internal>, BindingFlags.NonPublic)).[0]
     let privateCase = (FSharpType.GetUnionCases(typeof<Private>, BindingFlags.NonPublic)).[0]
     let genericCase = (FSharpType.GetUnionCases typeof<Generic<int>>).[0]
+
+
+    let getTagReaderComparer<'T> bindingFlags =
+        let fastReader = FSharpValue.PreComputeUnionTagReaderFast(typeof<'T>, ?bindingFlags = bindingFlags)
+        let reader = FSharpValue.PreComputeUnionTagReader(typeof<'T>, ?bindingFlags = bindingFlags)
+        fun (x : 'T) -> Assert.AreEqual(reader x, fastReader x)
 
     [<Test>]
     let ``should construct Straightforward union case without arguments``() =
@@ -219,7 +230,7 @@ module ReflectionUnionTest =
 
     [<Test>]
     let ``should not read Internal union case with BindingFlags.Public``() =
-        Assert.Throws<TargetInvocationException>(new TestDelegate(fun () -> FSharpValue.PreComputeUnionReaderFast(internalCase) |> ignore))
+        Assert.Throws<System.ArgumentException>(new TestDelegate(fun () -> FSharpValue.PreComputeUnionReaderFast(internalCase) |> ignore))
         |> ignore
 
     [<Test>]
@@ -247,6 +258,114 @@ module ReflectionUnionTest =
         let dtor = FSharpValue.PreComputeUnionReaderFast genericCase       
         let result = dtor (Generic 2)
         Assert.AreEqual([| box 2 |], result)
+        
+
+    [<Test>]
+    let ``should read Straightforward union tag``() =
+        let tester = getTagReaderComparer<Straightforward> None
+        tester <| Empty
+        tester <| S ""
+        tester <| I(42,"")
+
+    [<Test>]
+    let ``should read Internal union tag`` () =
+        let tester = getTagReaderComparer<Internal> (Some BindingFlags.NonPublic)
+        tester <| Si ""
+
+    [<Test>]
+    let ``should read Private union tag`` () =
+        let tester = getTagReaderComparer<Private> (Some BindingFlags.NonPublic)
+        tester <| Fp 42.0
+
+    [<Test>]
+    let ``should read Generic union tag`` () =
+        let tester = getTagReaderComparer<Generic<int * string>> (Some BindingFlags.NonPublic)
+        tester <| Generic (42,"")
+
+    [<Test>]
+    let ``should read Large union tag`` () =
+        let tester = getTagReaderComparer<LargeDU> (Some BindingFlags.NonPublic)
+        tester A ; tester C ; tester H ; tester M
+
+
+module ReflectionExceptionTest =
+
+    open System.Reflection
+    open NUnit.Framework
+    open FSharpx.Reflection
+
+    exception SimpleExn
+
+    exception PublicExn of string * obj
+
+    exception private PrivateExn of string * int
+
+    [<Test>]
+    let ``should construct simple exception`` () =
+        let ctor = FSharpValue.PreComputeExceptionConstructorFast typeof<SimpleExn>
+        Assert.AreEqual(SimpleExn, ctor [||])
+
+    [<Test>]
+    let ``should construct public exception`` () =
+       let ctor = FSharpValue.PreComputeExceptionConstructorFast typeof<PublicExn> 
+       Assert.AreEqual(PublicExn("", box 42), ctor [| box "" ; box 42 |])
+
+    [<Test>]
+    let ``should construct private exception`` () =
+        let ctor = FSharpValue.PreComputeExceptionConstructorFast(typeof<PrivateExn>, BindingFlags.NonPublic)
+        Assert.AreEqual(PrivateExn("", 42), ctor [| box "" ; box 42 |])
+
+    [<Test>]
+    let ``should read simple exception`` () =
+        let dtor = FSharpValue.PreComputeExceptionReaderFast typeof<SimpleExn>
+        Assert.AreEqual([||], dtor SimpleExn)
+
+    [<Test>]
+    let ``should read pubic exception`` () =
+        let dtor = FSharpValue.PreComputeExceptionReaderFast typeof<PublicExn>
+        Assert.AreEqual([|box "" ; box 42|], dtor <| PublicExn("", box 42))
+
+    [<Test>]
+    let ``should read private exception`` () =
+        let dtor = FSharpValue.PreComputeExceptionReaderFast(typeof<PrivateExn>, BindingFlags.NonPublic)
+        Assert.AreEqual([|box ""; box 42|], dtor <| PrivateExn("", 42))
+
+
+module ReflectionTupleTest =
+
+    open System
+    open NUnit.Framework
+    open FSharpx.Reflection
+    
+    [<Test>]
+    let ``should construct unitary tuple`` () =
+        let ctor = FSharpValue.PreComputeTupleConstructorFast typeof<Tuple<int>>
+        Assert.AreEqual(Tuple<_>(42), ctor [| box 42 |])
+
+    [<Test>]
+    let ``should read unitary tuple`` () =
+        let dtor = FSharpValue.PreComputeTupleReaderFast typeof<Tuple<int>>
+        Assert.AreEqual([| box 42 |], dtor <| Tuple<_>(42))
+
+    [<Test>]
+    let ``should construct pair`` () =
+        let ctor = FSharpValue.PreComputeTupleConstructorFast typeof<int * string>
+        Assert.AreEqual((42,""), ctor [| box 42 ; "" |])
+
+    [<Test>]
+    let ``should read pair`` () =
+        let dtor = FSharpValue.PreComputeTupleReaderFast typeof<int * string>
+        Assert.AreEqual([| box 42 ; box "" |], dtor (42, ""))
+
+    [<Test>]
+    let ``should construct large tuple`` () =
+        let ctor = FSharpValue.PreComputeTupleConstructorFast typeof<int * string * bool * (int * string) * int * int * int * int * int>
+        Assert.AreEqual((42,"",false,(10," "),1,2,3,4,5), ctor [| box 42; "" ; false ; (10," ") ; 1 ; 2 ; 3 ; 4 ; 5 |])
+
+    [<Test>]
+    let ``should read large tuple`` () =
+        let dtor = FSharpValue.PreComputeTupleReaderFast typeof<int * string * bool * (int * string) * int * int * int * int * int>
+        Assert.AreEqual(([| 42; "" ; false ; (10," ") ; 1 ; 2 ; 3 ; 4 ; 5 |] : obj []), dtor (42,"",false,(10," "),1,2,3,4,5))
 
 //make sure it is faster!
 module ReflectionPerformanceTest =
@@ -254,6 +373,8 @@ module ReflectionPerformanceTest =
     open NUnit.Framework
     open Microsoft.FSharp.Reflection
     open System.Reflection //for bindingflags
+
+    open FSharpx.Reflection
 
     let [<Literal>] numRepeats = 400000
     let [<Literal>] expectedImprovementTestor = 1L //conservative
@@ -303,6 +424,9 @@ module ReflectionPerformanceTest =
     let fastUnionReader = FSharpValue.PreComputeUnionReaderFast unionCases.[2]
     let standardUnionReader = FSharpValue.PreComputeUnionReader unionCases.[2]
 
+    let standardTagReader = FSharpValue.PreComputeUnionTagReader typeof<MyUnion>
+    let fastTagReader = FSharpValue.PreComputeUnionTagReaderFast typeof<MyUnion>
+
     [<Test>]
     let ``should construct 2-case union faster than F# reflection``() =
         let fast = repeat (fun i -> fastUnionCtor [| "3"; i |] :?> MyUnion)
@@ -316,3 +440,35 @@ module ReflectionPerformanceTest =
         let standard = repeat (fun i -> standardUnionReader (Two ("s",i)))
         printf "FSharpx is %ix faster" (standard/fast)
         Assert.True(fast < standard/expectedImprovementTestor)
+
+    [<Test>]
+    let ``should read union tags faster than F# reflection`` () =
+        let fast = repeat (fun i -> fastTagReader (Two ("s",i)))
+        let standard = repeat (fun i -> standardTagReader (Two ("s",i)))
+        printf "FSharpx is %ix faster" (standard/fast)
+        Assert.True(fast < standard/expectedImprovementTestor)
+
+
+    let standardTupleCtor = FSharpValue.PreComputeTupleConstructor typeof<int * int * string>
+    let fastTupleCtor = FSharpValue.PreComputeTupleConstructorFast typeof<int * int * string>
+    
+    let standardTupleReader = FSharpValue.PreComputeTupleReader typeof<int * int * string>
+    let fastTupleReader = FSharpValue.PreComputeTupleReaderFast typeof<int * int * string>
+
+    [<Test>]
+    let ``should construct tuples faster than F# reflection`` () =
+        let fast = repeat (fun i -> fastTupleCtor [|i ; i ; "s"|])
+        let standard = repeat (fun i -> standardTupleCtor [|i ; i ; "s"|])
+        printf "FSharpx is %ix faster" (standard/fast)
+        Assert.True(fast < standard/expectedImprovementTestor)
+
+    [<Test>]
+    let ``should read tuples faster than F# reflection`` () =
+        let fast = repeat (fun i -> fastTupleReader (i,i,"s"))
+        let standard = repeat (fun i -> standardTupleReader (i,i,"s"))
+        printf "FSharpx is %ix faster" (standard/fast)
+        Assert.True(fast < standard/expectedImprovementTestor)
+
+
+        
+        
