@@ -13,7 +13,7 @@
     <Name>FSharpx.Core</Name>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
-    <FscToolPath>..\..\lib\FSharp\</FscToolPath>
+    <FscToolPath>$(MSBuildProjectDirectory)\..\..\lib\FSharp\</FscToolPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
