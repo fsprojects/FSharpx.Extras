@@ -38,8 +38,6 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.Http", "src\FSharpx
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.Http.Tests", "tests\FSharpx.Http.Tests\FSharpx.Http.Tests.fsproj", "{3D1FCA4C-757E-4AD0-9E4B-4101C8AFCCA4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeFliesLikeAnArrow", "samples\TimeFliesLikeAnArrow\TimeFliesLikeAnArrow.csproj", "{EC2F35C2-6DC7-437B-9BD1-44DC1B6F7136}"
-EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.Observable", "src\FSharpx.Observable\FSharpx.Observable.fsproj", "{2E802F54-9CD0-4B0A-B834-5C5979403B50}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSharpx.Observable.Tests", "tests\FSharpx.Observable.Tests\FSharpx.Observable.Tests.csproj", "{13CF1E8D-D712-4031-8EEF-414534CC234E}"
