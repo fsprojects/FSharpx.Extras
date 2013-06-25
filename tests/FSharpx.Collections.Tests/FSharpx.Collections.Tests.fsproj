@@ -65,12 +65,14 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FsCheck">
-      <HintPath>..\..\packages\FsCheck.0.8.3.0\lib\net40\FsCheck.dll</HintPath>
+      <HintPath>..\..\packages\FsCheck.0.8.3.0\lib\net40-Client\FsCheck.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="FSharpx.Tests">
-      <HintPath>..\..\build\FSharpx.Tests.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\FSharpx.Tests\FSharpx.Tests.fsproj">
+      <Name>FSharpx.Tests</Name>
+      <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
+      <Private>true</Private>
+    </ProjectReference>
     <Reference Include="FsUnit.NUnit">
       <HintPath>..\..\packages\FsUnit.1.2.1.0\Lib\Net40\FsUnit.NUnit.dll</HintPath>
       <Private>True</Private>
@@ -96,4 +98,5 @@
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
 </Project>
