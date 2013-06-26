@@ -12,12 +12,14 @@ open System
 /// member that adds value to the set and returns whether the value
 /// was already present.
 type ConcurrentSetAgent<'T>() = 
-  let agent = Agent.Start(fun agent -> async {
-    let hashSet = new System.Collections.Generic.HashSet<_>(HashIdentity.Structural)
-    while true do
-      let! value, (repl:AsyncReplyChannel<_>) = agent.Receive()
-      repl.Reply(hashSet.Add(value)) })
 
-  /// Adds the specified element to the set and returns 
-  /// 'false' when it was already present in the set
-  member x.AsyncAdd(v) = agent.PostAndAsyncReply(fun repl -> v, repl)
+    let agent = Agent.Start(fun agent -> async {
+
+        let hashSet = new System.Collections.Generic.HashSet<_>(HashIdentity.Structural)
+        while true do
+            let! value, (repl:AsyncReplyChannel<_>) = agent.Receive()
+            repl.Reply(hashSet.Add(value)) })
+
+    /// Adds the specified element to the set and returns 
+    /// 'false' when it was already present in the set
+    member x.AsyncAdd(v) = agent.PostAndAsyncReply(fun repl -> v, repl)

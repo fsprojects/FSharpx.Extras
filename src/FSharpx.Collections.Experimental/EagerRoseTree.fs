@@ -10,22 +10,24 @@ open System.Runtime.CompilerServices
 /// Adapted from @mausch F# adaptation of Experimental.RoseTree.
 // Ported from http://hackage.haskell.org/packages/archive/containers/latest/doc/html/src/Data-Tree.html
 [<CustomEquality; NoComparison>]
-type 'a EagerRoseTree = { Root: 'a; Children: 'a EagerRoseForest }
-    with
+type EagerRoseTree<'T> = 
+    { Root: 'T; Children: EagerRoseForest<'T> }
     override x.Equals y = 
         match y with
-        | :? EagerRoseTree<'a> as y ->
+        | :? EagerRoseTree<'T> as y ->
             (x :> _ IEquatable).Equals y
         | _ -> false
+
     override x.GetHashCode() = 
         391
         + (box x.Root).GetHashCode() * 23
         + x.Children.GetHashCode()
-    interface IEquatable<'a EagerRoseTree> with
+    interface IEquatable<EagerRoseTree<'T>> with
+
         member x.Equals y = 
             obj.Equals(x.Root, y.Root) && (x.Children :> _ seq).SequenceEqual y.Children
             
-and 'a EagerRoseForest = 'a EagerRoseTree list
+and EagerRoseForest<'T> = EagerRoseTree<'T> list
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 [<Extension>]

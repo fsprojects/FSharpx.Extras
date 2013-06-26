@@ -11,10 +11,10 @@ let findConfigFile resolutionFolder configFileName =
     else 
         Path.Combine(resolutionFolder, configFileName)
 
-let erasedType<'a> assemblyName rootNamespace typeName = 
-    ProvidedTypeDefinition(assemblyName, rootNamespace, typeName, Some(typeof<'a>))
+let erasedType<'T> assemblyName rootNamespace typeName = 
+    ProvidedTypeDefinition(assemblyName, rootNamespace, typeName, Some(typeof<'T>))
 
-let runtimeType<'a> typeName = ProvidedTypeDefinition(niceName typeName, Some typeof<'a>)
+let runtimeType<'T> typeName = ProvidedTypeDefinition(niceName typeName, Some typeof<'T>)
 
 let seqType ty = typedefof<seq<_>>.MakeGenericType[| ty |]
 let listType ty = typedefof<list<_>>.MakeGenericType[| ty |]

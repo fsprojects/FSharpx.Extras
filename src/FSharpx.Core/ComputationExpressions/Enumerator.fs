@@ -14,14 +14,16 @@ module Enumerator =
         let state = ref 0
         { new IEnumerator<_> with 
             member self.Current = if (state.Value = 1) then a else invalidOp "!"
+
           interface System.Collections.IEnumerator with
             member self.Current = if (state.Value = 1) then box a else invalidOp "!"
             member self.MoveNext() = state := state.Value + 1; state.Value = 1
             member self.Reset() = state := 0
+
           interface System.IDisposable with 
             member self.Dispose() = () }
   
-    let bind (f:_ -> IEnumerator<'b>) (a:IEnumerator<'a>) =
+    let bind (f:_ -> IEnumerator<'U>) (a:IEnumerator<'T>) =
         if a.MoveNext() then f (Some(a.Current)) else f(None) 
    
     let combine (a:IEnumerator<_>) b = 
@@ -29,6 +31,7 @@ module Enumerator =
         let first = ref true
         { new IEnumerator<_> with 
             member self.Current = current.Value.Current
+
           interface System.Collections.IEnumerator with
             member self.Current = box current.Value.Current
             member self.MoveNext() = 
@@ -41,16 +44,19 @@ module Enumerator =
             member self.Reset() = 
                 a.Reset(); b.Reset()
                 first := true; current := a
+
           interface System.IDisposable with 
             member self.Dispose() = a.Dispose(); b.Dispose() }
     
-    let empty<'a> : IEnumerator<'a> = 
+    let empty<'T> : IEnumerator<'T> = 
         { new IEnumerator<_> with 
             member self.Current = invalidOp "!"
+
           interface System.Collections.IEnumerator with
             member self.Current = invalidOp "!"
             member self.MoveNext() = false
             member self.Reset() = ()
+
           interface System.IDisposable with 
             member self.Dispose() = ()}
     
@@ -58,10 +64,12 @@ module Enumerator =
         let en : Lazy<IEnumerator<_>> = lazy f()
         { new IEnumerator<_> with 
             member self.Current = en.Value.Current
+
           interface System.Collections.IEnumerator with
             member self.Current = box en.Value.Current
             member self.MoveNext() = en.Value.MoveNext()
             member self.Reset() = en.Value.Reset()
+
           interface System.IDisposable with 
             member self.Dispose() = en.Value.Dispose() }
    
@@ -75,36 +83,37 @@ module Enumerator =
         member x.Delay(f) = delay f
         member x.YieldFrom(a) = a
         member x.Yield(a) = singleton a
-        member x.Bind(a:IEnumerator<'a>, f:_ -> IEnumerator<'b>) = bind f a
+        member x.Bind(a:IEnumerator<'T>, f:_ -> IEnumerator<'b>) = bind f a
         member x.Combine(a, b) = combine a b
         member x.Zero() = empty<_>
+
     let iter = new EnumerableBuilder()    
 
-    let head (en:IEnumerator<'a>) =
+    let head (en:IEnumerator<'T>) =
         if en.MoveNext() then en.Current
         else invalidOp "!"
 
-    let firstOrDefault def (en:IEnumerator<'a>) =
+    let firstOrDefault def (en:IEnumerator<'T>) =
         if en.MoveNext() then en.Current
         else def
 
-    let rec lastOrDefault def (en:IEnumerator<'a>) =
+    let rec lastOrDefault def (en:IEnumerator<'T>) =
         if en.MoveNext() then
             lastOrDefault en.Current en
         else def
 
-    let last (en:IEnumerator<'a>) =
+    let last (en:IEnumerator<'T>) =
         if en.MoveNext() then
             lastOrDefault en.Current en
         else invalidOp "!"
 
-    let length (en:IEnumerator<'a>) =
+    let length (en:IEnumerator<'T>) =
         let rec loop acc =
             if en.MoveNext() then loop (acc+1)
             else acc
         loop 0
   
-    let skip n (en:IEnumerator<'a>) =
+    let skip n (en:IEnumerator<'T>) =
         if n = 0 then en
         else
             let rec loop acc =
@@ -113,7 +122,7 @@ module Enumerator =
                 else loop (acc+1)
             loop 1
   
-    let take n (en:IEnumerator<'a>) =
+    let take n (en:IEnumerator<'T>) =
         if n = 0 then empty<_>
         else
             let rec loop acc = iter {

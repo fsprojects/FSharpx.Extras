@@ -617,6 +617,7 @@ let ``prop mergeWithKey``() =
                 | (None, Some(_, y)) -> if keep_y then Some (k, y) else None
                 | (Some(_, x), None) -> if keep_x then Some (k, x) else None
                 | (Some(_, x), Some(_, y)) ->  f k x y |> Option.map (fun v -> (k, v))
+                | _ -> failwith "emulateMergeWithKey: combine"
             mapOption combine (List.sort (List.ofSeq (Seq.distinct (List.append (List.map fst xs') (List.map fst ys')))))
 
         let testMergeWithKey f keep_x keep_y =

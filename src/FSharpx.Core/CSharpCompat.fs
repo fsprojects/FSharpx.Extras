@@ -394,12 +394,12 @@ type FSharpChoice =
 
     // constructors
 
-    static member New1Of2<'a,'b> (a: 'a) : Choice<'a,'b> = Choice1Of2 a
-    static member New2Of2<'a,'b> (b: 'b) : Choice<'a,'b> = Choice2Of2 b
+    static member New1Of2<'T1,'T2> (a: 'T1) : Choice<'T1,'T2> = Choice1Of2 a
+    static member New2Of2<'T1,'T2> (b: 'T2) : Choice<'T1,'T2> = Choice2Of2 b
 
-    static member New1Of3<'a,'b,'c> (a: 'a) : Choice<'a,'b,'c> = Choice1Of3 a
-    static member New2Of3<'a,'b,'c> (a: 'b) : Choice<'a,'b,'c> = Choice2Of3 a
-    static member New3Of3<'a,'b,'c> (a: 'c) : Choice<'a,'b,'c> = Choice3Of3 a
+    static member New1Of3<'T1,'T2,'T3> (a: 'T1) : Choice<'T1,'T2,'T3> = Choice1Of3 a
+    static member New2Of3<'T1,'T2,'T3> (a: 'T2) : Choice<'T1,'T2,'T3> = Choice2Of3 a
+    static member New3Of3<'T1,'T2,'T3> (a: 'T3) : Choice<'T1,'T2,'T3> = Choice3Of3 a
 
 [<Extension>]
 type FSharpList =
@@ -424,7 +424,7 @@ type FSharpList =
     [<Extension>]
     static member Cons (l, e) = e::l
 
-    static member Create([<ParamArray>] values: 'a array) =
+    static member Create([<ParamArray>] values: 'T1 array) =
         Seq.toList values
 
     [<Extension>]
@@ -432,7 +432,7 @@ type FSharpList =
 
 [<Extension>]
 type FSharpSet =
-    static member Create([<ParamArray>] values: 'a array) =
+    static member Create([<ParamArray>] values: 'T1 array) =
         set values
 
     [<Extension>]

@@ -4,13 +4,13 @@ module FSharpx.Collections.Experimental.RealTimeQueue
 
 open FSharpx.Collections
 
-type RealTimeQueue<'a> = {
-    F: LazyList<'a> 
-    R: list<'a>
-    S: LazyList<'a> }
+type RealTimeQueue<'T> = {
+    F: LazyList<'T> 
+    R: list<'T>
+    S: LazyList<'T> }
 
 ///O(1). Returns queue of no elements.
-let empty<'a> : RealTimeQueue<'a> = { F = LazyList.empty; R = []; S = LazyList.empty }
+let empty<'T> : RealTimeQueue<'T> = { F = LazyList.empty; R = []; S = LazyList.empty }
 
 ///O(1). Returns true if the queue has no elements
 let isEmpty queue = LazyList.isEmpty queue.F

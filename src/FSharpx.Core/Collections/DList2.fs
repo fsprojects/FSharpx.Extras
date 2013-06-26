@@ -7,7 +7,7 @@ open System.Collections
 open System.Collections.Generic
 
 type DList<'T>(length : int , data : DListData<'T> ) =
-    let hashCode = ref None
+    let mutable hashCode = None
     member internal this.dc = data
 
     static member ofSeq (s : seq<'T>) =
@@ -18,14 +18,14 @@ type DList<'T>(length : int , data : DListData<'T> ) =
                     | Join(_,_) as xs -> Join(state, Unit x)) Nil s))
 
     override this.GetHashCode() =
-            match !hashCode with
-            | None ->
-                let mutable hash = 1
-                for x in this do
-                    hash <- 31 * hash + Unchecked.hash x
-                hashCode := Some hash
-                hash
-            | Some hash -> hash
+        match hashCode with
+        | None ->
+            let mutable hash = 1
+            for x in this do
+                hash <- 31 * hash + Unchecked.hash x
+            hashCode <- Some hash
+            hash
+        | Some hash -> hash
 
     override this.Equals(other) =
         match other with
@@ -52,7 +52,7 @@ type DList<'T>(length : int , data : DListData<'T> ) =
             match lefts with
             | []    -> xs
             | t::ts -> walk ts t xs
-        in walk [] l.dc state
+        walk [] l.dc state
 
     // making only a small adjustment to Ramsey's algorithm we get a left to right fold
     static member  fold (f : ('State -> 'T -> 'State)) (state : 'State) (l:DList<'T>)  =
@@ -65,7 +65,7 @@ type DList<'T>(length : int , data : DListData<'T> ) =
             match rights with
             | []    -> xs
             | t::ts -> walk ts t xs
-        in walk [] l.dc state
+        walk [] l.dc state
 
     static member append (left, right) =
         match left with
@@ -129,7 +129,7 @@ type DList<'T>(length : int , data : DListData<'T> ) =
 
     member this.toSeq() =
         //adaptation of right-hand side of Norman Ramsey's "fold"
-        (let rec walk rights l = 
+        let rec walk rights l = 
            seq {match l with
                 | Nil       -> 
                     match rights with
@@ -142,7 +142,7 @@ type DList<'T>(length : int , data : DListData<'T> ) =
                     | t::ts -> yield! walk ts t 
                 | Join(x,y) -> yield! walk (y::rights) x}
                
-        (walk [] data).GetEnumerator())
+        (walk [] data).GetEnumerator()
 
     interface IEnumerable<'T> with
         member s.GetEnumerator() = s.toSeq()

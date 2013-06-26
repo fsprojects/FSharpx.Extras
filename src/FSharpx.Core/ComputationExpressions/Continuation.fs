@@ -8,7 +8,7 @@ open FSharpx.Collections
 /// The algorithm is from Wes Dyer http://blogs.msdn.com/b/wesdyer/archive/2008/01/11/the-marvels-of-monads.aspx.
 /// The builder approach is from Matthew Podwysocki's excellent Creating Extended Builders series http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/18/much-ado-about-monads-creating-extended-builders.aspx.
 /// Current implementation from Matt's gist at https://gist.github.com/628956
-type Cont<'a,'r> = ('a -> 'r) -> (exn -> 'r) -> 'r
+type Cont<'T,'r> = ('T -> 'r) -> (exn -> 'r) -> 'r
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Continuation =
@@ -20,8 +20,8 @@ module Continuation =
         | Choice2Of2 v -> econt v
     
     let runCont (c:Cont<_,_>) cont econt = c cont econt
-    let throw exn : Cont<'a,'r> = fun cont econt -> econt exn
-    let callcc (f: ('a -> Cont<'b,'r>) -> Cont<'a,'r>) : Cont<'a,'r> =
+    let throw exn : Cont<'T,'r> = fun cont econt -> econt exn
+    let callcc (f: ('T -> Cont<'b,'r>) -> Cont<'T,'r>) : Cont<'T,'r> =
         fun cont econt -> runCont (f (fun a -> (fun _ _ -> cont a))) cont econt
     let bind f comp1 = 
         fun cont econt ->

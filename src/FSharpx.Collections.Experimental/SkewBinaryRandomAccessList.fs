@@ -7,20 +7,20 @@ namespace FSharpx.Collections.Experimental
 open System.Collections
 open System.Collections.Generic
 
-type TreeSBRAL<'a> =
-    | Leaf of 'a
-    | Node of 'a * TreeSBRAL<'a> * TreeSBRAL<'a>
+type TreeSBRAL<'T> =
+    | Leaf of 'T
+    | Node of 'T * TreeSBRAL<'T> * TreeSBRAL<'T>
 
-type SkewBinaryRandomAccessList<'a> (randomAccessList) =
+type SkewBinaryRandomAccessList<'T> (randomAccessList) =
 
     member this.randomAccessList = randomAccessList
 
-    static member private length : int * list<int * TreeSBRAL<'a>> -> int = function
+    static member private length : int * list<int * TreeSBRAL<'T>> -> int = function
         | len, [] -> len
         | len, (0, _)::ts -> SkewBinaryRandomAccessList.length (len, ts)
         | len, (i, _)::ts -> SkewBinaryRandomAccessList.length ((len + i), ts)
 
-    static member private cons (x:'a) : list<int * TreeSBRAL<'a>> -> list<int * TreeSBRAL<'a>> = function
+    static member private cons (x:'T) : list<int * TreeSBRAL<'T>> -> list<int * TreeSBRAL<'T>> = function
         | [] -> [(1, Leaf x)]
         | (w1, t1)::[] -> (1, Leaf x)::(w1, t1)::[]  //Not in Okasaki, maybe Standard ML does some wierd stuff I don't understand
         | (w1, t1)::(w2, t2)::ts' as ts ->
@@ -29,19 +29,19 @@ type SkewBinaryRandomAccessList<'a> (randomAccessList) =
             else
                 (1, Leaf x) :: ts
 
-    static member private head : list<int * TreeSBRAL<'a>> -> 'a = function
+    static member private head : list<int * TreeSBRAL<'T>> -> 'T = function
         | [] -> raise Exceptions.Empty
         | (1, Leaf x)::_ -> x
         | (_, Node(x, _, _))::_ -> x
         | _ -> failwith "should not get there"
 
-    static member private tryGetHead : list<int * TreeSBRAL<'a>> -> 'a option = function
+    static member private tryGetHead : list<int * TreeSBRAL<'T>> -> 'T option = function
         | [] -> None
         | (1, Leaf x)::_ -> Some(x)
         | (_, Node(x, _, _))::_ -> Some(x)
         | _ -> failwith "should not get there"
 
-    static member private lookupTree : int * int * TreeSBRAL<'a> -> 'a = function
+    static member private lookupTree : int * int * TreeSBRAL<'T> -> 'T = function
         | 1, 0, Leaf x -> x
         | 1, i, Leaf x -> raise Exceptions.OutOfBounds
         | w, 0, Node(x, _, _) -> x
@@ -52,7 +52,7 @@ type SkewBinaryRandomAccessList<'a> (randomAccessList) =
                 SkewBinaryRandomAccessList.lookupTree (w/2, i - 1 - w/2, t2)
         | _ -> failwith "should not get there"
 
-    static member private tryLookupTree : int * int  * TreeSBRAL<'a> -> 'a option = function
+    static member private tryLookupTree : int * int  * TreeSBRAL<'T> -> 'T option = function
         | 1, 0, Leaf x -> Some(x)
         | 1, i, Leaf x -> None
         | w, 0, Node(x, _, _) -> Some(x)
@@ -63,26 +63,26 @@ type SkewBinaryRandomAccessList<'a> (randomAccessList) =
               SkewBinaryRandomAccessList.tryLookupTree (w/2, i - 1 - (w/2), t2)
         | _ -> failwith "should not get there"
 
-    static member private lookup : int * list<int * TreeSBRAL<'a>> -> 'a = function
+    static member private lookup : int * list<int * TreeSBRAL<'T>> -> 'T = function
         | i, [] -> raise Exceptions.OutOfBounds
         | i, (w, t)::ts ->
             if i < w then SkewBinaryRandomAccessList.lookupTree (w, i, t) else SkewBinaryRandomAccessList.lookup ((i - w), ts)
 
-    static member private tryLookup : int * list<int * TreeSBRAL<'a>> -> 'a  option = function
+    static member private tryLookup : int * list<int * TreeSBRAL<'T>> -> 'T  option = function
         | i, [] -> None
         | i, (w, t)::ts ->
             if i < w then SkewBinaryRandomAccessList.tryLookupTree (w, i, t) else SkewBinaryRandomAccessList.tryLookup ((i - w), ts)
 
-    static member private tail : list<int * TreeSBRAL<'a>> -> list<int * TreeSBRAL<'a>> = function
+    static member private tail : list<int * TreeSBRAL<'T>> -> list<int * TreeSBRAL<'T>> = function
         | [] -> raise Exceptions.Empty
         | (1, Leaf _)::ts -> ts
         | (w, Node(_, t1, t2))::ts -> (w/2, t1) :: (w/2, t2) :: ts
         | _ -> failwith "should not get there"
 
-    static member private uncons (l: list<int * TreeSBRAL<'a>>) : 'a * list<int * TreeSBRAL<'a>> = 
+    static member private uncons (l: list<int * TreeSBRAL<'T>>) : 'T * list<int * TreeSBRAL<'T>> = 
         (SkewBinaryRandomAccessList.head l), (SkewBinaryRandomAccessList.tail l)
  
-    static member updateTree : int * int * 'a * TreeSBRAL<'a> -> TreeSBRAL<'a> = function
+    static member updateTree : int * int * 'T * TreeSBRAL<'T> -> TreeSBRAL<'T> = function
         | 1, 0, y, Leaf x -> Leaf y
         | 1, i, y, Leaf x -> raise Exceptions.OutOfBounds
         | w, 0, y, Node(x, t1, t2) -> Node(y, t1, t2)
@@ -94,7 +94,7 @@ type SkewBinaryRandomAccessList<'a> (randomAccessList) =
         | _ -> failwith "should not get there"
 
 
-    static member tryUpdateTree : int * int * 'a * TreeSBRAL<'a> -> TreeSBRAL<'a> option = function
+    static member tryUpdateTree : int * int * 'T * TreeSBRAL<'T> -> TreeSBRAL<'T> option = function
         | 1, 0, y, Leaf x -> Some(Leaf y)
         | 1, i, y, Leaf x -> None
         | w, 0, y, Node(x, t1, t2) -> Some(Node(y, t1, t2))
@@ -105,7 +105,7 @@ type SkewBinaryRandomAccessList<'a> (randomAccessList) =
               Some(Node(x, t1, (SkewBinaryRandomAccessList.tryUpdateTree (w/2, i - 1 - w/2, y, t2)).Value))
         | _ -> failwith "should not get there"
 
-    static member update i y : list<int * TreeSBRAL<'a>>  -> list<int * TreeSBRAL<'a>> = function
+    static member update i y : list<int * TreeSBRAL<'T>>  -> list<int * TreeSBRAL<'T>> = function
         | []  -> raise Exceptions.OutOfBounds
         | (w, t)::ts ->
             if i < w then
@@ -113,7 +113,7 @@ type SkewBinaryRandomAccessList<'a> (randomAccessList) =
             else
               (w, t) :: SkewBinaryRandomAccessList.update (i - w) y ts
 
-    static member tryUpdate i y : list<int * TreeSBRAL<'a>> -> list<int * TreeSBRAL<'a>> option = function
+    static member tryUpdate i y : list<int * TreeSBRAL<'T>> -> list<int * TreeSBRAL<'T>> option = function
         | []  -> None
         | (w, t)::ts ->
             if i < w then
@@ -121,18 +121,18 @@ type SkewBinaryRandomAccessList<'a> (randomAccessList) =
             else
               Some((w, t) :: (SkewBinaryRandomAccessList.tryUpdate (i - w) y ts).Value)
 
-    static member internal ofSeq (s:seq<'a>) : SkewBinaryRandomAccessList<'a> = 
+    static member internal ofSeq (s:seq<'T>) : SkewBinaryRandomAccessList<'T> = 
         if Seq.isEmpty s then SkewBinaryRandomAccessList([])
         else
             let a = Array.ofSeq s
-            let rec loop (acc: list<int * TreeSBRAL<'a>>) dec (a': array<'a>) =
+            let rec loop (acc: list<int * TreeSBRAL<'T>>) dec (a': array<'T>) =
                 if dec < 0 then SkewBinaryRandomAccessList(acc)
                 else loop (SkewBinaryRandomAccessList.cons  a'.[dec] acc) (dec - 1) a'
 
             loop [] (a.Length - 1) a
 
     ///O(1), worst case. Returns a new random access list with the element added to the beginning.
-    member this.Cons (x:'a)  = SkewBinaryRandomAccessList(SkewBinaryRandomAccessList.cons x randomAccessList)
+    member this.Cons (x:'T)  = SkewBinaryRandomAccessList(SkewBinaryRandomAccessList.cons x randomAccessList)
 
     ///O(1), worst case. Returns the first element.
     member this.Head = SkewBinaryRandomAccessList.head randomAccessList
@@ -158,7 +158,7 @@ type SkewBinaryRandomAccessList<'a> (randomAccessList) =
     ///O(n). Returns random access list reversed.
     member this.Rev() =
 
-        let rec loop : list<int * TreeSBRAL<'a>> * list<int * TreeSBRAL<'a>> -> SkewBinaryRandomAccessList<'a>  = function
+        let rec loop : list<int * TreeSBRAL<'T>> * list<int * TreeSBRAL<'T>> -> SkewBinaryRandomAccessList<'T>  = function
             | acc, [] -> SkewBinaryRandomAccessList(acc)  
             | acc, ral -> 
                 let x, ts = SkewBinaryRandomAccessList.uncons ral
@@ -196,9 +196,9 @@ type SkewBinaryRandomAccessList<'a> (randomAccessList) =
         | None -> None
         | Some(ts) -> Some(SkewBinaryRandomAccessList(ts))
 
-    interface IRandomAccessList<'a> with
+    interface IRandomAccessList<'T> with
 
-        member this.Cons (x : 'a) = this.Cons x :> _
+        member this.Cons (x : 'T) = this.Cons x :> _
 
         member this.Count() = this.Length()
 
@@ -254,52 +254,52 @@ type SkewBinaryRandomAccessList<'a> (randomAccessList) =
 module SkewBinaryRandomAccessList =   
     //pattern discriminator
 
-    let (|Cons|Nil|) (l: SkewBinaryRandomAccessList<'a>) = match l.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
+    let (|Cons|Nil|) (l: SkewBinaryRandomAccessList<'T>) = match l.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
   
     ///O(1), worst case. Returns a new random access list with the element added to the beginning.
-    let inline cons x (xs: SkewBinaryRandomAccessList<'a>) = xs.Cons x   
+    let inline cons x (xs: SkewBinaryRandomAccessList<'T>) = xs.Cons x   
   
     ///O(1), worst case. Returns the first element.
-    let inline head (xs: SkewBinaryRandomAccessList<'a>)  = xs.Head
+    let inline head (xs: SkewBinaryRandomAccessList<'T>)  = xs.Head
 
     ///O(1), worst case. Returns option first element.
-    let inline tryGetHead (xs: SkewBinaryRandomAccessList<'a>)  = xs.TryGetHead
+    let inline tryGetHead (xs: SkewBinaryRandomAccessList<'T>)  = xs.TryGetHead
 
     ///returns a empty random access list.
-    let inline empty() = SkewBinaryRandomAccessList<'a>([])
+    let inline empty() = SkewBinaryRandomAccessList<'T>([])
 
     ///O(1). Returns true if the random access list has no elements.
-    let inline isEmpty (xs: SkewBinaryRandomAccessList<'a>) = xs.IsEmpty
+    let inline isEmpty (xs: SkewBinaryRandomAccessList<'T>) = xs.IsEmpty
 
     ///O(log n). Returns the count of elememts.
-    let inline length (xs: SkewBinaryRandomAccessList<'a>) = xs.Length() 
+    let inline length (xs: SkewBinaryRandomAccessList<'T>) = xs.Length() 
 
     ///O(log n), worst case. Returns element by index.
-    let inline lookup i (xs: SkewBinaryRandomAccessList<'a>) = xs.Lookup i 
+    let inline lookup i (xs: SkewBinaryRandomAccessList<'T>) = xs.Lookup i 
 
     ///O(log n), worst case. Returns option element by index.
-    let inline tryLookup i (xs: SkewBinaryRandomAccessList<'a>) = xs.TryLookup i
+    let inline tryLookup i (xs: SkewBinaryRandomAccessList<'T>) = xs.TryLookup i
     
     ///O(n) Returns random access list from the sequence.
     let ofSeq s = SkewBinaryRandomAccessList.ofSeq s
 
     ///O(n). Returns random access list reversed.
-    let inline rev (xs: SkewBinaryRandomAccessList<'a>) = xs.Rev()
+    let inline rev (xs: SkewBinaryRandomAccessList<'T>) = xs.Rev()
 
     ///O(1), worst case. Returns a new random access list of the elements trailing the first element.
-    let inline tail (xs: SkewBinaryRandomAccessList<'a>) = xs.Tail
+    let inline tail (xs: SkewBinaryRandomAccessList<'T>) = xs.Tail
 
     ///O(1), worst case. Returns a option random access list of the elements trailing the first element.
-    let inline tryGetTail (xs: SkewBinaryRandomAccessList<'a>) = xs.TryGetTail
+    let inline tryGetTail (xs: SkewBinaryRandomAccessList<'T>) = xs.TryGetTail
 
     ///O(1), worst case. Returns the first element and tail.
-    let inline uncons (xs: SkewBinaryRandomAccessList<'a>) = xs.Uncons
+    let inline uncons (xs: SkewBinaryRandomAccessList<'T>) = xs.Uncons
 
     ///O(1), worst case. Returns the option first element and tail.
-    let inline tryUncons (xs: SkewBinaryRandomAccessList<'a>) = xs.TryUncons
+    let inline tryUncons (xs: SkewBinaryRandomAccessList<'T>) = xs.TryUncons
 
     ///O(log n), worst case. Returns random access list with element updated by index.
-    let inline update i y (xs: SkewBinaryRandomAccessList<'a>) = xs.Update i y
+    let inline update i y (xs: SkewBinaryRandomAccessList<'T>) = xs.Update i y
 
     ///O(log n), worst case. Returns option random access list with element updated by index.
-    let inline tryUpdate i y (xs: SkewBinaryRandomAccessList<'a>) = xs.TryUpdate i y
+    let inline tryUpdate i y (xs: SkewBinaryRandomAccessList<'T>) = xs.TryUpdate i y

@@ -8,7 +8,6 @@ namespace FSharpx.DataStructures
 
 #nowarn "44"
 open FSharpx.Collections
-open LazyListHelpr
 open System.Collections
 open System.Collections.Generic
 
@@ -26,7 +25,7 @@ type BankersQueue<'a> (frontLength : int, front : LazyList<'a>, backLength : int
     static member private check (q : BankersQueue<'a>) =
         if q.backLength <= q.frontLength
         then q
-        else BankersQueue((q.backLength + q.frontLength), (LazyList.append q.front (lLrev q.back)), 0, LazyList.empty)
+        else BankersQueue((q.backLength + q.frontLength), (LazyList.append q.front (LazyList.rev q.back)), 0, LazyList.empty)
 
     static member private length (q : BankersQueue<'a>) = q.frontLength + q.backLength
 
@@ -120,7 +119,7 @@ type BankersQueue<'a> (frontLength : int, front : LazyList<'a>, backLength : int
         member this.GetEnumerator() = 
             let e = seq {
                   yield! front
-                  yield! (lLrev back)  }
+                  yield! (LazyList.rev back)  }
             e.GetEnumerator()
 
         member this.GetEnumerator() = (this :> _ seq).GetEnumerator() :> IEnumerator

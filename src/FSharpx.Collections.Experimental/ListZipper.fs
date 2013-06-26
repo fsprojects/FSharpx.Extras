@@ -4,7 +4,7 @@ module FSharpx.Collections.Experimental.ListZipper
 
 #nowarn "25"
 /// A zipper for lists
-type 'a ListZipper = { Focus : 'a list; Path : 'a list } 
+type ListZipper<'T> = { Focus : 'T list; Path : 'T list } 
 
 /// Returns the head element from the list under focus
 let focus zipper =

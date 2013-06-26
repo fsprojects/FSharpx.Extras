@@ -3,9 +3,10 @@
 module FSharpx.Collections.Experimental.BinaryTreeZipper
 
 /// A simple binary tree
-type 'a BinaryTree=
+type BinaryTree<'T> =
    | Leaf
-   | Branch of 'a * 'a BinaryTree * 'a BinaryTree
+   | Branch of 'T * BinaryTree<'T> * BinaryTree<'T>
+
 
 /// Creates a new branch with the label x and two leafs as subbranches
 let branch x = Branch(x,Leaf,Leaf)
@@ -13,9 +14,9 @@ let branch x = Branch(x,Leaf,Leaf)
 type TreeDirection =  Left | Right
 
 /// The zipper datastructure for binary trees
-type 'a BinaryTreeZipper  = { 
-  Focus:'a BinaryTree
-  Path: (TreeDirection * 'a * 'a BinaryTree) list }
+type BinaryTreeZipper<'T> = { 
+  Focus:BinaryTree<'T>
+  Path: (TreeDirection * 'T * BinaryTree<'T>) list }
 
 open FSharpx
 
@@ -59,7 +60,7 @@ let inline getMove direction =
     | Right -> right
     
 /// Moves the zipper in the directions of the given list
-let rec move directions (z:'a BinaryTreeZipper) =
+let rec move directions (z:BinaryTreeZipper<'T>) =
     directions
       |> Seq.map getMove
       |> Seq.fold (|>) z       

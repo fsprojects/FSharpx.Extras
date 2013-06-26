@@ -9,7 +9,7 @@ namespace FSharpx.Collections.Experimental
 open System.Collections
 open System.Collections.Generic
  
-type PhysicistQueue<'a> (prefix : list<'a>, frontLength : int, front : Lazy<list<'a>>, rBackLength : int, rBack : list<'a>) = 
+type PhysicistQueue<'T> (prefix : list<'T>, frontLength : int, front : Lazy<list<'T>>, rBackLength : int, rBack : list<'T>) = 
 
     member internal this.prefix = prefix
 
@@ -21,21 +21,21 @@ type PhysicistQueue<'a> (prefix : list<'a>, frontLength : int, front : Lazy<list
 
     member internal this.rBack = rBack
 
-    static member private checkw (q : PhysicistQueue<'a>) =
+    static member private checkw (q : PhysicistQueue<'T>) =
         match q.prefix with
         | [] -> PhysicistQueue(q.front.Value, q.frontLength, q.front, q.rBackLength, q.rBack)
         | _ -> q
 
-    static member private check (q : PhysicistQueue<'a>) =
+    static member private check (q : PhysicistQueue<'T>) =
         if q.rBackLength <= q.frontLength then
             PhysicistQueue.checkw q
         else
             PhysicistQueue(q.front.Value, (q.frontLength + q.rBackLength),  (lazy (q.rBack |> List.rev |> List.append q.front.Value)), 0, [])
             |> PhysicistQueue.checkw
 
-    static member private length (q : PhysicistQueue<'a>) = q.frontLength + q.rBackLength
+    static member private length (q : PhysicistQueue<'T>) = q.frontLength + q.rBackLength
 
-    static member internal Empty() = PhysicistQueue<'a>([], 0, lazy [], 0, []) 
+    static member internal Empty() = PhysicistQueue<'T>([], 0, lazy [], 0, []) 
 
     static member internal fold (f : ('State -> 'T -> 'State)) (state : 'State) (q : PhysicistQueue<'T>)  :  'State =        
         let s = 
@@ -52,10 +52,10 @@ type PhysicistQueue<'a> (prefix : list<'a>, frontLength : int, front : Lazy<list
             then (List.foldBack f q.prefix s)
             else (List.foldBack f q.front.Value s)
 
-    static member internal OfList (xs:list<'a>) = PhysicistQueue<'a>(xs, xs.Length, (lazy xs), 0, [])
+    static member internal OfList (xs:list<'T>) = PhysicistQueue<'T>(xs, xs.Length, (lazy xs), 0, [])
 
-    static member internal OfSeq (xs:seq<'a>) = 
-        PhysicistQueue<'a>((List.ofSeq xs), (Seq.length xs), (lazy (List.ofSeq xs)), 0, [])
+    static member internal OfSeq (xs:seq<'T>) = 
+        PhysicistQueue<'T>((List.ofSeq xs), (Seq.length xs), (lazy (List.ofSeq xs)), 0, [])
    
     ///O(1), amortized. Returns the first element.
     member this.Head =
@@ -78,8 +78,8 @@ type PhysicistQueue<'a> (prefix : list<'a>, frontLength : int, front : Lazy<list
     ///O(1). Returns queue reversed.
     member this.Rev = 
         if (prefix.Length = frontLength)
-        then PhysicistQueue<'a>(rBack, rBackLength, (lazy rBack), frontLength, prefix) |> PhysicistQueue.check
-        else PhysicistQueue<'a>(rBack, rBackLength, (lazy rBack), frontLength, front.Value) |> PhysicistQueue.check
+        then PhysicistQueue<'T>(rBack, rBackLength, (lazy rBack), frontLength, prefix) |> PhysicistQueue.check
+        else PhysicistQueue<'T>(rBack, rBackLength, (lazy rBack), frontLength, front.Value) |> PhysicistQueue.check
 
     ///O(1), amortized. Returns a new queue with the element added to the end.
     member this.Snoc x = 
@@ -113,8 +113,7 @@ type PhysicistQueue<'a> (prefix : list<'a>, frontLength : int, front : Lazy<list
         | hd::_ -> Some(hd, (PhysicistQueue(prefix.Tail, (frontLength - 1), (lazy front.Value.Tail), rBackLength, rBack) |> PhysicistQueue.check))
         | _ -> None
 
-    with
-    interface IQueue<'a> with
+    interface IQueue<'T> with
 
         member this.Count() = this.Length
 
@@ -144,7 +143,7 @@ type PhysicistQueue<'a> (prefix : list<'a>, frontLength : int, front : Lazy<list
             | None -> None
             | Some(x, q) -> Some(x, q :> _)
           
-    interface IEnumerable<'a> with
+    interface IEnumerable<'T> with
 
         member this.GetEnumerator() = 
             let e = seq {
@@ -158,7 +157,7 @@ type PhysicistQueue<'a> (prefix : list<'a>, frontLength : int, front : Lazy<list
 module PhysicistQueue =
     //pattern discriminators
 
-    let (|Cons|Nil|) (q : PhysicistQueue<'a>) = match q.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
+    let (|Cons|Nil|) (q : PhysicistQueue<'T>) = match q.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
 
     ///O(1). Returns queue of no elements.
     let empty() = PhysicistQueue.Empty()
@@ -170,16 +169,16 @@ module PhysicistQueue =
     let foldBack (f : ('T -> 'State -> 'State)) (q : PhysicistQueue<'T>) (state : 'State) =  PhysicistQueue<_>.foldBack f q state
 
     ///O(1), amortized. Returns the first element.
-    let inline head (q : PhysicistQueue<'a>) = q.Head
+    let inline head (q : PhysicistQueue<'T>) = q.Head
 
     ///O(1), amortized. Returns option first element.
-    let inline tryGetHead (q : PhysicistQueue<'a>) = q.TryGetHead
+    let inline tryGetHead (q : PhysicistQueue<'T>) = q.TryGetHead
 
     ///O(1). Returns true if the queue has no elements.
-    let inline isEmpty (q : PhysicistQueue<'a>) = q.IsEmpty
+    let inline isEmpty (q : PhysicistQueue<'T>) = q.IsEmpty
 
     ///O(1). Returns the count of elememts.
-    let inline length (q : PhysicistQueue<'a>) = q.Length
+    let inline length (q : PhysicistQueue<'T>) = q.Length
 
     ///O(1). Returns a queue of the list.
     let ofList xs = PhysicistQueue.OfList xs
@@ -188,19 +187,19 @@ module PhysicistQueue =
     let ofSeq xs = PhysicistQueue.OfSeq xs
 
     ///O(1). Returns queue reversed.
-    let inline rev (q : PhysicistQueue<'a>) = q.Rev
+    let inline rev (q : PhysicistQueue<'T>) = q.Rev
 
     ///O(1), amortized. Returns a new queue with the element added to the end.
-    let inline snoc (x : 'a) (q : PhysicistQueue<'a>) = (q.Snoc x) 
+    let inline snoc (x : 'T) (q : PhysicistQueue<'T>) = (q.Snoc x) 
 
     ///O(1), amortized. Returns a new queue of the elements trailing the first element.
-    let inline tail (q : PhysicistQueue<'a>) = q.Tail 
+    let inline tail (q : PhysicistQueue<'T>) = q.Tail 
 
     ///O(1), amortized. Returns option queue of the elements trailing the first element.
-    let inline tryGetTail (q : PhysicistQueue<'a>) = q.TryGetTail 
+    let inline tryGetTail (q : PhysicistQueue<'T>) = q.TryGetTail 
 
     ///O(1), amortized. Returns the first element and tail.
-    let inline uncons (q : PhysicistQueue<'a>) = q.Uncons
+    let inline uncons (q : PhysicistQueue<'T>) = q.Uncons
 
     ///O(1), amortized. Returns option first element and tail.
-    let inline tryUncons (q : PhysicistQueue<'a>) = q.TryUncons
+    let inline tryUncons (q : PhysicistQueue<'T>) = q.TryUncons

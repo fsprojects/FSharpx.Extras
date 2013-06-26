@@ -6,7 +6,7 @@ open System.Collections
 open System.Collections.Generic
 open FSharpx
 
-type RingBuffer<'a>(position:int, values:seq<'a>) =
+type RingBuffer<'T>(position:int, values:seq<'T>) =
     let buffer = values |> Seq.toArray     
     let mutable position = position
 
@@ -41,7 +41,7 @@ type RingBuffer<'a>(position:int, values:seq<'a>) =
     member x.TryAdvance(offset) =
         if offset >= 0 then
             for i in 0 .. offset - 1 do
-                x.Buffer.[x.IndexOffset(x.Position, i)] <- Unchecked.defaultof<'a>
+                x.Buffer.[x.IndexOffset(x.Position, i)] <- Unchecked.defaultof<'T>
             x.Position <- x.IndexOffset(x.Position, offset)
             Some(x.Position)
         else
@@ -60,7 +60,7 @@ type RingBuffer<'a>(position:int, values:seq<'a>) =
         x.Position <- 0
 
     member x.Clone() = 
-        RingBuffer<'a>(x.Position, x.ToArray())
+        RingBuffer<'T>(x.Position, x.ToArray())
 
 module RingBuffer =
-    let create (seq: 'a seq) = new RingBuffer<'a>(seq)
+    let create (seq: 'T seq) = new RingBuffer<'T>(seq)

@@ -22,6 +22,7 @@ module Core =
     open System.Threading
     
     [<AbstractClass>]
+    /// A base type for transactional variables
     type TVar() =
         static let nextId = ref 0
         let _id = Interlocked.Increment(nextId)
@@ -30,6 +31,7 @@ module Core =
             member __.CompareTo(other) = _id.CompareTo(other.Id)
     
     [<Sealed>]
+    /// A transactional variable 
     type TVar<'T> internal (value: 'T, cmp: IEqualityComparer<'T>) =
         inherit TVar()
         let mutable _value = value
@@ -54,6 +56,7 @@ module Core =
         member internal __.NewValue 
             with get () = _newValue
             and set value = _newValue <- value
+
         interface IEntry with
             member __.Location = location :> _
             member __.Commit() = location.Value <- _newValue
@@ -85,15 +88,20 @@ module Core =
         inherit Exception()
     
     [<Sealed; AllowNullLiteral>]
+    /// A transactional memory log
     type TLog private (outer) =
         static let locker = obj()
         let log = SortedDictionary<TVar,IEntry>()
         private new () = TLog(null)
         member private __.Log = log
         member private __.Outer = outer
+
         static member NewTVarClass(value) = TVar<_>(value, ReferenceEqualityComparer())
+
         static member NewTVarStruct(value) = TVar<_>(value, EquatableEqualityComparer())
+
         static member NewTVarBoxedStruct(value) = TVar<_>(value, AnyEqualityComparer())
+
         static member NewTVar(value: 'T) =
             let ty = typeof<'T>
             let ect =
@@ -102,6 +110,7 @@ module Core =
                 else typedefof<AnyEqualityComparer<_>>
             let cmp = Activator.CreateInstance(ect.MakeGenericType(ty)) :?> _
             TVar<_>(value, cmp)
+
         member this.ReadTVar(location) =
             let rec loop (trans: TLog) =
                 match trans.Log.TryGetValue(location) with
@@ -114,32 +123,40 @@ module Core =
                         entry.OldValue
                     | outer -> loop outer
             loop this
+
         member __.WriteTVar(location, value: 'T) =
             match log.TryGetValue(location) with
             | true, (:? Entry<'T> as entry) -> entry.NewValue <- value
             | _ ->
                 let entry = Entry<_>(location, value)
                 log.Add(location, entry)
+
         member private __.IsValidSingle() =
             log.Values |> Seq.forall (fun entry -> entry.IsValid())
+
         member internal this.IsValid() =
             this.IsValidSingle() && (obj.ReferenceEquals(outer, null) || outer.IsValid())
+
         member internal __.Commit() =
             match outer with
             | null -> for entry in log.Values do entry.Commit()
             | _ -> raise (InvalidOperationException())
+
         member internal this.StartNested() = TLog(this)
+
         member internal __.MergeNested() =
             for innerEntry in log.Values do
                 match outer.Log.TryGetValue(innerEntry.Location) with
                 | true, outerEntry -> innerEntry.MergeNested(outerEntry)
                 | _ -> outer.Log.Add(innerEntry.Location, innerEntry)
+
         member internal __.Wait() = ()
         member internal __.UnWait() = ()
         member private __.Lock() = Monitor.Enter(locker)
         member private __.UnLock() = Monitor.Exit(locker)
         member private __.Block() = Monitor.Wait(locker) |> ignore
         member private __.Signal() = Monitor.PulseAll(locker)
+
         static member Atomic<'T>(p: TLog -> 'T) =
             let trans = TLog()
             let rec loop() =
@@ -183,10 +200,14 @@ module Core =
                 else trans.UnLock()
                 cont()
             loop()
+
         static member Atomic(p: TLog -> unit) = TLog.Atomic<_>(p) |> ignore
+
         member __.Retry() =
             raise (RetryException())
+
         member this.Retry() = this.Retry() |> ignore
+
         member this.OrElse<'T>(p: TLog -> 'T, q: TLog -> 'T) =
             let first = this.StartNested()
             try
@@ -245,26 +266,27 @@ module Core =
                         first.MergeNested()
                         reraise()
                     else raise (CommitFailedException())
+
         member this.OrElse(p: TLog -> unit, q: TLog -> unit) = this.OrElse<_>(p, q) |> ignore
     
-    type Stm<'a> = (TLog -> 'a)
+    type Stm<'T> = (TLog -> 'T)
     
-    let newTVar (value : 'a) : TVar<'a> =
+    let newTVar (value : 'T) : TVar<'T> =
         TLog.NewTVar(value)
       
-    let readTVar (ref : TVar<'a>) : Stm<'a> =
+    let readTVar (ref : TVar<'T>) : Stm<'T> =
         fun trans -> trans.ReadTVar(ref)
       
-    let writeTVar (ref : TVar<'a>) (value : 'a) : Stm<unit> =
+    let writeTVar (ref : TVar<'T>) (value : 'T) : Stm<unit> =
         fun trans -> trans.WriteTVar(ref, value)
     
-    let retry () : Stm<'a> = 
+    let retry () : Stm<'T> = 
         fun trans -> trans.Retry<_>()
     
-    let orElse (a : Stm<'a>) (b : Stm<'a>) : Stm<'a> = 
+    let orElse (a : Stm<'T>) (b : Stm<'T>) : Stm<'T> = 
         fun trans -> trans.OrElse<_>((fun x -> a x), (fun x -> b x))
       
-    let atomically (a : Stm<'a>) : 'a =
+    let atomically (a : Stm<'T>) : 'T =
         TLog.Atomic<_>(fun x -> a x)
       
     type StmBuilder () =
@@ -305,11 +327,11 @@ module ArrayQueue =
     open System.Threading
     open System.Collections.Generic
     
-    type Queue<'a> = {
+    type Queue<'T> = {
         head : TVar<int>
         used : TVar<int>
         len : int
-        a : TVar<'a>[] }
+        a : TVar<'T>[] }
     
     let newQueueClass n = {
         head = newTVar 0;
@@ -363,9 +385,9 @@ module ListQueue =
     open System.Threading
     open System.Collections.Generic
     
-    type Node<'a> = Cons of 'a * TVar<Node<'a> > | Nil
+    type Node<'T> = Cons of 'T * TVar<Node<'T> > | Nil
     
-    type Queue<'a> = { head : TVar<Node<'a> >; last : TVar<Node<'a> > }
+    type Queue<'T> = { head : TVar<Node<'T> >; last : TVar<Node<'T> > }
     
     let new_queue () = { head = newTVar Nil; last = newTVar Nil }
     
@@ -380,13 +402,13 @@ module ListQueue =
     let ifM p x = if p then x else stm.Return(())
     
     let dequeue queue =
-        let is_nil node = match node with Nil -> true | _ -> false
+        let isNil node = match node with Nil -> true | _ -> false
         stm { let! oldHead = readTVar queue.head
               return! match oldHead with
                       | Cons (item, next) -> 
                           stm { let! newHead = readTVar next
                                 do! writeTVar queue.head newHead
-                                do! ifM (is_nil newHead) (writeTVar queue.last Nil)
+                                do! ifM (isNil newHead) (writeTVar queue.last Nil)
                                 return item }
                       | Nil -> retry () }
     

@@ -6,11 +6,13 @@ open System.Collections
 open System.Collections.Generic
 open FSharpx.Collections
 
-type Timeseries<'a>(startDate:DateTimeOffset, granularity:TimeSpan, position:int, values:seq<'a>) = 
-    let buffer = RingBuffer<'a>(position, values)
+type Timeseries<'T>(startDate:DateTimeOffset, granularity:TimeSpan, position:int, values:seq<'T>) = 
+
+    let buffer = RingBuffer<'T>(position, values)
+
     let mutable startDate = startDate
 
-    let convertToGranularity (targetGran:TimeSpan) (currGran:TimeSpan) (values:seq<'a>) =
+    let convertToGranularity (targetGran:TimeSpan) (currGran:TimeSpan) (values:seq<'T>) =
         if currGran = targetGran then 
             values 
         elif currGran > targetGran then
@@ -20,7 +22,7 @@ type Timeseries<'a>(startDate:DateTimeOffset, granularity:TimeSpan, position:int
             let ratio = targetGran.TotalMinutes / currGran.TotalMinutes |> int
             values |> Seq.contract ratio
     
-    let convertToSeries (startDate:DateTimeOffset) (gran:TimeSpan) (seq:'a[]) =
+    let convertToSeries (startDate:DateTimeOffset) (gran:TimeSpan) (seq:'T[]) =
         Array.mapi (fun i x -> startDate.AddMinutes((i |> float) * gran.TotalMinutes), x) seq
 
     let offset (a:DateTimeOffset) (b:DateTimeOffset) = 
@@ -72,7 +74,7 @@ type Timeseries<'a>(startDate:DateTimeOffset, granularity:TimeSpan, position:int
         | Some(startDate) -> startDate
         | None -> invalidArg "toDate" "the toDate must be greater than or equal to the start date of the Timeseries"
 
-    member x.Insert(op:('a -> 'a -> 'a), startDate:DateTimeOffset, gran:TimeSpan, dataToInsert:seq<'a>) =
+    member x.Insert(op:('T -> 'T -> 'T), startDate:DateTimeOffset, gran:TimeSpan, dataToInsert:seq<'T>) =
         let data = dataToInsert |> convertToGranularity x.Granularity gran |> Seq.toArray
         let offsetIndex = offset x.StartDate startDate
         if offsetIndex < 0 then
@@ -81,8 +83,8 @@ type Timeseries<'a>(startDate:DateTimeOffset, granularity:TimeSpan, position:int
         else
             x.Buffer.Insert(op, offsetIndex, data)
 
-    member x.Merge(f:('a -> 'a -> 'a), ts:Timeseries<'a>) =
+    member x.Merge(f:('T -> 'T -> 'T), ts:Timeseries<'T>) =
         x.Insert(f, ts.StartDate, ts.Granularity, ts.Buffer.ToArray())
 
     member x.Clone() = 
-        Timeseries<'a>(x.StartDate, x.Granularity, x.Buffer.Position, x.Buffer.ToArray())     
+        Timeseries<'T>(x.StartDate, x.Granularity, x.Buffer.Position, x.Buffer.ToArray())     
