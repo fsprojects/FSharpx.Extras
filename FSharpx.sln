@@ -66,6 +66,7 @@ EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.Collections.Tests", "tests\FSharpx.Collections.Tests\FSharpx.Collections.Tests.fsproj", "{B397365B-F6EF-4ABC-94F1-8F6EA900BF20}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.Core.Tests", "FSharpx.Core.Tests\FSharpx.Core.Tests.fsproj", "{AD500A06-96ED-408C-9472-262CDC2A119B}"
+EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.Text.StructuredFormat", "src\FSharpx.Text.StructuredFormat\FSharpx.Text.StructuredFormat.fsproj", "{65E077ED-F51A-42D7-8004-E90D60AF8B8F}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.Text.StructuredFormat.Tests", "tests\FSharpx.Text.StructuredFormat.Tests\FSharpx.Text.StructuredFormat.Tests.fsproj", "{FBE1E618-4F32-4305-95C0-B0FFBAD24EF7}"
