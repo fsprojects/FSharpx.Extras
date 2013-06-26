@@ -8,14 +8,14 @@ type Queue<'T> (front : list<'T>, rBack : list<'T>) =
     member internal this.rBack = rBack
 
     override this.GetHashCode() =
-            match !hashCode with
-            | None ->
-                let mutable hash = 1
-                for x in this do
-                    hash <- 31 * hash + Unchecked.hash x
-                hashCode := Some hash
-                hash
-            | Some hash -> hash
+        match !hashCode with
+        | None ->
+            let mutable hash = 1
+            for x in this do
+                hash <- 31 * hash + Unchecked.hash x
+            hashCode := Some hash
+            hash
+        | Some hash -> hash
 
     override this.Equals(other) =
         match other with
@@ -82,8 +82,6 @@ type Queue<'T> (front : list<'T>, rBack : list<'T>) =
             | f, r -> Some(hd, Queue(f, r))
         | _ -> None
 
-    with
-              
     interface System.Collections.Generic.IEnumerable<'T> with
 
         member this.GetEnumerator() = 

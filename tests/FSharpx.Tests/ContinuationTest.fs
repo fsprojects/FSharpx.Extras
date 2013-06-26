@@ -48,16 +48,16 @@ let ``When running a coroutine it should yield elements in turn``() =
   let actual = System.Text.StringBuilder()
   let coroutine = Coroutine()
   coroutine.Put(fun yield' -> cont {
-    actual.Append("A")
+    actual.Append("A") |> ignore
     do! yield'()
-    actual.Append("B")
+    actual.Append("B") |> ignore
     do! yield'()
-    actual.Append("C")
+    actual.Append("C") |> ignore
   })
   coroutine.Put(fun yield' -> cont {
-    actual.Append("1")
+    actual.Append("1") |> ignore
     do! yield'()
-    actual.Append("2")
+    actual.Append("2") |> ignore
   })
   coroutine.Run()
   actual.ToString() |> should equal "A1B2C"

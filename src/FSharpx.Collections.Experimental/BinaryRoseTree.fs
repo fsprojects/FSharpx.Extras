@@ -13,21 +13,24 @@ open System.Runtime.CompilerServices
 /// Adapted from @mausch F# adaptation of Experimental.RoseTree.
 // Ported from http://hackage.haskell.org/packages/archive/containers/latest/doc/html/src/Data-Tree.html
 [<CustomEquality; NoComparison>]
-type 'a BinaryRoseTree = //{ Root: 'a; Children: 'a BinaryRoseTree Vector }
+type BinaryRoseTree<'T> = //{ Root: 'T; Children: 'T BinaryRoseTree Vector }
     | Nil
-    | Node of 'a * 'a BinaryRoseTree * 'a BinaryRoseTree
-    with
+    | Node of 'T * BinaryRoseTree<'T> * BinaryRoseTree<'T>
     override x.Equals y = 
         match y with
-        | :? BinaryRoseTree<'a> as y ->
+        | :? BinaryRoseTree<'T> as y ->
             (x :> _ IEquatable).Equals y
         | _ -> false
-    //override x.GetHashCode() = (x :> _ seq).GetHashCode()  //to do: this will stackoverflow
 
-    interface IEquatable<'a BinaryRoseTree> with
+    override x.GetHashCode() = 
+        let mutable hash = 1
+        for v in x do hash <- 31 * hash + Unchecked.hash v
+        hash
+
+    interface IEquatable<BinaryRoseTree<'T>> with
         member x.Equals y = x.SequenceEqual y      
             
-    interface IEnumerable<'a> with
+    interface IEnumerable<'T> with
         member x.GetEnumerator() =
             (let rec loop x =
                 seq {
@@ -42,13 +45,13 @@ type 'a BinaryRoseTree = //{ Root: 'a; Children: 'a BinaryRoseTree Vector }
             loop x).GetEnumerator()
         
         member x.GetEnumerator() =
-            (x :> _ seq).GetEnumerator() :> IEnumerator 
+            (x :> seq<'T>).GetEnumerator() :> IEnumerator 
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module BinaryRoseTree =
 
-    let inline createTree root (children : BinaryRoseTree<'a>) = Node(root, children, Nil)
-    let inline createForest root (children : BinaryRoseTree<'a>) (sibling : BinaryRoseTree<'a>) = Node(root, children, sibling)
+    let inline createTree root (children : BinaryRoseTree<'T>) = Node(root, children, Nil)
+    let inline createForest root (children : BinaryRoseTree<'T>) (sibling : BinaryRoseTree<'T>) = Node(root, children, sibling)
 
     let empty = Nil
     let inline singleton root = createTree root Nil

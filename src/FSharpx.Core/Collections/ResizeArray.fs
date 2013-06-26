@@ -126,7 +126,7 @@ module ResizeArray =
         for i = 0 to len1 - 1 do 
             f.Invoke(arr1.[i], arr2.[i])
 
-    let map2 f (arr1: ResizeArray<'T>) (arr2: ResizeArray<'b>) = 
+    let map2 f (arr1: ResizeArray<'T>) (arr2: ResizeArray<'T2>) = 
         let f = FSharpFunc<_,_,_>.Adapt(f)
         let len1 = length arr1
         if len1 <> length arr2 then invalidArg "arr2" "the arrays have different lengths"
@@ -232,7 +232,7 @@ module ResizeArray =
             res <- f.Invoke(res,arr1.[i],arr2.[i])
         res
 
-    let foldBack2 f (arr1: ResizeArray<'T1>) (arr2: ResizeArray<'T2>) (acc: 'b) =
+    let foldBack2 f (arr1: ResizeArray<'T1>) (arr2: ResizeArray<'T2>) (acc: 'State) =
         let f = FSharpFunc<_,_,_,_>.Adapt(f)
         let mutable res = acc 
         let len = length arr1
@@ -249,14 +249,14 @@ module ResizeArray =
         
     let isEmpty (arr: ResizeArray<_>) = length (arr: ResizeArray<_>) = 0
     
-    let iteri2 f (arr1: ResizeArray<'T>) (arr2: ResizeArray<'b>) =
+    let iteri2 f (arr1: ResizeArray<'T>) (arr2: ResizeArray<'T2>) =
         let f = FSharpFunc<_,_,_,_>.Adapt(f)
         let len1 = length arr1
         if len1 <> length arr2 then invalidArg "arr2" "the arrays have different lengths"
         for i = 0 to len1 - 1 do 
             f.Invoke(i,arr1.[i], arr2.[i])
 
-    let mapi2 (f: int -> 'T -> 'b -> 'c) (arr1: ResizeArray<'T>) (arr2: ResizeArray<'b>) = 
+    let mapi2 (f: int -> 'T -> 'T2 -> 'c) (arr1: ResizeArray<'T>) (arr2: ResizeArray<'T2>) = 
         let f = FSharpFunc<_,_,_,_>.Adapt(f)
         let len1 = length arr1
         if len1 <> length arr2 then invalidArg "arr2" "the arrays have different lengths"
@@ -316,8 +316,8 @@ module ResizeArray =
             res2.Add(y)
         res1,res2
 
-    let combine (arr1: ResizeArray<'T>) (arr2: ResizeArray<'b>) = zip arr1 arr2
-    let split (arr: ResizeArray<_>) = unzip arr
+    let combine arr1 arr2 = zip arr1 arr2
+    let split arr = unzip arr
 
     let to_list arr = toList arr
     let of_list l = ofList l

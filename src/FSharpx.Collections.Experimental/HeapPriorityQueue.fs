@@ -3,16 +3,17 @@
 open FSharpx.Collections.Experimental.PairingHeap
 
 module HeapPriorityQueue =
-    let empty<'a when 'a : comparison> maxQueue = PairingHeap.empty maxQueue :> IPriorityQueue<'a>
 
-    let inline isEmpty (pq:IPriorityQueue<'a>) = pq.IsEmpty
+    let empty<'T when 'T : comparison> maxQueue = PairingHeap.empty maxQueue :> IPriorityQueue<'T>
 
-    let inline insert element (pq:IPriorityQueue<'a>) = pq.Insert element
+    let inline isEmpty (pq:IPriorityQueue<'T>) = pq.IsEmpty
 
-    let inline tryPeek (pq:IPriorityQueue<'a>) = pq.TryPeek()
+    let inline insert element (pq:IPriorityQueue<'T>) = pq.Insert element
 
-    let inline peek (pq:IPriorityQueue<'a>) = pq.Peek()
+    let inline tryPeek (pq:IPriorityQueue<'T>) = pq.TryPeek()
 
-    let inline tryPop (pq:IPriorityQueue<'a>) = pq.TryPop()
+    let inline peek (pq:IPriorityQueue<'T>) = pq.Peek()
 
-    let inline pop (pq:IPriorityQueue<'a>) = pq.Pop()
+    let inline tryPop (pq:IPriorityQueue<'T>) = pq.TryPop()
+
+    let inline pop (pq:IPriorityQueue<'T>) = pq.Pop()

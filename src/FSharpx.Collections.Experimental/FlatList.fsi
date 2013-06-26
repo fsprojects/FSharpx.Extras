@@ -3,6 +3,7 @@ namespace FSharpx.Collections.Experimental
 [<Struct>]
 type FlatList<'T> =
 
+    val internal array : 'T[]
     interface System.Collections.Generic.IEnumerable<'T>
     interface System.Collections.IEnumerable
 

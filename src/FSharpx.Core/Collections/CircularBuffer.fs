@@ -7,10 +7,10 @@ open System.Collections.Generic
 // NOTE: A special version for primitives would increase
 // performance for primitive types, especially for I/O,
 // byte-based operations.
-type CircularBuffer<'a> (bufferSize: int) =
+type CircularBuffer<'T> (bufferSize: int) =
     do if bufferSize <= 0 then invalidArg "bufferSize" "The bufferSize must be greater than 0."
 
-    let buffer = Array.zeroCreate<'a> bufferSize
+    let buffer = Array.zeroCreate<'T> bufferSize
     let mutable head = bufferSize - 1
     let mutable tail = 0
     let mutable length = 0
@@ -77,6 +77,6 @@ type CircularBuffer<'a> (bufferSize: int) =
             yield! loop() }
         loop().GetEnumerator()
 
-    interface IEnumerable<'a> with
+    interface IEnumerable<'T> with
         member this.GetEnumerator() = this.GetEnumerator()
         member this.GetEnumerator() = this.GetEnumerator() :> IEnumerator

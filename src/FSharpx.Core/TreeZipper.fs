@@ -4,12 +4,12 @@ module FSharpx.DataStructures.RealTimeQueue
 
 open FSharpx
 
-type RealTimeQueue<'a> = {
-    F: LazyList<'a> 
-    R: Lazy<list<'a>>
-    S: LazyList<'a> }
+type RealTimeQueue<'T> = {
+    F: LazyList<'T> 
+    R: Lazy<list<'T>>
+    S: LazyList<'T> }
 
-let empty<'a> : RealTimeQueue<'a> = { F = LazyList.empty; R = lazy []; S = LazyList.empty }
+let empty<'T> : RealTimeQueue<'T> = { F = LazyList.empty; R = lazy []; S = LazyList.empty }
 
 let isEmpty queue = LazyList.isEmpty queue.F
 

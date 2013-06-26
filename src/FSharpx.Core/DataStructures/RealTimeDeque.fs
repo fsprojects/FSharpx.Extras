@@ -10,7 +10,6 @@ namespace FSharpx.DataStructures
 
 #nowarn "44"
 open FSharpx.Collections
-open LazyListHelpr
 open System.Collections
 open System.Collections.Generic
 
@@ -44,17 +43,17 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
         let rec rotateDrop c f j r =
 
             let rec rotateRev c = function
-                | LazyList.Nil, r, a -> LazyList.append (lLrev r) a
+                | LazyList.Nil, r, a -> LazyList.append (LazyList.rev r) a
                 | LazyList.Cons(x, f), r, a ->
-                    let a' = lLdrop c r
-                    let b' = LazyList.append (LazyList.take c r) a |> lLrev
+                    let a' = LazyList.drop c r
+                    let b' = LazyList.append (LazyList.take c r) a |> LazyList.rev
                     LazyList.cons x (rotateRev c (f, a', b'))
 
             if j < c then
-              rotateRev c (f, lLdrop j r, LazyList.empty)
+              rotateRev c (f, LazyList.drop j r, LazyList.empty)
             else
               match f with
-              | LazyList.Cons(x, f') -> LazyList.cons x (rotateDrop c f' (j-c) (lLdrop c r))
+              | LazyList.Cons(x, f') -> LazyList.cons x (rotateDrop c f' (j-c) (LazyList.drop c r))
               | _ -> failwith "should not get there"
 
         let n = RealTimeDeque.length q
@@ -79,13 +78,13 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
             let i= n / 2
             let j = n - i
             let f' = LazyList.take i q.front
-            let r' = lLdrop i q.front |> lLrev |> LazyList.append q.rBack
+            let r' = LazyList.drop i q.front |> LazyList.rev |> LazyList.append q.rBack
             new RealTimeDeque<'a>(q.c, i, f', f', j, r', r')
         elif q.rBackLength > q.c * q.frontLength + 1 then
             let j = n / 2
             let i = n - j
             let r' = LazyList.take j q.rBack
-            let f' = lLdrop j q.rBack |> lLrev |> LazyList.append q.front
+            let f' = LazyList.drop j q.rBack |> LazyList.rev |> LazyList.append q.front
             new RealTimeDeque<'a>(q.c, i, f', f', j, r', r')
         else
             new RealTimeDeque<'a>(q.c, q.frontLength, q.front, q.front, q.rBackLength, q.rBack, q.rBack)
@@ -98,14 +97,14 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
         match (front2, front3, back2, back3) with 
         | a, b, c, d when (abs(xs.frontLength - d) <= abs(a - c)) && (abs(xs.frontLength - d) <= abs(a - ys.rBackLength) && (xs.frontLength > 0)) -> 
             new RealTimeDeque<'a>(cC, xs.frontLength, xs.front, LazyList.empty, 
-                (xs.rBackLength + ys.frontLength + ys.rBackLength), (LazyList.append ys.rBack (LazyList.append  (lLrev ys.front) xs.rBack)), LazyList.empty)
+                (xs.rBackLength + ys.frontLength + ys.rBackLength), (LazyList.append ys.rBack (LazyList.append  (LazyList.rev ys.front) xs.rBack)), LazyList.empty)
             |> RealTimeDeque.check2
         | a, b, c, d when (abs(a - c) <= abs(xs.frontLength - d)) && (abs(a - c) <= abs(a - ys.rBackLength)) -> 
-            new RealTimeDeque<'a>(cC, (xs.frontLength + xs.rBackLength), (LazyList.append xs.front (lLrev xs.rBack)), LazyList.empty, 
-                (ys.frontLength + ys.rBackLength), (LazyList.append ys.rBack (lLrev ys.front)), LazyList.empty)
+            new RealTimeDeque<'a>(cC, (xs.frontLength + xs.rBackLength), (LazyList.append xs.front (LazyList.rev xs.rBack)), LazyList.empty, 
+                (ys.frontLength + ys.rBackLength), (LazyList.append ys.rBack (LazyList.rev ys.front)), LazyList.empty)
             |> RealTimeDeque.check2
         | a, b, c, d ->
-            new RealTimeDeque<'a>(cC, (xs.frontLength + xs.rBackLength + ys.frontLength), (LazyList.append (LazyList.append xs.front (lLrev xs.rBack)) ys.front), LazyList.empty, 
+            new RealTimeDeque<'a>(cC, (xs.frontLength + xs.rBackLength + ys.frontLength), (LazyList.append (LazyList.append xs.front (LazyList.rev xs.rBack)) ys.front), LazyList.empty, 
                 ys.rBackLength, ys.rBack, LazyList.empty)
             |> RealTimeDeque.check2
 
@@ -117,7 +116,7 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
         |> RealTimeDeque.check2
 
     static member internal OfCatSeqsC c (xs : 'a seq) (ys : 'a seq) =
-        new RealTimeDeque<'a>(c, (Seq.length xs), (LazyList.ofSeq xs), LazyList.empty, (Seq.length ys), (lLrev (LazyList.ofSeq ys)), LazyList.empty)
+        new RealTimeDeque<'a>(c, (Seq.length xs), (LazyList.ofSeq xs), LazyList.empty, (Seq.length ys), (LazyList.rev (LazyList.ofSeq ys)), LazyList.empty)
         |> RealTimeDeque.check2
    
     static member internal OfSeqC c (xs:seq<'a>) = 
@@ -220,7 +219,7 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
             let newFront = 
                 if (i = 0) then LazyList.tail front
                 else 
-                    let left, right = lLsplit front i
+                    let left, right = LazyList.split front i
                     LazyList.append (List.rev left |> LazyList.ofList) right
 
             new RealTimeDeque<'a>(c, (lenF - 1), newFront, LazyList.empty, lenR, rear, LazyList.empty)
@@ -231,7 +230,7 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
             let newRear = 
                 if (n = 0) then LazyList.tail rear
                 else 
-                    let left, right = lLsplit rear n
+                    let left, right = LazyList.split rear n
                     LazyList.append (List.rev left |> LazyList.ofList) right
 
             new RealTimeDeque<'a>(c, lenF, front, LazyList.empty, (lenR - 1), newRear, LazyList.empty)
@@ -245,7 +244,7 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
             let newFront = 
                 if (i = 0) then LazyList.tail front
                 else 
-                    let left, right = lLsplit front i
+                    let left, right = LazyList.split front i
                     LazyList.append (List.rev left |> LazyList.ofList) right
 
             let z = new RealTimeDeque<'a>(c, (lenF - 1), newFront, LazyList.empty, lenR, rear, LazyList.empty) |> RealTimeDeque.check2
@@ -256,7 +255,7 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
             let newRear = 
                 if (n = 0) then LazyList.tail rear
                 else 
-                    let left, right = lLsplit rear n
+                    let left, right = LazyList.split rear n
                     LazyList.append (List.rev left |> LazyList.ofList) right
         
             let z = new RealTimeDeque<'a>(c, lenF, front, LazyList.empty, (lenR - 1), newRear, LazyList.empty) |> RealTimeDeque.check2
@@ -321,7 +320,7 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
             let newFront = 
                 if (i = 0) then LazyList.cons y (LazyList.tail front)
                 else 
-                    let left, right = lLsplit front i
+                    let left, right = LazyList.split front i
                     LazyList.append (List.rev left |> LazyList.ofList) (LazyList.cons y right)
 
             new RealTimeDeque<'a>(c, lenF, newFront, LazyList.empty, lenR, rear, LazyList.empty)
@@ -332,7 +331,7 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
             let newRear = 
                 if (n = 0) then LazyList.cons y (LazyList.tail rear)
                 else 
-                    let left, right = lLsplit rear n
+                    let left, right = LazyList.split rear n
                     LazyList.append (List.rev left |> LazyList.ofList) (LazyList.cons y right)
         
             new RealTimeDeque<'a>(c, lenF, front, LazyList.empty, lenR, newRear, LazyList.empty)
@@ -346,7 +345,7 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
             let newFront = 
                 if (i = 0) then LazyList.cons y (LazyList.tail front)
                 else 
-                    let left, right = lLsplit front i
+                    let left, right = LazyList.split front i
                     LazyList.append (List.rev left |> LazyList.ofList) (LazyList.cons y right)
 
             let z = new RealTimeDeque<'a>(c, lenF, newFront, LazyList.empty, lenR, rear, LazyList.empty) |> RealTimeDeque.check2
@@ -357,7 +356,7 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
             let newRear = 
                 if (n = 0) then LazyList.cons y (LazyList.tail rear)
                 else 
-                    let left, right = lLsplit rear n
+                    let left, right = LazyList.split rear n
                     LazyList.append (List.rev left |> LazyList.ofList) (LazyList.cons y right)
         
             let z = new RealTimeDeque<'a>(c, lenF, front, LazyList.empty, lenR, newRear, LazyList.empty) |> RealTimeDeque.check2
@@ -437,7 +436,7 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
         member this.GetEnumerator() = 
             let e = seq {
                   yield! front
-                  yield! (lLrev this.rBack)  }
+                  yield! (LazyList.rev this.rBack)  }
             e.GetEnumerator()
 
         member this.GetEnumerator() = (this :> _ seq).GetEnumerator() :> IEnumerator

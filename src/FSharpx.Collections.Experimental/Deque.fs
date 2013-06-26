@@ -11,23 +11,23 @@ open System.Collections
 open System.Collections.Generic
 open ListHelpr
 
-type Deque<'a> (front, rBack) = 
+type Deque<'T> (front, rBack) = 
 
-    static member private splitAux n (r:'a list) (acc:'a list) =
+    static member private splitAux n (r:'T list) (acc:'T list) =
         match r with
         | hd::tl when List.length acc < n ->
             Deque.splitAux n tl (hd::acc)
         | _ ->
             List.rev r, List.rev acc
 
-    static member private split (r:'a list) =
+    static member private split (r:'T list) =
         Deque.splitAux (List.length r / 2) r []
 
-    static member private checkf : 'a list * 'a list  -> 'a list * 'a list = function
+    static member private checkf : 'T list * 'T list  -> 'T list * 'T list = function
         | [], r -> Deque.split r
         | deq -> deq
 
-    static member private checkr : 'a list * 'a list  -> 'a list * 'a list = function
+    static member private checkr : 'T list * 'T list  -> 'T list * 'T list = function
         | f, [] ->
             let a, b = Deque.split f
             b, a
@@ -35,14 +35,14 @@ type Deque<'a> (front, rBack) =
 
     static member internal Empty() = Deque(List.Empty, List.Empty)
 
-    static member internal OfCatLists (xs : 'a list) (ys : 'a list) =
+    static member internal OfCatLists (xs : 'T list) (ys : 'T list) =
         match xs, ys with
-        | [], _ -> new Deque<'a>(Deque.checkf(xs, (List.rev ys)))
-        | _, [] -> new Deque<'a>(Deque.checkr(xs, (List.rev ys)))
-        | _, _ -> new Deque<'a>(xs, (List.rev ys))
+        | [], _ -> new Deque<'T>(Deque.checkf(xs, (List.rev ys)))
+        | _, [] -> new Deque<'T>(Deque.checkr(xs, (List.rev ys)))
+        | _, _ -> new Deque<'T>(xs, (List.rev ys))
         
-    static member internal OfSeq (xs:seq<'a>) = 
-        new Deque<'a>(Deque.checkr((List.ofSeq xs), []))
+    static member internal OfSeq (xs:seq<'T>) = 
+        new Deque<'T>(Deque.checkr((List.ofSeq xs), []))
 
     static member internal Singleton x = Deque([x], List.Empty)
 
@@ -67,7 +67,7 @@ type Deque<'a> (front, rBack) =
 
     ///O(1) amortized, O(n), worst case. Returns a new deque of the elements before the last element.
     member this.Init = 
-        let rec loop : 'a list * 'a list -> Deque<'a> = function
+        let rec loop : 'T list * 'T list -> Deque<'T> = function
             | [], [] -> raise Exceptions.Empty
             | f, hd::tl -> 
                 let f, r = Deque.checkr (f, tl)
@@ -78,7 +78,7 @@ type Deque<'a> (front, rBack) =
 
     ///O(1) amortized, O(n), worst case. Returns option deque of the elements before the last element.
     member this.TryGetInit = 
-        let rec loop : 'a list * 'a list -> Deque<'a> option = function
+        let rec loop : 'T list * 'T list -> Deque<'T> option = function
             | [], [] -> None
             | f, hd::tl -> 
                 let f, r = Deque.checkr (f, tl)
@@ -151,7 +151,7 @@ type Deque<'a> (front, rBack) =
                     let left, right = loop2Array (Array.create i (List.head front)) front (i-1)    
                     loopFromArray ((Seq.length left) - 1) left right 0
 
-            (new Deque<'a>(newFront, rear))
+            (new Deque<'T>(newFront, rear))
 
         | lenF, front, lenR, rear ->  
             let n = lenR - (i - lenF) - 1
@@ -161,7 +161,7 @@ type Deque<'a> (front, rBack) =
                     let left, right = loop2Array (Array.create n (List.head rear)) rear (n-1) 
                     loopFromArray ((Seq.length left) - 1) left right 0
 
-            (new Deque<'a>(Deque.checkf(front, newRear)))
+            (new Deque<'T>(Deque.checkf(front, newRear)))
 
     ///O(n), worst case. Returns option deque with element removed by index.
     member this.TryRemove (i:int) =
@@ -175,7 +175,7 @@ type Deque<'a> (front, rBack) =
                     let left, right = loop2Array (Array.create i (List.head front)) front (i-1) 
                     loopFromArray ((Seq.length left) - 1) left right 0
 
-            Some((new Deque<'a>(newFront, rear)))
+            Some((new Deque<'T>(newFront, rear)))
 
         | lenF, front, lenR, rear ->  
             let n = lenR - (i - lenF) - 1
@@ -185,11 +185,11 @@ type Deque<'a> (front, rBack) =
                     let left, right = loop2Array (Array.create n (List.head rear)) rear (n-1) 
                     loopFromArray ((Seq.length left) - 1) left right 0
 
-            Some((new Deque<'a>(Deque.checkf(front, newRear))))
+            Some((new Deque<'T>(Deque.checkf(front, newRear))))
 
     ///O(1). Returns deque reversed.
     member this.Rev = 
-        new Deque<'a>(rBack, front)
+        new Deque<'T>(rBack, front)
 
     ///O(1) amortized, O(n), worst case. Returns a new deque with the element added to the end.
     member this.Snoc x = 
@@ -198,7 +198,7 @@ type Deque<'a> (front, rBack) =
 
     ///O(1) amortized, O(n), worst case. Returns a new deque of the elements trailing the first element.
     member this.Tail =
-        let rec loop : 'a list * 'a list -> Deque<'a> = function
+        let rec loop : 'T list * 'T list -> Deque<'T> = function
             | [], [] -> raise Exceptions.Empty
             | hd::tl, r -> 
                 let f, r = Deque.checkf (tl, r)
@@ -208,7 +208,7 @@ type Deque<'a> (front, rBack) =
 
     ///O(1) amortized, O(n), worst case. Returns option deque of the elements trailing the first element.
     member this.TryGetTail =
-        let rec loop : 'a list * 'a list -> Deque<'a> option = function
+        let rec loop : 'T list * 'T list -> Deque<'T> option = function
             | [], [] -> None
             | hd::tl, r -> 
                 let f, r = Deque.checkf (tl, r)
@@ -241,7 +241,7 @@ type Deque<'a> (front, rBack) =
         | _, _ -> Some(this.Init, this.Last)
     
     ///O(n), worst case. Returns deque with element updated by index.
-    member this.Update (i:int) (y: 'a) =
+    member this.Update (i:int) (y: 'T) =
         match (List.length front), front, (List.length rBack), rBack with
         | lenF, front, lenR, rear when i > (lenF + lenR - 1) -> raise Exceptions.OutOfBounds
         | lenF, front, lenR, rear when i < lenF -> 
@@ -251,7 +251,7 @@ type Deque<'a> (front, rBack) =
                     let left, right = loop2Array (Array.create i (List.head front)) front (i-1) 
                     loopFromArray ((Seq.length left) - 1) left (y::right) 0
 
-            new Deque<'a>(Deque.checkf(newFront, rear))
+            new Deque<'T>(Deque.checkf(newFront, rear))
 
         | lenF, front, lenR, rear ->  
             let n = lenR - (i - lenF) - 1
@@ -261,10 +261,10 @@ type Deque<'a> (front, rBack) =
                     let left, right = loop2Array (Array.create n (List.head rear)) rear (n-1) 
                     loopFromArray ((Seq.length left) - 1) left (y::right) 0
         
-            new Deque<'a>(Deque.checkf(front, newRear))
+            new Deque<'T>(Deque.checkf(front, newRear))
 
     ///O(n), worst case. Returns option deque with element updated by index.
-    member this.TryUpdate (i:int) (y: 'a) =
+    member this.TryUpdate (i:int) (y: 'T) =
         match (List.length front), front, (List.length rBack), rBack with
         | lenF, front, lenR, rear when i > (lenF + lenR - 1) -> None
         | lenF, front, lenR, rear when i < lenF -> 
@@ -274,7 +274,7 @@ type Deque<'a> (front, rBack) =
                     let left, right = loop2Array (Array.create i (List.head front)) front (i-1) 
                     loopFromArray ((Seq.length left) - 1) left (y::right) 0
 
-            Some((new Deque<'a>(Deque.checkf(newFront, rear))))
+            Some((new Deque<'T>(Deque.checkf(newFront, rear))))
 
         | lenF, front, lenR, rear ->  
             let n = lenR - (i - lenF) - 1
@@ -284,10 +284,9 @@ type Deque<'a> (front, rBack) =
                     let left, right = loop2Array (Array.create n (List.head rear)) rear (n-1)
                     loopFromArray ((Seq.length left) - 1) left (y::right) 0
         
-            Some((new Deque<'a>(Deque.checkf(front, newRear))))
+            Some((new Deque<'T>(Deque.checkf(front, newRear))))
 
-    with
-    interface IDeque<'a> with
+    interface IDeque<'T> with
 
         member this.Cons x = this.Cons x :> _
 
@@ -356,7 +355,7 @@ type Deque<'a> (front, rBack) =
             | None -> None
             | Some(q) -> Some(q :> _)
 
-    interface IEnumerable<'a> with
+    interface IEnumerable<'T> with
 
         member this.GetEnumerator() = 
             let e = seq {
@@ -371,45 +370,45 @@ module Deque =
 
 //pattern discriminators
 
-    let (|Cons|Nil|) (q : Deque<'a>) = match q.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
+    let (|Cons|Nil|) (q : Deque<'T>) = match q.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
 
-    let (|Snoc|Nil|) (q : Deque<'a>) = match q.TryUnsnoc with Some(a,b) -> Snoc(a,b) | None -> Nil
+    let (|Snoc|Nil|) (q : Deque<'T>) = match q.TryUnsnoc with Some(a,b) -> Snoc(a,b) | None -> Nil
 
     ///O(n), worst case. Returns a new deque with the element added to the beginning.
-    let inline cons (x : 'a) (q : Deque<'a>) = q.Cons x 
+    let inline cons (x : 'T) (q : Deque<'T>) = q.Cons x 
 
     ///O(1). Returns deque of no elements.
     let empty() = Deque.Empty()
 
     ///O(1) amortized, O(n), worst case. Returns the first element.
-    let inline head (q : Deque<'a>) = q.Head
+    let inline head (q : Deque<'T>) = q.Head
 
     ///O(1) amortized, O(n), worst case. Returns option first element.
-    let inline tryGetHead (q : Deque<'a>) = q.TryGetHead
+    let inline tryGetHead (q : Deque<'T>) = q.TryGetHead
 
     ///O(1) amortized, O(n), worst case. Returns a new deque of the elements before the last element.
-    let inline init (q : Deque<'a>) = q.Init 
+    let inline init (q : Deque<'T>) = q.Init 
 
     ///O(1) amortized, O(n), worst case. Returns option deque of the elements before the last element.
-    let inline tryGetInit (q : Deque<'a>) = q.TryGetInit 
+    let inline tryGetInit (q : Deque<'T>) = q.TryGetInit 
 
     ///O(1). Returns true if the deque has no elements.
-    let inline isEmpty (q : Deque<'a>) = q.IsEmpty
+    let inline isEmpty (q : Deque<'T>) = q.IsEmpty
 
     ///O(1) amortized, O(n), worst case. Returns the last element.
-    let inline last (q : Deque<'a>) = q.Last
+    let inline last (q : Deque<'T>) = q.Last
 
     ///O(1) amortized, O(n), worst case. Returns option last element.
-    let inline tryGetLast (q : Deque<'a>) = q.TryGetLast
+    let inline tryGetLast (q : Deque<'T>) = q.TryGetLast
 
     ///O(1). Returns the count of elememts.
-    let inline length (q : Deque<'a>) = q.Length
+    let inline length (q : Deque<'T>) = q.Length
 
     ///O(n), worst case. Returns element by index.
-    let inline lookup i (q : Deque<'a>) = q.Lookup i
+    let inline lookup i (q : Deque<'T>) = q.Lookup i
 
     ///O(n), worst case. Returns option element by index.
-    let inline tryLookup i (q : Deque<'a>) = q.TryLookup i
+    let inline tryLookup i (q : Deque<'T>) = q.TryLookup i
 
     ///O(ys). Returns a deque of the two lists concatenated.
     let ofCatLists xs ys = Deque.OfCatLists xs ys
@@ -418,40 +417,40 @@ module Deque =
     let ofSeq xs = Deque.OfSeq xs
 
     ///O(n), worst case. Returns deque with element removed by index.
-    let inline remove i (q : Deque<'a>) = q.Remove i
+    let inline remove i (q : Deque<'T>) = q.Remove i
 
     ///O(n), worst case. Returns option deque with element removed by index.
-    let inline tryRemove i (q : Deque<'a>) = q.TryRemove i
+    let inline tryRemove i (q : Deque<'T>) = q.TryRemove i
 
     ///O(1). Returns deque reversed.
-    let inline rev (q : Deque<'a>) = q.Rev
+    let inline rev (q : Deque<'T>) = q.Rev
 
     ///O(1). Returns a deque of one element.
     let singleton x = Deque.Singleton x
 
     ///O(1) amortized, O(n), worst case. Returns a new deque with the element added to the end.
-    let inline snoc (x : 'a) (q : Deque<'a>) = (q.Snoc x) 
+    let inline snoc (x : 'T) (q : Deque<'T>) = (q.Snoc x) 
 
     ///O(1) amortized, O(n), worst case. Returns a new deque of the elements trailing the first element.
-    let inline tail (q : Deque<'a>) = q.Tail 
+    let inline tail (q : Deque<'T>) = q.Tail 
 
     ///O(1) amortized, O(n), worst case. Returns option deque of the elements trailing the first element.
-    let inline tryGetTail (q : Deque<'a>) = q.TryGetTail 
+    let inline tryGetTail (q : Deque<'T>) = q.TryGetTail 
 
     ///O(1) amortized, O(n), worst case. Returns the first element and tail.
-    let inline uncons (q : Deque<'a>) = q.Uncons
+    let inline uncons (q : Deque<'T>) = q.Uncons
 
     ///O(1) amortized, /O(n), worst case. Returns option first element and tail.
-    let inline tryUncons (q : Deque<'a>) = q.TryUncons
+    let inline tryUncons (q : Deque<'T>) = q.TryUncons
 
     ///O(1) amortized, O(n), worst case. Returns init and the last element.
-    let inline unsnoc (q : Deque<'a>) = q.Unsnoc
+    let inline unsnoc (q : Deque<'T>) = q.Unsnoc
 
     ///O(1) amortized, O(n), worst case. Returns option init and the last element.
-    let inline tryUnsnoc (q : Deque<'a>) = q.TryUnsnoc
+    let inline tryUnsnoc (q : Deque<'T>) = q.TryUnsnoc
 
     ///O(n), worst case. Returns deque with element updated by index.
-    let inline update i y (q : Deque<'a>) = q.Update i y
+    let inline update i y (q : Deque<'T>) = q.Update i y
 
     ///O(n), worst case. Returns option deque with element updated by index.
-    let inline tryUpdate i y (q : Deque<'a>) = q.TryUpdate i y
+    let inline tryUpdate i y (q : Deque<'T>) = q.TryUpdate i y

@@ -6,6 +6,8 @@ open System
 open System.IO
 open System.Text
 
+#nowarn "40"
+
 [<TestFixture>]
 type AsyncStreamReaderTest() =
     

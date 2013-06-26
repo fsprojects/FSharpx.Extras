@@ -8,22 +8,25 @@ open System.Runtime.CompilerServices
 /// Multi-way tree, also known as rose tree.
 // Ported from http://hackage.haskell.org/packages/archive/containers/latest/doc/html/src/Data-Tree.html
 [<CustomEquality; NoComparison>]
-type 'a RoseTree = { Root: 'a; Children: 'a RoseForest }
-    with
+type RoseTree<'T> = 
+    { Root: 'T; Children: RoseForest<'T> }
+
     override x.Equals y = 
         match y with
-        | :? RoseTree<'a> as y ->
+        | :? RoseTree<'T> as y ->
             (x :> _ IEquatable).Equals y
         | _ -> false
+
     override x.GetHashCode() = 
         391
         + (box x.Root).GetHashCode() * 23
         + x.Children.GetHashCode()
-    interface IEquatable<'a RoseTree> with
+
+    interface IEquatable<RoseTree<'T>> with
         member x.Equals y = 
             obj.Equals(x.Root, y.Root) && (x.Children :> _ seq).SequenceEqual y.Children
             
-and 'a RoseForest = 'a RoseTree LazyList
+and RoseForest<'T> = LazyList<RoseTree<'T>>
 
 module L = LazyList
 

@@ -19,8 +19,8 @@ type AsyncSeq<'T> = Async<AsyncSeqInner<'T>>
 /// The interanl type that represents a value returned as a result of
 /// evaluating a step of an asynchronous sequence
 and AsyncSeqInner<'T> =
-  | Nil
-  | Cons of 'T * AsyncSeq<'T>
+    | Nil
+    | Cons of 'T * AsyncSeq<'T>
 
 
 /// Module with helper functions for working with asynchronous sequences
@@ -92,16 +92,16 @@ module AsyncSeq =
  
   /// Implements the 'TryFinally' functionality for computation builder
   let rec internal tryFinally (input : AsyncSeq<'T>) compensation = asyncSeq {
-    let! v = tryNext input
-    match v with 
-    | Choice1Of2 Nil -> 
-        compensation()
-    | Choice1Of2 (Cons (h, t)) -> 
-        yield h
-        yield! tryFinally t compensation
-    | Choice2Of2 e -> 
-        compensation()
-        yield! raise e }
+      let! v = tryNext input
+      match v with 
+      | Choice1Of2 Nil -> 
+          compensation()
+      | Choice1Of2 (Cons (h, t)) -> 
+          yield h
+          yield! tryFinally t compensation
+      | Choice2Of2 e -> 
+          compensation()
+          yield! raise e }
 
   /// Creates an asynchronou sequence that iterates over the given input sequence.
   /// For every input element, it calls the the specified function and iterates
@@ -109,20 +109,23 @@ module AsyncSeq =
   /// This is the 'bind' operation of the computation expression (exposed using
   /// the 'for' keyword in asyncSeq computation).
   let rec collect f (input : AsyncSeq<'T>) : AsyncSeq<'TResult> = asyncSeq {
-    let! v = input
-    match v with
-    | Nil -> ()
-    | Cons(h, t) ->
-        yield! f h
-        yield! collect f t }
+      let! v = input
+      match v with
+      | Nil -> ()
+      | Cons(h, t) ->
+          yield! f h
+          yield! collect f t }
 
 
   // Add additional methods to the 'asyncSeq' computation builder
   type AsyncSeqBuilder with
+
     member x.TryFinally (body: AsyncSeq<'T>, compensation) = 
       tryFinally body compensation   
+
     member x.TryWith (body: AsyncSeq<_>, handler: (exn -> AsyncSeq<_>)) = 
       tryWith body handler
+
     member x.Using (resource:#IDisposable, binder) = 
       tryFinally (binder resource) (fun () -> 
         if box resource <> null then resource.Dispose())

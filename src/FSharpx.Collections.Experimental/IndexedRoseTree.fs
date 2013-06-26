@@ -11,18 +11,20 @@ open System.Runtime.CompilerServices
 /// Adapted from @mausch F# adaptation of Experimental.RoseTree.
 // Ported from http://hackage.haskell.org/packages/archive/containers/latest/doc/html/src/Data-Tree.html
 [<CustomEquality; NoComparison>]
-type 'a IndexedRoseTree = { Root: 'a; Children: 'a IndexedRoseTree Vector }
+type IndexedRoseTree<'T> = { Root: 'T; Children: Vector<IndexedRoseTree<'T>> }
     with
     override x.Equals y = 
         match y with
-        | :? IndexedRoseTree<'a> as y ->
-            (x :> _ IEquatable).Equals y
+        | :? IndexedRoseTree<'T> as y ->
+            (x :> IEquatable<_>).Equals y
         | _ -> false
+
     override x.GetHashCode() = 
         391
         + (box x.Root).GetHashCode() * 23
         + x.Children.GetHashCode()
-    interface IEquatable<'a IndexedRoseTree> with
+
+    interface IEquatable<IndexedRoseTree<'T>> with
         member x.Equals y = 
             obj.Equals(x.Root, y.Root) && (x.Children :> _ seq).SequenceEqual y.Children       
 

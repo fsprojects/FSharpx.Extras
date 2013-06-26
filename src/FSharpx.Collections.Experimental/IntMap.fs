@@ -9,11 +9,11 @@ open FSharpx.Collections
 
 #nowarn "25"
 
-type 'a IntMap =
+type IntMap<'T> =
     | Nil
-    | Tip of int * 'a
-    | Bin of int * int * 'a IntMap * 'a IntMap
-    with
+    | Tip of int * 'T
+    | Bin of int * int * IntMap<'T> * IntMap<'T>
+
     member x.FoldBackWithKey f z =
         let rec go z =
             function
@@ -27,7 +27,7 @@ type 'a IntMap =
     
     member x.ToList() = x.FoldBackWithKey (fun k x xs -> (k, x) :: xs) []
 
-    interface IEnumerable<int * 'a> with
+    interface IEnumerable<int * 'T> with
         member x.GetEnumerator() =
             (x.ToList() :> (_ * _) seq).GetEnumerator()
         
@@ -79,7 +79,7 @@ module IntMap =
         | Tip _ -> 1
         | Nil -> 0
 
-    ///O(min(n,W)). Lookup the value at a key in the map. Returns 'a option. Credit: Haskell.org
+    ///O(min(n,W)). Lookup the value at a key in the map. Returns 'T option. Credit: Haskell.org
     let rec tryFind k =
         function
         | Bin(p, m, l, r) when nomatch k p m -> None
@@ -780,7 +780,7 @@ module IntMap =
     ///O(n+m). Is this a proper submap? (ie. a submap but not equal). Defined as (isProperSubmapOf = isProperSubmapOfBy (==)). Credit: Haskell.org
     let isProperSubmapOf m1 m2 = isProperSubmapOfBy (=) m1 m2
 
-    let monoid<'a> = 
-        { new Monoid<'a IntMap>() with
+    let monoid<'T> = 
+        { new Monoid<'T IntMap>() with
             override x.Zero() = empty
             override x.Combine(a,b) = append a b }

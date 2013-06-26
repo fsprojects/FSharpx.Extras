@@ -877,9 +877,9 @@ type QuotationEvaluator() =
 [<AutoOpen>]
 module QuotationHelpers =
     /// Converts a Lambda quotation into a Linq Lamba Expression with 1 parameter
-    let toLinqExpression (exp : Quotations.Expr<'a -> 'b>) =
+    let toLinqExpression (exp : Quotations.Expr<'T -> 'U>) =
         let linq = Conv(exp, false) :?> MethodCallExpression
         let lambda = linq.Arguments.[0] :?> LambdaExpression
-        Expression.Lambda<Func<'a, 'b>>(lambda.Body, lambda.Parameters)
+        Expression.Lambda<Func<'T, 'U>>(lambda.Body, lambda.Parameters)
 
     

@@ -10,7 +10,6 @@ namespace FSharpx.DataStructures
 
 #nowarn "44"
 open FSharpx.Collections
-open LazyListHelpr
 open System.Collections
 open System.Collections.Generic
 
@@ -35,13 +34,13 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
             let i= n / 2
             let j = n - i
             let f' = LazyList.take i q.front
-            let r' = lLdrop i q.front |> lLrev |> LazyList.append q.rBack
+            let r' = LazyList.drop i q.front |> LazyList.rev |> LazyList.append q.rBack
             new BankersDeque<'a>(q.c, i, f', j, r')
         elif q.rBackLength > q.c * q.frontLength + 1 then
             let j = n / 2
             let i = n - j
             let r' = LazyList.take j q.rBack
-            let f' = lLdrop j q.rBack |> lLrev |> LazyList.append q.front
+            let f' = LazyList.drop j q.rBack |> LazyList.rev |> LazyList.append q.front
             new BankersDeque<'a>(q.c, i, f', j, r')
         else
             q
@@ -53,13 +52,13 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
         let back3 = xs.rBackLength + ys.frontLength + ys.rBackLength
         match (front2, front3, back2, back3) with 
         | a, b, c, d when (abs(xs.frontLength - d) <= abs(a - c)) && (abs(xs.frontLength - d) <= abs(a - ys.rBackLength) && (xs.frontLength > 0)) -> 
-            new BankersDeque<'a>(cC, xs.frontLength, xs.front, (xs.rBackLength + ys.frontLength + ys.rBackLength), (LazyList.append ys.rBack (LazyList.append  (lLrev ys.front) xs.rBack)))
+            new BankersDeque<'a>(cC, xs.frontLength, xs.front, (xs.rBackLength + ys.frontLength + ys.rBackLength), (LazyList.append ys.rBack (LazyList.append  (LazyList.rev ys.front) xs.rBack)))
             |> BankersDeque.check
         | a, b, c, d when (abs(a - c) <= abs(xs.frontLength - d)) && (abs(a - c) <= abs(a - ys.rBackLength)) -> 
-            new BankersDeque<'a>(cC, (xs.frontLength + xs.rBackLength), (LazyList.append xs.front (lLrev xs.rBack)), (ys.frontLength + ys.rBackLength), (LazyList.append ys.rBack (lLrev ys.front)))
+            new BankersDeque<'a>(cC, (xs.frontLength + xs.rBackLength), (LazyList.append xs.front (LazyList.rev xs.rBack)), (ys.frontLength + ys.rBackLength), (LazyList.append ys.rBack (LazyList.rev ys.front)))
             |> BankersDeque.check
         | a, b, c, d ->
-            new BankersDeque<'a>(cC, (xs.frontLength + xs.rBackLength + ys.frontLength), (LazyList.append (LazyList.append xs.front (lLrev xs.rBack)) ys.front), ys.rBackLength, ys.rBack)
+            new BankersDeque<'a>(cC, (xs.frontLength + xs.rBackLength + ys.frontLength), (LazyList.append (LazyList.append xs.front (LazyList.rev xs.rBack)) ys.front), ys.rBackLength, ys.rBack)
             |> BankersDeque.check
 
     static member internal Empty c = new BankersDeque<'a>(c, 0, (LazyList.empty), 0, (LazyList.empty)) 
@@ -69,7 +68,7 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
         |> BankersDeque.check
 
     static member internal OfCatSeqsC c (xs : 'a seq) (ys : 'a seq) =
-        new BankersDeque<'a>(c, (Seq.length xs), (LazyList.ofSeq xs), (Seq.length ys), (lLrev (LazyList.ofSeq ys)))
+        new BankersDeque<'a>(c, (Seq.length xs), (LazyList.ofSeq xs), (Seq.length ys), (LazyList.rev (LazyList.ofSeq ys)))
         |> BankersDeque.check
 
     static member internal OfSeqC c (xs:seq<'a>) = 
@@ -171,7 +170,7 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
             let newFront = 
                 if (i = 0) then LazyList.tail front
                 else 
-                    let left, right = lLsplit front i
+                    let left, right = LazyList.split front i
                     LazyList.append (List.rev left |> LazyList.ofList) right
 
             new BankersDeque<'a>(c, (lenF - 1), newFront, lenR, rear)
@@ -182,7 +181,7 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
             let newRear = 
                 if (n = 0) then LazyList.tail rear
                 else 
-                    let left, right = lLsplit rear n
+                    let left, right = LazyList.split rear n
                     LazyList.append (List.rev left |> LazyList.ofList) right
 
             new BankersDeque<'a>(c, lenF, front, (lenR - 1), newRear)
@@ -196,7 +195,7 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
             let newFront = 
                 if (i = 0) then LazyList.tail front
                 else 
-                    let left, right = lLsplit front i
+                    let left, right = LazyList.split front i
                     LazyList.append (List.rev left |> LazyList.ofList) right
 
             let z = new BankersDeque<'a>(c, (lenF - 1), newFront, lenR, rear) |> BankersDeque.check
@@ -207,7 +206,7 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
             let newRear = 
                 if (n = 0) then LazyList.tail rear
                 else 
-                    let left, right = lLsplit rear n
+                    let left, right = LazyList.split rear n
                     LazyList.append (List.rev left |> LazyList.ofList) right
         
             let z = new BankersDeque<'a>(c, lenF, front, (lenR - 1), newRear) |> BankersDeque.check
@@ -272,7 +271,7 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
             let newFront = 
                 if (i = 0) then LazyList.cons y (LazyList.tail front)
                 else 
-                    let left, right = lLsplit front i
+                    let left, right = LazyList.split front i
                     LazyList.append (List.rev left |> LazyList.ofList) (LazyList.cons y right)
 
             new BankersDeque<'a>(c, lenF, newFront, lenR, rear)
@@ -283,7 +282,7 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
             let newRear = 
                 if (n = 0) then LazyList.cons y (LazyList.tail rear)
                 else 
-                    let left, right = lLsplit rear n
+                    let left, right = LazyList.split rear n
                     LazyList.append (List.rev left |> LazyList.ofList) (LazyList.cons y right)
         
             new BankersDeque<'a>(c, lenF, front, lenR, newRear)
@@ -297,7 +296,7 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
             let newFront = 
                 if (i = 0) then LazyList.cons y (LazyList.tail front)
                 else 
-                    let left, right = lLsplit front i
+                    let left, right = LazyList.split front i
                     LazyList.append (List.rev left |> LazyList.ofList) (LazyList.cons y right)
 
             let z = new BankersDeque<'a>(c, lenF, newFront, lenR, rear) |> BankersDeque.check 
@@ -308,7 +307,7 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
             let newRear = 
                 if (n = 0) then LazyList.cons y (LazyList.tail rear)
                 else 
-                    let left, right = lLsplit rear n
+                    let left, right = LazyList.split rear n
                     LazyList.append (List.rev left |> LazyList.ofList) (LazyList.cons y right)
         
             let z = new BankersDeque<'a>(c, lenF, front, lenR, newRear) |> BankersDeque.check
@@ -390,7 +389,7 @@ type BankersDeque<'a> (c : int, frontLength : int, front : LazyList<'a>,  rBackL
         member this.GetEnumerator() = 
             let e = seq {
                   yield! front
-                  yield! (lLrev this.rBack)  }
+                  yield! (LazyList.rev this.rBack)  }
             e.GetEnumerator()
 
         member this.GetEnumerator() = (this :> _ seq).GetEnumerator() :> IEnumerator

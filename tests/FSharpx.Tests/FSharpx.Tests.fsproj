@@ -131,7 +131,7 @@
     </ProjectReference>
     <ProjectReference Include="..\FSharpx.CSharpTests\FSharpx.CSharpTests.csproj">
       <Name>FSharpx.CSharpTests</Name>
-      <Project>{4354a199-6acf-4db5-a8fa-bad638d1d0e3}</Project>
+      <Project>{4354A199-6ACF-4DB5-A8FA-BAD638D1D0E3}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

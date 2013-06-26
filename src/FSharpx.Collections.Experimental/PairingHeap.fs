@@ -11,17 +11,15 @@ open System.Collections.Generic
 /// PairingHeap performs extremely well in practice, however (according to Okasaki) it should be avoided for applications taking advantage of persistence.
 /// Also according to Okasaki the time complexity of the heap functions in the PairingHeap implementation have "resisted" time complexity analysis. 
 /// ofSeq: superior performance; insert: superior performance; tail: superior performance
-type PairingHeap<'a when 'a : comparison> =
+type PairingHeap<'T when 'T : comparison> =
     | E of bool
-    | T of bool * 'a * list<PairingHeap<'a>>
+    | T of bool * 'T * list<PairingHeap<'T>>
 
-    with
-
-    static member private descending : PairingHeap<'a> -> bool = function 
+    static member private descending : PairingHeap<'T> -> bool = function 
         | E(m) -> m 
         | T(m, _, _) -> m
 
-    static member private merge (h1 : PairingHeap<'a>) (h2 : PairingHeap<'a>) : PairingHeap<'a> = 
+    static member private merge (h1 : PairingHeap<'T>) (h2 : PairingHeap<'T>) : PairingHeap<'T> = 
         match h1, h2 with
         | E(_), h -> h
         | h, E(_) -> h
@@ -32,9 +30,9 @@ type PairingHeap<'a when 'a : comparison> =
                 if x <= y then T(m, x, h2::xs) else T(m, y, h1::ys)
 
     //http://lorgonblog.wordpress.com/2008/04/06/catamorphisms-part-two
-    static member private foldHeap nodeF leafV (h : list<PairingHeap<'a>>) = 
+    static member private foldHeap nodeF leafV (h : list<PairingHeap<'T>>) = 
 
-        let rec loop (h : list<PairingHeap<'a>>) cont =
+        let rec loop (h : list<PairingHeap<'T>>) cont =
             match h with
             | T(_, a, h')::tl -> loop h'  (fun lacc ->  
                                     loop tl (fun racc -> 
@@ -43,35 +41,35 @@ type PairingHeap<'a when 'a : comparison> =
         
         loop h (fun x -> x)
 
-    static member private inOrder (h : list<PairingHeap<'a>>) = (PairingHeap.foldHeap (fun x l r acc -> l (x :: (r acc))) (fun acc -> acc) h) [] 
-    static member private sumTree (h : list<PairingHeap<'a>>) = (PairingHeap.foldHeap (fun x l r acc -> l (r (acc + 1))) (fun acc -> acc) h) 0 
+    static member private inOrder (h : list<PairingHeap<'T>>) = (PairingHeap.foldHeap (fun x l r acc -> l (x :: (r acc))) (fun acc -> acc) h) [] 
+    static member private sumTree (h : list<PairingHeap<'T>>) = (PairingHeap.foldHeap (fun x l r acc -> l (r (acc + 1))) (fun acc -> acc) h) 0 
            
-    static member private isEmpty : PairingHeap<'a> -> bool = function 
+    static member private isEmpty : PairingHeap<'T> -> bool = function 
         | E(_) -> true 
         | _ -> false
 
-    static member private tryMerge (h1: PairingHeap<'a>) (h2: PairingHeap<'a>) : PairingHeap<'a> option = 
+    static member private tryMerge (h1: PairingHeap<'T>) (h2: PairingHeap<'T>) : PairingHeap<'T> option = 
         if (PairingHeap.descending h1) = (PairingHeap.descending h2) then  Some(PairingHeap.merge h1 h2)
         else None
 
-    static member private insert (x: 'a) (h: PairingHeap<'a>) : PairingHeap<'a> = 
+    static member private insert (x: 'T) (h: PairingHeap<'T>) : PairingHeap<'T> = 
         PairingHeap.merge (T((PairingHeap.descending h), x, [])) h
 
-    static member private head: PairingHeap<'a> -> 'a = function
+    static member private head: PairingHeap<'T> -> 'T = function
         | E(_) -> raise Exceptions.Empty
         | T(_, x, _) -> x
 
-    static member private tryGetHead: PairingHeap<'a>  -> 'a option = function
+    static member private tryGetHead: PairingHeap<'T>  -> 'T option = function
         | E(_) -> None
         | T( _, x, _) -> Some(x)
  
-    static member internal ofSeq (isDescending: bool) (s:seq<'a>) : PairingHeap<'a> = 
+    static member internal ofSeq (isDescending: bool) (s:seq<'T>) : PairingHeap<'T> = 
         if Seq.isEmpty s then E(isDescending)
         //Seq.fold performs better than the CPS style mergePairs algorithm for ofSeq
         //and has the further advantage of being only one line of code
-        else Seq.fold (fun (h : 'a PairingHeap) t -> (h.Insert t)) (E(isDescending)) s
+        else Seq.fold (fun (h : 'T PairingHeap) t -> (h.Insert t)) (E(isDescending)) s
 
-    static member private tail :PairingHeap<'a> -> PairingHeap<'a> = function
+    static member private tail :PairingHeap<'T> -> PairingHeap<'T> = function
         | E(_) -> raise Exceptions.Empty
         | T(m,x, xs) -> 
             //non-tail recursive algorithm implemented directly from ML of Okasaki 1998 performs better in practice
@@ -92,7 +90,7 @@ type PairingHeap<'a when 'a : comparison> =
 //
 //            mergePairs xs m (fun x -> x)
 
-    static member private tryGetTail : PairingHeap<'a> -> PairingHeap<'a> option = function
+    static member private tryGetTail : PairingHeap<'T> -> PairingHeap<'T> option = function
         | E(_) -> None
         | T(m,x, xs) -> 
             let rec mergePairs pairList isDescending = 
@@ -102,7 +100,7 @@ type PairingHeap<'a when 'a : comparison> =
                 | x::y::tl -> PairingHeap.merge (PairingHeap.merge x y) (mergePairs tl isDescending)    
             Some(mergePairs xs m)
 
-    static member private tryUncons (h :PairingHeap<'a>) : ('a * PairingHeap<'a>) option =
+    static member private tryUncons (h :PairingHeap<'T>) : ('T * PairingHeap<'T>) option =
         match PairingHeap.tryGetHead h with
             | None -> None
             | Some(x) -> Some(x, (PairingHeap.tail h))
@@ -128,12 +126,12 @@ type PairingHeap<'a when 'a : comparison> =
         PairingHeap.sumTree lH
 
     ///O(log n) amortized time. Returns heap from merging two heaps, both must have same descending.
-    member this.Merge (xs : PairingHeap<'a>) = 
+    member this.Merge (xs : PairingHeap<'T>) = 
         if this.IsDescending = xs.IsDescending then PairingHeap.merge this xs
         else failwith "not same max or min"
 
     ///O(log n) amortized time. Returns heap option from merging two heaps.
-    member this.TryMerge (xs : PairingHeap<'a>) = 
+    member this.TryMerge (xs : PairingHeap<'T>) = 
         if this.IsDescending = xs.IsDescending then Some(PairingHeap.merge this xs)
         else None
 
@@ -150,7 +148,7 @@ type PairingHeap<'a when 'a : comparison> =
     ///O(log n) amortized time. Returns option head element and tail.
     member this.TryUncons() = PairingHeap.tryUncons this
 
-    interface IEnumerable<'a> with
+    interface IEnumerable<'T> with
 
         member this.GetEnumerator() = 
             let e = 
@@ -168,7 +166,7 @@ type PairingHeap<'a when 'a : comparison> =
 
         member this.GetEnumerator() = (this :> _ seq).GetEnumerator() :> IEnumerator
 
-    interface IHeap<PairingHeap<'a>, 'a> with
+    interface IHeap<PairingHeap<'T>, 'T> with
         
         member this.Count() = this.Length()
 
@@ -176,7 +174,7 @@ type PairingHeap<'a when 'a : comparison> =
 
         member this.TryGetHead() = PairingHeap.tryGetHead this
 
-        member this.Insert (x : 'a) = PairingHeap.insert x this
+        member this.Insert (x : 'T) = PairingHeap.insert x this
 
         member this.IsEmpty = PairingHeap.isEmpty this
 
@@ -184,9 +182,9 @@ type PairingHeap<'a when 'a : comparison> =
 
         member this.Length() = this.Length() 
 
-        member this.Merge (xs : PairingHeap<'a>) = PairingHeap.merge this xs
+        member this.Merge (xs : PairingHeap<'T>) = PairingHeap.merge this xs
 
-        member this.TryMerge (xs : PairingHeap<'a>)  = 
+        member this.TryMerge (xs : PairingHeap<'T>)  = 
             match PairingHeap.tryMerge this xs with
             | None -> None
             | Some(xs) -> Some(xs)
@@ -206,67 +204,66 @@ type PairingHeap<'a when 'a : comparison> =
             | None -> None
             | Some(x, xs) -> Some(x, xs)
 
-    interface IPriorityQueue<'a>
+    interface IPriorityQueue<'T> with
 
-        with
         member this.IsEmpty = this.IsEmpty
-        member this.Insert element = this.Insert element :> IPriorityQueue<'a>
+        member this.Insert element = this.Insert element :> IPriorityQueue<'T>
         member this.TryPeek() = this.TryGetHead()
         member this.Peek() = this.Head()
 
         member this.TryPop() = 
             match this.TryUncons() with
-            | Some(element,newHeap) -> Some(element,newHeap  :> IPriorityQueue<'a>)
+            | Some(element,newHeap) -> Some(element,newHeap  :> IPriorityQueue<'T>)
             | None -> None
 
         member this.Pop() = 
             let element,newHeap = this.Uncons()
-            element,(newHeap  :> IPriorityQueue<'a>)
+            element,(newHeap  :> IPriorityQueue<'T>)
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module PairingHeap =   
     //pattern discriminator
 
-    let (|Cons|Nil|) (h: PairingHeap<'a>) = match h.TryUncons() with Some(a,b) -> Cons(a,b) | None -> Nil
+    let (|Cons|Nil|) (h: PairingHeap<'T>) = match h.TryUncons() with Some(a,b) -> Cons(a,b) | None -> Nil
   
     ///O(1) Returns a empty heap.
     let inline empty (maximalist: bool) = E(maximalist)
 
     ///O(1) worst case. Returns the min or max element.
-    let inline head (xs: PairingHeap<'a>)  = xs.Head()
+    let inline head (xs: PairingHeap<'T>)  = xs.Head()
 
     ///O(1) worst case. Returns option first min or max element.
-    let inline tryGetHead (xs: PairingHeap<'a>)  = xs.TryGetHead()
+    let inline tryGetHead (xs: PairingHeap<'T>)  = xs.TryGetHead()
 
     ///O(log n) amortized time. Returns a new heap with the element inserted.
-    let inline insert x (xs: PairingHeap<'a>) = xs.Insert x   
+    let inline insert x (xs: PairingHeap<'T>) = xs.Insert x   
 
     ///O(1) Returns true if the heap has no elements.
-    let inline isEmpty (xs: PairingHeap<'a>) = xs.IsEmpty
+    let inline isEmpty (xs: PairingHeap<'T>) = xs.IsEmpty
 
     ///O(1). Returns true if the heap has max element at head.
-    let inline isDescending (xs: PairingHeap<'a>) = xs.IsDescending
+    let inline isDescending (xs: PairingHeap<'T>) = xs.IsDescending
 
     ///O(n). Returns the count of elememts.
-    let inline length (xs: PairingHeap<'a>) = xs.Length() 
+    let inline length (xs: PairingHeap<'T>) = xs.Length() 
 
     ///O(log n) amortized time. Returns heap from merging two heaps, both must have same descending.
-    let inline merge (xs: PairingHeap<'a>) (ys: PairingHeap<'a>) = xs.Merge ys
+    let inline merge (xs: PairingHeap<'T>) (ys: PairingHeap<'T>) = xs.Merge ys
 
     ///O(log n) amortized time. Returns heap option from merging two heaps.
-    let inline tryMerge (xs: PairingHeap<'a>) (ys: PairingHeap<'a>) = xs.TryMerge ys
+    let inline tryMerge (xs: PairingHeap<'T>) (ys: PairingHeap<'T>) = xs.TryMerge ys
 
     ///O(n). Returns heap from the sequence.
     let ofSeq maximalist s = PairingHeap.ofSeq maximalist s
 
     ///O(log n) amortized time. Returns a new heap of the elements trailing the head.
-    let inline tail (xs: PairingHeap<'a>) = xs.Tail()
+    let inline tail (xs: PairingHeap<'T>) = xs.Tail()
 
     ///O(log n) amortized time. Returns option heap of the elements trailing the head.
-    let inline tryGetTail (xs: PairingHeap<'a>) = xs.TryGetTail()
+    let inline tryGetTail (xs: PairingHeap<'T>) = xs.TryGetTail()
 
     ///O(log n) amortized time. Returns the head element and tail.
-    let inline uncons (xs: PairingHeap<'a>) = xs.Uncons()
+    let inline uncons (xs: PairingHeap<'T>) = xs.Uncons()
 
     ///O(log n) amortized time. Returns option head element and tail.
-    let inline tryUncons (xs: PairingHeap<'a>) = xs.TryUncons()
+    let inline tryUncons (xs: PairingHeap<'T>) = xs.TryUncons()

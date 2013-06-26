@@ -7,11 +7,10 @@
 namespace FSharpx.Collections.Experimental
 
 open FSharpx.Collections
-open LazyListHelpr
 open System.Collections
 open System.Collections.Generic
 
-type BankersQueue<'a> (frontLength : int, front : LazyList<'a>, backLength : int, back : LazyList<'a>) = 
+type BankersQueue<'T> (frontLength : int, front : LazyList<'T>, backLength : int, back : LazyList<'T>) = 
 
     member private this.frontLength = frontLength
 
@@ -21,17 +20,17 @@ type BankersQueue<'a> (frontLength : int, front : LazyList<'a>, backLength : int
 
     member internal this.back = back
 
-    static member private check (q : BankersQueue<'a>) =
+    static member private check (q : BankersQueue<'T>) =
         if q.backLength <= q.frontLength
         then q
-        else BankersQueue((q.backLength + q.frontLength), (LazyList.append q.front (lLrev q.back)), 0, LazyList.empty)
+        else BankersQueue((q.backLength + q.frontLength), (LazyList.append q.front (LazyList.rev q.back)), 0, LazyList.empty)
 
-    static member private length (q : BankersQueue<'a>) = q.frontLength + q.backLength
+    static member private length (q : BankersQueue<'T>) = q.frontLength + q.backLength
 
-    static member internal Empty() = new BankersQueue<'a>(0, LazyList.empty, 0, LazyList.empty) 
+    static member internal Empty() = new BankersQueue<'T>(0, LazyList.empty, 0, LazyList.empty) 
 
-    static member internal OfSeq (xs:seq<'a>) = 
-        BankersQueue<'a>((Seq.length xs), (LazyList.ofSeq xs), 0, LazyList.empty)
+    static member internal OfSeq (xs:seq<'T>) = 
+        BankersQueue<'T>((Seq.length xs), (LazyList.ofSeq xs), 0, LazyList.empty)
    
     ///O(1), amortized. Returns the first element.
     member this.Head =
@@ -51,39 +50,38 @@ type BankersQueue<'a> (frontLength : int, front : LazyList<'a>, backLength : int
     member this.Length = BankersQueue.length this
 
     ///O(1). Returns queue reversed
-    member this.Rev = BankersQueue<'a>(backLength, back, frontLength, front) |> BankersQueue.check
+    member this.Rev = BankersQueue<'T>(backLength, back, frontLength, front) |> BankersQueue.check
 
     ///O(1), amortized. Returns a new queue with the element added to the end.
     member this.Snoc x = 
-        BankersQueue<'a>(frontLength, front, (backLength + 1), (LazyList.cons x back))
+        BankersQueue<'T>(frontLength, front, (backLength + 1), (LazyList.cons x back))
         |> BankersQueue.check
 
     ///O(1), amortized. Returns a new queue of the elements trailing the first element.
     member this.Tail =
         if (this.frontLength = 0)  then raise Exceptions.Empty
         else 
-            BankersQueue<'a>((frontLength-1), (LazyList.tail front), backLength, back)
+            BankersQueue<'T>((frontLength-1), (LazyList.tail front), backLength, back)
             |> BankersQueue.check
 
     ///O(1), amortized. Returns option queue of the elements trailing the first element.
     member this.TryGetTail =
         if (this.frontLength = 0)  then None
         else 
-            Some(BankersQueue<'a>((frontLength-1), (LazyList.tail front), backLength, back)
+            Some(BankersQueue<'T>((frontLength-1), (LazyList.tail front), backLength, back)
             |> BankersQueue.check)
 
     ///O(1), amortized. Returns the first element and tail.
     member this.Uncons =  
         if (this.frontLength = 0)  then raise Exceptions.Empty
-        else (LazyList.head front), (BankersQueue<'a>((frontLength - 1), (LazyList.tail front), backLength, back) |> BankersQueue.check)
+        else (LazyList.head front), (BankersQueue<'T>((frontLength - 1), (LazyList.tail front), backLength, back) |> BankersQueue.check)
 
     ///O(1), amortized. Returns option first element and tail.
     member this.TryUncons =  
         if (this.frontLength = 0)  then None
-        else Some((LazyList.head front), (BankersQueue<'a>((frontLength-1), (LazyList.tail front), backLength, back) |> BankersQueue.check))
+        else Some((LazyList.head front), (BankersQueue<'T>((frontLength-1), (LazyList.tail front), backLength, back) |> BankersQueue.check))
 
-    with
-    interface IQueue<'a> with
+    interface IQueue<'T> with
 
         member this.Count() = this.Length
 
@@ -113,12 +111,12 @@ type BankersQueue<'a> (frontLength : int, front : LazyList<'a>, backLength : int
             | None -> None
             | Some(x, q) -> Some(x, q :> _)
           
-    interface IEnumerable<'a> with
+    interface IEnumerable<'T> with
 
         member this.GetEnumerator() = 
             let e = seq {
                   yield! front
-                  yield! (lLrev back)  }
+                  yield! (LazyList.rev back)  }
             e.GetEnumerator()
 
         member this.GetEnumerator() = (this :> _ seq).GetEnumerator() :> IEnumerator
@@ -126,40 +124,40 @@ type BankersQueue<'a> (frontLength : int, front : LazyList<'a>, backLength : int
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module BankersQueue =
     //pattern discriminators
-    let (|Cons|Nil|) (q : BankersQueue<'a>) = match q.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
+    let (|Cons|Nil|) (q : BankersQueue<'T>) = match q.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
 
     ///O(1). Returns queue of no elements.
     let empty() = BankersQueue.Empty()
 
     ///O(1), amortized. Returns the first element.
-    let inline head (q : BankersQueue<'a>) = q.Head
+    let inline head (q : BankersQueue<'T>) = q.Head
 
     ///O(1), amortized. Returns option first element.
-    let inline tryGetHead (q : BankersQueue<'a>) = q.TryGetHead
+    let inline tryGetHead (q : BankersQueue<'T>) = q.TryGetHead
 
     ///O(1). Returns true if the queue has no elements.
-    let inline isEmpty() (q : BankersQueue<'a>) = q.IsEmpty
+    let inline isEmpty() (q : BankersQueue<'T>) = q.IsEmpty
 
     ///O(1). Returns the count of elememts.
-    let inline length() (q : BankersQueue<'a>) = q.Length
+    let inline length() (q : BankersQueue<'T>) = q.Length
 
     ///O(1). Returns a queue of the seq.
     let ofSeq xs = BankersQueue.OfSeq xs
 
     ///O(1). Returns queue reversed.
-    let inline rev (q : BankersQueue<'a>) = q.Rev
+    let inline rev (q : BankersQueue<'T>) = q.Rev
 
     ///O(1), amortized. Returns a new queue with the element added to the end.
-    let inline snoc (x : 'a) (q : BankersQueue<'a>) = (q.Snoc x) 
+    let inline snoc (x : 'T) (q : BankersQueue<'T>) = (q.Snoc x) 
 
     ///O(1), amortized. Returns a new queue of the elements trailing the first element.
-    let inline tail (q : BankersQueue<'a>) = q.Tail 
+    let inline tail (q : BankersQueue<'T>) = q.Tail 
 
     ///O(1), amortized. Returns option queue of the elements trailing the first element.
-    let inline tryGetTail (q : BankersQueue<'a>) = q.TryGetTail 
+    let inline tryGetTail (q : BankersQueue<'T>) = q.TryGetTail 
 
     ///O(1), amortized. Returns the first element and tail.
-    let inline uncons (q : BankersQueue<'a>) = q.Uncons
+    let inline uncons (q : BankersQueue<'T>) = q.Uncons
 
     ///O(1), amortized. Returns option first element and tail.
-    let inline tryUncons (q : BankersQueue<'a>) = q.TryUncons
+    let inline tryUncons (q : BankersQueue<'T>) = q.TryUncons
