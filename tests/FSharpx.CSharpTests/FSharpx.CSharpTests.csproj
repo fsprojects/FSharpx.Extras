@@ -93,7 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\FSharpx.Core\FSharpx.Core.fsproj">
-      <Project>{1E95A279-C2A9-498B-BC72-6E7A0D6854CE}</Project>
+      <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
       <Name>FSharpx.Core</Name>
     </ProjectReference>
   </ItemGroup>

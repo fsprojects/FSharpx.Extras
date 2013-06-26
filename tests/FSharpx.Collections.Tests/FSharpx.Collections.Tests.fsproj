@@ -70,7 +70,7 @@
     </Reference>
     <ProjectReference Include="..\FSharpx.Tests\FSharpx.Tests.fsproj">
       <Name>FSharpx.Tests</Name>
-      <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
+      <Project>{26d9d3ee-e882-43e6-a79e-5d1d89e92c4f}</Project>
       <Private>true</Private>
     </ProjectReference>
     <Reference Include="FsUnit.NUnit">
