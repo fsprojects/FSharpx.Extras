@@ -10,6 +10,9 @@ open Microsoft.FSharp.Control.WebExtensions
 open FSharpx.Collections
 open FSharpx.DataStructures
 
+[<assembly:Extension>]
+do()
+
 /// Helps the C# compiler with Func type inference.
 type L =
     /// Helps the C# compiler with Func type inference.
