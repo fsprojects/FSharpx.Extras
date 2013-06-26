@@ -1,3 +1,4 @@
+#I @"./lib/FAKE/tools"
 #r @"./lib/FAKE/tools/FakeLib.dll"
 
 open Fake 

@@ -26,9 +26,9 @@ This library is for the .NET platform implementing a state machine type provider
 
 [<assembly: AssemblyProduct ("FSharpx.TypeProviders.Graph")>]
 
-[<assembly: AssemblyVersion ("1.7.8")>]
+[<assembly: AssemblyVersion ("1.8.45.0")>]
 
-[<assembly: AssemblyFileVersion ("1.7.8")>]
+[<assembly: AssemblyFileVersion ("1.8.45.0")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 

@@ -26,9 +26,9 @@ This library provides experimental data structures.")>]
 
 [<assembly: AssemblyProduct ("FSharpx")>]
 
-[<assembly: AssemblyVersion ("1.7.8")>]
+[<assembly: AssemblyVersion ("1.8.45.0")>]
 
-[<assembly: AssemblyFileVersion ("1.7.8")>]
+[<assembly: AssemblyFileVersion ("1.8.45.0")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 

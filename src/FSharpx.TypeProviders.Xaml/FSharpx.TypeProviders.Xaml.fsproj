@@ -17,7 +17,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <Tailcalls>false</Tailcalls>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\build\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>bin\Debug\FSharpx.TypeProviders.Xaml.XML</DocumentationFile>
@@ -27,7 +27,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <Tailcalls>true</Tailcalls>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\build\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>bin\Release\FSharpx.TypeProviders.Xaml.XML</DocumentationFile>
@@ -40,8 +40,18 @@
     <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
       <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
     </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationCore" Condition="$(TargetFrameworkVersion) == 'v3.5'">
+      <HintPath>..\..\lib\Wpf\v3.5\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" Condition="$(TargetFrameworkVersion) == 'v4.0'">
+      <HintPath>..\..\lib\Wpf\v4.0\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework" Condition="$(TargetFrameworkVersion) == 'v3.5'">
+      <HintPath>..\..\lib\Wpf\v3.5\PresentationFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework" Condition="$(TargetFrameworkVersion) == 'v4.0'">
+      <HintPath>..\..\lib\Wpf\v4.0\PresentationFramework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />

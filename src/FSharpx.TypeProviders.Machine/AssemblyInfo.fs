@@ -26,9 +26,9 @@ This library is for the .NET platform implementing type providers for the file s
 
 [<assembly: AssemblyProduct ("FSharpx.TypeProviders.Machine")>]
 
-[<assembly: AssemblyVersion ("1.7.8")>]
+[<assembly: AssemblyVersion ("1.8.45.0")>]
 
-[<assembly: AssemblyFileVersion ("1.7.8")>]
+[<assembly: AssemblyFileVersion ("1.8.45.0")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 
