@@ -26,7 +26,7 @@ let ``When starting a ticker at 0 and ticking twice, it should have a state of 2
 
 // Stack example
 let enqueue a = fun s -> ((), s @ a::[])
-let dequeue = fun (hd::tl) -> (hd, tl)
+let dequeue = function (hd::tl) -> (hd, tl) | [] -> failwith "dequeue"
 
 let workflow = state {
   let! queue = getState

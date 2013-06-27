@@ -9,13 +9,12 @@ open System.Collections.Generic
 /// This implementation adds an additional parameter to allow a more
 /// efficient calculation of the list length.
 /// Note that an alternate form would represent the DList as:
-/// type DList<'a> = DList of ('a list -> 'a list)
+/// type DList<'T> = DList of ('T list -> 'T list)
 /// An example can be found at http://stackoverflow.com/questions/5324623/functional-o1-append-and-on-iteration-from-first-element-list-data-structure/5327209#5327209
-type DList<'a> =
+type DList<'T> =
     | Nil
-    | Unit of 'a
-    | Join of DList<'a> * DList<'a> * int (* the total length of the DList *)
-    with
+    | Unit of 'T
+    | Join of DList<'T> * DList<'T> * int (* the total length of the DList *)
 
     static member op_Equality(left, right) =
         match left with
@@ -46,7 +45,7 @@ type DList<'a> =
         | _ -> failwith "DList.head: empty list"
 
     ///O(1). Returns a new DList with the element added to the end.
-    member x.snoc (a:'a) =
+    member x.snoc (a:'T) =
         //DList<_>.op_Append(x, Unit a)
         match x with
         | Nil ->  Unit a
@@ -56,7 +55,7 @@ type DList<'a> =
 
     ///O(log n). Returns a new DList of the elements trailing the first element.
     member x.Tail =
-        let rec step (xs:DList<'a>) (acc:DList<'a>) : DList<'a> =
+        let rec step (xs:DList<'T>) (acc:DList<'T>) : DList<'T> =
             match xs with
             | Nil -> acc
             | Unit _ -> acc
@@ -69,15 +68,15 @@ type DList<'a> =
 
         if x.IsEmpty then Nil else step x Nil
 
-    interface IEnumerable<'a> with
+    interface IEnumerable<'T> with
         member x.GetEnumerator() =
             let enumerable = seq {
                 match x with
                 | Nil -> () 
                 | Unit x -> yield x
                 | Join(x,y,_) ->
-                    yield! x :> seq<'a>
-                    yield! y :> seq<'a> }
+                    yield! x :> seq<'T>
+                    yield! y :> seq<'T> }
             enumerable.GetEnumerator()
 
         member x.GetEnumerator() =
@@ -86,14 +85,14 @@ type DList<'a> =
                 | Nil -> () 
                 | Unit x -> yield x
                 | Join(x,y,_) ->
-                    yield! x :> seq<'a>
-                    yield! y :> seq<'a> }
+                    yield! x :> seq<'T>
+                    yield! y :> seq<'T> }
             enumerable.GetEnumerator() :> IEnumerator
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module DList =
     ///O(1). Returns DList of no elements.
-    let empty<'a> : DList<'a> = Nil
+    let empty<'T> : DList<'T> = Nil
 
     ///O(1). Returns true if the DList has no elements.
     let isEmpty (l:DList<_>) = l.IsEmpty
@@ -112,7 +111,7 @@ module DList =
         | Join(_,_,l) -> Join(xs, Unit x, l+1)) Nil s
 
     ///O(n). Returns a seq of the DList elements.
-    let toSeq (l:DList<_>) = l :> seq<_>
+    let toSeq (l:DList<_>) = l :> _ seq
 
     ///O(1). Returns a new DList with the element added to the beginning.
     let cons hd tl = 

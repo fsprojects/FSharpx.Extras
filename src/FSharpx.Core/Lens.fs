@@ -2,11 +2,11 @@
 
 open FSharpx.Collections
 
-type Lens<'a,'b> = {
-    Get: 'a -> 'b
-    Set: 'b -> 'a -> 'a
-} with 
-    member l.Update f a = l.Set (f(l.Get a)) a
+type Lens<'T,'U> = 
+    { Get: 'T -> 'U
+      Set: 'U -> 'T -> 'T } 
+
+    member l.Update f a = l.Set (f (l.Get a)) a
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Lens =
@@ -81,7 +81,7 @@ module Lens =
         { Get = Operators.id
           Set = fun a b -> a }
 
-    let codiag<'a> : Lens<Choice<'a,'a>,'a> = choice id id
+    let codiag<'T> : Lens<Choice<'T,'T>,'T> = choice id id
 
     /// Lens for a particular value in a set
     let forSet value =

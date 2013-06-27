@@ -54,13 +54,9 @@ module ResizeArray =
 
     ///Build a list from the given array
     val toList: ResizeArray<'T> -> 'T list
-    [<System.Obsolete("This function has been renamed. Use 'ResizeArray.toList' instead")>]
-    val to_list: ResizeArray<'T> -> 'T list
 
     ///Build an array from the given list
     val ofList: 'T list -> ResizeArray<'T>
-    [<System.Obsolete("This function has been renamed. Use 'ResizeArray.ofList' instead")>]
-    val of_list: 'T list -> ResizeArray<'T>
 
     ///Build and array from the given seq
     val ofSeq : 'T seq -> ResizeArray<'T>
@@ -68,12 +64,12 @@ module ResizeArray =
     /// Apply a function to each element of the collection, threading an accumulator argument
     /// through the computation. If the input function is <c>f</c> and the elements are <c>i0...iN</c> 
     /// then computes <c>f (... (f s i0)...) iN</c>
-    val fold: ('T -> 'U -> 'T) -> 'T -> ResizeArray<'U> -> 'T
+    val fold: ('T -> 'State -> 'T) -> 'T -> ResizeArray<'State> -> 'T
 
     /// Apply a function to each element of the array, threading an accumulator argument
     /// through the computation. If the input function is <c>f</c> and the elements are <c>i0...iN</c> then 
     /// computes <c>f i0 (...(f iN s))</c>.
-    val foldBack: ('T -> 'U -> 'U) -> ResizeArray<'T> -> 'U -> 'U
+    val foldBack: ('T -> 'State -> 'State) -> ResizeArray<'T> -> 'State -> 'State
 
     ///Apply the given function to each element of the array. 
     val iter: ('T -> unit) -> ResizeArray<'T> -> unit
@@ -85,12 +81,12 @@ module ResizeArray =
     ///Apply the given function to two arrays simultaneously. The
     ///two arrays must have the same lengths, otherwise an Invalid_argument exception is
     ///raised.
-    val iter2: ('T -> 'U -> unit) -> ResizeArray<'T> -> ResizeArray<'U> -> unit
+    val iter2: ('T1 -> 'T2 -> unit) -> ResizeArray<'T1> -> ResizeArray<'T2> -> unit
 
     ///Build a new collection whose elements are the results of applying the given function
     ///to the corresponding elements of the two collections pairwise.  The two input
     ///arrays must have the same lengths.
-    val map2: ('T -> 'U -> 'c) -> ResizeArray<'T> -> ResizeArray<'U> -> ResizeArray<'c>
+    val map2: ('T1 -> 'T2 -> 'U) -> ResizeArray<'T1> -> ResizeArray<'T2> -> ResizeArray<'U>
 
     ///Apply the given function to each element of the array.  The integer passed to the
     ///function indicates the index of element.
@@ -137,14 +133,6 @@ module ResizeArray =
     ///result where function returns "Some(x)" for some x.
     val tryPick: ('T -> 'U option) -> ResizeArray<'T> -> 'U option
 
-    ///Combine the two arrays into an array of pairs. The two arrays must have equal lengths.
-    [<Obsolete("Use unzip instead")>]
-    val combine: ResizeArray<'T> -> ResizeArray<'U> -> ResizeArray<('T * 'U)>
-
-    ///Split a list of pairs into two lists
-    [<Obsolete("Use unzip instead")>]
-    val split: ResizeArray<('T * 'U)> -> (ResizeArray<'T> * ResizeArray<'U>)
-
     ///Return a new array with the elements in reverse order
     val rev: ResizeArray<'T> -> ResizeArray<'T>
 
@@ -160,12 +148,10 @@ module ResizeArray =
     val ofArray : 'T[] -> ResizeArray<'T>
     /// Return a view of the array as an enumerable object
     val toSeq : ResizeArray<'T> -> seq<'T>
-    [<System.Obsolete("This function has been renamed. Use 'ResizeArray.toSeq' instead")>]
-    val to_seq : ResizeArray<'T> -> seq<'T>
 
     /// Test elements of the two arrays pairwise to see if any pair of element satisfies the given predicate.
     /// Raise ArgumentException if the arrays have different lengths.
-    val exists2 : ('T -> 'U -> bool) -> ResizeArray<'T> -> ResizeArray<'U> -> bool
+    val exists2 : ('T1 -> 'T2 -> bool) -> ResizeArray<'T1> -> ResizeArray<'T2> -> bool
 
     /// Return the index of the first element in the array
     /// that satisfies the given predicate. Raise <c>KeyNotFoundException</c> if 
@@ -192,17 +178,17 @@ module ResizeArray =
     /// through the computation.  The two input
     /// arrays must have the same lengths, otherwise an <c>ArgumentException</c> is
     /// raised.
-    val fold2: ('state -> 'b1 -> 'b2 -> 'state) -> 'state -> ResizeArray<'b1> -> ResizeArray<'b2> -> 'state
+    val fold2: ('State -> 'T1 -> 'T2 -> 'State) -> 'State -> ResizeArray<'T1> -> ResizeArray<'T2> -> 'State
 
     /// Apply a function to pairs of elements drawn from the two collections, right-to-left, 
     /// threading an accumulator argument through the computation.  The two input
     /// arrays must have the same lengths, otherwise an <c>ArgumentException</c> is
     /// raised.
-    val foldBack2 : ('a1 -> 'a2 -> 'U -> 'U) -> ResizeArray<'a1> -> ResizeArray<'a2> -> 'U -> 'U
+    val foldBack2 : ('T1 -> 'T2 -> 'State -> 'State) -> ResizeArray<'T1> -> ResizeArray<'T2> -> 'State -> 'State
 
     /// Test elements of the two arrays pairwise to see if all pairs of elements satisfy the given predicate.
     /// Raise ArgumentException if the arrays have different lengths.
-    val forall2 : ('T -> 'U -> bool) -> ResizeArray<'T> -> ResizeArray<'U> -> bool
+    val forall2 : ('T1 -> 'T2 -> bool) -> ResizeArray<'T1> -> ResizeArray<'T2> -> bool
 
     /// Return true if the given array is empty, otherwise false
     val isEmpty : ResizeArray<'T> -> bool
@@ -210,19 +196,19 @@ module ResizeArray =
     /// Apply the given function to pair of elements drawn from matching indices in two arrays,
     /// also passing the index of the elements. The two arrays must have the same lengths, 
     /// otherwise an <c>ArgumentException</c> is raised.
-    val iteri2 : (int -> 'T -> 'U -> unit) -> ResizeArray<'T> -> ResizeArray<'U> -> unit
+    val iteri2 : (int -> 'T1 -> 'T2 -> unit) -> ResizeArray<'T1> -> ResizeArray<'T2> -> unit
 
     /// Build a new collection whose elements are the results of applying the given function
     /// to the corresponding elements of the two collections pairwise.  The two input
     /// arrays must have the same lengths, otherwise an <c>ArgumentException</c> is
     /// raised.
-    val mapi2 : (int -> 'T -> 'U -> 'c) -> ResizeArray<'T> -> ResizeArray<'U> -> ResizeArray<'c>
+    val mapi2 : (int -> 'T1 -> 'T2 -> 'U) -> ResizeArray<'T1> -> ResizeArray<'T2> -> ResizeArray<'U>
 
     /// Like <c>fold</c>, but return the intermediary and final results
-    val scan : ('U -> 'T -> 'U) -> 'U -> ResizeArray<'T> -> ResizeArray<'U>
+    val scan : ('State -> 'T -> 'State) -> 'State -> ResizeArray<'T> -> ResizeArray<'State>
 
     /// Like <c>foldBack</c>, but return both the intermediary and final results
-    val scanBack : ('T -> 'c -> 'c) -> ResizeArray<'T> -> 'c -> ResizeArray<'c>
+    val scanBack : ('T -> 'State -> 'State) -> ResizeArray<'T> -> 'State -> ResizeArray<'State>
 
     /// Return an array containing the given element
     val singleton : 'T -> ResizeArray<'T>
@@ -237,7 +223,7 @@ module ResizeArray =
 
     /// Combine the two arrays into an array of pairs. The two arrays must have equal lengths, otherwise an <c>ArgumentException</c> is
     /// raised..
-    val zip : ResizeArray<'T> -> ResizeArray<'U> -> ResizeArray<'T * 'U>
+    val zip : ResizeArray<'T1> -> ResizeArray<'T2> -> ResizeArray<'T1 * 'T2>
 
     /// Split an array of pairs into two arrays
-    val unzip : ResizeArray<'T * 'U> -> ResizeArray<'T> * ResizeArray<'U>
+    val unzip : ResizeArray<'T1 * 'T2> -> ResizeArray<'T1> * ResizeArray<'T2>

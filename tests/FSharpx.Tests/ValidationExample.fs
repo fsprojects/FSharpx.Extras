@@ -159,7 +159,7 @@ module GayBar =
     let costToEnter p =
         [checkAge; checkClothes; checkSobriety; checkGender]
         |> Validation.mapM (fun check -> check p |> Choice.mapSecond NonEmptyList.singleton)
-        |> Choice.map (function x::_ -> decimal x.Age + 1.5m)
+        |> Choice.map (function x::_ -> decimal x.Age + 1.5m | [] -> failwith "costToEnter")
 
 [<Test>]
 let part3() =

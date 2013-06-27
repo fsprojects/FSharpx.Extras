@@ -8,18 +8,18 @@ open System.Collections
 open System.Collections.Generic
 open ListHelpr
 
-type BatchedDeque<'a> (front, rBack) = 
+type BatchedDeque<'T> (front, rBack) = 
   
     static member internal Empty() = BatchedDeque(List.Empty, List.Empty)
 
-    static member internal OfCatLists (xs : 'a list) (ys : 'a list) =
-        new BatchedDeque<'a>(xs, (List.rev ys))
+    static member internal OfCatLists (xs : 'T list) (ys : 'T list) =
+        new BatchedDeque<'T>(xs, (List.rev ys))
 
-    static member internal OfList (xs : 'a list) = 
-        new BatchedDeque<'a>(xs, [])
+    static member internal OfList (xs : 'T list) = 
+        new BatchedDeque<'T>(xs, [])
 
-    static member internal OfSeq (xs:seq<'a>) = 
-        new BatchedDeque<'a>((List.ofSeq xs), [])
+    static member internal OfSeq (xs:seq<'T>) = 
+        new BatchedDeque<'T>((List.ofSeq xs), [])
 
     static member internal Singleton x = BatchedDeque([x], List.Empty)
 
@@ -131,7 +131,7 @@ type BatchedDeque<'a> (front, rBack) =
                     let left, right = loop2Array (Array.create i (List.head front)) front (i-1)    
                     loopFromArray ((Seq.length left) - 1) left right 0
 
-            (new BatchedDeque<'a>(newFront, rear))
+            (new BatchedDeque<'T>(newFront, rear))
 
         | lenF, front, lenR, rear ->  
             let n = lenR - (i - lenF) - 1
@@ -141,7 +141,7 @@ type BatchedDeque<'a> (front, rBack) =
                     let left, right = loop2Array (Array.create n (List.head rear)) rear (n-1) 
                     loopFromArray ((Seq.length left) - 1) left right 0
 
-            (new BatchedDeque<'a>(front, newRear))
+            (new BatchedDeque<'T>(front, newRear))
 
     ///O(n), worst case. Returns option deque with element removed by index.
     member this.TryRemove (i:int) =
@@ -154,7 +154,7 @@ type BatchedDeque<'a> (front, rBack) =
                     let left, right = loop2Array (Array.create i (List.head front)) front (i-1) 
                     loopFromArray ((Seq.length left) - 1) left right 0
 
-            Some((new BatchedDeque<'a>(newFront, rear)))
+            Some((new BatchedDeque<'T>(newFront, rear)))
 
         | lenF, front, lenR, rear ->  
             let n = lenR - (i - lenF) - 1
@@ -164,11 +164,11 @@ type BatchedDeque<'a> (front, rBack) =
                     let left, right = loop2Array (Array.create n (List.head rear)) rear (n-1) 
                     loopFromArray ((Seq.length left) - 1) left right 0
 
-            Some((new BatchedDeque<'a>(front, newRear)))
+            Some((new BatchedDeque<'T>(front, newRear)))
 
     ///O(1). Returns deque reversed.
     member this.Rev = 
-        (new BatchedDeque<'a>(rBack, front))
+        (new BatchedDeque<'T>(rBack, front))
 
     ///O(1). Returns a new deque with the element added to the end.
     member this.Snoc x = BatchedDeque(front, x::rBack)
@@ -226,7 +226,7 @@ type BatchedDeque<'a> (front, rBack) =
         | _, _ -> Some(this.Init, this.Last)
           
     ///O(n), worst case. Returns deque with element updated by index.
-    member this.Update (i:int) (y: 'a) =
+    member this.Update (i:int) (y: 'T) =
         match (List.length front), front, (List.length rBack), rBack with
         | lenF, front, lenR, rear when i > (lenF + lenR - 1) -> raise Exceptions.OutOfBounds
         | lenF, front, lenR, rear when i < lenF -> 
@@ -236,7 +236,7 @@ type BatchedDeque<'a> (front, rBack) =
                     let left, right = loop2Array (Array.create i (List.head front)) front (i-1) 
                     loopFromArray ((Seq.length left) - 1) left (y::right) 0
 
-            new BatchedDeque<'a>(newFront, rear)
+            new BatchedDeque<'T>(newFront, rear)
 
         | lenF, front, lenR, rear ->  
             let n = lenR - (i - lenF) - 1
@@ -246,10 +246,10 @@ type BatchedDeque<'a> (front, rBack) =
                     let left, right = loop2Array (Array.create n (List.head rear)) rear (n-1) 
                     loopFromArray ((Seq.length left) - 1) left (y::right) 0
         
-            new BatchedDeque<'a>(front, newRear)
+            new BatchedDeque<'T>(front, newRear)
 
     ///O(n), worst case. Returns option deque with element updated by index.
-    member this.TryUpdate (i:int) (y: 'a) =
+    member this.TryUpdate (i:int) (y: 'T) =
         match (List.length front), front, (List.length rBack), rBack with
         | lenF, front, lenR, rear when i > (lenF + lenR - 1) -> None
         | lenF, front, lenR, rear when i < lenF -> 
@@ -259,7 +259,7 @@ type BatchedDeque<'a> (front, rBack) =
                     let left, right = loop2Array (Array.create i (List.head front)) front (i-1) 
                     loopFromArray ((Seq.length left) - 1) left (y::right) 0
 
-            Some((new BatchedDeque<'a>(newFront, rear)))
+            Some((new BatchedDeque<'T>(newFront, rear)))
 
         | lenF, front, lenR, rear ->  
             let n = lenR - (i - lenF) - 1
@@ -269,10 +269,9 @@ type BatchedDeque<'a> (front, rBack) =
                     let left, right = loop2Array (Array.create n (List.head rear)) rear (n-1)
                     loopFromArray ((Seq.length left) - 1) left (y::right) 0
         
-            Some((new BatchedDeque<'a>(front, newRear)))
+            Some((new BatchedDeque<'T>(front, newRear)))
 
-    with
-    interface IDeque<'a> with
+    interface IDeque<'T> with
 
         member this.Cons x = this.Cons x :> _
 
@@ -341,7 +340,7 @@ type BatchedDeque<'a> (front, rBack) =
             | None -> None
             | Some(q) -> Some(q :> _)
 
-    interface IEnumerable<'a> with
+    interface IEnumerable<'T> with
 
         member this.GetEnumerator() = 
             let e = seq {
@@ -356,45 +355,45 @@ module BatchedDeque =
 
     //pattern discriminator
 
-    let (|Cons|Nil|) (q : BatchedDeque<'a>) = match q.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
+    let (|Cons|Nil|) (q : BatchedDeque<'T>) = match q.TryUncons with Some(a,b) -> Cons(a,b) | None -> Nil
 
-    let (|Snoc|Nil|) (q : BatchedDeque<'a>) = match q.TryUnsnoc with Some(a,b) -> Snoc(a,b) | None -> Nil
+    let (|Snoc|Nil|) (q : BatchedDeque<'T>) = match q.TryUnsnoc with Some(a,b) -> Snoc(a,b) | None -> Nil
 
     ///O(1). Returns a new deque with the element added to the beginning.
-    let inline cons (x : 'a) (q : BatchedDeque<'a>) = q.Cons x 
+    let inline cons (x : 'T) (q : BatchedDeque<'T>) = q.Cons x 
 
     ///O(1). Returns deque of no elements.
     let empty() = BatchedDeque.Empty()
 
     ///O(1) amortized, O(n), worst case. Returns the first element.
-    let inline head (q : BatchedDeque<'a>) = q.Head
+    let inline head (q : BatchedDeque<'T>) = q.Head
 
     ///O(1) amortized, O(n), worst case. Returns option first element.
-    let inline tryGetHead (q : BatchedDeque<'a>) = q.TryGetHead
+    let inline tryGetHead (q : BatchedDeque<'T>) = q.TryGetHead
 
     ///O(1) amortized, O(n), worst case. Returns a new deque of the elements before the last element.
-    let inline init (q : BatchedDeque<'a>) = q.Init 
+    let inline init (q : BatchedDeque<'T>) = q.Init 
 
     ///O(1) amortized, O(n), worst case. Returns option deque of the elements before the last element.
-    let inline tryGetInit (q : BatchedDeque<'a>) = q.TryGetInit 
+    let inline tryGetInit (q : BatchedDeque<'T>) = q.TryGetInit 
 
     ///O(1). Returns true if the deque has no elements.
-    let inline isEmpty (q : BatchedDeque<'a>) = q.IsEmpty
+    let inline isEmpty (q : BatchedDeque<'T>) = q.IsEmpty
 
     ///O(1) amortized, O(n), worst case. Returns the last element.
-    let inline last (q : BatchedDeque<'a>) = q.Last
+    let inline last (q : BatchedDeque<'T>) = q.Last
 
     ///O(1) amortized, O(n), worst case. Returns option last element.
-    let inline tryGetLast (q : BatchedDeque<'a>) = q.TryGetLast
+    let inline tryGetLast (q : BatchedDeque<'T>) = q.TryGetLast
 
     ///O(1). Returns the count of elememts.
-    let inline length (q : BatchedDeque<'a>) = q.Length
+    let inline length (q : BatchedDeque<'T>) = q.Length
 
     ///O(n), worst case. Returns element by index.
-    let inline lookup i (q : BatchedDeque<'a>) = q.Lookup i
+    let inline lookup i (q : BatchedDeque<'T>) = q.Lookup i
 
     ///O(n), worst case. Returns option element by index.
-    let inline tryLookup i (q : BatchedDeque<'a>) = q.TryLookup i
+    let inline tryLookup i (q : BatchedDeque<'T>) = q.TryLookup i
 
     ///O(n), worst case. Returns a deque of the two lists concatenated.
     let ofCatLists xs ys = BatchedDeque.OfCatLists xs ys
@@ -406,40 +405,40 @@ module BatchedDeque =
     let ofSeq xs = BatchedDeque.OfSeq xs
 
     ///O(n), worst case. Returns deque with element removed by index.
-    let inline remove i (q : BatchedDeque<'a>) = q.Remove i
+    let inline remove i (q : BatchedDeque<'T>) = q.Remove i
 
     ///O(n), worst case. Returns option deque with element removed by index.
-    let inline tryRemove i (q : BatchedDeque<'a>) = q.TryRemove i
+    let inline tryRemove i (q : BatchedDeque<'T>) = q.TryRemove i
 
     ///O(1). Returns deque reversed.
-    let inline rev (q : BatchedDeque<'a>) = q.Rev
+    let inline rev (q : BatchedDeque<'T>) = q.Rev
 
     ///O(1). Returns a deque of one element.
     let singleton x = BatchedDeque.Singleton x
 
     ///O(1). Returns a new deque with the element added to the end.
-    let inline snoc (x : 'a) (q : BatchedDeque<'a>) = (q.Snoc x) 
+    let inline snoc (x : 'T) (q : BatchedDeque<'T>) = (q.Snoc x) 
 
     ///O(1) amortized, O(n), worst case. Returns a new deque of the elements trailing the first element.
-    let inline tail (q : BatchedDeque<'a>) = q.Tail 
+    let inline tail (q : BatchedDeque<'T>) = q.Tail 
 
     ///O(1) amortized, O(n), worst case. Returns option deque of the elements trailing the first element.
-    let inline tryGetTail (q : BatchedDeque<'a>) = q.TryGetTail 
+    let inline tryGetTail (q : BatchedDeque<'T>) = q.TryGetTail 
 
     ///O(1) amortized, O(n), worst case. Returns the first element and tail.
-    let inline uncons (q : BatchedDeque<'a>) = q.Uncons
+    let inline uncons (q : BatchedDeque<'T>) = q.Uncons
 
     ///O(1) amortized, O(n), worst case. Returns option first element and tail.
-    let inline tryUncons (q : BatchedDeque<'a>) = q.TryUncons
+    let inline tryUncons (q : BatchedDeque<'T>) = q.TryUncons
 
     ///O(1) amortized, O(n), worst case. Returns init and the last element.
-    let inline unsnoc (q : BatchedDeque<'a>) = q.Unsnoc
+    let inline unsnoc (q : BatchedDeque<'T>) = q.Unsnoc
 
     ///O(1) amortized, O(n), worst case. Returns option init and the last element.
-    let inline tryUnsnoc (q : BatchedDeque<'a>) = q.TryUnsnoc
+    let inline tryUnsnoc (q : BatchedDeque<'T>) = q.TryUnsnoc
 
     ///O(n), worst case. Returns deque with element updated by index.
-    let inline update i y (q : BatchedDeque<'a>) = q.Update i y
+    let inline update i y (q : BatchedDeque<'T>) = q.Update i y
 
     ///O(n), worst case. Returns option deque with element updated by index.
-    let inline tryUpdate i y (q : BatchedDeque<'a>) = q.TryUpdate i y
+    let inline tryUpdate i y (q : BatchedDeque<'T>) = q.TryUpdate i y

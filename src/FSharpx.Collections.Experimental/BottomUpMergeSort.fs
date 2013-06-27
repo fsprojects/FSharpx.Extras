@@ -4,9 +4,9 @@ module FSharpx.Collections.Experimental.BottomUpMergeSort
 
 open FSharpx
 
-type Sortable<'a> = {
+type Sortable<'T> = {
     Size: int
-    Segments: Lazy<list<list<'a>>> }
+    Segments: Lazy<list<list<'T>>> }
 
 let rec merge xs ys =
     match xs, ys with
@@ -18,7 +18,7 @@ let rec merge xs ys =
         else
             y :: merge xs tly
 
-let empty<'a> : Sortable<'a> = { Size = 0; Segments = lazy [] }
+let empty<'T> : Sortable<'T> = { Size = 0; Segments = lazy [] }
 
 let isEmpty x = x.Size = 0
 

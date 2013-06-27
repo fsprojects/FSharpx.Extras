@@ -4,10 +4,9 @@ module FSharpx.StateMachine
 open System.Xml
 open System.Xml.Linq
 
-type IState = interface
+type IState = 
     abstract member EnterFunction : unit -> unit
     abstract member ExitFunction : unit->unit
-end
 
 // define a node record
 type Node = { Name : string; NextNodes : (string option * Node) list}
@@ -15,7 +14,7 @@ type Node = { Name : string; NextNodes : (string option * Node) list}
 // define DGML DU
 type DGML = 
     | Node of string
-    | Link of string * string * (string option)
+    | Link of string * string * string option
 
 
 // define DGML class
@@ -56,17 +55,19 @@ type DGMLClass() = class
 
         let getNextNodes fromNodeName= 
                 this.Links 
-                |> Seq.filter (fun (Link(a, b, l)) -> a = fromNodeName)
-                |> Seq.map (fun (Link(a,b,l)) -> l,this.FindNode(b))
-                |> Seq.filter (fun (_,n) -> match n with Some(x) -> true | None -> false)
-                |> Seq.map (fun (l,Some(n)) -> l,n)
+                |> Seq.choose (function 
+                    | Link(a, b, l) when a = fromNodeName ->
+                            match this.FindNode(b) with 
+                            | Some(x) -> Some(l,x) 
+                            | None -> None
+                    | _ -> None)
                 |> Seq.toList
 
         this.Nodes <-
             file.Descendants() 
             |> Seq.filter (fun node -> node.Name.LocalName = "Node")
-            |> Seq.map (fun node -> DGML.Node( node.Attribute(XName.Get("Id")).Value) )
-            |> Seq.map (fun (Node(n)) -> { Node.Name=n; NextNodes = [] })
+            |> Seq.map (fun node -> node.Attribute(XName.Get("Id")).Value )
+            |> Seq.map (fun n -> { Node.Name=n; NextNodes = [] })
             |> Seq.toList
         
         this.Nodes <-    
@@ -102,7 +103,7 @@ end
 
 // state machine class which inherit the DGML class
 // and use a MailboxProcessor to perform asynchronous message processing (if makeAsync = true)
-type StateMachine(makeAsync) as this = class
+type StateMachine(makeAsync) as this = 
     inherit DGMLClass()
 
     let functions = System.Collections.Generic.Dictionary<string, IState>()
@@ -164,6 +165,5 @@ type StateMachine(makeAsync) as this = class
     member private this.InvokeEnter(name:string) = 
         if functions.ContainsKey(name) then
             functions.[name].EnterFunction()
-end
 
 type State = { Name:string }

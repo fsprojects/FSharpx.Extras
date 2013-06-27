@@ -17,7 +17,7 @@ namespace FSharpx.CSharpTests {
         [Test]
         public void FromActionEta() {
             int a = 0;
-            Action action = () => a = 1;
+            Action action = () => a = a + 1;
             Action[] actions = new[] {action,action};
             var functions = actions.Select(FSharpFunc.FromAction);
         }

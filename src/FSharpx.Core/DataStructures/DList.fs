@@ -115,7 +115,7 @@ module DList =
         | Join(_,_,l) -> Join(xs, Unit x, l+1)) Nil s
 
     ///O(n). Returns a seq of the DList elements.
-    let toSeq (l:DList<_>) = l :> seq<_>
+    let toSeq (l:DList<_>) = l :> _ seq
 
     ///O(1). Returns a new DList with the element added to the beginning.
     let cons hd tl = DList<_>.op_Cons(hd, tl)

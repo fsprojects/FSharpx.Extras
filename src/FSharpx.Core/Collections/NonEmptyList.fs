@@ -6,12 +6,13 @@ open System.Collections.Generic
 open System.Runtime.CompilerServices
 open FSharpx
 
-type 'a NonEmptyList = {
-    Head: 'a
-    Tail: 'a list
-} with
+type NonEmptyList<'T> = 
+    { Head: 'T
+      Tail: 'T list }
+
     member x.Length = x.Tail.Length + 1
-    interface IEnumerable<'a> with
+
+    interface IEnumerable<'T> with
         member x.GetEnumerator() = 
             let e = seq {
                 yield x.Head
@@ -31,17 +32,17 @@ module NonEmptyList =
     let inline singleton value = create value []
 
     [<CompiledName("Head")>]
-    let inline head (x: _ NonEmptyList) = x.Head
+    let inline head (x: NonEmptyList<_>) = x.Head
 
     [<CompiledName("Tail")>]
-    let inline tail (x: _ NonEmptyList) = x.Tail
+    let inline tail (x: NonEmptyList<_>) = x.Tail
 
     [<CompiledName("ToFSharpList")>]
     [<Extension>]
-    let inline toList (x: _ NonEmptyList) = x.Head :: x.Tail
+    let inline toList (x: NonEmptyList<_>) = x.Head :: x.Tail
 
     [<CompiledName("Length")>]
-    let inline length (x: _ NonEmptyList) = x.Length
+    let inline length (x: NonEmptyList<_>) = x.Length
 
     [<CompiledName("ToArray")>]
     [<Extension>]
@@ -59,7 +60,7 @@ module NonEmptyList =
 
     [<CompiledName("AsEnumerable")>]
     [<Extension>]
-    let toSeq (list: _ NonEmptyList) = list :> _ seq
+    let toSeq (list: NonEmptyList<_>) = list :> _ seq
 
     [<CompiledName("Select")>]
     let map f list = 
@@ -96,6 +97,6 @@ module NonEmptyList =
     let collect mapping list =
         List.fold (fun s e -> mapping e |> append s) (mapping (head list)) (tail list)
 
-    type NonEmptyListSemigroup<'a>() =
-        interface ISemigroup<'a NonEmptyList> with
+    type NonEmptyListSemigroup<'T>() =
+        interface ISemigroup<'T NonEmptyList> with
             member x.Combine(a,b) = append a b

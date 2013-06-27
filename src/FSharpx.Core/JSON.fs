@@ -13,14 +13,14 @@ open FSharpx.Strings
 
 [<RequireQualifiedAccess>]
 type Token =
-| OpenBracket | CloseBracket
-| OpenArray | CloseArray
-| Colon | Comma
-| String of string
-| Date of DateTime
-| Boolean of bool
-| Null
-| Number of string
+    | OpenBracket | CloseBracket
+    | OpenArray | CloseArray
+    | Colon | Comma
+    | String of string
+    | Date of DateTime
+    | Boolean of bool
+    | Null
+    | Number of string
 
 let tokenize source=
     let rec parseString acc = function
@@ -83,6 +83,8 @@ type Text(text:string) =
     member this.Value with get() = v and set (value) = v <- value
     override this.ToString() = sprintf "\"%s\"" (escape v)
 
+    override this.GetHashCode() = hash this.Value
+
     override this.Equals other =
         match other with
         | (:? Text as y) -> this.Value = y.Value
@@ -98,6 +100,8 @@ type Date(date:DateTime) =
 
     member this.Value with get() = v and set (value) = v <- value
     override this.ToString() = sprintf "\"%s\"" (v.ToString())
+
+    override this.GetHashCode() = hash this.Value
 
     override this.Equals other =
         match other with
@@ -115,6 +119,8 @@ type Number(number:float) =
     member this.Value with get() = v and set (value) = v <- value
     override this.ToString() = v.ToString()
 
+    override this.GetHashCode() = hash this.Value
+
     override this.Equals other =
         match other with
         | (:? Number as y) -> this.Value = y.Value
@@ -130,6 +136,8 @@ type Boolean(boolean:bool) =
     member this.Value with get() = v and set (value) = v <- value
     override this.ToString() = v.ToString()
 
+    override this.GetHashCode() = hash this.Value
+
     override this.Equals other =
         match other with
         | (:? Boolean as y) -> this.Value = y.Value
@@ -142,6 +150,8 @@ type Boolean(boolean:bool) =
 
 type JSONNull() =
     override this.ToString() = "null"
+
+    override this.GetHashCode() = 1
 
     override this.Equals other =
         match other with
@@ -163,8 +173,14 @@ type JArray(elements:List<IDocument>) =
             (element :?> Infrastucture).Serialize(sb) |> ignore
         sb.Append "]"
 
-    member this.Elements with get() = v
+    member this.Elements = v
+
     override this.ToString() = (new StringBuilder() |> serialize).ToString()
+
+    override this.GetHashCode() = 
+        let mutable hash = 1
+        for w in this.Elements do hash <- 31 * hash + Unchecked.hash w
+        hash
 
     override this.Equals other =
         match other with
@@ -196,6 +212,11 @@ type JObject(properties:Dictionary<string,IDocument>) =
     member this.Properties with get() = v
     
     override this.ToString() = (new StringBuilder() |> serialize).ToString()
+
+    override x.GetHashCode() = 
+        let mutable hash = 1
+        for w in v do hash <- 31 * hash + Unchecked.hash w
+        hash
 
     override this.Equals other =
         match other with

@@ -7,17 +7,18 @@ open FSharpx.Collections
 
 // Ported from http://hackage.haskell.org/packages/archive/bktrees/latest/doc/html/src/Data-Set-BKTree.html
 
-type 'a BKTree =
-  | Node of 'a * int * IntMap<'a BKTree>
+type BKTree<'T> =
+  | Node of 'T * int * IntMap<BKTree<'T>>
   | Empty
-  with 
+
   member x.ToList() =
     match x with
     | Empty -> []
     | Node(a, _ , m) ->
         a :: (m |> IntMap.values |> List.collect (fun t -> t.ToList()))
 
-  interface IEnumerable<'a> with
+  interface IEnumerable<'T> with
+
     member x.GetEnumerator() =
         (x.ToList() :> _ seq).GetEnumerator()
         
@@ -108,7 +109,7 @@ module BKTree =
                 let size = subtree |> IntMap.values |> List.map size |> List.sum |> (+) 1
                 Node(b, size, subtree)
 
-    type 'a Functions(distance: 'a -> 'a -> int) =
+    type 'T Functions(distance: 'T -> 'T -> int) =
         member x.distance = distance
         member x.add a tree = add distance a tree
         member x.exists a tree = exists distance a tree
@@ -152,6 +153,6 @@ module BKTree =
     let Char = Functions(fun (i: char) j -> abs((int i) - (int j)))
 
     [<GeneralizableValue>]
-    let List<'a when 'a : equality> : 'a list Functions = Functions hirschberg
+    let List<'T when 'T : equality> : 'T list Functions = Functions hirschberg
 
     let ByteString = Functions byteStringDistance

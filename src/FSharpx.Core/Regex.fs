@@ -4,14 +4,12 @@ open System.Text.RegularExpressions
 
 //no reason to have this within the Regex module i think
 type ActiveMatch =
-    {
-        Match: Match
+    {   Match: Match
         MatchValue: string
         Groups: Group list
         OptionalGroups: (Group option) list
         GroupValues: string list
-        OptionalGroupValues: (string option) list
-    }
+        OptionalGroupValues: (string option) list }
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]//need this so doesn't hide Regex class in C# assemblies (should consider for other extension modules as well)
 module Regex =
@@ -55,9 +53,9 @@ module Regex =
                        OptionalGroupValues=optionalGroupValues })
             | _ -> None
 
-    let inline tryMatch x = tryMatchWithOptions RegexOptions.None x
+    let inline tryMatch pattern input = tryMatchWithOptions RegexOptions.None pattern input
 
-    let inline (|Match|_|) x = tryMatchWithOptions x
+    let inline (|Match|_|) options pattern input = tryMatchWithOptions options pattern input
 
     module Compiled =
         //note: if we need to support Silverlight and other reduced runtimes that don't support RegexOptions.Compiled,
