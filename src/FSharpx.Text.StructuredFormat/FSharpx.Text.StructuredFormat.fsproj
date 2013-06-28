@@ -40,7 +40,8 @@
   <PropertyGroup Condition="$(TargetFrameworkVersion) == 'v4.0'">
     <DefineConstants>NET40</DefineConstants>
   </PropertyGroup>
-  <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
+  <Import Project="..\..\lib\FSharp\Microsoft.Portable.FSharp.Targets" Condition="'$(TargetFramework)' == 'portable47'" />
+  <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" Condition="'$(TargetFramework)' != 'portable47'" />
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="StructuredFormat.fsi" />

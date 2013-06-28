@@ -50,7 +50,8 @@
   <PropertyGroup Condition="$(TargetFrameworkVersion) == 'v4.0'">
     <DefineConstants>NET40</DefineConstants>
   </PropertyGroup>
-  <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
+  <Import Project="..\..\lib\FSharp\Microsoft.Portable.FSharp.Targets" Condition="'$(TargetFramework)' == 'portable47'" />
+  <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" Condition="'$(TargetFramework)' != 'portable47'" />
   <ItemGroup>
     <Reference Include="FsCheck">
       <HintPath>..\..\packages\FsCheck.0.8.3.0\lib\net40-Client\FsCheck.dll</HintPath>

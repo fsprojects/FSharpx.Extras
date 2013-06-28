@@ -45,7 +45,8 @@
     <DocumentationFile>bin\Debug\UndoSample.XML</DocumentationFile>
     <OutputPath>..\..\build\DataStructures\</OutputPath>
   </PropertyGroup>
-  <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
+  <Import Project="..\..\lib\FSharp\Microsoft.Portable.FSharp.Targets" Condition="'$(TargetFramework)' == 'portable47'" />
+  <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" Condition="'$(TargetFramework)' != 'portable47'" />
   <ItemGroup>
     <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
       <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>

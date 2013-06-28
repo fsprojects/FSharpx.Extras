@@ -32,6 +32,8 @@
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>bin\Release\FSharpx.TypeProviders.Graph.XML</DocumentationFile>
   </PropertyGroup>
+  <Import Project="..\..\lib\FSharp\Microsoft.Portable.FSharp.Targets" Condition="'$(TargetFramework)' == 'portable47'" />
+  <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" Condition="'$(TargetFramework)' != 'portable47'" />
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
@@ -72,7 +74,6 @@
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets" Condition=" Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -32,7 +32,8 @@
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>bin\Release\FSharpx.Text.StructuredFormat.Tests.XML</DocumentationFile>
   </PropertyGroup>
-  <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" />
+  <Import Project="..\..\lib\FSharp\Microsoft.Portable.FSharp.Targets" Condition="'$(TargetFramework)' == 'portable47'" />
+  <Import Project="..\..\lib\FSharp\Microsoft.FSharp.Targets" Condition="'$(TargetFramework)' != 'portable47'" />
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
