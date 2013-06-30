@@ -807,3 +807,72 @@ let ``structural equality``() =
     let l3 = ofSeq [1..99] |> conj 7
 
     l1 = l3 |> should equal false
+
+//oh dear. That was a lot of work wasn't it?
+//let's see if we can do better with FsCheck.
+open FsCheck.Commands
+//Let's do some model-based checking, as that seems to be an aspect that's underused.
+type DequeActual = Deque<int>
+type DequeModel = list<int>
+//first, let's write the spec. What's a good model for a deque? Let's keep it simple -
+//a lowly list will do. 
+let spec =
+    let last = List.rev >> List.head
+    let tryHead l = match l with [] -> None | (h::_) -> Some h
+    let tryLast = List.rev >> tryHead
+    let initial = List.rev >> List.tail >> List.rev
+    let check (c,m) =
+        let asList = Deque.toSeq c |> Seq.toList
+        m = asList //main check is that the list is the same
+        && tryLast m = Deque.tryLast c //but also use other operations
+        && tryHead m = Deque.tryHead c //to test the correctness of those too
+        && List.length m = Deque.length c
+        && List.isEmpty m = Deque.isEmpty c
+    let unconj = 
+        Gen.constant <|
+                { new ICommand<DequeActual,DequeModel>() with
+                    member x.RunActual c = Deque.unconj c |> fst
+                    member x.RunModel m = initial m
+                    member x.Pre m = not (List.isEmpty m)
+                    member x.Post (c,m) = check (c,m)
+                    override x.ToString() = sprintf "unconj"}
+    let conj = 
+        gen { let! elem = Arb.generate<int>
+              return
+                { new ICommand<DequeActual,DequeModel>() with
+                    member x.RunActual c = Deque.conj elem c
+                    member x.RunModel m = m @ [elem]
+                    member x.Post (c,m) = check (c,m)
+                    override x.ToString() = sprintf "conj %i" elem}
+        }
+    let uncons = 
+        Gen.constant <|
+                { new ICommand<DequeActual,DequeModel>() with
+                    member x.RunActual c = Deque.uncons c |> snd
+                    member x.RunModel m = List.tail m
+                    member x.Pre m = not (List.isEmpty m)
+                    member x.Post (c,m) = check (c,m)
+                    override x.ToString() = sprintf "uncons"}
+    let cons = 
+        gen { let! elem = Arb.generate<int>
+              return
+                { new ICommand<DequeActual,DequeModel>() with
+                    member x.RunActual c = Deque.cons elem c
+                    member x.RunModel m = elem::m
+                    member x.Post (c,m) = check (c,m)
+                    override x.ToString() = sprintf "cons %i" elem}
+        }
+    let rev = 
+        Gen.constant <|
+                { new ICommand<DequeActual,DequeModel>() with
+                    member x.RunActual c = Deque.rev c
+                    member x.RunModel m = List.rev m
+                    member x.Post (c,m) = check (c,m)
+                    override x.ToString() = sprintf "rev"}
+    { new ISpecification<DequeActual, DequeModel> with
+        member x.Initial() = (Deque.empty,[])
+        member x.GenCommand _ = Gen.oneof [unconj; conj; uncons; cons; rev] }
+
+[<Test>]
+let JustFsCheckIt() =
+    Check.QuickThrowOnFailure (asProperty spec)
