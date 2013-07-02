@@ -65,15 +65,15 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="FsCheck">
-      <HintPath>..\..\packages\FsCheck.0.8.3.0\lib\net40-Client\FsCheck.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <ProjectReference Include="..\FSharpx.Tests\FSharpx.Tests.fsproj">
       <Name>FSharpx.Tests</Name>
       <Project>{26d9d3ee-e882-43e6-a79e-5d1d89e92c4f}</Project>
       <Private>true</Private>
     </ProjectReference>
+    <Reference Include="FsCheck">
+      <HintPath>..\..\packages\FsCheck.0.9.1.0\lib\net40-Client\FsCheck.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="FsUnit.NUnit">
       <HintPath>..\..\packages\FsUnit.1.2.1.0\Lib\Net40\FsUnit.NUnit.dll</HintPath>
       <Private>True</Private>
