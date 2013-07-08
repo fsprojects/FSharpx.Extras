@@ -10,7 +10,6 @@ open System.IO
 type BookTest = ExcelFile<"BookTest.xls", "Sheet1", true>
 type HeaderTest = ExcelFile<"BookTestWithHeader.xls", "A2", true>
 type MultipleRegions = ExcelFile<"MultipleRegions.xlsx", "A1:C5,E3:G5", true>
-type DataTypesTest = ExcelFile<"DataTypes.xlsx">
 
 [<Test>]
 let ``Can access first row in typed excel data``() = 
@@ -74,15 +73,3 @@ let ``Can load from multiple ranges``() =
     rows.[3].Fourth |> should equal null
     rows.[3].Fifth |> should equal null
     rows.[3].Sixth |> should equal null
-
-[<Test>]
-let ``Can create fields with correct types``() =
-    let file = new DataTypesTest()
-    let row = file.Data |> Seq.head
-    row.String.GetType() |> should equal typeof<string>
-    row.Float.GetType() |> should equal typeof<float>
-    row.Boolean.GetType() |> should equal typeof<bool>
-    row.Date.GetType() |> should equal typeof<DateTime>
-    row.Time.GetType() |> should equal typeof<DateTime>
-    row.Currency.GetType() |> should equal typeof<Double>
-    
