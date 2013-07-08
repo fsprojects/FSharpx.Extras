@@ -5,9 +5,10 @@ open Fake
 open Fake.Git
 open System.IO
 
+let nugetPath = ".nuget/NuGet.exe"
 let RestorePackage() =
     !! "./**/packages.config"
-    |> Seq.iter (RestorePackage (fun p -> { p with ToolPath = "./lib/NuGet/NuGet.exe" }))
+    |> Seq.iter (RestorePackage (fun p -> { p with ToolPath = nugetPath }))
 
 RestorePackage()
 
@@ -92,7 +93,6 @@ let frameworkParams portable frameworkVersion =
          "DefineConstants", "NET" + normalizeFrameworkVersion frameworkVersion]
 
 // tools
-let nugetPath = "./lib/Nuget/nuget.exe"
 let nunitVersion = GetPackageVersion packagesDir "NUnit.Runners"
 let nunitPath = sprintf "%sNUnit.Runners.%s/Tools" packagesDir nunitVersion
 
