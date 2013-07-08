@@ -1982,8 +1982,8 @@ type AssemblyGenerator(assemblyFileName) =
             for evt in ptd.GetEvents(ALL) |> Seq.choose (function :? ProvidedEvent as pe -> Some pe | _ -> None) do
                 let eb = tb.DefineEvent(evt.Name, evt.Attributes, evt.EventHandlerType)
                 defineCustomAttrs eb.SetCustomAttribute (evt.GetCustomAttributesDataImpl())
-                eb.SetAddOnMethod(methMap.[evt.AddMethod :?> _])
-                eb.SetRemoveOnMethod(methMap.[evt.RemoveMethod :?> _])
+                eb.SetAddOnMethod(methMap.[evt.GetAddMethod(true) :?> _])
+                eb.SetRemoveOnMethod(methMap.[evt.GetRemoveMethod(true) :?> _])
                 // TODO: add raiser
             
             for pinfo in ptd.GetProperties(ALL) |> Seq.choose (function :? ProvidedProperty as pe -> Some pe | _ -> None) do
