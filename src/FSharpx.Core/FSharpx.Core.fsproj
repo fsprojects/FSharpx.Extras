@@ -23,7 +23,7 @@
     <OutputPath>..\..\build\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Debug\FSharpx.Core.XML</DocumentationFile>
+    <DocumentationFile>..\..\build\Debug\FSharpx.Core.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,7 +32,7 @@
     <OutputPath>..\..\build\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\FSharpx.Core.XML</DocumentationFile>
+    <DocumentationFile>..\..\build\FSharpx.Core.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="$(TargetFrameworkVersion) == 'v3.5'">
     <DefineConstants>NET35</DefineConstants>

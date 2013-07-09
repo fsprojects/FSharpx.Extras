@@ -21,6 +21,7 @@
     <OutputPath>..\..\build\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
+    <DocumentationFile>..\..\build\Debug\FSharpx.Http.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,7 +30,7 @@
     <OutputPath>..\..\build\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\FSharpx.Http.XML</DocumentationFile>
+    <DocumentationFile>..\..\build\FSharpx.Http.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'DataStructures|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
