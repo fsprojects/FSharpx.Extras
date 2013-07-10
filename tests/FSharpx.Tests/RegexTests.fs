@@ -74,3 +74,27 @@ let ``all variations yield same match value result`` () =
 
     activeInterpreted.IsSome |> should equal true
     activeInterpreted.Value.MatchValue |> should equal input
+
+open System.Threading
+open System.Globalization
+
+let withCulture (c: string) =
+    let old = Thread.CurrentThread.CurrentCulture
+    Thread.CurrentThread.CurrentCulture <- CultureInfo c
+    { new IDisposable with
+        member x.Dispose() =
+            Thread.CurrentThread.CurrentCulture <- old }
+
+[<Test>]
+let ``tryMatch is culture invariant``() =
+    // example from http://msdn.microsoft.com/en-us/library/yd1hzczs.aspx#Invariant
+    use __ = withCulture "tr-TR"
+    let match' = Regex.tryMatch "(?i)FILE" "file"
+    match'.IsSome |> should equal true
+
+[<Test>]
+let ``Match active pattern is culture invariant``() =
+    use __ = withCulture "tr-TR"
+    match "file" with
+    | Regex.Interpreted.Match "(?i)FILE" m -> m.MatchValue |> should equal "file"
+    | _ -> Assert.Fail ""

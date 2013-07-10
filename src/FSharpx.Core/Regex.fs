@@ -53,7 +53,7 @@ module Regex =
                        OptionalGroupValues=optionalGroupValues })
             | _ -> None
 
-    let inline tryMatch pattern input = tryMatchWithOptions RegexOptions.None pattern input
+    let inline tryMatch pattern input = tryMatchWithOptions RegexOptions.CultureInvariant pattern input
 
     let inline (|Match|_|) options pattern input = tryMatchWithOptions options pattern input
 
@@ -62,7 +62,7 @@ module Regex =
         //then it would be nice for us to detect that and fall back on RegexOptions.None here (compiling is just an
         //optimization detail, doesn't change behavior of regex otherwise, so doing this fall back allows library
         //users to share code between their full vs. silverlight applications more easily).
-        let (|Match|_|) = (|Match|_|) RegexOptions.Compiled
+        let (|Match|_|) = (|Match|_|) (RegexOptions.Compiled ||| RegexOptions.CultureInvariant)
 
     module Interpreted =
-        let (|Match|_|) = (|Match|_|) RegexOptions.None
+        let (|Match|_|) = (|Match|_|) RegexOptions.CultureInvariant
