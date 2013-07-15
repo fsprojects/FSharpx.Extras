@@ -50,4 +50,20 @@ let ``sequence with Some``() =
 let ``sequence with None``() =
     let r = Option.sequence [Some 1; Some 2; None]
     Assert.AreEqual(None, r)
+
+[<Test>]
+let ``concat some of some``() =
+    let r = Some(Some 1) |> Option.concat
+    Assert.AreEqual(Some 1, r)
+
+[<Test>]
+let ``concat some of none``() =
+    let r = Some(None) |> Option.concat
+    Assert.AreEqual(None, r)
+
+[<Test>]
+let ``concat none``() =
+    let r = None |> Option.concat
+    Assert.AreEqual(None, r)
+
     

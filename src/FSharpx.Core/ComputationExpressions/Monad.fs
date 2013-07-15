@@ -278,6 +278,9 @@ module Option =
             | (true,  output) -> Some output
             | (false,      _) -> None
 
+    /// Concatenates an option of option.
+    let inline concat x = 
+        x >>= id
 
 module Nullable =
     let (|Null|Value|) (x: _ Nullable) =
