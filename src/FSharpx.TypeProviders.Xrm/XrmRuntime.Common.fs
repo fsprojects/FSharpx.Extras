@@ -253,5 +253,5 @@ module Utilities =
         | "Item7" -> tupleIndex.[6] | "Item17" -> tupleIndex.[16]
         | "Item8" -> tupleIndex.[7] | "Item18" -> tupleIndex.[17]
         | "Item9" -> tupleIndex.[8] | "Item19" -> tupleIndex.[18]
-        | "Item10"-> tupleIndex.[0] | "Item20" -> tupleIndex.[19]
+        | "Item10"-> tupleIndex.[9] | "Item20" -> tupleIndex.[19]
         | _ -> failwith "currently only support up to 20 nested entity aliases"
