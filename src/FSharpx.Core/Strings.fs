@@ -17,6 +17,7 @@ module Strings =
     let inline split (delimiter:char) (text:string) = text.Split [|delimiter|]
 
     /// Converts a sequence of strings to a single string separated with the delimiters
+    [<System.Obsolete("Function 'separatedBy' obsolete. Use 'String.concat' from 'Microsoft.FSharp.Core' instead.")>]
     let inline separatedBy delimiter (items: string seq) = String.Join(delimiter, Array.ofSeq items)
 
     /// Returns if the string is null or empty
