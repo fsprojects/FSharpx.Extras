@@ -18,20 +18,6 @@ namespace FSharpx.CSharpTests
         }
 
         [Test]
-        public void WhenJoiningStringsWithQuestionMark()
-        {
-            Strings.separatedBy("?", FSharpList.Create("Hello", "World", "fsharpx"))
-                .ShouldEqual("Hello?World?fsharpx");
-        }
-
-        [Test]
-        public void WhenJoiningStringsWithComma()
-        {
-            Strings.separatedBy("?", FSharpList.Create("Hello", "World", "fsharpx"))
-                .ShouldEqual("Hello?World?fsharpx");
-        }
-
-        [Test]
         public void WhenReplacingSimplePatternInStringWhichContainsThePattern()
         {
             (Strings.replace("Hello", "World", "Hello World!")).ShouldEqual("World World!");
