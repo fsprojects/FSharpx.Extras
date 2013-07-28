@@ -390,6 +390,9 @@ module Vector =
             | _ -> loop (f state' v'.[count]) v' (count + 1)  
         loop state v 0
 
+    let inline flatten (v : Vector<Vector<'T>>) =
+        fold (fun (s : seq<'T>) (v' : Vector<'T>) -> Seq.append s v') Seq.empty<'T> v
+
     let inline foldBack (f : ('T -> 'State -> 'State)) (v : Vector<'T>) (state : 'State) =  
         let rec loop state' (v' : Vector<'T>) count =
             match count with
@@ -422,14 +425,23 @@ module Vector =
         ret.persistent() 
 
     let inline nth i (vector: Vector<'T>) : 'T = vector.[i]
+
+    let inline nthNth i j (vector: Vector<Vector<'T>>) : 'T = vector.[i] |> nth j
  
     let inline tryNth i (vector: Vector<'T>) =
         if i >= 0 && i < vector.Length then Some(vector.[i])
         else None
 
+    let inline tryNthNth i j (vector: Vector<Vector<'T>>) =
+        match tryNth i vector with
+        | Some v' -> tryNth j v'
+        | None -> None    
+
     let ofSeq (items : 'T seq) = Vector.ofSeq items 
 
     let inline rev (vector: Vector<'T>) = vector.Rev()
+
+    let inline singleton (x : 'T) = empty |> conj x
 
     let inline unconj (vector: Vector<'T>) = vector.Unconj
 
@@ -437,4 +449,25 @@ module Vector =
 
     let inline update i (x : 'T) (vector : Vector<'T>) : Vector<'T> = vector.Update(i, x)
 
+    let inline updateNth i j (x : 'T) (vector : Vector<Vector<'T>>) : Vector<Vector<'T>> = vector.Update(i, (vector.[i].Update(j, x)))
+
     let inline tryUpdate i (x : 'T) (vector : Vector<'T>) = vector.TryUpdate(i, x)
+
+    let inline tryUpdateNth i  j (x : 'T) (vector : Vector<Vector<'T>>) = 
+        if i >= 0 && i < vector.Length && j >= 0 && j < vector.[i].Length
+        then Some(updateNth i j x vector)
+        else None
+
+    let inline windowFun windowLength = 
+        fun (v : Vector<Vector<'T>>) x ->
+        if v.Last.Length = windowLength 
+        then 
+            v 
+            |> conj (empty.Conj(x))
+        else 
+            initial v 
+            |> conj (last v |> conj x)
+
+    let inline windowSeq windowLength (items : 'T seq) = 
+        if windowLength < 1 then invalidArg "windowLength" "length is less than 1"
+        else (Seq.fold (windowFun windowLength) (empty.Conj empty<'T>) items)

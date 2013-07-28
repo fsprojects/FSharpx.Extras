@@ -68,6 +68,9 @@ module Vector =
     /// O(n). Returns a state from the supplied state and a function operating from left to right.
     val inline fold : ('State -> 'T -> 'State) -> 'State -> Vector<'T> -> 'State
 
+    /// O(m,n). Returns a seq from a vector of vectors.
+    val inline flatten : Vector<Vector<'T>> -> seq<'T>
+
     /// O(n). Returns a state from the supplied state and a function operating from right to left.
     val inline foldBack : ('T -> 'State -> 'State) -> Vector<'T> -> 'State -> 'State
 
@@ -97,15 +100,24 @@ module Vector =
 
     /// O(log32n). Returns the value at the index. If the index is out of bounds it throws an exception.
     val inline nth : int -> Vector<'T> -> 'T
+
+    /// O(log32(m,n)). Returns the value at the  outer index, inner index. If either index is out of bounds it throws an exception.
+    val inline nthNth : int -> int -> Vector<Vector<'T>> -> 'T
  
     /// O(log32n). Returns option value at the index. 
     val inline tryNth : int -> Vector<'T> -> 'T option
+
+    /// O(log32(m,n)). Returns option value at the indices. 
+    val inline tryNthNth : int -> int -> Vector<Vector<'T>> -> 'T option
 
     /// O(n). Returns a vector of the seq.
     val ofSeq : seq<'T> -> Vector<'T>
 
     ///O(n). Returns vector reversed.
     val inline rev : Vector<'T> -> Vector<'T>
+
+    /// O(1). Returns a new vector of one element.   
+    val inline singleton : 'T -> Vector<'T>
 
     /// O(1). Returns tuple last element and vector without last item
     val inline unconj : Vector<'T> -> Vector<'T> * 'T
@@ -116,5 +128,14 @@ module Vector =
     /// O(log32n). Returns a new vector that contains the given value at the index. 
     val inline update : int -> 'T -> Vector<'T> -> Vector<'T>
 
+    /// O(log32(m,n)). Returns a new vector of vectors that contains the given value at the indices. 
+    val inline updateNth : int -> int -> 'T -> Vector<Vector<'T>> -> Vector<Vector<'T>>
+
     /// O(log32n). Returns option vector that contains the given value at the index. 
     val inline tryUpdate : int -> 'T -> Vector<'T> -> Vector<'T> option
+
+    /// O(log32(m,n)). Returns option vector that contains the given value at the indices. 
+    val inline tryUpdateNth : int -> int -> 'T -> Vector<Vector<'T>> -> Vector<Vector<'T>> option
+
+    /// O(n). Returns a vector of vectors of given length from the seq. Result may be a jagged vector.
+    val inline windowSeq : int  -> seq<'T> -> Vector<Vector<'T>>

@@ -380,3 +380,187 @@ let ``structural equality``() =
     let l3 = l2 |> update 98 7
 
     l1 = l3 |> should equal false
+
+open FsCheck.Commands
+//model-based checking
+type Vector2Actual = Vector<Vector<int>>
+type VectorModel = Vector<int> 
+
+let firstVofV f (v : Vector<Vector<int>>) =
+    let rec loop = function
+        | x when x < v.Length ->
+            if v.[x].Length > 0 then x
+            else loop (x + 1)
+        | _ -> 0
+            
+    let i = loop 0
+    f i 0 
+
+let lastVofV f (v : Vector<Vector<int>>) = 
+    let rec loop = function
+        | x when x > 0 ->
+            if v.[x].Length > 0 then x
+            else loop (x - 1)
+        | _ -> 0
+            
+    let i = loop (v.Length - 1)
+        
+    let j = 
+        if v.[i].Length = 0 then 0
+        else v.[i].Length - 1
+            
+    f i j 
+
+let lastV f (v : Vector<Vector<int>>) = 
+    let rec loop = function
+        | x when x > 0 ->
+            if v.[x].Length > 0 then x
+            else loop (x - 1)
+        | _ -> 0
+            
+    f (loop (v.Length - 1))
+
+let appendInnerMulti check = 
+    gen { let! elems = Arb.generate<List<int>>
+          return
+            { new ICommand<Vector2Actual,VectorModel>() with
+                member x.RunActual c = c |> update (c.Length - 1)  (append c.[c.Length - 1] (ofSeq elems))
+                member x.RunModel m = append m (ofSeq elems)
+                member x.Post (c,m) = check (c,m)
+                override x.ToString() = sprintf "appendInnerMulti: elems = %A" elems }
+    }
+
+let tryUpdAppendInnerMulti check = 
+    gen { let! elems = Arb.generate<List<int>>
+          let! elemForUpd = Arb.generate<int>
+          return
+            { new ICommand<Vector2Actual,VectorModel>() with
+                member x.RunActual c = 
+                    match (lastVofV tryUpdateNth c) elemForUpd c with
+                    | Some x -> 
+                        let firstUpdated = (firstVofV updateNth x) elemForUpd x
+                        let last = firstUpdated.Length - 1
+                        firstUpdated |> update last  (append firstUpdated.[last] (ofSeq elems))
+                    | None -> c |> update (c.Length - 1)  (append c.[c.Length - 1] (ofSeq elems))
+                member x.RunModel m = 
+                    match tryUpdate (m.Length - 1) elemForUpd m with
+                    | Some x -> append (update 0 elemForUpd x) (ofSeq elems)
+                    | None -> append m (ofSeq elems)
+                member x.Post (c,m) = check (c,m)
+                override x.ToString() = sprintf "appendInnerMulti: elemForUpd = %i, elems = %A" elemForUpd elems }
+    }
+
+let conjInner1Elem check = 
+    gen { let! elem = Arb.generate<int>
+          return
+            { new ICommand<Vector2Actual,VectorModel>() with
+                member x.RunActual c = c |> conj (singleton elem)
+                member x.RunModel m = conj elem m
+                member x.Post (c,m) = check (c,m)
+                override x.ToString() = sprintf "conjInner1Elem: elem = %i" elem }
+    }
+
+let tryUpdConjInner1Elem check = 
+    gen { let! elem = Arb.generate<int>
+          let! elemForUpd = Arb.generate<int>
+          return
+            { new ICommand<Vector2Actual,VectorModel>() with
+                member x.RunActual c = 
+                    match (firstVofV tryUpdateNth c) elemForUpd c with
+                    | Some x -> 
+                        (lastVofV updateNth x) elemForUpd x
+                        |> conj (singleton elem)
+                    | None -> c |> conj (singleton elem)
+                member x.RunModel m = 
+                    match tryUpdate 0 elemForUpd m with
+                    | Some x -> 
+                        update (x.Length - 1) elemForUpd x
+                        |> conj elem
+                    | None -> conj elem m
+                member x.Post (c,m) = check (c,m)
+                override x.ToString() = sprintf "conjInner1Elem: elem = %i, elemForUpd = %i" elem elemForUpd}
+    }
+
+let conjInnerEmpty check = 
+    Gen.constant <|
+        { new ICommand<Vector2Actual,VectorModel>() with
+            member x.RunActual c = c |> conj empty
+            member x.RunModel m = m
+            member x.Post (c,m) = check (c,m) 
+            override x.ToString() = sprintf "conjInnerEmpty"}
+
+let shrinkInner check = 
+    Gen.constant <|
+        { new ICommand<Vector2Actual,VectorModel>() with
+            member x.RunActual c = (lastV update c) ((lastV nth c) c).Initial c
+            member x.RunModel m = m |> initial
+            member x.Pre m = (length m) > 0
+            member x.Post (c,m) = check (c,m) 
+            override x.ToString() = sprintf "conjInnerEmpty"}
+
+let checkFlatten (c,m) = 
+    m = (flatten c |> ofSeq)        //main check is that the list is the same
+
+let checkLookup (c, (m : Vector<int>)) =         //no way to distinguish which test failed
+    (if m.Length = 0 then true
+     else last m = (lastVofV nthNth c) c
+          && nth 0 m = (firstVofV nthNth c) c)
+    && tryLast m = (lastVofV tryNthNth c) c      //also use other operations
+    && tryNth 0 m = (firstVofV tryNthNth c) c    //to test the correctness of those too
+
+let specVofV_GrowFlatten =
+    { new ISpecification<Vector2Actual, VectorModel> with
+        member x.Initial() = ((empty |> conj empty), empty)
+        member x.GenCommand _ = Gen.oneof [conjInner1Elem(checkFlatten); conjInnerEmpty(checkFlatten); appendInnerMulti(checkFlatten)] }
+
+let specVofV_UpdateGrowFlatten =   
+    { new ISpecification<Vector2Actual, VectorModel> with
+        member x.Initial() = ((empty |> conj empty), empty)
+        member x.GenCommand _ = Gen.oneof [tryUpdConjInner1Elem(checkFlatten); conjInnerEmpty(checkFlatten); tryUpdAppendInnerMulti(checkFlatten)] }
+
+let specVofV_GrowLookup =   
+    { new ISpecification<Vector2Actual, VectorModel> with
+        member x.Initial() = ((empty |> conj empty), empty)
+        member x.GenCommand _ = Gen.oneof [conjInner1Elem(checkLookup); conjInnerEmpty(checkLookup); appendInnerMulti(checkLookup)] }
+
+let specVofV_UpdateGrowShrinkFlatten =   
+    { new ISpecification<Vector2Actual, VectorModel> with
+        member x.Initial() = ((empty |> conj empty), empty)
+        member x.GenCommand _ = Gen.oneof [tryUpdConjInner1Elem(checkFlatten); conjInnerEmpty(checkFlatten); tryUpdAppendInnerMulti(checkFlatten); shrinkInner(checkFlatten)] }
+
+[<Test>]
+let ``Grow Vector<Vector<'T>>, check by flatten``() =
+    Check.QuickThrowOnFailure (asProperty specVofV_GrowFlatten)
+
+[<Test>]
+let ``Update Vector<Vector<'T>>, Grow, check by flatten``() =
+    Check.QuickThrowOnFailure (asProperty specVofV_UpdateGrowFlatten)
+
+[<Test>]
+let ``Grow Vector<Vector<'T>>, check by look-up``() =
+    Check.QuickThrowOnFailure (asProperty specVofV_GrowFlatten)
+
+[<Test>]
+let ``Update Vector<Vector<'T>>, Grow, Shrink, check by flatten``() =
+    Check.QuickThrowOnFailure (asProperty specVofV_UpdateGrowShrinkFlatten)
+
+[<Test>]
+let WindowedTest() =
+    let testWindowed = 
+        gen { let! windowLength = Gen.choose(1,5)
+              let! source = Arb.generate<List<int>>
+              return ((windowSeq windowLength source), (windowLength, source))
+        }
+        
+    Check.QuickThrowOnFailure   (Prop.forAll  (Arb.fromGen testWindowed)
+                                (fun (vOfV, (windowLength, source)) -> 
+                                    let outerLength =
+                                        if source.Length = 0 then 1
+                                        else int (Math.Ceiling((float)source.Length/(float)windowLength))
+                                    (outerLength = vOfV.Length &&
+                                     flatten vOfV |> List.ofSeq = source)
+                                    |> Prop.classify (source.Length > 0 && outerLength > 0) "windowLength, outerLength"
+                                    |> Prop.classify (source.Length = 0) "empty"
+                                    |> Prop.collect (windowLength, outerLength)
+                                )
+                   )
