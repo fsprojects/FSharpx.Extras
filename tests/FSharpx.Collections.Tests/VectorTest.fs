@@ -508,41 +508,31 @@ let checkLookup (c, (m : Vector<int>)) =         //no way to distinguish which t
     && tryLast m = (lastVofV tryNthNth c) c      //also use other operations
     && tryNth 0 m = (firstVofV tryNthNth c) c    //to test the correctness of those too
 
-let specVofV_GrowFlatten =
+let specVofV genList =   
     { new ISpecification<Vector2Actual, VectorModel> with
         member x.Initial() = ((empty |> conj empty), empty)
-        member x.GenCommand _ = Gen.oneof [conjInner1Elem(checkFlatten); conjInnerEmpty(checkFlatten); appendInnerMulti(checkFlatten)] }
+        member x.GenCommand _ = Gen.oneof genList }
 
-let specVofV_UpdateGrowFlatten =   
-    { new ISpecification<Vector2Actual, VectorModel> with
-        member x.Initial() = ((empty |> conj empty), empty)
-        member x.GenCommand _ = Gen.oneof [tryUpdConjInner1Elem(checkFlatten); conjInnerEmpty(checkFlatten); tryUpdAppendInnerMulti(checkFlatten)] }
-
-let specVofV_GrowLookup =   
-    { new ISpecification<Vector2Actual, VectorModel> with
-        member x.Initial() = ((empty |> conj empty), empty)
-        member x.GenCommand _ = Gen.oneof [conjInner1Elem(checkLookup); conjInnerEmpty(checkLookup); appendInnerMulti(checkLookup)] }
-
-let specVofV_UpdateGrowShrinkFlatten =   
-    { new ISpecification<Vector2Actual, VectorModel> with
-        member x.Initial() = ((empty |> conj empty), empty)
-        member x.GenCommand _ = Gen.oneof [tryUpdConjInner1Elem(checkFlatten); conjInnerEmpty(checkFlatten); tryUpdAppendInnerMulti(checkFlatten); shrinkInner(checkFlatten)] }
+let ``Grow, check by flatten`` = [conjInner1Elem(checkFlatten); conjInnerEmpty(checkFlatten); appendInnerMulti(checkFlatten)]
+let ``Grow, check by look-up`` = [conjInner1Elem(checkLookup); conjInnerEmpty(checkLookup); appendInnerMulti(checkLookup)]
+let ``Grow, Update, check by flatten`` = [tryUpdConjInner1Elem(checkFlatten); conjInnerEmpty(checkFlatten); tryUpdAppendInnerMulti(checkFlatten)]
+let ``Grow, Update, Shrink, check by flatten`` = [tryUpdConjInner1Elem(checkFlatten); conjInnerEmpty(checkFlatten); tryUpdAppendInnerMulti(checkFlatten); shrinkInner(checkFlatten)]
 
 [<Test>]
 let ``Grow Vector<Vector<'T>>, check by flatten``() =
-    Check.QuickThrowOnFailure (asProperty specVofV_GrowFlatten)
-
-[<Test>]
-let ``Update Vector<Vector<'T>>, Grow, check by flatten``() =
-    Check.QuickThrowOnFailure (asProperty specVofV_UpdateGrowFlatten)
+    Check.QuickThrowOnFailure (asProperty (specVofV ``Grow, check by flatten``))
 
 [<Test>]
 let ``Grow Vector<Vector<'T>>, check by look-up``() =
-    Check.QuickThrowOnFailure (asProperty specVofV_GrowFlatten)
+    Check.QuickThrowOnFailure (asProperty (specVofV ``Grow, check by look-up``))
 
 [<Test>]
-let ``Update Vector<Vector<'T>>, Grow, Shrink, check by flatten``() =
-    Check.QuickThrowOnFailure (asProperty specVofV_UpdateGrowShrinkFlatten)
+let ``Grow Vector<Vector<'T>>, Update, check by flatten``() =
+    Check.QuickThrowOnFailure (asProperty (specVofV ``Grow, Update, check by flatten``))
+
+[<Test>]
+let ``Grow Vector<Vector<'T>>, Update, Shrink, check by flatten``() =
+    Check.QuickThrowOnFailure (asProperty (specVofV ``Grow, Update, Shrink, check by flatten``))
 
 [<Test>]
 let WindowedTest() =

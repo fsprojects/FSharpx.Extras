@@ -1,9 +1,10 @@
-Copyright 2010-2011
+Copyright 2010-2013
 
     Steffen Forkmann (http://navision-blog.de/)
     Tomas Petricek (http://tomasp.net/)
     Ryan Riley (http://panesofglass.org/)
     Mauricio Scheffer (http://bugsquash.blogspot.com/)
+    Jack Fox (http://jackfoxy.com/)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
