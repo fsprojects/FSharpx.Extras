@@ -13,6 +13,8 @@ type ActiveMatch =
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]//need this so doesn't hide Regex class in C# assemblies (should consider for other extension modules as well)
 module Regex =
+    type Options = RegexOptions
+
     let replaceWithAcc folder state input (rx: Regex) =
         let acc = ref state
         let evaluator (m: Match) =
@@ -53,7 +55,7 @@ module Regex =
                        OptionalGroupValues=optionalGroupValues })
             | _ -> None
 
-    let inline tryMatch pattern input = tryMatchWithOptions RegexOptions.CultureInvariant pattern input
+    let inline tryMatch pattern input = tryMatchWithOptions Options.CultureInvariant pattern input
 
     let inline (|Match|_|) options pattern input = tryMatchWithOptions options pattern input
 
@@ -62,7 +64,7 @@ module Regex =
         //then it would be nice for us to detect that and fall back on RegexOptions.None here (compiling is just an
         //optimization detail, doesn't change behavior of regex otherwise, so doing this fall back allows library
         //users to share code between their full vs. silverlight applications more easily).
-        let (|Match|_|) = (|Match|_|) (RegexOptions.Compiled ||| RegexOptions.CultureInvariant)
+        let (|Match|_|) = (|Match|_|) (Options.Compiled ||| Options.CultureInvariant)
 
     module Interpreted =
-        let (|Match|_|) = (|Match|_|) RegexOptions.CultureInvariant
+        let (|Match|_|) = (|Match|_|) Options.CultureInvariant
