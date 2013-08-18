@@ -1,5 +1,6 @@
 ﻿// RealTime queue from Chris Okasaki’s “Purely functional data structures”
 // original implementation taken from http://lepensemoi.free.fr/index.php/2010/01/07/real-time-queue
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 module FSharpx.DataStructures.RealTimeQueue
 
 #nowarn "44"

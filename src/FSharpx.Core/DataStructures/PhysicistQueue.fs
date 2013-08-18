@@ -157,6 +157,7 @@ type PhysicistQueue<'a> (prefix : list<'a>, frontLength : int, front : Lazy<list
 
         member this.GetEnumerator() = (this :> _ seq).GetEnumerator() :> IEnumerator
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module PhysicistQueue =
     //pattern discriminators

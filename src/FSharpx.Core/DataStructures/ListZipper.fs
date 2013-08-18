@@ -1,5 +1,6 @@
 ﻿/// ListZipper
 /// original implementation taken from http://learnyouahaskell.com/zippers
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 module FSharpx.DataStructures.ListZipper
 
 #nowarn "44"

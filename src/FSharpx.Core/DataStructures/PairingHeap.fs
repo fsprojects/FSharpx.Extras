@@ -225,6 +225,7 @@ type PairingHeap<'a when 'a : comparison> =
             let element,newHeap = this.Uncons()
             element,(newHeap  :> IPriorityQueue<'a>)
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module PairingHeap =   
     //pattern discriminator

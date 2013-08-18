@@ -29,6 +29,7 @@ and 'a RoseForest = 'a RoseTree LazyList
 
 module L = LazyList
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 [<Extension>]
 module RoseTree =
