@@ -1,5 +1,6 @@
 ﻿// implicit queue from Chris Okasaki’s “Purely functional data structures”
 // original implementation taken from http://lepensemoi.free.fr/index.php/2010/02/18/implicit-queue
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 module FSharpx.DataStructures.ImplicitQueue
 
 #nowarn "44"

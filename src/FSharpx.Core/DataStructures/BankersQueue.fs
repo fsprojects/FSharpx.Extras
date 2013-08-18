@@ -124,6 +124,7 @@ type BankersQueue<'a> (frontLength : int, front : LazyList<'a>, backLength : int
 
         member this.GetEnumerator() = (this :> _ seq).GetEnumerator() :> IEnumerator
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module BankersQueue =
     //pattern discriminators

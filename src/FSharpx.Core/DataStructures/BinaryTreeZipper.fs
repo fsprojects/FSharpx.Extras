@@ -1,5 +1,6 @@
 ﻿/// TreeZipper
 /// original implementation taken from http://blog.xquant.net/?p=156
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 module FSharpx.DataStructures.BinaryTreeZipper
 
 #nowarn "44"

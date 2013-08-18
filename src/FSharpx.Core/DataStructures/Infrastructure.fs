@@ -2,11 +2,13 @@
 
 open FSharpx.Collections
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 module Exceptions = 
     let Empty = new System.Exception("Queue is empty") // TODO: make this a better exception
 
     let OutOfBounds = new System.IndexOutOfRangeException() // TODO: make this a better exception
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 module LazyList =
     
     let rec private revAux r acc =
@@ -33,6 +35,7 @@ module LazyList =
             | _ -> loop (z - 1)  ((LazyList.head ll')::leftL) (LazyList.tail ll')
         loop n List.empty ll
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 module ListHelpr =
 
     let rec loop2Array (left:'a array) right = function

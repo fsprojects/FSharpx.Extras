@@ -26,6 +26,7 @@ type 'a BKTree =
     member x.GetEnumerator() =
         (x :> _ seq).GetEnumerator() :> IEnumerator
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 module BKTree =
 
     let isEmpty = function

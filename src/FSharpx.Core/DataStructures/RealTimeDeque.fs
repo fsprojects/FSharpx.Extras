@@ -441,6 +441,7 @@ type RealTimeDeque<'a>(c : int, frontLength : int, front : LazyList<'a>,  stream
 
         member this.GetEnumerator() = (this :> _ seq).GetEnumerator() :> IEnumerator
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 module RealTimeDeque =
     //pattern discriminators
 
