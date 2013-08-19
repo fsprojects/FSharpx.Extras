@@ -3,6 +3,7 @@
 #nowarn "44"
 open FSharpx.DataStructures.PairingHeap
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 module HeapPriorityQueue =
     let empty<'a when 'a : comparison> maxQueue = PairingHeap.empty maxQueue :> IPriorityQueue<'a>
 

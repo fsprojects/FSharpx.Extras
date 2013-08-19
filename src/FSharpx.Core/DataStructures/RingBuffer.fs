@@ -64,5 +64,6 @@ type RingBuffer<'a>(position:int, values:seq<'a>) =
     member x.Clone() = 
         RingBuffer<'a>(x.Position, x.ToArray())
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 module RingBuffer =
     let create (seq: 'a seq) = new RingBuffer<'a>(seq)

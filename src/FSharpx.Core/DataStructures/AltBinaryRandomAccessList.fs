@@ -314,7 +314,7 @@ and AltBinRndAccList<'a>
         | None -> None
         | Some(x) -> Some(x)
       
-      
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
  module AltBinaryRandomAccessList = 
     //pattern discriminator

@@ -7,21 +7,27 @@ type IVector<'T> =
     inherit System.Collections.IEnumerable
     inherit System.Collections.Generic.IEnumerable<'T>
 
+    [<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
     /// Returns the value at the index. If the index is out of bounds it throws an exception.
     abstract member Item  : int -> 'T with get
 
+    [<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
     /// Returns a new vector with the element 'added' at the end.
     abstract member Conj : 'T -> IVector<'T>
 
+    [<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
     /// Returns the number of items in the collection.
     abstract member Count : unit -> int
 
+    [<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
     /// Returns the last element in the vector. If the vector is empty it throws an exception.
     abstract member Peek : unit -> 'T
 
+    [<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
     /// Returns a new vector without the last item. If the collection is empty it throws an exception.
     abstract member Pop : unit -> IVector<'T>
 
+    [<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
     /// Returns a new vector that contains the given value at the index. Note - index must be <= vector.Count.
     abstract member AssocN : int*'T -> IVector<'T>
 

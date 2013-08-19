@@ -234,6 +234,7 @@ type BinomialHeap<'a when 'a : comparison> (isDescending : bool, heap : list<Bin
             let element,newHeap = this.Uncons()
             element,(newHeap  :> IPriorityQueue<'a>)
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 module BinomialHeap = 
     //pattern discriminator
     let (|Cons|Nil|) (h: BinomialHeap<'a>) = match h.TryUncons() with Some(a,b) -> Cons(a,b) | None -> Nil

@@ -93,6 +93,7 @@ type DList<'a> =
                     yield! y :> seq<'a> }
             enumerable.GetEnumerator() :> IEnumerator
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module DList =
     ///O(1). Returns DList of no elements.

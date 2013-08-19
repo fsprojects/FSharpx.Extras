@@ -34,6 +34,7 @@ type 'a IntMap =
         member x.GetEnumerator() =
             (x :> _ seq).GetEnumerator() :> IEnumerator
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 module IntMap =
 
     let inline private maskW i m = int (i &&& (~~~ (m - 1ul) ^^^ m))

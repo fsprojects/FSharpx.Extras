@@ -1,5 +1,6 @@
 ﻿// BottomUp merge sort from Chris Okasaki’s “Purely functional data structures”
 // original implementation taken from http://lepensemoi.free.fr/index.php/2010/01/07/bottom-up-merge-sort
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 module FSharpx.DataStructures.BottomUpMergeSort
 
 #nowarn "44"
@@ -10,6 +11,7 @@ type Sortable<'a> = {
     Size: int
     Segments: Lazy<list<list<'a>>> }
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 let rec merge xs ys =
     match xs, ys with
     | [], ys -> ys

@@ -206,6 +206,7 @@ type LeftistHeap<'a when 'a : comparison> =
 
         member this.GetEnumerator() = (this :> _ seq).GetEnumerator() :> IEnumerator  
 
+[<System.Obsolete("Namespace 'FSharpx.DataStructures' obsolete. Use 'FSharpx.Collections' or 'FSharpx.Collections.Experimental'  instead.")>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module LeftistHeap =   
     //pattern discriminator
