@@ -119,6 +119,9 @@ module Vector =
     /// O(1). Returns a new vector of one element.   
     val inline singleton : 'T -> Vector<'T>
 
+    ///O(n). Views the given vector as a sequence.
+    val inline toSeq  : Vector<'T> ->  seq<'T>
+
     /// O(1). Returns tuple last element and vector without last item
     val inline unconj : Vector<'T> -> Vector<'T> * 'T
 

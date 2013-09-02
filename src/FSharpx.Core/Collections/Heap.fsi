@@ -85,7 +85,7 @@ module Heap =
     ///O(log n) amortized time. Returns heap option from merging two heaps.
     val inline tryMerge : Heap<'T> -> Heap<'T> -> Heap<'T> option
 
-    ///O(n). Returns heap from the sequence.
+    ///O(n). Returns heap, bool isDescending, from the sequence.
     val ofSeq : bool -> seq<'T> -> Heap<'T>
 
     ///O(n). Returns heap reversed.
@@ -96,6 +96,9 @@ module Heap =
 
     ///O(log n) amortized time. Returns option heap of the elements trailing the head.
     val inline tryTail : Heap<'T> -> Heap<'T> option
+
+    ///O(n). Views the given heap as a sequence.
+    val inline toSeq  : Heap<'T> ->  seq<'T>
 
     ///O(log n) amortized time. Returns the head element and tail.
     val inline uncons : Heap<'T> -> 'T * Heap<'T>

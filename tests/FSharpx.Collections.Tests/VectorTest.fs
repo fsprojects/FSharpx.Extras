@@ -381,6 +381,14 @@ let ``structural equality``() =
 
     l1 = l3 |> should equal false
 
+[<Test>]
+let ``toSeq to list``() =
+    let l = ["f";"e";"d";"c";"b";"a"] 
+    let v = ofSeq l
+
+    v|> toSeq |> List.ofSeq |> should equal l
+
+
 open FsCheck.Commands
 //model-based checking
 type Vector2Actual = Vector<Vector<int>>

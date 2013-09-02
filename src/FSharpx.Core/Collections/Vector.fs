@@ -443,6 +443,8 @@ module Vector =
 
     let inline singleton (x : 'T) = empty |> conj x
 
+    let inline toSeq (vector: Vector<'T>) = vector :> seq<'T>
+
     let inline unconj (vector: Vector<'T>) = vector.Unconj
 
     let inline tryUnconj (vector: Vector<'T>) = vector.TryUnconj

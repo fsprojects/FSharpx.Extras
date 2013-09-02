@@ -196,6 +196,13 @@ let ``ofList build and serialize``() =
         (fun ((q : Queue<int>), (l : int list)) -> q |> Seq.toList = l ))
 
 [<Test>]
+let ``toSeq to list``() =
+    let l = ["f";"e";"d";"c";"b";"a"] 
+    let q = ofSeq l
+
+    q|> toSeq |> List.ofSeq |> should equal l
+
+[<Test>]
 let ``TryUncons wind-down to None``() =
     let q = ofSeq ["f";"e";"d";"c";"b";"a"] 
 
