@@ -390,6 +390,8 @@ module RandomAccessList =
 
     let inline tryTail (randomAccessList :'T RandomAccessList) = randomAccessList.TryTail
 
+    let inline toSeq (randomAccessList: 'T RandomAccessList) = randomAccessList :> seq<'T>
+
     let inline uncons (randomAccessList :'T RandomAccessList) = randomAccessList.Uncons
 
     let inline tryUncons (randomAccessList :'T RandomAccessList) = randomAccessList.TryUncons

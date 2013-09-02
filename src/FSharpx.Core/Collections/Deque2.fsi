@@ -139,7 +139,7 @@ module Deque =
     ///O(1) amortized, O(n), worst case. Returns the first element and tail.
     val inline uncons : Deque<'T> -> 'T * Deque<'T>
 
-    ///O(n). Returns a seq of the deque elements.
+    ///O(n). Views the given deque as a sequence.
     val inline toSeq  : Deque<'T> ->  seq<'T>
 
     ///O(1) amortized, O(n), worst case. Returns option first element and tail.

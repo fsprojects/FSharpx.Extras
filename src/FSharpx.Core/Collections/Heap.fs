@@ -207,6 +207,8 @@ module Heap =
 
     let inline tryTail (xs: Heap<'T>) = xs.TryTail()
 
+    let inline toSeq (xs: Heap<'T>) = xs :> seq<'T>
+
     let inline uncons (xs: Heap<'T>) = xs.Uncons()
 
     let inline tryUncons (xs: Heap<'T>) = xs.TryUncons()
