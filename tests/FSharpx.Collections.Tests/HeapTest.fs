@@ -212,6 +212,13 @@ let ``structural equality``() =
     l1 = l3 |> should equal false
 
 [<Test>]
+let ``toSeq to list``() =
+    let l = ["f";"e";"d";"c";"b";"a"] 
+    let h = ofSeq true l
+
+    h|> toSeq |> List.ofSeq |> should equal l
+
+[<Test>]
 [<TestCaseSource("intGensStart2")>]
 let ``tryUncons 1 element``(x : obj) =
     let genAndName = unbox x 

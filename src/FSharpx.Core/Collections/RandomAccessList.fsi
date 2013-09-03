@@ -103,6 +103,9 @@ module RandomAccessList =
     /// O(n). Returns option random access list without the last item.
     val inline tryTail : RandomAccessList<'T> -> RandomAccessList<'T> option
 
+    ///O(n). Views the given random access list as a sequence.
+    val inline toSeq  : RandomAccessList<'T> ->  seq<'T>
+
     /// O(1). Returns tuple last element and random access list without last item
     val inline uncons : RandomAccessList<'T> -> 'T * RandomAccessList<'T>
 

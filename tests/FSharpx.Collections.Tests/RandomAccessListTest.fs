@@ -739,7 +739,7 @@ let ``structural equality``() =
     l1 = l3 |> should equal false
 
 [<Test>]
-let ``ofSeq``() =
+let ``ofSeq random access list``() =
     let x = ofSeq ["a";"b";"c";"d";"e";"f";"g";"h";"i";"j"]
 
     (((x |> nth 0) = "a") && ((x |> nth 1) = "b") && ((x |> nth 2) = "c") && ((x |> nth 3) = "d") 
@@ -753,3 +753,10 @@ let ``allow init``() =
 
     s |> Seq.toList |> should equal [0;2;4;6;8]
     randomAccessList |> Seq.toList |> should equal [0;2;4;6;8]
+
+[<Test>]
+let ``toSeq to list``() =
+    let l = ["f";"e";"d";"c";"b";"a"] 
+    let rl = ofSeq l
+
+    rl |> toSeq |> List.ofSeq |> should equal l

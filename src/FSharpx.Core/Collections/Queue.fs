@@ -127,6 +127,8 @@ module Queue =
 
     let inline tryTail (q : Queue<'T>) = q.TryTail
 
+    let inline toSeq (q: Queue<'T>) = q :> seq<'T>
+
     let inline uncons (q : Queue<'T>) = q.Uncons
 
     let inline tryUncons (q : Queue<'T>) = q.TryUncons

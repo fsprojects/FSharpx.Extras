@@ -89,6 +89,9 @@ module Queue =
     ///O(1) amortized, O(n) worst-case. Returns option queue of the elements trailing the first element
     val inline tryTail : Queue<'T> -> Queue<'T> option
 
+    ///O(n). Views the given queue as a sequence.
+    val inline toSeq  : Queue<'T> ->  seq<'T>
+
     ///O(1) amortized, O(n) worst-case. Returns the first element and tail.
     val inline uncons : Queue<'T> -> 'T * Queue<'T>
 
