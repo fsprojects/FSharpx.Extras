@@ -335,6 +335,29 @@ module List =
     /// Merges two sequences by the default comparer for 'T
     let merge a b = mergeBy id a b
 
+    
+    let pad (amt: int) (elem: 'a) (list: 'a list) : 'a list = list @ (List.replicate amt elem)
+
+    let fill (total:int) (elem: 'a) (list: 'a list) = 
+        if List.length list >= total then 
+            list
+        else
+            pad (total - List.length list) elem list
+            
+
+    let prependToAll sep list = 
+        let rec prependToAll' list acc = 
+            match list with 
+                | [] -> List.rev acc
+                | h::t -> prependToAll' t (h::sep::acc)
+
+        prependToAll' list []
+
+    let intersperse (elem: 'a) (list: 'a list) : 'a list = 
+        match list with 
+         | [] -> []
+         | h::t -> h::(prependToAll elem t)
+
     /// List monoid
     let monoid<'T> =
         { new Monoid<'T list>() with
