@@ -345,10 +345,13 @@ module List =
             pad (total - List.length list) elem list
             
 
-    let rec prependToAll sep list = 
-        match list with 
-            | [] -> []
-            | h::t -> sep::h::(prependToAll sep t)
+    let prependToAll sep list = 
+        let rec prependToAll' list acc = 
+            match list with 
+                | [] -> List.rev acc
+                | h::t -> prependToAll' t (h::sep::acc)
+
+        prependToAll' list []
 
     let intersperse (elem: 'a) (list: 'a list) : 'a list = 
         match list with 
