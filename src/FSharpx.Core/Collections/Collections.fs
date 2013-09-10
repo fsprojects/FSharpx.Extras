@@ -335,20 +335,25 @@ module List =
     /// Merges two sequences by the default comparer for 'T
     let merge a b = mergeBy id a b
 
-    let pad (amt: int) (elem: 'a) (list: 'a list) : 'a list = 
-        if List.length list >= amt then 
+    
+    let pad (amt: int) (elem: 'a) (list: 'a list) : 'a list = list @ (List.replicate amt elem)
+
+    let fill (total:int) (elem: 'a) (list: 'a list) = 
+        if List.length list >= total then 
             list
         else
-            let padAmount = amt - List.length list
-            list @ (List.replicate padAmount elem)
+            pad (total - List.length list) elem list
+            
 
-    let intersperse (elem: 'a) (list: 'a seq) : 'a list = 
-        let length = Seq.length list
-        seq {
-            for item in list do
-                yield item
-                yield elem
-            } |> Seq.take (length * 2 - 1) |> Seq.toList
+    let rec prependToAll sep list = 
+        match list with 
+            | [] -> []
+            | h::t -> sep::h::(prependToAll sep t)
+
+    let intersperse (elem: 'a) (list: 'a list) : 'a list = 
+        match list with 
+         | [] -> []
+         | h::t -> h::(prependToAll elem t)
 
     /// List monoid
     let monoid<'T> =
