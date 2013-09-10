@@ -335,6 +335,21 @@ module List =
     /// Merges two sequences by the default comparer for 'T
     let merge a b = mergeBy id a b
 
+    let pad (amt: int) (elem: 'a) (list: 'a list) : 'a list = 
+        if List.length list >= amt then 
+            list
+        else
+            let padAmount = amt - List.length list
+            list @ (List.replicate padAmount elem)
+
+    let intersperse (elem: 'a) (list: 'a seq) : 'a list = 
+        let length = Seq.length list
+        seq {
+            for item in list do
+                yield item
+                yield elem
+            } |> Seq.take (length * 2 - 1) |> Seq.toList
+
     /// List monoid
     let monoid<'T> =
         { new Monoid<'T list>() with

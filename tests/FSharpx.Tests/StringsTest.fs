@@ -68,3 +68,46 @@ let ``Can simplify the type names``() =
 [<Test>]
 let ``Can infer floats``() = 
     isFloat "42.42" |> should equal true
+
+[<Test>]
+let ``Can get the string length`` () = 
+    strLen "foo" |> should equal 3
+
+[<Test>]
+let ``Should split by newlines`` () = 
+    let a = @"foo biz
+bar
+baz
+
+"   
+    let expected = ["foo biz";"bar";"baz"]
+
+    (a |> lines) |> should equal expected
+
+[<Test>]
+let ``Should merge by newlines`` () = 
+    let a = ["foo biz";"bar";"baz"]
+    let expected = @"foo biz
+bar
+baz"   
+
+    (a |> unlines) |> should equal expected
+
+[<Test>]
+let ``Should merge by whitespace`` () = 
+    let a = ["foo";"bar";"baz"]
+    let expected = "foo bar baz"   
+
+    (a |> unwords) |> should equal expected
+
+[<Test>]
+let ``Should split by whitespace`` () = 
+    let a = @"foo bar
+
+baz
+
+"      
+
+    let expected = ["foo";"bar";"baz"]
+
+    (a |> words) |> should equal expected

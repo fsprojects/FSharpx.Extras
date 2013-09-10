@@ -78,3 +78,20 @@ let ``I should be able to transpose a list``() =
             [3;6]
         ]
     (a |> List.transpose) |> should equal expected
+
+[<Test>]
+let ``I should pad a list`` () = 
+    let a = [1;2;3]
+
+    let expected = [1;2;3;0;0;0]
+
+    (a |> List.pad 6 0) |> should equal expected
+
+[<Test>]
+let ``I should intersperse a list``() = 
+    let a = "foobar".ToCharArray() |> Array.toList
+
+    let expected = ['f';',';'o';',';'o';',';'b';',';'a';',';'r']
+
+    (a |> List.intersperse ',') |> should equal expected
+
