@@ -114,6 +114,14 @@ let ``Should split by whitespace with tabs`` () =
     (a |> words) |> should equal expected
 
 [<Test>]
+let ``Should split by whitespace with mixed spaces and tabs`` () = 
+    let a = @"          foo bar       baz   "      
+
+    let expected = ["foo";"bar";"baz"]
+
+    (a |> words) |> should equal expected
+
+[<Test>]
 let ``Should split by whitespace with \n newlines`` () = 
     let a = "  foo bar    \n   \nbaz"      
 
