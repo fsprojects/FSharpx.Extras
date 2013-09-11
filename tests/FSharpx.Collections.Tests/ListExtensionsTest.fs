@@ -2,6 +2,8 @@
 
 open FSharpx.Collections
 open NUnit.Framework
+open FsCheck
+open FsCheck.NUnit
 open FsUnit
 
 [<Test>]
@@ -79,33 +81,27 @@ let ``I should be able to transpose a list``() =
         ]
     (a |> List.transpose) |> should equal expected
 
-[<Test>]
-let ``I should pad a list`` () = 
-    let a = [1;2;3]
-
-    let expected = [1;2;3;0;0;0]
-
-    (a |> List.pad 3 0) |> should equal expected
 
 [<Test>]
 let ``I should fill a list`` () = 
-    let a = [1;2;3]
+    let fill (total:int) (elem:'a) (list:'a list) = 
+        let padded = List.fill total elem list 
 
-    let expected = [1;2;3;0;0;0]
+        if total > 0 && total > List.length list then
+            List.length padded = total
+        else
+            List.length padded = List.length list
 
-    (a |> List.fill 6 0) |> should equal expected
-
-[<Test>]
-let ``I shouldn't remove any elements if a fill is less than the current list`` () = 
-    let a = [1;2;3]
-
-    (a |> List.fill 2 0) |> should equal a
+    fsCheck "fill a list" fill
 
 [<Test>]
-let ``I should intersperse a list``() = 
-    let a = "foobar".ToCharArray() |> Array.toList
+let ``I should padd a list`` () = 
+    let pad (total:int) (elem:'a) (list:'a list) = 
+        let padded = List.pad total elem list 
 
-    let expected = ['f';',';'o';',';'o';',';'b';',';'a';',';'r']
+        if total > 0 then
+            List.length padded = total + List.length list
+        else
+            List.length padded = List.length list
 
-    (a |> List.intersperse ',') |> should equal expected
-
+    fsCheck "pad a list" pad

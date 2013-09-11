@@ -192,6 +192,21 @@ module Seq =
     let page page pageSize (source : seq<_>) =
           source |> skipNoFail (page * pageSize) |> Seq.truncate pageSize
         
+    let prependToAll sep list = 
+        seq{
+            for element in list do
+                yield sep
+                yield element
+        }
+
+    let intersperse (elem: 'a) (list: 'a seq) : 'a seq = 
+        seq{
+            match list |> LazyList.ofSeq with 
+                | LazyList.Nil -> yield! list
+                | LazyList.Cons(h, t) ->
+                    yield h
+                    yield! prependToAll elem t                                        
+        }
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Array = 
@@ -336,28 +351,16 @@ module List =
     let merge a b = mergeBy id a b
 
     
-    let pad (amt: int) (elem: 'a) (list: 'a list) : 'a list = list @ (List.replicate amt elem)
+    let pad (amt: int) (elem: 'a) (list: 'a list) : 'a list = 
+        if amt >=0 then list @ (List.replicate amt elem)
+        else list
 
     let fill (total:int) (elem: 'a) (list: 'a list) = 
         if List.length list >= total then 
             list
         else
             pad (total - List.length list) elem list
-            
-
-    let prependToAll sep list = 
-        let rec prependToAll' list acc = 
-            match list with 
-                | [] -> List.rev acc
-                | h::t -> prependToAll' t (h::sep::acc)
-
-        prependToAll' list []
-
-    let intersperse (elem: 'a) (list: 'a list) : 'a list = 
-        match list with 
-         | [] -> []
-         | h::t -> h::(prependToAll elem t)
-
+                               
     /// List monoid
     let monoid<'T> =
         { new Monoid<'T list>() with

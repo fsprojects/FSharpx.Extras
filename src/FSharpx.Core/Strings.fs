@@ -16,26 +16,43 @@ module Strings =
     /// Splits the given string at the given delimiter
     let inline split (delimiter:char) (text:string) = text.Split [|delimiter|]
 
+    let toCharArray (str:string) = str.ToCharArray()
+
     /// Converts a sequence of strings to a single string separated with the delimiters
     [<System.Obsolete("Function 'separatedBy' obsolete. Use 'String.concat' from 'Microsoft.FSharp.Core' instead.")>]
     let inline separatedBy delimiter (items: string seq) = String.Join(delimiter, Array.ofSeq items)
 
-    /// Returns the string length
-    let strLen (str:string) = str.Length
+    /// Special string split function. Aggregates until the predicate is false, returns the aggregate and the remaining list
+    let private splitBy predicate list = 
+        let rec splitBy' (str:string, nextList) chars= 
+            match chars with 
+                | [] when String.length str = 0 -> None
+                | [] -> Some(str, [])
+                | h::t when predicate h && String.length str > 0 -> Some(str, t)
+                | h::t when predicate h -> splitBy' (str, t) t
+                | h::t -> splitBy' (str + h.ToString(), t) t 
+
+        splitBy' ("", []) list
+
+    /// Returns a sequence of strings split by the predicate
+    let splitStringBy predicate str = 
+        seq {
+            let inputList = str |> toCharArray |> Array.toList 
+
+            yield! Seq.unfold(fun state -> 
+                if List.length state = 0 then None
+                else                    
+                    splitBy predicate state) inputList
+        }
 
     /// Splits a string based on newlines 
-    let lines (input:string) : string list =
-        input 
-         |> replace "\r\n" "\n"
-         |> split '\n' 
-         |> Array.filter (strLen >> ((<) 0)) 
-         |> Array.toList
-    
+    let lines (input:string) : string seq = splitStringBy (fun c -> c = '\r' || c = '\n') input
+        
     /// Creates newline seperated string from the string list
     let unlines (input:string list) : string = (String.concat System.Environment.NewLine input).Trim()
 
     /// Splits a string based on whitespace (spaces and newlines)
-    let words (input:string) : string list = lines (input.Replace(" ", "\n"))
+    let words (input:string) : string seq = splitStringBy Char.IsWhiteSpace input
 
     /// Folds the string list by seperating entries with a single space
     let unwords (input: string list) : string = (String.concat " " input).Trim()
