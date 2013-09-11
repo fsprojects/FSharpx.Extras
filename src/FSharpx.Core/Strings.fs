@@ -16,37 +16,31 @@ module Strings =
     /// Splits the given string at the given delimiter
     let inline split (delimiter:char) (text:string) = text.Split [|delimiter|]
 
-    let toCharArray (str:string) = str.ToCharArray()
-
     /// Converts a sequence of strings to a single string separated with the delimiters
     [<System.Obsolete("Function 'separatedBy' obsolete. Use 'String.concat' from 'Microsoft.FSharp.Core' instead.")>]
     let inline separatedBy delimiter (items: string seq) = String.Join(delimiter, Array.ofSeq items)
 
-    /// Special string split function. Aggregates until the predicate is false, returns the aggregate and the remaining list
-    let private splitBy predicate list = 
-        let rec splitBy' (str:string, nextList) chars= 
-            match chars with 
-                | [] when String.length str = 0 -> None
-                | [] -> Some(str, [])
-                | h::t when predicate h && String.length str > 0 -> Some(str, t)
-                | h::t when predicate h -> splitBy' (str, t) t
-                | h::t -> splitBy' (str + h.ToString(), t) t 
+    let inline toCharArray (str:string) = str.ToCharArray()
 
-        splitBy' ("", []) list
+    let isNewline c = c = '\r' || c = '\n'
+            
+    /// Returns a sequence of strings split by the predicate    
+    let splitStringBy (isDelimiter:char -> bool) (str:string) = 
+        seq{
+            let result = ref String.Empty
+            for char in str do
+                if not (isDelimiter char) then 
+                    result := !result + char.ToString()
+                else if String.length !result > 0 then 
+                    yield !result
+                    result := String.Empty
 
-    /// Returns a sequence of strings split by the predicate
-    let splitStringBy predicate str = 
-        seq {
-            let inputList = str |> toCharArray |> Array.toList 
-
-            yield! Seq.unfold(fun state -> 
-                if List.length state = 0 then None
-                else                    
-                    splitBy predicate state) inputList
+            // yield the last accumulated value if one exists
+            if String.length !result > 0 then yield !result
         }
 
     /// Splits a string based on newlines 
-    let lines (input:string) : string seq = splitStringBy (fun c -> c = '\r' || c = '\n') input
+    let lines (input:string) : string seq = splitStringBy isNewline input
         
     /// Creates newline seperated string from the string list
     let unlines (input:string list) : string = (String.concat System.Environment.NewLine input).Trim()
