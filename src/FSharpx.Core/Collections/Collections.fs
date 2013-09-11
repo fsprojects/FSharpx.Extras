@@ -199,14 +199,14 @@ module Seq =
                 yield element
         }
 
-    let intersperse (elem: 'a) (list: 'a seq) : 'a seq = 
-        seq{
-            match list |> LazyList.ofSeq with 
-                | LazyList.Nil -> yield! list
-                | LazyList.Cons(h, t) ->
-                    yield h
-                    yield! prependToAll elem t                                        
-        }
+    let intersperse (sep: 'a) (list: 'a seq) : 'a seq = 
+        seq { 
+            let notFirst = ref false 
+            for element in list do 
+              if !notFirst then yield sep; 
+              yield element; 
+              notFirst := true
+      } 
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Array = 
