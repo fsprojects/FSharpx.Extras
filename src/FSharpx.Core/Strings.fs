@@ -27,16 +27,16 @@ module Strings =
     /// Returns a sequence of strings split by the predicate    
     let splitStringBy (isDelimiter:char -> bool) (str:string) = 
         seq{
-            let result = ref String.Empty
+            let result = new System.Text.StringBuilder()
             for char in str do
                 if not (isDelimiter char) then 
-                    result := !result + char.ToString()
-                else if String.length !result > 0 then 
-                    yield !result
-                    result := String.Empty
+                    result.Append char |> ignore
+                else if result.Length > 0 then 
+                    yield result.ToString()
+                    result.Clear() |> ignore
 
             // yield the last accumulated value if one exists
-            if String.length !result > 0 then yield !result
+            if result.Length > 0 then yield result.ToString()
         }
 
     /// Splits a string based on newlines 
