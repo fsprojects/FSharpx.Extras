@@ -40,16 +40,16 @@ module Strings =
         }
 
     /// Splits a string based on newlines 
-    let lines (input:string) : string seq = splitBy isNewline input
+    let toLines (input:string) : string seq = splitBy isNewline input
         
     /// Creates newline seperated string from the string list
-    let unlines (input:string list) : string = (String.concat System.Environment.NewLine input).Trim()
+    let joinLines (input:string list) : string = (String.concat System.Environment.NewLine input).Trim()
 
-    /// Splits a string based on whitespace (spaces and newlines)
-    let words (input:string) : string seq = splitBy Char.IsWhiteSpace input
+    /// Splits a string based on whitespace (spaces, tabs, and newlines)
+    let toWords (input:string) : string seq = splitBy Char.IsWhiteSpace input
 
     /// Folds the string list by seperating entries with a single space
-    let unwords (input: string list) : string = (String.concat " " input).Trim()
+    let joinWords (input: string list) : string = (String.concat " " input).Trim()
 
     /// Returns if the string is null or empty
     let inline isNullOrEmpty text = String.IsNullOrEmpty text

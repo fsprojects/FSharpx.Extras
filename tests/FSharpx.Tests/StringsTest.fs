@@ -79,7 +79,7 @@ baz
 "   
     let expected = ["foo biz";"bar";"baz"]
 
-    (a |> lines)  |> should equal expected
+    (a |> toLines)  |> should equal expected
 
 [<Test>]
 let ``Should merge by newlines`` () = 
@@ -88,14 +88,14 @@ let ``Should merge by newlines`` () =
 bar
 baz"   
 
-    (a |> unlines) |> should equal expected
+    (a |> joinLines) |> should equal expected
 
 [<Test>]
 let ``Should merge by whitespace`` () = 
     let a = ["foo";"bar";"baz"]
     let expected = "foo bar baz"   
 
-    (a |> unwords) |> should equal expected
+    (a |> joinWords) |> should equal expected
 
 [<Test>]
 let ``Should split by whitespace`` () = 
@@ -103,7 +103,7 @@ let ``Should split by whitespace`` () =
 
     let expected = ["foo";"bar";"baz"]
 
-    (a |> words) |> should equal expected
+    (a |> toWords) |> should equal expected
 
 [<Test>]
 let ``Should split by whitespace with tabs`` () = 
@@ -111,7 +111,7 @@ let ``Should split by whitespace with tabs`` () =
 
     let expected = ["foo";"bar";"baz"]
 
-    (a |> words) |> should equal expected
+    (a |> toWords) |> should equal expected
 
 [<Test>]
 let ``Should split by whitespace with mixed spaces and tabs`` () = 
@@ -119,7 +119,7 @@ let ``Should split by whitespace with mixed spaces and tabs`` () =
 
     let expected = ["foo";"bar";"baz"]
 
-    (a |> words) |> should equal expected
+    (a |> toWords) |> should equal expected
 
 [<Test>]
 let ``Should split by whitespace with \n newlines`` () = 
@@ -127,7 +127,7 @@ let ``Should split by whitespace with \n newlines`` () =
 
     let expected = ["foo";"bar";"baz"]
 
-    (a |> words) |> should equal expected
+    (a |> toWords) |> should equal expected
 
 [<Test>]
 let ``Should split by whitespace with \r newlines`` () = 
@@ -135,7 +135,7 @@ let ``Should split by whitespace with \r newlines`` () =
 
     let expected = ["foo";"bar";"baz"]
 
-    (a |> words) |> should equal expected
+    (a |> toWords) |> should equal expected
 
 [<Test>]
 let ``Should split by whitespace with \r\n newlines`` () = 
@@ -143,7 +143,7 @@ let ``Should split by whitespace with \r\n newlines`` () =
 
     let expected = ["foo";"bar";"baz"]
 
-    (a |> words) |> should equal expected
+    (a |> toWords) |> should equal expected
 
 [<Test>]
 let ``Should split by whitespace with mixed combinations of \r and \n newlines`` () = 
@@ -151,4 +151,4 @@ let ``Should split by whitespace with mixed combinations of \r and \n newlines``
 
     let expected = ["foo";"bar";"baz"]
 
-    (a |> words) |> should equal expected
+    (a |> toWords) |> should equal expected
