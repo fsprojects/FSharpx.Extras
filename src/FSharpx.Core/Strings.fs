@@ -25,7 +25,7 @@ module Strings =
     let isNewline c = c = '\r' || c = '\n'
             
     /// Returns a sequence of strings split by the predicate    
-    let splitStringBy (isDelimiter:char -> bool) (str:string) = 
+    let splitBy (isDelimiter:char -> bool) (str:string) = 
         seq{
             let result = new System.Text.StringBuilder()
             for char in str do
@@ -40,13 +40,13 @@ module Strings =
         }
 
     /// Splits a string based on newlines 
-    let lines (input:string) : string seq = splitStringBy isNewline input
+    let lines (input:string) : string seq = splitBy isNewline input
         
     /// Creates newline seperated string from the string list
     let unlines (input:string list) : string = (String.concat System.Environment.NewLine input).Trim()
 
     /// Splits a string based on whitespace (spaces and newlines)
-    let words (input:string) : string seq = splitStringBy Char.IsWhiteSpace input
+    let words (input:string) : string seq = splitBy Char.IsWhiteSpace input
 
     /// Folds the string list by seperating entries with a single space
     let unwords (input: string list) : string = (String.concat " " input).Trim()
