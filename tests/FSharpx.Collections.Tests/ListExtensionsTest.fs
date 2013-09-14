@@ -2,6 +2,8 @@
 
 open FSharpx.Collections
 open NUnit.Framework
+open FsCheck
+open FsCheck.NUnit
 open FsUnit
 
 [<Test>]
@@ -78,3 +80,28 @@ let ``I should be able to transpose a list``() =
             [3;6]
         ]
     (a |> List.transpose) |> should equal expected
+
+
+[<Test>]
+let ``I should fill a list`` () = 
+    let fill (total:int) (elem:'a) (list:'a list) = 
+        let padded = List.fill total elem list 
+
+        if total > 0 && total > List.length list then
+            List.length padded = total
+        else
+            List.length padded = List.length list
+
+    fsCheck "fill a list" fill
+
+[<Test>]
+let ``I should padd a list`` () = 
+    let pad (total:int) (elem:'a) (list:'a list) = 
+        let padded = List.pad total elem list 
+
+        if total > 0 then
+            List.length padded = total + List.length list
+        else
+            List.length padded = List.length list
+
+    fsCheck "pad a list" pad

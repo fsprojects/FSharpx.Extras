@@ -20,6 +20,37 @@ module Strings =
     [<System.Obsolete("Function 'separatedBy' obsolete. Use 'String.concat' from 'Microsoft.FSharp.Core' instead.")>]
     let inline separatedBy delimiter (items: string seq) = String.Join(delimiter, Array.ofSeq items)
 
+    let inline toCharArray (str:string) = str.ToCharArray()
+
+    let isNewline c = c = '\r' || c = '\n'
+            
+    /// Returns a sequence of strings split by the predicate    
+    let splitBy (isDelimiter:char -> bool) (str:string) = 
+        seq{
+            let result = new System.Text.StringBuilder()
+            for char in str do
+                if not (isDelimiter char) then 
+                    result.Append char |> ignore
+                else if result.Length > 0 then 
+                    yield result.ToString()
+                    result.Clear() |> ignore
+
+            // yield the last accumulated value if one exists
+            if result.Length > 0 then yield result.ToString()
+        }
+
+    /// Splits a string based on newlines 
+    let toLines (input:string) : string seq = splitBy isNewline input
+        
+    /// Creates newline seperated string from the string list
+    let joinLines (input:string list) : string = (String.concat System.Environment.NewLine input).Trim()
+
+    /// Splits a string based on whitespace (spaces, tabs, and newlines)
+    let toWords (input:string) : string seq = splitBy Char.IsWhiteSpace input
+
+    /// Folds the string list by seperating entries with a single space
+    let joinWords (input: string list) : string = (String.concat " " input).Trim()
+
     /// Returns if the string is null or empty
     let inline isNullOrEmpty text = String.IsNullOrEmpty text
 

@@ -68,3 +68,87 @@ let ``Can simplify the type names``() =
 [<Test>]
 let ``Can infer floats``() = 
     isFloat "42.42" |> should equal true
+
+
+[<Test>]
+let ``Should split by newlines`` () = 
+    let a = @"foo biz
+bar
+baz
+
+"   
+    let expected = ["foo biz";"bar";"baz"]
+
+    (a |> toLines)  |> should equal expected
+
+[<Test>]
+let ``Should merge by newlines`` () = 
+    let a = ["foo biz";"bar";"baz"]
+    let expected = @"foo biz
+bar
+baz"   
+
+    (a |> joinLines) |> should equal expected
+
+[<Test>]
+let ``Should merge by whitespace`` () = 
+    let a = ["foo";"bar";"baz"]
+    let expected = "foo bar baz"   
+
+    (a |> joinWords) |> should equal expected
+
+[<Test>]
+let ``Should split by whitespace`` () = 
+    let a = @"foo bar baz"      
+
+    let expected = ["foo";"bar";"baz"]
+
+    (a |> toWords) |> should equal expected
+
+[<Test>]
+let ``Should split by whitespace with tabs`` () = 
+    let a = @"foo bar       baz"      
+
+    let expected = ["foo";"bar";"baz"]
+
+    (a |> toWords) |> should equal expected
+
+[<Test>]
+let ``Should split by whitespace with mixed spaces and tabs`` () = 
+    let a = @"          foo bar       baz   "      
+
+    let expected = ["foo";"bar";"baz"]
+
+    (a |> toWords) |> should equal expected
+
+[<Test>]
+let ``Should split by whitespace with \n newlines`` () = 
+    let a = "  foo bar    \n   \nbaz"      
+
+    let expected = ["foo";"bar";"baz"]
+
+    (a |> toWords) |> should equal expected
+
+[<Test>]
+let ``Should split by whitespace with \r newlines`` () = 
+    let a = " foo bar    \r   \rbaz"      
+
+    let expected = ["foo";"bar";"baz"]
+
+    (a |> toWords) |> should equal expected
+
+[<Test>]
+let ``Should split by whitespace with \r\n newlines`` () = 
+    let a = "           foo bar    \r\n   \r\nbaz"      
+
+    let expected = ["foo";"bar";"baz"]
+
+    (a |> toWords) |> should equal expected
+
+[<Test>]
+let ``Should split by whitespace with mixed combinations of \r and \n newlines`` () = 
+    let a = "foo bar    \n\r\n   \r\r\r\nbaz"      
+
+    let expected = ["foo";"bar";"baz"]
+
+    (a |> toWords) |> should equal expected

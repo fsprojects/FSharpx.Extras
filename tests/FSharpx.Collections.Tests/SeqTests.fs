@@ -2,6 +2,8 @@
 
 open System
 open FSharpx.Collections
+open FsCheck
+open FsCheck.NUnit
 open NUnit.Framework
 open FsUnit
 
@@ -196,3 +198,34 @@ let ``I should be able to page a seq``() =
     Seq.page 0 2 data |> should equal [1.;2.]
     Seq.page 1 2 data |> should equal [3.;4.]
     Seq.page 2 2 data |> should equal [5.;6.]
+
+
+[<Test>]
+let ``I should intersperse a seq``() = 
+    let a = "foobar".ToCharArray()
+
+    let expected = ['f';',';'o';',';'o';',';'b';',';'a';',';'r']
+
+    (a |> Seq.intersperse ',') |> should equal expected
+
+[<Test>]
+let ``I shouldn't interperse an empty list``() = 
+    let a = []
+
+    (a |> Seq.intersperse ',') |> should equal a
+
+[<Test>]
+let ``I should interperse always 2n-1 elements``() = 
+    let intersperse elem (list:'a list) = 
+        let interpersed = Seq.intersperse elem list
+
+        if Seq.length list = 0 then 
+            Seq.length interpersed = 0
+        else
+            Seq.length interpersed = (Seq.length list) * 2 - 1
+            
+    fsCheck "interperse a list" intersperse 
+
+
+
+

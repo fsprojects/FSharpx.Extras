@@ -192,6 +192,21 @@ module Seq =
     let page page pageSize (source : seq<_>) =
           source |> skipNoFail (page * pageSize) |> Seq.truncate pageSize
         
+    let prependToAll sep list = 
+        seq{
+            for element in list do
+                yield sep
+                yield element
+        }
+
+    let intersperse (sep: 'a) (list: 'a seq) : 'a seq = 
+        seq { 
+            let notFirst = ref false 
+            for element in list do 
+              if !notFirst then yield sep; 
+              yield element; 
+              notFirst := true
+      } 
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Array = 
@@ -335,6 +350,17 @@ module List =
     /// Merges two sequences by the default comparer for 'T
     let merge a b = mergeBy id a b
 
+    
+    let pad (amt: int) (elem: 'a) (list: 'a list) : 'a list = 
+        if amt >=0 then list @ (List.replicate amt elem)
+        else list
+
+    let fill (total:int) (elem: 'a) (list: 'a list) = 
+        if List.length list >= total then 
+            list
+        else
+            pad (total - List.length list) elem list
+                               
     /// List monoid
     let monoid<'T> =
         { new Monoid<'T list>() with
