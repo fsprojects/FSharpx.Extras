@@ -33,7 +33,7 @@ module Strings =
                     result.Append char |> ignore
                 else if result.Length > 0 then 
                     yield result.ToString()
-                    result.Clear() |> ignore
+                    result.Length <- 0
 
             // yield the last accumulated value if one exists
             if result.Length > 0 then yield result.ToString()
