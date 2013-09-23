@@ -168,6 +168,7 @@ type XrmTypeProvider(config: TypeProviderConfig) as this =
                     t.AddMembers([for o in options -> ProvidedLiteralField(extractDescription o.Label,t,o.Value.Value)] )
                     let values = [|for o in options -> extractDescription o.Label|]
                     t.AddMember(ProvidedMethod("GetProvidedValues",[],typeof<string array>,InvokeCode = fun _ -> <@@ values @@> ))
+                    serviceType.AddMember t
                     data.[name] <- t
                 match optionSetType with
                 | Picklist(attribute) -> 
