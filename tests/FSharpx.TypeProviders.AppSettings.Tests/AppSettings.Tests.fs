@@ -4,7 +4,7 @@ open NUnit.Framework
 open FSharpx
 open FsUnit
 
-type Settings = AppSettings<"Test.App.config">
+type Settings = AppSettings<"App.config">
 
 [<Test>] 
 let ``Can return a string from the config file``() =   

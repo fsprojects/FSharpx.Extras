@@ -40,17 +40,20 @@ let internal typedAppSettings (ownerType:TypeProviderForNamespaces) (cfg:TypePro
                     let appSettings = ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None).AppSettings.Settings
 
                     for key in appSettings.AllKeys do
-                        let field =
+                        let name = niceName key
+                        let getValue = <@@ ConfigurationManager.AppSettings.[key] @@>
+                        let prop =
                             match (appSettings.Item key).Value with
-                            | Int fieldValue ->    ProvidedLiteralField(niceName key, typeof<int>, fieldValue)
-                            | Bool fieldValue ->   ProvidedLiteralField(niceName key, typeof<bool>, fieldValue)
-                            | Double fieldValue -> ProvidedLiteralField(niceName key, typeof<float>, fieldValue)
-                            | fieldValue ->        ProvidedLiteralField(niceName key, typeof<string>, fieldValue)
+                            | Int _ ->    ProvidedProperty(name, typeof<int>, GetterCode = (fun _ -> <@@ Int32.Parse(%%getValue) @@>))
+                            | Bool _ ->   ProvidedProperty(name, typeof<bool>, GetterCode = (fun _ -> <@@ Boolean.Parse(%%getValue) @@>))
+                            | Double _ -> ProvidedProperty(name, typeof<float>, GetterCode = (fun _ -> <@@ Double.Parse(%%getValue, Globalization.NumberStyles.Any, Globalization.CultureInfo.InvariantCulture) @@>))
+                            | _ ->        ProvidedProperty(name, typeof<string>, GetterCode = (fun _ -> getValue))
 
-                        field.AddXmlDoc (sprintf "Returns the value from %s with key %s" configFileName key)
-                        field.AddDefinitionLocation(1,1,configFileName)
+                        prop.IsStatic <- true
+                        prop.AddXmlDoc (sprintf "Returns the value from %s with key %s" configFileName key)
+                        prop.AddDefinitionLocation(1,1,configFileName)
 
-                        typeDef.AddMember field
+                        typeDef.AddMember prop
 
                     typeDef
                 with 
