@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -48,6 +48,7 @@
       <HintPath>..\..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
   </ItemGroup>
@@ -56,9 +57,7 @@
       <Link>FsUnit.fs</Link>
     </Compile>
     <Compile Include="AppSettings.Tests.fs" />
-    <Content Include="Test.App.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <None Include="App.config" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
