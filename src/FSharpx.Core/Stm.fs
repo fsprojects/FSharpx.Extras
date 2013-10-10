@@ -12,7 +12,7 @@
  *)
 
 /// <summary>The Software Transactional Memory monad.</summary>
-/// <see href="http://cs.hubfs.net/blogs/hell_is_other_languages/archive/2008/01/16/4565.aspx" />
+/// <see href="http://web.archive.org/web/20110926161739/http://cs.hubfs.net/blogs/hell_is_other_languages/archive/2008/01/16/4565.aspx" />
 module FSharpx.Stm
 
 [<AutoOpen>]
