@@ -13,30 +13,46 @@ open System.Threading
 /// of messages (added using the Enqueue method) and emits them using the 
 /// BatchProduced event. A group is produced when it reaches the maximal 
 /// size or after the timeout elapses.
-type BatchProcessingAgent<'T>(batchSize, timeout) = 
+type BatchProcessingAgent<'T>(batchSize,timeout) = 
 
     let batchEvent = new Event<'T[]>()
 
     let cts = new CancellationTokenSource()
+    
+    let newSegment () =
+        let array : 'T array = Array.zeroCreate batchSize
+        new ArraySegment<_>(array, 0, 0)
 
-    let body (agent: Agent<'T>) =
-        let rec loop remainingTime messages = async {
+    let segmentToArray (segment:ArraySegment<_>) =
+        let array = Array.zeroCreate segment.Count
+        Array.Copy(segment.Array, array, segment.Count)
+        array
+
+    let expandSegment item (segment:ArraySegment<_>) =
+        segment.Array.[segment.Count] <- item
+        new ArraySegment<_>(segment.Array, segment.Offset, segment.Count + 1)
+
+    let body (agent:Agent<_>) =
+        
+        let rec loop remainingTime (messages:ArraySegment<_>) = async {
             let start = DateTime.Now
             let! msg = agent.TryReceive(timeout = max 0 remainingTime)
             let elapsed = int (DateTime.Now - start).TotalMilliseconds
             match msg with 
-            | Some(msg) when List.length messages = batchSize - 1 ->
-                batchEvent.Trigger(msg :: messages |> List.rev |> Array.ofList)
-                return! loop timeout []
+            | Some(msg) when messages.Count = batchSize - 1 ->
+                batchEvent.Trigger(messages |> expandSegment msg |> segmentToArray)
+                return! loop timeout (newSegment())
             | Some(msg) ->
-                return! loop (remainingTime - elapsed) (msg::messages)
-            | None when List.length messages <> 0 -> 
-                batchEvent.Trigger(messages |> List.rev |> Array.ofList)
-                return! loop timeout []
+                return! loop (remainingTime - elapsed) (messages |> expandSegment msg)
+            | None when messages.Count <> 0 -> 
+                batchEvent.Trigger(messages |> segmentToArray)
+                return! loop timeout (newSegment())
             | None -> 
-                return! loop timeout [] }
-        loop timeout []
-    let agent : Agent<'T> = Agent.Start(body, cts.Token)
+                return! loop timeout (newSegment()) }
+
+        loop timeout (newSegment())
+
+    let agent = Agent<_>.Start(body, cts.Token)
 
     /// The event is triggered when a group of messages is collected. The
     /// group is not empty, but may not be of the specified maximal size
