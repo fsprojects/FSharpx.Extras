@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq;
 using FSharpx.Collections;
-using FSharpx.DataStructures;
-using Microsoft.FSharp.Collections;
+using FSharpx.Collections.Experimental;
 using NUnit.Framework;
 
 namespace FSharpx.CSharpTests {

@@ -92,6 +92,10 @@
     <Compile Include="ChoiceTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\FSharpx.Collections.Experimental\FSharpx.Collections.Experimental.fsproj">
+      <Project>{ad3c8e86-f4cf-426f-a31d-015056227777}</Project>
+      <Name>FSharpx.Collections.Experimental</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\FSharpx.Core\FSharpx.Core.fsproj">
       <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
       <Name>FSharpx.Core</Name>

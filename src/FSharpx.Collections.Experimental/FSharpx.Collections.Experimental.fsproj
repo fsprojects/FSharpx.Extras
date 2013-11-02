@@ -52,7 +52,7 @@
     <Compile Include="BatchedDeque.fs" />
     <Compile Include="BatchedQueue.fs" />
     <Compile Include="BinaryRandomAccessList.fs" />
-	<Compile Include="BinaryRoseTree.fs" />
+    <Compile Include="BinaryRoseTree.fs" />
     <Compile Include="BinaryTreeZipper.fs" />
     <Compile Include="BinomialHeap.fs" />
     <Compile Include="IntMap.fs" />
@@ -62,13 +62,13 @@
     <Compile Include="Deque.fs" />
     <Compile Include="DList.fs" />
     <Compile Include="EagerRoseTree.fs" />
-	<Compile Include="FlatList.fsi" />
-	<Compile Include="FlatList.fs" />
+    <Compile Include="FlatList.fsi" />
+    <Compile Include="FlatList.fs" />
     <Compile Include="PairingHeap.fs" />
     <Compile Include="HeapPriorityQueue.fs" />
     <Compile Include="HoodMelvilleQueue.fs" />
     <Compile Include="ImplicitQueue.fs" />
-	<Compile Include="IndexedRoseTree.fs" />
+    <Compile Include="IndexedRoseTree.fs" />
     <Compile Include="LeftistHeap.fs" />
     <Compile Include="ListZipper.fs" />
     <Compile Include="PhysicistQueue.fs" />
@@ -79,6 +79,7 @@
     <Compile Include="SkewBinaryRandomAccessList.fs" />
     <Compile Include="TimeSeries.fs" />
     <Compile Include="Vector.fs" />
+    <Compile Include="CSharpCompat.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
