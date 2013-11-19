@@ -38,6 +38,12 @@ module AsyncExtensions =
 
 #if NET40
 
+      /// Starts a non-generic Task with the cancellationToken and returns an
+      /// Async<unit> containing the result.
+      static member AwaitTask(task:Tasks.Task, ?cancellationToken) =
+          let cancel = defaultArg cancellationToken Async.DefaultCancellationToken
+          Async.AwaitTask <| task.ContinueWith((fun t -> ()), cancel)
+
       /// Starts a Task<'a> with the timeout and cancellationToken and
       /// returns a Async<a' option> containing the result.  If the Task does
       /// not complete in the timeout interval, or is faulted None is returned.
@@ -54,6 +60,7 @@ module AsyncExtensions =
     /// 'Bind' of the 'async' builder. The new overload awaits on 
     /// a standard .NET task
     type Microsoft.FSharp.Control.AsyncBuilder with
-        member x.Bind(t:Tasks.Task<'T>, f:'T -> Async<'R>) : Async<'R> =  async.Bind(Async.AwaitTask t, f)
+        member x.Bind(t:Tasks.Task<'T>, f:'T -> Async<'R>) : Async<'R>   = async.Bind(Async.AwaitTask t, f)
+        member x.Bind(t:Tasks.Task, f:unit -> Async<unit>) : Async<unit> = async.Bind(Async.AwaitTask t, f)
 
 #endif
