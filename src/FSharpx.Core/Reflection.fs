@@ -11,7 +11,114 @@ module internal ReflectImpl =
 
     open Microsoft.FSharp.Reflection
 
-    type Marker = class end
+    // simple typed descriptor for arguments/local vars in dynamic methods
+
+    type EnvItem<'T>(ilGen : ILGenerator, ?argument : int16) = 
+        inherit EnvItem(typeof<'T>, ilGen, ?argument = argument)
+
+    and EnvItem(ty : Type, ilGen : ILGenerator, ?argument : int16) =
+
+        let env = 
+            match argument with
+            | Some argId -> Arg argId
+            | None -> LocalVar <| ilGen.DeclareLocal ty
+
+        member __.Type = ty
+
+        member e.Load () =
+            match env with
+            | Arg 0s -> ilGen.Emit OpCodes.Ldarg_0
+            | Arg 1s -> ilGen.Emit OpCodes.Ldarg_1
+            | Arg 2s -> ilGen.Emit OpCodes.Ldarg_2
+            | Arg 3s -> ilGen.Emit OpCodes.Ldarg_3
+            | Arg i -> ilGen.Emit (OpCodes.Ldarg_S, i)
+            | LocalVar v -> ilGen.Emit(OpCodes.Ldloc, v)
+
+        member e.LoadAddress () =
+            match env with
+            | Arg i -> ilGen.Emit (OpCodes.Ldarg_S, i)
+            | LocalVar v -> ilGen.Emit(OpCodes.Ldloca, v)
+
+        member e.Store () =
+            match env with
+            | LocalVar v -> ilGen.Emit(OpCodes.Stloc, v)
+            | _ -> invalidOp "cannot store to arg param."
+
+        member e.LocalBuilder =
+            match env with
+            | LocalVar v -> v
+            | _ -> invalidArg "EnvItem" "is not a local variable."
+
+    and EnvDescriptor =
+        | Arg of int16
+        | LocalVar of LocalBuilder
+
+
+    // wrappers for defining dynamic methods
+
+    module DynamicMethod =
+
+        type private Marker = class end
+
+        let private voidType = Type.GetType("System.Void")
+
+        let private createDynamicMethod (name : string) (argTypes : Type []) (returnType : Type) =
+            let dyn =
+                new DynamicMethod(name, 
+                    MethodAttributes.Static ||| MethodAttributes.Public, CallingConventions.Standard, 
+                    returnType, argTypes, typeof<Marker>, skipVisibility = true)
+
+            dyn, dyn.GetILGenerator()
+
+        let private compileDynamicMethod<'Dele when 'Dele :> Delegate> (dyn : DynamicMethod) =
+            dyn.CreateDelegate(typeof<'Dele>) :?> 'Dele
+
+        let compileFunc<'T> (name : string) (builderF : ILGenerator -> unit) =
+            let dyn, ilGen = createDynamicMethod name [| |] typeof<'T>
+            do builderF ilGen
+            compileDynamicMethod<Func<'T>> dyn
+
+        let compileFunc1<'U1,'V> (name : string) (builderF : EnvItem<'U1> -> ILGenerator -> unit) =
+            let dyn, ilGen = createDynamicMethod name [| typeof<'U1> |] typeof<'V>
+            let arg0 = EnvItem<'U1>(ilGen, 0s)
+            do builderF arg0 ilGen
+            compileDynamicMethod<Func<'U1,'V>> dyn
+
+        let compileFunc2<'U1,'U2,'V> (name : string) (builderF : EnvItem<'U1> -> EnvItem<'U2> -> ILGenerator -> unit) =
+            let dyn, ilGen = createDynamicMethod name [| typeof<'U1> ; typeof<'U2> |] typeof<'V>
+            let arg0 = EnvItem<'U1>(ilGen, 0s)
+            let arg1 = EnvItem<'U2>(ilGen, 1s)
+            do builderF arg0 arg1 ilGen
+            compileDynamicMethod<Func<'U1,'U2,'V>> dyn
+
+        let compileFunc3<'U1,'U2,'U3,'V> (name : string) (builderF : EnvItem<'U1> -> EnvItem<'U2> -> EnvItem<'U3> -> ILGenerator -> unit) =
+            let dyn, ilGen = createDynamicMethod name [| typeof<'U1> ; typeof<'U2> ; typeof<'U3> |] typeof<'V>
+            let arg0 = EnvItem<'U1>(ilGen, 0s)
+            let arg1 = EnvItem<'U2>(ilGen, 1s)
+            let arg2 = EnvItem<'U3>(ilGen, 2s)
+            do builderF arg0 arg1 arg2 ilGen
+            compileDynamicMethod<Func<'U1,'U2,'U3,'V>> dyn
+
+        let compileAction1<'U1> (name : string) (builderF : EnvItem<'U1> -> ILGenerator -> unit) =
+            let dyn, ilGen = createDynamicMethod name [| typeof<'U1> |] voidType
+            let arg0 = EnvItem<'U1>(ilGen, 0s)
+            do builderF arg0 ilGen
+            compileDynamicMethod<Action<'U1>> dyn
+
+        let compileAction2<'U1,'U2> (name : string) (builderF : EnvItem<'U1> -> EnvItem<'U2> -> ILGenerator -> unit) =
+            let dyn, ilGen = createDynamicMethod name [| typeof<'U1> ; typeof<'U2> |] voidType
+            let arg0 = EnvItem<'U1>(ilGen, 0s)
+            let arg1 = EnvItem<'U2>(ilGen, 1s)
+            do builderF arg0 arg1 ilGen
+            compileDynamicMethod<Action<'U1,'U2>> dyn
+
+        let compileAction3<'U1,'U2,'U3> (name : string) (builderF : EnvItem<'U1> -> EnvItem<'U2> -> EnvItem<'U3> -> ILGenerator -> unit) =
+            let dyn, ilGen = createDynamicMethod name [| typeof<'U1> ; typeof<'U2> ; typeof<'U3> |] voidType
+            let arg0 = EnvItem<'U1>(ilGen, 0s)
+            let arg1 = EnvItem<'U2>(ilGen, 1s)
+            let arg2 = EnvItem<'U3>(ilGen, 2s)
+            do builderF arg0 arg1 arg2 ilGen
+            compileDynamicMethod<Action<'U1,'U2,'U3>> dyn
 
     let isOptionTy (t : Type) =
         t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<_ option>
@@ -26,104 +133,88 @@ module internal ReflectImpl =
         let bindingFlags = defaultArg bindingFlags BindingFlags.Public
         bindingFlags &&& BindingFlags.NonPublic = BindingFlags.NonPublic
 
-    let pushParam (arg : int) (idx : int) (generator : ILGenerator) (paramType : Type) =
-        generator.Emit(OpCodes.Ldarg, arg)
-        generator.Emit(OpCodes.Ldc_I4, idx)
-        generator.Emit(OpCodes.Ldelem_Ref)
-        if paramType <> typeof<obj> then
-            if paramType.IsValueType then
-                generator.Emit(OpCodes.Unbox_Any, paramType)
-            else
-                generator.Emit(OpCodes.Castclass, paramType)
+    // push an array of untyped parameters to the stack
+    let pushParams offset (parameters : EnvItem<obj []>) (paramTypes : Type []) (ilGen : ILGenerator) =
+        let pushParam (i : int) (ty : Type) =
+            parameters.Load ()
+            ilGen.Emit(OpCodes.Ldc_I4, i)
+            ilGen.Emit OpCodes.Ldelem_Ref
+            if ty <> typeof<obj> then
+                if ty.IsValueType then
+                    ilGen.Emit(OpCodes.Unbox_Any, ty)
+                else
+                    ilGen.Emit(OpCodes.Castclass, ty)
 
-    let pushParams arg offset gen (paramTypes:seq<Type>) =
-        paramTypes |> Seq.iteri (fun idx ty -> pushParam arg (idx + offset) gen ty)
+        paramTypes |> Array.iteri (fun i t -> pushParam (offset + i) t)
 
-        
-    let preComputeConstructor (ctorInfo : ConstructorInfo) : obj [] -> obj =
-        let meth = new DynamicMethod( "ctor", MethodAttributes.Static ||| MethodAttributes.Public,
-                            CallingConventions.Standard, typeof<obj>, [| typeof<obj[]> |],
-                            typeof<Marker>, true)
+    // evaluate a collection of getters and store to a given array
+    let saveParams offset (parameters : EnvItem<obj []>) (self : EnvItem) (getters : MethodInfo []) (ilGen : ILGenerator) =
+        let saveParam (idx : int) (getter : MethodInfo) =
+            // arr.[idx] <- p.GetValue(o) :> obj
+            parameters.Load ()
+            ilGen.Emit(OpCodes.Ldc_I4, idx)
 
-        let generator = meth.GetILGenerator()
-        let paramTypes = ctorInfo.GetParameters() |> Seq.map (fun pi -> pi.ParameterType)
+            // call property getter
+            self.Load()
+            ilGen.EmitCall(OpCodes.Call, getter, null)
+            if getter.ReturnType.IsValueType then ilGen.Emit(OpCodes.Box, getter.ReturnType)
 
-        pushParams 0 0 generator paramTypes
-        generator.Emit(OpCodes.Newobj, ctorInfo)
-        if ctorInfo.DeclaringType.IsValueType then generator.Emit(OpCodes.Box, ctorInfo.DeclaringType)
-        generator.Emit(OpCodes.Ret)
+            // store
+            ilGen.Emit OpCodes.Stelem_Ref
 
-        let dele = meth.CreateDelegate(typeof<Func<obj[],obj>>) :?> Func<obj[],obj>
+        getters |> Array.iteri (fun i g -> saveParam (offset + i) g)
 
-        dele.Invoke
+    let preComputeConstructor (ctorInfo : ConstructorInfo) =
+        DynamicMethod.compileFunc1<obj[], obj> "untypedCtor" (fun cparams ilGen ->
+            let paramTypes = ctorInfo.GetParameters() |> Array.map (fun pi -> pi.ParameterType)
 
-    let preComputeGetMethod (declaringType : Type) (getter : MethodInfo) : obj -> obj =
+            pushParams 0 cparams paramTypes ilGen
+            ilGen.Emit(OpCodes.Newobj, ctorInfo)
+            if ctorInfo.DeclaringType.IsValueType then ilGen.Emit(OpCodes.Box, ctorInfo.DeclaringType)
+            ilGen.Emit OpCodes.Ret)
+
+    let preComputeGetterMethod (declaringType : Type) (getter : MethodInfo) =
         assert isGetterMethod declaringType getter
 
-        let meth = new DynamicMethod("methodEvaluator", MethodAttributes.Static ||| MethodAttributes.Public,
-                                    CallingConventions.Standard, typeof<obj>, 
-                                    [|typeof<obj>|], typeof<Marker>, true)
-        let generator = meth.GetILGenerator()
+        DynamicMethod.compileFunc1<obj, obj> "untypedGetter" (fun self ilGen ->
+            self.Load ()
+            ilGen.Emit(OpCodes.Unbox_Any, declaringType)
+            ilGen.EmitCall(OpCodes.Call, getter, null)
+            if getter.ReturnType.IsValueType then ilGen.Emit(OpCodes.Box, getter.ReturnType)
 
-        generator.Emit(OpCodes.Ldarg_0)
-        generator.Emit(OpCodes.Unbox_Any, declaringType)
-        generator.EmitCall(OpCodes.Call, getter, null)
-        if getter.ReturnType.IsValueType then generator.Emit(OpCodes.Box, getter.ReturnType)
-
-        generator.Emit OpCodes.Ret
-
-        let dele = meth.CreateDelegate(typeof<Func<obj,obj>>) :?> Func<obj,obj>
-
-        dele.Invoke
+            ilGen.Emit OpCodes.Ret)
 
 
     // bundles multiple property getters in one dynamic method
-    let preComputeGetMethods (declaringType : Type) (getters : MethodInfo []) : obj -> obj [] =
+    let preComputeGetterMethods (declaringType : Type) (getters : MethodInfo []) =
         assert (getters |> Array.forall (isGetterMethod declaringType))
         
-        if getters.Length = 0 then (fun o -> [||]) else
+        if getters.Length = 0 then None else
 
-        let meth = new DynamicMethod("propEvaluator", MethodAttributes.Static ||| MethodAttributes.Public,
-                                            CallingConventions.Standard, typeof<obj []>, 
-                                            [|typeof<obj>|], typeof<Marker>, true)
-        let generator = meth.GetILGenerator()
+        DynamicMethod.compileFunc1<obj, obj []> "untypedGetters" (fun self ilGen ->
 
-        let unboxed = generator.DeclareLocal(declaringType)
-        let arr = generator.DeclareLocal(typeof<obj []>)
+            // local declarations
+            let unboxed = EnvItem(declaringType, ilGen)
+            let arr = EnvItem<obj []>(ilGen)
 
-        // unbox input
-        generator.Emit(OpCodes.Ldarg_0)
-        generator.Emit(OpCodes.Unbox_Any, declaringType)
-        generator.Emit(OpCodes.Stloc, unboxed)
+            // unbox input
+            self.Load ()
+            ilGen.Emit(OpCodes.Unbox_Any, declaringType)
+            unboxed.Store()
 
-        // init obj array
-        generator.Emit(OpCodes.Ldc_I4, getters.Length)
-        generator.Emit(OpCodes.Newarr, typeof<obj>)
-        generator.Emit(OpCodes.Stloc, arr)
+            // init obj array
+            ilGen.Emit(OpCodes.Ldc_I4, getters.Length)
+            ilGen.Emit(OpCodes.Newarr, typeof<obj>)
+            arr.Store ()
 
-        let computeGetter (idx : int) (m : MethodInfo) =
-            // arr.[idx] <- p.GetValue(o) :> obj
-            generator.Emit(OpCodes.Ldloc, arr)
-            generator.Emit(OpCodes.Ldc_I4, idx)
+            // evaluate getters and store to array
+            saveParams 0 arr unboxed getters ilGen
 
-            // call property getter
-            generator.Emit(OpCodes.Ldloc, unboxed)
-            generator.EmitCall(OpCodes.Call, m, null)
-            if m.ReturnType.IsValueType then generator.Emit(OpCodes.Box, m.ReturnType)
+            // return array
+            arr.Load ()
+            ilGen.Emit OpCodes.Ret) |> Some
 
-            // store
-            generator.Emit(OpCodes.Stelem_Ref)
-
-        getters |> Seq.iteri computeGetter
-
-        generator.Emit(OpCodes.Ldloc, arr)
-        generator.Emit(OpCodes.Ret)
-
-        let dele = meth.CreateDelegate(typeof<Func<obj,obj[]>>) :?> Func<obj,obj[]>
-
-        dele.Invoke
-
-    let preComputePropertyGetters bindingFlags (declaringType : Type) (props : PropertyInfo []) : obj -> obj [] =
+    let preComputePropertyGetters bindingFlags (declaringType : Type) (props : PropertyInfo []) =
         let getMethods = 
             props |> Array.map (fun p ->
                 match p.GetGetMethod(wantNonPublic bindingFlags) with
@@ -132,59 +223,45 @@ module internal ReflectImpl =
                     |> invalidArg "bindingFlags"
                 | p -> p)
 
-        preComputeGetMethods declaringType getMethods
+        preComputeGetterMethods declaringType getMethods
 
 
     // F# type constructors
     
-    let preComputeRecordContructor(recordType:Type,bindingFlags:BindingFlags option) : obj [] -> obj =
+    let preComputeRecordContructor(recordType:Type,bindingFlags:BindingFlags option) =
         assert FSharpType.IsRecord(recordType, ?bindingFlags=bindingFlags)
         let ctorInfo = FSharpValue.PreComputeRecordConstructorInfo(recordType,?bindingFlags=bindingFlags)
         preComputeConstructor ctorInfo
     
-    let preComputeUnionConstructor(unionCaseInfo:UnionCaseInfo, bindingFlags:BindingFlags option) : obj [] -> obj =
+    let preComputeUnionConstructor(unionCaseInfo:UnionCaseInfo, bindingFlags:BindingFlags option) =
         let methodInfo = FSharpValue.PreComputeUnionConstructorInfo(unionCaseInfo, ?bindingFlags=bindingFlags)
         let targetType = methodInfo.DeclaringType
         assert FSharpType.IsUnion(targetType, ?bindingFlags=bindingFlags)
-        let meth = new DynamicMethod( "invoke", MethodAttributes.Static ||| MethodAttributes.Public,
-                                        CallingConventions.Standard, typeof<obj>,
-                                        [| typeof<obj[]> |], targetType, true )
-        let paramTypes = methodInfo.GetParameters() |> Seq.map (fun pi -> pi.ParameterType)
-        let generator = meth.GetILGenerator()
+        let paramTypes = methodInfo.GetParameters() |> Array.map (fun pi -> pi.ParameterType)
 
-        let invoker =
-            pushParams 0 0 generator paramTypes
-            generator.Emit(OpCodes.Call, methodInfo)
-            generator.Emit(OpCodes.Ret)
-            meth.CreateDelegate(typeof<Func<obj[],obj>>) :?> Func<obj[],obj>
+        DynamicMethod.compileFunc1<obj [], obj> "unionCtor" (fun cparams ilGen ->
+            pushParams 0 cparams paramTypes ilGen
+            ilGen.Emit(OpCodes.Call, methodInfo)
+            ilGen.Emit OpCodes.Ret)
 
-        invoker.Invoke
+    let preComputeTupleConstructor(tuple : Type) =
+        DynamicMethod.compileFunc1<obj [], obj> "tupleCtor" (fun cparams ilGen ->
+            // walk through potentially nested tuples
+            let rec traverse offset (tuple : Type) =
+                let ctorInfo, nested = FSharpValue.PreComputeTupleConstructorInfo tuple
+                let paramTypes = ctorInfo.GetParameters() |> Array.map (fun pi -> pi.ParameterType)
 
-    let preComputeTupleConstructor(tuple : Type) : obj [] -> obj =
-        let meth = new DynamicMethod( "ctor", MethodAttributes.Static ||| MethodAttributes.Public,
-                                            CallingConventions.Standard, typeof<obj>, [| typeof<obj[]> |],
-                                            tuple,
-                                            true )
-        let generator = meth.GetILGenerator()
+                match nested with
+                | None -> pushParams offset cparams paramTypes ilGen
+                | Some nested ->
+                    let n = paramTypes.Length
+                    pushParams offset cparams paramTypes.[..n-2] ilGen
+                    traverse (offset + n - 1) nested
 
-        let rec traverse offset (tuple : Type) =
-            let ctorInfo, nested = FSharpValue.PreComputeTupleConstructorInfo tuple
-            let paramTypes = ctorInfo.GetParameters() |> Array.map (fun pi -> pi.ParameterType)
+                ilGen.Emit(OpCodes.Newobj, ctorInfo)
 
-            match nested with
-            | None -> pushParams 0 offset generator paramTypes
-            | Some nested ->
-                let n = paramTypes.Length
-                pushParams 0 offset generator (Seq.take (n-1) paramTypes)
-                traverse (offset + n - 1) nested
-
-            generator.Emit(OpCodes.Newobj, ctorInfo)
-
-        let invoker =
             traverse 0 tuple
-            generator.Emit(OpCodes.Ret)
-            meth.CreateDelegate(typeof<Func<obj[],obj>>) :?> Func<obj[],obj>
-        invoker.Invoke
+            ilGen.Emit OpCodes.Ret)
 
     // an implementation that curiously does not exist in Microsoft.FSharp.Reflection
     let preComputeExceptionConstructorInfo(exceptionType : Type, bindingFlags:BindingFlags option) : ConstructorInfo =
@@ -199,99 +276,119 @@ module internal ReflectImpl =
         | None -> invalidArg "exnType" "The exception type is private. You must specify BindingFlags.NonPublic to access private type representations."
         | Some ctorInfo -> ctorInfo
 
-    let preComputeExceptionConstructor(exceptionType : Type, bindingFlags:BindingFlags option) : obj [] -> obj =
+    let preComputeExceptionConstructor(exceptionType : Type, bindingFlags:BindingFlags option) =
         preComputeExceptionConstructorInfo(exceptionType, bindingFlags) |> preComputeConstructor
 
 
     // F# type readers
 
-    let preComputeRecordReader (recordType:Type, bindingFlags:BindingFlags option) : obj -> obj [] =
+    let preComputeRecordReader (recordType:Type, bindingFlags:BindingFlags option) =
         let fields = FSharpType.GetRecordFields(recordType, ?bindingFlags=bindingFlags)
         preComputePropertyGetters bindingFlags recordType fields
 
-    let preComputeUnionReader(unionCase:UnionCaseInfo, bindingFlags:BindingFlags option) : obj -> obj [] =
+    let preComputeUnionReader(unionCase:UnionCaseInfo, bindingFlags:BindingFlags option) =
         let fields = unionCase.GetFields()
         let declaringType = if fields.Length = 0 then unionCase.DeclaringType else fields.[0].DeclaringType
         preComputePropertyGetters bindingFlags declaringType fields
 
-    let preComputeTupleReader (tuple : Type) : obj -> obj [] =
-        let rec gather (tuple : Type) =
-            let fields = tuple.GetProperties()  |> Seq.filter (fun p -> p.Name.StartsWith("Item") || p.Name = "Rest") 
-                                                |> Seq.sortBy (fun p -> p.Name) //need: Items < 10 & "Item" < "Rest"
-                                                |> Seq.toArray
-            let partial = preComputePropertyGetters None tuple fields
-            match tuple.GetProperty("Rest") with
-            | null -> partial
-            | rest ->
-                let nested = gather rest.PropertyType
-                fun (o:obj) ->
-                    let values = partial o
-                    Array.append values.[..values.Length-2] (nested values.[values.Length-1])
+    let preComputeTupleReader (tuple : Type) =
+        let size = FSharpType.GetTupleElements tuple |> Array.length
+        DynamicMethod.compileFunc1<obj, obj []> "tupleReader" (fun self ilGen ->
 
-        if FSharpType.IsTuple tuple then
-            gather tuple
-        else
-            invalidArg "tuple" <| sprintf "Type '%s' is not a tuple type." tuple.Name
+            // local vars
+            let arr = EnvItem<obj []>(ilGen)
+            let currentTuple = EnvItem<obj>(ilGen)
 
-    let preComputeExceptionReader(exnT : Type, bindingFlags:BindingFlags option) : obj -> obj [] =
+            // init obj array
+            ilGen.Emit(OpCodes.Ldc_I4, size)
+            ilGen.Emit(OpCodes.Newarr, typeof<obj>)
+            arr.Store()
+
+            // store input
+            self.Load()
+            currentTuple.Store()
+
+            let rec traverse offset (tuple : Type) =
+                let fields = 
+                    tuple.GetProperties() 
+                    |> Seq.filter (fun p -> p.Name.StartsWith("Item")) 
+                    |> Seq.sortBy (fun p -> p.Name) //need: Items < 10
+                    |> Seq.map (fun p -> p.GetGetMethod(true))
+                    |> Seq.toArray
+
+                saveParams offset arr currentTuple fields ilGen
+
+                match tuple.GetProperty("Rest") with
+                | null -> ()
+                | rest ->
+                    let rest = rest.GetGetMethod(true)
+                    // replace with current tuple
+                    currentTuple.Load()
+                    ilGen.Emit(OpCodes.Call, rest)
+                    currentTuple.Store()
+                    traverse (offset + fields.Length) rest.ReturnType
+
+            do traverse 0 tuple
+            arr.Load()
+            ilGen.Emit OpCodes.Ret)
+
+    let preComputeExceptionReader(exnT : Type, bindingFlags:BindingFlags option) =
         let fields = FSharpType.GetExceptionFields(exnT, ?bindingFlags = bindingFlags)
         preComputePropertyGetters bindingFlags exnT fields
 
 
     // fast union tag reader
-    let preComputeUnionTagReader(union : Type, bindingFlags) : obj -> int =
-        let nonPublic = wantNonPublic bindingFlags
-        let bindingFlags = defaultArg bindingFlags (BindingFlags.Instance ||| BindingFlags.Public)
+    let preComputeUnionTagReader(union : Type, bindingFlags) =
+        let isPrivate = wantNonPublic bindingFlags
+        let tagGetter =
+            match FSharpValue.PreComputeUnionTagMemberInfo(union, ?bindingFlags = bindingFlags) with
+            | null -> invalidArg "bindingFlags" "The union type is private. You must specify BindingFlags.NonPublic to access private type representations."
+            | :? PropertyInfo as p -> p.GetGetMethod(true)
+            | :? MethodInfo as m -> m
+            | _ -> invalidOp "unexpected error"
 
-        if not <| FSharpType.IsUnion(union, bindingFlags) then
-            invalidArg "union" <| sprintf "Type '%s' is not an F# union type." union.Name
-        elif isOptionTy union then 
-            (fun (obj:obj) -> match obj with null -> 0 | _ -> 1)
-        else
-            match union.GetProperty("Tag", bindingFlags) with
-            | null ->
-                match union.GetMethod("GetTag", bindingFlags, null, [| union |], null) with
-                | null -> fun _ -> 0 // unary DU
-                | meth -> 
-                    let d = preComputeGetMethod union meth
-                    fun (o : obj) -> d o :?> int
-            | prop ->
-                match prop.GetGetMethod nonPublic with
-                | null ->
-                    sprintf "The type '%s' has private representation. You must specify BindingFlags.NonPublic to access private type representations." union.Name
-                    |> invalidArg "bindingFlags"
-                | getter ->
-                    let d = preComputeGetMethod union getter
-                    fun (o : obj) -> d o :?> int
+        DynamicMethod.compileFunc1<obj, int> "unionTagReader" (fun union ilGen ->
+            union.Load()
+            ilGen.Emit(OpCodes.Call, tagGetter)
+            ilGen.Emit OpCodes.Ret)
+
+
+    let inline ofFunc(f : Func<'T, 'S>) : 'T -> 'S = f.Invoke
+
+    let inline ofOptionalFunc(f : Func<'T, 'S []> option) : 'T -> 'S [] =
+        match f with
+        | None -> fun _ -> [||]
+        | Some f -> f.Invoke
 
 
 namespace FSharpx.Reflection
 
-open System
-open System.Reflection
-open Microsoft.FSharp.Reflection
+    open System
+    open System.Reflection
+    open Microsoft.FSharp.Reflection
+    open FSharpx.ReflectImpl
 
-type FSharpValue =
-    static member PreComputeRecordConstructorFast(recordType:Type,?bindingFlags:BindingFlags) =
-        FSharpx.ReflectImpl.preComputeRecordContructor(recordType,bindingFlags)
-    static member PreComputeUnionConstructorFast(unionCase:UnionCaseInfo, ?bindingFlags:BindingFlags) =
-        FSharpx.ReflectImpl.preComputeUnionConstructor(unionCase,bindingFlags)
-    static member PreComputeTupleConstructorFast(tupleType:Type) =
-        FSharpx.ReflectImpl.preComputeTupleConstructor tupleType
-    static member PreComputeExceptionConstructorFast(exceptionType:Type,?bindingFlags) =
-        FSharpx.ReflectImpl.preComputeExceptionConstructor(exceptionType,bindingFlags)
+    type FSharpValue =
+        static member PreComputeRecordConstructorFast(recordType:Type,?bindingFlags:BindingFlags) =
+            preComputeRecordContructor(recordType,bindingFlags) |> ofFunc
+        static member PreComputeUnionConstructorFast(unionCase:UnionCaseInfo, ?bindingFlags:BindingFlags) =
+            preComputeUnionConstructor(unionCase,bindingFlags) |> ofFunc
+        static member PreComputeTupleConstructorFast(tupleType:Type) =
+            preComputeTupleConstructor tupleType |> ofFunc
+        static member PreComputeExceptionConstructorFast(exceptionType:Type,?bindingFlags) =
+            preComputeExceptionConstructor(exceptionType,bindingFlags) |> ofFunc
 
-    static member PreComputeRecordReaderFast(recordType:Type, ?bindingFlags:BindingFlags) : obj -> obj[] =
-        FSharpx.ReflectImpl.preComputeRecordReader(recordType,bindingFlags)
-    static member PreComputeUnionReaderFast(unionCase:UnionCaseInfo, ?bindingFlags:BindingFlags) : obj -> obj[] =
-        FSharpx.ReflectImpl.preComputeUnionReader(unionCase, bindingFlags)
-    static member PreComputeTupleReaderFast(tupleType:Type) : obj -> obj [] =
-        FSharpx.ReflectImpl.preComputeTupleReader tupleType
-    static member PreComputeExceptionReaderFast(exceptionType:Type,?bindingFlags) : obj -> obj [] =
-        FSharpx.ReflectImpl.preComputeExceptionReader(exceptionType,bindingFlags)
+        static member PreComputeRecordReaderFast(recordType:Type, ?bindingFlags:BindingFlags) : obj -> obj[] =
+            preComputeRecordReader(recordType,bindingFlags) |> ofOptionalFunc
+        static member PreComputeUnionReaderFast(unionCase:UnionCaseInfo, ?bindingFlags:BindingFlags) : obj -> obj[] =
+            preComputeUnionReader(unionCase, bindingFlags) |> ofOptionalFunc
+        static member PreComputeTupleReaderFast(tupleType:Type) : obj -> obj [] =
+            preComputeTupleReader tupleType |> ofFunc
+        static member PreComputeExceptionReaderFast(exceptionType:Type,?bindingFlags) : obj -> obj [] =
+            preComputeExceptionReader(exceptionType,bindingFlags) |> ofOptionalFunc
 
-    static member PreComputeExceptionConstructorInfo(exceptionType,?bindingFlags) : ConstructorInfo =
-        FSharpx.ReflectImpl.preComputeExceptionConstructorInfo(exceptionType,bindingFlags)
+        static member PreComputeExceptionConstructorInfo(exceptionType,?bindingFlags) : ConstructorInfo =
+            FSharpx.ReflectImpl.preComputeExceptionConstructorInfo(exceptionType,bindingFlags)
 
-    static member PreComputeUnionTagReaderFast(unionType:Type,?bindingFlags) : obj -> int =
-        FSharpx.ReflectImpl.preComputeUnionTagReader(unionType,bindingFlags)
+        static member PreComputeUnionTagReaderFast(unionType:Type,?bindingFlags:BindingFlags) : obj -> int =
+            FSharpx.ReflectImpl.preComputeUnionTagReader(unionType,bindingFlags) |> ofFunc
