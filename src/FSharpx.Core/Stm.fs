@@ -319,6 +319,10 @@ module Core =
         fun trans -> ms |> Seq.iter (fun x -> x trans)
     
     let mapM_ f ms = ms |> Seq.map f |> sequence_
+
+    let filterM p ms =
+        let mark x = stm { let! v = p x in return  v, x }
+        mapM mark ms |> liftM (Seq.filter fst >> Seq.map snd)
     
 
 module ArrayQueue =
