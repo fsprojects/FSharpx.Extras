@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "WPFSample", "samples\WPF\WPFSample\WPFSample.fsproj", "{4468E3E7-88CC-4B75-A17D-1FE46717A3AC}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Graph.Tests", "tests\FSharpx.TypeProviders.Graph.Tests\FSharpx.TypeProviders.Graph.Tests.fsproj", "{7A255035-C169-4745-92F2-51D4101EE03B}"
@@ -14,8 +16,6 @@ EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Machine.Tests", "tests\FSharpx.TypeProviders.Machine.Tests\FSharpx.TypeProviders.Machine.Tests.fsproj", "{5AA173A1-3BC9-49C0-8DF5-4B76A8E2A64E}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Regex.Tests", "tests\FSharpx.TypeProviders.Regex.Tests\FSharpx.TypeProviders.Regex.Tests.fsproj", "{57B631E3-9709-4785-B66A-18CA7413B300}"
-EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.AppSettings.Tests", "tests\FSharpx.TypeProviders.AppSettings.Tests\FSharpx.TypeProviders.AppSettings.Tests.fsproj", "{9F86F2E8-F112-4B26-AD14-9BC017558423}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Management.Tests", "tests\FSharpx.TypeProviders.Management.Tests\FSharpx.TypeProviders.Management.Tests.fsproj", "{E788C2F0-3EB8-4C7A-91E7-CD633EBE1F09}"
 EndProject
@@ -53,10 +53,6 @@ Global
 		{57B631E3-9709-4785-B66A-18CA7413B300}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57B631E3-9709-4785-B66A-18CA7413B300}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57B631E3-9709-4785-B66A-18CA7413B300}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9F86F2E8-F112-4B26-AD14-9BC017558423}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9F86F2E8-F112-4B26-AD14-9BC017558423}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9F86F2E8-F112-4B26-AD14-9BC017558423}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9F86F2E8-F112-4B26-AD14-9BC017558423}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E788C2F0-3EB8-4C7A-91E7-CD633EBE1F09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E788C2F0-3EB8-4C7A-91E7-CD633EBE1F09}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E788C2F0-3EB8-4C7A-91E7-CD633EBE1F09}.Release|Any CPU.ActiveCfg = Release|Any CPU
