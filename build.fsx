@@ -65,7 +65,6 @@ let rec getPackageDesc = function
 | "TypeProviders.Regex" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type providers for regular expressions."
 | "TypeProviders.AppSettings" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing an AppSettings type provider."
 | "TypeProviders.Management" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a WMI type provider."
-| "TypeProviders.Xrm" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type provider for Microsoft Dynamics CRM 2011"
 | _ -> projectDesc + "\r\n\r\nIt currently implements:\r\n\r\n" + 
                        "* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n" +
                        "* Iteratee\r\n" +
@@ -429,6 +428,7 @@ Target "All" DoNothing
   ==> "Deploy"
 
 "All" <== ["Deploy"]
+
 
 // Start build
 Run target
