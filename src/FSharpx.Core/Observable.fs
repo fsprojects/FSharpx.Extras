@@ -182,9 +182,9 @@ module Observable =
             | Choice2Of2 r -> Some(lefts.popFront(), r)
         )
 
-    let bufferWithTimeOrCount<'T>  (timeSpan:TimeSpan) (count:int) (source:IObservable<'T>)=
+    let bufferWithTimeOrCount<'T> (timeSpan:TimeSpan) (count:int) (source:IObservable<'T>)=
         let timeSpan = int timeSpan.TotalMilliseconds
-        let batch = new BatchProcessingAgent<'T>(timeSpan,count) 
+        let batch = new BatchProcessingAgent<'T>(count, timeSpan) 
         { new IObservable<'T seq> with
             member this.Subscribe(observer:IObserver<'T seq>) =
                 let sd = source.Subscribe(fun v -> batch.Enqueue v)
