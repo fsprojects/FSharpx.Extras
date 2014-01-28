@@ -46,25 +46,20 @@ let nugetDir package = sprintf "./nuget/%s/" package
 let nugetLibDir package = nugetDir package @@ "lib"
 let nugetDocsDir package = nugetDir package @@ "docs"
 
-let typeProvidersPackages = ["TypeProviders.Graph"; "TypeProviders.Xaml"; "TypeProviders.Math"; "TypeProviders.Excel"; "TypeProviders.Machine"; "TypeProviders.Regex"; "TypeProviders.AppSettings"; "TypeProviders.Management"; "TypeProviders.Xrm"]
+let typeProvidersPackages = ["TypeProviders.Graph"; "TypeProviders.Math"; "TypeProviders.Excel"; ""TypeProviders.Regex"; ]
 let packages = ["Core"; "Http"; "Observable"; "Collections.Experimental"; "TypeProviders"; "Text.StructuredFormat"] @ typeProvidersPackages
 
 let projectDesc = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible."
 
 let rec getPackageDesc = function
 | "Http" -> projectDesc + "\r\n\r\nThis library provides common features for working with HTTP applications."
-| "Collections.Experimental" -> projectDesc + "\r\n\r\nThis library provides experimental data structures."
 | "Observable" -> projectDesc + "\r\n\r\nThis library implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford."
 | "Text.StructuredFormat" -> projectDesc + "\r\n\r\nThis library provides data structures and functoins for pretty printers."
 | "TypeProviders" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing common type providers on top of the FSharpx.Core."
 | "TypeProviders.Graph" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a state machine type provider."
-| "TypeProviders.Xaml" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type provider for Xaml files."
 | "TypeProviders.Math" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type provider for vectors."
 | "TypeProviders.Excel" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a Excel type provider."
-| "TypeProviders.Machine" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing type providers for the file system and the registry."
 | "TypeProviders.Regex" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type providers for regular expressions."
-| "TypeProviders.AppSettings" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing an AppSettings type provider."
-| "TypeProviders.Management" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a WMI type provider."
 | _ -> projectDesc + "\r\n\r\nIt currently implements:\r\n\r\n" + 
                        "* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n" +
                        "* Iteratee\r\n" +
@@ -116,9 +111,6 @@ let testReferences frameworkVersion =
             Excludes = [if not (buildTypeProviders frameworkVersion) then
                             yield "./tests/**/*.TypeProviders.*proj"
                             yield "./tests/**/*.TypeProviders.*.*proj"
-                        if frameworkVersion = net35 then
-                            yield "./tests/**/FSharpx.Collections.Tests.fsproj" // FsCheck is no longer available for .NET 3.5
-                            yield "./tests/**/FSharpx.Collections.Experimental.Tests.fsproj" // FsCheck is no longer available for .NET 3.5
                     ] }
     |> Scan
 
@@ -140,15 +132,6 @@ Target "AssemblyInfo" (fun _ ->
             AssemblyDescription = getPackageDesc "Core"
             Guid = "1e95a279-c2a9-498b-bc72-6e7a0d6854ce"
             OutputFileName = "./src/FSharpx.Core/AssemblyInfo.fs" })
-
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = version
-            AssemblyTitle = projectName
-            AssemblyDescription = getPackageDesc "Collections.Experimental"
-            Guid = "4C646C09-6925-47D0-B187-8A5C3D061329"
-            OutputFileName = "./src/FSharpx.Collections.Experimental/AssemblyInfo.fs" })
 
     AssemblyInfo (fun p ->
         {p with 
@@ -199,15 +182,6 @@ Target "AssemblyInfo" (fun _ ->
         {p with 
             CodeLanguage = FSharp
             AssemblyVersion = version
-            AssemblyTitle = "FSharpx.TypeProviders.Xaml"
-            AssemblyDescription = getPackageDesc "TypeProviders.Xaml"
-            Guid = "BF0A0BF6-B215-49F8-A842-C6CB0CB20B21"
-            OutputFileName = "./src/FSharpx.TypeProviders.Xaml/AssemblyInfo.fs" })
-
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = version
             AssemblyTitle = "FSharpx.TypeProviders.Math"
             AssemblyDescription = getPackageDesc "TypeProviders.Math"
             Guid = "B6D98F36-F327-4ECD-8E29-3C7296117498"
@@ -226,47 +200,11 @@ Target "AssemblyInfo" (fun _ ->
         {p with 
             CodeLanguage = FSharp
             AssemblyVersion = version
-            AssemblyTitle = "FSharpx.TypeProviders.Machine"
-            AssemblyDescription = getPackageDesc "TypeProviders.Machine"
-            Guid = "63B7CF90-901B-4809-ACBA-F6366B994677"
-            OutputFileName = "./src/FSharpx.TypeProviders.Machine/AssemblyInfo.fs" })
-
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = version
             AssemblyTitle = "FSharpx.TypeProviders.Regex"
             AssemblyDescription = getPackageDesc "TypeProviders.Regex"
             Guid = "6E8A9AD1-176F-49D9-8E1B-F91BEAB0AFD3"
             OutputFileName = "./src/FSharpx.TypeProviders.Regex/AssemblyInfo.fs" })
 
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = version
-            AssemblyTitle = "FSharpx.TypeProviders.AppSettings"
-            AssemblyDescription = getPackageDesc "TypeProviders.AppSettings"
-            Guid = "75A1B454-ED85-4FAB-939C-026891B758DB"
-            OutputFileName = "./src/FSharpx.TypeProviders.AppSettings/AssemblyInfo.fs" })
-
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = version
-            AssemblyTitle = "FSharpx.TypeProviders.Xrm"
-            AssemblyDescription = getPackageDesc "TypeProviders.Xrm"
-            Guid = "D69A0DB8-9D31-4CDD-8470-231A15313DBA"
-            OutputFileName = "./src/FSharpx.TypeProviders.Xrm/AssemblyInfo.fs" })
-
-            // TODO: COMVISIBLE is not working with portable
-//    AssemblyInfo (fun p ->
-//        {p with 
-//            CodeLanguage = FSharp
-//            AssemblyVersion = version
-//            AssemblyTitle = "FSharpx.TypeProviders.Management"
-//            AssemblyDescription = getPackageDesc "TypeProviders.Management"
-//            Guid = "a19058ba-54bf-498f-bed3-6564d5117842"
-//            OutputFileName = "./src/FSharpx.TypeProviders.Management/AssemblyInfo.fs" })
 )
 
 let buildAppTarget = TargetTemplate (fun frameworkVersion ->

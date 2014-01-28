@@ -1,13 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "WPFSample", "samples\WPF\WPFSample\WPFSample.fsproj", "{4468E3E7-88CC-4B75-A17D-1FE46717A3AC}"
-EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Graph.Tests", "tests\FSharpx.TypeProviders.Graph.Tests\FSharpx.TypeProviders.Graph.Tests.fsproj", "{7A255035-C169-4745-92F2-51D4101EE03B}"
-EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Xaml.Tests", "tests\FSharpx.TypeProviders.Xaml.Tests\FSharpx.TypeProviders.Xaml.Tests.fsproj", "{36B258D4-1AA4-4031-906A-228E649A3EC4}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.TypeProviders.Math.Tests", "tests\FSharpx.TypeProviders.Math.Tests\FSharpx.TypeProviders.Math.Tests.fsproj", "{BCCBD0E1-0F65-4FEB-A628-453A5373C79F}"
 EndProject
@@ -21,18 +17,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4468E3E7-88CC-4B75-A17D-1FE46717A3AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4468E3E7-88CC-4B75-A17D-1FE46717A3AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4468E3E7-88CC-4B75-A17D-1FE46717A3AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4468E3E7-88CC-4B75-A17D-1FE46717A3AC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7A255035-C169-4745-92F2-51D4101EE03B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7A255035-C169-4745-92F2-51D4101EE03B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A255035-C169-4745-92F2-51D4101EE03B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A255035-C169-4745-92F2-51D4101EE03B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{36B258D4-1AA4-4031-906A-228E649A3EC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{36B258D4-1AA4-4031-906A-228E649A3EC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{36B258D4-1AA4-4031-906A-228E649A3EC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{36B258D4-1AA4-4031-906A-228E649A3EC4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BCCBD0E1-0F65-4FEB-A628-453A5373C79F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BCCBD0E1-0F65-4FEB-A628-453A5373C79F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCCBD0E1-0F65-4FEB-A628-453A5373C79F}.Release|Any CPU.ActiveCfg = Release|Any CPU
