@@ -98,27 +98,27 @@ let nunitPath = sprintf "%sNUnit.Runners.%s/Tools" packagesDir nunitVersion
 // files
 let appReferences portable frameworkVersion =
     if portable then Seq.empty else
-    { (!+ "./src/**/*.*proj") with 
-        Excludes = 
-            [yield "./src/**/*.Silverlight.*proj"
-             if not (buildTypeProviders frameworkVersion) then                
-                yield "./src/**/*.TypeProviders.*.*proj"
-                yield "./src/**/*.TypeProviders.*proj"
-             if frameworkVersion = net35 then 
-                yield "./src/**/*.Async.fsproj"
-                yield "./src/**/*.Http.fsproj" // TODO: why is that?
-                yield "./src/**/*.Observable.fsproj" // TODO: why is that?
-                    ] }
-    |> Scan
+    seq { (!! "./src/**/*.*proj") with
+            Excludes =
+                [yield "./src/**/*.Silverlight.*proj"
+                 if not (buildTypeProviders frameworkVersion) then
+                    yield "./src/**/*.TypeProviders.*.*proj"
+                    yield "./src/**/*.TypeProviders.*proj"
+                 if frameworkVersion = net35 then
+                    yield "./src/**/*.Async.fsproj"
+                    yield "./src/**/*.Http.fsproj" // TODO: why is that?
+                    yield "./src/**/*.Observable.fsproj" // TODO: why is that?
+                        ] }
+        |> Scan
 
 let testReferences frameworkVersion =
-    { (!+ "./tests/**/*.*proj") with 
-        Excludes = [if not (buildTypeProviders frameworkVersion) then
-                        yield "./tests/**/*.TypeProviders.*proj"
-                        yield "./tests/**/*.TypeProviders.*.*proj"
-                    if frameworkVersion = net35 then
-                        yield "./tests/**/FSharpx.Collections.Tests.fsproj" // FsCheck is no longer available for .NET 3.5
-                        yield "./tests/**/FSharpx.Collections.Experimental.Tests.fsproj" // FsCheck is no longer available for .NET 3.5
+    seq { (!! "./tests/**/*.*proj") with 
+            Excludes = [if not (buildTypeProviders frameworkVersion) then
+                            yield "./tests/**/*.TypeProviders.*proj"
+                            yield "./tests/**/*.TypeProviders.*.*proj"
+                        if frameworkVersion = net35 then
+                            yield "./tests/**/FSharpx.Collections.Tests.fsproj" // FsCheck is no longer available for .NET 3.5
+                            yield "./tests/**/FSharpx.Collections.Experimental.Tests.fsproj" // FsCheck is no longer available for .NET 3.5
                     ] }
     |> Scan
 
