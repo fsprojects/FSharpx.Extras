@@ -182,13 +182,13 @@ module Observable =
             | Choice2Of2 r -> Some(lefts.popFront(), r)
         )
 
-    let bufferWithTimeOrCount<'T>  (timeSpan:TimeSpan) (count:int) (source:IObservable<'T>)=
+    let bufferWithTimeOrCount<'T> (timeSpan:TimeSpan) (count:int) (source:IObservable<'T>)=
         let timeSpan = int timeSpan.TotalMilliseconds
-        let batch = new BatchProcessingAgent<'T>(timeSpan,count) 
-        { new IObservable<'T seq> with
-            member this.Subscribe(observer:IObserver<'T seq>) =
-                let sd = source.Subscribe(fun v -> batch.Enqueue v)
-                let dd  = batch.BatchProduced.Subscribe(fun v -> observer.OnNext v)
+        let batch = new BatchProcessingAgent<'T>(batchSize=count, timeout=timeSpan) 
+        { new IObservable<'T array> with
+            member __.Subscribe(observer:IObserver<'T array>) =
+                let sd = source.Subscribe(batch.Enqueue)
+                let dd  = batch.BatchProduced.Subscribe(observer.OnNext)
                 { new IDisposable with 
                     member this.Dispose() = 
                         sd.Dispose()
