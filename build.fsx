@@ -46,7 +46,7 @@ let nugetDir package = sprintf "./nuget/%s/" package
 let nugetLibDir package = nugetDir package @@ "lib"
 let nugetDocsDir package = nugetDir package @@ "docs"
 
-let typeProvidersPackages = ["TypeProviders.Graph"; "TypeProviders.Math"; "TypeProviders.Excel"; ""TypeProviders.Regex"; ]
+let typeProvidersPackages = ["TypeProviders.Graph"; "TypeProviders.Math"; "TypeProviders.Excel"; "TypeProviders.Regex"; ]
 let packages = ["Core"; "Http"; "Observable"; "Collections.Experimental"; "TypeProviders"; "Text.StructuredFormat"] @ typeProvidersPackages
 
 let projectDesc = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible."
