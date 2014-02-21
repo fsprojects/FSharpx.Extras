@@ -46,7 +46,7 @@ let nugetDir package = sprintf "./nuget/%s/" package
 let nugetLibDir package = nugetDir package @@ "lib"
 let nugetDocsDir package = nugetDir package @@ "docs"
 
-let typeProvidersPackages = ["TypeProviders.Graph"; "TypeProviders.Math"; "TypeProviders.Excel"; ""TypeProviders.Regex"; ]
+let typeProvidersPackages = ["TypeProviders.Graph"; "TypeProviders.Math"; "TypeProviders.Excel" ]
 let packages = ["Core"; "Http"; "Observable"; "Collections.Experimental"; "TypeProviders"; "Text.StructuredFormat"] @ typeProvidersPackages
 
 let projectDesc = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible."
@@ -59,7 +59,6 @@ let rec getPackageDesc = function
 | "TypeProviders.Graph" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a state machine type provider."
 | "TypeProviders.Math" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type provider for vectors."
 | "TypeProviders.Excel" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a Excel type provider."
-| "TypeProviders.Regex" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type providers for regular expressions."
 | _ -> projectDesc + "\r\n\r\nIt currently implements:\r\n\r\n" + 
                        "* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n" +
                        "* Iteratee\r\n" +
@@ -195,15 +194,6 @@ Target "AssemblyInfo" (fun _ ->
             AssemblyDescription = getPackageDesc "TypeProviders.Excel"
             Guid = "54AB8A7D-094D-49A7-AB18-AA34E388A43E"
             OutputFileName = "./src/FSharpx.TypeProviders.Excel/AssemblyInfo.fs" })
-
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = version
-            AssemblyTitle = "FSharpx.TypeProviders.Regex"
-            AssemblyDescription = getPackageDesc "TypeProviders.Regex"
-            Guid = "6E8A9AD1-176F-49D9-8E1B-F91BEAB0AFD3"
-            OutputFileName = "./src/FSharpx.TypeProviders.Regex/AssemblyInfo.fs" })
 
 )
 
