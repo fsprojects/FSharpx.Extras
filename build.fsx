@@ -46,7 +46,7 @@ let nugetDir package = sprintf "./nuget/%s/" package
 let nugetLibDir package = nugetDir package @@ "lib"
 let nugetDocsDir package = nugetDir package @@ "docs"
 
-let typeProvidersPackages = ["TypeProviders.Graph"; "TypeProviders.Math"; "TypeProviders.Excel" ]
+let typeProvidersPackages = ["TypeProviders.Graph"; "TypeProviders.Math";  ]
 let packages = ["Core"; "Http"; "Observable"; "Collections.Experimental"; "TypeProviders"; "Text.StructuredFormat"] @ typeProvidersPackages
 
 let projectDesc = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible."
@@ -58,7 +58,6 @@ let rec getPackageDesc = function
 | "TypeProviders" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing common type providers on top of the FSharpx.Core."
 | "TypeProviders.Graph" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a state machine type provider."
 | "TypeProviders.Math" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type provider for vectors."
-| "TypeProviders.Excel" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a Excel type provider."
 | _ -> projectDesc + "\r\n\r\nIt currently implements:\r\n\r\n" + 
                        "* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n" +
                        "* Iteratee\r\n" +
@@ -185,15 +184,6 @@ Target "AssemblyInfo" (fun _ ->
             AssemblyDescription = getPackageDesc "TypeProviders.Math"
             Guid = "B6D98F36-F327-4ECD-8E29-3C7296117498"
             OutputFileName = "./src/FSharpx.TypeProviders.Math/AssemblyInfo.fs" })
-
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = version
-            AssemblyTitle = "FSharpx.TypeProviders.Excel"
-            AssemblyDescription = getPackageDesc "TypeProviders.Excel"
-            Guid = "54AB8A7D-094D-49A7-AB18-AA34E388A43E"
-            OutputFileName = "./src/FSharpx.TypeProviders.Excel/AssemblyInfo.fs" })
 
 )
 
