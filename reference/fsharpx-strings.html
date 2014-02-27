@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Strings - FSharpx</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Steffen Forkmann">
+
+    <script src="http://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="http://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="/FSharpx/content/style.css" />
+    <script type="text/javascript" src="/FSharpx/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="http://github.com/fsprojects/FSharpx">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="/FSharpx/index.html">FSharpx</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Strings</h1>
+<div class="xmldoc">
+</div>
+
+<!-- Render nested types and modules, if there are any -->
+
+  <h3>Functions and values</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Function or value</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1', 1)" onmouseover="showTip(event, '1', 1)">
+            ( @? ) s i
+          </code>
+          <div class="tip" id="1">
+            <strong>Signature:</strong>s:string -&gt; i:int -&gt; char option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L69-69" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2', 2)" onmouseover="showTip(event, '2', 2)">
+            contains substr t
+          </code>
+          <div class="tip" id="2">
+            <strong>Signature:</strong>substr:string -&gt; t:string -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Returns a value indicating whether the specified substring occurs within this string</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L14-14" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '3', 3)" onmouseover="showTip(event, '3', 3)">
+            inferType values
+          </code>
+          <div class="tip" id="3">
+            <strong>Signature:</strong>values:seq&lt;string&gt; -&gt; Type<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Checks whether all values of the sequence can be inferred to a special type</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L134-134" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4', 4)" onmouseover="showTip(event, '4', 4)">
+            isBool s
+          </code>
+          <div class="tip" id="4">
+            <strong>Signature:</strong>s:string -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Checks whether the string is a boolean value</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L118-118" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5', 5)" onmouseover="showTip(event, '5', 5)">
+            isFloat s
+          </code>
+          <div class="tip" id="5">
+            <strong>Signature:</strong>s:string -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Checks whether the string is a float</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L129-129" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '6', 6)" onmouseover="showTip(event, '6', 6)">
+            isInt s
+          </code>
+          <div class="tip" id="6">
+            <strong>Signature:</strong>s:string -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Checks whether the string is an int32</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L123-123" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7', 7)" onmouseover="showTip(event, '7', 7)">
+            isInt64 s
+          </code>
+          <div class="tip" id="7">
+            <strong>Signature:</strong>s:string -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Checks whether the string is an int64</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L126-126" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8', 8)" onmouseover="showTip(event, '8', 8)">
+            isNewline c
+          </code>
+          <div class="tip" id="8">
+            <strong>Signature:</strong>c:char -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L25-25" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9', 9)" onmouseover="showTip(event, '9', 9)">
+            isNullOrEmpty text
+          </code>
+          <div class="tip" id="9">
+            <strong>Signature:</strong>text:string -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Returns if the string is null or empty</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L55-55" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '10', 10)" onmouseover="showTip(event, '10', 10)">
+            joinLines input
+          </code>
+          <div class="tip" id="10">
+            <strong>Signature:</strong>input:string list -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Creates newline seperated string from the string list</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L46-46" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '11', 11)" onmouseover="showTip(event, '11', 11)">
+            joinWords input
+          </code>
+          <div class="tip" id="11">
+            <strong>Signature:</strong>input:string list -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Folds the string list by seperating entries with a single space</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L52-52" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '12', 12)" onmouseover="showTip(event, '12', 12)">
+            niceName s
+          </code>
+          <div class="tip" id="12">
+            <strong>Signature:</strong>s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Turns a string into a nice PascalCase identifier</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L85-85" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13', 13)" onmouseover="showTip(event, '13', 13)">
+            pluralize noun
+          </code>
+          <div class="tip" id="13">
+            <strong>Signature:</strong>noun:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Returns the pluralized version of a noun</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L58-58" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14', 14)" onmouseover="showTip(event, '14', 14)">
+            replace pattern replacement text
+          </code>
+          <div class="tip" id="14">
+            <strong>Signature:</strong>pattern:string -&gt; replacement:string -&gt; text:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Replaces the given "replacement" for every occurence of the pattern in the given text</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L11-11" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15', 15)" onmouseover="showTip(event, '15', 15)">
+            satisfies predicate charOption
+          </code>
+          <div class="tip" id="15">
+            <strong>Signature:</strong>predicate:(char -&gt; bool) -&gt; charOption:char option -&gt; char option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L71-71" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16', 16)" onmouseover="showTip(event, '16', 16)">
+            separatedBy delimiter items
+          </code>
+          <div class="tip" id="16">
+            <strong>Signature:</strong>delimiter:string -&gt; items:seq&lt;string&gt; -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Converts a sequence of strings to a single string separated with the delimiters</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L21-21" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '17', 17)" onmouseover="showTip(event, '17', 17)">
+            singularize noun
+          </code>
+          <div class="tip" id="17">
+            <strong>Signature:</strong>noun:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Returns the singularized version of a noun</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L65-65" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18', 18)" onmouseover="showTip(event, '18', 18)">
+            split delimiter text
+          </code>
+          <div class="tip" id="18">
+            <strong>Signature:</strong>delimiter:char -&gt; text:string -&gt; string []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Splits the given string at the given delimiter</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L17-17" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '19', 19)" onmouseover="showTip(event, '19', 19)">
+            splitBy isDelimiter str
+          </code>
+          <div class="tip" id="19">
+            <strong>Signature:</strong>isDelimiter:(char -&gt; bool) -&gt; str:string -&gt; seq&lt;string&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Returns a sequence of strings split by the predicate</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L28-28" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '20', 20)" onmouseover="showTip(event, '20', 20)">
+            startsWith prefix text
+          </code>
+          <div class="tip" id="20">
+            <strong>Signature:</strong>prefix:string -&gt; text:string -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Checks whether the given text starts with the given prefix</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L8-8" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '21', 21)" onmouseover="showTip(event, '21', 21)">
+            toCharArray str
+          </code>
+          <div class="tip" id="21">
+            <strong>Signature:</strong>str:string -&gt; char []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L23-23" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22', 22)" onmouseover="showTip(event, '22', 22)">
+            toLines input
+          </code>
+          <div class="tip" id="22">
+            <strong>Signature:</strong>input:string -&gt; seq&lt;string&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Splits a string based on newlines</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L43-43" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '23', 23)" onmouseover="showTip(event, '23', 23)">
+            toWords input
+          </code>
+          <div class="tip" id="23">
+            <strong>Signature:</strong>input:string -&gt; seq&lt;string&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Splits a string based on whitespace (spaces, tabs, and newlines)</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L49-49" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Active patterns</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Active pattern</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '81', 81)" onmouseover="showTip(event, '81', 81)">
+            ( |EOF|_| ) _arg1
+          </code>
+          <div class="tip" id="81">
+            <strong>Signature:</strong>_arg1:&#39;?16126 option -&gt; unit option<br />
+                          <strong>Type parameters:</strong> '?16126          </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L76-76" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '82', 82)" onmouseover="showTip(event, '82', 82)">
+            ( |LetterDigit|_| ) 
+          </code>
+          <div class="tip" id="82">
+            <strong>Signature:</strong>char option -&gt; char option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L80-80" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '83', 83)" onmouseover="showTip(event, '83', 83)">
+            ( |Lower|_| ) 
+          </code>
+          <div class="tip" id="83">
+            <strong>Signature:</strong>char option -&gt; char option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L82-82" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '84', 84)" onmouseover="showTip(event, '84', 84)">
+            ( |Upper|_| ) 
+          </code>
+          <div class="tip" id="84">
+            <strong>Signature:</strong>char option -&gt; char option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Strings.fs#L81-81" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <img src="/FSharpx/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharpx</li>
+            <li><a href="/FSharpx/index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.com/packages/FSharpx">Get Library via NuGet</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx">Source Code on GitHub</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx/blob/master/LICENSE.txt">License</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="/FSharpx/tutorial.html">Sample tutorial</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="/FSharpx/reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="http://github.com/fsprojects/FSharpx"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>
