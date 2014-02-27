@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>CustomValidation<'T> - FSharpx</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Steffen Forkmann">
+
+    <script src="http://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="http://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="http://fsprojects.github.io/fsharpx/content/style.css" />
+    <script type="text/javascript" src="http://fsprojects.github.io/fsharpx/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="http://github.com/fsprojects/FSharpx">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="http://fsprojects.github.io/fsharpx/index.html">FSharpx</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>CustomValidation<'T></h1>
+<div class="xmldoc">
+</div>
+  <h3>Record Fields</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Record Field</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '831', 831)" onmouseover="showTip(event, '831', 831)">
+            semigroup
+          </code>
+          <div class="tip" id="831">
+            <strong>Signature:</strong>ISemigroup&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L851-851" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '843', 843)" onmouseover="showTip(event, '843', 843)">
+            new(semigroup)
+          </code>
+          <div class="tip" id="843">
+            <strong>Signature:</strong>semigroup:ISemigroup&lt;&#39;T&gt; -&gt; CustomValidation&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L851-851" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '845', 845)" onmouseover="showTip(event, '845', 845)">
+            ap(x)
+          </code>
+          <div class="tip" id="845">
+            <strong>Signature:</strong>x:Choice&lt;&#39;?21464,&#39;T&gt; -&gt; Choice&lt;(&#39;?21464 -&gt; &#39;?21465),&#39;T&gt; -&gt; Choice&lt;&#39;?21465,&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> '?21464, '?21465          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Sequential application</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L853-853" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '846', 846)" onmouseover="showTip(event, '846', 846)">
+            apl(b a)
+          </code>
+          <div class="tip" id="846">
+            <strong>Signature:</strong>b:Choice&lt;&#39;?21477,&#39;T&gt; -&gt; a:Choice&lt;&#39;?21478,&#39;T&gt; -&gt; Choice&lt;&#39;?21478,&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> '?21477, '?21478          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Sequence actions, discarding the value of the second argument.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L862-862" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '847', 847)" onmouseover="showTip(event, '847', 847)">
+            apr(b a)
+          </code>
+          <div class="tip" id="847">
+            <strong>Signature:</strong>b:Choice&lt;&#39;?21473,&#39;T&gt; -&gt; a:Choice&lt;&#39;?21474,&#39;T&gt; -&gt; Choice&lt;&#39;?21473,&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> '?21473, '?21474          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Sequence actions, discarding the value of the first argument.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L859-859" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '848', 848)" onmouseover="showTip(event, '848', 848)">
+            lift2(f a b)
+          </code>
+          <div class="tip" id="848">
+            <strong>Signature:</strong>(f:(&#39;?21468 -&gt; &#39;?21469 -&gt; &#39;?21470)) -&gt; a:Choice&lt;&#39;?21468,&#39;T&gt; -&gt; b:Choice&lt;&#39;?21469,&#39;T&gt; -&gt; Choice&lt;&#39;?21470,&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> '?21468, '?21469, '?21470          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Promote a function to a monad/applicative, scanning the monadic/applicative arguments from left to right.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L856-856" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '849', 849)" onmouseover="showTip(event, '849', 849)">
+            mapM(f x)
+          </code>
+          <div class="tip" id="849">
+            <strong>Signature:</strong>(f:(&#39;?21488 -&gt; Choice&lt;&#39;?21489,&#39;T&gt;)) -&gt; (x:&#39;?21488 list) -&gt; Choice&lt;&#39;?21489 list,&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> '?21488, '?21489          </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L872-872" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '850', 850)" onmouseover="showTip(event, '850', 850)">
+            sequence(s)
+          </code>
+          <div class="tip" id="850">
+            <strong>Signature:</strong>(s:Choice&lt;&#39;?21485,&#39;T&gt; list) -&gt; Choice&lt;&#39;?21485 list,&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> '?21485          </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L868-868" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '851', 851)" onmouseover="showTip(event, '851', 851)">
+            seqValidator(f)
+          </code>
+          <div class="tip" id="851">
+            <strong>Signature:</strong>(f:(&#39;?21481 -&gt; Choice&lt;&#39;?21482,&#39;T&gt;)) -&gt; seq&lt;&#39;?21481&gt; -&gt; Choice&lt;&#39;?21482 list,&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> '?21481, '?21482          </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L864-864" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <img src="/FSharpx/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharpx</li>
+            <li><a href="http://fsprojects.github.io/fsharpx/index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.com/packages/FSharpx">Get Library via NuGet</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx">Source Code on GitHub</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx/blob/master/LICENSE.txt">License</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="http://fsprojects.github.io/fsharpx/tutorial.html">Sample tutorial</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="http://fsprojects.github.io/fsharpx/reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="http://github.com/fsprojects/FSharpx"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>LazyList - FSharpx</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Steffen Forkmann">
+
+    <script src="http://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="http://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="http://fsprojects.github.io/fsharpx/content/style.css" />
+    <script type="text/javascript" src="http://fsprojects.github.io/fsharpx/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="http://github.com/fsprojects/FSharpx">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="http://fsprojects.github.io/fsharpx/index.html">FSharpx</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>LazyList</h1>
+<div class="xmldoc">
+</div>
+
+<!-- Render nested types and modules, if there are any -->
+
+  <h3>Functions and values</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Function or value</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '446', 446)" onmouseover="showTip(event, '446', 446)">
+            append arg1 source
+          </code>
+          <div class="tip" id="446">
+            <strong>Signature:</strong>LazyList&lt;&#39;T&gt; -&gt; source:LazyList&lt;&#39;T&gt; -&gt; LazyList&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Return the list which contains on demand the elements of the first list followed
+ by the elements of the second list</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L139-139" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '449', 449)" onmouseover="showTip(event, '449', 449)">
+            concat arg1
+          </code>
+          <div class="tip" id="449">
+            <strong>Signature:</strong>LazyList&lt;LazyList&lt;&#39;T&gt;&gt; -&gt; LazyList&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Return the list which contains on demand the list of elements of the list of lazy lists.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L167-167" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '450', 450)" onmouseover="showTip(event, '450', 450)">
+            cons arg1 arg2
+          </code>
+          <div class="tip" id="450">
+            <strong>Signature:</strong>&#39;T -&gt; LazyList&lt;&#39;T&gt; -&gt; LazyList&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Return a new list which contains the given item followed by the
+ given list.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L126-126" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '451', 451)" onmouseover="showTip(event, '451', 451)">
+            consDelayed arg1 arg2
+          </code>
+          <div class="tip" id="451">
+            <strong>Signature:</strong>&#39;T -&gt; (unit -&gt; LazyList&lt;&#39;T&gt;) -&gt; LazyList&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Return a new list which on consumption contains the given item 
+ followed by the list returned by the given computation.  The</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L127-127" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '452', 452)" onmouseover="showTip(event, '452', 452)">
+            delayed arg1
+          </code>
+          <div class="tip" id="452">
+            <strong>Signature:</strong>(unit -&gt; LazyList&lt;&#39;T&gt;) -&gt; LazyList&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Return a list that is in effect the list returned by the given computation.
+ The given computation is not executed until the first element on the list is
+ consumed.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L145-145" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '453', 453)" onmouseover="showTip(event, '453', 453)">
+            empty 
+          </code>
+          <div class="tip" id="453">
+            <strong>Signature:</strong>LazyList&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Evaluates to the list that contains no items</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L124-124" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '454', 454)" onmouseover="showTip(event, '454', 454)">
+            filter predicate source
+          </code>
+          <div class="tip" id="454">
+            <strong>Signature:</strong>predicate:(&#39;T -&gt; bool) -&gt; source:LazyList&lt;&#39;T&gt; -&gt; LazyList&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Return a new collection which on consumption will consist of only the elements of the collection
+ for which the given predicate returns "true"</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L173-173" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '455', 455)" onmouseover="showTip(event, '455', 455)">
+            find predicate source
+          </code>
+          <div class="tip" id="455">
+            <strong>Signature:</strong>predicate:(&#39;T -&gt; bool) -&gt; source:LazyList&lt;&#39;T&gt; -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(n), worst case. Return the first element for which the given function returns <c>true</c>.
+ Raise <c>KeyNotFoundException</c> if no such element exists.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L186-186" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '456', 456)" onmouseover="showTip(event, '456', 456)">
+            head arg1
+          </code>
+          <div class="tip" id="456">
+            <strong>Signature:</strong>LazyList&lt;&#39;T&gt; -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Return the first element of the list.  Forces the evaluation of
+ the first cell of the list if it is not already evaluated.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L197-197" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '457', 457)" onmouseover="showTip(event, '457', 457)">
+            isEmpty arg1
+          </code>
+          <div class="tip" id="457">
+            <strong>Signature:</strong>LazyList&lt;&#39;T&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Test if a list is empty.  Forces the evaluation of
+ the first element of the stream if it is not already evaluated.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L205-205" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '458', 458)" onmouseover="showTip(event, '458', 458)">
+            iter action list
+          </code>
+          <div class="tip" id="458">
+            <strong>Signature:</strong>action:(&#39;T -&gt; unit) -&gt; list:LazyList&lt;&#39;T&gt; -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(n). Apply the given function to each element of the collection.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L267-267" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '459', 459)" onmouseover="showTip(event, '459', 459)">
+            length list
+          </code>
+          <div class="tip" id="459">
+            <strong>Signature:</strong>list:LazyList&lt;&#39;T&gt; -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(n). Return the length of the list</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L290-290" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '460', 460)" onmouseover="showTip(event, '460', 460)">
+            map mapping source
+          </code>
+          <div class="tip" id="460">
+            <strong>Signature:</strong>mapping:(&#39;T -&gt; &#39;U) -&gt; source:LazyList&lt;&#39;T&gt; -&gt; LazyList&lt;&#39;U&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'U          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Build a new collection whose elements are the results of applying the given function
+ to each of the elements of the collection.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L149-149" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '461', 461)" onmouseover="showTip(event, '461', 461)">
+            map2 mapping arg2 arg3
+          </code>
+          <div class="tip" id="461">
+            <strong>Signature:</strong>mapping:(&#39;T1 -&gt; &#39;T2 -&gt; &#39;U) -&gt; LazyList&lt;&#39;T1&gt; -&gt; LazyList&lt;&#39;T2&gt; -&gt; LazyList&lt;&#39;U&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2, 'U          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Build a new collection whose elements are the results of applying the given function
+ to the corresponding elements of the two collections pairwise.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L155-155" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '462', 462)" onmouseover="showTip(event, '462', 462)">
+            mapAccum f s l
+          </code>
+          <div class="tip" id="462">
+            <strong>Signature:</strong>f:(&#39;T1 -&gt; &#39;T2 -&gt; &#39;T1 * &#39;T3) -&gt; s:&#39;T1 -&gt; l:LazyList&lt;&#39;T2&gt; -&gt; &#39;T1 * LazyList&lt;&#39;T3&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2, 'T3          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(n). Behaves like a combination of map and fold; 
+ it applies a function to each element of a list, 
+ passing an accumulating parameter from left to right, 
+ and returning a final value of this accumulator together with the new list.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L247-247" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '463', 463)" onmouseover="showTip(event, '463', 463)">
+            ofArray arg1
+          </code>
+          <div class="tip" id="463">
+            <strong>Signature:</strong>&#39;T array -&gt; LazyList&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Build a collection from the given array. This function will eagerly evaluate all of the 
+ list (and thus may not terminate).</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L282-282" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '464', 464)" onmouseover="showTip(event, '464', 464)">
+            ofList arg1
+          </code>
+          <div class="tip" id="464">
+            <strong>Signature:</strong>&#39;T list -&gt; LazyList&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Build a collection from the given list. This function will eagerly evaluate all of the 
+ list (and thus may not terminate).</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L256-256" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '465', 465)" onmouseover="showTip(event, '465', 465)">
+            ofSeq arg1
+          </code>
+          <div class="tip" id="465">
+            <strong>Signature:</strong>seq&lt;&#39;T&gt; -&gt; LazyList&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Build a new collection from the given enumerable object</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L303-303" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '466', 466)" onmouseover="showTip(event, '466', 466)">
+            repeat arg1
+          </code>
+          <div class="tip" id="466">
+            <strong>Signature:</strong>&#39;T -&gt; LazyList&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Return the list which on consumption will consist of an infinite sequence of 
+ the given item</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L146-146" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '467', 467)" onmouseover="showTip(event, '467', 467)">
+            scan folder arg2 source
+          </code>
+          <div class="tip" id="467">
+            <strong>Signature:</strong>folder:(&#39;State -&gt; &#39;T -&gt; &#39;State) -&gt; &#39;State -&gt; source:LazyList&lt;&#39;T&gt; -&gt; LazyList&lt;&#39;State&gt;<br />
+                          <strong>Type parameters:</strong> 'State, 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Return a new list consisting of the results of applying the given accumulating function
+ to successive elements of the list</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L191-191" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '468', 468)" onmouseover="showTip(event, '468', 468)">
+            skip count source
+          </code>
+          <div class="tip" id="468">
+            <strong>Signature:</strong>count:int -&gt; source:LazyList&lt;&#39;T&gt; -&gt; LazyList&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(n), where n is count. Return the list which on consumption will skip the first 'n' elements of 
+ the input list.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L231-231" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '469', 469)" onmouseover="showTip(event, '469', 469)">
+            tail arg1
+          </code>
+          <div class="tip" id="469">
+            <strong>Signature:</strong>LazyList&lt;&#39;T&gt; -&gt; LazyList&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Return the list corresponding to the remaining items in the sequence.<br />
+ Forces the evaluation of the first cell of the list if it is not already evaluated.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L201-201" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '470', 470)" onmouseover="showTip(event, '470', 470)">
+            take count source
+          </code>
+          <div class="tip" id="470">
+            <strong>Signature:</strong>count:int -&gt; source:LazyList&lt;&#39;T&gt; -&gt; LazyList&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(n), where n is count. Return the list which on consumption will consist of at most 'n' elements of 
+ the input list.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L207-207" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '471', 471)" onmouseover="showTip(event, '471', 471)">
+            toArray arg1
+          </code>
+          <div class="tip" id="471">
+            <strong>Signature:</strong>LazyList&lt;&#39;T&gt; -&gt; &#39;T array<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(n). Build an array from the given collection</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L283-283" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '472', 472)" onmouseover="showTip(event, '472', 472)">
+            toList arg1
+          </code>
+          <div class="tip" id="472">
+            <strong>Signature:</strong>LazyList&lt;&#39;T&gt; -&gt; &#39;T list<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(n). Build a non-lazy list from the given collection. This function will eagerly evaluate all of the 
+ list (and thus may not terminate).</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L260-260" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '473', 473)" onmouseover="showTip(event, '473', 473)">
+            toSeq arg1
+          </code>
+          <div class="tip" id="473">
+            <strong>Signature:</strong>LazyList&lt;&#39;T&gt; -&gt; seq&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(n). Return a view of the collection as an enumerable object</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L292-292" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '474', 474)" onmouseover="showTip(event, '474', 474)">
+            tryFind predicate source
+          </code>
+          <div class="tip" id="474">
+            <strong>Signature:</strong>predicate:(&#39;T -&gt; bool) -&gt; source:LazyList&lt;&#39;T&gt; -&gt; &#39;T option<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(n), worst case. Apply the given function to successive elements of the list, returning the first
+ result where function returns <c>Some(x)</c> for some x. If the function never returns
+ true, 'None' is returned.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L179-179" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '475', 475)" onmouseover="showTip(event, '475', 475)">
+            tryHead arg1
+          </code>
+          <div class="tip" id="475">
+            <strong>Signature:</strong>LazyList&lt;&#39;T&gt; -&gt; &#39;T option<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Return option the first element of the list.  Forces the evaluation of
+ the first cell of the list if it is not already evaluated.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L199-199" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '476', 476)" onmouseover="showTip(event, '476', 476)">
+            trySkip count source
+          </code>
+          <div class="tip" id="476">
+            <strong>Signature:</strong>count:int -&gt; source:LazyList&lt;&#39;T&gt; -&gt; LazyList&lt;&#39;T&gt; option<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(n), where n is count. Return option the list which skips the first 'n' elements of 
+ the input list.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L243-243" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '477', 477)" onmouseover="showTip(event, '477', 477)">
+            tryTail arg1
+          </code>
+          <div class="tip" id="477">
+            <strong>Signature:</strong>LazyList&lt;&#39;T&gt; -&gt; LazyList&lt;&#39;T&gt; option<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Return option the list corresponding to the remaining items in the sequence.<br />
+ Forces the evaluation of the first cell of the list if it is not already evaluated.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L203-203" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '478', 478)" onmouseover="showTip(event, '478', 478)">
+            tryTake count source
+          </code>
+          <div class="tip" id="478">
+            <strong>Signature:</strong>count:int -&gt; source:LazyList&lt;&#39;T&gt; -&gt; LazyList&lt;&#39;T&gt; option<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(n), where n is count. Return the list which on consumption will consist of at most 'n' elements of 
+ the input list.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L216-216" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '479', 479)" onmouseover="showTip(event, '479', 479)">
+            tryUncons arg1
+          </code>
+          <div class="tip" id="479">
+            <strong>Signature:</strong>LazyList&lt;&#39;T&gt; -&gt; (&#39;T * LazyList&lt;&#39;T&gt;) option<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Returns option tuple of head element and tail of the list.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L131-131" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '480', 480)" onmouseover="showTip(event, '480', 480)">
+            uncons arg1
+          </code>
+          <div class="tip" id="480">
+            <strong>Signature:</strong>LazyList&lt;&#39;T&gt; -&gt; &#39;T * LazyList&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Returns tuple of head element and tail of the list.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L129-129" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '481', 481)" onmouseover="showTip(event, '481', 481)">
+            unfold arg1 arg2
+          </code>
+          <div class="tip" id="481">
+            <strong>Signature:</strong>(&#39;State -&gt; (&#39;T * &#39;State) option) -&gt; &#39;State -&gt; LazyList&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'State, 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Return a list that contains the elements returned by the given computation.
+ The given computation is not executed until the first element on the list is
+ consumed.  The given argument is passed to the computation.  Subsequent elements
+ in the list are generated by again applying the residual 'b to the computation.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L133-133" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '482', 482)" onmouseover="showTip(event, '482', 482)">
+            zip arg1 arg2
+          </code>
+          <div class="tip" id="482">
+            <strong>Signature:</strong>LazyList&lt;&#39;T1&gt; -&gt; LazyList&lt;&#39;T2&gt; -&gt; LazyList&lt;&#39;T1 * &#39;T2&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Return the list which contains on demand the pair of elements of the first and second list</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L161-161" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Active patterns</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Active pattern</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '557', 557)" onmouseover="showTip(event, '557', 557)">
+            ( |Cons|Nil| ) arg1
+          </code>
+          <div class="tip" id="557">
+            <strong>Signature:</strong>LazyList&lt;&#39;T&gt; -&gt; Choice&lt;(&#39;T * LazyList&lt;&#39;T&gt;),unit&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L306-306" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <img src="/FSharpx/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharpx</li>
+            <li><a href="http://fsprojects.github.io/fsharpx/index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.com/packages/FSharpx">Get Library via NuGet</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx">Source Code on GitHub</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx/blob/master/LICENSE.txt">License</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="http://fsprojects.github.io/fsharpx/tutorial.html">Sample tutorial</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="http://fsprojects.github.io/fsharpx/reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="http://github.com/fsprojects/FSharpx"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

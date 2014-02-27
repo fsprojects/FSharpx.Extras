@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Monoid - FSharpx</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Steffen Forkmann">
+
+    <script src="http://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="http://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="http://fsprojects.github.io/fsharpx/content/style.css" />
+    <script type="text/javascript" src="http://fsprojects.github.io/fsharpx/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="http://github.com/fsprojects/FSharpx">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="http://fsprojects.github.io/fsharpx/index.html">FSharpx</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Monoid</h1>
+<div class="xmldoc">
+</div>
+
+<!-- Render nested types and modules, if there are any -->
+
+  <h3>Functions and values</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Function or value</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '114', 114)" onmouseover="showTip(event, '114', 114)">
+            all 
+          </code>
+          <div class="tip" id="114">
+            <strong>Signature:</strong>Monoid&lt;bool&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Monoid.fs#L98-98" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '115', 115)" onmouseover="showTip(event, '115', 115)">
+            any 
+          </code>
+          <div class="tip" id="115">
+            <strong>Signature:</strong>Monoid&lt;bool&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Monoid.fs#L103-103" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '116', 116)" onmouseover="showTip(event, '116', 116)">
+            dual m
+          </code>
+          <div class="tip" id="116">
+            <strong>Signature:</strong>m:Monoid&lt;&#39;?22291&gt; -&gt; Monoid&lt;&#39;?22291&gt;<br />
+                          <strong>Type parameters:</strong> '?22291          </div>
+        </td>
+        <td class="xmldoc">
+        <p>The dual of a monoid, obtained by swapping the arguments of 'Combine'.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Monoid.fs#L49-49" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '117', 117)" onmouseover="showTip(event, '117', 117)">
+            endo 
+          </code>
+          <div class="tip" id="117">
+            <strong>Signature:</strong>Monoid&lt;(&#39;T -&gt; &#39;T)&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Monoid.fs#L117-117" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '118', 118)" onmouseover="showTip(event, '118', 118)">
+            maxInt 
+          </code>
+          <div class="tip" id="118">
+            <strong>Signature:</strong>Monoid&lt;int&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Monoid.fs#L88-88" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '119', 119)" onmouseover="showTip(event, '119', 119)">
+            minInt 
+          </code>
+          <div class="tip" id="119">
+            <strong>Signature:</strong>Monoid&lt;int&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Monoid.fs#L83-83" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '120', 120)" onmouseover="showTip(event, '120', 120)">
+            product arg1
+          </code>
+          <div class="tip" id="120">
+            <strong>Signature:</strong>unit -&gt; Monoid&lt;^?22302&gt;<br />
+                          <strong>Type parameters:</strong> ^?22302          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Monoid (a,1,*)</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Monoid.fs#L72-72" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '121', 121)" onmouseover="showTip(event, '121', 121)">
+            productInt 
+          </code>
+          <div class="tip" id="121">
+            <strong>Signature:</strong>Monoid&lt;int&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Monoid (int,1,*)</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Monoid.fs#L81-81" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '122', 122)" onmouseover="showTip(event, '122', 122)">
+            string 
+          </code>
+          <div class="tip" id="122">
+            <strong>Signature:</strong>Monoid&lt;string&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Monoid.fs#L93-93" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '123', 123)" onmouseover="showTip(event, '123', 123)">
+            sum arg1
+          </code>
+          <div class="tip" id="123">
+            <strong>Signature:</strong>unit -&gt; Monoid&lt;^?22300&gt;<br />
+                          <strong>Type parameters:</strong> ^?22300          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Monoid (a,0,+)</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Monoid.fs#L66-66" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '124', 124)" onmouseover="showTip(event, '124', 124)">
+            sumInt 
+          </code>
+          <div class="tip" id="124">
+            <strong>Signature:</strong>Monoid&lt;int&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Monoid (int,0,+)</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Monoid.fs#L78-78" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '125', 125)" onmouseover="showTip(event, '125', 125)">
+            tuple2 a b
+          </code>
+          <div class="tip" id="125">
+            <strong>Signature:</strong>a:Monoid&lt;&#39;?22293&gt; -&gt; b:Monoid&lt;&#39;?22294&gt; -&gt; Monoid&lt;&#39;?22293 * &#39;?22294&gt;<br />
+                          <strong>Type parameters:</strong> '?22293, '?22294          </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Monoid.fs#L54-54" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '126', 126)" onmouseover="showTip(event, '126', 126)">
+            tuple3 a b c
+          </code>
+          <div class="tip" id="126">
+            <strong>Signature:</strong>a:Monoid&lt;&#39;T&gt; -&gt; b:Monoid&lt;&#39;b&gt; -&gt; c:Monoid&lt;&#39;c&gt; -&gt; Monoid&lt;&#39;T * &#39;b * &#39;c&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'b, 'c          </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Monoid.fs#L59-59" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '127', 127)" onmouseover="showTip(event, '127', 127)">
+            unit 
+          </code>
+          <div class="tip" id="127">
+            <strong>Signature:</strong>Monoid&lt;unit&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Monoid.fs#L108-108" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <img src="/FSharpx/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharpx</li>
+            <li><a href="http://fsprojects.github.io/fsharpx/index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.com/packages/FSharpx">Get Library via NuGet</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx">Source Code on GitHub</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx/blob/master/LICENSE.txt">License</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="http://fsprojects.github.io/fsharpx/tutorial.html">Sample tutorial</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="http://fsprojects.github.io/fsharpx/reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="http://github.com/fsprojects/FSharpx"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

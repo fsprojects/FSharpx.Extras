@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>LazyList<'T> - FSharpx</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Steffen Forkmann">
+
+    <script src="http://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="http://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="http://fsprojects.github.io/fsharpx/content/style.css" />
+    <script type="text/javascript" src="http://fsprojects.github.io/fsharpx/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="http://github.com/fsprojects/FSharpx">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="http://fsprojects.github.io/fsharpx/index.html">FSharpx</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>LazyList<'T></h1>
+<div class="xmldoc">
+<p>LazyLists are possibly-infinite, cached sequences.  See also IEnumerable/Seq for
+uncached sequences. LazyLists normally involve delayed computations without 
+side-effects.  The results of these computations are cached and evaluations will be 
+performed only once for each element of the lazy list.  In contrast, for sequences 
+(IEnumerable) recomputation happens each time an enumerator is created and the sequence 
+traversed.</p>
+
+<p>LazyLists can represent cached, potentially-infinite computations.  Because they are 
+cached they may cause memory leaks if some active code or data structure maintains a 
+live reference to the head of an infinite or very large lazy list while iterating it, 
+or if a reference is maintained after the list is no longer required.</p>
+
+<p>Lazy lists may be matched using the LazyList.Cons and LazyList.Nil active patterns. 
+These may force the computation of elements of the list.</p>
+</div>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '969', 969)" onmouseover="showTip(event, '969', 969)">
+            Head(arg1)
+          </code>
+          <div class="tip" id="969">
+            <strong>Signature:</strong>unit -&gt; &#39;T<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Return the first element of the list.  Forces the evaluation of
+ the first cell of the list if it is not already evaluated.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L46-46" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '970', 970)" onmouseover="showTip(event, '970', 970)">
+            IsEmpty(arg1)
+          </code>
+          <div class="tip" id="970">
+            <strong>Signature:</strong>unit -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Test if a list is empty.  Forces the evaluation of
+ the first element of the stream if it is not already evaluated.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L41-41" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '971', 971)" onmouseover="showTip(event, '971', 971)">
+            Length(arg1)
+          </code>
+          <div class="tip" id="971">
+            <strong>Signature:</strong>unit -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(n). Return the length of the list</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L56-56" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '972', 972)" onmouseover="showTip(event, '972', 972)">
+            Tail(arg1)
+          </code>
+          <div class="tip" id="972">
+            <strong>Signature:</strong>unit -&gt; LazyList&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Return the list corresponding to the remaining items in the sequence.<br />
+ Forces the evaluation of the first cell of the list if it is not already evaluated.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L64-64" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '973', 973)" onmouseover="showTip(event, '973', 973)">
+            TryHead(arg1)
+          </code>
+          <div class="tip" id="973">
+            <strong>Signature:</strong>unit -&gt; &#39;T option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Return option the first element of the list.  Forces the evaluation of
+ the first cell of the list if it is not already evaluated.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L51-51" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '974', 974)" onmouseover="showTip(event, '974', 974)">
+            TryTail(arg1)
+          </code>
+          <div class="tip" id="974">
+            <strong>Signature:</strong>unit -&gt; LazyList&lt;&#39;T&gt; option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Return option the list corresponding to the remaining items in the sequence.<br />
+ Forces the evaluation of the first cell of the list if it is not already evaluated.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L69-69" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '975', 975)" onmouseover="showTip(event, '975', 975)">
+            TryUncons(arg1)
+          </code>
+          <div class="tip" id="975">
+            <strong>Signature:</strong>unit -&gt; (&#39;T * LazyList&lt;&#39;T&gt;) option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Returns option tuple of head element and tail of the list.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L79-79" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '976', 976)" onmouseover="showTip(event, '976', 976)">
+            Uncons(arg1)
+          </code>
+          <div class="tip" id="976">
+            <strong>Signature:</strong>unit -&gt; &#39;T * LazyList&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Returns tuple of head element and tail of the list.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/LazyList.fs#L74-74" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <img src="/FSharpx/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharpx</li>
+            <li><a href="http://fsprojects.github.io/fsharpx/index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.com/packages/FSharpx">Get Library via NuGet</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx">Source Code on GitHub</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx/blob/master/LICENSE.txt">License</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="http://fsprojects.github.io/fsharpx/tutorial.html">Sample tutorial</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="http://fsprojects.github.io/fsharpx/reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="http://github.com/fsprojects/FSharpx"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

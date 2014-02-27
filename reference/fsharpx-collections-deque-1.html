@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Deque<'T> - FSharpx</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Steffen Forkmann">
+
+    <script src="http://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="http://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="http://fsprojects.github.io/fsharpx/content/style.css" />
+    <script type="text/javascript" src="http://fsprojects.github.io/fsharpx/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="http://github.com/fsprojects/FSharpx">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="http://fsprojects.github.io/fsharpx/index.html">FSharpx</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Deque<'T></h1>
+<div class="xmldoc">
+<p>Double-ended queue is an ordered linear linear structure implementing the signature of List
+(head, tail, cons) as well as the mirror-image Vector signature (last, initial, conj). "head" inspects 
+the first or left-most element in the structure, while "last" inspects the last or 
+right-most element. "rev" (reverse) has time complexity O(1). Ordering is by insertion history.</p>
+</div>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '952', 952)" onmouseover="showTip(event, '952', 952)">
+            Conj(arg1)
+          </code>
+          <div class="tip" id="952">
+            <strong>Signature:</strong>&#39;T -&gt; Deque&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Returns a new deque with the element added to the end.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Deque2.fs#L32-32" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '953', 953)" onmouseover="showTip(event, '953', 953)">
+            Cons(arg1)
+          </code>
+          <div class="tip" id="953">
+            <strong>Signature:</strong>&#39;T -&gt; Deque&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Returns a new deque with the element added to the beginning.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Deque2.fs#L34-34" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '954', 954)" onmouseover="showTip(event, '954', 954)">
+            Head(arg1)
+          </code>
+          <div class="tip" id="954">
+            <strong>Signature:</strong>unit -&gt; &#39;T<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1) amortized, O(n), worst case. Returns the first element.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Deque2.fs#L36-36" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '955', 955)" onmouseover="showTip(event, '955', 955)">
+            Initial(arg1)
+          </code>
+          <div class="tip" id="955">
+            <strong>Signature:</strong>unit -&gt; Deque&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1) amortized, O(n), worst case. Returns a new deque of the elements before the last element.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Deque2.fs#L50-50" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '956', 956)" onmouseover="showTip(event, '956', 956)">
+            IsEmpty(arg1)
+          </code>
+          <div class="tip" id="956">
+            <strong>Signature:</strong>unit -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Returns true if the deque has no elements.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Deque2.fs#L78-78" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '957', 957)" onmouseover="showTip(event, '957', 957)">
+            Last(arg1)
+          </code>
+          <div class="tip" id="957">
+            <strong>Signature:</strong>unit -&gt; &#39;T<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1) amortized, O(n), worst case. Returns the last element.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Deque2.fs#L82-82" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '958', 958)" onmouseover="showTip(event, '958', 958)">
+            Length(arg1)
+          </code>
+          <div class="tip" id="958">
+            <strong>Signature:</strong>unit -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Returns the count of elememts.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Deque2.fs#L94-94" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '959', 959)" onmouseover="showTip(event, '959', 959)">
+            Rev(arg1)
+          </code>
+          <div class="tip" id="959">
+            <strong>Signature:</strong>unit -&gt; Deque&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1). Returns deque reversed.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Deque2.fs#L96-96" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '960', 960)" onmouseover="showTip(event, '960', 960)">
+            Tail(arg1)
+          </code>
+          <div class="tip" id="960">
+            <strong>Signature:</strong>unit -&gt; Deque&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1) amortized, O(n), worst case. Returns a new deque of the elements trailing the first element.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Deque2.fs#L99-99" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '961', 961)" onmouseover="showTip(event, '961', 961)">
+            TryHead(arg1)
+          </code>
+          <div class="tip" id="961">
+            <strong>Signature:</strong>unit -&gt; &#39;T option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1) amortized, O(n), worst case. Returns option first element.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Deque2.fs#L42-42" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '962', 962)" onmouseover="showTip(event, '962', 962)">
+            TryInitial(arg1)
+          </code>
+          <div class="tip" id="962">
+            <strong>Signature:</strong>unit -&gt; Deque&lt;&#39;T&gt; option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1) amortized, O(n), worst case. Returns a new deque of the elements before the last element.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Deque2.fs#L64-64" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '963', 963)" onmouseover="showTip(event, '963', 963)">
+            TryLast(arg1)
+          </code>
+          <div class="tip" id="963">
+            <strong>Signature:</strong>unit -&gt; &#39;T option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1) amortized, O(n), worst case. Returns option last element.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Deque2.fs#L88-88" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '964', 964)" onmouseover="showTip(event, '964', 964)">
+            TryTail(arg1)
+          </code>
+          <div class="tip" id="964">
+            <strong>Signature:</strong>unit -&gt; Deque&lt;&#39;T&gt; option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1) amortized, O(n), worst case. Returns option deque of the elements trailing the first element.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Deque2.fs#L113-113" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '965', 965)" onmouseover="showTip(event, '965', 965)">
+            TryUnconj(arg1)
+          </code>
+          <div class="tip" id="965">
+            <strong>Signature:</strong>unit -&gt; (Deque&lt;&#39;T&gt; * &#39;T) option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1) amortized, O(n), worst case. Returns option init and the last element.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Deque2.fs#L142-142" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '966', 966)" onmouseover="showTip(event, '966', 966)">
+            TryUncons(arg1)
+          </code>
+          <div class="tip" id="966">
+            <strong>Signature:</strong>unit -&gt; (&#39;T * Deque&lt;&#39;T&gt;) option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1) amortized, O(n), worst case. Returns option first element and tail.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Deque2.fs#L132-132" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '967', 967)" onmouseover="showTip(event, '967', 967)">
+            Unconj(arg1)
+          </code>
+          <div class="tip" id="967">
+            <strong>Signature:</strong>unit -&gt; Deque&lt;&#39;T&gt; * &#39;T<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1) amortized, O(n), worst case. Returns init and the last element.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Deque2.fs#L137-137" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '968', 968)" onmouseover="showTip(event, '968', 968)">
+            Uncons(arg1)
+          </code>
+          <div class="tip" id="968">
+            <strong>Signature:</strong>unit -&gt; &#39;T * Deque&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>O(1) amortized, O(n), worst case. Returns the first element and tail.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Deque2.fs#L127-127" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <img src="/FSharpx/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharpx</li>
+            <li><a href="http://fsprojects.github.io/fsharpx/index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.com/packages/FSharpx">Get Library via NuGet</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx">Source Code on GitHub</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx/blob/master/LICENSE.txt">License</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="http://fsprojects.github.io/fsharpx/tutorial.html">Sample tutorial</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="http://fsprojects.github.io/fsharpx/reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="http://github.com/fsprojects/FSharpx"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ResizeArray - FSharpx</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Steffen Forkmann">
+
+    <script src="http://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="http://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="http://fsprojects.github.io/fsharpx/content/style.css" />
+    <script type="text/javascript" src="http://fsprojects.github.io/fsharpx/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="http://github.com/fsprojects/FSharpx">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="http://fsprojects.github.io/fsharpx/index.html">FSharpx</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>ResizeArray</h1>
+<div class="xmldoc">
+<p>Generic operations on the type System.Collections.Generic.List, which is called ResizeArray in the F# libraries.</p>
+</div>
+
+<!-- Render nested types and modules, if there are any -->
+
+  <h3>Functions and values</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Function or value</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '589', 589)" onmouseover="showTip(event, '589', 589)">
+            append arg1 arg2
+          </code>
+          <div class="tip" id="589">
+            <strong>Signature:</strong>ResizeArray&lt;&#39;T&gt; -&gt; ResizeArray&lt;&#39;T&gt; -&gt; ResizeArray&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Build a new array that contains the elements of the first array followed by the elements of the second array</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L37-37" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '601', 601)" onmouseover="showTip(event, '601', 601)">
+            blit arg1 arg2 arg3 arg4 arg5
+          </code>
+          <div class="tip" id="601">
+            <strong>Signature:</strong>ResizeArray&lt;&#39;T&gt; -&gt; int -&gt; ResizeArray&lt;&#39;T&gt; -&gt; int -&gt; int -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Read a range of elements from the first array and write them into the second.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L27-27" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '602', 602)" onmouseover="showTip(event, '602', 602)">
+            choose arg1 arg2
+          </code>
+          <div class="tip" id="602">
+            <strong>Signature:</strong>(&#39;T -&gt; &#39;U option) -&gt; ResizeArray&lt;&#39;T&gt; -&gt; ResizeArray&lt;&#39;U&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'U          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Apply the given function to each element of the array. Return
+the array comprised of the results "x" for each element where
+the function returns Some(x)</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L145-145" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '603', 603)" onmouseover="showTip(event, '603', 603)">
+            concat arg1
+          </code>
+          <div class="tip" id="603">
+            <strong>Signature:</strong>ResizeArray&lt;&#39;T&gt; list -&gt; ResizeArray&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Build a new array that contains the elements of each of the given list of arrays</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L36-36" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '604', 604)" onmouseover="showTip(event, '604', 604)">
+            copy arg1
+          </code>
+          <div class="tip" id="604">
+            <strong>Signature:</strong>ResizeArray&lt;&#39;T&gt; -&gt; ResizeArray&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Build a new array that contains the elements of the given array</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L52-52" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '605', 605)" onmouseover="showTip(event, '605', 605)">
+            create arg1 arg2
+          </code>
+          <div class="tip" id="605">
+            <strong>Signature:</strong>int -&gt; &#39;T -&gt; ResizeArray&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Create an array whose elements are all initially the given value.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L17-17" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '606', 606)" onmouseover="showTip(event, '606', 606)">
+            exists arg1 arg2
+          </code>
+          <div class="tip" id="606">
+            <strong>Signature:</strong>(&#39;T -&gt; bool) -&gt; ResizeArray&lt;&#39;T&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Test if any element of the array satisfies the given predicate.
+If the input function is <c>f</c> and the elements are <c>i0...iN</c> 
+then computes <c>p i0 or ... or p iN</c>.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L95-95" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '607', 607)" onmouseover="showTip(event, '607', 607)">
+            exists2 arg1 arg2 arg3
+          </code>
+          <div class="tip" id="607">
+            <strong>Signature:</strong>(&#39;T1 -&gt; &#39;T2 -&gt; bool) -&gt; ResizeArray&lt;&#39;T1&gt; -&gt; ResizeArray&lt;&#39;T2&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Test elements of the two arrays pairwise to see if any pair of element satisfies the given predicate.
+Raise ArgumentException if the arrays have different lengths.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L197-197" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '608', 608)" onmouseover="showTip(event, '608', 608)">
+            fill arg1 arg2 arg3 arg4
+          </code>
+          <div class="tip" id="608">
+            <strong>Signature:</strong>ResizeArray&lt;&#39;T&gt; -&gt; int -&gt; int -&gt; &#39;T -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Fill a range of the collection with the given element</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L45-45" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '609', 609)" onmouseover="showTip(event, '609', 609)">
+            filter arg1 arg2
+          </code>
+          <div class="tip" id="609">
+            <strong>Signature:</strong>(&#39;T -&gt; bool) -&gt; ResizeArray&lt;&#39;T&gt; -&gt; ResizeArray&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Return a new collection containing only the elements of the collection
+for which the given predicate returns <c>true</c></p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L153-153" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '610', 610)" onmouseover="showTip(event, '610', 610)">
+            find arg1 arg2
+          </code>
+          <div class="tip" id="610">
+            <strong>Signature:</strong>(&#39;T -&gt; bool) -&gt; ResizeArray&lt;&#39;T&gt; -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Return the first element for which the given function returns <c>true</c>.
+Raise <c>KeyNotFoundException</c> if no such element exists.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L107-107" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '611', 611)" onmouseover="showTip(event, '611', 611)">
+            findIndex arg1 arg2
+          </code>
+          <div class="tip" id="611">
+            <strong>Signature:</strong>(&#39;T -&gt; bool) -&gt; ResizeArray&lt;&#39;T&gt; -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Return the index of the first element in the array
+that satisfies the given predicate. Raise <c>KeyNotFoundException</c> if 
+none of the elements satisfy the predicate.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L203-203" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '612', 612)" onmouseover="showTip(event, '612', 612)">
+            findIndexi arg1 arg2
+          </code>
+          <div class="tip" id="612">
+            <strong>Signature:</strong>(int -&gt; &#39;T -&gt; bool) -&gt; ResizeArray&lt;&#39;T&gt; -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Return the index of the first element in the array
+that satisfies the given predicate. Raise <c>KeyNotFoundException</c> if 
+none of the elements satisfy the predicate.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L207-207" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '613', 613)" onmouseover="showTip(event, '613', 613)">
+            fold arg1 arg2 arg3
+          </code>
+          <div class="tip" id="613">
+            <strong>Signature:</strong>(&#39;T -&gt; &#39;State -&gt; &#39;T) -&gt; &#39;T -&gt; ResizeArray&lt;&#39;State&gt; -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T, 'State          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Apply a function to each element of the collection, threading an accumulator argument
+through the computation. If the input function is <c>f</c> and the elements are <c>i0...iN</c> 
+then computes <c>f (... (f s i0)...) iN</c></p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L182-182" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '614', 614)" onmouseover="showTip(event, '614', 614)">
+            fold2 arg1 arg2 arg3 arg4
+          </code>
+          <div class="tip" id="614">
+            <strong>Signature:</strong>(&#39;State -&gt; &#39;T1 -&gt; &#39;T2 -&gt; &#39;State) -&gt; &#39;State -&gt; ResizeArray&lt;&#39;T1&gt; -&gt; ResizeArray&lt;&#39;T2&gt; -&gt; &#39;State<br />
+                          <strong>Type parameters:</strong> 'State, 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Apply a function to pairs of elements drawn from the two collections, 
+left-to-right, threading an accumulator argument
+through the computation.  The two input
+arrays must have the same lengths, otherwise an <c>ArgumentException</c> is
+raised.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L233-233" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '615', 615)" onmouseover="showTip(event, '615', 615)">
+            foldBack arg1 arg2 arg3
+          </code>
+          <div class="tip" id="615">
+            <strong>Signature:</strong>(&#39;T -&gt; &#39;State -&gt; &#39;State) -&gt; ResizeArray&lt;&#39;T&gt; -&gt; &#39;State -&gt; &#39;State<br />
+                          <strong>Type parameters:</strong> 'T, 'State          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Apply a function to each element of the array, threading an accumulator argument
+through the computation. If the input function is <c>f</c> and the elements are <c>i0...iN</c> then 
+computes <c>f i0 (...(f iN s))</c>.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L175-175" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '616', 616)" onmouseover="showTip(event, '616', 616)">
+            foldBack2 arg1 arg2 arg3 arg4
+          </code>
+          <div class="tip" id="616">
+            <strong>Signature:</strong>(&#39;T1 -&gt; &#39;T2 -&gt; &#39;State -&gt; &#39;State) -&gt; ResizeArray&lt;&#39;T1&gt; -&gt; ResizeArray&lt;&#39;T2&gt; -&gt; &#39;State -&gt; &#39;State<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2, 'State          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Apply a function to pairs of elements drawn from the two collections, right-to-left, 
+threading an accumulator argument through the computation.  The two input
+arrays must have the same lengths, otherwise an <c>ArgumentException</c> is
+raised.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L242-242" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '617', 617)" onmouseover="showTip(event, '617', 617)">
+            forall arg1 arg2
+          </code>
+          <div class="tip" id="617">
+            <strong>Signature:</strong>(&#39;T -&gt; bool) -&gt; ResizeArray&lt;&#39;T&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Test if all elements of the array satisfy the given predicate.
+If the input function is <c>f</c> and the elements are <c>i0...iN</c> and "j0...jN"
+then computes <c>p i0 &amp;&amp; ... &amp;&amp; p iN</c>.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L100-100" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '618', 618)" onmouseover="showTip(event, '618', 618)">
+            forall2 arg1 arg2 arg3
+          </code>
+          <div class="tip" id="618">
+            <strong>Signature:</strong>(&#39;T1 -&gt; &#39;T2 -&gt; bool) -&gt; ResizeArray&lt;&#39;T1&gt; -&gt; ResizeArray&lt;&#39;T2&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Test elements of the two arrays pairwise to see if all pairs of elements satisfy the given predicate.
+Raise ArgumentException if the arrays have different lengths.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L251-251" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '619', 619)" onmouseover="showTip(event, '619', 619)">
+            get arg1 arg2
+          </code>
+          <div class="tip" id="619">
+            <strong>Signature:</strong>ResizeArray&lt;&#39;T&gt; -&gt; int -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Fetch an element from the collection.  You can also use the syntax <c>arr.[idx]</c>.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L15-15" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '620', 620)" onmouseover="showTip(event, '620', 620)">
+            init arg1 arg2
+          </code>
+          <div class="tip" id="620">
+            <strong>Signature:</strong>int -&gt; (int -&gt; &#39;T) -&gt; ResizeArray&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Create an array by calling the given generator on each index.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L22-22" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '621', 621)" onmouseover="showTip(event, '621', 621)">
+            isEmpty arg1
+          </code>
+          <div class="tip" id="621">
+            <strong>Signature:</strong>ResizeArray&lt;&#39;T&gt; -&gt; bool<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Return true if the given array is empty, otherwise false</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L257-257" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '622', 622)" onmouseover="showTip(event, '622', 622)">
+            iter arg1 arg2
+          </code>
+          <div class="tip" id="622">
+            <strong>Signature:</strong>(&#39;T -&gt; unit) -&gt; ResizeArray&lt;&#39;T&gt; -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Apply the given function to each element of the array.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L71-71" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '623', 623)" onmouseover="showTip(event, '623', 623)">
+            iter2 arg1 arg2 arg3
+          </code>
+          <div class="tip" id="623">
+            <strong>Signature:</strong>(&#39;T1 -&gt; &#39;T2 -&gt; unit) -&gt; ResizeArray&lt;&#39;T1&gt; -&gt; ResizeArray&lt;&#39;T2&gt; -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Apply the given function to two arrays simultaneously. The
+two arrays must have the same lengths, otherwise an Invalid_argument exception is
+raised.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L129-129" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '624', 624)" onmouseover="showTip(event, '624', 624)">
+            iteri arg1 arg2
+          </code>
+          <div class="tip" id="624">
+            <strong>Signature:</strong>(int -&gt; &#39;T -&gt; unit) -&gt; ResizeArray&lt;&#39;T&gt; -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Apply the given function to each element of the array.  The integer passed to the
+function indicates the index of element.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L90-90" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '625', 625)" onmouseover="showTip(event, '625', 625)">
+            iteri2 arg1 arg2 arg3
+          </code>
+          <div class="tip" id="625">
+            <strong>Signature:</strong>(int -&gt; &#39;T1 -&gt; &#39;T2 -&gt; unit) -&gt; ResizeArray&lt;&#39;T1&gt; -&gt; ResizeArray&lt;&#39;T2&gt; -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Apply the given function to pair of elements drawn from matching indices in two arrays,
+also passing the index of the elements. The two arrays must have the same lengths, 
+otherwise an <c>ArgumentException</c> is raised.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L259-259" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '626', 626)" onmouseover="showTip(event, '626', 626)">
+            length arg1
+          </code>
+          <div class="tip" id="626">
+            <strong>Signature:</strong>ResizeArray&lt;&#39;T&gt; -&gt; int<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Return the length of the collection.  You can also use property <c>arr.Length</c>.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L14-14" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '627', 627)" onmouseover="showTip(event, '627', 627)">
+            map arg1 arg2
+          </code>
+          <div class="tip" id="627">
+            <strong>Signature:</strong>(&#39;T -&gt; &#39;U) -&gt; ResizeArray&lt;&#39;T&gt; -&gt; ResizeArray&lt;&#39;U&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'U          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Build a new array whose elements are the results of applying the given function
+to each of the elements of the array.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L75-75" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '628', 628)" onmouseover="showTip(event, '628', 628)">
+            map2 arg1 arg2 arg3
+          </code>
+          <div class="tip" id="628">
+            <strong>Signature:</strong>(&#39;T1 -&gt; &#39;T2 -&gt; &#39;U) -&gt; ResizeArray&lt;&#39;T1&gt; -&gt; ResizeArray&lt;&#39;T2&gt; -&gt; ResizeArray&lt;&#39;U&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2, 'U          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Build a new collection whose elements are the results of applying the given function
+to the corresponding elements of the two collections pairwise.  The two input
+arrays must have the same lengths.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L136-136" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '629', 629)" onmouseover="showTip(event, '629', 629)">
+            mapi arg1 arg2
+          </code>
+          <div class="tip" id="629">
+            <strong>Signature:</strong>(int -&gt; &#39;T -&gt; &#39;U) -&gt; ResizeArray&lt;&#39;T&gt; -&gt; ResizeArray&lt;&#39;U&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'U          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Build a new array whose elements are the results of applying the given function
+to each of the elements of the array. The integer index passed to the
+function indicates the index of element being transformed.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L82-82" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '630', 630)" onmouseover="showTip(event, '630', 630)">
+            mapi2 arg1 arg2 arg3
+          </code>
+          <div class="tip" id="630">
+            <strong>Signature:</strong>(int -&gt; &#39;T1 -&gt; &#39;T2 -&gt; &#39;U) -&gt; ResizeArray&lt;&#39;T1&gt; -&gt; ResizeArray&lt;&#39;T2&gt; -&gt; ResizeArray&lt;&#39;U&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2, 'U          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Build a new collection whose elements are the results of applying the given function
+to the corresponding elements of the two collections pairwise.  The two input
+arrays must have the same lengths, otherwise an <c>ArgumentException</c> is
+raised.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L266-266" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '631', 631)" onmouseover="showTip(event, '631', 631)">
+            ofArray arg1
+          </code>
+          <div class="tip" id="631">
+            <strong>Signature:</strong>&#39;T [] -&gt; ResizeArray&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Build a ResizeArray from the given elements</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L190-190" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '632', 632)" onmouseover="showTip(event, '632', 632)">
+            ofList arg1
+          </code>
+          <div class="tip" id="632">
+            <strong>Signature:</strong>&#39;T list -&gt; ResizeArray&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Build an array from the given list</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L60-60" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '633', 633)" onmouseover="showTip(event, '633', 633)">
+            ofSeq arg1
+          </code>
+          <div class="tip" id="633">
+            <strong>Signature:</strong>seq&lt;&#39;T&gt; -&gt; ResizeArray&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Build and array from the given seq</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L69-69" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '634', 634)" onmouseover="showTip(event, '634', 634)">
+            partition arg1 arg2
+          </code>
+          <div class="tip" id="634">
+            <strong>Signature:</strong>(&#39;T -&gt; bool) -&gt; ResizeArray&lt;&#39;T&gt; -&gt; ResizeArray&lt;&#39;T&gt; * ResizeArray&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Split the collection into two collections, containing the 
+elements for which the given predicate returns <c>true</c> and <c>false</c>
+respectively</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L160-160" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '635', 635)" onmouseover="showTip(event, '635', 635)">
+            reduce arg1 arg2
+          </code>
+          <div class="tip" id="635">
+            <strong>Signature:</strong>(&#39;T -&gt; &#39;T -&gt; &#39;T) -&gt; ResizeArray&lt;&#39;T&gt; -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Apply a function to each element of the array, threading an accumulator argument
+through the computation. If the input function is <c>f</c> and the elements are <c>i0...iN</c> 
+then computes <c>f (... (f i0 i1)...) iN</c>. Raises ArgumentException if the array has size zero.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L223-223" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '636', 636)" onmouseover="showTip(event, '636', 636)">
+            reduceBack arg1 arg2
+          </code>
+          <div class="tip" id="636">
+            <strong>Signature:</strong>(&#39;T -&gt; &#39;T -&gt; &#39;T) -&gt; ResizeArray&lt;&#39;T&gt; -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Apply a function to each element of the array, threading an accumulator argument
+through the computation. If the input function is <c>f</c> and the elements are <c>i0...iN</c> then 
+computes <c>f i0 (...(f iN-1 iN))</c>. Raises ArgumentException if the array has size zero.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L228-228" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '637', 637)" onmouseover="showTip(event, '637', 637)">
+            rev arg1
+          </code>
+          <div class="tip" id="637">
+            <strong>Signature:</strong>ResizeArray&lt;&#39;T&gt; -&gt; ResizeArray&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Return a new array with the elements in reverse order</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L168-168" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '638', 638)" onmouseover="showTip(event, '638', 638)">
+            scan arg1 arg2 arg3
+          </code>
+          <div class="tip" id="638">
+            <strong>Signature:</strong>(&#39;State -&gt; &#39;T -&gt; &#39;State) -&gt; &#39;State -&gt; ResizeArray&lt;&#39;T&gt; -&gt; ResizeArray&lt;&#39;State&gt;<br />
+                          <strong>Type parameters:</strong> 'State, 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Like <c>fold</c>, but return the intermediary and final results</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L290-290" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '639', 639)" onmouseover="showTip(event, '639', 639)">
+            scanBack arg1 arg2 arg3
+          </code>
+          <div class="tip" id="639">
+            <strong>Signature:</strong>(&#39;T -&gt; &#39;State -&gt; &#39;State) -&gt; ResizeArray&lt;&#39;T&gt; -&gt; &#39;State -&gt; ResizeArray&lt;&#39;State&gt;<br />
+                          <strong>Type parameters:</strong> 'T, 'State          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Like <c>foldBack</c>, but return both the intermediary and final results</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L294-294" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '640', 640)" onmouseover="showTip(event, '640', 640)">
+            set arg1 arg2 arg3
+          </code>
+          <div class="tip" id="640">
+            <strong>Signature:</strong>ResizeArray&lt;&#39;T&gt; -&gt; int -&gt; &#39;T -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Set the value of an element in the collection. You can also use the syntax <c>arr.[idx] <- e</c>.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L16-16" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '641', 641)" onmouseover="showTip(event, '641', 641)">
+            singleton arg1
+          </code>
+          <div class="tip" id="641">
+            <strong>Signature:</strong>&#39;T -&gt; ResizeArray&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Return an array containing the given element</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L298-298" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '642', 642)" onmouseover="showTip(event, '642', 642)">
+            sort arg1 arg2
+          </code>
+          <div class="tip" id="642">
+            <strong>Signature:</strong>(&#39;T -&gt; &#39;T -&gt; int) -&gt; ResizeArray&lt;&#39;T&gt; -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Sort the elements using the given comparison function</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L193-193" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '643', 643)" onmouseover="showTip(event, '643', 643)">
+            sortBy arg1 arg2
+          </code>
+          <div class="tip" id="643">
+            <strong>Signature:</strong>(&#39;T -&gt; &#39;Key) -&gt; ResizeArray&lt;&#39;T&gt; -&gt; unit<br />
+                          <strong>Type parameters:</strong> 'T, 'Key          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Sort the elements using the key extractor and generic comparison on the keys</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L194-194" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '644', 644)" onmouseover="showTip(event, '644', 644)">
+            sub arg1 arg2 arg3
+          </code>
+          <div class="tip" id="644">
+            <strong>Signature:</strong>ResizeArray&lt;&#39;T&gt; -&gt; int -&gt; int -&gt; ResizeArray&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Build a new array that contains the given subrange specified by
+starting index and length.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L39-39" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '645', 645)" onmouseover="showTip(event, '645', 645)">
+            toArray arg1
+          </code>
+          <div class="tip" id="645">
+            <strong>Signature:</strong>ResizeArray&lt;&#39;T&gt; -&gt; &#39;T []<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Return a fixed-length array containing the elements of the input ResizeArray</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L189-189" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '646', 646)" onmouseover="showTip(event, '646', 646)">
+            toList arg1
+          </code>
+          <div class="tip" id="646">
+            <strong>Signature:</strong>ResizeArray&lt;&#39;T&gt; -&gt; &#39;T list<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Build a list from the given array</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L54-54" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '647', 647)" onmouseover="showTip(event, '647', 647)">
+            toSeq arg1
+          </code>
+          <div class="tip" id="647">
+            <strong>Signature:</strong>ResizeArray&lt;&#39;T&gt; -&gt; seq&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Return a view of the array as an enumerable object</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L191-191" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '648', 648)" onmouseover="showTip(event, '648', 648)">
+            tryFind arg1 arg2
+          </code>
+          <div class="tip" id="648">
+            <strong>Signature:</strong>(&#39;T -&gt; bool) -&gt; ResizeArray&lt;&#39;T&gt; -&gt; &#39;T option<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Return the first element for which the given function returns <c>true</c>.
+Return None if no such element exists.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L122-122" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '649', 649)" onmouseover="showTip(event, '649', 649)">
+            tryFindIndex arg1 arg2
+          </code>
+          <div class="tip" id="649">
+            <strong>Signature:</strong>(&#39;T -&gt; bool) -&gt; ResizeArray&lt;&#39;T&gt; -&gt; int option<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Return the index of the first element in the array
+that satisfies the given predicate.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L303-303" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '650', 650)" onmouseover="showTip(event, '650', 650)">
+            tryFindIndexi arg1 arg2
+          </code>
+          <div class="tip" id="650">
+            <strong>Signature:</strong>(int -&gt; &#39;T -&gt; bool) -&gt; ResizeArray&lt;&#39;T&gt; -&gt; int option<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Return the index of the first element in the array
+that satisfies the given predicate.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L307-307" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '651', 651)" onmouseover="showTip(event, '651', 651)">
+            tryPick arg1 arg2
+          </code>
+          <div class="tip" id="651">
+            <strong>Signature:</strong>(&#39;T -&gt; &#39;U option) -&gt; ResizeArray&lt;&#39;T&gt; -&gt; &#39;U option<br />
+                          <strong>Type parameters:</strong> 'T, 'U          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Apply the given function to successive elements, returning the first
+result where function returns "Some(x)" for some x.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L114-114" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '652', 652)" onmouseover="showTip(event, '652', 652)">
+            unzip arg1
+          </code>
+          <div class="tip" id="652">
+            <strong>Signature:</strong>ResizeArray&lt;&#39;T1 * &#39;T2&gt; -&gt; ResizeArray&lt;&#39;T1&gt; * ResizeArray&lt;&#39;T2&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Split an array of pairs into two arrays</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L316-316" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '653', 653)" onmouseover="showTip(event, '653', 653)">
+            zip arg1 arg2
+          </code>
+          <div class="tip" id="653">
+            <strong>Signature:</strong>ResizeArray&lt;&#39;T1&gt; -&gt; ResizeArray&lt;&#39;T2&gt; -&gt; ResizeArray&lt;&#39;T1 * &#39;T2&gt;<br />
+                          <strong>Type parameters:</strong> 'T1, 'T2          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Combine the two arrays into an array of pairs. The two arrays must have equal lengths, otherwise an <c>ArgumentException</c> is
+raised..</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/ResizeArray.fs#L311-311" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <img src="/FSharpx/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharpx</li>
+            <li><a href="http://fsprojects.github.io/fsharpx/index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.com/packages/FSharpx">Get Library via NuGet</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx">Source Code on GitHub</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx/blob/master/LICENSE.txt">License</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="http://fsprojects.github.io/fsharpx/tutorial.html">Sample tutorial</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="http://fsprojects.github.io/fsharpx/reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="http://github.com/fsprojects/FSharpx"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Text - FSharpx</title>
+    <title>Operators - FSharpx</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="Steffen Forkmann">
@@ -35,90 +35,79 @@
 
 
 
-<h1>Text</h1>
+<h1>Operators</h1>
 <div class="xmldoc">
+<p>Generic monadic operators</p>
 </div>
-  <h3>Record Fields</h3>
+
+<!-- Render nested types and modules, if there are any -->
+
+  <h3>Functions and values</h3>
   <table class="table table-bordered member-list">
     <thead>
-      <tr><td>Record Field</td><td>Description</td></tr>
+      <tr><td>Function or value</td><td>Description</td></tr>
     </thead>
     <tbody>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '798', 798)" onmouseover="showTip(event, '798', 798)">
-            v
+          <code onmouseout="hideTip(event, '179', 179)" onmouseover="showTip(event, '179', 179)">
+            applyM builder1 builder2 f m
           </code>
-          <div class="tip" id="798">
-            <strong>Signature:</strong>string<br />
-              <strong>Modifiers:</strong> mutable<br />
-                      </div>
+          <div class="tip" id="179">
+            <strong>Signature:</strong>builder1:^M1 -&gt; builder2:^M2 -&gt; f:&#39;?22183 -&gt; m:&#39;?22188 -&gt; &#39;?22186<br />
+                          <strong>Type parameters:</strong> ^M1, '?22183, '?22184, '?22185, '?22186, ^M2, '?22188          </div>
         </td>
         <td class="xmldoc">
-        
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/JSON.fs#L78-78" class="github-link">Go to GitHub source</a>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <h3>Constructors</h3>
-  <table class="table table-bordered member-list">
-    <thead>
-      <tr><td>Constructor</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="member-name">
+        <p>Sequential application</p>
 
-          <code onmouseout="hideTip(event, '800', 800)" onmouseover="showTip(event, '800', 800)">
-            new(text)
-          </code>
-          <div class="tip" id="800">
-            <strong>Signature:</strong>text:string -&gt; Text<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-        
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/JSON.fs#L77-77" class="github-link">Go to GitHub source</a>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <h3>Instance members</h3>
-  <table class="table table-bordered member-list">
-    <thead>
-      <tr><td>Instance member</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '804', 804)" onmouseover="showTip(event, '804', 804)">
-            Value(arg1)
-          </code>
-          <div class="tip" id="804">
-            <strong>Signature:</strong>unit -&gt; string<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-        
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/JSON.fs#L83-83" class="github-link">Go to GitHub source</a>
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L20-20" class="github-link">Go to GitHub source</a>
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '805', 805)" onmouseover="showTip(event, '805', 805)">
-            Value()
+          <code onmouseout="hideTip(event, '180', 180)" onmouseover="showTip(event, '180', 180)">
+            bindM builder m f
           </code>
-          <div class="tip" id="805">
-            <strong>Signature:</strong>unit -&gt; string<br />
-                      </div>
+          <div class="tip" id="180">
+            <strong>Signature:</strong>builder:^M -&gt; m:&#39;d -&gt; f:(&#39;e -&gt; &#39;c) -&gt; &#39;c<br />
+                          <strong>Type parameters:</strong> ^M, 'd, 'e, 'c          </div>
         </td>
         <td class="xmldoc">
         
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/JSON.fs#L83-83" class="github-link">Go to GitHub source</a>
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L14-14" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '181', 181)" onmouseover="showTip(event, '181', 181)">
+            liftM builder f m
+          </code>
+          <div class="tip" id="181">
+            <strong>Signature:</strong>builder:^?22176 -&gt; f:(&#39;?22180 -&gt; &#39;?22177) -&gt; m:&#39;?22179 -&gt; &#39;?22178<br />
+                          <strong>Type parameters:</strong> ^?22176, '?22177, '?22178, '?22179, '?22180          </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L15-15" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '182', 182)" onmouseover="showTip(event, '182', 182)">
+            returnM builder x
+          </code>
+          <div class="tip" id="182">
+            <strong>Signature:</strong>builder:^M -&gt; x:&#39;b -&gt; &#39;c<br />
+                          <strong>Type parameters:</strong> ^M, 'b, 'c          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Inject a value into the monadic type</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L13-13" class="github-link">Go to GitHub source</a>
         </td>
       </tr>
     </tbody>

@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>IO - FSharpx</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Steffen Forkmann">
+
+    <script src="http://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="http://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="http://fsprojects.github.io/fsharpx/content/style.css" />
+    <script type="text/javascript" src="http://fsprojects.github.io/fsharpx/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="http://github.com/fsprojects/FSharpx">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="http://fsprojects.github.io/fsharpx/index.html">FSharpx</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>IO</h1>
+<div class="xmldoc">
+</div>
+
+<!-- Render nested types and modules, if there are any -->
+
+  <h3>Functions and values</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Function or value</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '40', 40)" onmouseover="showTip(event, '40', 40)">
+            allFilesExist files
+          </code>
+          <div class="tip" id="40">
+            <strong>Signature:</strong>files:seq&lt;string&gt; -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Checks if all given files exists</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L41-41" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '41', 41)" onmouseover="showTip(event, '41', 41)">
+            append s builder
+          </code>
+          <div class="tip" id="41">
+            <strong>Signature:</strong>s:string -&gt; builder:StringBuilder -&gt; StringBuilder<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Appends a text</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L80-80" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '42', 42)" onmouseover="showTip(event, '42', 42)">
+            appendFileNamesIfNotNull (...)
+          </code>
+          <div class="tip" id="42">
+            <strong>Signature:</strong>fileNames:seq&lt;string&gt; -&gt; builder:StringBuilder -&gt; StringBuilder<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Appends all notnull fileNames</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L98-98" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '43', 43)" onmouseover="showTip(event, '43', 43)">
+            appendIfFalse p
+          </code>
+          <div class="tip" id="43">
+            <strong>Signature:</strong>p:bool -&gt; string -&gt; StringBuilder -&gt; StringBuilder<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Appends a text if the predicate is false</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L86-86" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '44', 44)" onmouseover="showTip(event, '44', 44)">
+            appendIfNotNull value s
+          </code>
+          <div class="tip" id="44">
+            <strong>Signature:</strong>value:&#39;?22441 -&gt; s:string -&gt; StringBuilder -&gt; StringBuilder<br />
+                          <strong>Type parameters:</strong> '?22441          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Appends a text if the value is not null</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L89-89" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '45', 45)" onmouseover="showTip(event, '45', 45)">
+            appendIfTrue p s builder
+          </code>
+          <div class="tip" id="45">
+            <strong>Signature:</strong>p:bool -&gt; s:string -&gt; builder:StringBuilder -&gt; StringBuilder<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Appends a text if the predicate is true</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L83-83" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '46', 46)" onmouseover="showTip(event, '46', 46)">
+            appendStringIfValueIsNotNull value
+          </code>
+          <div class="tip" id="46">
+            <strong>Signature:</strong>value:&#39;?22443 -&gt; string -&gt; StringBuilder -&gt; StringBuilder<br />
+                          <strong>Type parameters:</strong> '?22443          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Appends a text if the value is not null</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L92-92" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '47', 47)" onmouseover="showTip(event, '47', 47)">
+            appendStringIfValueIsNotNullOrEmpty (...)
+          </code>
+          <div class="tip" id="47">
+            <strong>Signature:</strong>value:string -&gt; string -&gt; StringBuilder -&gt; StringBuilder<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Appends a text if the value is not null or empty</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L95-95" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '48', 48)" onmouseover="showTip(event, '48', 48)">
+            checkFileExists fileName
+          </code>
+          <div class="tip" id="48">
+            <strong>Signature:</strong>fileName:string -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Checks if the file exists on disk.</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L37-37" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '49', 49)" onmouseover="showTip(event, '49', 49)">
+            combinePaths path1 path2
+          </code>
+          <div class="tip" id="49">
+            <strong>Signature:</strong>path1:string -&gt; path2:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Combines two path strings</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L106-106" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '50', 50)" onmouseover="showTip(event, '50', 50)">
+            convertTextToWindowsLineBreaks text
+          </code>
+          <div class="tip" id="50">
+            <strong>Signature:</strong>text:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Converts the given text from linux or mac linebreaks to windows line breaks</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L73-73" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '51', 51)" onmouseover="showTip(event, '51', 51)">
+            currentDirectory 
+          </code>
+          <div class="tip" id="51">
+            <strong>Signature:</strong>string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Gets the current directory</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L34-34" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '52', 52)" onmouseover="showTip(event, '52', 52)">
+            directoryInfo path
+          </code>
+          <div class="tip" id="52">
+            <strong>Signature:</strong>path:string -&gt; DirectoryInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Creates a DirectoryInfo for the given path</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L13-13" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '53', 53)" onmouseover="showTip(event, '53', 53)">
+            directorySeparator 
+          </code>
+          <div class="tip" id="53">
+            <strong>Signature:</strong>string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>The directory separator string. On most systems / or \</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L103-103" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '54', 54)" onmouseover="showTip(event, '54', 54)">
+            fileInfo path
+          </code>
+          <div class="tip" id="54">
+            <strong>Signature:</strong>path:string -&gt; FileInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Creates a FileInfo for the given path</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L16-16" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '55', 55)" onmouseover="showTip(event, '55', 55)">
+            filesInDir dir
+          </code>
+          <div class="tip" id="55">
+            <strong>Signature:</strong>dir:DirectoryInfo -&gt; FileInfo []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Gets all files in the directory</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L31-31" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '56', 56)" onmouseover="showTip(event, '56', 56)">
+            fileSystemInfo path
+          </code>
+          <div class="tip" id="56">
+            <strong>Signature:</strong>path:string -&gt; FileSystemInfo<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Creates a FileInfo or a DirectoryInfo for the given path</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L19-19" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57', 57)" onmouseover="showTip(event, '57', 57)">
+            getFullName fileName
+          </code>
+          <div class="tip" id="57">
+            <strong>Signature:</strong>fileName:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Converts a file to it's full file system name</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L25-25" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58', 58)" onmouseover="showTip(event, '58', 58)">
+            LinuxLineBreaks 
+          </code>
+          <div class="tip" id="58">
+            <strong>Signature:</strong>string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L8-8" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '59', 59)" onmouseover="showTip(event, '59', 59)">
+            MacLineBreaks 
+          </code>
+          <div class="tip" id="59">
+            <strong>Signature:</strong>string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L10-10" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60', 60)" onmouseover="showTip(event, '60', 60)">
+            readFile file
+          </code>
+          <div class="tip" id="60">
+            <strong>Signature:</strong>file:string -&gt; seq&lt;string&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Reads a file line by line</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L47-47" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '61', 61)" onmouseover="showTip(event, '61', 61)">
+            readFileAsString file
+          </code>
+          <div class="tip" id="61">
+            <strong>Signature:</strong>file:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Reads a file as one text</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L44-44" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '62', 62)" onmouseover="showTip(event, '62', 62)">
+            replaceFile fileName lines
+          </code>
+          <div class="tip" id="62">
+            <strong>Signature:</strong>fileName:string -&gt; lines:seq&lt;string&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Replaces the file with the given string</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L63-63" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '63', 63)" onmouseover="showTip(event, '63', 63)">
+            subDirectories dir
+          </code>
+          <div class="tip" id="63">
+            <strong>Signature:</strong>dir:DirectoryInfo -&gt; DirectoryInfo []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Gets all subdirectories</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L28-28" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '64', 64)" onmouseover="showTip(event, '64', 64)">
+            WindowsLineBreaks 
+          </code>
+          <div class="tip" id="64">
+            <strong>Signature:</strong>string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L9-9" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '65', 65)" onmouseover="showTip(event, '65', 65)">
+            writeStringToFile append file text
+          </code>
+          <div class="tip" id="65">
+            <strong>Signature:</strong>append:bool -&gt; file:string -&gt; text:string -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Writes a single string to a file</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L60-60" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '66', 66)" onmouseover="showTip(event, '66', 66)">
+            writeToFile append fileName lines
+          </code>
+          <div class="tip" id="66">
+            <strong>Signature:</strong>append:bool -&gt; fileName:string -&gt; lines:seq&lt;string&gt; -&gt; unit<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        <p>Writes a file line by line</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/IO.fs#L53-53" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <img src="/FSharpx/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharpx</li>
+            <li><a href="http://fsprojects.github.io/fsharpx/index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.com/packages/FSharpx">Get Library via NuGet</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx">Source Code on GitHub</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx/blob/master/LICENSE.txt">License</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="http://fsprojects.github.io/fsharpx/tutorial.html">Sample tutorial</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="http://fsprojects.github.io/fsharpx/reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="http://github.com/fsprojects/FSharpx"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>
