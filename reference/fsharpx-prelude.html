@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Prelude - FSharpx</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="Steffen Forkmann">
+
+    <script src="http://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="http://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href="/FSharpx/content/style.css" />
+    <script type="text/javascript" src="/FSharpx/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="http://github.com/fsprojects/FSharpx">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="/FSharpx/index.html">FSharpx</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Prelude</h1>
+<div class="xmldoc">
+</div>
+
+<!-- Render nested types and modules, if there are any -->
+
+  <h3>Functions and values</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Function or value</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1', 1)" onmouseover="showTip(event, '1', 1)">
+            curry f a b
+          </code>
+          <div class="tip" id="1">
+            <strong>Signature:</strong>f:(&#39;?15817 * &#39;?15818 -&gt; &#39;?15819) -&gt; a:&#39;?15817 -&gt; b:&#39;?15818 -&gt; &#39;?15819<br />
+                          <strong>Type parameters:</strong> '?15817, '?15818, '?15819          </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L9-9" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '2', 2)" onmouseover="showTip(event, '2', 2)">
+            fix f x
+          </code>
+          <div class="tip" id="2">
+            <strong>Signature:</strong>f:((&#39;?15860 -&gt; &#39;?15861) -&gt; &#39;?15860 -&gt; &#39;?15861) -&gt; x:&#39;?15860 -&gt; &#39;?15861<br />
+                          <strong>Type parameters:</strong> '?15860, '?15861          </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L26-26" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '3', 3)" onmouseover="showTip(event, '3', 3)">
+            fix2 f x y
+          </code>
+          <div class="tip" id="3">
+            <strong>Signature:</strong>f:((&#39;?15863 -&gt; &#39;?15864 -&gt; &#39;?15865) -&gt; &#39;?15863 -&gt; &#39;?15864 -&gt; &#39;?15865) -&gt; x:&#39;?15863 -&gt; y:&#39;?15864 -&gt; &#39;?15865<br />
+                          <strong>Type parameters:</strong> '?15863, '?15864, '?15865          </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L27-27" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '4', 4)" onmouseover="showTip(event, '4', 4)">
+            fix3 f x y z
+          </code>
+          <div class="tip" id="4">
+            <strong>Signature:</strong>f:((&#39;?15867 -&gt; &#39;?15868 -&gt; &#39;?15869 -&gt; &#39;?15870) -&gt; &#39;?15867 -&gt; &#39;?15868 -&gt; &#39;?15869 -&gt; &#39;?15870) -&gt; x:&#39;?15867 -&gt; y:&#39;?15868 -&gt; z:&#39;?15869 -&gt; &#39;?15870<br />
+                          <strong>Type parameters:</strong> '?15867, '?15868, '?15869, '?15870          </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L28-28" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '5', 5)" onmouseover="showTip(event, '5', 5)">
+            flip f a b
+          </code>
+          <div class="tip" id="5">
+            <strong>Signature:</strong>f:(&#39;?15813 -&gt; &#39;?15814 -&gt; &#39;?15815) -&gt; a:&#39;?15814 -&gt; b:&#39;?15813 -&gt; &#39;?15815<br />
+                          <strong>Type parameters:</strong> '?15813, '?15814, '?15815          </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L8-8" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '6', 6)" onmouseover="showTip(event, '6', 6)">
+            konst a arg2
+          </code>
+          <div class="tip" id="6">
+            <strong>Signature:</strong>a:&#39;?15828 -&gt; &#39;?15829 -&gt; &#39;?15828<br />
+                          <strong>Type parameters:</strong> '?15828, '?15829          </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L12-12" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '7', 7)" onmouseover="showTip(event, '7', 7)">
+            konst2 a arg2 arg3
+          </code>
+          <div class="tip" id="7">
+            <strong>Signature:</strong>a:&#39;?15831 -&gt; &#39;?15832 -&gt; &#39;?15833 -&gt; &#39;?15831<br />
+                          <strong>Type parameters:</strong> '?15831, '?15832, '?15833          </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L13-13" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '8', 8)" onmouseover="showTip(event, '8', 8)">
+            swap (a, b)
+          </code>
+          <div class="tip" id="8">
+            <strong>Signature:</strong>(a:&#39;?15825 * b:&#39;?15826) -&gt; &#39;?15826 * &#39;?15825<br />
+                          <strong>Type parameters:</strong> '?15825, '?15826          </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L11-11" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '9', 9)" onmouseover="showTip(event, '9', 9)">
+            tuple2 a b
+          </code>
+          <div class="tip" id="9">
+            <strong>Signature:</strong>a:&#39;?15835 -&gt; b:&#39;?15836 -&gt; &#39;?15835 * &#39;?15836<br />
+                          <strong>Type parameters:</strong> '?15835, '?15836          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Creates a pair</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L16-16" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '10', 10)" onmouseover="showTip(event, '10', 10)">
+            tuple3 a b c
+          </code>
+          <div class="tip" id="10">
+            <strong>Signature:</strong>a:&#39;?15838 -&gt; b:&#39;?15839 -&gt; c:&#39;?15840 -&gt; &#39;?15838 * &#39;?15839 * &#39;?15840<br />
+                          <strong>Type parameters:</strong> '?15838, '?15839, '?15840          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Creates a 3-tuple</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L18-18" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '11', 11)" onmouseover="showTip(event, '11', 11)">
+            tuple4 a b c d
+          </code>
+          <div class="tip" id="11">
+            <strong>Signature:</strong>a:&#39;?15842 -&gt; b:&#39;?15843 -&gt; c:&#39;?15844 -&gt; d:&#39;?15845 -&gt; &#39;?15842 * &#39;?15843 * &#39;?15844 * &#39;?15845<br />
+                          <strong>Type parameters:</strong> '?15842, '?15843, '?15844, '?15845          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Creates a 4-tuple</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L20-20" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '12', 12)" onmouseover="showTip(event, '12', 12)">
+            tuple5 a b c d e
+          </code>
+          <div class="tip" id="12">
+            <strong>Signature:</strong>a:&#39;?15847 -&gt; b:&#39;?15848 -&gt; c:&#39;?15849 -&gt; d:&#39;?15850 -&gt; e:&#39;?15851 -&gt; &#39;?15847 * &#39;?15848 * &#39;?15849 * &#39;?15850 * &#39;?15851<br />
+                          <strong>Type parameters:</strong> '?15847, '?15848, '?15849, '?15850, '?15851          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Creates a 5-tuple</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L22-22" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '13', 13)" onmouseover="showTip(event, '13', 13)">
+            tuple6 a b c d e f
+          </code>
+          <div class="tip" id="13">
+            <strong>Signature:</strong>a:&#39;?15853 -&gt; b:&#39;?15854 -&gt; c:&#39;?15855 -&gt; d:&#39;?15856 -&gt; e:&#39;?15857 -&gt; f:&#39;?15858 -&gt; &#39;?15853 * &#39;?15854 * &#39;?15855 * &#39;?15856 * &#39;?15857 * &#39;?15858<br />
+                          <strong>Type parameters:</strong> '?15853, '?15854, '?15855, '?15856, '?15857, '?15858          </div>
+        </td>
+        <td class="xmldoc">
+        <p>Creates a 6-tuple</p>
+
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L24-24" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '14', 14)" onmouseover="showTip(event, '14', 14)">
+            uncurry f (a, b)
+          </code>
+          <div class="tip" id="14">
+            <strong>Signature:</strong>f:(&#39;?15821 -&gt; &#39;?15822 -&gt; &#39;?15823) -&gt; (a:&#39;?15821 * b:&#39;?15822) -&gt; &#39;?15823<br />
+                          <strong>Type parameters:</strong> '?15821, '?15822, '?15823          </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L10-10" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Type extensions</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Type extension</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '15', 15)" onmouseover="showTip(event, '15', 15)">
+            parse(x)
+          </code>
+          <div class="tip" id="15">
+            <strong>Signature:</strong>x:string -&gt; bool option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L31-31" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '16', 16)" onmouseover="showTip(event, '16', 16)">
+            parse(x)
+          </code>
+          <div class="tip" id="16">
+            <strong>Signature:</strong>x:string -&gt; int16 option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L42-42" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '17', 17)" onmouseover="showTip(event, '17', 17)">
+            parse(x)
+          </code>
+          <div class="tip" id="17">
+            <strong>Signature:</strong>x:string -&gt; int option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L51-51" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '18', 18)" onmouseover="showTip(event, '18', 18)">
+            parse(x)
+          </code>
+          <div class="tip" id="18">
+            <strong>Signature:</strong>x:string -&gt; decimal option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L60-60" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '19', 19)" onmouseover="showTip(event, '19', 19)">
+            parse(x)
+          </code>
+          <div class="tip" id="19">
+            <strong>Signature:</strong>x:string -&gt; byte option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L69-69" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '20', 20)" onmouseover="showTip(event, '20', 20)">
+            parse(x)
+          </code>
+          <div class="tip" id="20">
+            <strong>Signature:</strong>x:string -&gt; int64 option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L78-78" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '21', 21)" onmouseover="showTip(event, '21', 21)">
+            parse(x)
+          </code>
+          <div class="tip" id="21">
+            <strong>Signature:</strong>x:string -&gt; float32 option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L87-87" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '22', 22)" onmouseover="showTip(event, '22', 22)">
+            parse(x)
+          </code>
+          <div class="tip" id="22">
+            <strong>Signature:</strong>x:string -&gt; float option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L96-96" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '23', 23)" onmouseover="showTip(event, '23', 23)">
+            parse(x)
+          </code>
+          <div class="tip" id="23">
+            <strong>Signature:</strong>x:string -&gt; DateTime option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L105-105" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '24', 24)" onmouseover="showTip(event, '24', 24)">
+            parse(x)
+          </code>
+          <div class="tip" id="24">
+            <strong>Signature:</strong>x:string -&gt; DateTimeOffset option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L122-122" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '25', 25)" onmouseover="showTip(event, '25', 25)">
+            parseExact(formats x)
+          </code>
+          <div class="tip" id="25">
+            <strong>Signature:</strong>(formats:string []) -&gt; x:string -&gt; DateTime option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L113-113" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '26', 26)" onmouseover="showTip(event, '26', 26)">
+            parseExact(formats x)
+          </code>
+          <div class="tip" id="26">
+            <strong>Signature:</strong>(formats:string []) -&gt; x:string -&gt; DateTimeOffset option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L130-130" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '27', 27)" onmouseover="showTip(event, '27', 27)">
+            parseExactWithOptions(...)
+          </code>
+          <div class="tip" id="27">
+            <strong>Signature:</strong>style:DateTimeStyles -&gt; provider:IFormatProvider -&gt; (formats:string []) -&gt; x:string -&gt; DateTime option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L108-108" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '28', 28)" onmouseover="showTip(event, '28', 28)">
+            parseExactWithOptions(...)
+          </code>
+          <div class="tip" id="28">
+            <strong>Signature:</strong>style:DateTimeStyles -&gt; provider:IFormatProvider -&gt; (formats:string []) -&gt; x:string -&gt; DateTimeOffset option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L125-125" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '29', 29)" onmouseover="showTip(event, '29', 29)">
+            parseWithOptions(style provider x)
+          </code>
+          <div class="tip" id="29">
+            <strong>Signature:</strong>style:NumberStyles -&gt; provider:IFormatProvider -&gt; x:string -&gt; int16 option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L37-37" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '30', 30)" onmouseover="showTip(event, '30', 30)">
+            parseWithOptions(style provider x)
+          </code>
+          <div class="tip" id="30">
+            <strong>Signature:</strong>style:NumberStyles -&gt; provider:IFormatProvider -&gt; x:string -&gt; int option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L46-46" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '31', 31)" onmouseover="showTip(event, '31', 31)">
+            parseWithOptions(style provider x)
+          </code>
+          <div class="tip" id="31">
+            <strong>Signature:</strong>style:NumberStyles -&gt; provider:IFormatProvider -&gt; x:string -&gt; decimal option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L55-55" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '32', 32)" onmouseover="showTip(event, '32', 32)">
+            parseWithOptions(style provider x)
+          </code>
+          <div class="tip" id="32">
+            <strong>Signature:</strong>style:NumberStyles -&gt; provider:IFormatProvider -&gt; x:string -&gt; byte option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L64-64" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '33', 33)" onmouseover="showTip(event, '33', 33)">
+            parseWithOptions(style provider x)
+          </code>
+          <div class="tip" id="33">
+            <strong>Signature:</strong>style:NumberStyles -&gt; provider:IFormatProvider -&gt; x:string -&gt; int64 option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L73-73" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '34', 34)" onmouseover="showTip(event, '34', 34)">
+            parseWithOptions(style provider x)
+          </code>
+          <div class="tip" id="34">
+            <strong>Signature:</strong>style:NumberStyles -&gt; provider:IFormatProvider -&gt; x:string -&gt; float32 option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L82-82" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '35', 35)" onmouseover="showTip(event, '35', 35)">
+            parseWithOptions(style provider x)
+          </code>
+          <div class="tip" id="35">
+            <strong>Signature:</strong>style:NumberStyles -&gt; provider:IFormatProvider -&gt; x:string -&gt; float option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L91-91" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '36', 36)" onmouseover="showTip(event, '36', 36)">
+            parseWithOptions(style provider x)
+          </code>
+          <div class="tip" id="36">
+            <strong>Signature:</strong>style:DateTimeStyles -&gt; provider:IFormatProvider -&gt; x:string -&gt; DateTime option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L100-100" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '37', 37)" onmouseover="showTip(event, '37', 37)">
+            parseWithOptions(style provider x)
+          </code>
+          <div class="tip" id="37">
+            <strong>Signature:</strong>style:DateTimeStyles -&gt; provider:IFormatProvider -&gt; x:string -&gt; DateTimeOffset option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L117-117" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Active patterns</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Active pattern</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '38', 38)" onmouseover="showTip(event, '38', 38)">
+            ( |Boolean|_| ) arg00
+          </code>
+          <div class="tip" id="38">
+            <strong>Signature:</strong>arg00:string -&gt; bool option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L134-134" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '39', 39)" onmouseover="showTip(event, '39', 39)">
+            ( |Double|_| ) arg00
+          </code>
+          <div class="tip" id="39">
+            <strong>Signature:</strong>arg00:string -&gt; float option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L136-136" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '40', 40)" onmouseover="showTip(event, '40', 40)">
+            ( |Int32|_| ) arg00
+          </code>
+          <div class="tip" id="40">
+            <strong>Signature:</strong>arg00:string -&gt; int option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+        
+            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Prelude.fs#L135-135" class="github-link">Go to GitHub source</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <img src="/FSharpx/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharpx</li>
+            <li><a href="/FSharpx/index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.com/packages/FSharpx">Get Library via NuGet</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx">Source Code on GitHub</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx/blob/master/LICENSE.txt">License</a></li>
+            <li><a href="http://github.com/fsprojects/FSharpx/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="/FSharpx/tutorial.html">Sample tutorial</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="/FSharpx/reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="http://github.com/fsprojects/FSharpx"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+  </body>
+  </html>
