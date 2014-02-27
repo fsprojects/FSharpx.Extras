@@ -1,10 +1,6 @@
-# FSharpx
+FSharpx
+=======================
 
-**FSharpx** is a collection of libraries and tools for use with F#. 
+FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library.
 
-See [the home page](http://fsharp.github.com/fsharpx) for details. The home page can be [edited, forked or cloned](https://github.com/fsharp/fsharpx/tree/gh-pages).
-
-Please contribute to this project. Don't ask for permission, just fork the repository and send pull requests.
-
-Please also join the [F# Open Source Group](http://fsharp.github.com)
-
+<a href="http://fsprojects.github.io/FSharpx" target="_blank">API documents available here.</a>
