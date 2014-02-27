@@ -46,7 +46,7 @@ let nugetDir package = sprintf "./nuget/%s/" package
 let nugetLibDir package = nugetDir package @@ "lib"
 let nugetDocsDir package = nugetDir package @@ "docs"
 
-let typeProvidersPackages = ["TypeProviders.Graph"; "TypeProviders.Math";  ]
+let typeProvidersPackages = [ "TypeProviders.Math";  ]
 let packages = ["Core"; "Http"; "Observable"; "Collections.Experimental"; "TypeProviders"; "Text.StructuredFormat"] @ typeProvidersPackages
 
 let projectDesc = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible."
@@ -56,7 +56,6 @@ let rec getPackageDesc = function
 | "Observable" -> projectDesc + "\r\n\r\nThis library implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford."
 | "Text.StructuredFormat" -> projectDesc + "\r\n\r\nThis library provides data structures and functoins for pretty printers."
 | "TypeProviders" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing common type providers on top of the FSharpx.Core."
-| "TypeProviders.Graph" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a state machine type provider."
 | "TypeProviders.Math" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type provider for vectors."
 | _ -> projectDesc + "\r\n\r\nIt currently implements:\r\n\r\n" + 
                        "* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n" +
@@ -166,15 +165,6 @@ Target "AssemblyInfo" (fun _ ->
             AssemblyDescription = getPackageDesc "TypeProviders"
             Guid = "89B6AF94-507D-4BE0-98FA-A5124884DBA8"
             OutputFileName = "./src/FSharpx.TypeProviders/AssemblyInfo.fs" })
-
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = version
-            AssemblyTitle = "FSharpx.TypeProviders.Graph"
-            AssemblyDescription = getPackageDesc "TypeProviders.Graph"
-            Guid = "D68BF790-E641-4A40-9BC2-CCD8870D8C4B"
-            OutputFileName = "./src/FSharpx.TypeProviders.Graph/AssemblyInfo.fs" })
 
     AssemblyInfo (fun p ->
         {p with 
