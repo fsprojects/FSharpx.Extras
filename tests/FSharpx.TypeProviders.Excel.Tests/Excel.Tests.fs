@@ -11,6 +11,27 @@ type BookTest = ExcelFile<"BookTest.xls", "Sheet1", true>
 type HeaderTest = ExcelFile<"BookTestWithHeader.xls", "A2", true>
 type MultipleRegions = ExcelFile<"MultipleRegions.xlsx", "A1:C5,E3:G5", true>
 type DataTypesTest = ExcelFile<"DataTypes.xlsx">
+type DifferentMainSheet = ExcelFile<"DifferentMainSheet.xlsx">
+
+[<Test>]
+let ``Default Sheet not named Sheet1``() =
+    let file = DifferentMainSheet()
+    let firstRow = file.Data |> Seq.head
+    firstRow.Animal |> should equal "Daisy"
+    firstRow.``Pounds of Milk`` |> should equal 12
+
+let expectedToString = @"Row 1
+	Animal = Daisy
+	Pounds of Milk = 12"
+
+[<Test>]
+let ``ToString format``() =
+    let file = DifferentMainSheet()
+    let firstRow = file.Data |> Seq.head
+    
+    printfn "%O" firstRow
+
+    string firstRow |> should equal expectedToString
 
 [<Test>]
 let ``Can access first row in typed excel data``() = 
