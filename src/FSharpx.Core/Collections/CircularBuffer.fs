@@ -74,7 +74,7 @@ type CircularBuffer<'T> (bufferSize: int) =
         let rec loop() = seq {
             if length > 0 then
                 yield this.Dequeue(1).[0]
-            yield! loop() }
+                yield! loop() }
         loop().GetEnumerator()
 
     interface IEnumerable<'T> with
