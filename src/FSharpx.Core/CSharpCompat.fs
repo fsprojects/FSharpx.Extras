@@ -8,7 +8,7 @@ open System.Runtime.CompilerServices
 open Microsoft.FSharp.Control.StreamReaderExtensions
 open Microsoft.FSharp.Control.WebExtensions
 open FSharpx.Collections
-open FSharpx.DataStructures
+
 
 [<assembly:Extension>]
 do()
