@@ -75,7 +75,6 @@
     <Compile Include="IOTests.cs" />
     <Compile Include="LazyTests.cs" />
     <Compile Include="NonEmptyListTests.cs" />
-    <Compile Include="RoseTreeTests.cs" />
     <Compile Include="StringsTests.cs" />
     <Compile Include="Customer.cs" />
     <Compile Include="DictionaryTests.cs" />
