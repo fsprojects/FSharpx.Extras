@@ -133,6 +133,47 @@ namespace Microsoft.FSharp.Control
                 System.IO.File.AsyncOpen(path, mode, ?access=access, ?share=share,?bufferSize=bufferSize,?options=options)
 #endif
 
+#if FX_NO_FILE_OPTIONS
+#else
+            // Aims to take advantage of IO completion ports using FileStream.AsyncWrite and FileOptions.Asynchronous, so no FX_NO_FILE_OPTIONS version
+            static member AsyncWriteAllBytes(path, bytes) =
+                let bufferSize = 4096 // as per File.WriteAllBytes
+                async{
+                    use! fs = System.IO.File.AsyncOpen( path, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.Read, bufferSize, System.IO.FileOptions.Asynchronous)
+                    let! ret = fs.AsyncWrite bytes
+                    return ret
+                }
+
+            static member AsyncWriteAllText(path, (txt:string), ?encoder) =
+                let enc = match encoder with Some e -> e | None -> System.Text.Encoding.Default
+                async{
+                    let bs = enc.GetBytes txt
+                    return! System.IO.File.AsyncWriteAllBytes(path, bs)
+                }
+            
+            // Different memory profile to File.WriteAllLines, converts all lines to a byte[] before doing any writing, then a single write op.
+            // Not good for writing huge files, but writing one line at a time, as per File.WriteAllLines has its own issues, 
+            // e.g. sequential application of async IO (so lines are written in order)
+            static member AsyncWriteAllLines(path, (lines:string array), ?encoder) = 
+                let enc = match encoder with Some e -> e | None -> System.Text.Encoding.Default
+                async{
+                    use memStrm = new System.IO.MemoryStream()
+                    use sWriter = new System.IO.StreamWriter(memStrm, enc)
+                    lines |> Array.iter (fun line -> sWriter.WriteLine(line))
+                    do sWriter.Flush()
+                    let bs = memStrm.ToArray()
+                    return! System.IO.File.AsyncWriteAllBytes(path, bs)
+              }
+
+
+#endif
+
+
+
+
+
+
+
     [<AutoOpen>]
     module StreamReaderExtensions =
         type System.IO.StreamReader with
