@@ -65,9 +65,12 @@ namespace Microsoft.FSharp.Control
 
             // Aims to take advantage of IO completion ports using FileStream.AsyncWrite and FileOptions.Asynchronous, so no FX_NO_FILE_OPTIONS version
             static member AsyncWriteAllBytes: path:string * bytes:byte array -> Async<unit>
-
             static member AsyncWriteAllText: path:string * txt:string * ?encoder:System.Text.Encoding -> Async<unit>
             static member AsyncWriteAllLines: path:string * lines:string array * ?encoder:System.Text.Encoding -> Async<unit>
+            static member AsyncAppendAllBytes: path:string * bytes:byte array -> Async<unit>
+            static member AsyncAppendAllText: path:string * txt:string * ?encoder:System.Text.Encoding -> Async<unit>
+            static member AsyncAppendAllLines: path:string * lines:string array * ?encoder:System.Text.Encoding -> Async<unit>
+
 #endif
 
 #if FX_NO_WEB_REQUESTS
