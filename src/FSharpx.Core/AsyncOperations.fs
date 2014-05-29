@@ -96,6 +96,13 @@ namespace Microsoft.FSharp.Control
                     do! Async.SwitchToThreadPool ()
                     return res }
 
+        
+        let private LinesToBytes ((lines:string array), encoder) =
+            use memStrm = new System.IO.MemoryStream()
+            use sWriter = new System.IO.StreamWriter(memStrm, encoder)
+            lines |> Array.iter (fun line -> sWriter.WriteLine(line))
+            do sWriter.Flush()
+            memStrm.ToArray()
 
         type System.IO.File with
             static member AsyncOpenText(path)   = UnblockViaNewThread (fun () -> System.IO.File.OpenText(path))
@@ -135,6 +142,7 @@ namespace Microsoft.FSharp.Control
 
 #if FX_NO_FILE_OPTIONS
 #else
+
             // Aims to take advantage of IO completion ports using FileStream.AsyncWrite and FileOptions.Asynchronous, so no FX_NO_FILE_OPTIONS version
             static member AsyncWriteAllBytes(path, bytes) =
                 let bufferSize = 4096 // as per File.WriteAllBytes
@@ -157,13 +165,36 @@ namespace Microsoft.FSharp.Control
             static member AsyncWriteAllLines(path, (lines:string array), ?encoder) = 
                 let enc = match encoder with Some e -> e | None -> System.Text.Encoding.Default
                 async{
-                    use memStrm = new System.IO.MemoryStream()
-                    use sWriter = new System.IO.StreamWriter(memStrm, enc)
-                    lines |> Array.iter (fun line -> sWriter.WriteLine(line))
-                    do sWriter.Flush()
-                    let bs = memStrm.ToArray()
+                    let bs = LinesToBytes (lines, enc)
                     return! System.IO.File.AsyncWriteAllBytes(path, bs)
               }
+
+            // Aims to take advantage of IO completion ports using FileStream.AsyncWrite and FileOptions.Asynchronous, so no FX_NO_FILE_OPTIONS version
+            static member AsyncAppendAllBytes(path, bytes) =
+                let bufferSize = 4096 // as per File.WriteAllBytes
+                async{
+                    use! fs = System.IO.File.AsyncOpen( path, System.IO.FileMode.Append, System.IO.FileAccess.Write, System.IO.FileShare.Read, bufferSize, System.IO.FileOptions.Asynchronous)
+                    let! ret = fs.AsyncWrite bytes
+                    return ret
+                }
+
+            static member AsyncAppendAllText(path, (txt:string), ?encoder) =
+                let enc = match encoder with Some e -> e | None -> System.Text.Encoding.Default
+                async{
+                    let bs = enc.GetBytes txt
+                    return! System.IO.File.AsyncAppendAllBytes(path, bs)
+                }
+            
+            // Different memory profile to File.AppendAllLines, converts all lines to a byte[] before doing any writing, then a single write op.
+            // Not good for writing huge files, but writing one line at a time, as per File.AppendAllLines has its own issues, 
+            // e.g. sequential application of async IO (so lines are written in order)
+            static member AsyncAppendAllLines(path, (lines:string array), ?encoder) = 
+                let enc = match encoder with Some e -> e | None -> System.Text.Encoding.Default
+                async{
+                    let bs = LinesToBytes (lines, enc)
+                    return! System.IO.File.AsyncAppendAllBytes(path, bs)
+              }
+
 
 
 #endif
