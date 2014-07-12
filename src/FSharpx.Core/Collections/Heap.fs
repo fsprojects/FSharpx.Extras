@@ -119,12 +119,22 @@ type Heap<'T when 'T : comparison>(isDescending : bool, length : int, data : Hea
         match data with
         | E -> raise (new System.Exception("Heap is empty"))
         | T(x, xs) -> 
-            let rec mergePairs pairList = 
-                match pairList with
-                | [] ->  E
-                | [x] -> x
-                | x::y::tl -> mergeData (mergeData x y) (mergePairs tl)    
-            Heap(isDescending, (length - 1), mergePairs xs)
+            let combinePairs state item =
+                match state with
+                | Some p, l ->
+                    (None, (mergeData item p)::l)
+                | None, l ->
+                    (Some item, l)
+            
+            let tail = 
+                xs
+                |> List.fold combinePairs (None, [])
+                |> function
+                   | Some i, l -> i::l
+                   | None, l -> l
+                |> List.fold mergeData E
+            
+            Heap(isDescending, (length - 1), tail)
        
     member this.TryTail() =
         match data with
