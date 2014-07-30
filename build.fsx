@@ -54,7 +54,7 @@ let projectDesc = "FSharpx is a library for the .NET platform implementing gener
 let rec getPackageDesc = function
 | "Http" -> projectDesc + "\r\n\r\nThis library provides common features for working with HTTP applications."
 | "Observable" -> projectDesc + "\r\n\r\nThis library implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford."
-| "Text.StructuredFormat" -> projectDesc + "\r\n\r\nThis library provides data structures and functoins for pretty printers."
+| "Text.StructuredFormat" -> projectDesc + "\r\n\r\nThis library provides data structures and functions for pretty printers."
 | "TypeProviders" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing common type providers on top of the FSharpx.Core."
 | "TypeProviders.Math" -> projectDesc + "\r\n\r\nThis library is for the .NET platform implementing a type provider for vectors."
 | _ -> projectDesc + "\r\n\r\nIt currently implements:\r\n\r\n" + 
