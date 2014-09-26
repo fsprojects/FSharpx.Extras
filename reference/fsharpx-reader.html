@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <title>Reader - FSharpx</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="Steffen Forkmann">
+    <meta charset="utf-8"/>
+    <title>Reader - FSharpx.Extras</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="Steffan Forkmann and others"/>
 
-    <script src="http://code.jquery.com/jquery-1.8.0.js"></script>
-    <script src="http://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
-    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
-    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
 
-    <link type="text/css" rel="stylesheet" href="http://fsprojects.github.io/fsharpx/content/style.css" />
-    <script type="text/javascript" src="http://fsprojects.github.io/fsharpx/content/tips.js"></script>
+    <link type="text/css" rel="stylesheet" href="./content/style.css" />
+    <script type="text/javascript" src="./content/tips.js"></script>
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+      <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
   </head>
   <body>
@@ -24,9 +24,9 @@
       <div class="masthead">
         <ul class="nav nav-pills pull-right">
           <li><a href="http://fsharp.org">fsharp.org</a></li>
-          <li><a href="http://github.com/fsprojects/FSharpx">github page</a></li>
+          <li><a href="https://github.com/fsprojects/fsharpx">github page</a></li>
         </ul>
-        <h3 class="muted"><a href="http://fsprojects.github.io/fsharpx/index.html">FSharpx</a></h3>
+        <h3 class="muted"><a href="./index.html">FSharpx.Extras</a></h3>
       </div>
       <hr />
       <div class="row">
@@ -58,7 +58,7 @@
             <a href="fsharpx-reader-readerbuilder.html">ReaderBuilder</a>
           </td>
           <td class="xmldoc"><p>The reader monad.
-This monad comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/07/much-ado-about-monads-reader-edition.aspx.</p>
+This monad comes from Matthew Podwysocki's <a href="http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/07/much-ado-about-monads-reader-edition.aspx.">http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/07/much-ado-about-monads-reader-edition.aspx.</a></p>
 </td>
         </tr>
     </tbody>
@@ -75,329 +75,392 @@ This monad comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.p
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '289', 289)" onmouseover="showTip(event, '289', 289)">
+          <code onmouseout="hideTip(event, '414', 414)" onmouseover="showTip(event, '414', 414)">
             ( *&gt; ) x y
           </code>
-          <div class="tip" id="289">
-            <strong>Signature:</strong>x:Reader&lt;&#39;?21865,&#39;?21866&gt; -&gt; y:Reader&lt;&#39;?21865,&#39;?21867&gt; -&gt; Reader&lt;&#39;?21865,&#39;?21867&gt;<br />
-                          <strong>Type parameters:</strong> '?21865, '?21866, '?21867          </div>
+          <div class="tip" id="414">
+            <strong>Signature:</strong> x:Reader&lt;&#39;?24210,&#39;?24211&gt; -&gt; y:Reader&lt;&#39;?24210,&#39;?24212&gt; -&gt; Reader&lt;&#39;?24210,&#39;?24212&gt;<br />
+                          <strong>Type parameters:</strong> '?24210, '?24211, '?24212          </div>
         </td>
         <td class="xmldoc">
-        <p>Sequence actions, discarding the value of the first argument.</p>
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L541-541" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequence actions, discarding the value of the first argument.</p>
 
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L539-539" class="github-link">Go to GitHub source</a>
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '290', 290)" onmouseover="showTip(event, '290', 290)">
+          <code onmouseout="hideTip(event, '415', 415)" onmouseover="showTip(event, '415', 415)">
             ( &lt;!&gt; ) f m
           </code>
-          <div class="tip" id="290">
-            <strong>Signature:</strong>f:(&#39;?21856 -&gt; &#39;?21857) -&gt; m:Reader&lt;&#39;?21858,&#39;?21856&gt; -&gt; Reader&lt;&#39;?21858,&#39;?21857&gt;<br />
-                          <strong>Type parameters:</strong> '?21856, '?21857, '?21858          </div>
+          <div class="tip" id="415">
+            <strong>Signature:</strong> f:(&#39;?24201 -&gt; &#39;?24202) -&gt; m:Reader&lt;&#39;?24203,&#39;?24201&gt; -&gt; Reader&lt;&#39;?24203,&#39;?24202&gt;<br />
+                          <strong>Type parameters:</strong> '?24201, '?24202, '?24203          </div>
         </td>
         <td class="xmldoc">
-        <p>Infix map</p>
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L537-537" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Infix map</p>
 
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L535-535" class="github-link">Go to GitHub source</a>
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '291', 291)" onmouseover="showTip(event, '291', 291)">
+          <code onmouseout="hideTip(event, '416', 416)" onmouseover="showTip(event, '416', 416)">
             ( &lt;* ) x y
           </code>
-          <div class="tip" id="291">
-            <strong>Signature:</strong>x:Reader&lt;&#39;?21869,&#39;?21870&gt; -&gt; y:Reader&lt;&#39;?21869,&#39;?21871&gt; -&gt; Reader&lt;&#39;?21869,&#39;?21870&gt;<br />
-                          <strong>Type parameters:</strong> '?21869, '?21870, '?21871          </div>
+          <div class="tip" id="416">
+            <strong>Signature:</strong> x:Reader&lt;&#39;?24214,&#39;?24215&gt; -&gt; y:Reader&lt;&#39;?24214,&#39;?24216&gt; -&gt; Reader&lt;&#39;?24214,&#39;?24215&gt;<br />
+                          <strong>Type parameters:</strong> '?24214, '?24215, '?24216          </div>
         </td>
         <td class="xmldoc">
-        <p>Sequence actions, discarding the value of the second argument.</p>
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L543-543" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequence actions, discarding the value of the second argument.</p>
 
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L541-541" class="github-link">Go to GitHub source</a>
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '292', 292)" onmouseover="showTip(event, '292', 292)">
+          <code onmouseout="hideTip(event, '417', 417)" onmouseover="showTip(event, '417', 417)">
             ( &lt;*&gt; ) f m
           </code>
-          <div class="tip" id="292">
-            <strong>Signature:</strong>f:Reader&lt;&#39;?21844,(&#39;?21845 -&gt; &#39;?21846)&gt; -&gt; m:Reader&lt;&#39;?21844,&#39;?21845&gt; -&gt; Reader&lt;&#39;?21844,&#39;?21846&gt;<br />
-                          <strong>Type parameters:</strong> '?21844, '?21845, '?21846          </div>
+          <div class="tip" id="417">
+            <strong>Signature:</strong> f:Reader&lt;&#39;?24189,(&#39;?24190 -&gt; &#39;?24191)&gt; -&gt; m:Reader&lt;&#39;?24189,&#39;?24190&gt; -&gt; Reader&lt;&#39;?24189,&#39;?24191&gt;<br />
+                          <strong>Type parameters:</strong> '?24189, '?24190, '?24191          </div>
         </td>
         <td class="xmldoc">
-        <p>Sequential application</p>
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L531-531" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequential application</p>
 
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L529-529" class="github-link">Go to GitHub source</a>
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '293', 293)" onmouseover="showTip(event, '293', 293)">
+          <code onmouseout="hideTip(event, '418', 418)" onmouseover="showTip(event, '418', 418)">
             ( &lt;=&lt; ) x
           </code>
-          <div class="tip" id="293">
-            <strong>Signature:</strong>x:(&#39;?21882 -&gt; Reader&lt;&#39;?21883,&#39;?21884&gt;) -&gt; (&#39;?21885 -&gt; Reader&lt;&#39;?21883,&#39;?21882&gt;) -&gt; &#39;?21885 -&gt; Reader&lt;&#39;?21883,&#39;?21884&gt;<br />
-                          <strong>Type parameters:</strong> '?21882, '?21883, '?21884, '?21885          </div>
+          <div class="tip" id="418">
+            <strong>Signature:</strong> x:(&#39;?24227 -&gt; Reader&lt;&#39;?24228,&#39;?24229&gt;) -&gt; (&#39;?24230 -&gt; Reader&lt;&#39;?24228,&#39;?24227&gt;) -&gt; &#39;?24230 -&gt; Reader&lt;&#39;?24228,&#39;?24229&gt;<br />
+                          <strong>Type parameters:</strong> '?24227, '?24228, '?24229, '?24230          </div>
         </td>
         <td class="xmldoc">
-        <p>Right-to-left Kleisli composition</p>
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L549-549" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Right-to-left Kleisli composition</p>
 
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L547-547" class="github-link">Go to GitHub source</a>
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '294', 294)" onmouseover="showTip(event, '294', 294)">
+          <code onmouseout="hideTip(event, '419', 419)" onmouseover="showTip(event, '419', 419)">
             ( =&lt;&lt; ) f m
           </code>
-          <div class="tip" id="294">
-            <strong>Signature:</strong>f:(&#39;?21840 -&gt; Reader&lt;&#39;?21841,&#39;?21842&gt;) -&gt; m:Reader&lt;&#39;?21841,&#39;?21840&gt; -&gt; Reader&lt;&#39;?21841,&#39;?21842&gt;<br />
-                          <strong>Type parameters:</strong> '?21840, '?21841, '?21842          </div>
+          <div class="tip" id="419">
+            <strong>Signature:</strong> f:(&#39;?24185 -&gt; Reader&lt;&#39;?24186,&#39;?24187&gt;) -&gt; m:Reader&lt;&#39;?24186,&#39;?24185&gt; -&gt; Reader&lt;&#39;?24186,&#39;?24187&gt;<br />
+                          <strong>Type parameters:</strong> '?24185, '?24186, '?24187          </div>
         </td>
         <td class="xmldoc">
-        <p>Flipped >>=</p>
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L529-529" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Flipped >>=</p>
 
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L527-527" class="github-link">Go to GitHub source</a>
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '295', 295)" onmouseover="showTip(event, '295', 295)">
+          <code onmouseout="hideTip(event, '420', 420)" onmouseover="showTip(event, '420', 420)">
             ( &gt;=&gt; ) f g x
           </code>
-          <div class="tip" id="295">
-            <strong>Signature:</strong>f:(&#39;?21877 -&gt; Reader&lt;&#39;?21878,&#39;?21879&gt;) -&gt; g:(&#39;?21879 -&gt; Reader&lt;&#39;?21878,&#39;?21880&gt;) -&gt; x:&#39;?21877 -&gt; Reader&lt;&#39;?21878,&#39;?21880&gt;<br />
-                          <strong>Type parameters:</strong> '?21877, '?21878, '?21879, '?21880          </div>
+          <div class="tip" id="420">
+            <strong>Signature:</strong> f:(&#39;?24222 -&gt; Reader&lt;&#39;?24223,&#39;?24224&gt;) -&gt; g:(&#39;?24224 -&gt; Reader&lt;&#39;?24223,&#39;?24225&gt;) -&gt; x:&#39;?24222 -&gt; Reader&lt;&#39;?24223,&#39;?24225&gt;<br />
+                          <strong>Type parameters:</strong> '?24222, '?24223, '?24224, '?24225          </div>
         </td>
         <td class="xmldoc">
-        <p>Left-to-right Kleisli composition</p>
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L547-547" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Left-to-right Kleisli composition</p>
 
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L545-545" class="github-link">Go to GitHub source</a>
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '296', 296)" onmouseover="showTip(event, '296', 296)">
+          <code onmouseout="hideTip(event, '421', 421)" onmouseover="showTip(event, '421', 421)">
             ( &gt;&gt;. ) m f
           </code>
-          <div class="tip" id="296">
-            <strong>Signature:</strong>m:Reader&lt;&#39;?21873,&#39;?21874&gt; -&gt; f:Reader&lt;&#39;?21873,&#39;?21875&gt; -&gt; Reader&lt;&#39;?21873,&#39;?21875&gt;<br />
-                          <strong>Type parameters:</strong> '?21873, '?21874, '?21875          </div>
+          <div class="tip" id="421">
+            <strong>Signature:</strong> m:Reader&lt;&#39;?24218,&#39;?24219&gt; -&gt; f:Reader&lt;&#39;?24218,&#39;?24220&gt; -&gt; Reader&lt;&#39;?24218,&#39;?24220&gt;<br />
+                          <strong>Type parameters:</strong> '?24218, '?24219, '?24220          </div>
         </td>
         <td class="xmldoc">
-        <p>Sequentially compose two reader actions, discarding any value produced by the first</p>
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L545-545" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequentially compose two reader actions, discarding any value produced by the first</p>
 
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L543-543" class="github-link">Go to GitHub source</a>
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '297', 297)" onmouseover="showTip(event, '297', 297)">
+          <code onmouseout="hideTip(event, '422', 422)" onmouseover="showTip(event, '422', 422)">
             ( &gt;&gt;= ) m f
           </code>
-          <div class="tip" id="297">
-            <strong>Signature:</strong>m:Reader&lt;&#39;?21836,&#39;?21837&gt; -&gt; f:(&#39;?21837 -&gt; Reader&lt;&#39;?21836,&#39;?21838&gt;) -&gt; Reader&lt;&#39;?21836,&#39;?21838&gt;<br />
-                          <strong>Type parameters:</strong> '?21836, '?21837, '?21838          </div>
+          <div class="tip" id="422">
+            <strong>Signature:</strong> m:Reader&lt;&#39;?24181,&#39;?24182&gt; -&gt; f:(&#39;?24182 -&gt; Reader&lt;&#39;?24181,&#39;?24183&gt;) -&gt; Reader&lt;&#39;?24181,&#39;?24183&gt;<br />
+                          <strong>Type parameters:</strong> '?24181, '?24182, '?24183          </div>
         </td>
         <td class="xmldoc">
-        <p>Sequentially compose two actions, passing any value produced by the first as an argument to the second.</p>
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L527-527" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequentially compose two actions, passing any value produced by the first as an argument to the second.</p>
 
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L525-525" class="github-link">Go to GitHub source</a>
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '298', 298)" onmouseover="showTip(event, '298', 298)">
+          <code onmouseout="hideTip(event, '423', 423)" onmouseover="showTip(event, '423', 423)">
             ap m f
           </code>
-          <div class="tip" id="298">
-            <strong>Signature:</strong>m:Reader&lt;&#39;?21848,&#39;?21849&gt; -&gt; f:Reader&lt;&#39;?21848,(&#39;?21849 -&gt; &#39;?21850)&gt; -&gt; Reader&lt;&#39;?21848,&#39;?21850&gt;<br />
-                          <strong>Type parameters:</strong> '?21848, '?21849, '?21850          </div>
+          <div class="tip" id="423">
+            <strong>Signature:</strong> m:Reader&lt;&#39;?24193,&#39;?24194&gt; -&gt; f:Reader&lt;&#39;?24193,(&#39;?24194 -&gt; &#39;?24195)&gt; -&gt; Reader&lt;&#39;?24193,&#39;?24195&gt;<br />
+                          <strong>Type parameters:</strong> '?24193, '?24194, '?24195          </div>
         </td>
         <td class="xmldoc">
-        <p>Sequential application</p>
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L533-533" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequential application</p>
 
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L531-531" class="github-link">Go to GitHub source</a>
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '299', 299)" onmouseover="showTip(event, '299', 299)">
+          <code onmouseout="hideTip(event, '424', 424)" onmouseover="showTip(event, '424', 424)">
             ask 
           </code>
-          <div class="tip" id="299">
-            <strong>Signature:</strong>Reader&lt;&#39;R,&#39;R&gt;<br />
+          <div class="tip" id="424">
+            <strong>Signature:</strong> Reader&lt;&#39;R,&#39;R&gt;<br />
                           <strong>Type parameters:</strong> 'R          </div>
         </td>
         <td class="xmldoc">
-        
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L512-512" class="github-link">Go to GitHub source</a>
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L514-514" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '300', 300)" onmouseover="showTip(event, '300', 300)">
+          <code onmouseout="hideTip(event, '425', 425)" onmouseover="showTip(event, '425', 425)">
             asks f
           </code>
-          <div class="tip" id="300">
-            <strong>Signature:</strong>f:(&#39;?21826 -&gt; &#39;?21827) -&gt; Reader&lt;&#39;?21826,&#39;?21827&gt;<br />
-                          <strong>Type parameters:</strong> '?21826, '?21827          </div>
+          <div class="tip" id="425">
+            <strong>Signature:</strong> f:(&#39;?24171 -&gt; &#39;?24172) -&gt; Reader&lt;&#39;?24171,&#39;?24172&gt;<br />
+                          <strong>Type parameters:</strong> '?24171, '?24172          </div>
         </td>
         <td class="xmldoc">
-        
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L514-514" class="github-link">Go to GitHub source</a>
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L516-516" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '301', 301)" onmouseover="showTip(event, '301', 301)">
+          <code onmouseout="hideTip(event, '426', 426)" onmouseover="showTip(event, '426', 426)">
             bind k m r
           </code>
-          <div class="tip" id="301">
-            <strong>Signature:</strong>k:(&#39;?21785 -&gt; &#39;?21786 -&gt; &#39;?21787) -&gt; m:(&#39;?21786 -&gt; &#39;?21785) -&gt; r:&#39;?21786 -&gt; &#39;?21787<br />
-                          <strong>Type parameters:</strong> '?21785, '?21786, '?21787          </div>
+          <div class="tip" id="426">
+            <strong>Signature:</strong> k:(&#39;?24130 -&gt; &#39;?24131 -&gt; &#39;?24132) -&gt; m:(&#39;?24131 -&gt; &#39;?24130) -&gt; r:&#39;?24131 -&gt; &#39;?24132<br />
+                          <strong>Type parameters:</strong> '?24130, '?24131, '?24132          </div>
         </td>
         <td class="xmldoc">
-        
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L485-485" class="github-link">Go to GitHub source</a>
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L487-487" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '302', 302)" onmouseover="showTip(event, '302', 302)">
+          <code onmouseout="hideTip(event, '427', 427)" onmouseover="showTip(event, '427', 427)">
             foldM f s
           </code>
-          <div class="tip" id="302">
-            <strong>Signature:</strong>f:(&#39;?21887 -&gt; &#39;?21888 -&gt; Reader&lt;&#39;?21889,&#39;?21887&gt;) -&gt; s:&#39;?21887 -&gt; seq&lt;&#39;?21888&gt; -&gt; Reader&lt;&#39;?21889,&#39;?21887&gt;<br />
-                          <strong>Type parameters:</strong> '?21887, '?21888, '?21889          </div>
+          <div class="tip" id="427">
+            <strong>Signature:</strong> f:(&#39;?24232 -&gt; &#39;?24233 -&gt; Reader&lt;&#39;?24234,&#39;?24232&gt;) -&gt; s:&#39;?24232 -&gt; seq&lt;&#39;?24233&gt; -&gt; Reader&lt;&#39;?24234,&#39;?24232&gt;<br />
+                          <strong>Type parameters:</strong> '?24232, '?24233, '?24234          </div>
         </td>
         <td class="xmldoc">
-        
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L549-549" class="github-link">Go to GitHub source</a>
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L551-551" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '303', 303)" onmouseover="showTip(event, '303', 303)">
+          <code onmouseout="hideTip(event, '428', 428)" onmouseover="showTip(event, '428', 428)">
             lift2 f a b
           </code>
-          <div class="tip" id="303">
-            <strong>Signature:</strong>f:(&#39;?21860 -&gt; &#39;?21861 -&gt; &#39;?21862) -&gt; a:Reader&lt;&#39;?21863,&#39;?21860&gt; -&gt; b:Reader&lt;&#39;?21863,&#39;?21861&gt; -&gt; Reader&lt;&#39;?21863,&#39;?21862&gt;<br />
-                          <strong>Type parameters:</strong> '?21860, '?21861, '?21862, '?21863          </div>
+          <div class="tip" id="428">
+            <strong>Signature:</strong> f:(&#39;?24205 -&gt; &#39;?24206 -&gt; &#39;?24207) -&gt; a:Reader&lt;&#39;?24208,&#39;?24205&gt; -&gt; b:Reader&lt;&#39;?24208,&#39;?24206&gt; -&gt; Reader&lt;&#39;?24208,&#39;?24207&gt;<br />
+                          <strong>Type parameters:</strong> '?24205, '?24206, '?24207, '?24208          </div>
         </td>
         <td class="xmldoc">
-        <p>Promote a function to a monad/applicative, scanning the monadic/applicative arguments from left to right.</p>
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L539-539" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Promote a function to a monad/applicative, scanning the monadic/applicative arguments from left to right.</p>
 
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L537-537" class="github-link">Go to GitHub source</a>
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '304', 304)" onmouseover="showTip(event, '304', 304)">
+          <code onmouseout="hideTip(event, '429', 429)" onmouseover="showTip(event, '429', 429)">
             local f m
           </code>
-          <div class="tip" id="304">
-            <strong>Signature:</strong>f:(&#39;r1 -&gt; &#39;r2) -&gt; m:Reader&lt;&#39;r2,&#39;T&gt; -&gt; Reader&lt;&#39;r1,&#39;T&gt;<br />
+          <div class="tip" id="429">
+            <strong>Signature:</strong> f:(&#39;r1 -&gt; &#39;r2) -&gt; m:Reader&lt;&#39;r2,&#39;T&gt; -&gt; Reader&lt;&#39;r1,&#39;T&gt;<br />
                           <strong>Type parameters:</strong> 'r1, 'r2, 'T          </div>
         </td>
         <td class="xmldoc">
-        
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L518-518" class="github-link">Go to GitHub source</a>
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L520-520" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '305', 305)" onmouseover="showTip(event, '305', 305)">
+          <code onmouseout="hideTip(event, '430', 430)" onmouseover="showTip(event, '430', 430)">
             map f m
           </code>
-          <div class="tip" id="305">
-            <strong>Signature:</strong>f:(&#39;?21852 -&gt; &#39;?21853) -&gt; m:Reader&lt;&#39;?21854,&#39;?21852&gt; -&gt; Reader&lt;&#39;?21854,&#39;?21853&gt;<br />
-                          <strong>Type parameters:</strong> '?21852, '?21853, '?21854          </div>
+          <div class="tip" id="430">
+            <strong>Signature:</strong> f:(&#39;?24197 -&gt; &#39;?24198) -&gt; m:Reader&lt;&#39;?24199,&#39;?24197&gt; -&gt; Reader&lt;&#39;?24199,&#39;?24198&gt;<br />
+                          <strong>Type parameters:</strong> '?24197, '?24198, '?24199          </div>
         </td>
         <td class="xmldoc">
-        <p>Transforms a Reader value by using a specified mapping function.</p>
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L535-535" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Transforms a Reader value by using a specified mapping function.</p>
 
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L533-533" class="github-link">Go to GitHub source</a>
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '306', 306)" onmouseover="showTip(event, '306', 306)">
+          <code onmouseout="hideTip(event, '431', 431)" onmouseover="showTip(event, '431', 431)">
             mapM f x
           </code>
-          <div class="tip" id="306">
-            <strong>Signature:</strong>f:(&#39;?21894 -&gt; Reader&lt;&#39;?21895,&#39;?21896&gt;) -&gt; x:&#39;?21894 list -&gt; Reader&lt;&#39;?21895,&#39;?21896 list&gt;<br />
-                          <strong>Type parameters:</strong> '?21894, '?21895, '?21896          </div>
+          <div class="tip" id="431">
+            <strong>Signature:</strong> f:(&#39;?24239 -&gt; Reader&lt;&#39;?24240,&#39;?24241&gt;) -&gt; x:&#39;?24239 list -&gt; Reader&lt;&#39;?24240,&#39;?24241 list&gt;<br />
+                          <strong>Type parameters:</strong> '?24239, '?24240, '?24241          </div>
         </td>
         <td class="xmldoc">
-        
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L556-556" class="github-link">Go to GitHub source</a>
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L558-558" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '307', 307)" onmouseover="showTip(event, '307', 307)">
+          <code onmouseout="hideTip(event, '432', 432)" onmouseover="showTip(event, '432', 432)">
             reader 
           </code>
-          <div class="tip" id="307">
-            <strong>Signature:</strong>ReaderBuilder<br />
+          <div class="tip" id="432">
+            <strong>Signature:</strong> ReaderBuilder<br />
                       </div>
         </td>
         <td class="xmldoc">
-        
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L510-510" class="github-link">Go to GitHub source</a>
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L512-512" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '308', 308)" onmouseover="showTip(event, '308', 308)">
+          <code onmouseout="hideTip(event, '433', 433)" onmouseover="showTip(event, '433', 433)">
             returnM x
           </code>
-          <div class="tip" id="308">
-            <strong>Signature:</strong>x:&#39;?21833 -&gt; Reader&lt;&#39;?21834,&#39;?21833&gt;<br />
-                          <strong>Type parameters:</strong> '?21833, '?21834          </div>
+          <div class="tip" id="433">
+            <strong>Signature:</strong> x:&#39;?24178 -&gt; Reader&lt;&#39;?24179,&#39;?24178&gt;<br />
+                          <strong>Type parameters:</strong> '?24178, '?24179          </div>
         </td>
         <td class="xmldoc">
-        <p>Inject a value into the Reader type</p>
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L525-525" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Inject a value into the Reader type</p>
 
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L523-523" class="github-link">Go to GitHub source</a>
         </td>
       </tr>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '309', 309)" onmouseover="showTip(event, '309', 309)">
+          <code onmouseout="hideTip(event, '434', 434)" onmouseover="showTip(event, '434', 434)">
             sequence s
           </code>
-          <div class="tip" id="309">
-            <strong>Signature:</strong>s:Reader&lt;&#39;?21891,&#39;?21892&gt; list -&gt; Reader&lt;&#39;?21891,&#39;?21892 list&gt;<br />
-                          <strong>Type parameters:</strong> '?21891, '?21892          </div>
+          <div class="tip" id="434">
+            <strong>Signature:</strong> s:Reader&lt;&#39;?24236,&#39;?24237&gt; list -&gt; Reader&lt;&#39;?24236,&#39;?24237 list&gt;<br />
+                          <strong>Type parameters:</strong> '?24236, '?24237          </div>
         </td>
         <td class="xmldoc">
-        
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/ComputationExpressions/Monad.fs#L552-552" class="github-link">Go to GitHub source</a>
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L554-554" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
         </td>
       </tr>
     </tbody>
@@ -405,25 +468,25 @@ This monad comes from Matthew Podwysocki's http://codebetter.com/blogs/matthew.p
 
         </div>
         <div class="span3">
-          <img src="/FSharpx/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <img src="./img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
           <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
-            <li class="nav-header">FSharpx</li>
-            <li><a href="http://fsprojects.github.io/fsharpx/index.html">Home page</a></li>
+            <li class="nav-header">FSharpx.Extras</li>
+            <li><a href="./index.html">Home page</a></li>
             <li class="divider"></li>
-            <li><a href="http://nuget.com/packages/FSharpx">Get Library via NuGet</a></li>
-            <li><a href="http://github.com/fsprojects/FSharpx">Source Code on GitHub</a></li>
-            <li><a href="http://github.com/fsprojects/FSharpx/blob/master/LICENSE.txt">License</a></li>
-            <li><a href="http://github.com/fsprojects/FSharpx/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+            <li><a href="http://nuget.com/packages/FSharpx.Core">Get Library via NuGet</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx/blob/master/LICENSE.txt">License</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
             
             <li class="nav-header">Getting started</li>
-            <li><a href="http://fsprojects.github.io/fsharpx/tutorial.html">Sample tutorial</a></li>
+            <li><a href="./index.html">Introduction</a></li>
 
             <li class="nav-header">Documentation</li>
-            <li><a href="http://fsprojects.github.io/fsharpx/reference/index.html">API Reference</a></li>
+            <li><a href="./reference/index.html">API Reference</a></li>
           </ul>
         </div>
       </div>
     </div>
-    <a href="http://github.com/fsprojects/FSharpx"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+    <a href="https://github.com/fsprojects/fsharpx"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
   </body>
   </html>

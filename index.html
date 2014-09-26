@@ -1,129 +1,98 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <meta charset="utf-8"/>
+    <title>FSharpx.Extras
+</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="Extra components for FSharpx"/>
+    <meta name="author" content="Steffan Forkmann and others"/>
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
+
+    <link type="text/css" rel="stylesheet" href="./content/style.css" />
+    <script type="text/javascript" src="./content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+      <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <title>Fsharpx by fsharp</title>
   </head>
-
   <body>
-    <div id="container">
-      <div class="inner">
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="https://github.com/fsprojects/fsharpx">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="./index.html">FSharpx.Extras</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+<h1>FSharpx.Extras</h1>
 
-        <header>
-          <h1>Fsharpx</h1>
-          <h2>Extensions and Tools for F# Programming</h2>
-        </header>
+<p>FSharpx.Extras is a set of additions on top of FSharpx.Collections.</p>
 
-        <section id="downloads" class="clearfix">
-          <a href="https://github.com/fsharp/fsharpx/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
-          <a href="https://github.com/fsharp/fsharpx/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
-          <a href="https://github.com/fsharp/fsharpx" id="view-on-github" class="button"><span>View on GitHub</span></a>
-        </section>
-
-        <hr>
-
-        <section id="main_content">
-          <h2>Use via NuGET</h2>
-
-<pre><code>Install-Package FSharpx.Core 
-Install-Package FSharpx.Http
-Install-Package FSharpx.Observable
-Install-Package FSharpx.Compatibility.OCaml  
-Install-Package FSharpx.TypeProviders
-Install-Package FSharpx.TypeProviders.Graph
-Install-Package FSharpx.TypeProviders.AppSettings
-Install-Package FSharpx.TypeProviders.Excel
-Install-Package FSharpx.TypeProviders.Math
-Install-Package FSharpx.TypeProviders.Regex
-Install-Package FSharpx.TypeProviders.Machine
-Install-Package FSharpx.TypeProviders.Management
-Install-Package FSharpx.TypeProviders.Xaml
-</code></pre>
-
-<h2>FSharpx.Core</h2>
-
-<p>FSharpx.Core is a collection of general functional constructs extending F#. Its main target is F# but
-it aims to be compatible with all .NET languages wherever possible. FSharpx.Core provides:</p>
-<ul>
-<li>Several standard monads: State, Reader, Writer, Either, Continuation, Distribution</li>
-<li>Purely functional data structures: Queues, double-ended Queues, BottomUpMergeSort, RandomAccessList, Vector, RoseTree</li>
-<li>Validation applicative functor</li>
-<li>General functions like flip</li>
-<li>Additional functions around collections</li>
-<li>Functions to make C# - F# interop easier</li>
-<li><a href="https://github.com/fsharp/fsharpx/wiki/FSharpx-Async-Extensions">Async extensions, Reusable agents and Observable extensions</a></li>
-</ul>
-
-<h2>FSharpx.Http</h2>
-<p>A package containing asynchronous helpers and the Conneg HTTP programming model</p>
-
-<h2>FSharpx.TypeProviders</h2>
-
-<p>FSharpx provides some very interesting F# type providers. At the moment we have:</p>
-
-<ul>
-<li>FSharpx.TypeProviders.AppSettings - generates setters and getters for application settings files</li>
-<li>FSharpx.TypeProviders.Excel - provides strongly typed access to Excel spread sheets</li>
-<li>FSharpx.TypeProviders.Graph - includes type providers for state machines and graphs</li>
-<li>FSharpx.TypeProviders.Math - contains a type provider for vector data structures</li>
-<li>FSharpx.TypeProviders.Regex - allows to access regular expressions in a strongly typed manner</li>
-<li>FSharpx.TypeProviders.Machine - provides strongly typed access to the Registry and the file system</li>
-<li>FSharpx.TypeProviders.Management - provides strongly typed access to WMI</li>
-<li>FSharpx.TypeProviders.Xaml - a type provider for XAML files and enables the use of the Visual Studio WPF Designer from F#</li>
-</ul><p>All type providers work with .NET 4.0 and .NET 4.5 and F# 3.0.</p>
-
-<h3>Samples</h3>
-
-<h4>RegEx</h4>
-<pre>
-type PhoneRegex = Regex&lt; @"(?&lt;AreaCode&gt;^\d{3})-(?&lt;PhoneNumber&gt;\d{3}-\d{4}$)"&gt;
-
-PhoneRegex.IsMatch "425-123-2345"
-|> should equal true
-
-PhoneRegex().Match("425-123-2345").CompleteMatch.Value
-|> should equal "425-123-2345"
-
-PhoneRegex().Match("425-123-2345").PhoneNumber.Value
-|> should equal "123-2345"  
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l"> 1: </span>
+<span class="l"> 2: </span>
+<span class="l"> 3: </span>
+<span class="l"> 4: </span>
+<span class="l"> 5: </span>
+<span class="l"> 6: </span>
+<span class="l"> 7: </span>
+<span class="l"> 8: </span>
+<span class="l"> 9: </span>
+<span class="l">10: </span>
 </pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+<span class="prep">#r</span> <span class="s">&quot;</span><span class="s">FSharpx</span><span class="s">.</span><span class="s">Collections</span><span class="s">.</span><span class="s">dll</span><span class="s">&quot;</span>
+<span class="prep">#r</span> <span class="s">&quot;</span><span class="s">FSharpx</span><span class="s">.</span><span class="s">Core</span><span class="s">.</span><span class="s">dll</span><span class="s">&quot;</span>
+<span class="prep">#r</span> <span class="s">&quot;</span><span class="s">FSharpx</span><span class="s">.</span><span class="s">Observable</span><span class="s">.</span><span class="s">dll</span><span class="s">&quot;</span>
+<span class="prep">#r</span> <span class="s">&quot;</span><span class="s">FSharpx</span><span class="s">.</span><span class="s">Http</span><span class="s">.</span><span class="s">dll</span><span class="s">&quot;</span>
+<span class="prep">#r</span> <span class="s">&quot;</span><span class="s">FSharpx</span><span class="s">.</span><span class="s">Text</span><span class="s">.</span><span class="s">StructuredFormat</span><span class="s">.</span><span class="s">dll</span><span class="s">&quot;</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="i">FSharpx</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs1', 2)" onmouseover="showTip(event, 'fs1', 2)" class="i">FSharpx</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs2', 3)" onmouseover="showTip(event, 'fs2', 3)" class="i">Collections</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs1', 4)" onmouseover="showTip(event, 'fs1', 4)" class="i">FSharpx</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs3', 5)" onmouseover="showTip(event, 'fs3', 5)" class="i">Observable</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs1', 6)" onmouseover="showTip(event, 'fs1', 6)" class="i">FSharpx</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs4', 7)" onmouseover="showTip(event, 'fs4', 7)" class="i">Text</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs5', 8)" onmouseover="showTip(event, 'fs5', 8)" class="i">StructuredFormat</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs1', 9)" onmouseover="showTip(event, 'fs1', 9)" class="i">FSharpx</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs6', 10)" onmouseover="showTip(event, 'fs6', 10)" class="i">Http</span></pre>
+</td>
+</tr>
+</table>
 
+<div class="tip" id="fs1">namespace FSharpx</div>
+<div class="tip" id="fs2">namespace FSharpx.Collections</div>
+<div class="tip" id="fs3">namespace FSharpx.Observable</div>
+<div class="tip" id="fs4">namespace FSharpx.Text</div>
+<div class="tip" id="fs5">namespace FSharpx.Text.StructuredFormat</div>
+<div class="tip" id="fs6">namespace FSharpx.Http</div>
 
-<h4>Management (WMI)</h4>
+        </div>
+        <div class="span3">
+          <img src="./img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharpx.Extras</li>
+            <li><a href="./index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.com/packages/FSharpx.Core">Get Library via NuGet</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx/blob/master/LICENSE.txt">License</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="./index.html">Introduction</a></li>
 
-<pre>
-type LocalHost = FSharpx.TypeProviders.Management.WmiProvider<"localhost">
-
-let ctxt = LocalHost.GetDataContext()
-let batteryInfo = [ for x in ctxt.Win32_Battery -> x.Name, x.BatteryRechargeTime ]
-</pre>
-
-
-<h2>FSharpx.Observable</h2>
-<p>A small package containing helpers related to programming with observables</p>
-
-<h2>Building the project</h2>
-
-<p>Read the wiki page about <a href="https://github.com/fsharp/fsharpx/wiki/Build">Build</a></p>
-
-        </section>
-
-<p><a href="https://github.com/fsharp/fsharpx/edit/gh-pages/index.html">Edit</a> this page</p>
-
-        <footer>
-          Fsharpx is maintained by <a href="http://fsharp.github.com">The F# Open Source Community</a>.
-        </footer>
-        
+            <li class="nav-header">Documentation</li>
+            <li><a href="./reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
       </div>
     </div>
+    <a href="https://github.com/fsprojects/fsharpx"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
   </body>
-</html>
-
+  </html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Funcs - FSharpx.Extras</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="Steffan Forkmann and others"/>
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
+
+    <link type="text/css" rel="stylesheet" href="./content/style.css" />
+    <script type="text/javascript" src="./content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="https://github.com/fsprojects/fsharpx">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="./index.html">FSharpx.Extras</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Funcs</h1>
+<div class="xmldoc">
+<p>Extensions around Actions and Funcs</p>
+</div>
+  <h3>Static members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Static member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1011', 1011)" onmouseover="showTip(event, '1011', 1011)">
+            AndThen(f, g)
+          </code>
+          <div class="tip" id="1011">
+            <strong>Signature:</strong> (f:Func&lt;&#39;?22814,&#39;?22815&gt; * g:Func&lt;&#39;?22815,&#39;?22816&gt;) -&gt; Func&lt;&#39;?22814,&#39;?22816&gt;<br />
+                          <strong>Type parameters:</strong> '?22814, '?22815, '?22816          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/CSharpCompat.fs#L131-131" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Composes two functions (forward composition).
+Mathematically: g . f</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1012', 1012)" onmouseover="showTip(event, '1012', 1012)">
+            Compose(f, g)
+          </code>
+          <div class="tip" id="1012">
+            <strong>Signature:</strong> (f:Func&lt;&#39;?22810,&#39;?22811&gt; * g:Func&lt;&#39;?22812,&#39;?22810&gt;) -&gt; Func&lt;&#39;?22812,&#39;?22811&gt;<br />
+                          <strong>Type parameters:</strong> '?22810, '?22811, '?22812          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/CSharpCompat.fs#L125-125" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Composes two functions.
+Mathematically: f . g</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1013', 1013)" onmouseover="showTip(event, '1013', 1013)">
+            Curry(f)
+          </code>
+          <div class="tip" id="1013">
+            <strong>Signature:</strong> f:Func&lt;&#39;?22781,&#39;?22782,&#39;?22783,&#39;?22784&gt; -&gt; Func&lt;&#39;?22781,Func&lt;&#39;?22782,Func&lt;&#39;?22783,&#39;?22784&gt;&gt;&gt;<br />
+                          <strong>Type parameters:</strong> '?22781, '?22782, '?22783, '?22784          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/CSharpCompat.fs#L89-89" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Converts an uncurried function to a curried function</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1014', 1014)" onmouseover="showTip(event, '1014', 1014)">
+            Curry(f)
+          </code>
+          <div class="tip" id="1014">
+            <strong>Signature:</strong> f:Func&lt;&#39;?22777,&#39;?22778,&#39;?22779&gt; -&gt; Func&lt;&#39;?22777,Func&lt;&#39;?22778,&#39;?22779&gt;&gt;<br />
+                          <strong>Type parameters:</strong> '?22777, '?22778, '?22779          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/CSharpCompat.fs#L84-84" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Converts an uncurried function to a curried function</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1015', 1015)" onmouseover="showTip(event, '1015', 1015)">
+            ToFunc(f)
+          </code>
+          <div class="tip" id="1015">
+            <strong>Signature:</strong> f:Action&lt;&#39;?22773,&#39;?22774,&#39;?22775&gt; -&gt; Func&lt;&#39;?22773,&#39;?22774,&#39;?22775,unit&gt;<br />
+                          <strong>Type parameters:</strong> '?22773, '?22774, '?22775          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/CSharpCompat.fs#L79-79" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Converts an action to a function returning Unit</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1016', 1016)" onmouseover="showTip(event, '1016', 1016)">
+            ToFunc(a)
+          </code>
+          <div class="tip" id="1016">
+            <strong>Signature:</strong> a:Action&lt;&#39;?22770,&#39;?22771&gt; -&gt; Func&lt;&#39;?22770,&#39;?22771,unit&gt;<br />
+                          <strong>Type parameters:</strong> '?22770, '?22771          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/CSharpCompat.fs#L74-74" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Converts an action to a function returning Unit</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1017', 1017)" onmouseover="showTip(event, '1017', 1017)">
+            ToFunc(a)
+          </code>
+          <div class="tip" id="1017">
+            <strong>Signature:</strong> a:Action&lt;&#39;?22768&gt; -&gt; Func&lt;&#39;?22768,unit&gt;<br />
+                          <strong>Type parameters:</strong> '?22768          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/CSharpCompat.fs#L69-69" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Converts an action to a function returning Unit</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1018', 1018)" onmouseover="showTip(event, '1018', 1018)">
+            ToFunc(a)
+          </code>
+          <div class="tip" id="1018">
+            <strong>Signature:</strong> a:Action -&gt; Func&lt;unit&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/CSharpCompat.fs#L64-64" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Converts an action to a function returning Unit</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1019', 1019)" onmouseover="showTip(event, '1019', 1019)">
+            Tuple(f)
+          </code>
+          <div class="tip" id="1019">
+            <strong>Signature:</strong> f:Action&lt;&#39;?22793,&#39;?22794,&#39;?22795,&#39;?22796&gt; -&gt; Action&lt;&#39;?22793 * &#39;?22794 * &#39;?22795 * &#39;?22796&gt;<br />
+                          <strong>Type parameters:</strong> '?22793, '?22794, '?22795, '?22796          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/CSharpCompat.fs#L104-104" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Converts an action with 4 arguments into an action taking a 4-tuple</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1020', 1020)" onmouseover="showTip(event, '1020', 1020)">
+            Tuple(f)
+          </code>
+          <div class="tip" id="1020">
+            <strong>Signature:</strong> f:Action&lt;&#39;?22789,&#39;?22790,&#39;?22791&gt; -&gt; Action&lt;&#39;?22789 * &#39;?22790 * &#39;?22791&gt;<br />
+                          <strong>Type parameters:</strong> '?22789, '?22790, '?22791          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/CSharpCompat.fs#L99-99" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Converts an action with 3 arguments into an action taking a 3-tuple</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1021', 1021)" onmouseover="showTip(event, '1021', 1021)">
+            Tuple(f)
+          </code>
+          <div class="tip" id="1021">
+            <strong>Signature:</strong> f:Action&lt;&#39;?22786,&#39;?22787&gt; -&gt; Action&lt;&#39;?22786 * &#39;?22787&gt;<br />
+                          <strong>Type parameters:</strong> '?22786, '?22787          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/CSharpCompat.fs#L94-94" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Converts an action with 2 arguments into an action taking a 2-tuple</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1022', 1022)" onmouseover="showTip(event, '1022', 1022)">
+            Untuple(f)
+          </code>
+          <div class="tip" id="1022">
+            <strong>Signature:</strong> (f:Action&lt;&#39;?22805 * &#39;?22806 * &#39;?22807 * &#39;?22808&gt;) -&gt; Action&lt;&#39;?22805,&#39;?22806,&#39;?22807,&#39;?22808&gt;<br />
+                          <strong>Type parameters:</strong> '?22805, '?22806, '?22807, '?22808          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/CSharpCompat.fs#L119-119" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Converts an action taking a 4-tuple into an action with 4 parameters</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1023', 1023)" onmouseover="showTip(event, '1023', 1023)">
+            Untuple(f)
+          </code>
+          <div class="tip" id="1023">
+            <strong>Signature:</strong> (f:Action&lt;&#39;?22801 * &#39;?22802 * &#39;?22803&gt;) -&gt; Action&lt;&#39;?22801,&#39;?22802,&#39;?22803&gt;<br />
+                          <strong>Type parameters:</strong> '?22801, '?22802, '?22803          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/CSharpCompat.fs#L114-114" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>/// Converts an action taking a 3-tuple into an action with 3 parameters</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1024', 1024)" onmouseover="showTip(event, '1024', 1024)">
+            Untuple(f)
+          </code>
+          <div class="tip" id="1024">
+            <strong>Signature:</strong> (f:Action&lt;&#39;?22798 * &#39;?22799&gt;) -&gt; Action&lt;&#39;?22798,&#39;?22799&gt;<br />
+                          <strong>Type parameters:</strong> '?22798, '?22799          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/CSharpCompat.fs#L109-109" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Converts an action taking a 2-tuple into an action with 2 parameters</p>
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <img src="./img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharpx.Extras</li>
+            <li><a href="./index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.com/packages/FSharpx.Core">Get Library via NuGet</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx/blob/master/LICENSE.txt">License</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="./index.html">Introduction</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="./reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/fsprojects/fsharpx"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
+  </body>
+  </html>

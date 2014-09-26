@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <title>Map - FSharpx</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="Steffen Forkmann">
+    <meta charset="utf-8"/>
+    <title>Map - FSharpx.Extras</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="Steffan Forkmann and others"/>
 
-    <script src="http://code.jquery.com/jquery-1.8.0.js"></script>
-    <script src="http://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
-    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
-    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
 
-    <link type="text/css" rel="stylesheet" href="http://fsprojects.github.io/fsharpx/content/style.css" />
-    <script type="text/javascript" src="http://fsprojects.github.io/fsharpx/content/tips.js"></script>
+    <link type="text/css" rel="stylesheet" href="./content/style.css" />
+    <script type="text/javascript" src="./content/tips.js"></script>
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+      <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
   </head>
   <body>
@@ -24,9 +24,9 @@
       <div class="masthead">
         <ul class="nav nav-pills pull-right">
           <li><a href="http://fsharp.org">fsharp.org</a></li>
-          <li><a href="http://github.com/fsprojects/FSharpx">github page</a></li>
+          <li><a href="https://github.com/fsprojects/fsharpx">github page</a></li>
         </ul>
-        <h3 class="muted"><a href="http://fsprojects.github.io/fsharpx/index.html">FSharpx</a></h3>
+        <h3 class="muted"><a href="./index.html">FSharpx.Extras</a></h3>
       </div>
       <hr />
       <div class="row">
@@ -50,190 +50,19 @@
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '588', 588)" onmouseover="showTip(event, '588', 588)">
-            choose f map
-          </code>
-          <div class="tip" id="588">
-            <strong>Signature:</strong>f:(&#39;T -&gt; &#39;b -&gt; &#39;c option) -&gt; map:Map&lt;&#39;T,&#39;b&gt; -&gt; Map&lt;&#39;T,&#39;c&gt;<br />
-                          <strong>Type parameters:</strong> 'T, 'b, 'c          </div>
-        </td>
-        <td class="xmldoc">
-        
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Collections.fs#L424-424" class="github-link">Go to GitHub source</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '590', 590)" onmouseover="showTip(event, '590', 590)">
-            findOrDefault key defaultValue map
-          </code>
-          <div class="tip" id="590">
-            <strong>Signature:</strong>key:&#39;T -&gt; defaultValue:&#39;b -&gt; map:Map&lt;&#39;T,&#39;b&gt; -&gt; &#39;b<br />
-                          <strong>Type parameters:</strong> 'T, 'b          </div>
-        </td>
-        <td class="xmldoc">
-        
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Collections.fs#L443-443" class="github-link">Go to GitHub source</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '591', 591)" onmouseover="showTip(event, '591', 591)">
-            insertWith f key value map
-          </code>
-          <div class="tip" id="591">
-            <strong>Signature:</strong>f:(&#39;?23249 -&gt; &#39;?23249 -&gt; &#39;?23249) -&gt; key:&#39;?23250 -&gt; value:&#39;?23249 -&gt; map:Map&lt;&#39;?23250,&#39;?23249&gt; -&gt; Map&lt;&#39;?23250,&#39;?23249&gt;<br />
-                          <strong>Type parameters:</strong> '?23249, '?23250          </div>
-        </td>
-        <td class="xmldoc">
-        <p>insertWith f key value mp will insert the pair (key, value) into mp if key does not exist in the map. 
- If the key does exist, the function will insert f new<em>value old</em>value.</p>
-
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Collections.fs#L399-399" class="github-link">Go to GitHub source</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '592', 592)" onmouseover="showTip(event, '592', 592)">
-            keys map
-          </code>
-          <div class="tip" id="592">
-            <strong>Signature:</strong>map:Map&lt;&#39;T,&#39;b&gt; -&gt; seq&lt;&#39;T&gt;<br />
-                          <strong>Type parameters:</strong> 'T, 'b          </div>
-        </td>
-        <td class="xmldoc">
-        <p>Retrieves the keys from a Map</p>
-
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Collections.fs#L440-440" class="github-link">Go to GitHub source</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '593', 593)" onmouseover="showTip(event, '593', 593)">
+          <code onmouseout="hideTip(event, '573', 573)" onmouseover="showTip(event, '573', 573)">
             monoid 
           </code>
-          <div class="tip" id="593">
-            <strong>Signature:</strong>Monoid&lt;Map&lt;&#39;key,&#39;value&gt;&gt;<br />
+          <div class="tip" id="573">
+            <strong>Signature:</strong> Monoid&lt;Map&lt;&#39;key,&#39;value&gt;&gt;<br />
                           <strong>Type parameters:</strong> 'key, 'value          </div>
         </td>
         <td class="xmldoc">
-        
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Collections.fs#L446-446" class="github-link">Go to GitHub source</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '594', 594)" onmouseover="showTip(event, '594', 594)">
-            removeMany keys map
-          </code>
-          <div class="tip" id="594">
-            <strong>Signature:</strong>keys:seq&lt;&#39;T&gt; -&gt; map:Map&lt;&#39;T,&#39;b&gt; -&gt; Map&lt;&#39;T,&#39;b&gt;<br />
-                          <strong>Type parameters:</strong> 'T, 'b          </div>
-        </td>
-        <td class="xmldoc">
-        <p>Allows to remove many keys from a Map</p>
-
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Collections.fs#L432-432" class="github-link">Go to GitHub source</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '595', 595)" onmouseover="showTip(event, '595', 595)">
-            spanWithKey pred map
-          </code>
-          <div class="tip" id="595">
-            <strong>Signature:</strong>pred:(&#39;?23243 -&gt; bool) -&gt; map:Map&lt;&#39;?23243,&#39;?23244&gt; -&gt; Map&lt;&#39;?23243,&#39;?23244&gt; * Map&lt;&#39;?23243,&#39;?23244&gt;<br />
-                          <strong>Type parameters:</strong> '?23243, '?23244          </div>
-        </td>
-        <td class="xmldoc">
-        
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Collections.fs#L384-384" class="github-link">Go to GitHub source</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '596', 596)" onmouseover="showTip(event, '596', 596)">
-            splitWithKey pred d
-          </code>
-          <div class="tip" id="596">
-            <strong>Signature:</strong>pred:(&#39;?23246 -&gt; bool) -&gt; d:Map&lt;&#39;?23246,&#39;?23247&gt; -&gt; Map&lt;&#39;?23246,&#39;?23247&gt; * Map&lt;&#39;?23246,&#39;?23247&gt;<br />
-                          <strong>Type parameters:</strong> '?23246, '?23247          </div>
-        </td>
-        <td class="xmldoc">
-        
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Collections.fs#L393-393" class="github-link">Go to GitHub source</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '597', 597)" onmouseover="showTip(event, '597', 597)">
-            union map1 map2
-          </code>
-          <div class="tip" id="597">
-            <strong>Signature:</strong>map1:Map&lt;&#39;?23258,&#39;?23259&gt; -&gt; map2:Map&lt;&#39;?23258,&#39;?23259&gt; -&gt; Map&lt;&#39;?23258,&#39;?23259&gt;<br />
-                          <strong>Type parameters:</strong> '?23258, '?23259          </div>
-        </td>
-        <td class="xmldoc">
-        <p>Combines the two Maps into a single Map</p>
-
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Collections.fs#L421-421" class="github-link">Go to GitHub source</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '598', 598)" onmouseover="showTip(event, '598', 598)">
-            updateWith f key map
-          </code>
-          <div class="tip" id="598">
-            <strong>Signature:</strong>f:(&#39;?23252 -&gt; &#39;?23252 option) -&gt; key:&#39;?23253 -&gt; map:Map&lt;&#39;?23253,&#39;?23252&gt; -&gt; Map&lt;&#39;?23253,&#39;?23252&gt;<br />
-                          <strong>Type parameters:</strong> '?23252, '?23253          </div>
-        </td>
-        <td class="xmldoc">
-        <p>update f k map updates the value x at key k (if it is in the map). 
- If f x is None, the element is deleted. 
- If it is Some y, the key is bound to the new value y.</p>
-
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Collections.fs#L409-409" class="github-link">Go to GitHub source</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '599', 599)" onmouseover="showTip(event, '599', 599)">
-            valueList map
-          </code>
-          <div class="tip" id="599">
-            <strong>Signature:</strong>map:Map&lt;&#39;?23255,&#39;?23256&gt; -&gt; &#39;?23256 list<br />
-                          <strong>Type parameters:</strong> '?23255, '?23256          </div>
-        </td>
-        <td class="xmldoc">
-        
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Collections.fs#L418-418" class="github-link">Go to GitHub source</a>
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '600', 600)" onmouseover="showTip(event, '600', 600)">
-            values map
-          </code>
-          <div class="tip" id="600">
-            <strong>Signature:</strong>map:Map&lt;&#39;T,&#39;b&gt; -&gt; seq&lt;&#39;b&gt;<br />
-                          <strong>Type parameters:</strong> 'T, 'b          </div>
-        </td>
-        <td class="xmldoc">
-        <p>Retrieves the values from a Map</p>
-
-            <a href="http://github.com/fsprojects/FSharpx/tree/master/src/FSharpx/Collections/Collections.fs#L436-436" class="github-link">Go to GitHub source</a>
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Monoid.fs#L154-154" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
         </td>
       </tr>
     </tbody>
@@ -241,25 +70,25 @@
 
         </div>
         <div class="span3">
-          <img src="/FSharpx/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <img src="./img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
           <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
-            <li class="nav-header">FSharpx</li>
-            <li><a href="http://fsprojects.github.io/fsharpx/index.html">Home page</a></li>
+            <li class="nav-header">FSharpx.Extras</li>
+            <li><a href="./index.html">Home page</a></li>
             <li class="divider"></li>
-            <li><a href="http://nuget.com/packages/FSharpx">Get Library via NuGet</a></li>
-            <li><a href="http://github.com/fsprojects/FSharpx">Source Code on GitHub</a></li>
-            <li><a href="http://github.com/fsprojects/FSharpx/blob/master/LICENSE.txt">License</a></li>
-            <li><a href="http://github.com/fsprojects/FSharpx/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+            <li><a href="http://nuget.com/packages/FSharpx.Core">Get Library via NuGet</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx/blob/master/LICENSE.txt">License</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
             
             <li class="nav-header">Getting started</li>
-            <li><a href="http://fsprojects.github.io/fsharpx/tutorial.html">Sample tutorial</a></li>
+            <li><a href="./index.html">Introduction</a></li>
 
             <li class="nav-header">Documentation</li>
-            <li><a href="http://fsprojects.github.io/fsharpx/reference/index.html">API Reference</a></li>
+            <li><a href="./reference/index.html">API Reference</a></li>
           </ul>
         </div>
       </div>
     </div>
-    <a href="http://github.com/fsprojects/FSharpx"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+    <a href="https://github.com/fsprojects/fsharpx"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
   </body>
   </html>
