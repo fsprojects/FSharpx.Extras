@@ -21,7 +21,7 @@
     <OutputPath>..\..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Debug\FSharpx.Text.StructuredFormat.Tests.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\FSharpx.Text.StructuredFormat.Tests.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,7 +30,7 @@
     <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\FSharpx.Text.StructuredFormat.Tests.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\FSharpx.Text.StructuredFormat.Tests.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets') And $(TargetFrameworkProfile) == ''">
     <FSharpTargetsPath>$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets</FSharpTargetsPath>
@@ -66,7 +66,7 @@
     <ProjectReference Include="..\..\src\FSharpx.Text.StructuredFormat\FSharpx.Text.StructuredFormat.fsproj">
       <Name>FSharpx.Text.StructuredFormat</Name>
       <Project>{65e077ed-f51a-42d7-8004-e90d60af8b8f}</Project>
-      <Private>True</Private>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
 </Project>

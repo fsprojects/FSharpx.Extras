@@ -21,7 +21,7 @@
     <OutputPath>..\..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Debug\FSharpx.Observable.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\FSharpx.Observable.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,7 +30,7 @@
     <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\FSharpx.Observable.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\FSharpx.Observable.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets') And $(TargetFrameworkProfile) == ''">
     <FSharpTargetsPath>$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets</FSharpTargetsPath>
@@ -68,7 +68,7 @@
     <ProjectReference Include="..\FSharpx.Core\FSharpx.Core.fsproj">
       <Name>FSharpx.Core</Name>
       <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
-      <Private>True</Private>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
 </Project>

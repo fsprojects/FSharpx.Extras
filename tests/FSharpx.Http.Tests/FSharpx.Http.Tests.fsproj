@@ -54,18 +54,14 @@
     <ProjectReference Include="..\..\src\FSharpx.Http\FSharpx.Http.fsproj">
       <Name>FSharpx.Http</Name>
       <Project>{60f3bb81-5449-45dd-a217-b6045327680c}</Project>
-      <Private>True</Private>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\FSharpx.Tests\FSharpx.Tests.fsproj">
       <Name>FSharpx.Tests</Name>
       <Project>{26d9d3ee-e882-43e6-a79e-5d1d89e92c4f}</Project>
-      <Private>True</Private>
+      <Private>False</Private>
     </ProjectReference>
-    <Reference Include="FsUnit.NUnit" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
-      <HintPath>..\..\packages\FsUnit.1.2.1.0\Lib\Net20\FsUnit.NUnit.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="FsUnit.NUnit" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
+    <Reference Include="FsUnit.NUnit">
       <HintPath>..\..\packages\FsUnit.1.2.1.0\Lib\Net40\FsUnit.NUnit.dll</HintPath>
       <Private>True</Private>
     </Reference>

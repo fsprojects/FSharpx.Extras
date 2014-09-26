@@ -43,11 +43,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FsUnit.NUnit" Condition="'$(TargetFrameworkVersion)' == 'v3.5'">
-      <HintPath>..\..\packages\FsUnit.1.2.1.0\Lib\Net20\FsUnit.NUnit.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="FsUnit.NUnit" Condition="'$(TargetFrameworkVersion)' != 'v3.5'">
+    <Reference Include="FsUnit.NUnit">
       <HintPath>..\..\packages\FsUnit.1.2.1.0\Lib\Net40\FsUnit.NUnit.dll</HintPath>
       <Private>True</Private>
     </Reference>
