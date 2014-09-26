@@ -63,7 +63,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics" Condition="'$(TargetFrameworkVersion)' != 'v3.5'" />
     <Reference Include="WindowsBase" />
     <ProjectReference Include="..\FSharpx.Core\FSharpx.Core.fsproj">
       <Name>FSharpx.Core</Name>

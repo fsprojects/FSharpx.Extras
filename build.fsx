@@ -28,13 +28,14 @@ let net35 = "v3.5"
 let net40 = "v4.0"
 
 // directories
-let buildDir = "./bin/"
-let packagesDir = "./packages/"
-let testDir = "./test/"
+let buildDir = "./bin"
+let buildDirVer fxVersion = buildDir @@ fxVersion
+let packagesDir = "./packages"
 
 let targetPlatformDir = getTargetPlatformDir "v4.0.30319"
 
-let nugetDir package = sprintf "./nuget/%s/" package
+let nugDir = "./nuget"
+let nugetDir package = nugDir @@ package
 let nugetLibDir package = nugetDir package @@ "lib"
 
 let packages = ["Core"; "Http"; "Observable"; "Text.StructuredFormat"] 
@@ -78,15 +79,12 @@ let buildLibParams fxVersion =
 
 // tools
 let nunitVersion = GetPackageVersion packagesDir "NUnit.Runners"
-let nunitPath = sprintf "%sNUnit.Runners.%s/Tools" packagesDir nunitVersion
+let nunitPath = packagesDir  @@ sprintf "NUnit.Runners.%s/Tools" nunitVersion
 
 
 // targets
 Target "Clean" (fun _ ->       
-    CleanDirs [buildDir; testDir]
-
-    packages
-    |> Seq.iter (fun x -> CleanDirs [nugetDir x; nugetLibDir x;])
+    CleanDirs [buildDir; nugDir]
 )
 
 
@@ -131,28 +129,24 @@ Target "AssemblyInfo" (fun _ ->
 )
 
 
-let testTarget = TargetTemplate (fun fxVersion ->
-    ActivateFinalTarget "CloseTestRunner"
-    !! (testDir + "/*.Tests.dll")
-    |> NUnit (fun p ->
-        {p with
-            ToolPath = nunitPath
-            DisableShadowCopy = true
-            OutputFile = testDir + sprintf "TestResults.%s.xml" fxVersion })
-)
-
 
 Target "Build" (fun _ ->
     for fxVersion in fxVersions do
-        (!! "./src/**/*.*proj")  
-        |> MSBuild buildDir "Rebuild" (["Configuration","Release"] @ buildLibParams fxVersion)
+        // Only generate tests for net40
+        (if fxVersion = net35 then !! "src/**/*.fsproj" else !! "*.sln")  
+        |> MSBuild (buildDirVer fxVersion) "Rebuild" (["Configuration","Release"] @ buildLibParams fxVersion)
         |> ignore)
 
 Target "Test" (fun _ ->
-    for fxVersion in fxVersions do
-        (!! "./tests/**/*.*proj") 
-        |> MSBuild testDir "Rebuild" ["Configuration","Release"]
-        |> ignore)
+    ActivateFinalTarget "CloseTestRunner"
+    for fxVersion in [net40] do
+      printfn "buildDirVer fxVersion = %s" (buildDirVer fxVersion)
+      !! (buildDirVer fxVersion @@ "*.Tests.dll")
+      |> NUnit (fun p ->
+        {p with
+            ToolPath = nunitPath
+            DisableShadowCopy = true
+            OutputFile = buildDirVer fxVersion @@ sprintf "TestResults.%s.xml" fxVersion }))
 
 Target "PrepareNuGet" (fun _ ->
     for fxVersion in fxVersions do
@@ -161,7 +155,7 @@ Target "PrepareNuGet" (fun _ ->
         CleanDir frameworkSubDir
 
         [for ending in ["dll";"pdb";"xml"] do
-            yield sprintf "%sFSharpx.%s.%s" buildDir package ending]
+            yield buildDirVer fxVersion @@ sprintf "FSharpx.%s.%s" package ending]
         |> Seq.filter File.Exists
         |> CopyTo frameworkSubDir)
 
@@ -229,13 +223,17 @@ Target "Release" DoNothing
   ==> "PrepareNuGet"
   ==> "NuGet"
 
-"Test"
+"Test" 
+  ==> "Release"
+
+"Build" 
   ==> "GenerateDocs"
   ==> "ReleaseDocs"
   ==> "Release"
 
 "NuGet"
   ==> "Release"
+
 
 let target = getBuildParamOrDefault "target" "Test"
 

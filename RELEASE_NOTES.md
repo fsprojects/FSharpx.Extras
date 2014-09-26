@@ -1,3 +1,6 @@
+### 1.9.4 - Remove Obsolete method
+* Remove the WebClient extension method that has long ago been moved to FSharp.Core
+
 ### 1.9.3 - Cleanup namespaces
 * FSharpx.* types and operators are now in FSharpx.Functional
 * FSharpx.Regex are now in FSharpx.Text.Regex

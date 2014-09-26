@@ -260,7 +260,6 @@ namespace FSharpx.Control
             }
 
         type WebClient with
-            member this.AsyncDownloadString address = callFSharpCoreAsyncDownloadString this address
 
             member private this.buildAsyncAction(event, start, result) =
                 fromEventPattern event start result (fun () -> this.CancelAsync())

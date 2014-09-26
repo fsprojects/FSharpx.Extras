@@ -57,7 +57,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics" Condition="'$(TargetFrameworkVersion)' != 'v3.5'"  />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="StructuredFormatTests.fs" />
