@@ -12,6 +12,7 @@ open System.Text
 [<TestFixture>]
 type AsyncStreamReaderTest() =
     
+    let runningOnMono = try System.Type.GetType("Mono.Runtime") <> null with e -> false 
     let utf8Encoding : Encoding = downcast (new UTF8Encoding()).Clone()
 #if FX_NO_UTF32ENCODING
 #else
@@ -177,10 +178,14 @@ type AsyncStreamReaderTest() =
         
     [<Test>]
     member this.``ReadToEnd, Read and ReadExactly on Russian chars``() =
-       readToEndAndReadCharTest "Однажды в студеную зимнюю пору\r\nЯ из лесу вышел\r\nБыл сильный мороз!"
+       // See https://github.com/fsprojects/fsharpx/issues/302
+       if not runningOnMono then 
+           readToEndAndReadCharTest "Однажды в студеную зимнюю пору\r\nЯ из лесу вышел\r\nБыл сильный мороз!"
        
     [<Test>]
     member this.``ReadToEnd, Read and ReadExactly with surrogate codepoints``() =
+     // See https://github.com/fsprojects/fsharpx/issues/302
+     if not runningOnMono then 
       let chars =
         [| for i in 1..4096 do
             yield 'a'
