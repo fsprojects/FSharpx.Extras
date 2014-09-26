@@ -17,8 +17,8 @@
 open System
 open System.Net
 open System.Text
-open FSharp.IO
-open FSharp.Control
+open FSharpx.IO
+open FSharpx.Control
 open Microsoft.FSharp.Control.WebExtensions
 
 // ----------------------------------------------------------------------------

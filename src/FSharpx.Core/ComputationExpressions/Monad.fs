@@ -1,5 +1,5 @@
 ﻿
-namespace FSharpx
+namespace FSharpx.Functional
 #nowarn "40"
 
 open System
@@ -610,7 +610,7 @@ module Undo =
             return true }
 
 module Writer =
-    open Monoid
+    open FSharpx.Functional.Monoid
         
     type Writer<'W, 'T> = unit -> 'T * 'W
 

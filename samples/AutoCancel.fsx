@@ -7,7 +7,7 @@
 // The agent automatically stops its body when disposed.
 
 #r @"..\bin\FSharpx.Core.dll"
-open FSharp.Control
+open FSharpx.Control
 
 let op = async {
   // Create a local agent that is disposed when the 

@@ -6,7 +6,7 @@
 // This example demonstrates how to convert IObservable<'T> to AsyncSeq<'T>
 
 #r @"..\bin\FSharpx.Core.dll"
-open FSharp.Control
+open FSharpx.Control
 open System.Windows.Forms
 open System.Threading
 

@@ -7,6 +7,7 @@ open System.Collections.Generic
 open System.Runtime.CompilerServices
 open FSharpx.Control.StreamReaderExtensions
 open FSharpx.Collections
+open FSharpx.Functional
 
 
 [<assembly:Extension>]

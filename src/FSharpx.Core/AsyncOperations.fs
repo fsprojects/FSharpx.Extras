@@ -6,7 +6,7 @@ namespace FSharpx.Control
 
     open System
     open System.Threading
-    open Microsoft.FSharp.Control
+    open FSharpx.Functional
 
     /// Represents the reified result of an asynchronous computation
     [<NoEquality; NoComparison>]

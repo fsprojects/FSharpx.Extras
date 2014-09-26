@@ -6,7 +6,7 @@
 // This example demonstrates how to use 'Async.Cache' and 'AsyncSeq.cache'
 
 #r @"..\bin\FSharpx.Core.dll"
-open FSharp.Control
+open FSharpx.Control
 
 // The Async.Cache combinator makes it possible to create asynchronous
 // workflow that caches the result and performs computation only once

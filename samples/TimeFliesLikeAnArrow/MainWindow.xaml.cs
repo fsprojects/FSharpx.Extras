@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using FSharp.Control;
+using FSharpx.Control;
 
 namespace TimeFliesLikeAnArrow
 {

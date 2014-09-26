@@ -2,7 +2,7 @@
 // F# async extensions (CircularQueueAgent.fs)
 // (c) Tomas Petricek & Ryan Riley, 2011-2012, Available under Apache 2.0 license.
 // -------------------------------------------------------------------------------
-namespace FSharp.Control
+namespace FSharpx.Control
 
 open System
 open System.Collections.Generic

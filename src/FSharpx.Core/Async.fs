@@ -2,7 +2,7 @@
 // F# async extensions
 // (c) Tomas Petricek, David Thomas 2012, Available under Apache 2.0 license.
 // ----------------------------------------------------------------------------
-namespace FSharp.Control
+namespace FSharpx.Control
 open System
 open System.Threading
 

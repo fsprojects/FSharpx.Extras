@@ -1,4 +1,4 @@
-﻿namespace FSharpx
+﻿namespace FSharpx.Functional
 
 /// Semigroup (set with associative binary operation)
 type ISemigroup<'T> =
@@ -126,7 +126,7 @@ namespace FSharpx.Collections
     open System.Collections
     open System.Collections.Generic
     open System.Runtime.CompilerServices
-    open FSharpx
+    open FSharpx.Functional
             
     module Seq =
 

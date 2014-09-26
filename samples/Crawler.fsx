@@ -18,7 +18,7 @@ open System.Net
 open System.Text.RegularExpressions
 open HtmlAgilityPack
 
-open FSharp.Control
+open FSharpx.Control
 
 // ----------------------------------------------------------------------------
 // Helper functions for downloading documents, extracting links etc.

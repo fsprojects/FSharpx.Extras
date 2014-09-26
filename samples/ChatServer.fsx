@@ -6,7 +6,7 @@
 //open System.Text
 //open System.Threading
 open System.Xml.Linq
-//open FSharp.Control
+//open FSharpx.Control
 
 type Agent<'T> = MailboxProcessor<'T>
 
@@ -167,7 +167,7 @@ let contentTypes =
          ".html", "text/html" 
          ".xap", "application/x-silverlight-app" ]
 
-let server = HttpAgent.Start("http://localhost:8082/", fun mbox -> 
+let server2 = HttpAgent.Start("http://localhost:8082/", fun mbox -> 
   let handleRequest (ctx:HttpListenerContext) = async { 
     match ctx.Request.Url.LocalPath with 
     | "/post" -> 
@@ -192,4 +192,4 @@ let server = HttpAgent.Start("http://localhost:8082/", fun mbox ->
       let! ctx = mbox.Receive()
       ctx |> handleRequest |> Async.Start })
 
-server.Stop()
+server2.Stop()

@@ -4,7 +4,7 @@ open System
 open System.Threading
 open System.Threading.Tasks
 
-open FSharp.Control.Observable
+open FSharpx.Control.Observable
 
 open FsUnit
 open NUnit.Framework

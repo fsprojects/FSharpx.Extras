@@ -1,11 +1,11 @@
-﻿namespace FSharpx
+﻿namespace FSharpx.Functional
 #nowarn "40"
 
 open System
 open System.Collections
 open System.Collections.Generic
 open FSharpx.Collections
-open FSharp.Control
+open FSharpx.Control
 
 (*
 # Iteratee

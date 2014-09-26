@@ -2,14 +2,14 @@
 
 // Initial version of the parser from http://blog.efvincent.com/parsing-json-using-f/
 // Simplyfied and fixed some minor bugs
-
+#nowarn "44"
 open System
 open System.Xml
 open System.Xml.Linq
 open System.Text
 open Microsoft.FSharp.Reflection
 open System.Collections.Generic
-open FSharpx.Strings
+open FSharpx.Text.Strings
 
 [<RequireQualifiedAccess>]
 [<Obsolete("This JSON parser is no longer maintained. Please use the JSON parser in FSharp.Data")>]

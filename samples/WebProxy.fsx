@@ -7,9 +7,9 @@
 
 #r @"..\bin\FSharpx.Core.dll"
 #r @"..\bin\FSharpx.Http.dll"
-open FSharp.Control
-open FSharp.IO
-open FSharp.Net
+open FSharpx.Control
+open FSharpx.IO
+open FSharpx.Net
 
 open System
 open System.Net

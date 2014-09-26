@@ -8,7 +8,7 @@
 
 #r @"..\bin\FSharpx.Core.dll"
 
-open FSharp.Control
+open FSharpx.Control
 open System.Drawing
 open System.Windows.Forms
 

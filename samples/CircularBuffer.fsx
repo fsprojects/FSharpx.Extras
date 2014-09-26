@@ -11,8 +11,8 @@
 
 open System
 open System.Diagnostics
-open FSharp.Control
-open FSharp.IO
+open FSharpx.Control
+open FSharpx.IO
 open FSharpx.Collections.Mutable
 
 // [snippet: Using CircularBuffer]
