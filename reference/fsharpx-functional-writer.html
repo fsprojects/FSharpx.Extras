@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Writer - FSharpx.Extras</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="Steffan Forkmann and others"/>
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
+
+    <link type="text/css" rel="stylesheet" href="./content/style.css" />
+    <script type="text/javascript" src="./content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="https://github.com/fsprojects/fsharpx">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="./index.html">FSharpx.Extras</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Writer</h1>
+<div class="xmldoc">
+</div>
+
+<!-- Render nested types and modules, if there are any -->
+  <h2>Nested types and modules</h2>
+  <div>
+      <table class="table table-bordered type-list">
+    <thead>
+      <tr><td>Type</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-functional-writer-writer-2.html">Writer<'W, 'T></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-functional-writer-writerbuilder-1.html">WriterBuilder<'W></a>
+          </td>
+          <td class="xmldoc"><p>The writer monad.
+This monad comes from Matthew Podwysocki's <a href="http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.">http://codebetter.com/blogs/matthew.podwysocki/archive/2010/02/01/a-kick-in-the-monads-writer-edition.aspx.</a></p>
+</td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+  <h3>Functions and values</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Function or value</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '503', 503)" onmouseover="showTip(event, '503', 503)">
+            ( *&gt; ) x y
+          </code>
+          <div class="tip" id="503">
+            <strong>Signature:</strong> x:Writer&lt;string list,&#39;?25649&gt; -&gt; y:Writer&lt;string list,&#39;?25650&gt; -&gt; Writer&lt;string list,&#39;?25650&gt;<br />
+                          <strong>Type parameters:</strong> '?25649, '?25650          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L696-696" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequence actions, discarding the value of the first argument.</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '504', 504)" onmouseover="showTip(event, '504', 504)">
+            ( &lt;!&gt; ) f m
+          </code>
+          <div class="tip" id="504">
+            <strong>Signature:</strong> f:(&#39;?25642 -&gt; &#39;?25643) -&gt; m:Writer&lt;string list,&#39;?25642&gt; -&gt; Writer&lt;string list,&#39;?25643&gt;<br />
+                          <strong>Type parameters:</strong> '?25642, '?25643          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L690-690" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Infix map</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '505', 505)" onmouseover="showTip(event, '505', 505)">
+            ( &lt;* ) x y
+          </code>
+          <div class="tip" id="505">
+            <strong>Signature:</strong> x:Writer&lt;string list,&#39;?25652&gt; -&gt; y:Writer&lt;string list,&#39;?25653&gt; -&gt; Writer&lt;string list,&#39;?25652&gt;<br />
+                          <strong>Type parameters:</strong> '?25652, '?25653          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L699-699" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequence actions, discarding the value of the second argument.</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '506', 506)" onmouseover="showTip(event, '506', 506)">
+            ( &lt;*&gt; ) f m
+          </code>
+          <div class="tip" id="506">
+            <strong>Signature:</strong> f:Writer&lt;string list,(&#39;?25633 -&gt; &#39;?25634)&gt; -&gt; m:Writer&lt;string list,&#39;?25633&gt; -&gt; Writer&lt;string list,&#39;?25634&gt;<br />
+                          <strong>Type parameters:</strong> '?25633, '?25634          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L681-681" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequential application</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '507', 507)" onmouseover="showTip(event, '507', 507)">
+            ( &lt;=&lt; ) x
+          </code>
+          <div class="tip" id="507">
+            <strong>Signature:</strong> x:(&#39;?25662 -&gt; Writer&lt;string list,&#39;?25663&gt;) -&gt; (&#39;?25664 -&gt; Writer&lt;string list,&#39;?25662&gt;) -&gt; &#39;?25664 -&gt; Writer&lt;string list,&#39;?25663&gt;<br />
+                          <strong>Type parameters:</strong> '?25662, '?25663, '?25664          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L708-708" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Right-to-left Kleisli composition</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '508', 508)" onmouseover="showTip(event, '508', 508)">
+            ( =&lt;&lt; ) f m
+          </code>
+          <div class="tip" id="508">
+            <strong>Signature:</strong> f:(&#39;?25630 -&gt; Writer&lt;string list,&#39;?25631&gt;) -&gt; m:Writer&lt;string list,&#39;?25630&gt; -&gt; Writer&lt;string list,&#39;?25631&gt;<br />
+                          <strong>Type parameters:</strong> '?25630, '?25631          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L678-678" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Flipped >>=</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '509', 509)" onmouseover="showTip(event, '509', 509)">
+            ( &gt;=&gt; ) f g x
+          </code>
+          <div class="tip" id="509">
+            <strong>Signature:</strong> f:(&#39;?25658 -&gt; Writer&lt;string list,&#39;?25659&gt;) -&gt; g:(&#39;?25659 -&gt; Writer&lt;string list,&#39;?25660&gt;) -&gt; x:&#39;?25658 -&gt; Writer&lt;string list,&#39;?25660&gt;<br />
+                          <strong>Type parameters:</strong> '?25658, '?25659, '?25660          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L705-705" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Left-to-right Kleisli composition</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '510', 510)" onmouseover="showTip(event, '510', 510)">
+            ( &gt;&gt;. ) m f
+          </code>
+          <div class="tip" id="510">
+            <strong>Signature:</strong> m:Writer&lt;string list,&#39;?25655&gt; -&gt; f:Writer&lt;string list,&#39;?25656&gt; -&gt; Writer&lt;string list,&#39;?25656&gt;<br />
+                          <strong>Type parameters:</strong> '?25655, '?25656          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L702-702" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequentially compose two state actions, discarding any value produced by the first</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '511', 511)" onmouseover="showTip(event, '511', 511)">
+            ( &gt;&gt;= ) m f
+          </code>
+          <div class="tip" id="511">
+            <strong>Signature:</strong> m:Writer&lt;string list,&#39;?25627&gt; -&gt; f:(&#39;?25627 -&gt; Writer&lt;string list,&#39;?25628&gt;) -&gt; Writer&lt;string list,&#39;?25628&gt;<br />
+                          <strong>Type parameters:</strong> '?25627, '?25628          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L675-675" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequentially compose two actions, passing any value produced by the first as an argument to the second.</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '512', 512)" onmouseover="showTip(event, '512', 512)">
+            ap m f
+          </code>
+          <div class="tip" id="512">
+            <strong>Signature:</strong> m:Writer&lt;string list,&#39;?25636&gt; -&gt; f:Writer&lt;string list,(&#39;?25636 -&gt; &#39;?25637)&gt; -&gt; Writer&lt;string list,&#39;?25637&gt;<br />
+                          <strong>Type parameters:</strong> '?25636, '?25637          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L684-684" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequential application</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '513', 513)" onmouseover="showTip(event, '513', 513)">
+            bind m k writer ()
+          </code>
+          <div class="tip" id="513">
+            <strong>Signature:</strong> m:Monoid&lt;&#39;W&gt; -&gt; k:(&#39;T -&gt; Writer&lt;&#39;W,&#39;U&gt;) -&gt; writer:Writer&lt;&#39;W,&#39;T&gt; -&gt; unit -&gt; &#39;U * &#39;W<br />
+                          <strong>Type parameters:</strong> 'W, 'T, 'U          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L617-617" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '514', 514)" onmouseover="showTip(event, '514', 514)">
+            censor monoid f m
+          </code>
+          <div class="tip" id="514">
+            <strong>Signature:</strong> monoid:Monoid&lt;&#39;w1&gt; -&gt; f:(&#39;w1 -&gt; &#39;w2) -&gt; m:Writer&lt;&#39;w1,&#39;T&gt; -&gt; Writer&lt;&#39;w2,&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'w1, 'w2, 'T          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L664-664" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '515', 515)" onmouseover="showTip(event, '515', 515)">
+            foldM f s
+          </code>
+          <div class="tip" id="515">
+            <strong>Signature:</strong> f:(&#39;?25666 -&gt; &#39;?25667 -&gt; Writer&lt;string list,&#39;?25666&gt;) -&gt; s:&#39;?25666 -&gt; seq&lt;&#39;?25667&gt; -&gt; Writer&lt;string list,&#39;?25666&gt;<br />
+                          <strong>Type parameters:</strong> '?25666, '?25667          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L710-710" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '516', 516)" onmouseover="showTip(event, '516', 516)">
+            lift2 f a b
+          </code>
+          <div class="tip" id="516">
+            <strong>Signature:</strong> f:(&#39;?25645 -&gt; &#39;?25646 -&gt; &#39;?25647) -&gt; a:Writer&lt;string list,&#39;?25645&gt; -&gt; b:Writer&lt;string list,&#39;?25646&gt; -&gt; Writer&lt;string list,&#39;?25647&gt;<br />
+                          <strong>Type parameters:</strong> '?25645, '?25646, '?25647          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L693-693" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Promote a function to a monad/applicative, scanning the monadic/applicative arguments from left to right.</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '517', 517)" onmouseover="showTip(event, '517', 517)">
+            listen m ()
+          </code>
+          <div class="tip" id="517">
+            <strong>Signature:</strong> m:(unit -&gt; &#39;?25609 * &#39;?25610) -&gt; unit -&gt; (&#39;?25609 * &#39;?25610) * &#39;?25610<br />
+                          <strong>Type parameters:</strong> '?25609, '?25610          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L655-655" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '518', 518)" onmouseover="showTip(event, '518', 518)">
+            listens monoid f m
+          </code>
+          <div class="tip" id="518">
+            <strong>Signature:</strong> monoid:Monoid&lt;&#39;?25616&gt; -&gt; f:(&#39;?25617 -&gt; &#39;?25618) -&gt; m:Writer&lt;&#39;?25616,(&#39;?25619 * &#39;?25617)&gt; -&gt; unit -&gt; (&#39;?25619 * &#39;?25618) * &#39;?25616<br />
+                          <strong>Type parameters:</strong> '?25616, '?25617, '?25618, '?25619          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L658-658" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '519', 519)" onmouseover="showTip(event, '519', 519)">
+            map f m
+          </code>
+          <div class="tip" id="519">
+            <strong>Signature:</strong> f:(&#39;?25639 -&gt; &#39;?25640) -&gt; m:Writer&lt;string list,&#39;?25639&gt; -&gt; Writer&lt;string list,&#39;?25640&gt;<br />
+                          <strong>Type parameters:</strong> '?25639, '?25640          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L687-687" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Transforms a Writer value by using a specified mapping function.</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '520', 520)" onmouseover="showTip(event, '520', 520)">
+            mapM f x
+          </code>
+          <div class="tip" id="520">
+            <strong>Signature:</strong> f:(&#39;?25671 -&gt; Writer&lt;string list,&#39;?25672&gt;) -&gt; x:&#39;?25671 list -&gt; Writer&lt;string list,&#39;?25672 list&gt;<br />
+                          <strong>Type parameters:</strong> '?25671, '?25672          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L717-717" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '521', 521)" onmouseover="showTip(event, '521', 521)">
+            pass m ()
+          </code>
+          <div class="tip" id="521">
+            <strong>Signature:</strong> m:(unit -&gt; (&#39;?25612 * (&#39;?25613 -&gt; &#39;?25614)) * &#39;?25613) -&gt; unit -&gt; &#39;?25612 * &#39;?25614<br />
+                          <strong>Type parameters:</strong> '?25612, '?25613, '?25614          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L656-656" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '522', 522)" onmouseover="showTip(event, '522', 522)">
+            returnM monoid a ()
+          </code>
+          <div class="tip" id="522">
+            <strong>Signature:</strong> monoid:Monoid&lt;&#39;?25567&gt; -&gt; a:&#39;?25568 -&gt; unit -&gt; &#39;?25568 * &#39;?25567<br />
+                          <strong>Type parameters:</strong> '?25567, '?25568          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L624-624" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Inject a value into the Writer type</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '523', 523)" onmouseover="showTip(event, '523', 523)">
+            sequence s
+          </code>
+          <div class="tip" id="523">
+            <strong>Signature:</strong> s:Writer&lt;string list,&#39;?25669&gt; list -&gt; Writer&lt;string list,&#39;?25669 list&gt;<br />
+                          <strong>Type parameters:</strong> '?25669          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L713-713" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '524', 524)" onmouseover="showTip(event, '524', 524)">
+            tell w ()
+          </code>
+          <div class="tip" id="524">
+            <strong>Signature:</strong> w:&#39;?25607 -&gt; unit -&gt; unit * &#39;?25607<br />
+                          <strong>Type parameters:</strong> '?25607          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L654-654" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '525', 525)" onmouseover="showTip(event, '525', 525)">
+            writer 
+          </code>
+          <div class="tip" id="525">
+            <strong>Signature:</strong> WriterBuilder&lt;string list&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Monad.fs#L652-652" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <img src="./img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharpx.Extras</li>
+            <li><a href="./index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.com/packages/FSharpx.Core">Get Library via NuGet</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx/blob/master/LICENSE.txt">License</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="./index.html">Introduction</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="./reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/fsprojects/fsharpx"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
+  </body>
+  </html>

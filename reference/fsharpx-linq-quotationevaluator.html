@@ -47,55 +47,11 @@
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '1127', 1127)" onmouseover="showTip(event, '1127', 1127)">
+          <code onmouseout="hideTip(event, '1112', 1112)" onmouseover="showTip(event, '1112', 1112)">
             Compile(arg1)
           </code>
-          <div class="tip" id="1127">
+          <div class="tip" id="1112">
             <strong>Signature:</strong> Expr&lt;&#39;T&gt; -&gt; unit -&gt; &#39;T<br />
-                          <strong>Type parameters:</strong> 'T          </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Linq/Linq.fs#L872-872" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Compile the quotation expression by first converting to LINQ expression trees</p>
-
-<p>Exceptions: InvalidArgumentException will be raised if the input expression is
-not in the subset that can be converted to a LINQ expression tree</p>
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '1128', 1128)" onmouseover="showTip(event, '1128', 1128)">
-            CompileUntyped(arg1)
-          </code>
-          <div class="tip" id="1128">
-            <strong>Signature:</strong> Expr -&gt; unit -&gt; obj<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Linq/Linq.fs#L866-866" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Compile the quotation expression by first converting to LINQ expression trees</p>
-
-<p>Exceptions: InvalidArgumentException will be raised if the input expression is
-not in the subset that can be converted to a LINQ expression tree</p>
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '1129', 1129)" onmouseover="showTip(event, '1129', 1129)">
-            Evaluate(arg1)
-          </code>
-          <div class="tip" id="1129">
-            <strong>Signature:</strong> Expr&lt;&#39;T&gt; -&gt; &#39;T<br />
                           <strong>Type parameters:</strong> 'T          </div>
         </td>
         <td class="xmldoc">
@@ -103,7 +59,7 @@ not in the subset that can be converted to a LINQ expression tree</p>
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Evaluate the quotation expression by first converting to LINQ expression trees</p>
+          <p>Compile the quotation expression by first converting to LINQ expression trees</p>
 
 <p>Exceptions: InvalidArgumentException will be raised if the input expression is
 not in the subset that can be converted to a LINQ expression tree</p>
@@ -113,11 +69,11 @@ not in the subset that can be converted to a LINQ expression tree</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '1130', 1130)" onmouseover="showTip(event, '1130', 1130)">
-            EvaluateUntyped(arg1)
+          <code onmouseout="hideTip(event, '1122', 1122)" onmouseover="showTip(event, '1122', 1122)">
+            CompileUntyped(arg1)
           </code>
-          <div class="tip" id="1130">
-            <strong>Signature:</strong> Expr -&gt; obj<br />
+          <div class="tip" id="1122">
+            <strong>Signature:</strong> Expr -&gt; unit -&gt; obj<br />
                       </div>
         </td>
         <td class="xmldoc">
@@ -135,15 +91,59 @@ not in the subset that can be converted to a LINQ expression tree</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '1131', 1131)" onmouseover="showTip(event, '1131', 1131)">
+          <code onmouseout="hideTip(event, '1123', 1123)" onmouseover="showTip(event, '1123', 1123)">
+            Evaluate(arg1)
+          </code>
+          <div class="tip" id="1123">
+            <strong>Signature:</strong> Expr&lt;&#39;T&gt; -&gt; &#39;T<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Linq/Linq.fs#L876-876" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Evaluate the quotation expression by first converting to LINQ expression trees</p>
+
+<p>Exceptions: InvalidArgumentException will be raised if the input expression is
+not in the subset that can be converted to a LINQ expression tree</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1124', 1124)" onmouseover="showTip(event, '1124', 1124)">
+            EvaluateUntyped(arg1)
+          </code>
+          <div class="tip" id="1124">
+            <strong>Signature:</strong> Expr -&gt; obj<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Linq/Linq.fs#L870-870" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Compile the quotation expression by first converting to LINQ expression trees</p>
+
+<p>Exceptions: InvalidArgumentException will be raised if the input expression is
+not in the subset that can be converted to a LINQ expression tree</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '1125', 1125)" onmouseover="showTip(event, '1125', 1125)">
             ToLinqExpression(arg1)
           </code>
-          <div class="tip" id="1131">
+          <div class="tip" id="1125">
             <strong>Signature:</strong> Expr -&gt; Expression<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Linq/Linq.fs#L863-863" class="github-link">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Linq/Linq.fs#L865-865" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>

@@ -35,201 +35,6 @@
 
 <h1>FSharpx.Extras</h1>
 
-    <h2>FSharp.Control Namespace</h2>
-    <div>
-        <table class="table table-bordered type-list">
-    <thead>
-      <tr><td>Type</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td class="type-name">
-            <a href="fsharp-control-agent-1.html">Agent<'T></a>
-          </td>
-          <td class="xmldoc"><p>Type alias for F# mailbox processor type</p>
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="fsharp-control-asyncseq-1.html">AsyncSeq<'T></a>
-          </td>
-          <td class="xmldoc"><p>An asynchronous sequence represents a delayed computation that can be
-started to produce either Cons value consisting of the next element of the 
-sequence (head) together with the next asynchronous sequence (tail) or a 
-special value representing the end of the sequence (Nil)</p>
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="fsharp-control-asyncseqinner-1.html">AsyncSeqInner<'T></a>
-          </td>
-          <td class="xmldoc"><p>The interanl type that represents a value returned as a result of
-evaluating a step of an asynchronous sequence</p>
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="fsharp-control-autocancelagent-1.html">AutoCancelAgent<'T></a>
-          </td>
-          <td class="xmldoc"><p>Wrapper for the standard F# agent (MailboxProcessor) that
-supports stopping of the agent's body using the IDisposable 
-interface (the type automatically creates a cancellation token)</p>
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="fsharp-control-batchprocessingagent-1.html">BatchProcessingAgent<'T></a>
-          </td>
-          <td class="xmldoc"><p>Agent that can be used to implement batch processing. It creates groups
-of messages (added using the Enqueue method) and emits them using the 
-BatchProduced event. A group is produced when it reaches the maximal 
-size or after the timeout elapses.</p>
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="fsharp-control-blockingqueueagent-1.html">BlockingQueueAgent<'T></a>
-          </td>
-          <td class="xmldoc"><p>Agent that implements an asynchronous queue with blocking put
-and blocking get operation (this implements the producer-consumer 
-concurrent programming pattern). The constructor takes the maximal
-size of the buffer.</p>
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="fsharp-control-circularqueueagent-1.html">CircularQueueAgent<'T></a>
-          </td>
-          <td class="xmldoc"><p>Agent that implements an asynchronous circular buffer with blocking
-enqueue and blocking dequeue operation (this implements the producer-consumer 
-concurrent programming pattern). The constructor takes the maximal
-size of the buffer.</p>
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="fsharp-control-concurrentsetagent-1.html">ConcurrentSetAgent<'T></a>
-          </td>
-          <td class="xmldoc"><p>Agent that implements a simple concurrent set. The agent exposes a 
-member that adds value to the set and returns whether the value
-was already present.</p>
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="fsharp-control-isubject-2.html">ISubject<'TIn, 'TOut></a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="fsharp-control-observableextensions.html">ObservableExtensions</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="fsharp-control-observableupdate-1.html">ObservableUpdate<'T></a>
-          </td>
-          <td class="xmldoc"><p>Union type that represents different messages that can be sent to the
-IObserver interface. The IObserver type is equivalent to a type that has
-just OnNext method that gets 'ObservableUpdate' as an argument.</p>
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="fsharp-control-replaysubject-1.html">ReplaySubject<'T></a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="fsharp-control-slidingwindowagent-1.html">SlidingWindowAgent<'T></a>
-          </td>
-          <td class="xmldoc"><p>Agent that implements the "sliding window" functionality. It collects
-messages added using the Enqueue method and emits them in overlapping 
-groups of the specified size. For example, given [1,2,3,4,5...] and a 
-size 3, the produced groups will be [1,2,3], [2,3,4], [3,4,5], ...</p>
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="fsharp-control-subject-1.html">Subject<'T></a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-    </tbody>
-  </table>
-  <table class="table table-bordered module-list">
-    <thead>
-      <tr><td>Module</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td class="module-name">
-            <a href="fsharp-control-asyncextensions.html">AsyncExtensions</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharp-control-asyncseq.html">AsyncSeq</a>
-          </td>
-          <td class="xmldoc"><p>Module with helper functions for working with asynchronous sequences</p>
-</td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharp-control-asyncseqextensions.html">AsyncSeqExtensions</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharp-control-observable.html">Observable</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharp-control-seq.html">Seq</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-    </tbody>
-  </table>
-
-    </div>
-    <h2>FSharp.IO Namespace</h2>
-    <div>
-        <table class="table table-bordered type-list">
-    <thead>
-      <tr><td>Type</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td class="type-name">
-            <a href="fsharp-io-circularstream.html">CircularStream</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-    </tbody>
-  </table>
-  <table class="table table-bordered module-list">
-    <thead>
-      <tr><td>Module</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td class="module-name">
-            <a href="fsharp-io-ioextensions.html">IOExtensions</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-    </tbody>
-  </table>
-
-    </div>
     <h2>FSharpx Namespace</h2>
     <div>
         <table class="table table-bordered type-list">
@@ -237,31 +42,6 @@ size 3, the produced groups will be [1,2,3], [2,3,4], [3,4,5], ...</p>
       <tr><td>Type</td><td>Description</td></tr>
     </thead>
     <tbody>
-        <tr>
-          <td class="type-name">
-            <a href="fsharpx-activematch.html">ActiveMatch</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="fsharpx-cont-2.html">Cont<'T, 'r></a>
-          </td>
-          <td class="xmldoc"><p>The continuation monad.
-The algorithm is from Wes Dyer <a href="http://blogs.msdn.com/b/wesdyer/archive/2008/01/11/the-marvels-of-monads.aspx.
-The">http://blogs.msdn.com/b/wesdyer/archive/2008/01/11/the-marvels-of-monads.aspx.
-The</a> builder approach is from Matthew Podwysocki's excellent Creating Extended Builders series <a href="http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/18/much-ado-about-monads-creating-extended-builders.aspx.
-Current">http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/18/much-ado-about-monads-creating-extended-builders.aspx.
-Current</a> implementation from Matt's gist at <a href="https://gist.github.com/628956">https://gist.github.com/628956</a></p>
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="fsharpx-coroutine.html">Coroutine</a>
-          </td>
-          <td class="xmldoc"><p>The coroutine type from <a href="http://fssnip.net/7M">http://fssnip.net/7M</a></p>
-</td>
-        </tr>
         <tr>
           <td class="type-name">
             <a href="fsharpx-dictionary.html">Dictionary</a>
@@ -273,21 +53,6 @@ Current</a> implementation from Matt's gist at <a href="https://gist.github.com/
             <a href="fsharpx-enumerableex.html">EnumerableEx</a>
           </td>
           <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="fsharpx-enumeratee-3.html">Enumeratee<'ChunkOut, 'ChunkIn, 'T></a>
-          </td>
-          <td class="xmldoc"><p>An enumeratee is an enumerator that produces an iteratee using another iteratee as input.
-Enumeratees can be used for tasks such as encoding or encrypting data.</p>
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="fsharpx-enumerator-2.html">Enumerator<'Chunk, 'T></a>
-          </td>
-          <td class="xmldoc"><p>An enumerator generates a stream of data and feeds an iteratee, returning a new iteratee.</p>
-</td>
         </tr>
         <tr>
           <td class="type-name">
@@ -348,39 +113,9 @@ We need these because FuncConvert often makes C# type inference fail.</p>
         </tr>
         <tr>
           <td class="type-name">
-            <a href="fsharpx-isemigroup-1.html">ISemigroup<'T></a>
-          </td>
-          <td class="xmldoc"><p>Semigroup (set with associative binary operation)</p>
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="fsharpx-iteratee-2.html">Iteratee<'Chunk, 'T></a>
-          </td>
-          <td class="xmldoc"><p>The iteratee is a stream consumer that will consume a stream of data until either 
-it receives an EOF or meets its own requirements for consuming data. The iteratee
-will return Continue whenever it is ready to receive the next chunk. An iteratee
-is fed data by an Enumerator, which generates a Stream.</p>
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
             <a href="fsharpx-l.html">L</a>
           </td>
           <td class="xmldoc"><p>Helps the C# compiler with Func type inference.</p>
-</td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="fsharpx-lens-2.html">Lens<'T, 'U></a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="type-name">
-            <a href="fsharpx-monoid-1.html">Monoid<'T></a>
-          </td>
-          <td class="xmldoc"><p>Monoid (associative binary operation with identity)</p>
 </td>
         </tr>
         <tr>
@@ -389,15 +124,6 @@ is fed data by an Enumerator, which generates a Stream.</p>
           </td>
           <td class="xmldoc"></td>
         </tr>
-        <tr>
-          <td class="type-name">
-            <a href="fsharpx-stream-1.html">Stream<'Chunk></a>
-          </td>
-          <td class="xmldoc"><p>A stream of chunks of data generated by an Enumerator.
-The stream can be composed of chunks of 'T, empty blocks indicating a wait, or an EOF marker.
-Be aware that when using #seq<_> types, you will need to check for both Seq.empty ([]) and Empty.</p>
-</td>
-        </tr>
     </tbody>
   </table>
   <table class="table table-bordered module-list">
@@ -405,42 +131,6 @@ Be aware that when using #seq<_> types, you will need to check for both Seq.empt
       <tr><td>Module</td><td>Description</td></tr>
     </thead>
     <tbody>
-        <tr>
-          <td class="module-name">
-            <a href="fsharpx-async.html">Async</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharpx-choice.html">Choice</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharpx-continuationmodule.html">Continuation</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharpx-enumerator.html">Enumerator</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharpx-io.html">IO</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharpx-iterateemodule.html">Iteratee</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
         <tr>
           <td class="module-name">
             <a href="fsharpx-json.html">JSON</a>
@@ -455,67 +145,6 @@ Be aware that when using #seq<_> types, you will need to check for both Seq.empt
         </tr>
         <tr>
           <td class="module-name">
-            <a href="fsharpx-lensmodule.html">Lens</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharpx-monoid.html">Monoid</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharpx-nullable.html">Nullable</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharpx-operators.html">Operators</a>
-          </td>
-          <td class="xmldoc"><p>Generic monadic operators</p>
-</td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharpx-option.html">Option</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharpx-prelude.html">Prelude</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharpx-reader.html">Reader</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharpx-regexmodule.html">Regex</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharpx-semigroup.html">Semigroup</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharpx-state.html">State</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
             <a href="fsharpx-stm.html">Stm</a>
           </td>
           <td class="xmldoc"><p>The Software Transactional Memory monad.</p>
@@ -523,43 +152,7 @@ Be aware that when using #seq<_> types, you will need to check for both Seq.empt
         </tr>
         <tr>
           <td class="module-name">
-            <a href="fsharpx-strings.html">Strings</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharpx-task.html">Task</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
             <a href="fsharpx-timemeasurement.html">TimeMeasurement</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharpx-undo.html">Undo</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharpx-validation.html">Validation</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharpx-writer.html">Writer</a>
-          </td>
-          <td class="xmldoc"></td>
-        </tr>
-        <tr>
-          <td class="module-name">
-            <a href="fsharpx-ziplist.html">ZipList</a>
           </td>
           <td class="xmldoc"></td>
         </tr>
@@ -617,6 +210,13 @@ Be aware that when using #seq<_> types, you will need to check for both Seq.empt
     <tbody>
         <tr>
           <td class="type-name">
+            <a href="fsharpx-control-agent-1.html">Agent<'T></a>
+          </td>
+          <td class="xmldoc"><p>Type alias for F# mailbox processor type</p>
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
             <a href="fsharpx-control-asyncresult-1.html">AsyncResult<'T></a>
           </td>
           <td class="xmldoc"><p>Represents the reified result of an asynchronous computation</p>
@@ -628,6 +228,24 @@ Be aware that when using #seq<_> types, you will need to check for both Seq.empt
           </td>
           <td class="xmldoc"><p>A helper type to store a single result from an asynchronous computation and asynchronously
 access its result.</p>
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-control-asyncseq-1.html">AsyncSeq<'T></a>
+          </td>
+          <td class="xmldoc"><p>An asynchronous sequence represents a delayed computation that can be
+started to produce either Cons value consisting of the next element of the 
+sequence (head) together with the next asynchronous sequence (tail) or a 
+special value representing the end of the sequence (Nil)</p>
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-control-asyncseqinner-1.html">AsyncSeqInner<'T></a>
+          </td>
+          <td class="xmldoc"><p>The interanl type that represents a value returned as a result of
+evaluating a step of an asynchronous sequence</p>
 </td>
         </tr>
         <tr>
@@ -644,6 +262,97 @@ a byte stream in a particular encoding.</p>
           </td>
           <td class="xmldoc"></td>
         </tr>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-control-autocancelagent-1.html">AutoCancelAgent<'T></a>
+          </td>
+          <td class="xmldoc"><p>Wrapper for the standard F# agent (MailboxProcessor) that
+supports stopping of the agent's body using the IDisposable 
+interface (the type automatically creates a cancellation token)</p>
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-control-batchprocessingagent-1.html">BatchProcessingAgent<'T></a>
+          </td>
+          <td class="xmldoc"><p>Agent that can be used to implement batch processing. It creates groups
+of messages (added using the Enqueue method) and emits them using the 
+BatchProduced event. A group is produced when it reaches the maximal 
+size or after the timeout elapses.</p>
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-control-blockingqueueagent-1.html">BlockingQueueAgent<'T></a>
+          </td>
+          <td class="xmldoc"><p>Agent that implements an asynchronous queue with blocking put
+and blocking get operation (this implements the producer-consumer 
+concurrent programming pattern). The constructor takes the maximal
+size of the buffer.</p>
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-control-circularqueueagent-1.html">CircularQueueAgent<'T></a>
+          </td>
+          <td class="xmldoc"><p>Agent that implements an asynchronous circular buffer with blocking
+enqueue and blocking dequeue operation (this implements the producer-consumer 
+concurrent programming pattern). The constructor takes the maximal
+size of the buffer.</p>
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-control-concurrentsetagent-1.html">ConcurrentSetAgent<'T></a>
+          </td>
+          <td class="xmldoc"><p>Agent that implements a simple concurrent set. The agent exposes a 
+member that adds value to the set and returns whether the value
+was already present.</p>
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-control-isubject-2.html">ISubject<'TIn, 'TOut></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-control-observableextensions.html">ObservableExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-control-observableupdate-1.html">ObservableUpdate<'T></a>
+          </td>
+          <td class="xmldoc"><p>Union type that represents different messages that can be sent to the
+IObserver interface. The IObserver type is equivalent to a type that has
+just OnNext method that gets 'ObservableUpdate' as an argument.</p>
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-control-replaysubject-1.html">ReplaySubject<'T></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-control-slidingwindowagent-1.html">SlidingWindowAgent<'T></a>
+          </td>
+          <td class="xmldoc"><p>Agent that implements the "sliding window" functionality. It collects
+messages added using the Enqueue method and emits them in overlapping 
+groups of the specified size. For example, given [1,2,3,4,5...] and a 
+size 3, the produced groups will be [1,2,3], [2,3,4], [3,4,5], ...</p>
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-control-subject-1.html">Subject<'T></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
     </tbody>
   </table>
   <table class="table table-bordered module-list">
@@ -653,7 +362,38 @@ a byte stream in a particular encoding.</p>
     <tbody>
         <tr>
           <td class="module-name">
+            <a href="fsharpx-control-asyncextensions.html">AsyncExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-control-asyncseq.html">AsyncSeq</a>
+          </td>
+          <td class="xmldoc"><p>Module with helper functions for working with asynchronous sequences</p>
+</td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-control-asyncseqextensions.html">AsyncSeqExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
             <a href="fsharpx-control-fileextensions.html">FileExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-control-observable.html">Observable</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-control-seq.html">Seq</a>
           </td>
           <td class="xmldoc"></td>
         </tr>
@@ -689,6 +429,248 @@ a byte stream in a particular encoding.</p>
         <tr>
           <td class="module-name">
             <a href="fsharpx-core-assemblyinfo.html">AssemblyInfo</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+    </tbody>
+  </table>
+
+    </div>
+    <h2>FSharpx.Functional Namespace</h2>
+    <div>
+        <table class="table table-bordered type-list">
+    <thead>
+      <tr><td>Type</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-functional-cont-2.html">Cont<'T, 'r></a>
+          </td>
+          <td class="xmldoc"><p>The continuation monad.
+The algorithm is from Wes Dyer <a href="http://blogs.msdn.com/b/wesdyer/archive/2008/01/11/the-marvels-of-monads.aspx.
+The">http://blogs.msdn.com/b/wesdyer/archive/2008/01/11/the-marvels-of-monads.aspx.
+The</a> builder approach is from Matthew Podwysocki's excellent Creating Extended Builders series <a href="http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/18/much-ado-about-monads-creating-extended-builders.aspx.
+Current">http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/18/much-ado-about-monads-creating-extended-builders.aspx.
+Current</a> implementation from Matt's gist at <a href="https://gist.github.com/628956">https://gist.github.com/628956</a></p>
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-functional-coroutine.html">Coroutine</a>
+          </td>
+          <td class="xmldoc"><p>The coroutine type from <a href="http://fssnip.net/7M">http://fssnip.net/7M</a></p>
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-functional-enumeratee-3.html">Enumeratee<'ChunkOut, 'ChunkIn, 'T></a>
+          </td>
+          <td class="xmldoc"><p>An enumeratee is an enumerator that produces an iteratee using another iteratee as input.
+Enumeratees can be used for tasks such as encoding or encrypting data.</p>
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-functional-enumerator-2.html">Enumerator<'Chunk, 'T></a>
+          </td>
+          <td class="xmldoc"><p>An enumerator generates a stream of data and feeds an iteratee, returning a new iteratee.</p>
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-functional-isemigroup-1.html">ISemigroup<'T></a>
+          </td>
+          <td class="xmldoc"><p>Semigroup (set with associative binary operation)</p>
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-functional-iteratee-2.html">Iteratee<'Chunk, 'T></a>
+          </td>
+          <td class="xmldoc"><p>The iteratee is a stream consumer that will consume a stream of data until either 
+it receives an EOF or meets its own requirements for consuming data. The iteratee
+will return Continue whenever it is ready to receive the next chunk. An iteratee
+is fed data by an Enumerator, which generates a Stream.</p>
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-functional-lens-2.html">Lens<'T, 'U></a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-functional-monoid-1.html">Monoid<'T></a>
+          </td>
+          <td class="xmldoc"><p>Monoid (associative binary operation with identity)</p>
+</td>
+        </tr>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-functional-stream-1.html">Stream<'Chunk></a>
+          </td>
+          <td class="xmldoc"><p>A stream of chunks of data generated by an Enumerator.
+The stream can be composed of chunks of 'T, empty blocks indicating a wait, or an EOF marker.
+Be aware that when using #seq<_> types, you will need to check for both Seq.empty ([]) and Empty.</p>
+</td>
+        </tr>
+    </tbody>
+  </table>
+  <table class="table table-bordered module-list">
+    <thead>
+      <tr><td>Module</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-async.html">Async</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-choice.html">Choice</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-continuationmodule.html">Continuation</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-enumerator.html">Enumerator</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-iterateemodule.html">Iteratee</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-lensmodule.html">Lens</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-monoid.html">Monoid</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-nullable.html">Nullable</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-operators.html">Operators</a>
+          </td>
+          <td class="xmldoc"><p>Generic monadic operators</p>
+</td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-option.html">Option</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-prelude.html">Prelude</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-reader.html">Reader</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-semigroup.html">Semigroup</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-state.html">State</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-task.html">Task</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-undo.html">Undo</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-validation.html">Validation</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-writer.html">Writer</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-ziplist.html">ZipList</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+    </tbody>
+  </table>
+
+    </div>
+    <h2>FSharpx.IO Namespace</h2>
+    <div>
+        <table class="table table-bordered type-list">
+    <thead>
+      <tr><td>Type</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-io-circularstream.html">CircularStream</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+    </tbody>
+  </table>
+  <table class="table table-bordered module-list">
+    <thead>
+      <tr><td>Module</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-io-ioextensions.html">IOExtensions</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-io-ioprimitives.html">IOPrimitives</a>
           </td>
           <td class="xmldoc"></td>
         </tr>
@@ -751,6 +733,42 @@ expression trees and using the LINQ dynamic compiler.</p>
         <tr>
           <td class="type-name">
             <a href="fsharpx-reflection-fsharpvalue.html">FSharpValue</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+    </tbody>
+  </table>
+
+    </div>
+    <h2>FSharpx.Text Namespace</h2>
+    <div>
+        <table class="table table-bordered type-list">
+    <thead>
+      <tr><td>Type</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-text-activematch.html">ActiveMatch</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+    </tbody>
+  </table>
+  <table class="table table-bordered module-list">
+    <thead>
+      <tr><td>Module</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-text-regexmodule.html">Regex</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-text-strings.html">Strings</a>
           </td>
           <td class="xmldoc"></td>
         </tr>
