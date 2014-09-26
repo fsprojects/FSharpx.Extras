@@ -2,8 +2,8 @@
 
 open System
 open NUnit.Framework
-open FSharpx
-open FSharpx.Option
+open FSharpx.Functional
+open FSharpx.Functional.Option
 
 [<Test>]
 let ``kleisli composition``() =

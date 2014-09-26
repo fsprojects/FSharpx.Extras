@@ -229,8 +229,8 @@ Target "Release" DoNothing
   ==> "PrepareNuGet"
   ==> "NuGet"
 
-"Test"
-  ==> "GenerateDocs"
+//"Test"
+"GenerateDocs"
   ==> "ReleaseDocs"
   ==> "Release"
 

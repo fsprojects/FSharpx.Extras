@@ -3,6 +3,7 @@
 open FsUnit
 open NUnit.Framework
 open FSharpx
+open FSharpx.Functional
 
 [<Test>]
 let zipping() =

@@ -1,11 +1,11 @@
 module FSharpx.Tests.BinaryIterateeTest
 
 open System
-open FSharpx
+open FSharpx.Functional
 open FSharpx.Collections
 open FSharpx.Collections.ByteString
-open FSharpx.Iteratee
-open FSharpx.Iteratee.Binary
+open FSharpx.Functional.Iteratee
+open FSharpx.Functional.Iteratee.Binary
 open NUnit.Framework
 open FsUnit
 

@@ -34,8 +34,8 @@ let info =
 open Fake
 open System.IO
 open Fake.FileHelper
-open FSharpx.Literate
-open FSharpx.MetadataFormat
+open FSharp.Literate
+open FSharp.MetadataFormat
 
 // When called from 'build.fsx', use the public project URL as <root>
 // otherwise, use the current 'output' directory.

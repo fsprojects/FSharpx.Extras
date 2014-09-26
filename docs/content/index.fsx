@@ -38,7 +38,7 @@ These are some adhoc components which are now rarely used:
 #r "FSharpx.Observable.dll"
 #r "FSharpx.Http.dll"
 #r "FSharpx.Text.StructuredFormat.dll"
-open FSharpx
+open FSharpx.Functional
 open FSharpx.Collections
 
 // Access the object that proves that 'List' is a 'monoid'

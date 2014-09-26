@@ -1,4 +1,4 @@
-﻿namespace FSharpx.Core.Tests
+﻿namespace FSharpx.Control.Tests
 
 open System
 open System.Threading

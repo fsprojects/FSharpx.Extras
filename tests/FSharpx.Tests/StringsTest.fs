@@ -1,7 +1,7 @@
 ﻿module FSharpx.Tests.StringsTest
 
 open System
-open FSharpx.Strings
+open FSharpx.Text.Strings
 open NUnit.Framework
 open FsUnit
 

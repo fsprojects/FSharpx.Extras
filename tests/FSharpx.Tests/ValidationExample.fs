@@ -5,10 +5,10 @@
 open NUnit.Framework
 open FsUnit
 
-open FSharpx
+open FSharpx.Functional
 open FSharpx.Collections
-open FSharpx.Choice
-open FSharpx.Validation
+open FSharpx.Functional.Choice
+open FSharpx.Functional.Validation
 
 // First let's define a domain.
 

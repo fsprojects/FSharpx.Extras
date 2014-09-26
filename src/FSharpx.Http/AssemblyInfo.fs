@@ -26,9 +26,9 @@ This library provides common features for working with HTTP applications.")>]
 
 [<assembly: AssemblyProduct ("FSharpx.Http")>]
 
-[<assembly: AssemblyVersion ("1.8.42")>]
+[<assembly: AssemblyVersion ("1.9.3")>]
 
-[<assembly: AssemblyFileVersion ("1.8.42")>]
+[<assembly: AssemblyFileVersion ("1.9.3")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 

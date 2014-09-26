@@ -4,7 +4,9 @@ open System
 open NUnit.Framework
 open FsCheck
 open FsCheck.NUnit
-open FSharpx.Lens.Operators
+open FSharpx.Functional
+open FSharpx.Functional.Lens.Operators
+open FSharpx.Text
 
 type Car = {
     Make: string
@@ -100,7 +102,7 @@ let stateMonad() =
     Assert.AreEqual(tom.Salary, r)
     Assert.AreEqual(1100, tom1.Salary)
 
-open FSharpx.Lens.StateOperators
+open FSharpx.Functional.Lens.StateOperators
 
 [<Test>]
 let stateMonadOperators() =

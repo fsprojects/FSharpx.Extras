@@ -1,6 +1,7 @@
 module FSharpx.Tests.RegexTests
 
-open FSharpx
+open FSharpx.Text
+open FSharpx.Functional
 open NUnit.Framework
 open System
 open System.Text.RegularExpressions

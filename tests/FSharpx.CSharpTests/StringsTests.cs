@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using FSharpx.Text;
 
 namespace FSharpx.CSharpTests
 {

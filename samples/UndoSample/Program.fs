@@ -1,5 +1,5 @@
 ﻿open System
-open FSharpx.Undo
+open FSharpx.Functional.Undo
 
 module Sample =
     let rec handleInput<'a> = undoable {         
