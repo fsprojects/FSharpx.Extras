@@ -51,10 +51,10 @@ size of the buffer.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '901', 901)" onmouseover="showTip(event, '901', 901)">
+          <code onmouseout="hideTip(event, '903', 903)" onmouseover="showTip(event, '903', 903)">
             new(maxLength)
           </code>
-          <div class="tip" id="901">
+          <div class="tip" id="903">
             <strong>Signature:</strong> maxLength:int -&gt; CircularQueueAgent&lt;&#39;T&gt;<br />
                       </div>
         </td>
@@ -77,10 +77,10 @@ size of the buffer.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '905', 905)" onmouseover="showTip(event, '905', 905)">
+          <code onmouseout="hideTip(event, '904', 904)" onmouseover="showTip(event, '904', 904)">
             AsyncDequeue(count, timeout)
           </code>
-          <div class="tip" id="905">
+          <div class="tip" id="904">
             <strong>Signature:</strong> (count:int * timeout:int option) -&gt; Async&lt;&#39;T []&gt;<br />
                       </div>
         </td>
@@ -97,10 +97,10 @@ in the queue, the operation will block until items are added.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '906', 906)" onmouseover="showTip(event, '906', 906)">
+          <code onmouseout="hideTip(event, '905', 905)" onmouseover="showTip(event, '905', 905)">
             AsyncEnqueue(value, timeout)
           </code>
-          <div class="tip" id="906">
+          <div class="tip" id="905">
             <strong>Signature:</strong> (value:&#39;T [] * timeout:int option) -&gt; Async&lt;unit&gt;<br />
                       </div>
         </td>
@@ -118,10 +118,10 @@ will block until some items are removed.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '907', 907)" onmouseover="showTip(event, '907', 907)">
+          <code onmouseout="hideTip(event, '906', 906)" onmouseover="showTip(event, '906', 906)">
             AsyncEnqueue(segment, timeout)
           </code>
-          <div class="tip" id="907">
+          <div class="tip" id="906">
             <strong>Signature:</strong> (segment:ArraySegment&lt;&#39;T&gt; * timeout:int option) -&gt; Async&lt;unit&gt;<br />
                       </div>
         </td>
@@ -139,10 +139,10 @@ will block until some items are removed.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '908', 908)" onmouseover="showTip(event, '908', 908)">
+          <code onmouseout="hideTip(event, '907', 907)" onmouseover="showTip(event, '907', 907)">
             AsyncEnqueue(...)
           </code>
-          <div class="tip" id="908">
+          <div class="tip" id="907">
             <strong>Signature:</strong> (value:&#39;T [] * offset:int * count:int * timeout:int option) -&gt; Async&lt;unit&gt;<br />
                       </div>
         </td>
@@ -154,6 +154,25 @@ will block until some items are removed.</p>
           <p>Adds item to the queue. The operation ends when
 there is a place for the item. If the queue is full, the operation
 will block until some items are removed.</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '908', 908)" onmouseover="showTip(event, '908', 908)">
+            Count
+          </code>
+          <div class="tip" id="908">
+            <strong>Signature:</strong> int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Agents/CircularQueueAgent.fs#L124-124" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Gets the number of elements currently waiting in the queue.</p>
 
         </td>
       </tr>
@@ -180,28 +199,9 @@ will block until some items are removed.</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '910', 910)" onmouseover="showTip(event, '910', 910)">
-            Count
-          </code>
-          <div class="tip" id="910">
-            <strong>Signature:</strong> int<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Agents/CircularQueueAgent.fs#L124-124" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Gets the number of elements currently waiting in the queue.</p>
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '911', 911)" onmouseover="showTip(event, '911', 911)">
             Dequeue(count, timeout)
           </code>
-          <div class="tip" id="911">
+          <div class="tip" id="910">
             <strong>Signature:</strong> (count:int * timeout:int option) -&gt; &#39;T []<br />
                       </div>
         </td>
@@ -219,10 +219,10 @@ This method blocks until value is available!</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '912', 912)" onmouseover="showTip(event, '912', 912)">
+          <code onmouseout="hideTip(event, '911', 911)" onmouseover="showTip(event, '911', 911)">
             Enqueue(value)
           </code>
-          <div class="tip" id="912">
+          <div class="tip" id="911">
             <strong>Signature:</strong> (value:&#39;T []) -&gt; unit<br />
                       </div>
         </td>
@@ -240,10 +240,10 @@ will block until some items are removed.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '913', 913)" onmouseover="showTip(event, '913', 913)">
+          <code onmouseout="hideTip(event, '912', 912)" onmouseover="showTip(event, '912', 912)">
             Enqueue(segment)
           </code>
-          <div class="tip" id="913">
+          <div class="tip" id="912">
             <strong>Signature:</strong> segment:ArraySegment&lt;&#39;T&gt; -&gt; unit<br />
                       </div>
         </td>
@@ -261,10 +261,10 @@ will block until some items are removed.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '914', 914)" onmouseover="showTip(event, '914', 914)">
+          <code onmouseout="hideTip(event, '913', 913)" onmouseover="showTip(event, '913', 913)">
             Enqueue(value, offset, count)
           </code>
-          <div class="tip" id="914">
+          <div class="tip" id="913">
             <strong>Signature:</strong> (value:&#39;T [] * offset:int * count:int) -&gt; unit<br />
                       </div>
         </td>

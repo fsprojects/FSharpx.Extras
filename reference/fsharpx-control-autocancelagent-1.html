@@ -50,10 +50,10 @@ interface (the type automatically creates a cancellation token)</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '834', 834)" onmouseover="showTip(event, '834', 834)">
+          <code onmouseout="hideTip(event, '833', 833)" onmouseover="showTip(event, '833', 833)">
             add_Error(arg1)
           </code>
-          <div class="tip" id="834">
+          <div class="tip" id="833">
             <strong>Signature:</strong> Handler&lt;Exception&gt; -&gt; unit<br />
                       </div>
         </td>
@@ -63,6 +63,25 @@ interface (the type automatically creates a cancellation token)</p>
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
           <p>Occurs when the execution of the agent results in an exception.</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '834', 834)" onmouseover="showTip(event, '834', 834)">
+            CurrentQueueLength
+          </code>
+          <div class="tip" id="834">
+            <strong>Signature:</strong> int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Agents/AutoCancelAgent.fs#L25-25" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Returns the number of unprocessed messages in the message queue of the agent.</p>
 
         </td>
       </tr>
@@ -89,18 +108,18 @@ interface (the type automatically creates a cancellation token)</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '836', 836)" onmouseover="showTip(event, '836', 836)">
-            CurrentQueueLength
+            Error
           </code>
           <div class="tip" id="836">
-            <strong>Signature:</strong> int<br />
+            <strong>Signature:</strong> IEvent&lt;Handler&lt;Exception&gt;,Exception&gt;<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Agents/AutoCancelAgent.fs#L25-25" class="github-link">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Agents/AutoCancelAgent.fs#L29-29" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
-          <p>Returns the number of unprocessed messages in the message queue of the agent.</p>
+          <p>Occurs when the execution of the agent results in an exception.</p>
 
         </td>
       </tr>
@@ -127,28 +146,9 @@ interface (the type automatically creates a cancellation token)</p>
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '838', 838)" onmouseover="showTip(event, '838', 838)">
-            Error
-          </code>
-          <div class="tip" id="838">
-            <strong>Signature:</strong> IEvent&lt;Handler&lt;Exception&gt;,Exception&gt;<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Agents/AutoCancelAgent.fs#L29-29" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Occurs when the execution of the agent results in an exception.</p>
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '839', 839)" onmouseover="showTip(event, '839', 839)">
             Post(m)
           </code>
-          <div class="tip" id="839">
+          <div class="tip" id="838">
             <strong>Signature:</strong> m:&#39;T -&gt; unit<br />
                       </div>
         </td>
@@ -164,10 +164,10 @@ interface (the type automatically creates a cancellation token)</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '840', 840)" onmouseover="showTip(event, '840', 840)">
+          <code onmouseout="hideTip(event, '839', 839)" onmouseover="showTip(event, '839', 839)">
             PostAndAsyncReply(buildMessage, timeout)
           </code>
-          <div class="tip" id="840">
+          <div class="tip" id="839">
             <strong>Signature:</strong> (buildMessage:(AsyncReplyChannel&lt;&#39;?11704&gt; -&gt; &#39;T) * timeout:int option) -&gt; Async&lt;&#39;?11704&gt;<br />
                       </div>
         </td>
@@ -183,10 +183,10 @@ interface (the type automatically creates a cancellation token)</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '841', 841)" onmouseover="showTip(event, '841', 841)">
+          <code onmouseout="hideTip(event, '840', 840)" onmouseover="showTip(event, '840', 840)">
             PostAndReply(buildMessage, timeout)
           </code>
-          <div class="tip" id="841">
+          <div class="tip" id="840">
             <strong>Signature:</strong> (buildMessage:(AsyncReplyChannel&lt;&#39;?11698&gt; -&gt; &#39;T) * timeout:int option) -&gt; &#39;?11698<br />
                       </div>
         </td>
@@ -202,10 +202,10 @@ interface (the type automatically creates a cancellation token)</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '842', 842)" onmouseover="showTip(event, '842', 842)">
+          <code onmouseout="hideTip(event, '841', 841)" onmouseover="showTip(event, '841', 841)">
             PostAndTryAsyncReply(...)
           </code>
-          <div class="tip" id="842">
+          <div class="tip" id="841">
             <strong>Signature:</strong> (buildMessage:(AsyncReplyChannel&lt;&#39;?11701&gt; -&gt; &#39;T) * timeout:int option) -&gt; Async&lt;&#39;?11701 option&gt;<br />
                       </div>
         </td>
@@ -221,10 +221,10 @@ interface (the type automatically creates a cancellation token)</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '843', 843)" onmouseover="showTip(event, '843', 843)">
+          <code onmouseout="hideTip(event, '842', 842)" onmouseover="showTip(event, '842', 842)">
             Receive(timeout)
           </code>
-          <div class="tip" id="843">
+          <div class="tip" id="842">
             <strong>Signature:</strong> (timeout:int option) -&gt; Async&lt;&#39;T&gt;<br />
                       </div>
         </td>
@@ -240,10 +240,10 @@ interface (the type automatically creates a cancellation token)</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '844', 844)" onmouseover="showTip(event, '844', 844)">
+          <code onmouseout="hideTip(event, '843', 843)" onmouseover="showTip(event, '843', 843)">
             remove_Error(arg1)
           </code>
-          <div class="tip" id="844">
+          <div class="tip" id="843">
             <strong>Signature:</strong> Handler&lt;Exception&gt; -&gt; unit<br />
                       </div>
         </td>
@@ -259,10 +259,10 @@ interface (the type automatically creates a cancellation token)</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '845', 845)" onmouseover="showTip(event, '845', 845)">
+          <code onmouseout="hideTip(event, '844', 844)" onmouseover="showTip(event, '844', 844)">
             Scan(scanner, timeout)
           </code>
-          <div class="tip" id="845">
+          <div class="tip" id="844">
             <strong>Signature:</strong> (scanner:(&#39;T -&gt; Async&lt;&#39;?11685&gt; option) * timeout:int option) -&gt; Async&lt;&#39;?11685&gt;<br />
                       </div>
         </td>
@@ -279,10 +279,10 @@ returns a Some value. Other messages remain in the queue.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '846', 846)" onmouseover="showTip(event, '846', 846)">
+          <code onmouseout="hideTip(event, '845', 845)" onmouseover="showTip(event, '845', 845)">
             TryPostAndReply(buildMessage, timeout)
           </code>
-          <div class="tip" id="846">
+          <div class="tip" id="845">
             <strong>Signature:</strong> (buildMessage:(AsyncReplyChannel&lt;&#39;?11688&gt; -&gt; &#39;T) * timeout:int option) -&gt; &#39;?11688 option<br />
                       </div>
         </td>
@@ -298,10 +298,10 @@ returns a Some value. Other messages remain in the queue.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '847', 847)" onmouseover="showTip(event, '847', 847)">
+          <code onmouseout="hideTip(event, '846', 846)" onmouseover="showTip(event, '846', 846)">
             TryReceive(timeout)
           </code>
-          <div class="tip" id="847">
+          <div class="tip" id="846">
             <strong>Signature:</strong> (timeout:int option) -&gt; Async&lt;&#39;T option&gt;<br />
                       </div>
         </td>
@@ -317,10 +317,10 @@ returns a Some value. Other messages remain in the queue.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '848', 848)" onmouseover="showTip(event, '848', 848)">
+          <code onmouseout="hideTip(event, '847', 847)" onmouseover="showTip(event, '847', 847)">
             TryScan(scanner, timeout)
           </code>
-          <div class="tip" id="848">
+          <div class="tip" id="847">
             <strong>Signature:</strong> (scanner:(&#39;T -&gt; Async&lt;&#39;?11693&gt; option) * timeout:int option) -&gt; Async&lt;&#39;?11693 option&gt;<br />
                       </div>
         </td>
@@ -345,10 +345,10 @@ returns a Some value. Other messages remain in the queue.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '854', 854)" onmouseover="showTip(event, '854', 854)">
+          <code onmouseout="hideTip(event, '848', 848)" onmouseover="showTip(event, '848', 848)">
             Start(f)
           </code>
-          <div class="tip" id="854">
+          <div class="tip" id="848">
             <strong>Signature:</strong> (f:(MailboxProcessor&lt;&#39;T&gt; -&gt; Async&lt;unit&gt;)) -&gt; AutoCancelAgent&lt;&#39;T&gt;<br />
                       </div>
         </td>
