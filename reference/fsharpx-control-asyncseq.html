@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>AsyncSeq - FSharpx.Extras</title>
+    <title>AsyncSeq - fsharpx</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content=""/>
     <meta name="author" content="Steffan Forkmann and others"/>
@@ -26,7 +26,7 @@
           <li><a href="http://fsharp.org">fsharp.org</a></li>
           <li><a href="https://github.com/fsprojects/fsharpx">github page</a></li>
         </ul>
-        <h3 class="muted"><a href="./index.html">FSharpx.Extras</a></h3>
+        <h3 class="muted"><a href="./index.html">fsharpx</a></h3>
       </div>
       <hr />
       <div class="row">
@@ -70,10 +70,10 @@ sequences using the 'asyncSeq { ... }' syntax</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '41', 41)" onmouseover="showTip(event, '41', 41)">
+          <code onmouseout="hideTip(event, '61', 61)" onmouseover="showTip(event, '61', 61)">
             append seq1 seq2
           </code>
-          <div class="tip" id="41">
+          <div class="tip" id="61">
             <strong>Signature:</strong> seq1:AsyncSeq&lt;&#39;T&gt; -&gt; seq2:AsyncSeq&lt;&#39;T&gt; -&gt; AsyncSeq&lt;&#39;T&gt;<br />
                           <strong>Type parameters:</strong> 'T          </div>
         </td>
@@ -90,10 +90,10 @@ all elements of the second asynchronous sequence.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '42', 42)" onmouseover="showTip(event, '42', 42)">
+          <code onmouseout="hideTip(event, '62', 62)" onmouseover="showTip(event, '62', 62)">
             asyncSeq 
           </code>
-          <div class="tip" id="42">
+          <div class="tip" id="62">
             <strong>Signature:</strong> AsyncSeqBuilder<br />
                       </div>
         </td>
@@ -109,10 +109,10 @@ all elements of the second asynchronous sequence.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '43', 43)" onmouseover="showTip(event, '43', 43)">
+          <code onmouseout="hideTip(event, '63', 63)" onmouseover="showTip(event, '63', 63)">
             cache input
           </code>
-          <div class="tip" id="43">
+          <div class="tip" id="63">
             <strong>Signature:</strong> input:AsyncSeq&lt;&#39;T&gt; -&gt; AsyncSeq&lt;&#39;T&gt;<br />
                           <strong>Type parameters:</strong> 'T          </div>
         </td>
@@ -130,12 +130,12 @@ multiple times, the input will still be evaluated only once</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '44', 44)" onmouseover="showTip(event, '44', 44)">
+          <code onmouseout="hideTip(event, '64', 64)" onmouseover="showTip(event, '64', 64)">
             choose f input
           </code>
-          <div class="tip" id="44">
-            <strong>Signature:</strong> f:(&#39;T -&gt; &#39;?12068 option) -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; AsyncSeq&lt;&#39;?12068&gt;<br />
-                          <strong>Type parameters:</strong> 'T, '?12068          </div>
+          <div class="tip" id="64">
+            <strong>Signature:</strong> f:(&#39;T -&gt; &#39;?12067 option) -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; AsyncSeq&lt;&#39;?12067&gt;<br />
+                          <strong>Type parameters:</strong> 'T, '?12067          </div>
         </td>
         <td class="xmldoc">
             <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/AsyncSeq.fs#L275-275" class="github-link">
@@ -150,10 +150,10 @@ and processes the input element immediately.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '45', 45)" onmouseover="showTip(event, '45', 45)">
+          <code onmouseout="hideTip(event, '65', 65)" onmouseover="showTip(event, '65', 65)">
             chooseAsync f input
           </code>
-          <div class="tip" id="45">
+          <div class="tip" id="65">
             <strong>Signature:</strong> f:(&#39;T -&gt; Async&lt;&#39;R option&gt;) -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; AsyncSeq&lt;&#39;R&gt;<br />
                           <strong>Type parameters:</strong> 'T, 'R          </div>
         </td>
@@ -174,10 +174,10 @@ be asked for the next element after the processing of an element completes).</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '46', 46)" onmouseover="showTip(event, '46', 46)">
+          <code onmouseout="hideTip(event, '66', 66)" onmouseover="showTip(event, '66', 66)">
             collect f input
           </code>
-          <div class="tip" id="46">
+          <div class="tip" id="66">
             <strong>Signature:</strong> f:(&#39;T -&gt; AsyncSeq&lt;&#39;TResult&gt;) -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; AsyncSeq&lt;&#39;TResult&gt;<br />
                           <strong>Type parameters:</strong> 'T, 'TResult          </div>
         </td>
@@ -197,10 +197,10 @@ the 'for' keyword in asyncSeq computation).</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '47', 47)" onmouseover="showTip(event, '47', 47)">
+          <code onmouseout="hideTip(event, '67', 67)" onmouseover="showTip(event, '67', 67)">
             empty 
           </code>
-          <div class="tip" id="47">
+          <div class="tip" id="67">
             <strong>Signature:</strong> AsyncSeq&lt;&#39;T&gt;<br />
                           <strong>Type parameters:</strong> 'T          </div>
         </td>
@@ -216,10 +216,10 @@ the 'for' keyword in asyncSeq computation).</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '48', 48)" onmouseover="showTip(event, '48', 48)">
+          <code onmouseout="hideTip(event, '68', 68)" onmouseover="showTip(event, '68', 68)">
             filter f input
           </code>
-          <div class="tip" id="48">
+          <div class="tip" id="68">
             <strong>Signature:</strong> f:(&#39;T -&gt; bool) -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; AsyncSeq&lt;&#39;T&gt;<br />
                           <strong>Type parameters:</strong> 'T          </div>
         </td>
@@ -236,10 +236,10 @@ and processes the input element immediately.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '49', 49)" onmouseover="showTip(event, '49', 49)">
+          <code onmouseout="hideTip(event, '69', 69)" onmouseover="showTip(event, '69', 69)">
             filterAsync f input
           </code>
-          <div class="tip" id="49">
+          <div class="tip" id="69">
             <strong>Signature:</strong> f:(&#39;T -&gt; Async&lt;bool&gt;) -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; AsyncSeq&lt;&#39;T&gt;<br />
                           <strong>Type parameters:</strong> 'T          </div>
         </td>
@@ -259,10 +259,10 @@ be asked for the next element after the processing of an element completes).</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '50', 50)" onmouseover="showTip(event, '50', 50)">
+          <code onmouseout="hideTip(event, '70', 70)" onmouseover="showTip(event, '70', 70)">
             firstOrDefault def input
           </code>
-          <div class="tip" id="50">
+          <div class="tip" id="70">
             <strong>Signature:</strong> def:&#39;T -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; Async&lt;&#39;T&gt;<br />
                           <strong>Type parameters:</strong> 'T          </div>
         </td>
@@ -279,10 +279,10 @@ given asynchronous sequence (or the specified default value).</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '51', 51)" onmouseover="showTip(event, '51', 51)">
+          <code onmouseout="hideTip(event, '71', 71)" onmouseover="showTip(event, '71', 71)">
             fold f state input
           </code>
-          <div class="tip" id="51">
+          <div class="tip" id="71">
             <strong>Signature:</strong> f:(&#39;TState -&gt; &#39;T -&gt; &#39;TState) -&gt; state:&#39;TState -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; Async&lt;&#39;TState&gt;<br />
                           <strong>Type parameters:</strong> 'TState, 'T          </div>
         </td>
@@ -299,10 +299,10 @@ and returns the result of aggregation immediately.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '52', 52)" onmouseover="showTip(event, '52', 52)">
+          <code onmouseout="hideTip(event, '72', 72)" onmouseover="showTip(event, '72', 72)">
             foldAsync f state input
           </code>
-          <div class="tip" id="52">
+          <div class="tip" id="72">
             <strong>Signature:</strong> f:(&#39;TState -&gt; &#39;T -&gt; Async&lt;&#39;TState&gt;) -&gt; state:&#39;TState -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; Async&lt;&#39;TState&gt;<br />
                           <strong>Type parameters:</strong> 'TState, 'T          </div>
         </td>
@@ -323,10 +323,10 @@ be asked for the next element after the processing of an element completes).</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '53', 53)" onmouseover="showTip(event, '53', 53)">
+          <code onmouseout="hideTip(event, '73', 73)" onmouseover="showTip(event, '73', 73)">
             iter f input
           </code>
-          <div class="tip" id="53">
+          <div class="tip" id="73">
             <strong>Signature:</strong> f:(&#39;T -&gt; unit) -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; Async&lt;unit&gt;<br />
                           <strong>Type parameters:</strong> 'T          </div>
         </td>
@@ -343,10 +343,10 @@ and performs the side-effect immediately.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '54', 54)" onmouseover="showTip(event, '54', 54)">
+          <code onmouseout="hideTip(event, '74', 74)" onmouseover="showTip(event, '74', 74)">
             iterAsync f input
           </code>
-          <div class="tip" id="54">
+          <div class="tip" id="74">
             <strong>Signature:</strong> f:(&#39;T -&gt; Async&lt;unit&gt;) -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; Async&lt;unit&gt;<br />
                           <strong>Type parameters:</strong> 'T          </div>
         </td>
@@ -366,10 +366,10 @@ be asked for the next element after the processing of an element completes).</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '55', 55)" onmouseover="showTip(event, '55', 55)">
+          <code onmouseout="hideTip(event, '75', 75)" onmouseover="showTip(event, '75', 75)">
             lastOrDefault def input
           </code>
-          <div class="tip" id="55">
+          <div class="tip" id="75">
             <strong>Signature:</strong> def:&#39;T -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; Async&lt;&#39;T&gt;<br />
                           <strong>Type parameters:</strong> 'T          </div>
         </td>
@@ -386,12 +386,12 @@ given asynchronous sequence (or the specified default value).</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '56', 56)" onmouseover="showTip(event, '56', 56)">
+          <code onmouseout="hideTip(event, '76', 76)" onmouseover="showTip(event, '76', 76)">
             map f input
           </code>
-          <div class="tip" id="56">
-            <strong>Signature:</strong> f:(&#39;T -&gt; &#39;?12063) -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; AsyncSeq&lt;&#39;?12063&gt;<br />
-                          <strong>Type parameters:</strong> 'T, '?12063          </div>
+          <div class="tip" id="76">
+            <strong>Signature:</strong> f:(&#39;T -&gt; &#39;?12062) -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; AsyncSeq&lt;&#39;?12062&gt;<br />
+                          <strong>Type parameters:</strong> 'T, '?12062          </div>
         </td>
         <td class="xmldoc">
             <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/AsyncSeq.fs#L265-265" class="github-link">
@@ -406,10 +406,10 @@ and returns the result of projection immediately.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '57', 57)" onmouseover="showTip(event, '57', 57)">
+          <code onmouseout="hideTip(event, '77', 77)" onmouseover="showTip(event, '77', 77)">
             mapAsync f input
           </code>
-          <div class="tip" id="57">
+          <div class="tip" id="77">
             <strong>Signature:</strong> f:(&#39;T -&gt; Async&lt;&#39;TResult&gt;) -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; AsyncSeq&lt;&#39;TResult&gt;<br />
                           <strong>Type parameters:</strong> 'T, 'TResult          </div>
         </td>
@@ -429,12 +429,12 @@ be asked for the next element after the processing of an element completes).</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '58', 58)" onmouseover="showTip(event, '58', 58)">
+          <code onmouseout="hideTip(event, '78', 78)" onmouseover="showTip(event, '78', 78)">
             ofObservable input
           </code>
-          <div class="tip" id="58">
-            <strong>Signature:</strong> input:IObservable&lt;&#39;?12089&gt; -&gt; AsyncSeq&lt;&#39;?12089&gt;<br />
-                          <strong>Type parameters:</strong> '?12089          </div>
+          <div class="tip" id="78">
+            <strong>Signature:</strong> input:IObservable&lt;&#39;?12088&gt; -&gt; AsyncSeq&lt;&#39;?12088&gt;<br />
+                          <strong>Type parameters:</strong> '?12088          </div>
         </td>
         <td class="xmldoc">
             <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/AsyncSeq.fs#L342-342" class="github-link">
@@ -451,12 +451,12 @@ all values produced by the observable)</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '59', 59)" onmouseover="showTip(event, '59', 59)">
+          <code onmouseout="hideTip(event, '79', 79)" onmouseover="showTip(event, '79', 79)">
             ofObservableBuffered input
           </code>
-          <div class="tip" id="59">
-            <strong>Signature:</strong> input:IObservable&lt;&#39;?12087&gt; -&gt; AsyncSeq&lt;&#39;?12087&gt;<br />
-                          <strong>Type parameters:</strong> '?12087          </div>
+          <div class="tip" id="79">
+            <strong>Signature:</strong> input:IObservable&lt;&#39;?12086&gt; -&gt; AsyncSeq&lt;&#39;?12086&gt;<br />
+                          <strong>Type parameters:</strong> '?12086          </div>
         </td>
         <td class="xmldoc">
             <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/AsyncSeq.fs#L321-321" class="github-link">
@@ -472,10 +472,10 @@ an unbounded buffer and are returned as next elements of the async sequence.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '60', 60)" onmouseover="showTip(event, '60', 60)">
+          <code onmouseout="hideTip(event, '80', 80)" onmouseover="showTip(event, '80', 80)">
             ofSeq input
           </code>
-          <div class="tip" id="60">
+          <div class="tip" id="80">
             <strong>Signature:</strong> input:seq&lt;&#39;T&gt; -&gt; AsyncSeq&lt;&#39;T&gt;<br />
                           <strong>Type parameters:</strong> 'T          </div>
         </td>
@@ -492,10 +492,10 @@ input synchronous sequence and returns them one-by-one.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '61', 61)" onmouseover="showTip(event, '61', 61)">
+          <code onmouseout="hideTip(event, '81', 81)" onmouseover="showTip(event, '81', 81)">
             pairwise input
           </code>
-          <div class="tip" id="61">
+          <div class="tip" id="81">
             <strong>Signature:</strong> input:AsyncSeq&lt;&#39;T&gt; -&gt; AsyncSeq&lt;&#39;T * &#39;T&gt;<br />
                           <strong>Type parameters:</strong> 'T          </div>
         </td>
@@ -513,10 +513,10 @@ singleton input sequence.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '62', 62)" onmouseover="showTip(event, '62', 62)">
+          <code onmouseout="hideTip(event, '82', 82)" onmouseover="showTip(event, '82', 82)">
             scan f state input
           </code>
-          <div class="tip" id="62">
+          <div class="tip" id="82">
             <strong>Signature:</strong> f:(&#39;TState -&gt; &#39;T -&gt; &#39;TState) -&gt; state:&#39;TState -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; AsyncSeq&lt;&#39;TState&gt;<br />
                           <strong>Type parameters:</strong> 'TState, 'T          </div>
         </td>
@@ -533,10 +533,10 @@ and returns the result of aggregation immediately.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '63', 63)" onmouseover="showTip(event, '63', 63)">
+          <code onmouseout="hideTip(event, '83', 83)" onmouseover="showTip(event, '83', 83)">
             scanAsync f state input
           </code>
-          <div class="tip" id="63">
+          <div class="tip" id="83">
             <strong>Signature:</strong> f:(&#39;TState -&gt; &#39;T -&gt; Async&lt;&#39;TState&gt;) -&gt; state:&#39;TState -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; AsyncSeq&lt;&#39;TState&gt;<br />
                           <strong>Type parameters:</strong> 'TState, 'T          </div>
         </td>
@@ -557,10 +557,10 @@ be asked for the next element after the processing of an element completes).</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '64', 64)" onmouseover="showTip(event, '64', 64)">
+          <code onmouseout="hideTip(event, '84', 84)" onmouseover="showTip(event, '84', 84)">
             singleton v
           </code>
-          <div class="tip" id="64">
+          <div class="tip" id="84">
             <strong>Signature:</strong> v:&#39;T -&gt; AsyncSeq&lt;&#39;T&gt;<br />
                           <strong>Type parameters:</strong> 'T          </div>
         </td>
@@ -576,10 +576,10 @@ be asked for the next element after the processing of an element completes).</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '65', 65)" onmouseover="showTip(event, '65', 65)">
+          <code onmouseout="hideTip(event, '85', 85)" onmouseover="showTip(event, '85', 85)">
             skip count input
           </code>
-          <div class="tip" id="65">
+          <div class="tip" id="85">
             <strong>Signature:</strong> count:int -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; AsyncSeq&lt;&#39;T&gt;<br />
                           <strong>Type parameters:</strong> 'T          </div>
         </td>
@@ -596,10 +596,10 @@ then returns the rest of the sequence unmodified.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '66', 66)" onmouseover="showTip(event, '66', 66)">
+          <code onmouseout="hideTip(event, '86', 86)" onmouseover="showTip(event, '86', 86)">
             skipWhile p input
           </code>
-          <div class="tip" id="66">
+          <div class="tip" id="86">
             <strong>Signature:</strong> p:(&#39;T -&gt; bool) -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; AsyncSeq&lt;&#39;T&gt;<br />
                           <strong>Type parameters:</strong> 'T          </div>
         </td>
@@ -617,10 +617,10 @@ predicate is evaluated asynchronously.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '67', 67)" onmouseover="showTip(event, '67', 67)">
+          <code onmouseout="hideTip(event, '87', 87)" onmouseover="showTip(event, '87', 87)">
             skipWhileAsync p input
           </code>
-          <div class="tip" id="67">
+          <div class="tip" id="87">
             <strong>Signature:</strong> p:(&#39;T -&gt; Async&lt;bool&gt;) -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; AsyncSeq&lt;&#39;T&gt;<br />
                           <strong>Type parameters:</strong> 'T          </div>
         </td>
@@ -638,10 +638,10 @@ predicate is evaluated asynchronously.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '68', 68)" onmouseover="showTip(event, '68', 68)">
+          <code onmouseout="hideTip(event, '88', 88)" onmouseover="showTip(event, '88', 88)">
             take count input
           </code>
-          <div class="tip" id="68">
+          <div class="tip" id="88">
             <strong>Signature:</strong> count:int -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; AsyncSeq&lt;&#39;T&gt;<br />
                           <strong>Type parameters:</strong> 'T          </div>
         </td>
@@ -657,10 +657,10 @@ predicate is evaluated asynchronously.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '69', 69)" onmouseover="showTip(event, '69', 69)">
+          <code onmouseout="hideTip(event, '89', 89)" onmouseover="showTip(event, '89', 89)">
             takeWhile p input
           </code>
-          <div class="tip" id="69">
+          <div class="tip" id="89">
             <strong>Signature:</strong> p:(&#39;T -&gt; bool) -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; AsyncSeq&lt;&#39;T&gt;<br />
                           <strong>Type parameters:</strong> 'T          </div>
         </td>
@@ -677,10 +677,10 @@ predicate holds. The predicate is evaluated synchronously.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '70', 70)" onmouseover="showTip(event, '70', 70)">
+          <code onmouseout="hideTip(event, '90', 90)" onmouseover="showTip(event, '90', 90)">
             takeWhileAsync p input
           </code>
-          <div class="tip" id="70">
+          <div class="tip" id="90">
             <strong>Signature:</strong> p:(&#39;T -&gt; Async&lt;bool&gt;) -&gt; input:AsyncSeq&lt;&#39;T&gt; -&gt; AsyncSeq&lt;&#39;T&gt;<br />
                           <strong>Type parameters:</strong> 'T          </div>
         </td>
@@ -697,10 +697,10 @@ predicate holds. The predicate is evaluated asynchronously.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '71', 71)" onmouseover="showTip(event, '71', 71)">
+          <code onmouseout="hideTip(event, '91', 91)" onmouseover="showTip(event, '91', 91)">
             toBlockingSeq input
           </code>
-          <div class="tip" id="71">
+          <div class="tip" id="91">
             <strong>Signature:</strong> input:AsyncSeq&lt;&#39;T&gt; -&gt; seq&lt;&#39;T&gt;<br />
                           <strong>Type parameters:</strong> 'T          </div>
         </td>
@@ -717,12 +717,12 @@ The elements of the asynchronous sequence are consumed lazily.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '72', 72)" onmouseover="showTip(event, '72', 72)">
+          <code onmouseout="hideTip(event, '92', 92)" onmouseover="showTip(event, '92', 92)">
             toObservable aseq
           </code>
-          <div class="tip" id="72">
-            <strong>Signature:</strong> aseq:AsyncSeq&lt;&#39;?12091&gt; -&gt; IObservable&lt;&#39;?12091&gt;<br />
-                          <strong>Type parameters:</strong> '?12091          </div>
+          <div class="tip" id="92">
+            <strong>Signature:</strong> aseq:AsyncSeq&lt;&#39;?12090&gt; -&gt; IObservable&lt;&#39;?12090&gt;<br />
+                          <strong>Type parameters:</strong> '?12090          </div>
         </td>
         <td class="xmldoc">
             <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/AsyncSeq.fs#L364-364" class="github-link">
@@ -739,10 +739,10 @@ observer cancels the iteration over asynchronous sequence.</p>
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '73', 73)" onmouseover="showTip(event, '73', 73)">
+          <code onmouseout="hideTip(event, '93', 93)" onmouseover="showTip(event, '93', 93)">
             zip input1 input2
           </code>
-          <div class="tip" id="73">
+          <div class="tip" id="93">
             <strong>Signature:</strong> input1:AsyncSeq&lt;&#39;T1&gt; -&gt; input2:AsyncSeq&lt;&#39;T2&gt; -&gt; AsyncSeq&lt;&#39;T1 * &#39;T2&gt;<br />
                           <strong>Type parameters:</strong> 'T1, 'T2          </div>
         </td>
@@ -763,7 +763,7 @@ The values from sequences are retrieved in parallel.</p>
         <div class="span3">
           <img src="./img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
           <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
-            <li class="nav-header">FSharpx.Extras</li>
+            <li class="nav-header">fsharpx</li>
             <li><a href="./index.html">Home page</a></li>
             <li class="divider"></li>
             <li><a href="http://nuget.com/packages/FSharpx.Core">Get Library via NuGet</a></li>

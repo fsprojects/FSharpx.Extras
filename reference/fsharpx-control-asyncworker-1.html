@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>AsyncWorker<'T> - FSharpx.Extras</title>
+    <title>AsyncWorker<'T> - fsharpx</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content=""/>
     <meta name="author" content="Steffan Forkmann and others"/>
@@ -26,7 +26,7 @@
           <li><a href="http://fsharp.org">fsharp.org</a></li>
           <li><a href="https://github.com/fsprojects/fsharpx">github page</a></li>
         </ul>
-        <h3 class="muted"><a href="./index.html">FSharpx.Extras</a></h3>
+        <h3 class="muted"><a href="./index.html">fsharpx</a></h3>
       </div>
       <hr />
       <div class="row">
@@ -47,10 +47,10 @@
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '862', 862)" onmouseover="showTip(event, '862', 862)">
+          <code onmouseout="hideTip(event, '860', 860)" onmouseover="showTip(event, '860', 860)">
             new(arg1, asyncGroup)
           </code>
-          <div class="tip" id="862">
+          <div class="tip" id="860">
             <strong>Signature:</strong> (Async&lt;&#39;T&gt; * asyncGroup:CancellationToken option) -&gt; AsyncWorker&lt;&#39;T&gt;<br />
                       </div>
         </td>
@@ -73,10 +73,10 @@
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '864', 864)" onmouseover="showTip(event, '864', 864)">
+          <code onmouseout="hideTip(event, '862', 862)" onmouseover="showTip(event, '862', 862)">
             CancelAsync(message)
           </code>
-          <div class="tip" id="864">
+          <div class="tip" id="862">
             <strong>Signature:</strong> (message:string option) -&gt; unit<br />
                       </div>
         </td>
@@ -91,15 +91,69 @@
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '866', 866)" onmouseover="showTip(event, '866', 866)">
+          <code onmouseout="hideTip(event, '863', 863)" onmouseover="showTip(event, '863', 863)">
             Canceled
           </code>
-          <div class="tip" id="866">
+          <div class="tip" id="863">
             <strong>Signature:</strong> IEvent&lt;OperationCanceledException&gt;<br />
                       </div>
         </td>
         <td class="xmldoc">
             <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/AsyncWorker.fs#L64-64" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '864', 864)" onmouseover="showTip(event, '864', 864)">
+            Canceled
+          </code>
+          <div class="tip" id="864">
+            <strong>Signature:</strong> IEvent&lt;OperationCanceledException&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/AsyncWorker.fs#L64-64" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '865', 865)" onmouseover="showTip(event, '865', 865)">
+            Completed
+          </code>
+          <div class="tip" id="865">
+            <strong>Signature:</strong> IEvent&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/AsyncWorker.fs#L63-63" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '866', 866)" onmouseover="showTip(event, '866', 866)">
+            Completed
+          </code>
+          <div class="tip" id="866">
+            <strong>Signature:</strong> IEvent&lt;&#39;T&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/AsyncWorker.fs#L63-63" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -110,14 +164,14 @@
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '867', 867)" onmouseover="showTip(event, '867', 867)">
-            Canceled
+            Error
           </code>
           <div class="tip" id="867">
-            <strong>Signature:</strong> IEvent&lt;OperationCanceledException&gt;<br />
+            <strong>Signature:</strong> IEvent&lt;exn&gt;<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/AsyncWorker.fs#L64-64" class="github-link">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/AsyncWorker.fs#L65-65" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -128,14 +182,14 @@
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '868', 868)" onmouseover="showTip(event, '868', 868)">
-            Completed
+            Error
           </code>
           <div class="tip" id="868">
-            <strong>Signature:</strong> IEvent&lt;&#39;T&gt;<br />
+            <strong>Signature:</strong> IEvent&lt;exn&gt;<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/AsyncWorker.fs#L63-63" class="github-link">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/AsyncWorker.fs#L65-65" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -146,14 +200,14 @@
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '869', 869)" onmouseover="showTip(event, '869', 869)">
-            Completed
+            ProgressChanged
           </code>
           <div class="tip" id="869">
-            <strong>Signature:</strong> IEvent&lt;&#39;T&gt;<br />
+            <strong>Signature:</strong> IEvent&lt;int&gt;<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/AsyncWorker.fs#L63-63" class="github-link">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/AsyncWorker.fs#L62-62" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -164,14 +218,14 @@
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '870', 870)" onmouseover="showTip(event, '870', 870)">
-            Error
+            ProgressChanged
           </code>
           <div class="tip" id="870">
-            <strong>Signature:</strong> IEvent&lt;exn&gt;<br />
+            <strong>Signature:</strong> IEvent&lt;int&gt;<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/AsyncWorker.fs#L65-65" class="github-link">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/AsyncWorker.fs#L62-62" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -182,63 +236,9 @@
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '871', 871)" onmouseover="showTip(event, '871', 871)">
-            Error
-          </code>
-          <div class="tip" id="871">
-            <strong>Signature:</strong> IEvent&lt;exn&gt;<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/AsyncWorker.fs#L65-65" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '872', 872)" onmouseover="showTip(event, '872', 872)">
-            ProgressChanged
-          </code>
-          <div class="tip" id="872">
-            <strong>Signature:</strong> IEvent&lt;int&gt;<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/AsyncWorker.fs#L62-62" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '873', 873)" onmouseover="showTip(event, '873', 873)">
-            ProgressChanged
-          </code>
-          <div class="tip" id="873">
-            <strong>Signature:</strong> IEvent&lt;int&gt;<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/AsyncWorker.fs#L62-62" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '874', 874)" onmouseover="showTip(event, '874', 874)">
             ReportProgress(arg1)
           </code>
-          <div class="tip" id="874">
+          <div class="tip" id="871">
             <strong>Signature:</strong> int -&gt; unit<br />
                       </div>
         </td>
@@ -253,10 +253,10 @@
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '875', 875)" onmouseover="showTip(event, '875', 875)">
+          <code onmouseout="hideTip(event, '872', 872)" onmouseover="showTip(event, '872', 872)">
             RunAsync()
           </code>
-          <div class="tip" id="875">
+          <div class="tip" id="872">
             <strong>Signature:</strong> unit -&gt; bool<br />
                       </div>
         </td>
@@ -275,7 +275,7 @@
         <div class="span3">
           <img src="./img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
           <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
-            <li class="nav-header">FSharpx.Extras</li>
+            <li class="nav-header">fsharpx</li>
             <li><a href="./index.html">Home page</a></li>
             <li class="divider"></li>
             <li><a href="http://nuget.com/packages/FSharpx.Core">Get Library via NuGet</a></li>
