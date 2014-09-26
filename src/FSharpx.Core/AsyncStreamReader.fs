@@ -1,7 +1,7 @@
 ﻿// First version copied from the F# Power Pack 
 // https://raw.github.com/fsharp/powerpack/master/src/FSharp.PowerPack/AsyncStreamReader.fs
 
-namespace Microsoft.FSharp.Control
+namespace FSharpx.Control
 
 open System
 open System.Diagnostics

@@ -2,7 +2,7 @@
 // https://raw.github.com/fsharp/powerpack/master/src/FSharp.PowerPack/AsyncOperations.fs
 
 // (c) Microsoft Corporation 2005-2009. 
-namespace Microsoft.FSharp.Control
+namespace FSharpx.Control
 
     open System
     open System.Threading

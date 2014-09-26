@@ -1,6 +1,7 @@
 ﻿namespace FSharpx.Tests
 
 open Microsoft.FSharp.Control
+open FSharpx.Control
 open NUnit.Framework
 open System
 open System.IO
