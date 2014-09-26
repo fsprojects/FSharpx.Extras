@@ -9,6 +9,6 @@ Please also join the [F# Open Source Group](http://fsharp.github.com)
 
 # Build Status
 
-Head (branch ``master``), Windows Server 2012 (Appveyor)  [![Build status](https://ci.appveyor.com/api/projects/status/y6d9vcdeov9rqcgd/branch/master)](https://ci.appveyor.com/project/fsgit/fsharp-data-dbpedia)
+Head (branch ``master``), Windows Server 2012 (Appveyor)  [![Build status](https://ci.appveyor.com/api/projects/status/n9202rbh688hnln6/branch/master)](https://ci.appveyor.com/project/fsgit/fsharp-data-dbpedia)
 
 Head (branch ``master``), OSX (Travis)  [![Build status](https://travis-ci.org/fsprojects/fsharpx.svg?branch=master)
