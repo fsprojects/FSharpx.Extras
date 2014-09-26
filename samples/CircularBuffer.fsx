@@ -7,7 +7,7 @@
 // The agent implements producer/consumer concurrent pattern.
 
 #r "System.dll"
-#r @"..\build\FSharpx.Core.dll"
+#r @"..\bin\FSharpx.Core.dll"
 
 open System
 open System.Diagnostics

@@ -1,10 +1,12 @@
-﻿namespace FSharpx
+﻿
+namespace FSharpx
 #nowarn "40"
 
 open System
 open System.Collections
 open System.Collections.Generic
 open FSharpx.Collections
+
 
 /// Generic monadic operators    
 module Operators =
@@ -872,8 +874,12 @@ module Validation =
         member this.mapM f x = this.sequence (List.map f x)
 
 
+    type NonEmptyListSemigroup<'T>() = 
+        interface ISemigroup<'T NonEmptyList> with 
+            member x.Combine(a,b) = NonEmptyList.append a b 
+
     type NonEmptyListValidation<'T>() = 
-        inherit CustomValidation<'T NonEmptyList>(NonEmptyList.NonEmptyListSemigroup<'T>())
+        inherit CustomValidation<'T NonEmptyList>(NonEmptyListSemigroup<'T>())
 
     /// Sequential application
     let inline ap x = apa NonEmptyList.append x

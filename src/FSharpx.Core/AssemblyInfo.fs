@@ -25,8 +25,6 @@ exception ReturnNoneException183c26a427ae489c8fd92ec21a0c9a59
 It currently implements:
 
 * Several standard monads: State, Reader, Writer, Either, Continuation, Distribution
-* Iteratee
-* Purely functional data structures: Queues, double-ended Queues, BottomUpMergeSort, RandomAccessList, Vector, RoseTree, BKTree
 * Validation applicative functor
 * General functions like flip
 * Additional functions around collections
@@ -34,9 +32,9 @@ It currently implements:
 
 [<assembly: AssemblyProduct ("FSharpx")>]
 
-[<assembly: AssemblyVersion ("1.8.45.0")>]
+[<assembly: AssemblyVersion ("1.8.42")>]
 
-[<assembly: AssemblyFileVersion ("1.8.45.0")>]
+[<assembly: AssemblyFileVersion ("1.8.42")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 

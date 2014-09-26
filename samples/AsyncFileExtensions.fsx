@@ -1,6 +1,6 @@
 ﻿
 
-#r @"..\build\FSharpx.Core.dll"
+#r @"..\bin\FSharpx.Core.dll"
 
 
 open Microsoft.FSharp.Control

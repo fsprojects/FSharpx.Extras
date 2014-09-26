@@ -1,4 +1,4 @@
-﻿#r @"..\build\FSharpx.Core.dll"
+﻿#r @"..\bin\FSharpx.Core.dll"
 
 open System
 open System.Threading
