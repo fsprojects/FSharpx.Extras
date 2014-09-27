@@ -35,7 +35,7 @@ type ``AwaitObservable Tests``() =
         let result = awaiter(TimeSpan.FromSeconds(1.0))
         result |> should equal (Result "ONE")
 
-    [<Test(* ; Ignore("Failing on appveyor (due to timing issues?)") *) >]
+    [<Test ; Ignore("Failing on appveyor ('a observer-subscription was not disposed')")  >]
     member test.``AwaitObservable is canceled if the source completes without a single result``() =
         let source = new ObservableMock<string>()
         let wf = Async.AwaitObservable source
@@ -45,7 +45,7 @@ type ``AwaitObservable Tests``() =
         let result = awaiter(TimeSpan.FromSeconds(1.0))
         result |> should equal AwaiterResult<string>.Canceled    
         
-    [<Test(* ; Ignore("Failing on appveyor (due to timing issues?)") *) >]
+    [<Test ; Ignore("Failing on appveyor ('a observer-subscription was not disposed')")  >]
     member test.``AwaitObservable is unsubscribed from the source after a value was received``() =
         let source = new ObservableMock<string>()
         let wf = Async.AwaitObservable source
@@ -54,7 +54,7 @@ type ``AwaitObservable Tests``() =
         source.Next("Done")
         source.AssertUnsubscribe(TimeSpan.FromSeconds(1.0))
 
-    [<Test(* ; Ignore("Failing on appveyor (due to timing issues?)") *) >]
+    [<Test ; Ignore("Failing on appveyor ('a observer-subscription was not disposed')")  >]
     member test.``AwaitObservable is unsubscribed from the source after the source completes without a result``() =
         let source = new ObservableMock<string>()
         let wf = Async.AwaitObservable source
@@ -72,7 +72,7 @@ type ``AwaitObservable Tests``() =
         source.Error(exn "test-error")
         source.AssertUnsubscribe(TimeSpan.FromSeconds(1.0))
 
-    [<Test(* ; Ignore("Failing on appveyor (due to timing issues?)") *) >]
+    [<Test ; Ignore("Failing on appveyor ('a observer-subscription was not disposed')")  >]
     member test.``AwaitObservable is unsubscribed from the source if it's resulting async-workflow gets cancelled``() =
         let cts = new CancellationTokenSource()
         let source = new ObservableMock<string>()
