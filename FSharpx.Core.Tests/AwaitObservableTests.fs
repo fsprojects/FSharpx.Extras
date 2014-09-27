@@ -23,7 +23,7 @@ type ``AwaitObservable Tests``() =
         let result = awaiter(TimeSpan.FromSeconds(1.0))
         result |> should equal (Result "DONE")
 
-    [<Test(* ; Ignore("Failing on appveyor (due to timing issues?)") *) >]
+    [<Test; Ignore("Failing on appveyor ('A continuation provided by Async.FromContinuations was invoked multiple times')") >]
     member test.``AwaitObservable yields the first value from the sources Next``() =
         let source = new ObservableMock<string>()
         let wf = Async.AwaitObservable source
@@ -63,7 +63,7 @@ type ``AwaitObservable Tests``() =
         source.Completed()
         source.AssertUnsubscribe(TimeSpan.FromSeconds(1.0))
 
-    [<Test(* ; Ignore("Failing on appveyor (due to timing issues?)") *) >]
+    [<Test ; Ignore("Failing on appveyor ('a observer-subscription was not disposed')")  >]
     member test.``AwaitObservable is unsubscribed from the source after OnError was called``() =
         let source = new ObservableMock<string>()
         let wf = Async.AwaitObservable source
