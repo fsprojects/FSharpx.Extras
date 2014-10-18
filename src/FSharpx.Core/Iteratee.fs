@@ -1,4 +1,4 @@
-﻿namespace FSharpx.Functional
+﻿namespace FSharpx
 #nowarn "40"
 
 open System

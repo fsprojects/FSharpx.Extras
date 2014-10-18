@@ -1,4 +1,4 @@
-﻿namespace FSharpx.Functional
+﻿namespace FSharpx
 
 open FSharpx.Collections
 

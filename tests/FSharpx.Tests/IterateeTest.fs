@@ -1,8 +1,8 @@
 ﻿module FSharpx.Tests.IterateeTest
 
 open System
-open FSharpx.Functional
-open FSharpx.Functional.Iteratee
+open FSharpx
+open FSharpx.Iteratee
 open NUnit.Framework
 open FsUnit
 

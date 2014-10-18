@@ -1,9 +1,9 @@
 module FSharpx.Tests.ListIterateeTest
 
 open System
-open FSharpx.Functional
-open FSharpx.Functional.Iteratee
-open FSharpx.Functional.Iteratee.List
+open FSharpx
+open FSharpx.Iteratee
+open FSharpx.Iteratee.List
 open Microsoft.FSharp.Collections
 open NUnit.Framework
 open FsUnit

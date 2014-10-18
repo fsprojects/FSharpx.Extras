@@ -2,7 +2,7 @@
 
 open System
 open NUnit.Framework
-open FSharpx.Functional
+open FSharpx
 open FsUnit
 
 [<Test>]
@@ -63,7 +63,7 @@ let ChoiceFolding() =
         printfn "error: %s" error
         Assert.Fail("should not have failed: {0}", error)
 
-open FSharpx.Functional.Choice
+open FSharpx.Choice
 
 [<Test>]
 let ``computations are aborted on the first Choice2Of2``() = 

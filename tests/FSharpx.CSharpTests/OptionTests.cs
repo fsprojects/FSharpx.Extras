@@ -4,7 +4,7 @@ using Microsoft.FSharp.Core;
 using NUnit.Framework;
 using Microsoft.FSharp.Collections;
 
-namespace FSharpx.Functional.CSharpTests {
+namespace FSharpx.CSharpTests {
     [TestFixture]
     public class OptionTests {
         [Test]

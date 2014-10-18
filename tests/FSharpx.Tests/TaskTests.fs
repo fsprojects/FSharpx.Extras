@@ -5,7 +5,6 @@ open System.IO
 open System.Net
 open NUnit.Framework
 open FSharpx
-open FSharpx.Functional
 open System.Threading
 
 #if NET40

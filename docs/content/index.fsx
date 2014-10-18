@@ -37,7 +37,7 @@ These are some adhoc components which are now rarely used:
 #r "FSharpx.Collections.dll"
 #r "FSharpx.Core.dll"
 
-open FSharpx.Functional
+open FSharpx
 
 open FSharpx.Collections
 

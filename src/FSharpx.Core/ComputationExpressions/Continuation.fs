@@ -1,4 +1,4 @@
-﻿namespace FSharpx.Functional
+﻿namespace FSharpx
 
 open System
 open System.Collections.Generic
@@ -52,7 +52,7 @@ module Continuation =
                 (fun enum -> this.While((fun () -> enum.MoveNext()), this.Delay(fun () -> body enum.Current))))
     let cont = ContinuationBuilder()
     
-    open FSharpx.Functional.Operators
+    open FSharpx.Operators
     
     /// Inject a value into the Cont type
     let inline returnM x = returnM cont x

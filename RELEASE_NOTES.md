@@ -2,7 +2,7 @@
 * Remove the WebClient extension method that has long ago been moved to FSharp.Core
 
 ### 1.9.3 - Cleanup namespaces
-* FSharpx.* types and operators are now in FSharpx.Functional
+* FSharpx.* types and operators are now in FSharpx
 * FSharpx.Regex are now in FSharpx.Text.Regex
 * FSharpx.Strings is now in FSharpx.Text.Strings
 * Microsoft.FSharp.Control has been renamed to FSharpx.Control

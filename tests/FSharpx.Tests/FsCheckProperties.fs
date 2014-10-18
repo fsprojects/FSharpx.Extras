@@ -1,6 +1,6 @@
 ﻿module FSharpx.Tests.Properties
 
-open FSharpx.Functional
+open FSharpx
 open FSharpx.Collections
 open FsCheck
 open FsCheck.NUnit
@@ -17,7 +17,7 @@ let checkEquality<'a when 'a : equality> name =
         fun (x: 'a) (y: 'a) (z: 'a) ->
             if x = y && y = z then x = z else true
 
-let checkMonoid name (monoid: _ FSharpx.Functional.Monoid) =
+let checkMonoid name (monoid: _ FSharpx.Monoid) =
     let n = sprintf "%s : monoid %s" name
     let mappend = curry monoid.Combine
     let mempty = monoid.Zero()

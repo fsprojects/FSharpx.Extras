@@ -3,7 +3,7 @@
 open System
 open System.Globalization
 open System.Threading
-open FSharpx.Functional
+open FSharpx
 open NUnit.Framework
 open FsUnit
 

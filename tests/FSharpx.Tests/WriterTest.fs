@@ -1,7 +1,7 @@
 ﻿module FSharpx.Tests.WriterTest
 
 open FSharpx
-open FSharpx.Functional.Writer
+open FSharpx.Writer
 open NUnit.Framework
 open FsUnit
 
