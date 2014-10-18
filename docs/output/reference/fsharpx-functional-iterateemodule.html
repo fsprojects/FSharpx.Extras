@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Iteratee - fsharpx</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="Steffan Forkmann and others"/>
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
+
+    <link type="text/css" rel="stylesheet" href="./content/style.css" />
+    <script type="text/javascript" src="./content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="https://github.com/fsprojects/fsharpx">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="./index.html">fsharpx</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Iteratee</h1>
+<div class="xmldoc">
+</div>
+
+<!-- Render nested types and modules, if there are any -->
+  <h2>Nested types and modules</h2>
+  <div>
+      <table class="table table-bordered type-list">
+    <thead>
+      <tr><td>Type</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-functional-iterateemodule-iterateebuilder.html">IterateeBuilder</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+    </tbody>
+  </table>
+  <table class="table table-bordered module-list">
+    <thead>
+      <tr><td>Module</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-iterateemodule-binarymodule.html">Binary</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-iterateemodule-listmodule.html">List</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+  <h3>Functions and values</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Function or value</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '245', 245)" onmouseover="showTip(event, '245', 245)">
+            ( *&gt; ) x y
+          </code>
+          <div class="tip" id="245">
+            <strong>Signature:</strong> x:Iteratee&lt;&#39;?10629,&#39;?10630&gt; -&gt; y:Iteratee&lt;&#39;?10629,&#39;?10631&gt; -&gt; Iteratee&lt;&#39;?10629,&#39;?10631&gt;<br />
+                          <strong>Type parameters:</strong> '?10629, '?10630, '?10631          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L260-260" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequence actions, discarding the value of the first argument.</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '276', 276)" onmouseover="showTip(event, '276', 276)">
+            ( &lt;!&gt; ) f m
+          </code>
+          <div class="tip" id="276">
+            <strong>Signature:</strong> f:(&#39;?10620 -&gt; &#39;?10621) -&gt; m:Iteratee&lt;&#39;?10622,&#39;?10620&gt; -&gt; Iteratee&lt;&#39;?10622,&#39;?10621&gt;<br />
+                          <strong>Type parameters:</strong> '?10620, '?10621, '?10622          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L257-257" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '277', 277)" onmouseover="showTip(event, '277', 277)">
+            ( &lt;* ) x y
+          </code>
+          <div class="tip" id="277">
+            <strong>Signature:</strong> x:Iteratee&lt;&#39;?10633,&#39;?10634&gt; -&gt; y:Iteratee&lt;&#39;?10633,&#39;?10635&gt; -&gt; Iteratee&lt;&#39;?10633,&#39;?10634&gt;<br />
+                          <strong>Type parameters:</strong> '?10633, '?10634, '?10635          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L262-262" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequence actions, discarding the value of the second argument.</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '278', 278)" onmouseover="showTip(event, '278', 278)">
+            ( &lt;*&gt; ) f m
+          </code>
+          <div class="tip" id="278">
+            <strong>Signature:</strong> f:Iteratee&lt;&#39;?10608,(&#39;?10609 -&gt; &#39;?10610)&gt; -&gt; m:Iteratee&lt;&#39;?10608,&#39;?10609&gt; -&gt; Iteratee&lt;&#39;?10608,&#39;?10610&gt;<br />
+                          <strong>Type parameters:</strong> '?10608, '?10609, '?10610          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L253-253" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequential application</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '279', 279)" onmouseover="showTip(event, '279', 279)">
+            ( &lt;=&lt; ) x
+          </code>
+          <div class="tip" id="279">
+            <strong>Signature:</strong> x:(&#39;?10646 -&gt; Iteratee&lt;&#39;?10647,&#39;?10648&gt;) -&gt; (&#39;?10649 -&gt; Iteratee&lt;&#39;?10647,&#39;?10646&gt;) -&gt; &#39;?10649 -&gt; Iteratee&lt;&#39;?10647,&#39;?10648&gt;<br />
+                          <strong>Type parameters:</strong> '?10646, '?10647, '?10648, '?10649          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L268-268" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Right-to-left Kleisli composition</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '280', 280)" onmouseover="showTip(event, '280', 280)">
+            ( =&lt;&lt; ) f m
+          </code>
+          <div class="tip" id="280">
+            <strong>Signature:</strong> f:(&#39;?10604 -&gt; Iteratee&lt;&#39;?10605,&#39;?10606&gt;) -&gt; m:Iteratee&lt;&#39;?10605,&#39;?10604&gt; -&gt; Iteratee&lt;&#39;?10605,&#39;?10606&gt;<br />
+                          <strong>Type parameters:</strong> '?10604, '?10605, '?10606          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L251-251" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '281', 281)" onmouseover="showTip(event, '281', 281)">
+            ( &gt;=&gt; ) f g x
+          </code>
+          <div class="tip" id="281">
+            <strong>Signature:</strong> f:(&#39;?10641 -&gt; Iteratee&lt;&#39;?10642,&#39;?10643&gt;) -&gt; g:(&#39;?10643 -&gt; Iteratee&lt;&#39;?10642,&#39;?10644&gt;) -&gt; x:&#39;?10641 -&gt; Iteratee&lt;&#39;?10642,&#39;?10644&gt;<br />
+                          <strong>Type parameters:</strong> '?10641, '?10642, '?10643, '?10644          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L266-266" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Left-to-right Kleisli composition</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '282', 282)" onmouseover="showTip(event, '282', 282)">
+            ( &gt;&gt;. ) m f
+          </code>
+          <div class="tip" id="282">
+            <strong>Signature:</strong> m:Iteratee&lt;&#39;?10637,&#39;?10638&gt; -&gt; f:Iteratee&lt;&#39;?10637,&#39;?10639&gt; -&gt; Iteratee&lt;&#39;?10637,&#39;?10639&gt;<br />
+                          <strong>Type parameters:</strong> '?10637, '?10638, '?10639          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L264-264" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequentially compose two iteratee actions, discarding any value produced by the first</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '283', 283)" onmouseover="showTip(event, '283', 283)">
+            ( &gt;&gt;= ) m f
+          </code>
+          <div class="tip" id="283">
+            <strong>Signature:</strong> m:Iteratee&lt;&#39;?10600,&#39;?10601&gt; -&gt; f:(&#39;?10601 -&gt; Iteratee&lt;&#39;?10600,&#39;?10602&gt;) -&gt; Iteratee&lt;&#39;?10600,&#39;?10602&gt;<br />
+                          <strong>Type parameters:</strong> '?10600, '?10601, '?10602          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L250-250" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '284', 284)" onmouseover="showTip(event, '284', 284)">
+            ap m f
+          </code>
+          <div class="tip" id="284">
+            <strong>Signature:</strong> m:Iteratee&lt;&#39;?10612,&#39;?10613&gt; -&gt; f:Iteratee&lt;&#39;?10612,(&#39;?10613 -&gt; &#39;?10614)&gt; -&gt; Iteratee&lt;&#39;?10612,&#39;?10614&gt;<br />
+                          <strong>Type parameters:</strong> '?10612, '?10613, '?10614          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L255-255" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequential application</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '285', 285)" onmouseover="showTip(event, '285', 285)">
+            bind f i
+          </code>
+          <div class="tip" id="285">
+            <strong>Signature:</strong> f:(&#39;?10534 -&gt; Iteratee&lt;&#39;?10535,&#39;?10536&gt;) -&gt; i:Iteratee&lt;&#39;?10535,&#39;?10534&gt; -&gt; Iteratee&lt;&#39;?10535,&#39;?10536&gt;<br />
+                          <strong>Type parameters:</strong> '?10534, '?10535, '?10536          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L177-177" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '286', 286)" onmouseover="showTip(event, '286', 286)">
+            catchError h i
+          </code>
+          <div class="tip" id="286">
+            <strong>Signature:</strong> h:(exn -&gt; Iteratee&lt;&#39;?10541,&#39;?10542&gt;) -&gt; i:Iteratee&lt;&#39;?10541,&#39;?10542&gt; -&gt; Iteratee&lt;&#39;?10541,&#39;?10542&gt;<br />
+                          <strong>Type parameters:</strong> '?10541, '?10542          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L196-196" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '287', 287)" onmouseover="showTip(event, '287', 287)">
+            checkContinue0 inner
+          </code>
+          <div class="tip" id="287">
+            <strong>Signature:</strong> inner:((Iteratee&lt;&#39;?10666,&#39;?10667&gt; -&gt; Iteratee&lt;&#39;?10666,&#39;?10667&gt;) -&gt; (Stream&lt;&#39;?10666&gt; -&gt; Iteratee&lt;&#39;?10666,&#39;?10667&gt;) -&gt; Iteratee&lt;&#39;?10666,&#39;?10667&gt;) -&gt; Iteratee&lt;&#39;?10666,&#39;?10667&gt; -&gt; Iteratee&lt;&#39;?10666,&#39;?10667&gt;<br />
+                          <strong>Type parameters:</strong> '?10666, '?10667          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L299-299" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '288', 288)" onmouseover="showTip(event, '288', 288)">
+            checkDone f
+          </code>
+          <div class="tip" id="288">
+            <strong>Signature:</strong> f:((Stream&lt;&#39;?10662&gt; -&gt; Iteratee&lt;&#39;?10662,&#39;?10663&gt;) -&gt; Iteratee&lt;&#39;?10664,Iteratee&lt;&#39;?10662,&#39;?10663&gt;&gt;) -&gt; Iteratee&lt;&#39;?10662,&#39;?10663&gt; -&gt; Iteratee&lt;&#39;?10664,Iteratee&lt;&#39;?10662,&#39;?10663&gt;&gt;<br />
+                          <strong>Type parameters:</strong> '?10662, '?10663, '?10664          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L296-296" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '289', 289)" onmouseover="showTip(event, '289', 289)">
+            checkDoneEx extra f _arg1
+          </code>
+          <div class="tip" id="289">
+            <strong>Signature:</strong> extra:Stream&lt;&#39;?10658&gt; -&gt; f:((Stream&lt;&#39;?10659&gt; -&gt; Iteratee&lt;&#39;?10659,&#39;?10660&gt;) -&gt; Iteratee&lt;&#39;?10658,Iteratee&lt;&#39;?10659,&#39;?10660&gt;&gt;) -&gt; _arg1:Iteratee&lt;&#39;?10659,&#39;?10660&gt; -&gt; Iteratee&lt;&#39;?10658,Iteratee&lt;&#39;?10659,&#39;?10660&gt;&gt;<br />
+                          <strong>Type parameters:</strong> '?10658, '?10659, '?10660          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L291-291" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '290', 290)" onmouseover="showTip(event, '290', 290)">
+            continueI k
+          </code>
+          <div class="tip" id="290">
+            <strong>Signature:</strong> k:(Stream&lt;&#39;?10528&gt; -&gt; Iteratee&lt;&#39;?10528,&#39;?10529&gt;) -&gt; Iteratee&lt;&#39;?10528,&#39;?10529&gt;<br />
+                          <strong>Type parameters:</strong> '?10528, '?10529          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L174-174" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '291', 291)" onmouseover="showTip(event, '291', 291)">
+            doneI x s
+          </code>
+          <div class="tip" id="291">
+            <strong>Signature:</strong> x:&#39;?10525 -&gt; s:Stream&lt;&#39;?10526&gt; -&gt; Iteratee&lt;&#39;?10526,&#39;?10525&gt;<br />
+                          <strong>Type parameters:</strong> '?10525, '?10526          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L173-173" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '292', 292)" onmouseover="showTip(event, '292', 292)">
+            empty 
+          </code>
+          <div class="tip" id="292">
+            <strong>Signature:</strong> Iteratee&lt;&#39;T,unit&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L172-172" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '293', 293)" onmouseover="showTip(event, '293', 293)">
+            enumEOF _arg1
+          </code>
+          <div class="tip" id="293">
+            <strong>Signature:</strong> _arg1:Iteratee&lt;&#39;?10547,&#39;?10548&gt; -&gt; Iteratee&lt;&#39;?10549,&#39;?10548&gt;<br />
+                          <strong>Type parameters:</strong> '?10547, '?10548, '?10549          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L209-209" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '294', 294)" onmouseover="showTip(event, '294', 294)">
+            enumErr e _arg1
+          </code>
+          <div class="tip" id="294">
+            <strong>Signature:</strong> e:exn -&gt; _arg1:&#39;?10551 -&gt; Iteratee&lt;&#39;?10552,&#39;?10553&gt;<br />
+                          <strong>Type parameters:</strong> '?10551, '?10552, '?10553          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L217-217" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '295', 295)" onmouseover="showTip(event, '295', 295)">
+            enumList xs
+          </code>
+          <div class="tip" id="295">
+            <strong>Signature:</strong> xs:&#39;?10655 list -&gt; Iteratee&lt;&#39;?10655,&#39;?10656&gt; -&gt; Iteratee&lt;&#39;?10655,&#39;?10656&gt;<br />
+                          <strong>Type parameters:</strong> '?10655, '?10656          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L283-283" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '296', 296)" onmouseover="showTip(event, '296', 296)">
+            iteratee 
+          </code>
+          <div class="tip" id="296">
+            <strong>Signature:</strong> IterateeBuilder<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L247-247" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '297', 297)" onmouseover="showTip(event, '297', 297)">
+            joinI outher
+          </code>
+          <div class="tip" id="297">
+            <strong>Signature:</strong> outher:Iteratee&lt;&#39;?10651,Iteratee&lt;&#39;?10652,&#39;?10653&gt;&gt; -&gt; Iteratee&lt;&#39;?10651,&#39;?10653&gt;<br />
+                          <strong>Type parameters:</strong> '?10651, '?10652, '?10653          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L270-270" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '298', 298)" onmouseover="showTip(event, '298', 298)">
+            lift2 f a b
+          </code>
+          <div class="tip" id="298">
+            <strong>Signature:</strong> f:(&#39;?10624 -&gt; &#39;?10625 -&gt; &#39;?10626) -&gt; a:Iteratee&lt;&#39;?10627,&#39;?10624&gt; -&gt; b:Iteratee&lt;&#39;?10627,&#39;?10625&gt; -&gt; Iteratee&lt;&#39;?10627,&#39;?10626&gt;<br />
+                          <strong>Type parameters:</strong> '?10624, '?10625, '?10626, '?10627          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L258-258" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '299', 299)" onmouseover="showTip(event, '299', 299)">
+            map f m
+          </code>
+          <div class="tip" id="299">
+            <strong>Signature:</strong> f:(&#39;?10616 -&gt; &#39;?10617) -&gt; m:Iteratee&lt;&#39;?10618,&#39;?10616&gt; -&gt; Iteratee&lt;&#39;?10618,&#39;?10617&gt;<br />
+                          <strong>Type parameters:</strong> '?10616, '?10617, '?10618          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L256-256" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '300', 300)" onmouseover="showTip(event, '300', 300)">
+            opt i
+          </code>
+          <div class="tip" id="300">
+            <strong>Signature:</strong> i:Iteratee&lt;&#39;?10538,&#39;?10539&gt; -&gt; Iteratee&lt;&#39;?10538,&#39;?10539 option&gt;<br />
+                          <strong>Type parameters:</strong> '?10538, '?10539          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L189-189" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '301', 301)" onmouseover="showTip(event, '301', 301)">
+            returnI x
+          </code>
+          <div class="tip" id="301">
+            <strong>Signature:</strong> x:&#39;?10520 -&gt; Iteratee&lt;&#39;?10521,&#39;?10520&gt;<br />
+                          <strong>Type parameters:</strong> '?10520, '?10521          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L171-171" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '302', 302)" onmouseover="showTip(event, '302', 302)">
+            returnM x
+          </code>
+          <div class="tip" id="302">
+            <strong>Signature:</strong> x:&#39;?10597 -&gt; Iteratee&lt;&#39;?10598,&#39;?10597&gt;<br />
+                          <strong>Type parameters:</strong> '?10597, '?10598          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L249-249" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '303', 303)" onmouseover="showTip(event, '303', 303)">
+            run i
+          </code>
+          <div class="tip" id="303">
+            <strong>Signature:</strong> i:Iteratee&lt;&#39;?10558,&#39;?10559&gt; -&gt; &#39;?10559<br />
+                          <strong>Type parameters:</strong> '?10558, '?10559          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L225-225" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '304', 304)" onmouseover="showTip(event, '304', 304)">
+            run_ i
+          </code>
+          <div class="tip" id="304">
+            <strong>Signature:</strong> i:Iteratee&lt;&#39;?10555,&#39;?10556&gt; -&gt; Choice&lt;&#39;?10556,exn&gt;<br />
+                          <strong>Type parameters:</strong> '?10555, '?10556          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L219-219" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '305', 305)" onmouseover="showTip(event, '305', 305)">
+            throw e
+          </code>
+          <div class="tip" id="305">
+            <strong>Signature:</strong> e:exn -&gt; Iteratee&lt;&#39;?10531,&#39;?10532&gt;<br />
+                          <strong>Type parameters:</strong> '?10531, '?10532          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L175-175" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '306', 306)" onmouseover="showTip(event, '306', 306)">
+            tryFinally compensation i
+          </code>
+          <div class="tip" id="306">
+            <strong>Signature:</strong> compensation:(unit -&gt; unit) -&gt; i:Iteratee&lt;&#39;?10544,&#39;?10545&gt; -&gt; Iteratee&lt;&#39;?10544,&#39;?10545&gt;<br />
+                          <strong>Type parameters:</strong> '?10544, '?10545          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Iteratee.fs#L203-203" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <img src="./img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">fsharpx</li>
+            <li><a href="./index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.com/packages/FSharpx.Core">Get Library via NuGet</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx/blob/master/LICENSE.txt">License</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="./index.html">Introduction</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="./reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/fsprojects/fsharpx"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
+  </body>
+  </html>

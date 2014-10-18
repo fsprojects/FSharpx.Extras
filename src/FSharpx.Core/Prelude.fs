@@ -1,4 +1,4 @@
-﻿namespace FSharpx
+﻿namespace FSharpx.Functional
 
 open System
 open System.Globalization

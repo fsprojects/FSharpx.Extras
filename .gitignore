@@ -26,10 +26,7 @@ obj/
 [Rr]elease*/
 _ReSharper*/
 [Tt]est[Rr]esult*
-build/
-build-portable/
 deploy/
-docs/
 nuget/
 test/
 FSharp.Monad_mm_cache.bin

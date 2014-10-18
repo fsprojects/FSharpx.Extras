@@ -3,11 +3,12 @@
 open System
 open FsUnit
 open Microsoft.FSharp.Core
-open FSharpx
 open FSharpx.Collections
 open FSharpx.CSharpTests
-open FSharpx.Choice
-open FSharpx.Validation
+open FSharpx.Functional
+open FSharpx.Functional.Choice
+open FSharpx.Functional.Validation
+open FSharpx.Functional.Nullable
 open NUnit.Framework
 
 let validator pred error value =
@@ -31,7 +32,6 @@ let validateAddress (a: Address) =
     <* nonNull "Post code can't be null" a.Postcode
     <* validateAddressLines a
 
-open FSharpx.Nullable
 
 let greaterThan o = validator ((<?) o)
 

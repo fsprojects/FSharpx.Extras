@@ -3,10 +3,10 @@
 open NUnit.Framework
 open FsCheck
 open FsCheck.NUnit
-open FSharpx
+open FSharpx.Functional
 open FSharpx.Collections
 open FSharpx.Tests.Properties
-open FSharpx.Monoid
+open FSharpx.Functional.Monoid
 
 type ByteStringGen =
     static member ByteStringArb =

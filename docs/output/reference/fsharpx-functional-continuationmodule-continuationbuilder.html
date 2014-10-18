@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>ContinuationBuilder - fsharpx</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="Steffan Forkmann and others"/>
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
+
+    <link type="text/css" rel="stylesheet" href="./content/style.css" />
+    <script type="text/javascript" src="./content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="https://github.com/fsprojects/fsharpx">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="./index.html">fsharpx</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>ContinuationBuilder</h1>
+<div class="xmldoc">
+</div>
+  <h3>Constructors</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Constructor</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '952', 952)" onmouseover="showTip(event, '952', 952)">
+            new()
+          </code>
+          <div class="tip" id="952">
+            <strong>Signature:</strong> unit -&gt; ContinuationBuilder<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Continuation.fs#L30-30" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Instance members</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Instance member</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '967', 967)" onmouseover="showTip(event, '967', 967)">
+            Bind(comp1, f)
+          </code>
+          <div class="tip" id="967">
+            <strong>Signature:</strong> (comp1:Cont&lt;&#39;?10936,&#39;?10937&gt; * f:(&#39;?10936 -&gt; Cont&lt;&#39;?10938,&#39;?10937&gt;)) -&gt; (&#39;?10938 -&gt; &#39;?10937) -&gt; (exn -&gt; &#39;?10937) -&gt; &#39;?10937<br />
+                          <strong>Type parameters:</strong> '?10936, '?10937, '?10938          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Continuation.fs#L33-33" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '968', 968)" onmouseover="showTip(event, '968', 968)">
+            Catch(comp)
+          </code>
+          <div class="tip" id="968">
+            <strong>Signature:</strong> comp:Cont&lt;&#39;?10940,&#39;?10941&gt; -&gt; Cont&lt;Choice&lt;&#39;?10940,exn&gt;,&#39;?10941&gt;<br />
+                          <strong>Type parameters:</strong> '?10940, '?10941          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Continuation.fs#L34-34" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '969', 969)" onmouseover="showTip(event, '969', 969)">
+            Combine(comp1, comp2)
+          </code>
+          <div class="tip" id="969">
+            <strong>Signature:</strong> (comp1:Cont&lt;unit,&#39;?10955&gt; * comp2:Cont&lt;&#39;?10956,&#39;?10955&gt;) -&gt; (&#39;?10956 -&gt; &#39;?10955) -&gt; (exn -&gt; &#39;?10955) -&gt; &#39;?10955<br />
+                          <strong>Type parameters:</strong> '?10955, '?10956          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Continuation.fs#L46-46" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '970', 970)" onmouseover="showTip(event, '970', 970)">
+            Delay(f)
+          </code>
+          <div class="tip" id="970">
+            <strong>Signature:</strong> (f:(unit -&gt; Cont&lt;&#39;?10958,&#39;?10959&gt;)) -&gt; (&#39;?10958 -&gt; &#39;?10959) -&gt; (exn -&gt; &#39;?10959) -&gt; &#39;?10959<br />
+                          <strong>Type parameters:</strong> '?10958, '?10959          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Continuation.fs#L47-47" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '971', 971)" onmouseover="showTip(event, '971', 971)">
+            For(items, body)
+          </code>
+          <div class="tip" id="971">
+            <strong>Signature:</strong> (items:seq&lt;&#39;?10963&gt; * body:(&#39;?10963 -&gt; Cont&lt;unit,&#39;?10964&gt;)) -&gt; (unit -&gt; &#39;?10964) -&gt; (exn -&gt; &#39;?10964) -&gt; &#39;?10964<br />
+                          <strong>Type parameters:</strong> '?10963, '?10964          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Continuation.fs#L50-50" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '972', 972)" onmouseover="showTip(event, '972', 972)">
+            Return(a)
+          </code>
+          <div class="tip" id="972">
+            <strong>Signature:</strong> a:&#39;?10930 -&gt; Cont&lt;&#39;?10930,&#39;?10931&gt;<br />
+                          <strong>Type parameters:</strong> '?10930, '?10931          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Continuation.fs#L31-31" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '973', 973)" onmouseover="showTip(event, '973', 973)">
+            ReturnFrom(comp)
+          </code>
+          <div class="tip" id="973">
+            <strong>Signature:</strong> comp:Cont&lt;&#39;?10933,&#39;?10934&gt; -&gt; Cont&lt;&#39;?10933,&#39;?10934&gt;<br />
+                          <strong>Type parameters:</strong> '?10933, '?10934          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Continuation.fs#L32-32" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '974', 974)" onmouseover="showTip(event, '974', 974)">
+            TryFinally(tryBlock, finallyBlock)
+          </code>
+          <div class="tip" id="974">
+            <strong>Signature:</strong> (tryBlock:Cont&lt;&#39;?10948,&#39;?10949&gt; * finallyBlock:(unit -&gt; unit)) -&gt; (&#39;?10948 -&gt; &#39;?10949) -&gt; (exn -&gt; &#39;?10949) -&gt; &#39;?10949<br />
+                          <strong>Type parameters:</strong> '?10948, '?10949          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Continuation.fs#L41-41" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '975', 975)" onmouseover="showTip(event, '975', 975)">
+            TryWith(tryBlock, catchBlock)
+          </code>
+          <div class="tip" id="975">
+            <strong>Signature:</strong> (tryBlock:Cont&lt;&#39;?10945,&#39;?10946&gt; * catchBlock:(exn -&gt; Cont&lt;&#39;?10945,&#39;?10946&gt;)) -&gt; (&#39;?10945 -&gt; &#39;?10946) -&gt; (exn -&gt; &#39;?10946) -&gt; &#39;?10946<br />
+                          <strong>Type parameters:</strong> '?10945, '?10946          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Continuation.fs#L38-38" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '976', 976)" onmouseover="showTip(event, '976', 976)">
+            Using(res, body)
+          </code>
+          <div class="tip" id="976">
+            <strong>Signature:</strong> (res:&#39;?10951 * body:(&#39;?10951 -&gt; Cont&lt;&#39;?10952,&#39;?10953&gt;)) -&gt; (&#39;?10952 -&gt; &#39;?10953) -&gt; (exn -&gt; &#39;?10953) -&gt; &#39;?10953<br />
+                          <strong>Type parameters:</strong> '?10951, '?10952, '?10953          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Continuation.fs#L44-44" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '977', 977)" onmouseover="showTip(event, '977', 977)">
+            While(pred, body)
+          </code>
+          <div class="tip" id="977">
+            <strong>Signature:</strong> (pred:(unit -&gt; bool) * body:Cont&lt;unit,&#39;?10961&gt;) -&gt; (unit -&gt; &#39;?10961) -&gt; (exn -&gt; &#39;?10961) -&gt; &#39;?10961<br />
+                          <strong>Type parameters:</strong> '?10961          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Continuation.fs#L48-48" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '978', 978)" onmouseover="showTip(event, '978', 978)">
+            Zero()
+          </code>
+          <div class="tip" id="978">
+            <strong>Signature:</strong> unit -&gt; Cont&lt;unit,&#39;?10943&gt;<br />
+                          <strong>Type parameters:</strong> '?10943          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/ComputationExpressions/Continuation.fs#L36-36" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <img src="./img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">fsharpx</li>
+            <li><a href="./index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.com/packages/FSharpx.Core">Get Library via NuGet</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx/blob/master/LICENSE.txt">License</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="./index.html">Introduction</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="./reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/fsprojects/fsharpx"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
+  </body>
+  </html>

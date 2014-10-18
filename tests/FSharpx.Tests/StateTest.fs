@@ -1,6 +1,6 @@
 ﻿module FSharpx.Tests.StateTest
 
-open FSharpx.State
+open FSharpx.Functional.State
 open NUnit.Framework
 open FsUnit
 

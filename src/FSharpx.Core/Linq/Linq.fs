@@ -3,6 +3,8 @@
 
 namespace FSharpx.Linq
 
+#nowarn "1204"
+
 open System
 open System.Linq
 open System.Collections.Generic

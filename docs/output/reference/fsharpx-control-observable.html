@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Observable - fsharpx</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="Steffan Forkmann and others"/>
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
+
+    <link type="text/css" rel="stylesheet" href="./content/style.css" />
+    <script type="text/javascript" src="./content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="https://github.com/fsprojects/fsharpx">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="./index.html">fsharpx</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Observable</h1>
+<div class="xmldoc">
+</div>
+
+<!-- Render nested types and modules, if there are any -->
+
+  <h3>Functions and values</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Function or value</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '42', 42)" onmouseover="showTip(event, '42', 42)">
+            asUpdates input
+          </code>
+          <div class="tip" id="42">
+            <strong>Signature:</strong> input:IObservable&lt;&#39;T&gt; -&gt; IObservable&lt;ObservableUpdate&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Observable.fs#L65-65" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Turns observable into an observable that only calls OnNext method of the
+observer, but gives it a discriminated union that represents different
+kinds of events (error, next, completed)</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '43', 43)" onmouseover="showTip(event, '43', 43)">
+            bufferWithTimeOrCount (...)
+          </code>
+          <div class="tip" id="43">
+            <strong>Signature:</strong> timeSpan:TimeSpan -&gt; count:int -&gt; source:IObservable&lt;&#39;T&gt; -&gt; IObservable&lt;seq&lt;&#39;T&gt;&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Observable.fs#L185-185" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '44', 44)" onmouseover="showTip(event, '44', 44)">
+            combineLatest left right
+          </code>
+          <div class="tip" id="44">
+            <strong>Signature:</strong> left:IObservable&lt;&#39;TLeft&gt; -&gt; right:IObservable&lt;&#39;TRight&gt; -&gt; IObservable&lt;&#39;TLeft * &#39;TRight&gt;<br />
+                          <strong>Type parameters:</strong> 'TLeft, 'TRight          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Observable.fs#L152-152" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '45', 45)" onmouseover="showTip(event, '45', 45)">
+            create f
+          </code>
+          <div class="tip" id="45">
+            <strong>Signature:</strong> f:(IObserver&lt;&#39;?11786&gt; -&gt; unit -&gt; unit) -&gt; IObservable&lt;&#39;?11786&gt;<br />
+                          <strong>Type parameters:</strong> '?11786          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Observable.fs#L82-82" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '46', 46)" onmouseover="showTip(event, '46', 46)">
+            createWithDisposable f
+          </code>
+          <div class="tip" id="46">
+            <strong>Signature:</strong> f:(IObserver&lt;&#39;?11788&gt; -&gt; IDisposable) -&gt; IObservable&lt;&#39;?11788&gt;<br />
+                          <strong>Type parameters:</strong> '?11788          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Observable.fs#L89-89" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '47', 47)" onmouseover="showTip(event, '47', 47)">
+            delay milliseconds observable
+          </code>
+          <div class="tip" id="47">
+            <strong>Signature:</strong> milliseconds:int -&gt; observable:IObservable&lt;&#39;T&gt; -&gt; IObservable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Observable.fs#L233-233" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Delay execution of Observer function</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '48', 48)" onmouseover="showTip(event, '48', 48)">
+            error e
+          </code>
+          <div class="tip" id="48">
+            <strong>Signature:</strong> e:exn -&gt; IObservable&lt;&#39;?11790&gt;<br />
+                          <strong>Type parameters:</strong> '?11790          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Observable.fs#L94-94" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '49', 49)" onmouseover="showTip(event, '49', 49)">
+            FromEvent (...)
+          </code>
+          <div class="tip" id="49">
+            <strong>Signature:</strong> (conversion:Func&lt;Action&lt;&#39;TEventArgs&gt;,&#39;TDelegate&gt; * addHandler:Action&lt;&#39;TDelegate&gt; * removeHandler:Action&lt;&#39;TDelegate&gt;) -&gt; IObservable&lt;&#39;TEventArgs&gt;<br />
+                          <strong>Type parameters:</strong> 'TEventArgs, 'TDelegate          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Observable.fs#L112-112" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '50', 50)" onmouseover="showTip(event, '50', 50)">
+            FromEventHandler (...)
+          </code>
+          <div class="tip" id="50">
+            <strong>Signature:</strong> (addHandler:Action&lt;EventHandler&lt;EventArgs&gt;&gt; * removeHandler:Action&lt;EventHandler&lt;EventArgs&gt;&gt;) -&gt; IObservable&lt;EventArgs&gt;<br />
+                          <strong>Type parameters:</strong> 'TEventArgs          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Observable.fs#L101-101" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '51', 51)" onmouseover="showTip(event, '51', 51)">
+            guard f e
+          </code>
+          <div class="tip" id="51">
+            <strong>Signature:</strong> f:(unit -&gt; unit) -&gt; e:IObservable&lt;&#39;Args&gt; -&gt; IObservable&lt;&#39;Args&gt;<br />
+                          <strong>Type parameters:</strong> 'Args          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Observable.fs#L57-57" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Creates an observable that calls the specified function (each time)
+after an observer is attached to the observable. This is useful to 
+make sure that events triggered by the function are handled.</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '52', 52)" onmouseover="showTip(event, '52', 52)">
+            invoke f w
+          </code>
+          <div class="tip" id="52">
+            <strong>Signature:</strong> f:((unit -&gt; unit) -&gt; unit) -&gt; w:IObservable&lt;&#39;?11833&gt; -&gt; IObservable&lt;&#39;?11833&gt;<br />
+                          <strong>Type parameters:</strong> '?11833          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Observable.fs#L217-217" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Invoke Observer function through specified function</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '53', 53)" onmouseover="showTip(event, '53', 53)">
+            mapi f source
+          </code>
+          <div class="tip" id="53">
+            <strong>Signature:</strong> f:(int -&gt; &#39;TSource -&gt; &#39;TResult) -&gt; source:IObservable&lt;&#39;TSource&gt; -&gt; IObservable&lt;&#39;TResult&gt;<br />
+                          <strong>Type parameters:</strong> 'TSource, 'TResult          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Observable.fs#L132-132" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '54', 54)" onmouseover="showTip(event, '54', 54)">
+            ofSeq items
+          </code>
+          <div class="tip" id="54">
+            <strong>Signature:</strong> items:seq&lt;&#39;TItem&gt; -&gt; IObservable&lt;&#39;TItem&gt;<br />
+                          <strong>Type parameters:</strong> 'TItem          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Observable.fs#L124-124" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '55', 55)" onmouseover="showTip(event, '55', 55)">
+            result x
+          </code>
+          <div class="tip" id="55">
+            <strong>Signature:</strong> x:&#39;?11784 -&gt; IObservable&lt;&#39;?11784&gt;<br />
+                          <strong>Type parameters:</strong> '?11784          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Observable.fs#L74-74" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '56', 56)" onmouseover="showTip(event, '56', 56)">
+            synchronize f
+          </code>
+          <div class="tip" id="56">
+            <strong>Signature:</strong> f:(((unit -&gt; unit) -&gt; unit) -&gt; &#39;?11837) -&gt; &#39;?11837<br />
+                          <strong>Type parameters:</strong> '?11837          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Observable.fs#L243-243" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Helper that can be used for writing CPS-style code that resumes
+on the same thread where the operation was started.</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '57', 57)" onmouseover="showTip(event, '57', 57)">
+            takeWhile f source
+          </code>
+          <div class="tip" id="57">
+            <strong>Signature:</strong> f:(&#39;TSource -&gt; bool) -&gt; source:IObservable&lt;&#39;TSource&gt; -&gt; IObservable&lt;&#39;TSource&gt;<br />
+                          <strong>Type parameters:</strong> 'TSource          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Observable.fs#L140-140" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '58', 58)" onmouseover="showTip(event, '58', 58)">
+            throttle milliseconds source
+          </code>
+          <div class="tip" id="58">
+            <strong>Signature:</strong> milliseconds:int -&gt; source:IObservable&lt;&#39;T&gt; -&gt; IObservable&lt;&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Observable.fs#L366-366" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '59', 59)" onmouseover="showTip(event, '59', 59)">
+            windowed size input
+          </code>
+          <div class="tip" id="59">
+            <strong>Signature:</strong> size:int -&gt; input:IObservable&lt;&#39;T&gt; -&gt; IObservable&lt;&#39;T []&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Observable.fs#L27-27" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Returns an observable that yields sliding windows of 
+containing elements drawn from the input observable. 
+Each window is returned as a fresh array.</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '60', 60)" onmouseover="showTip(event, '60', 60)">
+            zip left right
+          </code>
+          <div class="tip" id="60">
+            <strong>Signature:</strong> left:IObservable&lt;&#39;TLeft&gt; -&gt; right:IObservable&lt;&#39;TRight&gt; -&gt; IObservable&lt;&#39;TLeft * &#39;TRight&gt;<br />
+                          <strong>Type parameters:</strong> 'TLeft, 'TRight          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/fsharpx/tree/master/src/FSharpx.Core/Observable.fs#L172-172" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <img src="./img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">fsharpx</li>
+            <li><a href="./index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.com/packages/FSharpx.Core">Get Library via NuGet</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx/blob/master/LICENSE.txt">License</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="./index.html">Introduction</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="./reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/fsprojects/fsharpx"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
+  </body>
+  </html>

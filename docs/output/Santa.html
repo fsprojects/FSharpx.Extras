@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Santa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="Extra components for FSharpx"/>
+    <meta name="author" content="Steffan Forkmann and others"/>
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
+
+    <link type="text/css" rel="stylesheet" href="./content/style.css" />
+    <script type="text/javascript" src="./content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="https://github.com/fsprojects/fsharpx">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="./index.html">FSharpx.Extras</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+<table class="pre"><tr><td class="lines"><pre class="fssnip">
+<span class="l">  1: </span>
+<span class="l">  2: </span>
+<span class="l">  3: </span>
+<span class="l">  4: </span>
+<span class="l">  5: </span>
+<span class="l">  6: </span>
+<span class="l">  7: </span>
+<span class="l">  8: </span>
+<span class="l">  9: </span>
+<span class="l"> 10: </span>
+<span class="l"> 11: </span>
+<span class="l"> 12: </span>
+<span class="l"> 13: </span>
+<span class="l"> 14: </span>
+<span class="l"> 15: </span>
+<span class="l"> 16: </span>
+<span class="l"> 17: </span>
+<span class="l"> 18: </span>
+<span class="l"> 19: </span>
+<span class="l"> 20: </span>
+<span class="l"> 21: </span>
+<span class="l"> 22: </span>
+<span class="l"> 23: </span>
+<span class="l"> 24: </span>
+<span class="l"> 25: </span>
+<span class="l"> 26: </span>
+<span class="l"> 27: </span>
+<span class="l"> 28: </span>
+<span class="l"> 29: </span>
+<span class="l"> 30: </span>
+<span class="l"> 31: </span>
+<span class="l"> 32: </span>
+<span class="l"> 33: </span>
+<span class="l"> 34: </span>
+<span class="l"> 35: </span>
+<span class="l"> 36: </span>
+<span class="l"> 37: </span>
+<span class="l"> 38: </span>
+<span class="l"> 39: </span>
+<span class="l"> 40: </span>
+<span class="l"> 41: </span>
+<span class="l"> 42: </span>
+<span class="l"> 43: </span>
+<span class="l"> 44: </span>
+<span class="l"> 45: </span>
+<span class="l"> 46: </span>
+<span class="l"> 47: </span>
+<span class="l"> 48: </span>
+<span class="l"> 49: </span>
+<span class="l"> 50: </span>
+<span class="l"> 51: </span>
+<span class="l"> 52: </span>
+<span class="l"> 53: </span>
+<span class="l"> 54: </span>
+<span class="l"> 55: </span>
+<span class="l"> 56: </span>
+<span class="l"> 57: </span>
+<span class="l"> 58: </span>
+<span class="l"> 59: </span>
+<span class="l"> 60: </span>
+<span class="l"> 61: </span>
+<span class="l"> 62: </span>
+<span class="l"> 63: </span>
+<span class="l"> 64: </span>
+<span class="l"> 65: </span>
+<span class="l"> 66: </span>
+<span class="l"> 67: </span>
+<span class="l"> 68: </span>
+<span class="l"> 69: </span>
+<span class="l"> 70: </span>
+<span class="l"> 71: </span>
+<span class="l"> 72: </span>
+<span class="l"> 73: </span>
+<span class="l"> 74: </span>
+<span class="l"> 75: </span>
+<span class="l"> 76: </span>
+<span class="l"> 77: </span>
+<span class="l"> 78: </span>
+<span class="l"> 79: </span>
+<span class="l"> 80: </span>
+<span class="l"> 81: </span>
+<span class="l"> 82: </span>
+<span class="l"> 83: </span>
+<span class="l"> 84: </span>
+<span class="l"> 85: </span>
+<span class="l"> 86: </span>
+<span class="l"> 87: </span>
+<span class="l"> 88: </span>
+<span class="l"> 89: </span>
+<span class="l"> 90: </span>
+<span class="l"> 91: </span>
+<span class="l"> 92: </span>
+<span class="l"> 93: </span>
+<span class="l"> 94: </span>
+<span class="l"> 95: </span>
+<span class="l"> 96: </span>
+<span class="l"> 97: </span>
+<span class="l"> 98: </span>
+<span class="l"> 99: </span>
+<span class="l">100: </span>
+<span class="l">101: </span>
+<span class="l">102: </span>
+<span class="l">103: </span>
+<span class="l">104: </span>
+<span class="l">105: </span>
+<span class="l">106: </span>
+<span class="l">107: </span>
+<span class="l">108: </span>
+<span class="l">109: </span>
+<span class="l">110: </span>
+<span class="l">111: </span>
+<span class="l">112: </span>
+<span class="l">113: </span>
+<span class="l">114: </span>
+<span class="l">115: </span>
+<span class="l">116: </span>
+<span class="l">117: </span>
+<span class="l">118: </span>
+<span class="l">119: </span>
+<span class="l">120: </span>
+<span class="l">121: </span>
+<span class="l">122: </span>
+<span class="l">123: </span>
+<span class="l">124: </span>
+<span class="l">125: </span>
+<span class="l">126: </span>
+<span class="l">127: </span>
+<span class="l">128: </span>
+<span class="l">129: </span>
+<span class="l">130: </span>
+<span class="l">131: </span>
+<span class="l">132: </span>
+<span class="l">133: </span>
+<span class="l">134: </span>
+<span class="l">135: </span>
+<span class="l">136: </span>
+<span class="l">137: </span>
+<span class="l">138: </span>
+</pre>
+</td>
+<td class="snippet"><pre class="fssnip">
+<span class="c">(*</span>
+<span class="c"> * Copyright (c) 2008, Gregory Neverov</span>
+<span class="c"> * All rights reserved.</span>
+<span class="c"> * </span>
+<span class="c"> * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:</span>
+<span class="c"> * 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer. </span>
+<span class="c"> * 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution. </span>
+<span class="c"> * 3. Neither the name of the author nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission. </span>
+<span class="c"> * </span>
+<span class="c"> * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</span>
+<span class="c"> * </span>
+<span class="c"> *)</span>
+
+<span class="prep">#r</span> <span class="s">@&quot;</span><span class="s">.</span><span class="s">.</span><span class="s">/</span><span class="s">.</span><span class="s">.</span><span class="s">/</span><span class="s">bin</span><span class="s">/</span><span class="s">v4</span><span class="s">.</span><span class="s">0</span><span class="s">/</span><span class="s">FSharpx</span><span class="s">.</span><span class="s">Core</span><span class="s">.</span><span class="s">dll</span><span class="s">&quot;</span>
+
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="i">System</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs1', 2)" onmouseover="showTip(event, 'fs1', 2)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs2', 3)" onmouseover="showTip(event, 'fs2', 3)" class="i">Threading</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs3', 4)" onmouseover="showTip(event, 'fs3', 4)" class="i">FSharpx</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs4', 5)" onmouseover="showTip(event, 'fs4', 5)" class="i">Stm</span>
+
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs5', 6)" onmouseover="showTip(event, 'fs5', 6)" class="i">check</span> <span onmouseout="hideTip(event, 'fs6', 7)" onmouseover="showTip(event, 'fs6', 7)" class="i">p</span> <span class="o">=</span>
+  <span class="k">match</span> <span onmouseout="hideTip(event, 'fs6', 8)" onmouseover="showTip(event, 'fs6', 8)" class="i">p</span> <span class="k">with</span>
+  | <span class="k">true</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs7', 9)" onmouseover="showTip(event, 'fs7', 9)" class="i">stm</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs8', 10)" onmouseover="showTip(event, 'fs8', 10)" class="i">Return</span>(())
+  | <span class="k">false</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs9', 11)" onmouseover="showTip(event, 'fs9', 11)" class="i">retry</span> ()
+
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs10', 12)" onmouseover="showTip(event, 'fs10', 12)" class="i">forkIO</span> (<span onmouseout="hideTip(event, 'fs11', 13)" onmouseover="showTip(event, 'fs11', 13)" class="i">f</span> <span class="o">:</span> <span onmouseout="hideTip(event, 'fs12', 14)" onmouseover="showTip(event, 'fs12', 14)" class="i">unit</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs12', 15)" onmouseover="showTip(event, 'fs12', 15)" class="i">unit</span>) <span class="o">=</span> 
+  <span class="k">let</span> <span onmouseout="hideTip(event, 'fs13', 16)" onmouseover="showTip(event, 'fs13', 16)" class="i">t</span> <span class="o">=</span> <span class="k">new</span> <span onmouseout="hideTip(event, 'fs14', 17)" onmouseover="showTip(event, 'fs14', 17)" class="i">Thread</span>(<span onmouseout="hideTip(event, 'fs11', 18)" onmouseover="showTip(event, 'fs11', 18)" class="i">f</span>)
+  <span onmouseout="hideTip(event, 'fs13', 19)" onmouseover="showTip(event, 'fs13', 19)" class="i">t</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs15', 20)" onmouseover="showTip(event, 'fs15', 20)" class="i">Start</span>()
+  <span onmouseout="hideTip(event, 'fs13', 21)" onmouseover="showTip(event, 'fs13', 21)" class="i">t</span>
+
+<span class="c">//----------------</span>
+
+<span class="c">//forever :: IO () -&gt; IO ()</span>
+<span class="c">// Repeatedly perform the action</span>
+<span class="k">let</span> <span class="k">rec</span> <span onmouseout="hideTip(event, 'fs16', 22)" onmouseover="showTip(event, 'fs16', 22)" class="i">forever</span> <span onmouseout="hideTip(event, 'fs17', 23)" onmouseover="showTip(event, 'fs17', 23)" class="i">act</span> <span class="o">:</span> <span onmouseout="hideTip(event, 'fs12', 24)" onmouseover="showTip(event, 'fs12', 24)" class="i">unit</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs17', 25)" onmouseover="showTip(event, 'fs17', 25)" class="i">act</span> (); <span onmouseout="hideTip(event, 'fs16', 26)" onmouseover="showTip(event, 'fs16', 26)" class="i">forever</span> <span onmouseout="hideTip(event, 'fs17', 27)" onmouseover="showTip(event, 'fs17', 27)" class="i">act</span>
+
+<span class="c">//randomDelay :: IO ()</span>
+<span class="c">// Delay for a random time between 1 and 1000,000 microseconds</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs18', 28)" onmouseover="showTip(event, 'fs18', 28)" class="i">rng</span> <span class="o">=</span> <span class="k">new</span> <span onmouseout="hideTip(event, 'fs19', 29)" onmouseover="showTip(event, 'fs19', 29)" class="i">Random</span>()
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs20', 30)" onmouseover="showTip(event, 'fs20', 30)" class="i">randomDelay</span> () <span class="o">=</span> 
+  <span class="k">let</span> <span onmouseout="hideTip(event, 'fs21', 31)" onmouseover="showTip(event, 'fs21', 31)" class="i">waitTime</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs18', 32)" onmouseover="showTip(event, 'fs18', 32)" class="i">rng</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs22', 33)" onmouseover="showTip(event, 'fs22', 33)" class="i">Next</span>(<span class="n">1000</span>)
+  <span onmouseout="hideTip(event, 'fs14', 34)" onmouseover="showTip(event, 'fs14', 34)" class="i">Thread</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs23', 35)" onmouseover="showTip(event, 'fs23', 35)" class="i">Sleep</span>(<span onmouseout="hideTip(event, 'fs21', 36)" onmouseover="showTip(event, 'fs21', 36)" class="i">waitTime</span>)
+
+<span class="c">//choose :: [(STM a, a -&gt; IO ())] -&gt; IO ()</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs24', 37)" onmouseover="showTip(event, 'fs24', 37)" class="i">choose</span> <span onmouseout="hideTip(event, 'fs25', 38)" onmouseover="showTip(event, 'fs25', 38)" class="i">choices</span> <span class="o">:</span> <span onmouseout="hideTip(event, 'fs12', 39)" onmouseover="showTip(event, 'fs12', 39)" class="i">unit</span> <span class="o">=</span> 
+  <span class="c">//stmActions :: [STM (IO ())]</span>
+  <span class="k">let</span> <span onmouseout="hideTip(event, 'fs26', 40)" onmouseover="showTip(event, 'fs26', 40)" class="i">stmActions</span> <span class="o">=</span> [ <span class="k">for</span> (<span onmouseout="hideTip(event, 'fs27', 41)" onmouseover="showTip(event, 'fs27', 41)" class="i">guard</span>, <span onmouseout="hideTip(event, 'fs28', 42)" onmouseover="showTip(event, 'fs28', 42)" class="i">rhs</span>) <span class="k">in</span> <span onmouseout="hideTip(event, 'fs25', 43)" onmouseover="showTip(event, 'fs25', 43)" class="i">choices</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs7', 44)" onmouseover="showTip(event, 'fs7', 44)" class="i">stm</span> { <span class="k">let!</span> <span onmouseout="hideTip(event, 'fs29', 45)" onmouseover="showTip(event, 'fs29', 45)" class="i">v</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs27', 46)" onmouseover="showTip(event, 'fs27', 46)" class="i">guard</span> <span class="k">in</span> <span class="k">return</span> (<span onmouseout="hideTip(event, 'fs28', 47)" onmouseover="showTip(event, 'fs28', 47)" class="i">rhs</span> <span onmouseout="hideTip(event, 'fs29', 48)" onmouseover="showTip(event, 'fs29', 48)" class="i">v</span>) } ]
+  <span onmouseout="hideTip(event, 'fs26', 49)" onmouseover="showTip(event, 'fs26', 49)" class="i">stmActions</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs30', 50)" onmouseover="showTip(event, 'fs30', 50)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs31', 51)" onmouseover="showTip(event, 'fs31', 51)" class="i">reduceBack</span> <span onmouseout="hideTip(event, 'fs32', 52)" onmouseover="showTip(event, 'fs32', 52)" class="i">orElse</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs33', 53)" onmouseover="showTip(event, 'fs33', 53)" class="i">atomically</span>
+
+<span class="c">//---------------</span>
+<span class="k">type</span> <span onmouseout="hideTip(event, 'fs34', 54)" onmouseover="showTip(event, 'fs34', 54)" class="i">Gate</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs35', 55)" onmouseover="showTip(event, 'fs35', 55)" class="i">MkGate</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs36', 56)" onmouseover="showTip(event, 'fs36', 56)" class="i">int</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs37', 57)" onmouseover="showTip(event, 'fs37', 57)" class="i">TVar</span><span class="o">&lt;</span><span onmouseout="hideTip(event, 'fs36', 58)" onmouseover="showTip(event, 'fs36', 58)" class="i">int</span><span class="o">&gt;</span>
+
+<span class="c">//newGate :: Int -&gt; STM Gate</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs38', 59)" onmouseover="showTip(event, 'fs38', 59)" class="i">newGate</span> <span onmouseout="hideTip(event, 'fs39', 60)" onmouseover="showTip(event, 'fs39', 60)" class="i">n</span> <span class="o">=</span> 
+  <span onmouseout="hideTip(event, 'fs7', 61)" onmouseover="showTip(event, 'fs7', 61)" class="i">stm</span> { <span class="k">let</span> <span onmouseout="hideTip(event, 'fs40', 62)" onmouseover="showTip(event, 'fs40', 62)" class="i">tv</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs41', 63)" onmouseover="showTip(event, 'fs41', 63)" class="i">newTVar</span> <span class="n">0</span> <span class="k">in</span> <span class="k">return</span> <span onmouseout="hideTip(event, 'fs35', 64)" onmouseover="showTip(event, 'fs35', 64)" class="i">MkGate</span> (<span onmouseout="hideTip(event, 'fs39', 65)" onmouseover="showTip(event, 'fs39', 65)" class="i">n</span>, <span onmouseout="hideTip(event, 'fs40', 66)" onmouseover="showTip(event, 'fs40', 66)" class="i">tv</span>) }
+
+<span class="c">//passGate :: Gate -&gt; IO ()</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs42', 67)" onmouseover="showTip(event, 'fs42', 67)" class="i">passGate</span> (<span onmouseout="hideTip(event, 'fs35', 68)" onmouseover="showTip(event, 'fs35', 68)" class="i">MkGate</span> (<span onmouseout="hideTip(event, 'fs39', 69)" onmouseover="showTip(event, 'fs39', 69)" class="i">n</span>,<span onmouseout="hideTip(event, 'fs40', 70)" onmouseover="showTip(event, 'fs40', 70)" class="i">tv</span>)) <span class="o">=</span>
+  <span onmouseout="hideTip(event, 'fs7', 71)" onmouseover="showTip(event, 'fs7', 71)" class="i">stm</span> { <span class="k">let!</span> <span onmouseout="hideTip(event, 'fs43', 72)" onmouseover="showTip(event, 'fs43', 72)" class="i">n_left</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs44', 73)" onmouseover="showTip(event, 'fs44', 73)" class="i">readTVar</span> <span onmouseout="hideTip(event, 'fs40', 74)" onmouseover="showTip(event, 'fs40', 74)" class="i">tv</span>
+        <span class="k">do!</span> <span onmouseout="hideTip(event, 'fs5', 75)" onmouseover="showTip(event, 'fs5', 75)" class="i">check</span> (<span onmouseout="hideTip(event, 'fs43', 76)" onmouseover="showTip(event, 'fs43', 76)" class="i">n_left</span> <span class="o">&gt;</span> <span class="n">0</span>)
+        <span class="k">do!</span> <span onmouseout="hideTip(event, 'fs45', 77)" onmouseover="showTip(event, 'fs45', 77)" class="i">writeTVar</span> <span onmouseout="hideTip(event, 'fs40', 78)" onmouseover="showTip(event, 'fs40', 78)" class="i">tv</span> (<span onmouseout="hideTip(event, 'fs43', 79)" onmouseover="showTip(event, 'fs43', 79)" class="i">n_left</span><span class="o">-</span><span class="n">1</span>)
+        <span class="k">return</span> () } <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs33', 80)" onmouseover="showTip(event, 'fs33', 80)" class="i">atomically</span>
+
+<span class="c">//operateGate :: Gate -&gt; IO ()</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs46', 81)" onmouseover="showTip(event, 'fs46', 81)" class="i">operateGate</span> (<span onmouseout="hideTip(event, 'fs35', 82)" onmouseover="showTip(event, 'fs35', 82)" class="i">MkGate</span> (<span onmouseout="hideTip(event, 'fs39', 83)" onmouseover="showTip(event, 'fs39', 83)" class="i">n</span>,<span onmouseout="hideTip(event, 'fs40', 84)" onmouseover="showTip(event, 'fs40', 84)" class="i">tv</span>)) <span class="o">=</span>
+   <span onmouseout="hideTip(event, 'fs7', 85)" onmouseover="showTip(event, 'fs7', 85)" class="i">stm</span> { <span class="k">return!</span> <span onmouseout="hideTip(event, 'fs45', 86)" onmouseover="showTip(event, 'fs45', 86)" class="i">writeTVar</span> <span onmouseout="hideTip(event, 'fs40', 87)" onmouseover="showTip(event, 'fs40', 87)" class="i">tv</span> <span onmouseout="hideTip(event, 'fs39', 88)" onmouseover="showTip(event, 'fs39', 88)" class="i">n</span> } <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs33', 89)" onmouseover="showTip(event, 'fs33', 89)" class="i">atomically</span>
+   <span onmouseout="hideTip(event, 'fs7', 90)" onmouseover="showTip(event, 'fs7', 90)" class="i">stm</span> { <span class="k">let!</span> <span onmouseout="hideTip(event, 'fs43', 91)" onmouseover="showTip(event, 'fs43', 91)" class="i">n_left</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs44', 92)" onmouseover="showTip(event, 'fs44', 92)" class="i">readTVar</span> <span onmouseout="hideTip(event, 'fs40', 93)" onmouseover="showTip(event, 'fs40', 93)" class="i">tv</span>
+         <span class="k">return!</span> <span onmouseout="hideTip(event, 'fs5', 94)" onmouseover="showTip(event, 'fs5', 94)" class="i">check</span> (<span onmouseout="hideTip(event, 'fs43', 95)" onmouseover="showTip(event, 'fs43', 95)" class="i">n_left</span> <span class="o">=</span> <span class="n">0</span>) } <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs33', 96)" onmouseover="showTip(event, 'fs33', 96)" class="i">atomically</span>
+
+<span class="c">//---------------</span>
+<span class="k">type</span> <span onmouseout="hideTip(event, 'fs47', 97)" onmouseover="showTip(event, 'fs47', 97)" class="i">Group</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs48', 98)" onmouseover="showTip(event, 'fs48', 98)" class="i">MkGroup</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs36', 99)" onmouseover="showTip(event, 'fs36', 99)" class="i">int</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs37', 100)" onmouseover="showTip(event, 'fs37', 100)" class="i">TVar</span><span class="o">&lt;</span><span onmouseout="hideTip(event, 'fs36', 101)" onmouseover="showTip(event, 'fs36', 101)" class="i">int</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs34', 102)" onmouseover="showTip(event, 'fs34', 102)" class="i">Gate</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs34', 103)" onmouseover="showTip(event, 'fs34', 103)" class="i">Gate</span><span class="o">&gt;</span>
+
+<span class="c">//newGroup :: Int -&gt; IO Group</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs49', 104)" onmouseover="showTip(event, 'fs49', 104)" class="i">newGroup</span> <span onmouseout="hideTip(event, 'fs39', 105)" onmouseover="showTip(event, 'fs39', 105)" class="i">n</span> <span class="o">=</span> 
+  <span onmouseout="hideTip(event, 'fs7', 106)" onmouseover="showTip(event, 'fs7', 106)" class="i">stm</span> { <span class="k">let!</span> <span onmouseout="hideTip(event, 'fs50', 107)" onmouseover="showTip(event, 'fs50', 107)" class="i">g1</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs38', 108)" onmouseover="showTip(event, 'fs38', 108)" class="i">newGate</span> <span onmouseout="hideTip(event, 'fs39', 109)" onmouseover="showTip(event, 'fs39', 109)" class="i">n</span>
+        <span class="k">let!</span> <span onmouseout="hideTip(event, 'fs51', 110)" onmouseover="showTip(event, 'fs51', 110)" class="i">g2</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs38', 111)" onmouseover="showTip(event, 'fs38', 111)" class="i">newGate</span> <span onmouseout="hideTip(event, 'fs39', 112)" onmouseover="showTip(event, 'fs39', 112)" class="i">n</span>
+        <span class="k">let</span>  <span onmouseout="hideTip(event, 'fs52', 113)" onmouseover="showTip(event, 'fs52', 113)" class="i">tv</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs41', 114)" onmouseover="showTip(event, 'fs41', 114)" class="i">newTVar</span> (<span onmouseout="hideTip(event, 'fs39', 115)" onmouseover="showTip(event, 'fs39', 115)" class="i">n</span>, <span onmouseout="hideTip(event, 'fs50', 116)" onmouseover="showTip(event, 'fs50', 116)" class="i">g1</span>, <span onmouseout="hideTip(event, 'fs51', 117)" onmouseover="showTip(event, 'fs51', 117)" class="i">g2</span>)
+        <span class="k">return</span> <span onmouseout="hideTip(event, 'fs48', 118)" onmouseover="showTip(event, 'fs48', 118)" class="i">MkGroup</span> (<span onmouseout="hideTip(event, 'fs39', 119)" onmouseover="showTip(event, 'fs39', 119)" class="i">n</span>, <span onmouseout="hideTip(event, 'fs52', 120)" onmouseover="showTip(event, 'fs52', 120)" class="i">tv</span>)  } <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs33', 121)" onmouseover="showTip(event, 'fs33', 121)" class="i">atomically</span>
+
+<span class="c">//joinGroup :: Group -&gt; IO (Gate,Gate)</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs53', 122)" onmouseover="showTip(event, 'fs53', 122)" class="i">joinGroup</span> (<span onmouseout="hideTip(event, 'fs48', 123)" onmouseover="showTip(event, 'fs48', 123)" class="i">MkGroup</span> (<span onmouseout="hideTip(event, 'fs39', 124)" onmouseover="showTip(event, 'fs39', 124)" class="i">n</span>,<span onmouseout="hideTip(event, 'fs52', 125)" onmouseover="showTip(event, 'fs52', 125)" class="i">tv</span>)) <span class="o">=</span>
+  <span onmouseout="hideTip(event, 'fs7', 126)" onmouseover="showTip(event, 'fs7', 126)" class="i">stm</span> { <span class="k">let!</span> <span onmouseout="hideTip(event, 'fs43', 127)" onmouseover="showTip(event, 'fs43', 127)" class="i">n_left</span>, <span onmouseout="hideTip(event, 'fs50', 128)" onmouseover="showTip(event, 'fs50', 128)" class="i">g1</span>, <span onmouseout="hideTip(event, 'fs51', 129)" onmouseover="showTip(event, 'fs51', 129)" class="i">g2</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs44', 130)" onmouseover="showTip(event, 'fs44', 130)" class="i">readTVar</span> <span onmouseout="hideTip(event, 'fs52', 131)" onmouseover="showTip(event, 'fs52', 131)" class="i">tv</span>
+        <span class="k">do!</span> <span onmouseout="hideTip(event, 'fs5', 132)" onmouseover="showTip(event, 'fs5', 132)" class="i">check</span> (<span onmouseout="hideTip(event, 'fs43', 133)" onmouseover="showTip(event, 'fs43', 133)" class="i">n_left</span> <span class="o">&gt;</span> <span class="n">0</span>) 
+        <span class="k">do!</span> <span onmouseout="hideTip(event, 'fs45', 134)" onmouseover="showTip(event, 'fs45', 134)" class="i">writeTVar</span> <span onmouseout="hideTip(event, 'fs52', 135)" onmouseover="showTip(event, 'fs52', 135)" class="i">tv</span> (<span onmouseout="hideTip(event, 'fs43', 136)" onmouseover="showTip(event, 'fs43', 136)" class="i">n_left</span><span class="o">-</span><span class="n">1</span>, <span onmouseout="hideTip(event, 'fs50', 137)" onmouseover="showTip(event, 'fs50', 137)" class="i">g1</span>, <span onmouseout="hideTip(event, 'fs51', 138)" onmouseover="showTip(event, 'fs51', 138)" class="i">g2</span>)
+        <span class="k">return</span> (<span onmouseout="hideTip(event, 'fs50', 139)" onmouseover="showTip(event, 'fs50', 139)" class="i">g1</span>,<span onmouseout="hideTip(event, 'fs51', 140)" onmouseover="showTip(event, 'fs51', 140)" class="i">g2</span>) } <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs33', 141)" onmouseover="showTip(event, 'fs33', 141)" class="i">atomically</span>
+
+<span class="c">//awaitGroup :: Group -&gt; STM (Gate,Gate)</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs54', 142)" onmouseover="showTip(event, 'fs54', 142)" class="i">awaitGroup</span> (<span onmouseout="hideTip(event, 'fs48', 143)" onmouseover="showTip(event, 'fs48', 143)" class="i">MkGroup</span> (<span onmouseout="hideTip(event, 'fs39', 144)" onmouseover="showTip(event, 'fs39', 144)" class="i">n</span>,<span onmouseout="hideTip(event, 'fs52', 145)" onmouseover="showTip(event, 'fs52', 145)" class="i">tv</span>)) <span class="o">=</span>
+  <span onmouseout="hideTip(event, 'fs7', 146)" onmouseover="showTip(event, 'fs7', 146)" class="i">stm</span> { <span class="k">let!</span> <span onmouseout="hideTip(event, 'fs43', 147)" onmouseover="showTip(event, 'fs43', 147)" class="i">n_left</span>, <span onmouseout="hideTip(event, 'fs50', 148)" onmouseover="showTip(event, 'fs50', 148)" class="i">g1</span>, <span onmouseout="hideTip(event, 'fs51', 149)" onmouseover="showTip(event, 'fs51', 149)" class="i">g2</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs44', 150)" onmouseover="showTip(event, 'fs44', 150)" class="i">readTVar</span> <span onmouseout="hideTip(event, 'fs52', 151)" onmouseover="showTip(event, 'fs52', 151)" class="i">tv</span>
+        <span class="k">do!</span> <span onmouseout="hideTip(event, 'fs5', 152)" onmouseover="showTip(event, 'fs5', 152)" class="i">check</span> (<span onmouseout="hideTip(event, 'fs43', 153)" onmouseover="showTip(event, 'fs43', 153)" class="i">n_left</span> <span class="o">=</span> <span class="n">0</span>) 
+        <span class="k">let!</span> <span onmouseout="hideTip(event, 'fs55', 154)" onmouseover="showTip(event, 'fs55', 154)" class="i">new_g1</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs38', 155)" onmouseover="showTip(event, 'fs38', 155)" class="i">newGate</span> <span onmouseout="hideTip(event, 'fs39', 156)" onmouseover="showTip(event, 'fs39', 156)" class="i">n</span>
+        <span class="k">let!</span> <span onmouseout="hideTip(event, 'fs56', 157)" onmouseover="showTip(event, 'fs56', 157)" class="i">new_g2</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs38', 158)" onmouseover="showTip(event, 'fs38', 158)" class="i">newGate</span> <span onmouseout="hideTip(event, 'fs39', 159)" onmouseover="showTip(event, 'fs39', 159)" class="i">n</span>
+        <span class="k">do!</span> <span onmouseout="hideTip(event, 'fs45', 160)" onmouseover="showTip(event, 'fs45', 160)" class="i">writeTVar</span> <span onmouseout="hideTip(event, 'fs52', 161)" onmouseover="showTip(event, 'fs52', 161)" class="i">tv</span> (<span onmouseout="hideTip(event, 'fs39', 162)" onmouseover="showTip(event, 'fs39', 162)" class="i">n</span>,<span onmouseout="hideTip(event, 'fs55', 163)" onmouseover="showTip(event, 'fs55', 163)" class="i">new_g1</span>,<span onmouseout="hideTip(event, 'fs56', 164)" onmouseover="showTip(event, 'fs56', 164)" class="i">new_g2</span>)
+        <span class="k">return</span> (<span onmouseout="hideTip(event, 'fs50', 165)" onmouseover="showTip(event, 'fs50', 165)" class="i">g1</span>,<span onmouseout="hideTip(event, 'fs51', 166)" onmouseover="showTip(event, 'fs51', 166)" class="i">g2</span>) }
+
+<span class="c">//---------------       </span>
+<span class="k">let</span> <span class="k">rec</span> <span onmouseout="hideTip(event, 'fs57', 167)" onmouseover="showTip(event, 'fs57', 167)" class="i">main</span> () <span class="o">=</span> 
+  <span class="k">let</span> <span onmouseout="hideTip(event, 'fs58', 168)" onmouseover="showTip(event, 'fs58', 168)" class="i">elf_gp</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs49', 169)" onmouseover="showTip(event, 'fs49', 169)" class="i">newGroup</span> <span class="n">3</span>
+  <span onmouseout="hideTip(event, 'fs30', 170)" onmouseover="showTip(event, 'fs30', 170)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs59', 171)" onmouseover="showTip(event, 'fs59', 171)" class="i">iter</span> (<span class="k">fun</span> <span onmouseout="hideTip(event, 'fs39', 172)" onmouseover="showTip(event, 'fs39', 172)" class="i">n</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs60', 173)" onmouseover="showTip(event, 'fs60', 173)" class="i">elf</span> <span onmouseout="hideTip(event, 'fs58', 174)" onmouseover="showTip(event, 'fs58', 174)" class="i">elf_gp</span> <span onmouseout="hideTip(event, 'fs39', 175)" onmouseover="showTip(event, 'fs39', 175)" class="i">n</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs61', 176)" onmouseover="showTip(event, 'fs61', 176)" class="i">ignore</span>) [<span class="n">1..</span><span class="n">10</span>]
+  <span class="k">let</span> <span onmouseout="hideTip(event, 'fs62', 177)" onmouseover="showTip(event, 'fs62', 177)" class="i">rein_gp</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs49', 178)" onmouseover="showTip(event, 'fs49', 178)" class="i">newGroup</span> <span class="n">9</span>
+  <span onmouseout="hideTip(event, 'fs30', 179)" onmouseover="showTip(event, 'fs30', 179)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs59', 180)" onmouseover="showTip(event, 'fs59', 180)" class="i">iter</span> (<span class="k">fun</span> <span onmouseout="hideTip(event, 'fs39', 181)" onmouseover="showTip(event, 'fs39', 181)" class="i">n</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs63', 182)" onmouseover="showTip(event, 'fs63', 182)" class="i">reindeer</span> <span onmouseout="hideTip(event, 'fs62', 183)" onmouseover="showTip(event, 'fs62', 183)" class="i">rein_gp</span> <span onmouseout="hideTip(event, 'fs39', 184)" onmouseover="showTip(event, 'fs39', 184)" class="i">n</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs61', 185)" onmouseover="showTip(event, 'fs61', 185)" class="i">ignore</span>) [<span class="n">1..</span><span class="n">9</span>]
+  <span onmouseout="hideTip(event, 'fs16', 186)" onmouseover="showTip(event, 'fs16', 186)" class="i">forever</span> (<span class="k">fun</span> () <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs64', 187)" onmouseover="showTip(event, 'fs64', 187)" class="i">santa</span> <span onmouseout="hideTip(event, 'fs58', 188)" onmouseover="showTip(event, 'fs58', 188)" class="i">elf_gp</span> <span onmouseout="hideTip(event, 'fs62', 189)" onmouseover="showTip(event, 'fs62', 189)" class="i">rein_gp</span>)
+
+<span class="k">and</span> <span onmouseout="hideTip(event, 'fs60', 190)" onmouseover="showTip(event, 'fs60', 190)" class="i">elf</span> <span onmouseout="hideTip(event, 'fs65', 191)" onmouseover="showTip(event, 'fs65', 191)" class="i">gp</span> <span onmouseout="hideTip(event, 'fs66', 192)" onmouseover="showTip(event, 'fs66', 192)" class="i">id</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs10', 193)" onmouseover="showTip(event, 'fs10', 193)" class="i">forkIO</span> (<span class="k">fun</span> () <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs16', 194)" onmouseover="showTip(event, 'fs16', 194)" class="i">forever</span> (<span class="k">fun</span> () <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs67', 195)" onmouseover="showTip(event, 'fs67', 195)" class="i">elf1</span> <span onmouseout="hideTip(event, 'fs65', 196)" onmouseover="showTip(event, 'fs65', 196)" class="i">gp</span> <span onmouseout="hideTip(event, 'fs66', 197)" onmouseover="showTip(event, 'fs66', 197)" class="i">id</span>; <span onmouseout="hideTip(event, 'fs20', 198)" onmouseover="showTip(event, 'fs20', 198)" class="i">randomDelay</span> ()))
+
+<span class="k">and</span> <span onmouseout="hideTip(event, 'fs63', 199)" onmouseover="showTip(event, 'fs63', 199)" class="i">reindeer</span> <span onmouseout="hideTip(event, 'fs65', 200)" onmouseover="showTip(event, 'fs65', 200)" class="i">gp</span> <span onmouseout="hideTip(event, 'fs66', 201)" onmouseover="showTip(event, 'fs66', 201)" class="i">id</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs10', 202)" onmouseover="showTip(event, 'fs10', 202)" class="i">forkIO</span> (<span class="k">fun</span> () <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs16', 203)" onmouseover="showTip(event, 'fs16', 203)" class="i">forever</span> (<span class="k">fun</span> () <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs68', 204)" onmouseover="showTip(event, 'fs68', 204)" class="i">reindeer1</span> <span onmouseout="hideTip(event, 'fs65', 205)" onmouseover="showTip(event, 'fs65', 205)" class="i">gp</span> <span onmouseout="hideTip(event, 'fs66', 206)" onmouseover="showTip(event, 'fs66', 206)" class="i">id</span>; <span onmouseout="hideTip(event, 'fs20', 207)" onmouseover="showTip(event, 'fs20', 207)" class="i">randomDelay</span> ()))
+
+<span class="c">//santa :: Group -&gt; Group -&gt; IO ()</span>
+<span class="k">and</span> <span onmouseout="hideTip(event, 'fs64', 208)" onmouseover="showTip(event, 'fs64', 208)" class="i">santa</span> <span onmouseout="hideTip(event, 'fs69', 209)" onmouseover="showTip(event, 'fs69', 209)" class="i">elf_group</span> <span onmouseout="hideTip(event, 'fs70', 210)" onmouseover="showTip(event, 'fs70', 210)" class="i">rein_group</span> <span class="o">=</span>
+  <span onmouseout="hideTip(event, 'fs71', 211)" onmouseover="showTip(event, 'fs71', 211)" class="i">Console</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs72', 212)" onmouseover="showTip(event, 'fs72', 212)" class="i">WriteLine</span>(<span class="s">&quot;</span><span class="s">-</span><span class="s">-</span><span class="s">-</span><span class="s">-</span><span class="s">-</span><span class="s">-</span><span class="s">-</span><span class="s">-</span><span class="s">-</span><span class="s">-</span><span class="s">&quot;</span>)
+  <span onmouseout="hideTip(event, 'fs24', 213)" onmouseover="showTip(event, 'fs24', 213)" class="i">choose</span> [<span onmouseout="hideTip(event, 'fs54', 214)" onmouseover="showTip(event, 'fs54', 214)" class="i">awaitGroup</span> <span onmouseout="hideTip(event, 'fs70', 215)" onmouseover="showTip(event, 'fs70', 215)" class="i">rein_group</span>, <span onmouseout="hideTip(event, 'fs73', 216)" onmouseover="showTip(event, 'fs73', 216)" class="i">run</span> <span class="s">&quot;</span><span class="s">deliver</span><span class="s"> </span><span class="s">toys</span><span class="s">&quot;</span>; 
+          <span onmouseout="hideTip(event, 'fs54', 217)" onmouseover="showTip(event, 'fs54', 217)" class="i">awaitGroup</span> <span onmouseout="hideTip(event, 'fs69', 218)" onmouseover="showTip(event, 'fs69', 218)" class="i">elf_group</span>,  <span onmouseout="hideTip(event, 'fs73', 219)" onmouseover="showTip(event, 'fs73', 219)" class="i">run</span> <span class="s">&quot;</span><span class="s">meet</span><span class="s"> </span><span class="s">in</span><span class="s"> </span><span class="s">my</span><span class="s"> </span><span class="s">study</span><span class="s">&quot;</span>]
+
+<span class="c">//run :: String -&gt; (Gate,Gate) -&gt; IO ()</span>
+<span class="k">and</span> <span onmouseout="hideTip(event, 'fs73', 220)" onmouseover="showTip(event, 'fs73', 220)" class="i">run</span> <span onmouseout="hideTip(event, 'fs74', 221)" onmouseover="showTip(event, 'fs74', 221)" class="i">task</span> (<span onmouseout="hideTip(event, 'fs75', 222)" onmouseover="showTip(event, 'fs75', 222)" class="i">in_gate</span>,<span onmouseout="hideTip(event, 'fs76', 223)" onmouseover="showTip(event, 'fs76', 223)" class="i">out_gate</span>) <span class="o">=</span>
+  <span onmouseout="hideTip(event, 'fs71', 224)" onmouseover="showTip(event, 'fs71', 224)" class="i">Console</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs72', 225)" onmouseover="showTip(event, 'fs72', 225)" class="i">WriteLine</span>(<span class="s">&quot;</span><span class="s">Ho</span><span class="s">!</span><span class="s"> </span><span class="s">Ho</span><span class="s">!</span><span class="s"> </span><span class="s">Ho</span><span class="s">!</span><span class="s"> </span><span class="s">let&#39;s</span><span class="s"> </span><span class="s">{</span><span class="s">0</span><span class="s">}</span><span class="s">&quot;</span>, <span onmouseout="hideTip(event, 'fs74', 226)" onmouseover="showTip(event, 'fs74', 226)" class="i">task</span>)
+  <span onmouseout="hideTip(event, 'fs46', 227)" onmouseover="showTip(event, 'fs46', 227)" class="i">operateGate</span> <span onmouseout="hideTip(event, 'fs75', 228)" onmouseover="showTip(event, 'fs75', 228)" class="i">in_gate</span>
+  <span onmouseout="hideTip(event, 'fs46', 229)" onmouseover="showTip(event, 'fs46', 229)" class="i">operateGate</span> <span onmouseout="hideTip(event, 'fs76', 230)" onmouseover="showTip(event, 'fs76', 230)" class="i">out_gate</span>
+
+<span class="c">//helper1 :: Group -&gt; IO () -&gt; IO ()</span>
+<span class="k">and</span> <span onmouseout="hideTip(event, 'fs77', 231)" onmouseover="showTip(event, 'fs77', 231)" class="i">helper1</span> <span onmouseout="hideTip(event, 'fs78', 232)" onmouseover="showTip(event, 'fs78', 232)" class="i">group</span> <span onmouseout="hideTip(event, 'fs79', 233)" onmouseover="showTip(event, 'fs79', 233)" class="i">do_task</span> <span class="o">=</span>
+  <span class="k">let</span> <span onmouseout="hideTip(event, 'fs75', 234)" onmouseover="showTip(event, 'fs75', 234)" class="i">in_gate</span>, <span onmouseout="hideTip(event, 'fs76', 235)" onmouseover="showTip(event, 'fs76', 235)" class="i">out_gate</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs53', 236)" onmouseover="showTip(event, 'fs53', 236)" class="i">joinGroup</span> <span onmouseout="hideTip(event, 'fs78', 237)" onmouseover="showTip(event, 'fs78', 237)" class="i">group</span>
+  <span onmouseout="hideTip(event, 'fs42', 238)" onmouseover="showTip(event, 'fs42', 238)" class="i">passGate</span> <span onmouseout="hideTip(event, 'fs75', 239)" onmouseover="showTip(event, 'fs75', 239)" class="i">in_gate</span>
+  <span onmouseout="hideTip(event, 'fs79', 240)" onmouseover="showTip(event, 'fs79', 240)" class="i">do_task</span> ()
+  <span onmouseout="hideTip(event, 'fs42', 241)" onmouseover="showTip(event, 'fs42', 241)" class="i">passGate</span> <span onmouseout="hideTip(event, 'fs76', 242)" onmouseover="showTip(event, 'fs76', 242)" class="i">out_gate</span>
+
+<span class="c">//elf1, reindeer1 :: Group -&gt; Int -&gt; IO ()</span>
+<span class="k">and</span> <span onmouseout="hideTip(event, 'fs67', 243)" onmouseover="showTip(event, 'fs67', 243)" class="i">elf1</span> <span onmouseout="hideTip(event, 'fs78', 244)" onmouseover="showTip(event, 'fs78', 244)" class="i">group</span> <span onmouseout="hideTip(event, 'fs66', 245)" onmouseover="showTip(event, 'fs66', 245)" class="i">id</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs77', 246)" onmouseover="showTip(event, 'fs77', 246)" class="i">helper1</span> <span onmouseout="hideTip(event, 'fs78', 247)" onmouseover="showTip(event, 'fs78', 247)" class="i">group</span> (<span class="k">fun</span> () <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs80', 248)" onmouseover="showTip(event, 'fs80', 248)" class="i">meetInStudy</span> <span onmouseout="hideTip(event, 'fs66', 249)" onmouseover="showTip(event, 'fs66', 249)" class="i">id</span>)
+<span class="k">and</span> <span onmouseout="hideTip(event, 'fs68', 250)" onmouseover="showTip(event, 'fs68', 250)" class="i">reindeer1</span> <span onmouseout="hideTip(event, 'fs78', 251)" onmouseover="showTip(event, 'fs78', 251)" class="i">group</span> <span onmouseout="hideTip(event, 'fs66', 252)" onmouseover="showTip(event, 'fs66', 252)" class="i">id</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs77', 253)" onmouseover="showTip(event, 'fs77', 253)" class="i">helper1</span> <span onmouseout="hideTip(event, 'fs78', 254)" onmouseover="showTip(event, 'fs78', 254)" class="i">group</span> (<span class="k">fun</span> () <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs81', 255)" onmouseover="showTip(event, 'fs81', 255)" class="i">deliverToys</span> <span onmouseout="hideTip(event, 'fs66', 256)" onmouseover="showTip(event, 'fs66', 256)" class="i">id</span>)
+
+<span class="k">and</span> <span onmouseout="hideTip(event, 'fs80', 257)" onmouseover="showTip(event, 'fs80', 257)" class="i">meetInStudy</span> <span onmouseout="hideTip(event, 'fs66', 258)" onmouseover="showTip(event, 'fs66', 258)" class="i">id</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs71', 259)" onmouseover="showTip(event, 'fs71', 259)" class="i">Console</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs72', 260)" onmouseover="showTip(event, 'fs72', 260)" class="i">WriteLine</span>(<span class="s">&quot;</span><span class="s">Elf</span><span class="s"> </span><span class="s">{</span><span class="s">0</span><span class="s">}</span><span class="s"> </span><span class="s">meeting</span><span class="s"> </span><span class="s">in</span><span class="s"> </span><span class="s">the</span><span class="s"> </span><span class="s">study</span><span class="s">&quot;</span>, <span onmouseout="hideTip(event, 'fs66', 261)" onmouseover="showTip(event, 'fs66', 261)" class="i">id</span>)
+<span class="k">and</span> <span onmouseout="hideTip(event, 'fs81', 262)" onmouseover="showTip(event, 'fs81', 262)" class="i">deliverToys</span> <span onmouseout="hideTip(event, 'fs66', 263)" onmouseover="showTip(event, 'fs66', 263)" class="i">id</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs71', 264)" onmouseover="showTip(event, 'fs71', 264)" class="i">Console</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs72', 265)" onmouseover="showTip(event, 'fs72', 265)" class="i">WriteLine</span>(<span class="s">&quot;</span><span class="s">Reindeer</span><span class="s"> </span><span class="s">{</span><span class="s">0</span><span class="s">}</span><span class="s"> </span><span class="s">delivering</span><span class="s"> </span><span class="s">toys</span><span class="s">&quot;</span>, <span onmouseout="hideTip(event, 'fs66', 266)" onmouseover="showTip(event, 'fs66', 266)" class="i">id</span>)
+
+<span class="prep">#if</span> <span class="i">INTERACTIVE</span>
+<span class="inactive">main()</span>
+<span class="prep">#else</span>
+[&lt;<span onmouseout="hideTip(event, 'fs82', 267)" onmouseover="showTip(event, 'fs82', 267)" class="i">EntryPoint</span>&gt;]
+<span class="k">let</span> <span class="i">entryPoint</span> <span class="i">args</span> <span class="o">=</span> <span class="i">main</span>(); <span class="n">0</span>
+<span class="prep">#endif</span></pre>
+</td>
+</tr>
+</table>
+
+<div class="tip" id="fs1">namespace System</div>
+<div class="tip" id="fs2">namespace System.Threading</div>
+<div class="tip" id="fs3">namespace FSharpx</div>
+<div class="tip" id="fs4">module Stm<br /><br />from FSharpx</div>
+<div class="tip" id="fs5">val check : p:bool -&gt; Stm&lt;unit&gt;<br /><br />Full name: Santa.check</div>
+<div class="tip" id="fs6">val p : bool</div>
+<div class="tip" id="fs7">val stm : StmBuilder<br /><br />Full name: FSharpx.Stm.Core.stm</div>
+<div class="tip" id="fs8">member StmBuilder.Return : x:&#39;a0 -&gt; Stm&lt;&#39;a0&gt;</div>
+<div class="tip" id="fs9">val retry : unit -&gt; trans:TLog -&gt; &#39;T<br /><br />Full name: FSharpx.Stm.Core.retry</div>
+<div class="tip" id="fs10">val forkIO : f:(unit -&gt; unit) -&gt; Thread<br /><br />Full name: Santa.forkIO</div>
+<div class="tip" id="fs11">val f : (unit -&gt; unit)</div>
+<div class="tip" id="fs12">type unit = Unit<br /><br />Full name: Microsoft.FSharp.Core.unit</div>
+<div class="tip" id="fs13">val t : Thread</div>
+<div class="tip" id="fs14">Multiple items<br />type Thread =<br />&#160;&#160;inherit CriticalFinalizerObject<br />&#160;&#160;new : start:ThreadStart -&gt; Thread + 3 overloads<br />&#160;&#160;member Abort : unit -&gt; unit + 1 overload<br />&#160;&#160;member ApartmentState : ApartmentState with get, set<br />&#160;&#160;member CurrentCulture : CultureInfo with get, set<br />&#160;&#160;member CurrentUICulture : CultureInfo with get, set<br />&#160;&#160;member DisableComObjectEagerCleanup : unit -&gt; unit<br />&#160;&#160;member ExecutionContext : ExecutionContext<br />&#160;&#160;member GetApartmentState : unit -&gt; ApartmentState<br />&#160;&#160;member GetCompressedStack : unit -&gt; CompressedStack<br />&#160;&#160;member GetHashCode : unit -&gt; int<br />&#160;&#160;...<br /><br />Full name: System.Threading.Thread<br /><br />--------------------<br />Thread(start: ThreadStart) : unit<br />Thread(start: ParameterizedThreadStart) : unit<br />Thread(start: ThreadStart, maxStackSize: int) : unit<br />Thread(start: ParameterizedThreadStart, maxStackSize: int) : unit</div>
+<div class="tip" id="fs15">Thread.Start() : unit<br />Thread.Start(parameter: obj) : unit</div>
+<div class="tip" id="fs16">val forever : act:(unit -&gt; unit) -&gt; unit<br /><br />Full name: Santa.forever</div>
+<div class="tip" id="fs17">val act : (unit -&gt; unit)</div>
+<div class="tip" id="fs18">val rng : Random<br /><br />Full name: Santa.rng</div>
+<div class="tip" id="fs19">Multiple items<br />type Random =<br />&#160;&#160;new : unit -&gt; Random + 1 overload<br />&#160;&#160;member Next : unit -&gt; int + 2 overloads<br />&#160;&#160;member NextBytes : buffer:byte[] -&gt; unit<br />&#160;&#160;member NextDouble : unit -&gt; float<br /><br />Full name: System.Random<br /><br />--------------------<br />Random() : unit<br />Random(Seed: int) : unit</div>
+<div class="tip" id="fs20">val randomDelay : unit -&gt; unit<br /><br />Full name: Santa.randomDelay</div>
+<div class="tip" id="fs21">val waitTime : int</div>
+<div class="tip" id="fs22">Random.Next() : int<br />Random.Next(maxValue: int) : int<br />Random.Next(minValue: int, maxValue: int) : int</div>
+<div class="tip" id="fs23">Thread.Sleep(timeout: TimeSpan) : unit<br />Thread.Sleep(millisecondsTimeout: int) : unit</div>
+<div class="tip" id="fs24">val choose : choices:seq&lt;Stm&lt;&#39;a&gt; * (&#39;a -&gt; unit)&gt; -&gt; unit<br /><br />Full name: Santa.choose</div>
+<div class="tip" id="fs25">val choices : seq&lt;Stm&lt;&#39;a&gt; * (&#39;a -&gt; unit)&gt;</div>
+<div class="tip" id="fs26">val stmActions : Stm&lt;unit&gt; list</div>
+<div class="tip" id="fs27">val guard : Stm&lt;&#39;a&gt;</div>
+<div class="tip" id="fs28">val rhs : (&#39;a -&gt; unit)</div>
+<div class="tip" id="fs29">val v : &#39;a</div>
+<div class="tip" id="fs30">Multiple items<br />module List<br /><br />from Microsoft.FSharp.Collections<br /><br />--------------------<br />type List&lt;&#39;T&gt; =<br />&#160;&#160;| ( [] )<br />&#160;&#160;| ( :: ) of Head: &#39;T * Tail: &#39;T list<br />&#160;&#160;interface IEnumerable<br />&#160;&#160;interface IEnumerable&lt;&#39;T&gt;<br />&#160;&#160;member Head : &#39;T<br />&#160;&#160;member IsEmpty : bool<br />&#160;&#160;member Item : index:int -&gt; &#39;T with get<br />&#160;&#160;member Length : int<br />&#160;&#160;member Tail : &#39;T list<br />&#160;&#160;static member Cons : head:&#39;T * tail:&#39;T list -&gt; &#39;T list<br />&#160;&#160;static member Empty : &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.List&lt;_&gt;</div>
+<div class="tip" id="fs31">val reduceBack : reduction:(&#39;T -&gt; &#39;T -&gt; &#39;T) -&gt; list:&#39;T list -&gt; &#39;T<br /><br />Full name: Microsoft.FSharp.Collections.List.reduceBack</div>
+<div class="tip" id="fs32">val orElse : a:Stm&lt;&#39;T&gt; -&gt; b:Stm&lt;&#39;T&gt; -&gt; trans:TLog -&gt; &#39;T<br /><br />Full name: FSharpx.Stm.Core.orElse</div>
+<div class="tip" id="fs33">val atomically : a:Stm&lt;&#39;T&gt; -&gt; &#39;T<br /><br />Full name: FSharpx.Stm.Core.atomically</div>
+<div class="tip" id="fs34">type Gate = | MkGate of int * TVar&lt;int&gt;<br /><br />Full name: Santa.Gate</div>
+<div class="tip" id="fs35">union case Gate.MkGate: int * TVar&lt;int&gt; -&gt; Gate</div>
+<div class="tip" id="fs36">Multiple items<br />val int : value:&#39;T -&gt; int (requires member op_Explicit)<br /><br />Full name: Microsoft.FSharp.Core.Operators.int<br /><br />--------------------<br />type int = int32<br /><br />Full name: Microsoft.FSharp.Core.int<br /><br />--------------------<br />type int&lt;&#39;Measure&gt; = int<br /><br />Full name: Microsoft.FSharp.Core.int&lt;_&gt;</div>
+<div class="tip" id="fs37">Multiple items<br />type TVar =<br />&#160;&#160;interface IComparable&lt;TVar&gt;<br />&#160;&#160;new : unit -&gt; TVar<br />&#160;&#160;member private Id : int<br /><br />Full name: FSharpx.Stm.Core.TVar<br /><br />--------------------<br />type TVar&lt;&#39;T&gt; =<br />&#160;&#160;inherit TVar<br />&#160;&#160;private new : value:&#39;T * cmp:IEqualityComparer&lt;&#39;T&gt; -&gt; TVar&lt;&#39;T&gt;<br />&#160;&#160;member private Comparer : IEqualityComparer&lt;&#39;T&gt;<br />&#160;&#160;member private Value : &#39;T<br />&#160;&#160;member private Value : &#39;T with set<br /><br />Full name: FSharpx.Stm.Core.TVar&lt;_&gt;<br /><br />--------------------<br />new : unit -&gt; TVar</div>
+<div class="tip" id="fs38">val newGate : n:int -&gt; Stm&lt;Gate&gt;<br /><br />Full name: Santa.newGate</div>
+<div class="tip" id="fs39">val n : int</div>
+<div class="tip" id="fs40">val tv : TVar&lt;int&gt;</div>
+<div class="tip" id="fs41">val newTVar : value:&#39;T -&gt; TVar&lt;&#39;T&gt;<br /><br />Full name: FSharpx.Stm.Core.newTVar</div>
+<div class="tip" id="fs42">val passGate : Gate -&gt; unit<br /><br />Full name: Santa.passGate</div>
+<div class="tip" id="fs43">val n_left : int</div>
+<div class="tip" id="fs44">val readTVar : ref:TVar&lt;&#39;T&gt; -&gt; trans:TLog -&gt; &#39;T<br /><br />Full name: FSharpx.Stm.Core.readTVar</div>
+<div class="tip" id="fs45">val writeTVar : ref:TVar&lt;&#39;T&gt; -&gt; value:&#39;T -&gt; trans:TLog -&gt; unit<br /><br />Full name: FSharpx.Stm.Core.writeTVar</div>
+<div class="tip" id="fs46">val operateGate : Gate -&gt; unit<br /><br />Full name: Santa.operateGate</div>
+<div class="tip" id="fs47">type Group = | MkGroup of int * TVar&lt;int * Gate * Gate&gt;<br /><br />Full name: Santa.Group</div>
+<div class="tip" id="fs48">union case Group.MkGroup: int * TVar&lt;int * Gate * Gate&gt; -&gt; Group</div>
+<div class="tip" id="fs49">val newGroup : n:int -&gt; Group<br /><br />Full name: Santa.newGroup</div>
+<div class="tip" id="fs50">val g1 : Gate</div>
+<div class="tip" id="fs51">val g2 : Gate</div>
+<div class="tip" id="fs52">val tv : TVar&lt;int * Gate * Gate&gt;</div>
+<div class="tip" id="fs53">val joinGroup : Group -&gt; Gate * Gate<br /><br />Full name: Santa.joinGroup</div>
+<div class="tip" id="fs54">val awaitGroup : Group -&gt; Stm&lt;Gate * Gate&gt;<br /><br />Full name: Santa.awaitGroup</div>
+<div class="tip" id="fs55">val new_g1 : Gate</div>
+<div class="tip" id="fs56">val new_g2 : Gate</div>
+<div class="tip" id="fs57">val main : unit -&gt; unit<br /><br />Full name: Santa.main</div>
+<div class="tip" id="fs58">val elf_gp : Group</div>
+<div class="tip" id="fs59">val iter : action:(&#39;T -&gt; unit) -&gt; list:&#39;T list -&gt; unit<br /><br />Full name: Microsoft.FSharp.Collections.List.iter</div>
+<div class="tip" id="fs60">val elf : gp:Group -&gt; id:int -&gt; Thread<br /><br />Full name: Santa.elf</div>
+<div class="tip" id="fs61">val ignore : value:&#39;T -&gt; unit<br /><br />Full name: Microsoft.FSharp.Core.Operators.ignore</div>
+<div class="tip" id="fs62">val rein_gp : Group</div>
+<div class="tip" id="fs63">val reindeer : gp:Group -&gt; id:int -&gt; Thread<br /><br />Full name: Santa.reindeer</div>
+<div class="tip" id="fs64">val santa : elf_group:Group -&gt; rein_group:Group -&gt; unit<br /><br />Full name: Santa.santa</div>
+<div class="tip" id="fs65">val gp : Group</div>
+<div class="tip" id="fs66">val id : int</div>
+<div class="tip" id="fs67">val elf1 : group:Group -&gt; id:int -&gt; unit<br /><br />Full name: Santa.elf1</div>
+<div class="tip" id="fs68">val reindeer1 : group:Group -&gt; id:int -&gt; unit<br /><br />Full name: Santa.reindeer1</div>
+<div class="tip" id="fs69">val elf_group : Group</div>
+<div class="tip" id="fs70">val rein_group : Group</div>
+<div class="tip" id="fs71">type Console =<br />&#160;&#160;static member BackgroundColor : ConsoleColor with get, set<br />&#160;&#160;static member Beep : unit -&gt; unit + 1 overload<br />&#160;&#160;static member BufferHeight : int with get, set<br />&#160;&#160;static member BufferWidth : int with get, set<br />&#160;&#160;static member CapsLock : bool<br />&#160;&#160;static member Clear : unit -&gt; unit<br />&#160;&#160;static member CursorLeft : int with get, set<br />&#160;&#160;static member CursorSize : int with get, set<br />&#160;&#160;static member CursorTop : int with get, set<br />&#160;&#160;static member CursorVisible : bool with get, set<br />&#160;&#160;...<br /><br />Full name: System.Console</div>
+<div class="tip" id="fs72">Console.WriteLine() : unit<br />&#160;&#160;&#160;<em>(+0 other overloads)</em><br />Console.WriteLine(value: string) : unit<br />&#160;&#160;&#160;<em>(+0 other overloads)</em><br />Console.WriteLine(value: obj) : unit<br />&#160;&#160;&#160;<em>(+0 other overloads)</em><br />Console.WriteLine(value: uint64) : unit<br />&#160;&#160;&#160;<em>(+0 other overloads)</em><br />Console.WriteLine(value: int64) : unit<br />&#160;&#160;&#160;<em>(+0 other overloads)</em><br />Console.WriteLine(value: uint32) : unit<br />&#160;&#160;&#160;<em>(+0 other overloads)</em><br />Console.WriteLine(value: int) : unit<br />&#160;&#160;&#160;<em>(+0 other overloads)</em><br />Console.WriteLine(value: float32) : unit<br />&#160;&#160;&#160;<em>(+0 other overloads)</em><br />Console.WriteLine(value: float) : unit<br />&#160;&#160;&#160;<em>(+0 other overloads)</em><br />Console.WriteLine(value: decimal) : unit<br />&#160;&#160;&#160;<em>(+0 other overloads)</em></div>
+<div class="tip" id="fs73">val run : task:string -&gt; in_gate:Gate * out_gate:Gate -&gt; unit<br /><br />Full name: Santa.run</div>
+<div class="tip" id="fs74">val task : string</div>
+<div class="tip" id="fs75">val in_gate : Gate</div>
+<div class="tip" id="fs76">val out_gate : Gate</div>
+<div class="tip" id="fs77">val helper1 : group:Group -&gt; do_task:(unit -&gt; unit) -&gt; unit<br /><br />Full name: Santa.helper1</div>
+<div class="tip" id="fs78">val group : Group</div>
+<div class="tip" id="fs79">val do_task : (unit -&gt; unit)</div>
+<div class="tip" id="fs80">val meetInStudy : id:int -&gt; unit<br /><br />Full name: Santa.meetInStudy</div>
+<div class="tip" id="fs81">val deliverToys : id:int -&gt; unit<br /><br />Full name: Santa.deliverToys</div>
+<div class="tip" id="fs82">Multiple items<br />type EntryPointAttribute =<br />&#160;&#160;inherit Attribute<br />&#160;&#160;new : unit -&gt; EntryPointAttribute<br /><br />Full name: Microsoft.FSharp.Core.EntryPointAttribute<br /><br />--------------------<br />new : unit -&gt; EntryPointAttribute</div>
+
+        </div>
+        <div class="span3">
+          <img src="./img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharpx.Extras</li>
+            <li><a href="./index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.com/packages/FSharpx.Core">Get Library via NuGet</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx">Source Code on GitHub</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx/blob/master/LICENSE.txt">License</a></li>
+            <li><a href="https://github.com/fsprojects/fsharpx/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="./index.html">Introduction</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="./reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/fsprojects/fsharpx"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
+  </body>
+  </html>

@@ -1,6 +1,0 @@
-﻿<Window x:Class="TimeFliesLikeAnArrow.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Time Flies Like An Arrow" Height="350" Width="525">
-    <Canvas Name="canvas"/>
-</Window>

@@ -3,9 +3,9 @@
 // (c) Tomas Petricek and Ryan Riley, 2011-2012, Available under Apache 2.0 license.
 // ----------------------------------------------------------------------------
 
-namespace FSharp.IO
+namespace FSharpx.IO
 open System.IO
-open FSharp.Control
+open FSharpx.Control
 // ----------------------------------------------------------------------------
 // Extensions that simplify working with Stream using async sequences
 

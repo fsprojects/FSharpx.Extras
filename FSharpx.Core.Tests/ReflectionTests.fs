@@ -1,4 +1,4 @@
-﻿namespace FSharpx.Core.Tests
+﻿namespace FSharpx.Reflection.Tests
   
 module ReflectionRecordTest =
 
@@ -7,7 +7,6 @@ module ReflectionRecordTest =
     open System.Reflection //for bindingflags
     open FSharpx.Reflection
 
-    open FSharpx.Reflection
 
     //some test types
 
