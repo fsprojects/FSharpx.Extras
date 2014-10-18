@@ -1,10 +1,13 @@
-﻿namespace FSharpx
+﻿namespace FSharpx.IO
 
 open System
 open System.IO
 open System.Text
+open FSharpx.Text.Strings 
 
-module IO =
+
+[<AutoOpen>]
+module IOPrimitives =
     let LinuxLineBreaks = "\n"
     let WindowsLineBreaks = "\r\n"
     let MacLineBreaks = "\r"
@@ -66,8 +69,6 @@ module IO =
             fi.IsReadOnly <- false
             fi.Delete()
         writeToFile false fileName lines
-
-    open Strings 
 
     /// Converts the given text from linux or mac linebreaks to windows line breaks
     let convertTextToWindowsLineBreaks text = 

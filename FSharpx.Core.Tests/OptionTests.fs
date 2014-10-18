@@ -1,13 +1,14 @@
-﻿namespace FSharpx.Core.Tests
+﻿namespace FSharpx.Tests
 
 open System
 open System.Threading
 open System.Threading.Tasks
 
+open FSharpx.Core
 open FSharpx
 
 open FsUnit
-open NUnit.Framework
+open NUnit.Framework 
 
 [<TestFixture>]
 type ``Option module Extension Tests``() = 

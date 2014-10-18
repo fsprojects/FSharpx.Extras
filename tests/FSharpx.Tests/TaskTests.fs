@@ -9,9 +9,9 @@ open System.Threading
 
 #if NET40
 open System.Threading.Tasks
-open Microsoft.FSharp.Control.FileExtensions
-open Microsoft.FSharp.Control.StreamReaderExtensions
-open Microsoft.FSharp.Control.WebExtensions
+open FSharpx.Control.FileExtensions
+open FSharpx.Control.StreamReaderExtensions
+open FSharpx.Control.WebClientExtensions
 
 type StreamReader with
     member x.ReadToEndAsync() = 

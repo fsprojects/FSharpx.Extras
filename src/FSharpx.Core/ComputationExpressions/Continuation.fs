@@ -52,7 +52,7 @@ module Continuation =
                 (fun enum -> this.While((fun () -> enum.MoveNext()), this.Delay(fun () -> body enum.Current))))
     let cont = ContinuationBuilder()
     
-    open Operators
+    open FSharpx.Operators
     
     /// Inject a value into the Cont type
     let inline returnM x = returnM cont x

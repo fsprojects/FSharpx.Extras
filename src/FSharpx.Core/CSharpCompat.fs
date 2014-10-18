@@ -5,9 +5,9 @@ open System.IO
 open System.Net
 open System.Collections.Generic
 open System.Runtime.CompilerServices
-open Microsoft.FSharp.Control.StreamReaderExtensions
-open Microsoft.FSharp.Control.WebExtensions
+open FSharpx.Control.StreamReaderExtensions
 open FSharpx.Collections
+open FSharpx
 
 
 [<assembly:Extension>]

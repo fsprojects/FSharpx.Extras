@@ -3,6 +3,8 @@
 open FSharpx
 open FSharpx.Option
 open NUnit.Framework
+open FsCheck
+open FsCheck.NUnit
 open FsUnit
 
 let divide x y =
@@ -43,8 +45,6 @@ let ``is delayed``() =
     }
     r |> should equal None
 
-open FsCheck
-open FsCheck.NUnit
 
 [<Test>]
 let ``monad laws``() =

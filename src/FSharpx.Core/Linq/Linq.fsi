@@ -11,6 +11,7 @@ namespace FSharpx.Linq
         val GenericNotEqualIntrinsic : 'T -> 'T -> bool
 
     [<Sealed>]
+    [<Obsolete("This component is no longer maintained. Please use FSharp.Quotations.Evaluator from https://github.com/fsprojects/FSharp.Quotations.Evaluator")>]
     type QuotationEvaluator = 
 
         /// Convert the quotation expression to LINQ expression trees
@@ -50,6 +51,7 @@ namespace FSharpx.Linq
     /// This module provides Compile and Eval extension members
     /// for F# quotation values, implemented by translating to LINQ
     /// expression trees and using the LINQ dynamic compiler.
+    [<Obsolete("This component is no longer maintained. Please use FSharp.Quotations.Evaluator from https://github.com/fsprojects/FSharp.Quotations.Evaluator")>]
     module QuotationEvaluation =
 
         type Microsoft.FSharp.Quotations.Expr with 
@@ -167,4 +169,5 @@ namespace FSharpx.Linq
     [<AutoOpen>]
     module QuotationHelpers =
         /// Converts a Lambda quotation into a Linq Lamba Expression with 1 parameter
+        [<Obsolete("This component is no longer maintained. Please use FSharp.Quotations.Evaluator from https://github.com/fsprojects/FSharp.Quotations.Evaluator")>]
         val toLinqExpression: (Quotations.Expr<'a -> 'b>) -> Expression<Func<'a,'b>>

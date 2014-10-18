@@ -1,4 +1,4 @@
-namespace FSharpx
+namespace FSharpx.Text
 
 open System.Text.RegularExpressions
 
