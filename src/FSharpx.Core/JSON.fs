@@ -2,16 +2,17 @@
 
 // Initial version of the parser from http://blog.efvincent.com/parsing-json-using-f/
 // Simplyfied and fixed some minor bugs
-
+#nowarn "44"
 open System
 open System.Xml
 open System.Xml.Linq
 open System.Text
 open Microsoft.FSharp.Reflection
 open System.Collections.Generic
-open FSharpx.Strings
+open FSharpx.Text.Strings
 
 [<RequireQualifiedAccess>]
+[<Obsolete("This JSON parser is no longer maintained. Please use the JSON parser in FSharp.Data")>]
 type Token =
     | OpenBracket | CloseBracket
     | OpenArray | CloseArray
@@ -22,6 +23,7 @@ type Token =
     | Null
     | Number of string
 
+[<Obsolete("This JSON parser is no longer maintained. Please use the JSON parser in FSharp.Data")>]
 let tokenize source=
     let rec parseString acc = function
         | '\\' :: '"' :: t -> // escaped quote
@@ -74,6 +76,7 @@ type internal Infrastucture =
     abstract member Serialize : StringBuilder -> StringBuilder
     abstract member ToXml: unit -> obj
 
+[<Obsolete("This JSON parser is no longer maintained. Please use the JSON parser in FSharp.Data")>]
 type Text(text:string) =
     let mutable v = text
 
@@ -95,6 +98,7 @@ type Text(text:string) =
         member this.Serialize sb = sb.AppendFormat("\"{0}\"", escape v)
         member this.ToXml() = v :> obj
 
+[<Obsolete("This JSON parser is no longer maintained. Please use the JSON parser in FSharp.Data")>]
 type Date(date:DateTime) =
     let mutable v = date
 
@@ -114,6 +118,7 @@ type Date(date:DateTime) =
         member this.ToXml() = v :> obj
 
 
+[<Obsolete("This JSON parser is no longer maintained. Please use the JSON parser in FSharp.Data")>]
 type Number(number:float) =
     let mutable v = number
     member this.Value with get() = v and set (value) = v <- value
@@ -131,6 +136,7 @@ type Number(number:float) =
         member this.Serialize sb = sb.Append(v.ToString(System.Globalization.CultureInfo.InvariantCulture))
         member this.ToXml() = v :> obj
 
+[<Obsolete("This JSON parser is no longer maintained. Please use the JSON parser in FSharp.Data")>]
 type Boolean(boolean:bool) =
     let mutable v = boolean
     member this.Value with get() = v and set (value) = v <- value
@@ -148,6 +154,7 @@ type Boolean(boolean:bool) =
         member this.Serialize sb = sb.Append(v.ToString().ToLower())
         member this.ToXml() = v :> obj
 
+[<Obsolete("This JSON parser is no longer maintained. Please use the JSON parser in FSharp.Data")>]
 type JSONNull() =
     override this.ToString() = "null"
 
@@ -163,6 +170,7 @@ type JSONNull() =
         member this.Serialize sb = sb.Append "null"
         member this.ToXml() = null
 
+[<Obsolete("This JSON parser is no longer maintained. Please use the JSON parser in FSharp.Data")>]
 type JArray(elements:List<IDocument>) =
     let mutable v = elements
     let serialize(sb:StringBuilder) =
@@ -198,6 +206,7 @@ type JArray(elements:List<IDocument>) =
         member this.Serialize sb = serialize sb
         member this.ToXml() = v |> Seq.map (fun item -> new XElement(XName.Get "item", (item:?> Infrastucture).ToXml())) :> obj
 
+[<Obsolete("This JSON parser is no longer maintained. Please use the JSON parser in FSharp.Data")>]
 type JObject(properties:Dictionary<string,IDocument>) =
     let mutable v = properties
     let serialize(sb:StringBuilder) =
@@ -245,6 +254,7 @@ type JObject(properties:Dictionary<string,IDocument>) =
 open System.Globalization
 
 /// Parses a JSON source text and returns an JSON AST
+[<Obsolete("This JSON parser is no longer maintained. Please use the JSON parser in FSharp.Data")>]
 let parse source =
 
     let (|Date|String|) input = 
@@ -315,6 +325,7 @@ let parse source =
     |> parseValue
     |> fst
 
+[<Obsolete("This JSON parser is no longer maintained. Please use the JSON parser in FSharp.Data")>]
 let fromXml(xml:XDocument) =
     let rec createJArray (elements:XElement seq) =
         let jArray = JArray.New()
@@ -337,6 +348,7 @@ let fromXml(xml:XDocument) =
 
     createJObject xml.Root :> IDocument
     
+[<Obsolete("This JSON parser is no longer maintained. Please use the JSON parser in FSharp.Data")>]
 module DocumentExtensions =
     type IDocument with 
         member this.GetProperty propertyName = (this :?> JObject).Properties.[propertyName]

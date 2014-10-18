@@ -1,4 +1,4 @@
-﻿namespace FSharpx
+﻿namespace FSharpx.Functional
 
 /// Semigroup (set with associative binary operation)
 type ISemigroup<'T> =
@@ -118,3 +118,48 @@ module Monoid =
         { new Monoid<'T -> 'T>() with
             override this.Zero() = id
             override this.Combine(f,g) = f << g }
+
+namespace FSharpx.Collections
+
+    open System
+    open System.Linq
+    open System.Collections
+    open System.Collections.Generic
+    open System.Runtime.CompilerServices
+    open FSharpx.Functional
+            
+    module Seq =
+
+        let foldMap (monoid: _ Monoid) f =
+            Seq.fold (fun s e -> monoid.Combine(s, f e)) (monoid.Zero())
+    
+
+
+    module List =
+                               
+        /// List monoid
+        let monoid<'T> =
+            { new Monoid<'T list>() with
+                override this.Zero() = []
+                override this.Combine(a,b) = a @ b }
+
+    module Set =
+        let monoid<'T when 'T : comparison> =
+            { new Monoid<Set<'T>>() with
+                override this.Zero() = Set.empty
+                override this.Combine(a,b) = Set.union a b }
+
+    module Map =
+            
+        let monoid<'key, 'value when 'key : comparison> =
+            { new Monoid<Map<'key, 'value>>() with
+                override this.Zero() = Map.empty
+                override this.Combine(a,b) = Map.union a b }
+
+
+    module ByteString = 
+        let monoid =
+            { new Monoid<_>() with
+                override x.Zero() = ByteString.empty
+                override x.Combine(a,b) = ByteString.append a b }
+

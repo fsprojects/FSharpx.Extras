@@ -1,8 +1,8 @@
-﻿namespace FSharp.Control
+﻿namespace FSharpx.Control
 
 open System
 open System.Collections.Generic
-open FSharp.Control
+open FSharpx.Control
 
 // ----------------------------------------------------------------------------
 

@@ -10,29 +10,31 @@
     <RootNamespace>FSharpx</RootNamespace>
     <AssemblyName>FSharpx.Core</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFSharpCoreVersion>4.3.0.0</TargetFSharpCoreVersion>
     <Name>FSharpx.Core</Name>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
-    <FscToolPath>$(MSBuildProjectDirectory)\..\..\lib\FSharp</FscToolPath>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <Tailcalls>false</Tailcalls>
-    <OutputPath>..\..\build\Debug\</OutputPath>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>..\..\build\Debug\FSharpx.Core.XML</DocumentationFile>
+    <DocumentationFile>..\..\bin\Debug\FSharpx.Core.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <Tailcalls>true</Tailcalls>
-    <OutputPath>..\..\build\</OutputPath>
+    <OutputPath>..\..\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>..\..\build\FSharpx.Core.XML</DocumentationFile>
+    <DocumentationFile>..\..\bin\FSharpx.Core.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="$(TargetFrameworkVersion) == 'v3.5'">
     <DefineConstants>NET35</DefineConstants>
@@ -40,19 +42,26 @@
   <PropertyGroup Condition="$(TargetFrameworkVersion) == 'v4.0'">
     <DefineConstants>NET40</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets') And $(TargetFramework) != 'portable47'">
+  <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets') And '$(TargetFrameworkProfile)' == ''">
     <FSharpTargetsPath>$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets</FSharpTargetsPath>
   </PropertyGroup>
-  <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets') And $(TargetFramework) != 'portable47'">
+  <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets') And '$(TargetFrameworkProfile)' == ''">
     <FSharpTargetsPath>$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets</FSharpTargetsPath>
   </PropertyGroup>
-  <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.Portable.FSharp.Targets') And $(TargetFramework) == 'portable47'">
-    <FSharpTargetsPath>$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets</FSharpTargetsPath>
+  <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.Portable.FSharp.Targets') And '$(TargetFrameworkProfile)' != ''">
+    <FSharpTargetsPath>$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.Portable.FSharp.Targets</FSharpTargetsPath>
   </PropertyGroup>
-  <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.Portable.FSharp.Targets') And $(TargetFramework) == 'portable47'">
-    <FSharpTargetsPath>$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.FSharp.Targets</FSharpTargetsPath>
+  <PropertyGroup Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.Portable.FSharp.Targets') And '$(TargetFrameworkProfile)' != ''">
+    <FSharpTargetsPath>$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.1\Framework\v4.0\Microsoft.Portable.FSharp.Targets</FSharpTargetsPath>
   </PropertyGroup>
   <Import Project="$(FSharpTargetsPath)" Condition="Exists('$(FSharpTargetsPath)')" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Prelude.fs" />
@@ -64,28 +73,6 @@
     <Compile Include="Linq\Linq.fsi" />
     <Compile Include="Linq\Linq.fs" />
     <Compile Include="Lazy.fs" />
-    <Compile Include="Collections\LazyList.fsi" />
-    <Compile Include="Collections\LazyList.fs" />
-    <Compile Include="Collections\ResizeArray.fsi" />
-    <Compile Include="Collections\ResizeArray.fs" />
-    <Compile Include="Collections\Collections.fs" />
-    <Compile Include="Collections\Deque2.fsi" />
-    <Compile Include="Collections\Deque2.fs" />
-    <Compile Include="Collections\DList2.fsi" />
-    <Compile Include="Collections\DList2.fs" />
-    <Compile Include="Collections\ByteString.fs" />
-    <Compile Include="Collections\CircularBuffer.fs" />
-    <Compile Include="Collections\IPriorityQueue.fs" />
-    <Compile Include="Collections\Heap.fsi" />
-    <Compile Include="Collections\Heap.fs" />
-    <Compile Include="Collections\NonEmptyList.fs" />
-    <Compile Include="Collections\PriorityQueue.fs" />
-    <Compile Include="Collections\RandomAccessList.fsi" />
-    <Compile Include="Collections\RandomAccessList.fs" />
-    <Compile Include="Collections\Queue.fsi" />
-    <Compile Include="Collections\Queue.fs" />
-    <Compile Include="Collections\Vector.fsi" />
-    <Compile Include="Collections\Vector.fs" />
     <Compile Include="ComputationExpressions\Monad.fs" />
     <Compile Include="ComputationExpressions\Continuation.fs" />
     <Compile Include="ComputationExpressions\Enumerator.fs" />
@@ -113,13 +100,26 @@
     <Compile Include="Iteratee.fs" />
     <Compile Include="CSharpCompat.fs" />
     <Compile Include="Reflection.fs" />
+    <Content Include="packages.config" />
+    <Content Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="FSharp.Core" Condition="$(TargetFrameworkVersion) == 'v3.5'">
-      <HintPath>..\..\lib\FSharp\Net20\FSharp.Core.dll</HintPath>
+    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" Condition="'$(TargetFrameworkProfile)' == ''">
+      <Private>False</Private>
     </Reference>
-    <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkVersion)' == 'v4.0'">
-      <HintPath>..\..\lib\FSharp\FSharp.Core.dll</HintPath>
+    <Reference Include="FSharp.Core" Condition="'$(TargetFrameworkProfile)' == 'Profile47'">
+      <Private>False</Private>
+      <Name>FSharp.Core</Name>
+      <AssemblyName>FSharp.Core.dll</AssemblyName>
+      <HintPath>$(MSBuildExtensionsPath32)\..\Reference Assemblies\Microsoft\FSharp\.NETPortable\$(TargetFSharpCoreVersion)\FSharp.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="FSharpx.Collections" Condition="'$(TargetFrameworkProfile)' == ''">
+      <HintPath>..\..\packages\FSharpx.Collections.1.9.4\lib\net35\FSharpx.Collections.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharpx.Collections" Condition="'$(TargetFrameworkProfile)' == 'Profile47'">
+      <HintPath>..\..\packages\FSharpx.Collections.1.9.4\lib\portable-net4+sl4+wp71+win8\FSharpx.Collections.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />

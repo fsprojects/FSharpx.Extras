@@ -10,7 +10,7 @@
  *
  * **********************************************************************************)
 
-module internal FSharpx.Pluralizer
+module internal FSharpx.Text.Pluralizer
 
 open System
 open System.Collections.Generic

@@ -2,7 +2,7 @@
 // https://raw.github.com/fsharp/powerpack/master/src/FSharp.PowerPack/AsyncOperations.fsi
 
 // (c) Microsoft Corporation 2005-2009.
-namespace Microsoft.FSharp.Control
+namespace FSharpx.Control
 
     open System
     open Microsoft.FSharp.Control
@@ -88,8 +88,6 @@ namespace Microsoft.FSharp.Control
     [<AutoOpen>]
     module WebClientExtensions =
         type System.Net.WebClient with
-            [<System.Obsolete("The extension method now resides in the 'WebExtensions' module in the F# core library. Please add 'open Microsoft.FSharp.Control.WebExtensions' to access this method")>]
-            member AsyncDownloadString : address:System.Uri -> Async<string>
 
             /// Returns an asynchronous computation that, when run, will wait for the upload of the data in the specified name/value collection to the resource identified by the specified URI.
             member AsyncUploadValues : address: System.Uri * data: Collections.Specialized.NameValueCollection -> Async<byte[]>

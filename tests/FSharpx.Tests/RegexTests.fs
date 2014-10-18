@@ -1,10 +1,13 @@
 module FSharpx.Tests.RegexTests
 
-open FSharpx
+open FSharpx.Text
+open FSharpx.Functional
 open NUnit.Framework
 open System
 open System.Text.RegularExpressions
 open FsUnit
+
+let runningOnMono = try System.Type.GetType("Mono.Runtime") <> null with e -> false 
 
 [<Test>]
 let ``tryMatch success``() =
@@ -87,6 +90,8 @@ let withCulture (c: string) =
 
 [<Test>]
 let ``tryMatch is culture invariant``() =
+   // See https://github.com/fsprojects/fsharpx/issues/302
+   if not runningOnMono then 
     // example from http://msdn.microsoft.com/en-us/library/yd1hzczs.aspx#Invariant
     use __ = withCulture "tr-TR"
     let match' = Regex.tryMatch "(?i)FILE" "file"
@@ -94,6 +99,8 @@ let ``tryMatch is culture invariant``() =
 
 [<Test>]
 let ``Match active pattern is culture invariant``() =
+   // See https://github.com/fsprojects/fsharpx/issues/302
+   if not runningOnMono then 
     use __ = withCulture "tr-TR"
     match "file" with
     | Regex.Interpreted.Match "(?i)FILE" m -> m.MatchValue |> should equal "file"

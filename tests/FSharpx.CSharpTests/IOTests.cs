@@ -1,6 +1,7 @@
 using NUnit.Framework;
+using FSharpx.CSharpTests;
 
-namespace FSharpx.CSharpTests
+namespace FSharpx.IO.CSharpTests
 {
     [TestFixture]
     public class IOTests
@@ -8,7 +9,7 @@ namespace FSharpx.CSharpTests
         [Test]
         public void WhenConvertingTextToWindowsLineBreaks()
         {
-            IO.convertTextToWindowsLineBreaks("\rMy text\n\ris from different os versions\r\nbut thats ok\treally")
+            IOPrimitives.convertTextToWindowsLineBreaks("\rMy text\n\ris from different os versions\r\nbut thats ok\treally")
                 .ShouldEqual("\r\nMy text\r\n\r\nis from different os versions\r\nbut thats ok\treally");
         }
 

@@ -2,11 +2,11 @@
 // https://raw.github.com/fsharp/powerpack/master/src/FSharp.PowerPack/AsyncOperations.fs
 
 // (c) Microsoft Corporation 2005-2009. 
-namespace Microsoft.FSharp.Control
+namespace FSharpx.Control
 
     open System
     open System.Threading
-    open Microsoft.FSharp.Control
+    open FSharpx.Functional
 
     /// Represents the reified result of an asynchronous computation
     [<NoEquality; NoComparison>]
@@ -260,7 +260,6 @@ namespace Microsoft.FSharp.Control
             }
 
         type WebClient with
-            member this.AsyncDownloadString address = callFSharpCoreAsyncDownloadString this address
 
             member private this.buildAsyncAction(event, start, result) =
                 fromEventPattern event start result (fun () -> this.CancelAsync())
