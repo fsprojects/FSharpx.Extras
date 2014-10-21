@@ -3,7 +3,7 @@
 // (c) Tomas Petricek, Phil Trelford, and Ryan Riley, 2011-2012, Available under Apache 2.0 license.
 // ----------------------------------------------------------------------------
 #nowarn "40"
-namespace FSharp.Control
+namespace FSharpx.Control
 
 open System
 open System.Collections.Generic

@@ -1,16 +1,16 @@
-﻿namespace FSharpx
+﻿namespace FSharpx.Functional
 #nowarn "40"
 
 open System
 open System.Collections
 open System.Collections.Generic
 open FSharpx.Collections
-open FSharp.Control
+open FSharpx.Control
 
 (*
 # Iteratee
 
-The *Iteratee* module, part of the [FSharpx](http://github.com/fsharp/fsharpx) library, provides a set of types and functions for building compositional, input processing components.
+The *Iteratee* module, part of the [FSharpx](http://github.com/fsprojects/fsharpx) library, provides a set of types and functions for building compositional, input processing components.
 
 ## System.IO.Stream-based processing
 

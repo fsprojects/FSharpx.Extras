@@ -2,7 +2,7 @@
 // F# async extensions
 // (c) Tomas Petricek, David Thomas 2012, Available under Apache 2.0 license.
 // ----------------------------------------------------------------------------
-namespace FSharp.Control
+namespace FSharpx.Control
 open System
 open System.Threading
 
@@ -42,7 +42,7 @@ module AsyncExtensions =
       /// Async<unit> containing the result.
       static member AwaitTask(task:Tasks.Task, ?cancellationToken) =
           let cancel = defaultArg cancellationToken Async.DefaultCancellationToken
-          Async.AwaitTask <| task.ContinueWith((fun t -> ()), cancel)
+          Async.AwaitTask <| task.ContinueWith<unit>((fun t -> ()), cancel)
 
       /// Starts a Task<'a> with the timeout and cancellationToken and
       /// returns a Async<a' option> containing the result.  If the Task does

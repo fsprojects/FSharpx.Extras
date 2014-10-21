@@ -2,7 +2,7 @@
 
 // http://stackoverflow.com/questions/8179485/updating-nested-immutable-data-structures
 
-open FSharpx
+open FSharpx.Functional
 open FSharpx.Collections
 
 type Monster = {
@@ -71,7 +71,7 @@ let l2 = { Level.Illumination = 50;  Rooms = [r3; r4] }
 
 let dungeon = { Dungeon.Levels = [l1; l2] }
 
-open FSharpx.Lens.Operators
+open FSharpx.Functional.Lens.Operators
 
 Dungeon.print dungeon
 

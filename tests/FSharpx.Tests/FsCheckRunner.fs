@@ -1,6 +1,6 @@
 ﻿module FsCheck.NUnit
 
-open FSharpx
+open FSharpx.Functional
 open FsCheck
 open NUnit.Framework
 

@@ -1,8 +1,8 @@
 ﻿module FSharpx.Tests.ContinuationTest
 
 open System
-open FSharpx
-open FSharpx.Continuation
+open FSharpx.Functional
+open FSharpx.Functional.Continuation
 open NUnit.Framework
 open FsUnit
 

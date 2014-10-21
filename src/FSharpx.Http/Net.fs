@@ -3,15 +3,15 @@
 // (c) Tomas Petricek, 2011-2012, Available under Apache 2.0 license.
 // ----------------------------------------------------------------------------
 
-namespace FSharp.Net
+namespace FSharpx.Net
 
 open System.IO
 open System.Net
 open System.Text
 open System.Threading
 
-open FSharp.IO
-open FSharp.Control
+open FSharpx.IO
+open FSharpx.Control
 
 // ----------------------------------------------------------------------------
 // Extensions that simplify working with HttpListener and related types
