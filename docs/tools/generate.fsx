@@ -16,7 +16,7 @@ let info =
     "project-author", "Steffan Forkmann and others"
     "project-summary", "Extra components for FSharpx"
     "project-github", githubLink
-    "project-nuget", "http://nuget.org/packages/FSharpx.Core" ]
+    "project-nuget", "https://www.nuget.org/packages/FSharpx.Core/" ]
 
 // --------------------------------------------------------------------------------------
 // For typical project, no changes are needed below
