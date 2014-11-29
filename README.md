@@ -12,3 +12,11 @@ Please also join the [F# Open Source Group](http://fsharp.github.com)
 Head (branch ``master``), Windows Server 2012 (Appveyor)  [![Build status](https://ci.appveyor.com/api/projects/status/n9202rbh688hnln6/branch/master)](https://ci.appveyor.com/project/fsgit/fsharp-data-dbpedia)
 
 Head (branch ``master``), OSX (Travis)  [![Build status](https://travis-ci.org/fsprojects/fsharpx.svg?branch=master)
+
+# Maintainer(s)
+
+- [@forki](https://github.com/forki)
+- [@mausch](https://github.com/mausch)
+- [@panesofglass](https://github.com/panesofglass)
+
+The default maintainer account for projects under "fsprojects" is [@fsgit](https://github.com/fsgit) - F# Community Project Incubation Space (repo management)
