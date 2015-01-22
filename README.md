@@ -1,4 +1,7 @@
-# FSharpx
+[![Issue Stats](http://issuestats.com/github/fsprojects/fsharpx/badge/issue)](http://issuestats.com/github/fsprojects/fsharpx)
+[![Issue Stats](http://issuestats.com/github/fsprojects/fsharpx/badge/pr)](http://issuestats.com/github/fsprojects/fsharpx)
+
+# FSharpx [![NuGet Status](http://img.shields.io/nuget/v/FSharpx.Core.svg?style=flat)](https://www.nuget.org/packages/FSharpx.Core/)
 
 **FSharpx** is a collection of libraries and tools for use with F#. 
 
