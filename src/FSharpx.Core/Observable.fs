@@ -252,82 +252,45 @@ module Observable =
       /// Behaves like AwaitObservable, but calls the specified guarding function
       /// after a subscriber is registered with the observable.
       static member GuardedAwaitObservable (ev1:IObservable<'T1>) guardFunction =
-          let removeObj : IDisposable option ref = ref None
-          let removeLock = new obj()
-          let setRemover r = 
-              lock removeLock (fun () -> removeObj := Some r)
-          let remove() =
-              lock removeLock (fun () ->
-                  match !removeObj with
-                  | Some d -> removeObj := None
-                              d.Dispose()
-                  | None   -> ())
-          synchronize (fun f ->
-          let workflow =
-              Async.FromContinuations((fun (cont,econt,ccont) ->
-                  let rec finish cont value =
-                      remove()
-                      f (fun () -> cont value)
-                  setRemover <|
-                      ev1.Subscribe
-                          ({ new IObserver<_> with
-                              member x.OnNext(v) = finish cont v
-                              member x.OnError(e) = finish econt e
-                              member x.OnCompleted() =
-                                  let msg = "Cancelling the workflow, because the Observable awaited using AwaitObservable has completed."
-                                  finish ccont (new System.OperationCanceledException(msg)) })
-                  guardFunction() ))
           async {
-              let! cToken = Async.CancellationToken
-              let token : CancellationToken = cToken
-              #if NET40
-              use registration = token.Register(fun () -> remove())
-              #else
-              use registration = token.Register((fun _ -> remove()), null)
-              #endif
-              return! workflow
-          })
+              let! token = Async.CancellationToken // capture the current cancellation token
+              return! Async.FromContinuations(fun (cont, econt, ccont) ->
+                  // start a new mailbox processor which will await the result
+                  Agent.Start((fun (mailbox : Agent<Choice<'T1, exn, OperationCanceledException>>) ->
+                      async {
+                          // register a callback with the cancellation token which posts a cancellation message
+                          #if NET40
+                          use __ = token.Register((fun _ ->
+                              mailbox.Post (Choice3Of3 (new OperationCanceledException("The opeartion was cancelled.")))))
+                          #else
+                          use __ = token.Register((fun _ ->
+                              mailbox.Post (Choice3Of3 (new OperationCanceledException("The opeartion was cancelled.")))), null)
+                          #endif
+          
+                          // subscribe to the observable: if an error occurs post an error message and post the result otherwise
+                          use __ = 
+                              ev1.Subscribe({ new IObserver<'T1> with
+                                  member __.OnNext result = mailbox.Post (Choice1Of3 result)
+                                  member __.OnError exn = mailbox.Post (Choice2Of3 exn)
+                                  member __.OnCompleted () =
+                                      let msg = "Cancelling the workflow, because the Observable awaited using AwaitObservable has completed."
+                                      mailbox.Post (Choice3Of3 (new OperationCanceledException(msg))) })
+                          
+                          guardFunction() // call the guard function
+
+                          // wait for the first of these messages and call the appropriate continuation function
+                          let! message = mailbox.Receive()
+                          match message with
+                          | Choice1Of3 reply -> cont reply
+                          | Choice2Of3 exn -> econt exn
+                          | Choice3Of3 exn -> ccont exn })) |> ignore) }
 
       /// Creates an asynchronous workflow that will be resumed when the 
       /// specified observables produces a value. The workflow will return 
       /// the value produced by the observable.
-      static member AwaitObservable(observable : IObservable<'T1>) =
-          let removeObj : IDisposable option ref = ref None
-          let removeLock = new obj()
-          let setRemover r = 
-              lock removeLock (fun () -> removeObj := Some r)
-          let remove() =
-              lock removeLock (fun () ->
-                  match !removeObj with
-                  | Some d -> removeObj := None
-                              d.Dispose()
-                  | None   -> ())
-          synchronize (fun f ->
-          let workflow =
-              Async.FromContinuations((fun (cont,econt,ccont) ->
-                  let rec finish cont value =
-                      remove()
-                      f (fun () -> cont value)
-                  setRemover <|
-                      observable.Subscribe
-                          ({ new IObserver<_> with
-                              member x.OnNext(v) = finish cont v
-                              member x.OnError(e) = finish econt e
-                              member x.OnCompleted() =
-                                  let msg = "Cancelling the workflow, because the Observable awaited using AwaitObservable has completed."
-                                  finish ccont (new System.OperationCanceledException(msg)) })
-                  () ))
-          async {
-              let! cToken = Async.CancellationToken
-              let token : CancellationToken = cToken
-              #if NET40
-              use registration = token.Register(fun () -> remove())
-              #else
-              use registration = token.Register((fun _ -> remove()), null)
-              #endif
-              return! workflow
-          })
-  
+      static member AwaitObservable(ev1 : IObservable<'T1>) =
+          Async.GuardedAwaitObservable ev1 ignore
+          
       /// Creates an asynchronous workflow that will be resumed when the 
       /// first of the specified two observables produces a value. The 
       /// workflow will return a Choice value that can be used to identify

@@ -12,7 +12,7 @@ open NUnit.Framework
 [<TestFixture>]
 type ``AwaitObservable Tests``() = 
 
-    [<Test; Ignore("Failing on appveyor ('A continuation provided by Async.FromContinuations was invoked multiple times')") >]
+    [<Test>]
     member test.``AwaitObservable yields a value from the sources Next``() =
         let source = new ObservableMock<string>()
         let wf = Async.AwaitObservable source
@@ -23,7 +23,7 @@ type ``AwaitObservable Tests``() =
         let result = awaiter(TimeSpan.FromSeconds(1.0))
         result |> should equal (Result "DONE")
 
-    [<Test; Ignore("Failing on appveyor ('A continuation provided by Async.FromContinuations was invoked multiple times')") >]
+    [<Test>]
     member test.``AwaitObservable yields the first value from the sources Next``() =
         let source = new ObservableMock<string>()
         let wf = Async.AwaitObservable source
@@ -35,7 +35,7 @@ type ``AwaitObservable Tests``() =
         let result = awaiter(TimeSpan.FromSeconds(1.0))
         result |> should equal (Result "ONE")
 
-    [<Test ; Ignore("Failing on appveyor ('a observer-subscription was not disposed')")  >]
+    [<Test>]
     member test.``AwaitObservable is canceled if the source completes without a single result``() =
         let source = new ObservableMock<string>()
         let wf = Async.AwaitObservable source
@@ -45,7 +45,7 @@ type ``AwaitObservable Tests``() =
         let result = awaiter(TimeSpan.FromSeconds(1.0))
         result |> should equal AwaiterResult<string>.Canceled    
         
-    [<Test ; Ignore("Failing on appveyor ('a observer-subscription was not disposed')")  >]
+    [<Test>]
     member test.``AwaitObservable is unsubscribed from the source after a value was received``() =
         let source = new ObservableMock<string>()
         let wf = Async.AwaitObservable source
@@ -54,7 +54,7 @@ type ``AwaitObservable Tests``() =
         source.Next("Done")
         source.AssertUnsubscribe(TimeSpan.FromSeconds(1.0))
 
-    [<Test ; Ignore("Failing on appveyor ('a observer-subscription was not disposed')")  >]
+    [<Test>]
     member test.``AwaitObservable is unsubscribed from the source after the source completes without a result``() =
         let source = new ObservableMock<string>()
         let wf = Async.AwaitObservable source
@@ -63,7 +63,7 @@ type ``AwaitObservable Tests``() =
         source.Completed()
         source.AssertUnsubscribe(TimeSpan.FromSeconds(1.0))
 
-    [<Test ; Ignore("Failing on appveyor ('a observer-subscription was not disposed')")  >]
+    [<Test>]
     member test.``AwaitObservable is unsubscribed from the source after OnError was called``() =
         let source = new ObservableMock<string>()
         let wf = Async.AwaitObservable source
@@ -72,7 +72,7 @@ type ``AwaitObservable Tests``() =
         source.Error(exn "test-error")
         source.AssertUnsubscribe(TimeSpan.FromSeconds(1.0))
 
-    [<Test ; Ignore("Failing on appveyor ('a observer-subscription was not disposed')")  >]
+    [<Test>]
     member test.``AwaitObservable is unsubscribed from the source if it's resulting async-workflow gets cancelled``() =
         let cts = new CancellationTokenSource()
         let source = new ObservableMock<string>()
@@ -83,4 +83,45 @@ type ``AwaitObservable Tests``() =
         let result = awaiter (TimeSpan.FromSeconds(1.0)) 
         result |> should equal AwaiterResult<string>.Canceled
         source.AssertUnsubscribe(TimeSpan.FromSeconds(1.0))
+    
+    [<Test>]
+    member test.``AwaitObservable yields the first value from a hot observable``() =
+        let source = { new IObservable<string> with
+            member __.Subscribe(observer) =
+                observer.OnNext("ONE")
+                observer.OnNext("TWO")
+                { new IDisposable with 
+                    member __.Dispose () = () } }
+
+        let wf = Async.AwaitObservable source
+        let awaiter = startAsAwaiter wf
+        let result = awaiter(TimeSpan.FromSeconds(1.0))
+        result |> should equal (Result "ONE")
         
+    [<Test>]
+    member test.``AwaitObservable yields the first value from a hot observable with error``() =
+        let source = { new IObservable<string> with
+            member __.Subscribe(observer) =
+                observer.OnNext("ONE")
+                observer.OnError (exn "test-error")
+                { new IDisposable with 
+                    member __.Dispose () = () } }
+
+        let wf = Async.AwaitObservable source
+        let awaiter = startAsAwaiter wf
+        let result = awaiter(TimeSpan.FromSeconds(1.0))
+        result |> should equal (Result "ONE")
+            
+    [<Test>]
+    member test.``AwaitObservable yields the first value from a hot observable which has completed``() =
+        let source = { new IObservable<string> with
+            member __.Subscribe(observer) =
+                observer.OnNext("ONE")
+                observer.OnCompleted()
+                { new IDisposable with 
+                    member __.Dispose () = () } }
+
+        let wf = Async.AwaitObservable source
+        let awaiter = startAsAwaiter wf
+        let result = awaiter(TimeSpan.FromSeconds(1.0))
+        result |> should equal (Result "ONE")
