@@ -477,6 +477,35 @@ module AsyncSeq =
       | Nil -> return Nil 
     else return! input }
 
+  /// <summary>
+  /// Combine two ordered asynchronous sequences into a single ordered 
+  // asynchronous sequence.
+  /// </summary>
+  /// <param name="compare">
+  /// The compare function should return Choice1Of2 if the first is before
+  /// the second, or Choice2Of2 if the first is after than the second.
+  /// </param>
+  let merge compare (inputA : AsyncSeq<_>) (inputB : AsyncSeq<_>) : AsyncSeq<_> =
+    let rec mergeNext nextA nextB = async {
+        match nextA, nextB with
+        | Nil, Nil -> return Nil
+        | _, Nil -> return nextA
+        | Nil, _ -> return nextB
+        | Cons(headA, tailA), Cons(headB, tailB) ->
+          match compare(headA, headB) with
+          | Choice1Of2 () -> 
+            let! nextA = tailA
+            return Cons(headA, mergeNext nextA nextB)
+          | Choice2Of2 () ->
+            let! nextB = tailB
+            return Cons(headB, mergeNext nextA nextB)
+      }
+    async {
+      let! nextA = inputA
+      let! nextB = inputB
+      return! mergeNext nextA nextB
+    }
+
 [<AutoOpen>]
 module AsyncSeqExtensions = 
   /// Builds an asynchronou sequence using the computation builder syntax
