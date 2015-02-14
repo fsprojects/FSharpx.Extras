@@ -478,15 +478,12 @@ module AsyncSeq =
     else return! input }
 
   /// <summary>
-  /// Combine two ordered asynchronous sequences into a single 
-  /// ordered asynchronous sequence.
+  /// Combine two ordered asynchronous sequences into a single ordered 
+  // asynchronous sequence.
   /// </summary>
   /// <param name="compare">
-  /// The compare function should return
-  /// a signed integer that indicates the relative values of the first 
-  /// and second values, following the rules: less than zero if the first 
-  /// is less than the second; zero if the first equals the second; 
-  /// greater than zero if the first is greater than the second.
+  /// The compare function should return Choice1Of2 if the first is before
+  /// the second, or Choice2Of2 if the first is after than the second.
   /// </param>
   let merge compare (inputA : AsyncSeq<_>) (inputB : AsyncSeq<_>) : AsyncSeq<_> =
     let rec mergeNext nextA nextB = async {
@@ -495,10 +492,11 @@ module AsyncSeq =
         | _, Nil -> return nextA
         | Nil, _ -> return nextB
         | Cons(headA, tailA), Cons(headB, tailB) ->
-          if compare (headA, headB) <= 0 then
+          match compare(headA, headB) with
+          | Choice1Of2 () -> 
             let! nextA = tailA
             return Cons(headA, mergeNext nextA nextB)
-          else
+          | Choice2Of2 () ->
             let! nextB = tailB
             return Cons(headB, mergeNext nextA nextB)
       }
