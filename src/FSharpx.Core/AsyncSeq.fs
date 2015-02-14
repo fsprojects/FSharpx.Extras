@@ -477,6 +477,37 @@ module AsyncSeq =
       | Nil -> return Nil 
     else return! input }
 
+  /// <summary>
+  /// Combine two ordered asynchronous sequences into a single 
+  /// ordered asynchronous sequence.
+  /// </summary>
+  /// <param name="compare">
+  /// The compare function should return
+  /// a signed integer that indicates the relative values of the first 
+  /// and second values, following the rules: less than zero if the first 
+  /// is less than the second; zero if the first equals the second; 
+  /// greater than zero if the first is greater than the second.
+  /// </param>
+  let merge compare (inputA : AsyncSeq<_>) (inputB : AsyncSeq<_>) : AsyncSeq<_> =
+    let rec mergeNext nextA nextB = async {
+        match nextA, nextB with
+        | Nil, Nil -> return Nil
+        | _, Nil -> return nextA
+        | Nil, _ -> return nextB
+        | Cons(headA, tailA), Cons(headB, tailB) ->
+          if compare (headA, headB) <= 0 then
+            let! nextA = tailA
+            return Cons(headA, mergeNext nextA nextB)
+          else
+            let! nextB = tailB
+            return Cons(headB, mergeNext nextA nextB)
+      }
+    async {
+      let! nextA = inputA
+      let! nextB = inputB
+      return! mergeNext nextA nextB
+    }
+
 [<AutoOpen>]
 module AsyncSeqExtensions = 
   /// Builds an asynchronou sequence using the computation builder syntax
