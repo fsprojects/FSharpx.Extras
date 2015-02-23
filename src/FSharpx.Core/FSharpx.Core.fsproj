@@ -82,7 +82,6 @@
     <Compile Include="Stm.fs" />
     <Compile Include="Iteratee.fs" />
     <Compile Include="CSharpCompat.fs" />
-    <Compile Include="Reflection.fs" />
     <Content Include="packages.config" />
     <Content Include="app.config" />
   </ItemGroup>
