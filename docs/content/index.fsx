@@ -29,7 +29,7 @@ These are some adhoc components which are now rarely used:
 
 * FSharpx.Http provides a few features for working with HTTP applications.
 * FSharpx.Observable implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford.
-* FSharpx.Text.StructuredFormat provides data structures and functoins for pretty printers. Combinators description: https://github.com/fsprojects/fsharpx/blob/master/src/FSharpx.Text.StructuredFormat/StructuredFormat.fsi
+* FSharpx.Text.StructuredFormat provides data structures and functoins for pretty printers.
 
 
 *)
@@ -37,7 +37,7 @@ These are some adhoc components which are now rarely used:
 #r "FSharpx.Collections.dll"
 #r "FSharpx.Core.dll"
 
-open FSharpx.Functional
+open FSharpx
 
 open FSharpx.Collections
 
@@ -63,7 +63,6 @@ FSharpx.Collections.List.monoid
 * [Santa](Santa.html)
 * [StmSample](StmSample.html)
 * [StockStream](StockStream.html)
-* [StructuredFormatSample](StructuredFormatSample.html)
 * [UndoSample](UndoSample.html)
 * [WebProxy](WebProxy.html)
 

@@ -3,8 +3,8 @@
 
 module FSharpx.Tests.AsyncOperatorsTest
 
-open FSharpx.Functional
-open FSharpx.Functional.Async
+open FSharpx
+open FSharpx.Async
 open FSharpx.Control
 open NUnit.Framework
 open FsUnit

@@ -1,11 +1,11 @@
-﻿namespace FSharpx.Functional.Tests
+﻿namespace FSharpx.Tests
 
 open System
 open System.Threading
 open System.Threading.Tasks
 
 open FSharpx.Core
-open FSharpx.Functional
+open FSharpx
 
 open FsUnit
 open NUnit.Framework 

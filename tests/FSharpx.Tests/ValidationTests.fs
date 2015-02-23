@@ -5,10 +5,10 @@ open FsUnit
 open Microsoft.FSharp.Core
 open FSharpx.Collections
 open FSharpx.CSharpTests
-open FSharpx.Functional
-open FSharpx.Functional.Choice
-open FSharpx.Functional.Validation
-open FSharpx.Functional.Nullable
+open FSharpx
+open FSharpx.Choice
+open FSharpx.Validation
+open FSharpx.Nullable
 open NUnit.Framework
 
 let validator pred error value =

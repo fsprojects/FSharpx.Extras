@@ -9,4 +9,5 @@ install:
   - sudo installer -pkg "MonoFramework-MDK-${MONO_VERSION}.macos10.xamarin.x86.pkg" -target /
 
 script: 
+  - chmod u+x ./build.sh
   - ./build.sh
