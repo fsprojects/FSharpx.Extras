@@ -280,12 +280,12 @@ module ReflectionUnionTest =
 
     [<Test>]
     let ``should read Generic union tag`` () =
-        let tester = getTagReaderComparer<Generic<int * string>> (Some BindingFlags.NonPublic)
+        let tester = getTagReaderComparer<Generic<int * string>> None
         tester <| Generic (42,"")
 
     [<Test>]
     let ``should read Large union tag`` () =
-        let tester = getTagReaderComparer<LargeDU> (Some BindingFlags.NonPublic)
+        let tester = getTagReaderComparer<LargeDU> None
         tester A ; tester C ; tester H ; tester M
 
 
