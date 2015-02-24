@@ -61,6 +61,12 @@ module Async =
     /// Right-to-left Kleisli composition
     let inline (<=<) x = flip (>=>) x
 
+    let attempt m = async { 
+                             try  let! outp = m
+                                  return Choice1Of2 <| outp
+                             with exn -> return Choice2Of2 exn
+                    }
+
     let foldM f s = 
         Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
 
@@ -899,105 +905,6 @@ module Validation =
     let seqValidator f = 
         let inline cons a b = lift2 (flip List.cons) a b
         Seq.map f >> Seq.fold cons (returnM [])
-
-    let inline sequence s =
-        let inline cons a b = lift2 List.cons a b
-        List.foldBack cons s (returnM [])
-
-    let inline mapM f x = sequence (List.map f x)
-
-
-module IO =
-
-
-    
-    type IOStream = { input     : IO.Stream
-                    ; output    : IO.Stream
-                    ; reader : IO.StreamReader
-                    ; writer : IO.StreamWriter}
-    type IO<'T> = IOStream -> 'T
-    
-    let runIO m (input :IO.Stream, output : IO.Stream) =
-        use reader =  new IO.StreamReader(input)
-        use writer = new IO.StreamWriter(output)
-        writer.AutoFlush <- true
-        let io = { input = input; output = output; reader = reader; writer = writer}
-        m io
-    
-    let run m = 
-        use writer = new IO.StreamWriter(Console.OpenStandardOutput())
-        use reader =  new IO.StreamReader(Console.OpenStandardInput())
-        writer.AutoFlush <- true
-        System.Console.SetOut (writer);
-        Console.SetIn(reader)
-        let io = { input = reader.BaseStream; output = writer.BaseStream; reader = reader; writer = writer}
-        m io
-
-    let getChar = fun (s:IOStream) -> char <| s.reader.Read()
-    let putChar (c:char) = fun (s:IOStream) -> s.writer.Write(c)
-    let putStr (str:string) = fun (s:IOStream) -> s.writer.Write(str)
-    let getLine (str) = fun (s:IOStream) -> s.reader.ReadLine()
-    let print (a) = fun (s:IOStream) -> s.writer.Write(sprintf "%A" a)
-
-    let bind k m = fun s -> let a = m s in (k a) s
-    let attempt m = fun s -> try Choice1Of2 <| m s
-                             with exn -> Choice2Of2 exn
-    /// The IO monad.
-    /// You could use the state monad but this sends a signal that it involves sideeffects
-    type IOBuilder() =
-        member this.Return(a) : IO<'T> = fun s -> (a)
-        member this.ReturnFrom(m:IO<'T>) = m
-        member this.Bind(m:IO<'T>, k:'T -> IO<'U>) : IO<'U> = bind k m
-        member this.Zero() = this.Return ()
-        member this.Combine(r1, r2) = this.Bind(r1, fun () -> r2)
-        member this.TryWith(m:IO<'T>, h:exn -> IO<'T>) : IO<'T> =
-            fun env -> try m env
-                       with e -> (h e) env
-        member this.TryFinally(m:IO<'T>, compensation) : IO<'T> =
-            fun env -> try m env
-                       finally compensation()
-        member this.Using(res:#IDisposable, body) =
-            this.TryFinally(body res, (fun () -> match res with null -> () | disp -> disp.Dispose()))
-        member this.Delay(f) = this.Bind(this.Return (), f)
-        member this.While(guard, m) =
-            if not(guard()) then this.Zero() else
-                this.Bind(m, (fun () -> this.While(guard, m)))
-        member this.For(sequence:seq<_>, body) =
-            this.Using(sequence.GetEnumerator(),
-                (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current))))
-    let io = new IOBuilder()
-    
-    open Operators
-
-    /// Inject a value into the IO type
-    let inline returnM x = returnM io x
-    /// Sequentially compose two actions, passing any value produced by the first as an argument to the second.
-    let inline (>>=) m f = bindM io m f
-    /// Flipped >>=
-    let inline (=<<) f m = bindM io m f
-    /// Sequential application
-    let inline (<*>) f m = applyM io io f m
-    /// Sequential application
-    let inline ap m f = f <*> m
-    /// Transforms a State value by using a specified mapping function.
-    let inline map f m = liftM io f m
-    /// Infix map
-    let inline (<!>) f m = map f m
-    /// Promote a function to a monad/applicative, scanning the monadic/applicative arguments from left to right.
-    let inline lift2 f a b = returnM f <*> a <*> b
-    /// Sequence actions, discarding the value of the first argument.
-    let inline ( *>) x y = lift2 (fun _ z -> z) x y
-    /// Sequence actions, discarding the value of the second argument.
-    let inline ( <*) x y = lift2 (fun z _ -> z) x y
-    /// Sequentially compose two state actions, discarding any value produced by the first
-    let inline (>>.) m f = bindM io m (fun _ -> f)
-    /// Left-to-right Kleisli composition
-    let inline (>=>) f g = fun x -> f x >>= g
-    /// Right-to-left Kleisli composition
-    let inline (<=<) x = flip (>=>) x
-
-    let foldM f s = 
-        Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
 
     let inline sequence s =
         let inline cons a b = lift2 List.cons a b
