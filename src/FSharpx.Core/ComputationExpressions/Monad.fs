@@ -909,9 +909,24 @@ module Validation =
 
 module IO =
 
-    type IO<'T> = System.IO.Stream -> 'T
+
     
-    let getIO = fun s -> s
+    type IOStream = { io     : IO.Stream
+                    ; reader : IO.StreamReader
+                    ; writer : IO.StreamWriter}
+    type IO<'T> = IOStream -> 'T
+    
+    let runIO m (stream :IO.Stream) =
+        use reader =  new IO.StreamReader(stream)
+        use writer = new IO.StreamWriter(stream)
+        let io = { io = stream; reader = reader; writer = writer}
+        m io
+    let getChar = fun (s:IOStream) -> char <| s.reader.Read()
+    let putChar (c:char) = fun (s:IOStream) -> s.writer.Write(c)
+    let putStr (str:string) = fun (s:IOStream) -> s.writer.Write(str)
+    let getLine (str) = fun (s:IOStream) -> s.reader.ReadLine()
+    let print (a) = fun (s:IOStream) -> s.writer.Write(sprintf "%A" a)
+
     let bind k m = fun s -> let a = m s in (k a) s
     let attempt m = fun s -> try Choice1Of2 <| m s
                              with exn -> Choice2Of2 exn
@@ -938,22 +953,22 @@ module IO =
         member this.For(sequence:seq<_>, body) =
             this.Using(sequence.GetEnumerator(),
                 (fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current))))
-    let IO = new IOBuilder()
+    let io = new IOBuilder()
     
     open Operators
 
     /// Inject a value into the IO type
-    let inline returnM x = returnM IO x
+    let inline returnM x = returnM io x
     /// Sequentially compose two actions, passing any value produced by the first as an argument to the second.
-    let inline (>>=) m f = bindM IO m f
+    let inline (>>=) m f = bindM io m f
     /// Flipped >>=
-    let inline (=<<) f m = bindM IO m f
+    let inline (=<<) f m = bindM io m f
     /// Sequential application
-    let inline (<*>) f m = applyM IO IO f m
+    let inline (<*>) f m = applyM io io f m
     /// Sequential application
     let inline ap m f = f <*> m
     /// Transforms a State value by using a specified mapping function.
-    let inline map f m = liftM IO f m
+    let inline map f m = liftM io f m
     /// Infix map
     let inline (<!>) f m = map f m
     /// Promote a function to a monad/applicative, scanning the monadic/applicative arguments from left to right.
@@ -963,7 +978,7 @@ module IO =
     /// Sequence actions, discarding the value of the second argument.
     let inline ( <*) x y = lift2 (fun z _ -> z) x y
     /// Sequentially compose two state actions, discarding any value produced by the first
-    let inline (>>.) m f = bindM IO m (fun _ -> f)
+    let inline (>>.) m f = bindM io m (fun _ -> f)
     /// Left-to-right Kleisli composition
     let inline (>=>) f g = fun x -> f x >>= g
     /// Right-to-left Kleisli composition
