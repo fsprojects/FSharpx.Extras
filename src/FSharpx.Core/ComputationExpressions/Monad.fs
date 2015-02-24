@@ -911,16 +911,28 @@ module IO =
 
 
     
-    type IOStream = { io     : IO.Stream
+    type IOStream = { input     : IO.Stream
+                    ; output    : IO.Stream
                     ; reader : IO.StreamReader
                     ; writer : IO.StreamWriter}
     type IO<'T> = IOStream -> 'T
     
-    let runIO m (stream :IO.Stream) =
-        use reader =  new IO.StreamReader(stream)
-        use writer = new IO.StreamWriter(stream)
-        let io = { io = stream; reader = reader; writer = writer}
+    let runIO m (input :IO.Stream, output : IO.Stream) =
+        use reader =  new IO.StreamReader(input)
+        use writer = new IO.StreamWriter(output)
+        writer.AutoFlush <- true
+        let io = { input = input; output = output; reader = reader; writer = writer}
         m io
+    
+    let run m = 
+        use writer = new IO.StreamWriter(Console.OpenStandardOutput())
+        use reader =  new IO.StreamReader(Console.OpenStandardInput())
+        writer.AutoFlush <- true
+        System.Console.SetOut (writer);
+        Console.SetIn(reader)
+        let io = { input = reader.BaseStream; output = writer.BaseStream; reader = reader; writer = writer}
+        m io
+
     let getChar = fun (s:IOStream) -> char <| s.reader.Read()
     let putChar (c:char) = fun (s:IOStream) -> s.writer.Write(c)
     let putStr (str:string) = fun (s:IOStream) -> s.writer.Write(str)
