@@ -61,6 +61,12 @@ module Async =
     /// Right-to-left Kleisli composition
     let inline (<=<) x = flip (>=>) x
 
+    let attempt m = async { 
+                             try  let! outp = m
+                                  return Choice1Of2 <| outp
+                             with exn -> return Choice2Of2 exn
+                    }
+
     let foldM f s = 
         Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
 
@@ -905,6 +911,9 @@ module Validation =
         List.foldBack cons s (returnM [])
 
     let inline mapM f x = sequence (List.map f x)
+
+
+
 
 #if NET40
 
