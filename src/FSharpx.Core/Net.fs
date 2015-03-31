@@ -11,7 +11,8 @@ open System.Text
 open System.Threading
 
 open FSharpx.IO
-open FSharpx.Control
+open FSharpx.Async
+open FSharp.Control
 
 // ----------------------------------------------------------------------------
 // Extensions that simplify working with HttpListener and related types

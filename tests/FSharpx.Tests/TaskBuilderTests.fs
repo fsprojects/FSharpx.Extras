@@ -4,10 +4,13 @@ open System
 open System.IO
 open System.Net
 open NUnit.Framework
+open FSharpx
+open FSharpx.Task
+open FSharpx.Async
+open FSharpx.Control
 open FSharpx.Functional
 open System.Threading
 
-#if NET40
 open System.Threading.Tasks
 open FSharpx.Control.FileExtensions
 open FSharpx.Control.StreamReaderExtensions
@@ -251,7 +254,5 @@ let ``combine``() =
     
     checkSuccess "hello world" t
     Assert.AreEqual(true, !flag)
-
-#endif
 
 

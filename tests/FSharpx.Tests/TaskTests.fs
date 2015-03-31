@@ -8,7 +8,6 @@ open FSharpx
 open FSharpx.Functional
 open System.Threading
 
-#if NET40
 open System.Threading.Tasks
 open FSharpx.Control.FileExtensions
 open FSharpx.Control.StreamReaderExtensions
@@ -150,4 +149,3 @@ let ``run delay law``() =
     let task = Task.TaskBuilder(continuationOptions = TaskContinuationOptions.ExecuteSynchronously)
     fsCheck "run delay law" (fun a -> (task.Run << task.Delay << konst) a = a)
 
-#endif

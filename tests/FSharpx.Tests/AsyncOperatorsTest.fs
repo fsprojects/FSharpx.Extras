@@ -5,7 +5,6 @@ module FSharpx.Tests.AsyncOperatorsTest
 
 open FSharpx
 open FSharpx.Async
-open FSharpx.Control
 open NUnit.Framework
 open FsUnit
 

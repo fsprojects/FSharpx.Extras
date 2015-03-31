@@ -20,16 +20,16 @@ FSharpx.Core currently implements:
 
 * Functions to make C# - F# interop easier.
 
-FSharpx.Core is a set of additions on top of FSharpx.Collections
+* FSharpx.Http provides a few features for working with HTTP applications.
+
+FSharpx.Core is a set of additions on top of FSharpx.Collections and FSharpx.Async
 
 
 ## Extras
 
 These are some adhoc components which are now rarely used:
 
-* FSharpx.Http provides a few features for working with HTTP applications.
-* FSharpx.Observable implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford.
-* FSharpx.Text.StructuredFormat provides data structures and functoins for pretty printers.
+* FSharpx.Text.StructuredFormat provides data structures and functions for pretty printers.
 
 
 *)

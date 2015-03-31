@@ -1,6 +1,8 @@
 ﻿namespace FSharpx.Functional
 
+open FSharpx
 open FSharpx.Collections
+open FSharpx.Functional
 
 type Lens<'T,'U> = 
     { Get: 'T -> 'U

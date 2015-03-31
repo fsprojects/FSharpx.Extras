@@ -12,7 +12,7 @@ let githubLink = "https://github.com/fsprojects/fsharpx"
 
 // Specify more information about your project
 let info =
-  [ "project-name", "fsharpx"
+  [ "project-name", "FSharpx.Functional"
     "project-author", "Steffan Forkmann and others"
     "project-summary", "Extra components for FSharpx"
     "project-github", githubLink

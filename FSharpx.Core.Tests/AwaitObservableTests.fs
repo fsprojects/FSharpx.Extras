@@ -4,10 +4,12 @@ open System
 open System.Threading
 open System.Threading.Tasks
 
-open FSharpx.Control.Observable
-
 open FsUnit
 open NUnit.Framework
+open FSharpx.Control
+open FSharpx.Control.AsyncExtensions
+open FSharpx.Control.StreamReaderExtensions
+open FSharpx.Control.Observable
 
 [<TestFixture>]
 type ``AwaitObservable Tests``() = 
@@ -26,7 +28,7 @@ type ``AwaitObservable Tests``() =
     [<Test; Ignore("Failing on appveyor ('A continuation provided by Async.FromContinuations was invoked multiple times')") >]
     member test.``AwaitObservable yields the first value from the sources Next``() =
         let source = new ObservableMock<string>()
-        let wf = Async.AwaitObservable source
+        let wf = Async .AwaitObservable source
         let awaiter = startAsAwaiter wf
         source.AssertSubscribtion(TimeSpan.FromSeconds(1.0))
         source.Next("ONE")

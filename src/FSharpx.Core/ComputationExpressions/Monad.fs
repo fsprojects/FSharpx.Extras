@@ -6,6 +6,7 @@ open System
 open System.Collections
 open System.Collections.Generic
 open FSharpx.Collections
+open FSharpx.Functional
 
 
 /// Generic monadic operators    
@@ -906,7 +907,6 @@ module Validation =
 
     let inline mapM f x = sequence (List.map f x)
 
-#if NET40
 
 module Task =
     open System.Threading
@@ -1074,4 +1074,3 @@ module Task =
         
         member this.Delay f = this.Bind(this.Return (), f)
 
-#endif

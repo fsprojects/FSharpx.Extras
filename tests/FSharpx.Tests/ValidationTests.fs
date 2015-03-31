@@ -6,6 +6,7 @@ open Microsoft.FSharp.Core
 open FSharpx.Collections
 open FSharpx.CSharpTests
 open FSharpx
+open FSharpx.Functional
 open FSharpx.Choice
 open FSharpx.Validation
 open FSharpx.Nullable

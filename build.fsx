@@ -15,13 +15,13 @@ RestorePackage()
 
 // properties
 let currentDate = System.DateTime.UtcNow
-let projectName = "FSharpx"
+let projectName = "FSharpx.Extras"
 
-let coreSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
-let projectSummary = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library."
+let coreSummary = "FSharpx.Extras is a library for the .NET platform implementing general functional constructs on top of the F# core library."
+let projectSummary = "FSharpx.Extras is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let authors = ["Steffen Forkmann"; "Daniel Mohl"; "Tomas Petricek"; "Ryan Riley"; "Mauricio Scheffer"; "Phil Trelford" ]
 let mail = "ryan.riley@panesofglass.org"
-let homepage = "http://github.com/fsprojects/fsharpx"
+let homepage = "http://github.com/fsprojects/FSharpx.Extras"
 
 // .NET Frameworks
 let net35 = "v3.5"
@@ -38,13 +38,11 @@ let nugDir = "./nuget"
 let nugetDir package = nugDir @@ package
 let nugetLibDir package = nugetDir package @@ "lib"
 
-let packages = ["Core"; "Http"; "Observable"; "Text.StructuredFormat"] 
+let packages = ["Extras"; "Text.StructuredFormat"] 
 
-let projectDesc = "FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible."
+let projectDesc = "FSharpx.Extras implements general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible."
 
 let rec getPackageDesc = function
-| "Http" -> projectDesc + "\r\n\r\nThis library provides common features for working with HTTP applications."
-| "Observable" -> projectDesc + "\r\n\r\nThis library implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford."
 | "Text.StructuredFormat" -> projectDesc + "\r\n\r\nThis library provides data structures and functoins for pretty printers."
 | _ -> projectDesc + "\r\n\r\nIt currently implements:\r\n\r\n" + 
                        "* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n" +
@@ -58,7 +56,7 @@ let rec getPackageDesc = function
 let gitHome = "https://github.com/fsprojects"
 
 // The name of the project on GitHub
-let gitName = "fsharpx"
+let gitName = "FSharpx.Extras"
 
 // The url for the raw files hosted
 let gitRaw = environVarOrDefault "gitRaw" "https://raw.github.com/fsprojects"
@@ -94,27 +92,10 @@ Target "AssemblyInfo" (fun _ ->
             CodeLanguage = FSharp
             AssemblyVersion = release.AssemblyVersion
             AssemblyTitle = projectName
-            AssemblyDescription = getPackageDesc "Core"
+            AssemblyDescription = getPackageDesc "Extras"
             Guid = "1e95a279-c2a9-498b-bc72-6e7a0d6854ce"
-            OutputFileName = "./src/FSharpx.Core/AssemblyInfo.fs" })
+            OutputFileName = "./src/FSharpx.Extras/AssemblyInfo.fs" })
 
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = release.AssemblyVersion
-            AssemblyTitle = "FSharpx.Http"
-            AssemblyDescription = getPackageDesc "Http"
-            Guid = "60F3BB81-5449-45DD-A217-B6045327680C"
-            OutputFileName = "./src/FSharpx.Http/AssemblyInfo.fs" })
-
-    AssemblyInfo (fun p ->
-        {p with 
-            CodeLanguage = FSharp
-            AssemblyVersion = release.AssemblyVersion
-            AssemblyTitle = "FSharpx.Observable"
-            AssemblyDescription = getPackageDesc "Observable"
-            Guid = "2E802F54-9CD0-4B0A-B834-5C5979403B50"
-            OutputFileName = "./src/FSharpx.Observable/AssemblyInfo.fs" })
 
     AssemblyInfo (fun p ->
         {p with 
@@ -177,10 +158,10 @@ Target "NuGet" (fun _ ->
             Publish = hasBuildParam "nugetkey"
             ToolPath = nugetPath
             Dependencies =
-                if package = "Core" then p.Dependencies 
+                if package = "Extras" then p.Dependencies 
                 else
-                  [projectName + ".Core", RequireExactly (NormalizeVersion release.AssemblyVersion)] })
-        "FSharpx.Core.nuspec")
+                  ["FSharpx.Extras", RequireExactly (NormalizeVersion release.AssemblyVersion)] })
+        "FSharpx.Extras.nuspec")
             
 
 

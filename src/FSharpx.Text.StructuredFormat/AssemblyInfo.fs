@@ -20,9 +20,9 @@ exception ReturnNoneException183c26a427ae489c8fd92ec21a0c9a59
 
 [<assembly: AssemblyTitle ("FSharpx.Text.StructuredFormat")>]
 
-[<assembly: AssemblyDescription ("FSharpx is a library for the .NET platform implementing general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.
+[<assembly: AssemblyDescription ("FSharpx.Core and FSharpx.Functional implement general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.
 
-This library provides data structures and functions for pretty printers.")>]
+This library provides data structures and functoins for pretty printers.")>]
 
 [<assembly: AssemblyProduct ("FSharpx.Text.StructuredFormat")>]
 
