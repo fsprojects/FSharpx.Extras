@@ -3,9 +3,7 @@ namespace FSharpx.Functional
 open System
 open System.Collections
 open System.Collections.Generic
-#if NET40
 open System.Diagnostics.Contracts
-#endif
 open System.Runtime.CompilerServices
             
 module Enumerator = 

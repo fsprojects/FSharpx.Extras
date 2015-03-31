@@ -4,7 +4,10 @@
 namespace FSharpx.Tests
 
 open Microsoft.FSharp.Control
+open FSharp.Control
 open FSharpx.Control
+open FSharpx.Async
+open FSharpx
 open NUnit.Framework
 open System
 open System.IO

@@ -6,7 +6,7 @@
 // This example demonstrates how to use 'AutoCancelAgent'
 // The agent automatically stops its body when disposed.
 
-#r @"../../bin/v4.0/FSharpx.Core.dll"
+#r @"../../bin/v4.0/FSharpx.Extras.dll"
 open FSharpx.Control
 
 let op = async {

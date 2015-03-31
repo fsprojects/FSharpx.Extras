@@ -10,7 +10,7 @@
 // The first version performs single-threaded random walk (returned 
 // as an asynchronous sequence) and the second version is concurrent.
 
-#r @"../../bin/v4.0/FSharpx.Core.dll"
+#r @"../../bin/v4.0/FSharpx.Extras.dll"
 #r @"..\..\packages\HtmlAgilityPack.1.4.2\lib\HtmlAgilityPack.dll"
 
 open System

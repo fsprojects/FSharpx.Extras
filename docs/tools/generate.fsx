@@ -4,7 +4,7 @@
 // --------------------------------------------------------------------------------------
 
 // Binaries that have XML documentation (in a corresponding generated XML file)
-let referenceBinaries = [ "FSharpx.Core.dll" ]
+let referenceBinaries = [ "FSharpx.Extras.dll" ]
 // Web site location for the generated documentation
 let website = "."
 
@@ -12,11 +12,11 @@ let githubLink = "https://github.com/fsprojects/fsharpx"
 
 // Specify more information about your project
 let info =
-  [ "project-name", "fsharpx"
+  [ "project-name", "FSharpx.Functional"
     "project-author", "Steffan Forkmann and others"
     "project-summary", "Extra components for FSharpx"
     "project-github", githubLink
-    "project-nuget", "https://www.nuget.org/packages/FSharpx.Core/" ]
+    "project-nuget", "https://www.nuget.org/packages/FSharpx.Extras/" ]
 
 // --------------------------------------------------------------------------------------
 // For typical project, no changes are needed below

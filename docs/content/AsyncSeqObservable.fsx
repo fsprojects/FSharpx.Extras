@@ -5,7 +5,7 @@
 
 // This example demonstrates how to convert IObservable<'T> to AsyncSeq<'T>
 
-#r @"../../bin/v4.0/FSharpx.Core.dll"
+#r @"../../bin/v4.0/FSharpx.Extras.dll"
 
 open FSharpx.Control
 open System.Windows.Forms

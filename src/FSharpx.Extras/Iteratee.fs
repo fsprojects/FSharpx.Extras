@@ -5,7 +5,7 @@ open System
 open System.Collections
 open System.Collections.Generic
 open FSharpx.Collections
-open FSharpx.Control
+open FSharp.Control
 
 (*
 # Iteratee
@@ -700,18 +700,6 @@ module Iteratee =
                  | Continue k -> let x, xs = ByteString.head str, ByteString.tail str in enumerate xs (k (Chunk (ByteString.singleton x)))
                  | _ -> i
 
-        // TODO: Both source and sink should include a close function or IDisposable.
-        // NOTE: source and sink could implement IObservable and IObserver, respectively, though that could be misleading as they are intended to be used together.
-        let rec connect sink source = async {
-            match sink with
-            // Delay pulling from the source until we know that the sink needs data.
-            | Continue k ->
-                let! res = source
-                match res with
-                | AsyncSeqInner.Nil -> return run sink, AsyncSeq.empty
-                | Cons(s1, s2) -> return! connect (k (Chunk s1)) s2
-            | _ -> return run sink, source
-        }
 
         // val repeat :: byte -> Enumerator<ByteString, 'T>
         let repeat a = checkContinue0 (fun loop k -> loop (k (Chunk (ByteString.singleton a))))

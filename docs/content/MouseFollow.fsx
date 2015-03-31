@@ -6,7 +6,7 @@
 // This example demonstrates how to implement a simple mouse following
 // algorithm using asynchronous sequences and Observable.window
 
-#r @"../../bin/v4.0/FSharpx.Core.dll"
+#r @"../../bin/v4.0/FSharpx.Extras.dll"
 
 open FSharpx.Control
 open System.Drawing

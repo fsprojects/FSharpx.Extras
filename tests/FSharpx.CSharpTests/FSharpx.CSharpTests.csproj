@@ -52,8 +52,15 @@
     <DefineConstants>NET40</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FSharp.Control.AsyncSeq, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\FSharp.Control.AsyncSeq.1.15.0\lib\net40\FSharp.Control.AsyncSeq.dll</HintPath>
+    </Reference>
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>True</Private>
+    </Reference>
+    <Reference Include="FSharpx.Async">
+      <HintPath>..\..\packages\FSharpx.Async.1.12.0\lib\net40\FSharpx.Async.dll</HintPath>
     </Reference>
     <Reference Include="FSharpx.Collections, Version=1.9.4.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -93,9 +100,9 @@
     <Compile Include="ChoiceTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\FSharpx.Core\FSharpx.Core.fsproj">
+    <ProjectReference Include="..\..\src\FSharpx.Extras\FSharpx.Extras.fsproj">
       <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
-      <Name>FSharpx.Core</Name>
+      <Name>FSharpx.Extras</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

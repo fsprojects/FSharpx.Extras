@@ -4,11 +4,11 @@
 #I "../../bin/v4.0"
 
 (** 
-# FSharpx.Core and other Extras
+# FSharpx.Extras
 
-## FSharpx.Core
+## FSharpx.Extras
 
-FSharpx.Core currently implements:
+FSharpx.Extras implements:
 
 * Several standard monads: State, Reader, Writer, Either, Continuation, Distribution
 
@@ -20,22 +20,22 @@ FSharpx.Core currently implements:
 
 * Functions to make C# - F# interop easier.
 
-FSharpx.Core is a set of additions on top of FSharpx.Collections
+* A few features for working with HTTP applications.
+
+FSharpx.Extras is a set of additions on top of FSharpx.Collections and FSharpx.Async
 
 
-## Extras
+## FSharpx.Text.StructuredFormat
 
-These are some adhoc components which are now rarely used:
+This is a separate component:
 
-* FSharpx.Http provides a few features for working with HTTP applications.
-* FSharpx.Observable implements a mini-Reactive Extensions (MiniRx) and was authored by Phil Trelford.
-* FSharpx.Text.StructuredFormat provides data structures and functoins for pretty printers.
+* FSharpx.Text.StructuredFormat provides data structures and functions for pretty printers.
 
 
 *)
 
 #r "FSharpx.Collections.dll"
-#r "FSharpx.Core.dll"
+#r "FSharpx.Extras.dll"
 
 open FSharpx
 

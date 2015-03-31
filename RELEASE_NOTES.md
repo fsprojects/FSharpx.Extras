@@ -1,3 +1,6 @@
+### 1.10.0 - Renamed to FSharpx.Extras
+* Renamed to FSharpx.Core to FSharpx.Extras
+
 ### 1.9.4 - Remove Obsolete method
 * Remove the WebClient extension method that has long ago been moved to FSharp.Core
 
