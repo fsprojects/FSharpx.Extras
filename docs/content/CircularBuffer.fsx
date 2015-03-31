@@ -8,7 +8,7 @@
 
 #r "System.dll"
 #I @"../../bin/v4.0"
-#r @"FSharpx.Core.dll"
+#r @"FSharpx.Extras.dll"
 #r @"FSharpx.Collections.dll"
 
 open System

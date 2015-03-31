@@ -6,7 +6,7 @@
 // This example demonstrates how to use 'BlockingAgent'
 // The agent implements producer/consumer concurrent pattern.
 
-#r @"../../bin/v4.0/FSharpx.Core.dll"
+#r @"../../bin/v4.0/FSharpx.Extras.dll"
 open FSharpx.Control
 
 let buffer = new BlockingQueueAgent<int>(3)

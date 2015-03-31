@@ -135,8 +135,8 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\FSharpx.Core\FSharpx.Core.fsproj">
-      <Name>FSharpx.Core</Name>
+    <ProjectReference Include="..\..\src\FSharpx.Extras\FSharpx.Extras.fsproj">
+      <Name>FSharpx.Extras</Name>
       <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
       <Private>True</Private>
     </ProjectReference>

@@ -5,7 +5,7 @@
 
 // This example demonstrates how to use 'Async.Cache' and 'AsyncSeq.cache'
 
-#r @"../../bin/v4.0/FSharpx.Core.dll"
+#r @"../../bin/v4.0/FSharpx.Extras.dll"
 open FSharpx.Control
 
 // The Async.Cache combinator makes it possible to create asynchronous

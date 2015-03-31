@@ -5,7 +5,7 @@
 
 // This example demonstrates how to implement simple HTTP proxy
 
-#r @"../../bin/v4.0/FSharpx.Core.dll"
+#r @"../../bin/v4.0/FSharpx.Extras.dll"
 #r @"..\..\bin\v4.0\FSharpx.Http.dll"
 open FSharpx.Control
 open FSharpx.IO

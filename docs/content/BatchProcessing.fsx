@@ -7,7 +7,7 @@
 // The agent groups received messages in groups with a maximal
 // size and emits them with a maximal timeout.
 
-#r @"../../bin/v4.0/FSharpx.Core.dll"
+#r @"../../bin/v4.0/FSharpx.Extras.dll"
 open FSharpx.Control
 
 open System.Drawing

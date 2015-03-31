@@ -24,7 +24,6 @@ let mail = "ryan.riley@panesofglass.org"
 let homepage = "http://github.com/fsprojects/FSharpx.Extras"
 
 // .NET Frameworks
-let net35 = "v3.5"
 let net40 = "v4.0"
 
 // directories
@@ -64,7 +63,7 @@ let gitRaw = environVarOrDefault "gitRaw" "https://raw.github.com/fsprojects"
 System.Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 let release = parseReleaseNotes (File.ReadAllLines "RELEASE_NOTES.md")
 
-let fxVersions = [net35; net40]
+let fxVersions = [net40]
 
 let normalizeFrameworkVersion fxVersion =
     let v = ("[^\\d]" >=> "") fxVersion
@@ -73,7 +72,7 @@ let normalizeFrameworkVersion fxVersion =
 let buildLibParams fxVersion = 
     ["TargetFrameworkVersion", fxVersion
      "DefineConstants", "NET" + normalizeFrameworkVersion fxVersion
-     "TargetFSharpCoreVersion", (if fxVersion = net35 then "2.3.0.0" else "4.3.0.0") ]
+     "TargetFSharpCoreVersion", "4.3.0.0" ]
 
 // tools
 let nunitVersion = GetPackageVersion packagesDir "NUnit.Runners"
@@ -114,7 +113,7 @@ Target "AssemblyInfo" (fun _ ->
 Target "Build" (fun _ ->
     for fxVersion in fxVersions do
         // Only generate tests for net40
-        (if fxVersion = net35 then !! "src/**/*.fsproj" else !! "*.sln")  
+        !! "*.sln"
         |> MSBuild (buildDirVer fxVersion) "Rebuild" (["Configuration","Release"] @ buildLibParams fxVersion)
         |> ignore)
 

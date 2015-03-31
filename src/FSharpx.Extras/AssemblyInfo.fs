@@ -1,4 +1,4 @@
-module FSharpx.Core.AssemblyInfo
+module FSharpx.Extras.AssemblyInfo
 #nowarn "49" // uppercase argument names
 #nowarn "67" // this type test or downcast will always hold
 #nowarn "66" // tis upast is unnecessary - the types are identical
@@ -18,9 +18,9 @@ exception ReturnNoneException183c26a427ae489c8fd92ec21a0c9a59
 
 [<assembly: Guid ("1e95a279-c2a9-498b-bc72-6e7a0d6854ce")>]
 
-[<assembly: AssemblyTitle ("FSharpx")>]
+[<assembly: AssemblyTitle ("FSharpx.Extras")>]
 
-[<assembly: AssemblyDescription ("FSharpx.Core and FSharpx.Functional implement general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.
+[<assembly: AssemblyDescription ("FSharpx.Extras implements general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.
 
 It currently implements:
 
@@ -30,11 +30,11 @@ It currently implements:
 * Additional functions around collections
 * Functions to make C# - F# interop easier.")>]
 
-[<assembly: AssemblyProduct ("FSharpx")>]
+[<assembly: AssemblyProduct ("FSharpx.Extras")>]
 
-[<assembly: AssemblyVersion ("1.9.4")>]
+[<assembly: AssemblyVersion ("1.10.0")>]
 
-[<assembly: AssemblyFileVersion ("1.9.4")>]
+[<assembly: AssemblyFileVersion ("1.10.0")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 
