@@ -1,3 +1,6 @@
+### 1.10.1 - Fix dependency in nuget package
+* Fix #332
+
 ### 1.10.0 - Renamed to FSharpx.Extras
 * Renamed to FSharpx.Core to FSharpx.Extras
 

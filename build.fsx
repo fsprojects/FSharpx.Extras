@@ -15,7 +15,6 @@ RestorePackage()
 
 // properties
 let currentDate = System.DateTime.UtcNow
-let projectName = "FSharpx.Extras"
 
 let coreSummary = "FSharpx.Extras is a library for the .NET platform implementing general functional constructs on top of the F# core library."
 let projectSummary = "FSharpx.Extras is a library for the .NET platform implementing general functional constructs on top of the F# core library."
@@ -37,12 +36,12 @@ let nugDir = "./nuget"
 let nugetDir package = nugDir @@ package
 let nugetLibDir package = nugetDir package @@ "lib"
 
-let packages = ["Extras"; "Text.StructuredFormat"] 
+let packages = ["FSharpx.Extras"; "FSharpx.Text.StructuredFormat"] 
 
 let projectDesc = "FSharpx.Extras implements general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible."
 
 let rec getPackageDesc = function
-| "Text.StructuredFormat" -> projectDesc + "\r\n\r\nThis library provides data structures and functoins for pretty printers."
+| "FSharpx.Text.StructuredFormat" -> projectDesc + "\r\n\r\nThis library provides data structures and functoins for pretty printers."
 | _ -> projectDesc + "\r\n\r\nIt currently implements:\r\n\r\n" + 
                        "* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n" +
                        "* Validation applicative functor\r\n" + 
@@ -90,8 +89,8 @@ Target "AssemblyInfo" (fun _ ->
         {p with 
             CodeLanguage = FSharp
             AssemblyVersion = release.AssemblyVersion
-            AssemblyTitle = projectName
-            AssemblyDescription = getPackageDesc "Extras"
+            AssemblyTitle = "FSharpx.Extras"
+            AssemblyDescription = getPackageDesc "FSharpx.Extras"
             Guid = "1e95a279-c2a9-498b-bc72-6e7a0d6854ce"
             OutputFileName = "./src/FSharpx.Extras/AssemblyInfo.fs" })
 
@@ -101,7 +100,7 @@ Target "AssemblyInfo" (fun _ ->
             CodeLanguage = FSharp
             AssemblyVersion = release.AssemblyVersion
             AssemblyTitle = "FSharpx.Text.StructuredFormat"
-            AssemblyDescription = getPackageDesc "Text.StructuredFormat"
+            AssemblyDescription = getPackageDesc "FSharpx.Text.StructuredFormat"
             Guid = "65e077ed-f51a-42d7-8004-e90d60af8b8f"
             OutputFileName = "./src/FSharpx.Text.StructuredFormat/AssemblyInfo.fs" })
             
@@ -135,7 +134,7 @@ Target "PrepareNuGet" (fun _ ->
         CleanDir frameworkSubDir
 
         [for ending in ["dll";"pdb";"xml"] do
-            yield buildDirVer fxVersion @@ sprintf "FSharpx.%s.%s" package ending]
+            yield buildDirVer fxVersion @@ sprintf "%s.%s" package ending]
         |> Seq.filter File.Exists
         |> CopyTo frameworkSubDir)
 
@@ -148,7 +147,7 @@ Target "NuGet" (fun _ ->
     NuGet (fun p -> 
         {p with               
             Authors = authors
-            Project = projectName + "." + package
+            Project = package
             WorkingDir = nugetDir package
             Description = getPackageDesc package
             Version = release.AssemblyVersion
@@ -157,7 +156,7 @@ Target "NuGet" (fun _ ->
             Publish = hasBuildParam "nugetkey"
             ToolPath = nugetPath
             Dependencies =
-                if package = "Extras" then p.Dependencies 
+                if package = "FSharpx.Extras" then p.Dependencies 
                 else
                   ["FSharpx.Extras", RequireExactly (NormalizeVersion release.AssemblyVersion)] })
         "FSharpx.Extras.nuspec")
