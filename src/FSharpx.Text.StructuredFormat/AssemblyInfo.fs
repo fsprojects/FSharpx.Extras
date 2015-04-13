@@ -26,9 +26,9 @@ This library provides data structures and functoins for pretty printers.")>]
 
 [<assembly: AssemblyProduct ("FSharpx.Text.StructuredFormat")>]
 
-[<assembly: AssemblyVersion ("1.10.0")>]
+[<assembly: AssemblyVersion ("1.10.2")>]
 
-[<assembly: AssemblyFileVersion ("1.10.0")>]
+[<assembly: AssemblyFileVersion ("1.10.2")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 

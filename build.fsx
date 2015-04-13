@@ -156,9 +156,10 @@ Target "NuGet" (fun _ ->
             Publish = hasBuildParam "nugetkey"
             ToolPath = nugetPath
             Dependencies =
-                if package = "FSharpx.Extras" then p.Dependencies 
-                else
-                  ["FSharpx.Extras", RequireExactly (NormalizeVersion release.AssemblyVersion)] })
+                [ yield ("FSharpx.Async", NormalizeVersion (Fake.NuGetHelper.GetPackageVersion "packages" "FSharpx.Async"));
+                  yield ("FSharpx.Collections", NormalizeVersion (Fake.NuGetHelper.GetPackageVersion "packages" "FSharpx.Collections"));
+                  if package <> "FSharpx.Extras" then                   
+                     yield ("FSharpx.Extras", RequireExactly (NormalizeVersion release.AssemblyVersion)) ] })
         "FSharpx.Extras.nuspec")
             
 
