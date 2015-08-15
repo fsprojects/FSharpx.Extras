@@ -1017,6 +1017,16 @@ module Task =
             if not(guard()) then this.Zero() else
                 this.Bind(m(), fun () -> this.While(guard, m))
 
+        member this.TryWith(body:unit -> Task<_>, catchFn:exn -> Task<_>) =  
+            try
+               body()
+                .ContinueWith(fun (t:Task<_>) ->
+                   match t.IsFaulted with
+                   | false -> returnM(t.Result)
+                   | true  -> catchFn(t.Exception.GetBaseException()))
+                .Unwrap()
+            with e -> catchFn(e)
+
         member this.TryFinally(m, compensation) =
             try this.ReturnFrom m
             finally compensation()

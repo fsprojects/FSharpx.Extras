@@ -136,6 +136,56 @@ let ``while``() =
     Task.run t |> ignore
     Assert.AreEqual(0, !i)
 
+[<Test>]
+let ``try with should catch exception in the body``() =
+   let task = Task.TaskBuilder(continuationOptions = TaskContinuationOptions.ExecuteSynchronously)
+   let result = task {
+      try 
+         failwith "exception"
+         return 1
+      with e -> return 5
+   }
+   Assert.AreEqual(5, result.Result)
+
+[<Test>]
+let ``try with should catch exception in the continuation``() =
+   let task = Task.TaskBuilder(continuationOptions = TaskContinuationOptions.ExecuteSynchronously)
+   let result = task {
+      try 
+         do! Task.Factory.StartNew(fun () -> failwith "exception")            
+         return 1
+      with e -> return 5
+   }
+   Assert.AreEqual(5, result.Result)
+
+[<Test>]
+let ``try with should catch exception only by type``() =
+   let task = Task.TaskBuilder(continuationOptions = TaskContinuationOptions.ExecuteSynchronously)
+   let result = task {
+      try 
+         invalidArg "param name" "msg"
+         return 1
+      with                   
+      | :? System.NullReferenceException -> return 5
+      | :? System.ArgumentException -> return 10
+      | e -> return 15
+   }
+   Assert.AreEqual(10, result.Result)
+
+[<Test>]
+let ``try with should do unwrapping of exception to original type if it was raised in continuation``() =
+   let task = Task.TaskBuilder(continuationOptions = TaskContinuationOptions.ExecuteSynchronously)
+   let result = task {
+      try 
+         do! Task.Factory.StartNew(fun () -> invalidArg "param name" "msg")
+         return 1
+      with
+      | :? System.NullReferenceException -> return 5
+      | :? System.ArgumentException -> return 10
+      | e -> return 15
+   }
+   Assert.AreEqual(10, result.Result)
+
 open FsCheck
 open FsCheck.NUnit
 
