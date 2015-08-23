@@ -95,6 +95,7 @@
     <Compile Include="ControlTests.fs" />
     <Compile Include="AsyncStreamReaderTest.fs" />
     <Compile Include="ConnegTests.fs" />
+    <Compile Include="EnumTest.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FsCheck">
