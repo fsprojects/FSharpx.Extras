@@ -58,16 +58,6 @@ module Prelude =
     /// Fixed point combinator.
     let rec fix3 f x y z = f (fix3 f) x y z
 
-    /// Fail with an unexpected match failure.
-    /// Useful to intelligently handle missing match cases instead of taking on an inexhaustiveness warning.
-    let failwithumf () =
-        let stackTrace = StackTrace ()
-        let frame = stackTrace.GetFrame 1
-        let meth = frame.GetMethod ()
-        let line = frame.GetFileLineNumber ()
-        let fileName = frame.GetFileName ()
-        failwithf "Unexpected match failure in '%s' on line %i in file %s." meth.Name line fileName
-
     /// Sequencing operator like Haskell's ($). Has better precedence than (<|) due to the
     /// first character used in the symbol.
     let (^) = (<|)
