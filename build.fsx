@@ -71,11 +71,13 @@ let normalizeFrameworkVersion fxVersion =
 let buildLibParams fxVersion = 
     ["TargetFrameworkVersion", fxVersion
      "DefineConstants", "NET" + normalizeFrameworkVersion fxVersion
-     "TargetFSharpCoreVersion", "4.3.0.0" ]
+     "TargetFSharpCoreVersion", "4.3.0.0"
+     "DefineConstants", "FX_NO_WINDOWSFORMS"
+     ]
 
 // tools
 let nunitVersion = GetPackageVersion packagesDir "NUnit.Runners"
-let nunitPath = packagesDir  @@ sprintf "NUnit.Runners.%s/Tools" nunitVersion
+let nunitPath = packagesDir  @@ sprintf "NUnit.Runners.%s/tools" nunitVersion
 
 
 // targets
@@ -154,7 +156,6 @@ Target "NuGet" (fun _ ->
             OutputPath = nugetDir package
             AccessKey = getBuildParamOrDefault "nugetkey" ""
             Publish = hasBuildParam "nugetkey"
-            ToolPath = nugetPath
             Dependencies =
                 [ yield ("FSharpx.Async", NormalizeVersion (Fake.NuGetHelper.GetPackageVersion "packages" "FSharpx.Async"));
                   yield ("FSharpx.Collections", NormalizeVersion (Fake.NuGetHelper.GetPackageVersion "packages" "FSharpx.Collections"));
@@ -193,6 +194,8 @@ FinalTarget "CloseTestRunner" (fun _ ->
 
 Target "Release" DoNothing
 
+Target "CI" DoNothing
+
 // Build order
 "Clean"
   ==> "AssemblyInfo"
@@ -214,6 +217,10 @@ Target "Release" DoNothing
 "NuGet"
   ==> "Release"
 
+"Test"
+  ==> "GenerateDocs"
+  ==> "NuGet"
+  ==> "CI"
 
 let target = getBuildParamOrDefault "target" "Test"
 
