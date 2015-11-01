@@ -62,6 +62,9 @@ module Prelude =
     /// first character used in the symbol.
     let (^) = (<|)
 
+    // Bottom value
+    let undefined<'T> : 'T = raise (NotImplementedException("result was implemented as undefined")) 
+
     type Boolean with
         static member parse x =
             match bool.TryParse(x) with
