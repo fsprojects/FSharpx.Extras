@@ -1,3 +1,5 @@
+### 1.10.3 - Added undefined in Prelude - https://github.com/fsprojects/FSharpx.Extras/pull/332
+
 ### 1.10.2 - List dependencies properly in nuget package
 
 ### 1.10.1 - Fix dependency in nuget package
