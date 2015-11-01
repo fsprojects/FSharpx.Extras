@@ -208,7 +208,7 @@ Target "Release" DoNothing
 
 "Build" 
   ==> "GenerateDocs"
-  ==> "ReleaseDocs"
+//  ==> "ReleaseDocs"
   ==> "Release"
 
 "NuGet"
