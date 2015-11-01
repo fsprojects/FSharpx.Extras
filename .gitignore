@@ -38,3 +38,4 @@ build.AndDeploy.bat
 __setup__.fsx
 lib/FAKE/tools/
 packages/
+release.cmd
