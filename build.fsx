@@ -164,6 +164,14 @@ Target "NuGet" (fun _ ->
         "FSharpx.Extras.nuspec")
             
 
+Target "PaketPack" (fun _ ->
+    Paket.Pack (fun p ->
+      { p with
+          OutputPath = "bin"
+          Version = release.AssemblyVersion
+          ReleaseNotes = toLines release.Notes
+      })
+)
 
 // --------------------------------------------------------------------------------------
 // Generate the documentation
@@ -205,6 +213,7 @@ Target "CI" DoNothing
 "Build"
   ==> "PrepareNuGet"
   ==> "NuGet"
+  ==> "PaketPack"
 
 "Test" 
   ==> "Release"
@@ -220,6 +229,7 @@ Target "CI" DoNothing
 "Test"
   ==> "GenerateDocs"
   ==> "NuGet"
+  ==> "PaketPack"
   ==> "CI"
 
 let target = getBuildParamOrDefault "target" "Test"
