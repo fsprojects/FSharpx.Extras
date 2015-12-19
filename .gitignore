@@ -40,4 +40,5 @@ lib/FAKE/tools/
 packages/
 .paket/paket.exe
 *.userprefs
+.fake/*
 

@@ -4,8 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>ad500a06-96ed-408c-9472-262cdc2a119b</ProjectGuid>
+    <ProjectGuid>{AD500A06-96ED-408C-9472-262CDC2A119B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx.Extras.Tests</RootNamespace>
     <AssemblyName>FSharpx.Extras.Tests</AssemblyName>
@@ -60,13 +59,6 @@
     <Compile Include="OptionTests.fs" />
     <None Include="paket.references" />
     <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\src\FSharpx.Extras\FSharpx.Extras.fsproj">
-      <Name>FSharpx.Extras</Name>
-      <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.0' Or $(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')">
@@ -209,4 +201,11 @@
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\src\FSharpx.Extras\FSharpx.Extras.fsproj">
+      <Name>FSharpx.Extras</Name>
+      <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

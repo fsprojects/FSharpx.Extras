@@ -1,14 +1,14 @@
 NUGET
   remote: https://nuget.org/api/v2
   specs:
-    FAKE (4.9.1)
-    FsCheck (0.9.1.0) - framework: >= net40
+    FAKE (4.11.0)
+    FsCheck (0.9.1) - framework: >= net40
     FSharp.Control.AsyncSeq (1.15.0) - framework: >= net40
     FSharp.Core (4.0.0.1)
     FSharpx.Async (1.12.0) - framework: >= net40
       FSharp.Control.AsyncSeq
     FSharpx.Collections (1.10.1)
       FSharp.Core (>= 3.1.2.1)
-    FsUnit (1.2.1.0) - framework: >= net40
+    FsUnit (1.2.1) - framework: >= net40
       NUnit (>= 2.6.2)
     NUnit (2.6.2) - framework: >= net40
