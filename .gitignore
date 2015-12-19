@@ -41,4 +41,5 @@ packages/
 .paket/paket.exe
 *.userprefs
 .fake/*
+docs/output/*
 

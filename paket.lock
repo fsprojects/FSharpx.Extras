@@ -3,12 +3,21 @@ NUGET
   specs:
     FAKE (4.11.0)
     FsCheck (0.9.1) - framework: >= net40
+    FSharp.Compiler.Service (0.0.59)
     FSharp.Control.AsyncSeq (1.15.0) - framework: >= net40
     FSharp.Core (4.0.0.1)
+    FSharp.Formatting (2.4.25)
+      FSharp.Compiler.Service (>= 0.0.59)
+      Microsoft.AspNet.Razor (2.0.30506.0)
+      RazorEngine (3.3.0)
     FSharpx.Async (1.12.0) - framework: >= net40
       FSharp.Control.AsyncSeq
     FSharpx.Collections (1.10.1)
       FSharp.Core (>= 3.1.2.1)
     FsUnit (1.2.1) - framework: >= net40
       NUnit (>= 2.6.2)
+    Microsoft.AspNet.Razor (2.0.30506)
     NUnit (2.6.2) - framework: >= net40
+    NUnit.Runners (2.6.2) - framework: >= net40
+    RazorEngine (3.3.0)
+      Microsoft.AspNet.Razor (>= 2.0.30506.0)
