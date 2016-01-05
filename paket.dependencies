@@ -1,0 +1,15 @@
+source https://nuget.org/api/v2
+
+nuget FAKE
+nuget FsCheck @= 0.9.1.0 framework: >= net40
+nuget FSharp.Compiler.Service @= 0.0.59
+nuget FSharp.Control.AsyncSeq @= 1.15.0 framework: >= net40
+nuget FSharp.Formatting @= 2.4.25
+nuget FSharpx.Async @= 1.12.0 framework: >= net40
+nuget FSharpx.Collections @= 1.10.1
+nuget FsUnit @= 1.2.1.0 framework: >= net40
+nuget NUnit @= 2.6.2 framework: >= net40
+nuget NUnit.Runners @= 2.6.2 framework: >= net40
+nuget Microsoft.AspNet.Razor @= 2.0.30506.0
+nuget RazorEngine @= 3.3.0
+

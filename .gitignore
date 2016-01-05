@@ -38,3 +38,8 @@ build.AndDeploy.bat
 __setup__.fsx
 lib/FAKE/tools/
 packages/
+.paket/paket.exe
+*.userprefs
+.fake/*
+docs/output/*
+
