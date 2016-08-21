@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx.Text.StructuredFormat</RootNamespace>
     <AssemblyName>FSharpx.Text.StructuredFormat</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.3.0.0</TargetFSharpCoreVersion>
     <Name>FSharpx.Text.StructuredFormat</Name>
     <TargetFrameworkProfile>

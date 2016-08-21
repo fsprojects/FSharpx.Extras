@@ -1,5 +1,5 @@
 build_script:
-  - cmd: build.cmd
+  - cmd: build.cmd CI
 test: off
 version: 0.0.1.{build}
 artifacts:

@@ -17,6 +17,8 @@ type WeatherInfoResponse = {
 type IWeatherInfoService =
     abstract HandleRequest: WeatherInfoRequest -> WeatherInfoResponse
 
+#nowarn "44"
+
 [<Test>]
 let ``It should convert a quoted lambda with 1 parameter to a Linq lambda``() = 
     let weatherInfoRequest = { City = "Hamburg" } : WeatherInfoRequest

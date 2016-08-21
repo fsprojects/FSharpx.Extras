@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx</RootNamespace>
     <AssemblyName>FSharpx.Extras</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.3.0.0</TargetFSharpCoreVersion>
     <Name>FSharpx.Extras</Name>
     <TargetFrameworkProfile>
@@ -55,6 +55,8 @@
   </PropertyGroup>
   <Import Project="$(FSharpTargetsPath)" Condition="Exists('$(FSharpTargetsPath)')" />
   <ItemGroup>
+    <Content Include="paket.references" />
+    <Content Include="app.config" />
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Prelude.fs" />
     <Compile Include="Pluralizer.fs" />
@@ -74,8 +76,6 @@
     <Compile Include="Stm.fs" />
     <Compile Include="Iteratee.fs" />
     <Compile Include="CSharpCompat.fs" />
-    <Content Include="paket.references" />
-    <Content Include="app.config" />
     <Compile Include="Net.fs" />
     <Compile Include="Conneg.fs" />
   </ItemGroup>

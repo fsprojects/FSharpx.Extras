@@ -158,8 +158,10 @@ namespace FSharpx.CSharpTests {
             };
         }
 
+        #pragma warning disable 414
         static Func<Address, FSharpChoice<Address, Errors>> ValidateAddressLines2 = 
             Validator<Address>(x => x.Line1 != null || x.Line2 == null, "Line1 is empty but Line2 is not");
+        #pragma warning restore 414
 
         static FSharpChoice<Address, Errors> ValidateAddress(Address a) {
             return from x in NonNull(a.Postcode, "Post code can't be null")

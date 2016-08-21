@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx.Text.StructuredFormat.Tests</RootNamespace>
     <AssemblyName>FSharpx.Text.StructuredFormat.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.3.0.0</TargetFSharpCoreVersion>
     <Name>FSharpx.Text.StructuredFormat.Tests</Name>
   </PropertyGroup>

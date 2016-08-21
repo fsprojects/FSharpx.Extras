@@ -105,7 +105,7 @@ module Lens =
 
     /// Lens for a particular position in a list
     let forList i =
-        { Get = (flip List.nth) i
+        { Get = List.item i
           Set = fun v -> List.mapi (fun j e -> if j = i then v else e) }
 
     /// Creates a lens that maps the given lens in a list

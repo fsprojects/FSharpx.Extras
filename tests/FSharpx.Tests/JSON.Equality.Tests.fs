@@ -2,8 +2,11 @@
 
 open NUnit.Framework
 open FSharpx.JSON
-open FSharpx.JSON.DocumentExtensions
 open FsUnit
+
+#nowarn "44"
+
+open FSharpx.JSON.DocumentExtensions
 
 [<Test>]
 let ``Can compare empty documents``() = 

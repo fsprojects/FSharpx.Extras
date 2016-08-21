@@ -3,6 +3,9 @@
 open NUnit.Framework
 open FSharpx.JSON
 open FsUnit
+
+#nowarn "44"
+
 open FSharpx.JSON.DocumentExtensions
 
 [<Test>]

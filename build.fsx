@@ -9,6 +9,7 @@ open System.IO
 
 // .NET Frameworks
 let net40 = "v4.0"
+let net45 = "v4.5"
 
 // directories
 let buildDir = "./bin"
@@ -36,7 +37,7 @@ let gitName = "FSharpx.Extras"
 System.Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 let release = parseReleaseNotes (File.ReadAllLines "RELEASE_NOTES.md")
 
-let fxVersions = [net40]
+let fxVersions = [net45]
 
 let normalizeFrameworkVersion fxVersion =
     let v = ("[^\\d]" >=> "") fxVersion
@@ -54,8 +55,12 @@ let nunitPath = packagesDir  @@ "NUnit.Runners/tools"
 
 
 // targets
-Target "Clean" (fun _ ->       
-    CleanDirs [buildDir]
+Target "Clean" (fun _ ->
+    for fxVersion in fxVersions do
+        !! "*.sln"
+        |> MSBuild (buildDirVer fxVersion) "Clean"(["Configuration","Release"] @ buildLibParams fxVersion)
+        |> ignore
+    CleanDirs [buildDir; packagesDir; "docs/output"]
 )
 
 
@@ -88,12 +93,12 @@ Target "Build" (fun _ ->
     for fxVersion in fxVersions do
         // Only generate tests for net40
         !! "*.sln"
-        |> MSBuild (buildDirVer fxVersion) "Rebuild" (["Configuration","Release"] @ buildLibParams fxVersion)
+        |> MSBuild (buildDirVer fxVersion) "Build" (["Configuration","Release"] @ buildLibParams fxVersion)
         |> ignore)
 
 Target "Test" (fun _ ->
     ActivateFinalTarget "CloseTestRunner"
-    for fxVersion in [net40] do
+    for fxVersion in [net45] do
       printfn "buildDirVer fxVersion = %s" (buildDirVer fxVersion)
       !! (buildDirVer fxVersion @@ "*.Tests.dll")
       |> NUnit (fun p ->
@@ -123,7 +128,7 @@ Target "GenerateDocs" (fun _ ->
 // Release Scripts
 
 Target "ReleaseDocs" (fun _ ->
-    let tempDocsDir = "temp/gh-pages"
+    let tempDocsDir = "bin/gh-pages"
     if not (Directory.Exists tempDocsDir) then 
         Repository.cloneSingleBranch "" (gitHome + "/" + gitName + ".git") "gh-pages" tempDocsDir
 
@@ -144,8 +149,7 @@ Target "Release" DoNothing
 Target "CI" DoNothing
 
 // Build order
-"Clean"
-  ==> "AssemblyInfo"
+"AssemblyInfo"
   ==> "Build" 
   ==> "Test" 
 
