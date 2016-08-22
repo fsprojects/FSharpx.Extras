@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Conneg - FSharpx.Extras</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="Steffen Forkmann and others"/>
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
+
+    <link type="text/css" rel="stylesheet" href="/FSharpx.Extras/content/style.css" />
+    <script type="text/javascript" src="/FSharpx.Extras/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="https://github.com/fsprojects/FSharpx.Extras">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="/FSharpx.Extras/index.html">FSharpx.Extras</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Conneg</h1>
+<p>
+  <span>Namespace: FSharpx.Http</span><br />
+</p>
+<div class="xmldoc">
+</div>
+
+<!-- Render nested types and modules, if there are any -->
+
+  <h3>Functions and values</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Function or value</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '526', 526)" onmouseover="showTip(event, '526', 526)">
+            bestCharset x
+          </code>
+          <div class="tip" id="526">
+            <strong>Signature:</strong> x:string list -&gt; string -&gt; (string * float&lt;MeasureOne&gt;) option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Conneg.fs#L257-257" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Intersects accepted and served charsets.
+Returns the preferred viable charset, or None.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '527', 527)" onmouseover="showTip(event, '527', 527)">
+            bestEncoding x
+          </code>
+          <div class="tip" id="527">
+            <strong>Signature:</strong> x:string list -&gt; string -&gt; (string * float&lt;MeasureOne&gt;) option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Conneg.fs#L261-261" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '528', 528)" onmouseover="showTip(event, '528', 528)">
+            bestLanguage x
+          </code>
+          <div class="tip" id="528">
+            <strong>Signature:</strong> x:seq&lt;string&gt; -&gt; string -&gt; (string * float&lt;MeasureOne&gt;) option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Conneg.fs#L215-215" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Intersects accepted and served media.
+Returns the preferred viable language, or None.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '529', 529)" onmouseover="showTip(event, '529', 529)">
+            bestMediaType x
+          </code>
+          <div class="tip" id="529">
+            <strong>Signature:</strong> x:seq&lt;string&gt; -&gt; string -&gt; (string * float&lt;MeasureOne&gt;) option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Conneg.fs#L174-174" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Intersects accepted and served media.
+Returns the preferred viable media, or None.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '530', 530)" onmouseover="showTip(event, '530', 530)">
+            bestOf negotiate serves accepts
+          </code>
+          <div class="tip" id="530">
+            <strong>Signature:</strong> negotiate:(&#39;?11221 -&gt; &#39;?11222 -&gt; &#39;?11223 list) -&gt; serves:&#39;?11221 -&gt; accepts:&#39;?11222 -&gt; &#39;?11223 option<br />
+                          <strong>Type parameters:</strong> '?11221, '?11222, '?11223          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Conneg.fs#L165-165" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Gets the first item from a list of negotiated items</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '531', 531)" onmouseover="showTip(event, '531', 531)">
+            filterMediaTypes mediaType accepts
+          </code>
+          <div class="tip" id="531">
+            <strong>Signature:</strong> mediaType:string -&gt; accepts:string -&gt; (string * float&lt;MeasureOne&gt;) list<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Conneg.fs#L102-102" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Filters an Accept header by type.
+E.g. filterMediaTypes "image" "image/png,text/html" -&gt; ["image/png"]</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '532', 532)" onmouseover="showTip(event, '532', 532)">
+            filterSortAccept 
+          </code>
+          <div class="tip" id="532">
+            <strong>Signature:</strong> seq&lt;string * float&lt;MeasureOne&gt; * float&lt;MeasureOne&gt;&gt; -&gt; (string * float&lt;MeasureOne&gt;) list<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Conneg.fs#L65-65" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Takes a list of items with associated numeric quality (preference), and:
+removes all items with q=0 (i.e. not acceptable by client);
+sorts by q descending (client preference)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '533', 533)" onmouseover="showTip(event, '533', 533)">
+            matchCharset serves accepts
+          </code>
+          <div class="tip" id="533">
+            <strong>Signature:</strong> serves:string -&gt; accepts:string -&gt; string option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Conneg.fs#L222-222" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Matches two charset tags</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '534', 534)" onmouseover="showTip(event, '534', 534)">
+            matchLanguage serves accepts
+          </code>
+          <div class="tip" id="534">
+            <strong>Signature:</strong> serves:string -&gt; accepts:string -&gt; string option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Conneg.fs#L191-191" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Matches two language tags</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '535', 535)" onmouseover="showTip(event, '535', 535)">
+            matchMediaType serves accepts
+          </code>
+          <div class="tip" id="535">
+            <strong>Signature:</strong> serves:string -&gt; accepts:string -&gt; string option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Conneg.fs#L115-115" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Finds a match between two media types, handling wildcards.
+Returns None if no match, otherwise Some media
+Example: matchMediaType "text/*" "text/plain" -&gt; "text/plain"</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '536', 536)" onmouseover="showTip(event, '536', 536)">
+            negotiate matcher serves accepts
+          </code>
+          <div class="tip" id="536">
+            <strong>Signature:</strong> matcher:(&#39;?11217 -&gt; string -&gt; &#39;?11218 option) -&gt; serves:seq&lt;&#39;?11217&gt; -&gt; accepts:string -&gt; (&#39;?11218 * float&lt;MeasureOne&gt;) list<br />
+                          <strong>Type parameters:</strong> '?11217, '?11218          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Conneg.fs#L147-147" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Filters and maps a list of served items and a Accept-* header of acceptable items using a matcher function</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '537', 537)" onmouseover="showTip(event, '537', 537)">
+            negotiateCharset x
+          </code>
+          <div class="tip" id="537">
+            <strong>Signature:</strong> x:string list -&gt; string -&gt; (string * float&lt;MeasureOne&gt;) list<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Conneg.fs#L250-250" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Intersects accepted and served charsets.
+Returns a list of viable charsets, sorted by client preference in descending order</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '538', 538)" onmouseover="showTip(event, '538', 538)">
+            negotiateEncoding x
+          </code>
+          <div class="tip" id="538">
+            <strong>Signature:</strong> x:string list -&gt; string -&gt; (string * float&lt;MeasureOne&gt;) list<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Conneg.fs#L259-259" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '539', 539)" onmouseover="showTip(event, '539', 539)">
+            negotiateLanguage x
+          </code>
+          <div class="tip" id="539">
+            <strong>Signature:</strong> x:seq&lt;string&gt; -&gt; string -&gt; (string * float&lt;MeasureOne&gt;) list<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Conneg.fs#L208-208" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Intersects accepted and served languages.
+Returns a list of viable languages, sorted by client preference in descending order</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '540', 540)" onmouseover="showTip(event, '540', 540)">
+            negotiateList matcher serves accepts
+          </code>
+          <div class="tip" id="540">
+            <strong>Signature:</strong> matcher:(&#39;?11212 -&gt; &#39;?11213 -&gt; (&#39;?11214 * &#39;?11215) option) -&gt; serves:seq&lt;&#39;?11212&gt; -&gt; accepts:seq&lt;&#39;?11213&gt; -&gt; (&#39;?11214 * &#39;?11215) list<br />
+                          <strong>Type parameters:</strong> '?11212, '?11213, '?11214, '?11215          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Conneg.fs#L132-132" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Filters and maps two sequences of items using a matcher function.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '541', 541)" onmouseover="showTip(event, '541', 541)">
+            negotiateMediaType x
+          </code>
+          <div class="tip" id="541">
+            <strong>Signature:</strong> x:seq&lt;string&gt; -&gt; string -&gt; (string * float&lt;MeasureOne&gt;) list<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Conneg.fs#L157-157" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Intersects accepted and served media.
+Returns a list of viable media, sorted by client preference in descending order</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '542', 542)" onmouseover="showTip(event, '542', 542)">
+            parseAccept 
+          </code>
+          <div class="tip" id="542">
+            <strong>Signature:</strong> string -&gt; seq&lt;string * float&lt;MeasureOne&gt; * float&lt;MeasureOne&gt;&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Conneg.fs#L57-57" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Parses any Accept-* header, returns a seq of items with associated q (quality/preference)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '543', 543)" onmouseover="showTip(event, '543', 543)">
+            parseFilterSortAccept 
+          </code>
+          <div class="tip" id="543">
+            <strong>Signature:</strong> string -&gt; (string * float&lt;MeasureOne&gt;) list<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Conneg.fs#L76-76" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Parses any Accept-* header.
+Removes all items with q=0 (i.e. not acceptable by client).
+Sorts by q descending (client preference)</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '544', 544)" onmouseover="showTip(event, '544', 544)">
+            parseMediaTypes 
+          </code>
+          <div class="tip" id="544">
+            <strong>Signature:</strong> string -&gt; (string * (string * string) * float&lt;MeasureOne&gt;) list<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Conneg.fs#L91-91" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Parses an Accept header into a list of media,(media type, media subtype),q
+E.g. "text/html",("text","html"),0.8</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '545', 545)" onmouseover="showTip(event, '545', 545)">
+            parseQ s
+          </code>
+          <div class="tip" id="545">
+            <strong>Signature:</strong> s:string [] -&gt; string * float&lt;MeasureOne&gt; * float&lt;MeasureOne&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Conneg.fs#L35-35" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Parses a single Accept-* header item.
+Returns item with associated q</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '546', 546)" onmouseover="showTip(event, '546', 546)">
+            splitMediaTypeSubtype m
+          </code>
+          <div class="tip" id="546">
+            <strong>Signature:</strong> m:string -&gt; string * string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Conneg.fs#L83-83" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Splits media type and subtype, e.g. "text/html" -&gt; "text","html"</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Active patterns</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Active pattern</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '547', 547)" onmouseover="showTip(event, '547', 547)">
+            ( |AcceptsMedia|_| ) serves accepts
+          </code>
+          <div class="tip" id="547">
+            <strong>Signature:</strong> serves:string -&gt; accepts:string list -&gt; unit option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Conneg.fs#L181-181" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Matches if the media parameter can be handled by the accept list</p>
+
+
+              <p>CompiledName: <code>|AcceptsMedia|_|</code></p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <img src="/FSharpx.Extras/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharpx.Extras</li>
+            <li><a href="/FSharpx.Extras/index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.org/packages/FSharpx.Extras">Get Library via NuGet</a></li>
+            <li><a href="https://github.com/fsprojects/FSharpx.Extras">Source Code on GitHub</a></li>
+            <li><a href="/FSharpx.Extras/license.html">License</a></li>
+            <li><a href="/FSharpx.Extras/release-notes.html">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="/FSharpx.Extras/index.html">Introduction</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="/FSharpx.Extras/reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/fsprojects/FSharpx.Extras"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
+  </body>
+  </html>

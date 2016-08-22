@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>WebProxy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="FSharpx.Extras implements general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible."/>
+    <meta name="author" content="Steffen Forkmann and others"/>
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
+
+    <link type="text/css" rel="stylesheet" href="/FSharpx.Extras/content/style.css" />
+    <script type="text/javascript" src="/FSharpx.Extras/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="https://github.com/fsprojects/FSharpx.Extras">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="/FSharpx.Extras/index.html">FSharpx.Extras</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">  1: </span>
+<span class="l">  2: </span>
+<span class="l">  3: </span>
+<span class="l">  4: </span>
+<span class="l">  5: </span>
+<span class="l">  6: </span>
+<span class="l">  7: </span>
+<span class="l">  8: </span>
+<span class="l">  9: </span>
+<span class="l"> 10: </span>
+<span class="l"> 11: </span>
+<span class="l"> 12: </span>
+<span class="l"> 13: </span>
+<span class="l"> 14: </span>
+<span class="l"> 15: </span>
+<span class="l"> 16: </span>
+<span class="l"> 17: </span>
+<span class="l"> 18: </span>
+<span class="l"> 19: </span>
+<span class="l"> 20: </span>
+<span class="l"> 21: </span>
+<span class="l"> 22: </span>
+<span class="l"> 23: </span>
+<span class="l"> 24: </span>
+<span class="l"> 25: </span>
+<span class="l"> 26: </span>
+<span class="l"> 27: </span>
+<span class="l"> 28: </span>
+<span class="l"> 29: </span>
+<span class="l"> 30: </span>
+<span class="l"> 31: </span>
+<span class="l"> 32: </span>
+<span class="l"> 33: </span>
+<span class="l"> 34: </span>
+<span class="l"> 35: </span>
+<span class="l"> 36: </span>
+<span class="l"> 37: </span>
+<span class="l"> 38: </span>
+<span class="l"> 39: </span>
+<span class="l"> 40: </span>
+<span class="l"> 41: </span>
+<span class="l"> 42: </span>
+<span class="l"> 43: </span>
+<span class="l"> 44: </span>
+<span class="l"> 45: </span>
+<span class="l"> 46: </span>
+<span class="l"> 47: </span>
+<span class="l"> 48: </span>
+<span class="l"> 49: </span>
+<span class="l"> 50: </span>
+<span class="l"> 51: </span>
+<span class="l"> 52: </span>
+<span class="l"> 53: </span>
+<span class="l"> 54: </span>
+<span class="l"> 55: </span>
+<span class="l"> 56: </span>
+<span class="l"> 57: </span>
+<span class="l"> 58: </span>
+<span class="l"> 59: </span>
+<span class="l"> 60: </span>
+<span class="l"> 61: </span>
+<span class="l"> 62: </span>
+<span class="l"> 63: </span>
+<span class="l"> 64: </span>
+<span class="l"> 65: </span>
+<span class="l"> 66: </span>
+<span class="l"> 67: </span>
+<span class="l"> 68: </span>
+<span class="l"> 69: </span>
+<span class="l"> 70: </span>
+<span class="l"> 71: </span>
+<span class="l"> 72: </span>
+<span class="l"> 73: </span>
+<span class="l"> 74: </span>
+<span class="l"> 75: </span>
+<span class="l"> 76: </span>
+<span class="l"> 77: </span>
+<span class="l"> 78: </span>
+<span class="l"> 79: </span>
+<span class="l"> 80: </span>
+<span class="l"> 81: </span>
+<span class="l"> 82: </span>
+<span class="l"> 83: </span>
+<span class="l"> 84: </span>
+<span class="l"> 85: </span>
+<span class="l"> 86: </span>
+<span class="l"> 87: </span>
+<span class="l"> 88: </span>
+<span class="l"> 89: </span>
+<span class="l"> 90: </span>
+<span class="l"> 91: </span>
+<span class="l"> 92: </span>
+<span class="l"> 93: </span>
+<span class="l"> 94: </span>
+<span class="l"> 95: </span>
+<span class="l"> 96: </span>
+<span class="l"> 97: </span>
+<span class="l"> 98: </span>
+<span class="l"> 99: </span>
+<span class="l">100: </span>
+<span class="l">101: </span>
+<span class="l">102: </span>
+<span class="l">103: </span>
+<span class="l">104: </span>
+<span class="l">105: </span>
+<span class="l">106: </span>
+<span class="l">107: </span>
+<span class="l">108: </span>
+<span class="l">109: </span>
+<span class="l">110: </span>
+<span class="l">111: </span>
+<span class="l">112: </span>
+<span class="l">113: </span>
+<span class="l">114: </span>
+<span class="l">115: </span>
+<span class="l">116: </span>
+<span class="l">117: </span>
+<span class="l">118: </span>
+<span class="l">119: </span>
+<span class="l">120: </span>
+<span class="l">121: </span>
+<span class="l">122: </span>
+<span class="l">123: </span>
+<span class="l">124: </span>
+<span class="l">125: </span>
+<span class="l">126: </span>
+<span class="l">127: </span>
+<span class="l">128: </span>
+<span class="l">129: </span>
+<span class="l">130: </span>
+<span class="l">131: </span>
+<span class="l">132: </span>
+<span class="l">133: </span>
+<span class="l">134: </span>
+<span class="l">135: </span>
+<span class="l">136: </span>
+<span class="l">137: </span>
+<span class="l">138: </span>
+<span class="l">139: </span>
+<span class="l">140: </span>
+<span class="l">141: </span>
+<span class="l">142: </span>
+<span class="l">143: </span>
+<span class="l">144: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="c">// ----------------------------------------------------------------------------</span>
+<span class="c">// F# async extensions (AutoCancel.fsx)</span>
+<span class="c">// (c) Tomas Petricek, 2011, Available under Apache 2.0 license.</span>
+<span class="c">// ----------------------------------------------------------------------------</span>
+
+<span class="c">// This example demonstrates how to implement simple HTTP proxy</span>
+
+<span class="prep">#r</span> <span class="s">@&quot;../../bin/v4.0/FSharpx.Extras.dll&quot;</span>
+<span class="prep">#r</span> <span class="s">@&quot;..\..\bin\v4.0\FSharpx.Http.dll&quot;</span>
+<span class="k">open</span> <span class="i">FSharpx</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="i">Control</span>
+<span class="k">open</span> <span class="i">FSharpx</span><span class="o">.</span><span class="i">IO</span>
+<span class="k">open</span> <span class="i">FSharpx</span><span class="o">.</span><span class="i">Net</span>
+
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs2', 2)" onmouseover="showTip(event, 'fs2', 2)" class="i">System</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs2', 3)" onmouseover="showTip(event, 'fs2', 3)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs3', 4)" onmouseover="showTip(event, 'fs3', 4)" class="i">Net</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs2', 5)" onmouseover="showTip(event, 'fs2', 5)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs4', 6)" onmouseover="showTip(event, 'fs4', 6)" class="i">Threading</span>
+
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs5', 7)" onmouseover="showTip(event, 'fs5', 7)" class="i">root</span> <span class="o">=</span> <span class="s">&quot;http://msdn.microsoft.com&quot;</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs6', 8)" onmouseover="showTip(event, 'fs6', 8)" class="i">proxy</span> <span class="o">=</span> <span class="s">&quot;http://localhost:8082/&quot;</span>
+
+<span class="c">// ----------------------------------------------------------------------------</span>
+<span class="c">// Simple web proxy implemented using &#39;HttpListener&#39;. This version downloads</span>
+<span class="c">// the entire web page as a string and then writes it to the response stream.</span>
+
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs7', 9)" onmouseover="showTip(event, 'fs7', 9)" class="i">cts1</span> <span class="o">=</span> <span class="k">new</span> <span onmouseout="hideTip(event, 'fs8', 10)" onmouseover="showTip(event, 'fs8', 10)" class="t">CancellationTokenSource</span>()
+<span onmouseout="hideTip(event, 'fs9', 11)" onmouseover="showTip(event, 'fs9', 11)" class="t">HttpListener</span><span class="o">.</span><span class="i">Start</span>(<span onmouseout="hideTip(event, 'fs6', 12)" onmouseover="showTip(event, 'fs6', 12)" class="i">proxy</span>, (<span class="k">fun</span> (<span class="i">req</span>, <span class="i">resp</span>) <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs10', 13)" onmouseover="showTip(event, 'fs10', 13)" class="i">async</span> {
+    <span class="c">// Download the web page</span>
+    <span class="k">let</span> <span class="i">url</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs5', 14)" onmouseover="showTip(event, 'fs5', 14)" class="i">root</span> <span class="o">+</span> <span class="i">req</span><span class="o">.</span><span class="i">Url</span><span class="o">.</span><span class="i">PathAndQuery</span>
+    <span class="k">let</span> <span class="i">wc</span> <span class="o">=</span> <span class="k">new</span> <span onmouseout="hideTip(event, 'fs11', 15)" onmouseover="showTip(event, 'fs11', 15)" class="i">WebClient</span>()
+    <span class="k">let!</span> <span class="i">html</span> <span class="o">=</span> <span class="i">wc</span><span class="o">.</span><span class="i">AsyncDownloadString</span>(<span onmouseout="hideTip(event, 'fs12', 16)" onmouseover="showTip(event, 'fs12', 16)" class="i">Uri</span>(<span class="i">url</span>))
+
+    <span class="c">// Replace URLs and send to the response stream</span>
+    <span class="k">let</span> <span class="i">html</span> <span class="o">=</span> <span class="i">html</span><span class="o">.</span><span class="i">Replace</span>(<span onmouseout="hideTip(event, 'fs5', 17)" onmouseover="showTip(event, 'fs5', 17)" class="i">root</span>, <span onmouseout="hideTip(event, 'fs6', 18)" onmouseover="showTip(event, 'fs6', 18)" class="i">proxy</span>)
+    <span class="k">do!</span> <span class="i">resp</span><span class="o">.</span><span class="i">AsyncReply</span>(<span class="i">html</span>) }), <span class="i">cancellationToken</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs7', 19)" onmouseover="showTip(event, 'fs7', 19)" class="i">cts1</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs13', 20)" onmouseover="showTip(event, 'fs13', 20)" class="i">Token</span>)
+
+<span class="c">// Now go to: http://localhost:8082/en-us/fsharp</span>
+<span onmouseout="hideTip(event, 'fs7', 21)" onmouseover="showTip(event, 'fs7', 21)" class="i">cts1</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs14', 22)" onmouseover="showTip(event, 'fs14', 22)" class="f">Cancel</span>()
+
+<span class="c">// ----------------------------------------------------------------------------</span>
+<span class="c">// Better version of a proxy - this time, we read data from the input stream</span>
+<span class="c">// in chunks and write them to the response stream as they arive.</span>
+
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs15', 23)" onmouseover="showTip(event, 'fs15', 23)" class="i">cts2</span> <span class="o">=</span> <span class="k">new</span> <span onmouseout="hideTip(event, 'fs8', 24)" onmouseover="showTip(event, 'fs8', 24)" class="t">CancellationTokenSource</span>()
+<span onmouseout="hideTip(event, 'fs9', 25)" onmouseover="showTip(event, 'fs9', 25)" class="t">HttpListener</span><span class="o">.</span><span class="i">Start</span>(<span onmouseout="hideTip(event, 'fs6', 26)" onmouseover="showTip(event, 'fs6', 26)" class="i">proxy</span>, (<span class="k">fun</span> (<span class="i">req</span>, <span class="i">resp</span>) <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs10', 27)" onmouseover="showTip(event, 'fs10', 27)" class="i">async</span> {
+    <span class="c">// Initialize the download</span>
+    <span class="k">let</span> <span class="i">url</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs5', 28)" onmouseover="showTip(event, 'fs5', 28)" class="i">root</span> <span class="o">+</span> <span class="i">req</span><span class="o">.</span><span class="i">Url</span><span class="o">.</span><span class="i">PathAndQuery</span>
+    <span class="k">let</span> <span class="i">targetReq</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs16', 29)" onmouseover="showTip(event, 'fs16', 29)" class="i">HttpWebRequest</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs17', 30)" onmouseover="showTip(event, 'fs17', 30)" class="i">Create</span>(<span class="i">url</span>)
+    <span class="k">use!</span> <span class="i">targetResp</span> <span class="o">=</span> <span class="i">targetReq</span><span class="o">.</span><span class="i">AsyncGetResponse</span>()
+    <span class="k">use</span> <span class="i">stream</span> <span class="o">=</span> <span class="i">targetResp</span><span class="o">.</span><span class="i">GetResponseStream</span>()
+  
+    <span class="c">// Copy data until we read the entire input</span>
+    <span class="k">let</span> <span class="i">count</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs18', 31)" onmouseover="showTip(event, 'fs18', 31)" class="i">ref</span> <span class="n">1</span>
+    <span class="k">let</span> <span class="i">buffer</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs19', 32)" onmouseover="showTip(event, 'fs19', 32)" class="i">Array</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs20', 33)" onmouseover="showTip(event, 'fs20', 33)" class="i">zeroCreate</span> <span class="n">4096</span>
+    <span class="k">while</span> <span class="o">!</span><span class="i">count</span> <span class="o">&gt;</span> <span class="n">0</span> <span class="k">do</span>
+      <span class="k">let!</span> <span class="i">read</span> <span class="o">=</span> <span class="i">stream</span><span class="o">.</span><span class="i">AsyncRead</span>(<span class="i">buffer</span>, <span class="n">0</span>, <span class="i">buffer</span><span class="o">.</span><span class="i">Length</span>)
+      <span class="k">do!</span> <span class="i">resp</span><span class="o">.</span><span class="i">OutputStream</span><span class="o">.</span><span class="i">AsyncWrite</span>(<span class="i">buffer</span>, <span class="n">0</span>, <span class="i">read</span>)    
+      <span class="i">count</span> <span class="o">:=</span> <span class="i">read</span>
+    <span class="i">resp</span><span class="o">.</span><span class="i">Close</span>() }), <span class="i">cancellationToken</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs15', 34)" onmouseover="showTip(event, 'fs15', 34)" class="i">cts2</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs13', 35)" onmouseover="showTip(event, 'fs13', 35)" class="i">Token</span>)
+
+<span onmouseout="hideTip(event, 'fs15', 36)" onmouseover="showTip(event, 'fs15', 36)" class="i">cts2</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs14', 37)" onmouseover="showTip(event, 'fs14', 37)" class="f">Cancel</span>()
+
+<span class="c">// ----------------------------------------------------------------------------</span>
+<span class="c">// Proxy that copies data in chunks can be easily implemented using </span>
+<span class="c">// asynchronous sequences. We read all data as asynchronous sequence and</span>
+<span class="c">// write them to the output (Even simpler version could use &#39;AsyncWriteSeq&#39;</span>
+<span class="c">// to write all input buffers to the output stream).</span>
+
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs21', 38)" onmouseover="showTip(event, 'fs21', 38)" class="i">cts3</span> <span class="o">=</span> <span class="k">new</span> <span onmouseout="hideTip(event, 'fs8', 39)" onmouseover="showTip(event, 'fs8', 39)" class="t">CancellationTokenSource</span>()
+<span onmouseout="hideTip(event, 'fs9', 40)" onmouseover="showTip(event, 'fs9', 40)" class="t">HttpListener</span><span class="o">.</span><span class="i">Start</span>(<span onmouseout="hideTip(event, 'fs6', 41)" onmouseover="showTip(event, 'fs6', 41)" class="i">proxy</span>, (<span class="k">fun</span> (<span class="i">req</span>, <span class="i">resp</span>) <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs10', 42)" onmouseover="showTip(event, 'fs10', 42)" class="i">async</span> {
+    <span class="c">// Initialize the download</span>
+    <span class="k">let</span> <span class="i">url</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs5', 43)" onmouseover="showTip(event, 'fs5', 43)" class="i">root</span> <span class="o">+</span> <span class="i">req</span><span class="o">.</span><span class="i">Url</span><span class="o">.</span><span class="i">PathAndQuery</span>
+    <span class="k">let</span> <span class="i">targetReq</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs16', 44)" onmouseover="showTip(event, 'fs16', 44)" class="i">HttpWebRequest</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs17', 45)" onmouseover="showTip(event, 'fs17', 45)" class="i">Create</span>(<span class="i">url</span>)
+    <span class="k">use!</span> <span class="i">targetResp</span> <span class="o">=</span> <span class="i">targetReq</span><span class="o">.</span><span class="i">AsyncGetResponse</span>()
+    <span class="k">use</span> <span class="i">stream</span> <span class="o">=</span> <span class="i">targetResp</span><span class="o">.</span><span class="i">GetResponseStream</span>()
+  
+    <span class="c">// Iterate over chunks read as an asynchronous sequence</span>
+    <span class="c">// and write them to the output stream</span>
+    <span class="k">for</span> <span class="i">buffer</span> <span class="k">in</span> <span class="i">stream</span><span class="o">.</span><span class="i">AsyncReadSeq</span>(<span class="n">4096</span>) <span class="k">do</span>
+      <span class="k">do!</span> <span class="i">resp</span><span class="o">.</span><span class="i">OutputStream</span><span class="o">.</span><span class="i">AsyncWrite</span>(<span class="i">buffer</span>, <span class="n">0</span>, <span class="i">buffer</span><span class="o">.</span><span class="i">Length</span>)
+    <span class="i">resp</span><span class="o">.</span><span class="i">Close</span>() }), <span class="i">cancellationToken</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs21', 46)" onmouseover="showTip(event, 'fs21', 46)" class="i">cts3</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs13', 47)" onmouseover="showTip(event, 'fs13', 47)" class="i">Token</span>)
+
+<span onmouseout="hideTip(event, 'fs21', 48)" onmouseover="showTip(event, 'fs21', 48)" class="i">cts3</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs14', 49)" onmouseover="showTip(event, 'fs14', 49)" class="f">Cancel</span>()
+
+<span class="c">// ----------------------------------------------------------------------------</span>
+<span class="c">// A more sophisticated version of proxy that caches web </span>
+<span class="c">// pages using a simple agent.</span>
+
+<span class="k">type</span> <span onmouseout="hideTip(event, 'fs22', 50)" onmouseover="showTip(event, 'fs22', 50)" class="t">CacheMessage</span> <span class="o">=</span>
+  | <span onmouseout="hideTip(event, 'fs23', 51)" onmouseover="showTip(event, 'fs23', 51)" class="p">TryGet</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs24', 52)" onmouseover="showTip(event, 'fs24', 52)" class="t">string</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs25', 53)" onmouseover="showTip(event, 'fs25', 53)" class="t">AsyncReplyChannel</span><span class="o">&lt;</span><span onmouseout="hideTip(event, 'fs26', 54)" onmouseover="showTip(event, 'fs26', 54)" class="t">option</span><span class="o">&lt;</span><span onmouseout="hideTip(event, 'fs27', 55)" onmouseover="showTip(event, 'fs27', 55)" class="t">byte</span>[]<span class="o">&gt;</span><span class="o">&gt;</span>
+  | <span onmouseout="hideTip(event, 'fs28', 56)" onmouseover="showTip(event, 'fs28', 56)" class="p">Add</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs24', 57)" onmouseover="showTip(event, 'fs24', 57)" class="t">string</span> <span class="o">*</span> <span onmouseout="hideTip(event, 'fs27', 58)" onmouseover="showTip(event, 'fs27', 58)" class="t">byte</span>[]
+
+<span class="c">// Creates an agent that handles &#39;CacheMessage&#39; and implements the cache</span>
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs29', 59)" onmouseover="showTip(event, 'fs29', 59)" class="i">cache</span> <span class="o">=</span> <span class="i">Agent</span><span class="o">.</span><span class="i">Start</span>(<span class="k">fun</span> <span class="i">agent</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs10', 60)" onmouseover="showTip(event, 'fs10', 60)" class="i">async</span> {
+  <span class="k">let</span> <span class="i">pages</span> <span class="o">=</span> <span class="k">new</span> <span onmouseout="hideTip(event, 'fs2', 61)" onmouseover="showTip(event, 'fs2', 61)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs30', 62)" onmouseover="showTip(event, 'fs30', 62)" class="i">Collections</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs31', 63)" onmouseover="showTip(event, 'fs31', 63)" class="i">Generic</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs32', 64)" onmouseover="showTip(event, 'fs32', 64)" class="i">Dictionary</span><span class="o">&lt;</span>_, _<span class="o">&gt;</span>()
+  <span class="k">while</span> <span class="k">true</span> <span class="k">do</span>
+    <span class="k">let!</span> <span class="i">msg</span> <span class="o">=</span> <span class="i">agent</span><span class="o">.</span><span class="i">Receive</span>()
+    <span class="k">match</span> <span class="i">msg</span> <span class="k">with</span> 
+    | <span onmouseout="hideTip(event, 'fs23', 65)" onmouseover="showTip(event, 'fs23', 65)" class="i">TryGet</span>(<span class="i">url</span>, <span class="i">repl</span>) <span class="k">-&gt;</span>
+        <span class="c">// Try to get a value from the dictionary</span>
+        <span class="k">match</span> <span class="i">pages</span><span class="o">.</span><span class="i">TryGetValue</span>(<span class="i">url</span>) <span class="k">with</span>
+        | <span class="k">true</span>, <span class="i">data</span> <span class="k">-&gt;</span> <span class="i">repl</span><span class="o">.</span><span class="i">Reply</span>(<span onmouseout="hideTip(event, 'fs33', 66)" onmouseover="showTip(event, 'fs33', 66)" class="i">Some</span>(<span class="i">data</span>))
+        | _ <span class="k">-&gt;</span> <span class="i">repl</span><span class="o">.</span><span class="i">Reply</span>(<span onmouseout="hideTip(event, 'fs34', 67)" onmouseover="showTip(event, 'fs34', 67)" class="i">None</span>)
+    | <span onmouseout="hideTip(event, 'fs28', 68)" onmouseover="showTip(event, 'fs28', 68)" class="i">Add</span>(<span class="i">url</span>, <span class="i">data</span>) <span class="k">-&gt;</span>
+        <span class="c">// Add byte array to the cache</span>
+        <span class="i">pages</span><span class="o">.</span>[<span class="i">url</span>] <span class="o">&lt;-</span> <span class="i">data</span> })
+
+
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs35', 69)" onmouseover="showTip(event, 'fs35', 69)" class="i">cts4</span> <span class="o">=</span> <span class="k">new</span> <span onmouseout="hideTip(event, 'fs8', 70)" onmouseover="showTip(event, 'fs8', 70)" class="t">CancellationTokenSource</span>()
+<span onmouseout="hideTip(event, 'fs9', 71)" onmouseover="showTip(event, 'fs9', 71)" class="t">HttpListener</span><span class="o">.</span><span class="i">Start</span>(<span onmouseout="hideTip(event, 'fs6', 72)" onmouseover="showTip(event, 'fs6', 72)" class="i">proxy</span>, (<span class="k">fun</span> (<span class="i">req</span>, <span class="i">resp</span>) <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs10', 73)" onmouseover="showTip(event, 'fs10', 73)" class="i">async</span> {
+    <span class="c">// Generate URL and check data from the cache</span>
+    <span class="k">let</span> <span class="i">url</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs5', 74)" onmouseover="showTip(event, 'fs5', 74)" class="i">root</span> <span class="o">+</span> <span class="i">req</span><span class="o">.</span><span class="i">Url</span><span class="o">.</span><span class="i">PathAndQuery</span>
+    <span class="k">let!</span> <span class="i">cached</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs29', 75)" onmouseover="showTip(event, 'fs29', 75)" class="i">cache</span><span class="o">.</span><span class="i">PostAndAsyncReply</span>(<span class="k">fun</span> <span class="i">repl</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs23', 76)" onmouseover="showTip(event, 'fs23', 76)" class="i">TryGet</span>(<span class="i">url</span>, <span class="i">repl</span>))
+    <span class="k">match</span> <span class="i">cached</span> <span class="k">with</span> 
+    | <span onmouseout="hideTip(event, 'fs33', 77)" onmouseover="showTip(event, 'fs33', 77)" class="i">Some</span> <span class="i">data</span> <span class="k">-&gt;</span>
+        <span class="c">// Reply using data from the cache</span>
+        <span class="k">do!</span> <span class="i">resp</span><span class="o">.</span><span class="i">OutputStream</span><span class="o">.</span><span class="i">AsyncWrite</span>(<span class="i">data</span>)
+        <span class="i">resp</span><span class="o">.</span><span class="i">Close</span>() 
+    | <span onmouseout="hideTip(event, 'fs34', 78)" onmouseover="showTip(event, 'fs34', 78)" class="i">None</span> <span class="k">-&gt;</span>
+        <span class="c">// Initialize the download</span>
+        <span class="k">let</span> <span class="i">targetReq</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs16', 79)" onmouseover="showTip(event, 'fs16', 79)" class="i">HttpWebRequest</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs17', 80)" onmouseover="showTip(event, 'fs17', 80)" class="i">Create</span>(<span class="i">url</span>)
+        <span class="k">use!</span> <span class="i">targetResp</span> <span class="o">=</span> <span class="i">targetReq</span><span class="o">.</span><span class="i">AsyncGetResponse</span>()
+        <span class="k">use</span> <span class="i">stream</span> <span class="o">=</span> <span class="i">targetResp</span><span class="o">.</span><span class="i">GetResponseStream</span>()
+  
+        <span class="c">// Create a cached asynchronous sequence </span>
+        <span class="c">// (that reads the stream only once)</span>
+        <span class="k">let</span> <span class="i">cachedData</span> <span class="o">=</span> <span class="i">stream</span><span class="o">.</span><span class="i">AsyncReadSeq</span>(<span class="n">4096</span>) <span class="o">|&gt;</span> <span class="i">AsyncSeq</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs29', 81)" onmouseover="showTip(event, 'fs29', 81)" class="i">cache</span>
+
+        <span class="c">// Start workflow that reads all data in memory (for caching)</span>
+        <span class="k">let!</span> <span class="i">allBytes</span> <span class="o">=</span> 
+          <span class="i">cachedData</span> 
+          <span class="o">|&gt;</span> <span class="i">AsyncSeq</span><span class="o">.</span><span class="i">fold</span> (<span class="k">fun</span> <span class="i">st</span> <span class="i">data</span> <span class="k">-&gt;</span> <span class="i">data</span><span class="o">::</span><span class="i">st</span>) []
+          <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs36', 82)" onmouseover="showTip(event, 'fs36', 82)" class="i">Async</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs37', 83)" onmouseover="showTip(event, 'fs37', 83)" class="i">StartChild</span>
+        <span class="c">// Write all data from the async sequence to the output</span>
+        <span class="k">for</span> <span class="i">buffer</span> <span class="k">in</span> <span class="i">cachedData</span> <span class="k">do</span>
+          <span class="k">do!</span> <span class="i">resp</span><span class="o">.</span><span class="i">OutputStream</span><span class="o">.</span><span class="i">AsyncWrite</span>(<span class="i">buffer</span>, <span class="n">0</span>, <span class="i">buffer</span><span class="o">.</span><span class="i">Length</span>)
+        <span class="i">resp</span><span class="o">.</span><span class="i">Close</span>() 
+
+        <span class="c">// Get all data accumulated in background and save</span>
+        <span class="c">// them to the cache (for later use)</span>
+        <span class="k">let!</span> <span class="i">allData</span> <span class="o">=</span> <span class="i">allBytes</span>
+        <span class="k">let</span> <span class="i">data</span> <span class="o">=</span> <span class="i">allData</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs38', 84)" onmouseover="showTip(event, 'fs38', 84)" class="i">List</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs39', 85)" onmouseover="showTip(event, 'fs39', 85)" class="i">rev</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs19', 86)" onmouseover="showTip(event, 'fs19', 86)" class="i">Array</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs40', 87)" onmouseover="showTip(event, 'fs40', 87)" class="i">concat</span> 
+        <span onmouseout="hideTip(event, 'fs29', 88)" onmouseover="showTip(event, 'fs29', 88)" class="i">cache</span><span class="o">.</span><span class="i">Post</span>(<span onmouseout="hideTip(event, 'fs28', 89)" onmouseover="showTip(event, 'fs28', 89)" class="i">Add</span>(<span class="i">url</span>, <span class="i">data</span>)) }), <span onmouseout="hideTip(event, 'fs35', 90)" onmouseover="showTip(event, 'fs35', 90)" class="i">cts4</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs13', 91)" onmouseover="showTip(event, 'fs13', 91)" class="i">Token</span>)
+
+<span onmouseout="hideTip(event, 'fs35', 92)" onmouseover="showTip(event, 'fs35', 92)" class="i">cts4</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs14', 93)" onmouseover="showTip(event, 'fs14', 93)" class="f">Cancel</span>()
+</code></pre></td>
+</tr>
+</table>
+
+<div class="tip" id="fs1">namespace Microsoft.FSharp.Control</div>
+<div class="tip" id="fs2">namespace System</div>
+<div class="tip" id="fs3">namespace System.Net</div>
+<div class="tip" id="fs4">namespace System.Threading</div>
+<div class="tip" id="fs5">val root : string<br /><br />Full name: WebProxy.root</div>
+<div class="tip" id="fs6">val proxy : string<br /><br />Full name: WebProxy.proxy</div>
+<div class="tip" id="fs7">val cts1 : CancellationTokenSource<br /><br />Full name: WebProxy.cts1</div>
+<div class="tip" id="fs8">Multiple items<br />type CancellationTokenSource =<br />&#160;&#160;new : unit -&gt; CancellationTokenSource<br />&#160;&#160;member Cancel : unit -&gt; unit + 1 overload<br />&#160;&#160;member Dispose : unit -&gt; unit<br />&#160;&#160;member IsCancellationRequested : bool<br />&#160;&#160;member Token : CancellationToken<br />&#160;&#160;static member CreateLinkedTokenSource : [&lt;ParamArray&gt;] tokens:CancellationToken[] -&gt; CancellationTokenSource + 1 overload<br /><br />Full name: System.Threading.CancellationTokenSource<br /><br />--------------------<br />CancellationTokenSource() : unit</div>
+<div class="tip" id="fs9">Multiple items<br />type HttpListener =<br />&#160;&#160;new : unit -&gt; HttpListener<br />&#160;&#160;member Abort : unit -&gt; unit<br />&#160;&#160;member AuthenticationSchemeSelectorDelegate : AuthenticationSchemeSelector with get, set<br />&#160;&#160;member AuthenticationSchemes : AuthenticationSchemes with get, set<br />&#160;&#160;member BeginGetContext : callback:AsyncCallback * state:obj -&gt; IAsyncResult<br />&#160;&#160;member Close : unit -&gt; unit<br />&#160;&#160;member DefaultServiceNames : ServiceNameCollection<br />&#160;&#160;member EndGetContext : asyncResult:IAsyncResult -&gt; HttpListenerContext<br />&#160;&#160;member ExtendedProtectionPolicy : ExtendedProtectionPolicy with get, set<br />&#160;&#160;member ExtendedProtectionSelectorDelegate : ExtendedProtectionSelector with get, set<br />&#160;&#160;...<br />&#160;&#160;nested type ExtendedProtectionSelector<br /><br />Full name: System.Net.HttpListener<br /><br />--------------------<br />HttpListener() : unit</div>
+<div class="tip" id="fs10">val async : AsyncBuilder<br /><br />Full name: Microsoft.FSharp.Core.ExtraTopLevelOperators.async</div>
+<div class="tip" id="fs11">Multiple items<br />type WebClient =<br />&#160;&#160;inherit Component<br />&#160;&#160;new : unit -&gt; WebClient<br />&#160;&#160;member BaseAddress : string with get, set<br />&#160;&#160;member CachePolicy : RequestCachePolicy with get, set<br />&#160;&#160;member CancelAsync : unit -&gt; unit<br />&#160;&#160;member Credentials : ICredentials with get, set<br />&#160;&#160;member DownloadData : address:string -&gt; byte[] + 1 overload<br />&#160;&#160;member DownloadDataAsync : address:Uri -&gt; unit + 1 overload<br />&#160;&#160;member DownloadFile : address:string * fileName:string -&gt; unit + 1 overload<br />&#160;&#160;member DownloadFileAsync : address:Uri * fileName:string -&gt; unit + 1 overload<br />&#160;&#160;member DownloadString : address:string -&gt; string + 1 overload<br />&#160;&#160;...<br /><br />Full name: System.Net.WebClient<br /><br />--------------------<br />WebClient() : unit</div>
+<div class="tip" id="fs12">Multiple items<br />type Uri =<br />&#160;&#160;new : uriString:string -&gt; Uri + 5 overloads<br />&#160;&#160;member AbsolutePath : string<br />&#160;&#160;member AbsoluteUri : string<br />&#160;&#160;member Authority : string<br />&#160;&#160;member DnsSafeHost : string<br />&#160;&#160;member Equals : comparand:obj -&gt; bool<br />&#160;&#160;member Fragment : string<br />&#160;&#160;member GetComponents : components:UriComponents * format:UriFormat -&gt; string<br />&#160;&#160;member GetHashCode : unit -&gt; int<br />&#160;&#160;member GetLeftPart : part:UriPartial -&gt; string<br />&#160;&#160;...<br /><br />Full name: System.Uri<br /><br />--------------------<br />Uri(uriString: string) : unit<br />Uri(uriString: string, uriKind: UriKind) : unit<br />Uri(baseUri: Uri, relativeUri: string) : unit<br />Uri(baseUri: Uri, relativeUri: Uri) : unit</div>
+<div class="tip" id="fs13">property CancellationTokenSource.Token: CancellationToken</div>
+<div class="tip" id="fs14">CancellationTokenSource.Cancel() : unit<br />CancellationTokenSource.Cancel(throwOnFirstException: bool) : unit</div>
+<div class="tip" id="fs15">val cts2 : CancellationTokenSource<br /><br />Full name: WebProxy.cts2</div>
+<div class="tip" id="fs16">type HttpWebRequest =<br />&#160;&#160;inherit WebRequest<br />&#160;&#160;member Abort : unit -&gt; unit<br />&#160;&#160;member Accept : string with get, set<br />&#160;&#160;member AddRange : range:int -&gt; unit + 7 overloads<br />&#160;&#160;member Address : Uri<br />&#160;&#160;member AllowAutoRedirect : bool with get, set<br />&#160;&#160;member AllowWriteStreamBuffering : bool with get, set<br />&#160;&#160;member AutomaticDecompression : DecompressionMethods with get, set<br />&#160;&#160;member BeginGetRequestStream : callback:AsyncCallback * state:obj -&gt; IAsyncResult<br />&#160;&#160;member BeginGetResponse : callback:AsyncCallback * state:obj -&gt; IAsyncResult<br />&#160;&#160;member ClientCertificates : X509CertificateCollection with get, set<br />&#160;&#160;...<br /><br />Full name: System.Net.HttpWebRequest</div>
+<div class="tip" id="fs17">WebRequest.Create(requestUri: Uri) : WebRequest<br />WebRequest.Create(requestUriString: string) : WebRequest</div>
+<div class="tip" id="fs18">Multiple items<br />val ref : value:&#39;T -&gt; &#39;T ref<br /><br />Full name: Microsoft.FSharp.Core.Operators.ref<br /><br />--------------------<br />type &#39;T ref = Ref&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Core.ref&lt;_&gt;</div>
+<div class="tip" id="fs19">type Array =<br />&#160;&#160;member Clone : unit -&gt; obj<br />&#160;&#160;member CopyTo : array:Array * index:int -&gt; unit + 1 overload<br />&#160;&#160;member GetEnumerator : unit -&gt; IEnumerator<br />&#160;&#160;member GetLength : dimension:int -&gt; int<br />&#160;&#160;member GetLongLength : dimension:int -&gt; int64<br />&#160;&#160;member GetLowerBound : dimension:int -&gt; int<br />&#160;&#160;member GetUpperBound : dimension:int -&gt; int<br />&#160;&#160;member GetValue : [&lt;ParamArray&gt;] indices:int[] -&gt; obj + 7 overloads<br />&#160;&#160;member Initialize : unit -&gt; unit<br />&#160;&#160;member IsFixedSize : bool<br />&#160;&#160;...<br /><br />Full name: System.Array</div>
+<div class="tip" id="fs20">val zeroCreate : count:int -&gt; &#39;T []<br /><br />Full name: Microsoft.FSharp.Collections.Array.zeroCreate</div>
+<div class="tip" id="fs21">val cts3 : CancellationTokenSource<br /><br />Full name: WebProxy.cts3</div>
+<div class="tip" id="fs22">type CacheMessage =<br />&#160;&#160;| TryGet of string * AsyncReplyChannel&lt;byte [] option&gt;<br />&#160;&#160;| Add of string * byte []<br /><br />Full name: WebProxy.CacheMessage</div>
+<div class="tip" id="fs23">union case CacheMessage.TryGet: string * AsyncReplyChannel&lt;byte [] option&gt; -&gt; CacheMessage</div>
+<div class="tip" id="fs24">Multiple items<br />val string : value:&#39;T -&gt; string<br /><br />Full name: Microsoft.FSharp.Core.Operators.string<br /><br />--------------------<br />type string = String<br /><br />Full name: Microsoft.FSharp.Core.string</div>
+<div class="tip" id="fs25">type AsyncReplyChannel&lt;&#39;Reply&gt;<br />member Reply : value:&#39;Reply -&gt; unit<br /><br />Full name: Microsoft.FSharp.Control.AsyncReplyChannel&lt;_&gt;</div>
+<div class="tip" id="fs26">type &#39;T option = Option&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Core.option&lt;_&gt;</div>
+<div class="tip" id="fs27">Multiple items<br />val byte : value:&#39;T -&gt; byte (requires member op_Explicit)<br /><br />Full name: Microsoft.FSharp.Core.Operators.byte<br /><br />--------------------<br />type byte = Byte<br /><br />Full name: Microsoft.FSharp.Core.byte</div>
+<div class="tip" id="fs28">union case CacheMessage.Add: string * byte [] -&gt; CacheMessage</div>
+<div class="tip" id="fs29">val cache : obj<br /><br />Full name: WebProxy.cache</div>
+<div class="tip" id="fs30">namespace System.Collections</div>
+<div class="tip" id="fs31">namespace System.Collections.Generic</div>
+<div class="tip" id="fs32">Multiple items<br />type Dictionary&lt;&#39;TKey,&#39;TValue&gt; =<br />&#160;&#160;new : unit -&gt; Dictionary&lt;&#39;TKey, &#39;TValue&gt; + 5 overloads<br />&#160;&#160;member Add : key:&#39;TKey * value:&#39;TValue -&gt; unit<br />&#160;&#160;member Clear : unit -&gt; unit<br />&#160;&#160;member Comparer : IEqualityComparer&lt;&#39;TKey&gt;<br />&#160;&#160;member ContainsKey : key:&#39;TKey -&gt; bool<br />&#160;&#160;member ContainsValue : value:&#39;TValue -&gt; bool<br />&#160;&#160;member Count : int<br />&#160;&#160;member GetEnumerator : unit -&gt; Enumerator&lt;&#39;TKey, &#39;TValue&gt;<br />&#160;&#160;member GetObjectData : info:SerializationInfo * context:StreamingContext -&gt; unit<br />&#160;&#160;member Item : &#39;TKey -&gt; &#39;TValue with get, set<br />&#160;&#160;...<br />&#160;&#160;nested type Enumerator<br />&#160;&#160;nested type KeyCollection<br />&#160;&#160;nested type ValueCollection<br /><br />Full name: System.Collections.Generic.Dictionary&lt;_,_&gt;<br /><br />--------------------<br />Collections.Generic.Dictionary() : unit<br />Collections.Generic.Dictionary(capacity: int) : unit<br />Collections.Generic.Dictionary(comparer: Collections.Generic.IEqualityComparer&lt;&#39;TKey&gt;) : unit<br />Collections.Generic.Dictionary(dictionary: Collections.Generic.IDictionary&lt;&#39;TKey,&#39;TValue&gt;) : unit<br />Collections.Generic.Dictionary(capacity: int, comparer: Collections.Generic.IEqualityComparer&lt;&#39;TKey&gt;) : unit<br />Collections.Generic.Dictionary(dictionary: Collections.Generic.IDictionary&lt;&#39;TKey,&#39;TValue&gt;, comparer: Collections.Generic.IEqualityComparer&lt;&#39;TKey&gt;) : unit</div>
+<div class="tip" id="fs33">union case Option.Some: Value: &#39;T -&gt; Option&lt;&#39;T&gt;</div>
+<div class="tip" id="fs34">union case Option.None: Option&lt;&#39;T&gt;</div>
+<div class="tip" id="fs35">val cts4 : CancellationTokenSource<br /><br />Full name: WebProxy.cts4</div>
+<div class="tip" id="fs36">Multiple items<br />type Async<br />static member AsBeginEnd : computation:(&#39;Arg -&gt; Async&lt;&#39;T&gt;) -&gt; (&#39;Arg * AsyncCallback * obj -&gt; IAsyncResult) * (IAsyncResult -&gt; &#39;T) * (IAsyncResult -&gt; unit)<br />static member AwaitEvent : event:IEvent&lt;&#39;Del,&#39;T&gt; * ?cancelAction:(unit -&gt; unit) -&gt; Async&lt;&#39;T&gt; (requires delegate and &#39;Del :&gt; Delegate)<br />static member AwaitIAsyncResult : iar:IAsyncResult * ?millisecondsTimeout:int -&gt; Async&lt;bool&gt;<br />static member AwaitTask : task:Task -&gt; Async&lt;unit&gt;<br />static member AwaitTask : task:Task&lt;&#39;T&gt; -&gt; Async&lt;&#39;T&gt;<br />static member AwaitWaitHandle : waitHandle:WaitHandle * ?millisecondsTimeout:int -&gt; Async&lt;bool&gt;<br />static member CancelDefaultToken : unit -&gt; unit<br />static member Catch : computation:Async&lt;&#39;T&gt; -&gt; Async&lt;Choice&lt;&#39;T,exn&gt;&gt;<br />static member FromBeginEnd : beginAction:(AsyncCallback * obj -&gt; IAsyncResult) * endAction:(IAsyncResult -&gt; &#39;T) * ?cancelAction:(unit -&gt; unit) -&gt; Async&lt;&#39;T&gt;<br />static member FromBeginEnd : arg:&#39;Arg1 * beginAction:(&#39;Arg1 * AsyncCallback * obj -&gt; IAsyncResult) * endAction:(IAsyncResult -&gt; &#39;T) * ?cancelAction:(unit -&gt; unit) -&gt; Async&lt;&#39;T&gt;<br />static member FromBeginEnd : arg1:&#39;Arg1 * arg2:&#39;Arg2 * beginAction:(&#39;Arg1 * &#39;Arg2 * AsyncCallback * obj -&gt; IAsyncResult) * endAction:(IAsyncResult -&gt; &#39;T) * ?cancelAction:(unit -&gt; unit) -&gt; Async&lt;&#39;T&gt;<br />static member FromBeginEnd : arg1:&#39;Arg1 * arg2:&#39;Arg2 * arg3:&#39;Arg3 * beginAction:(&#39;Arg1 * &#39;Arg2 * &#39;Arg3 * AsyncCallback * obj -&gt; IAsyncResult) * endAction:(IAsyncResult -&gt; &#39;T) * ?cancelAction:(unit -&gt; unit) -&gt; Async&lt;&#39;T&gt;<br />static member FromContinuations : callback:((&#39;T -&gt; unit) * (exn -&gt; unit) * (OperationCanceledException -&gt; unit) -&gt; unit) -&gt; Async&lt;&#39;T&gt;<br />static member Ignore : computation:Async&lt;&#39;T&gt; -&gt; Async&lt;unit&gt;<br />static member OnCancel : interruption:(unit -&gt; unit) -&gt; Async&lt;IDisposable&gt;<br />static member Parallel : computations:seq&lt;Async&lt;&#39;T&gt;&gt; -&gt; Async&lt;&#39;T []&gt;<br />static member RunSynchronously : computation:Async&lt;&#39;T&gt; * ?timeout:int * ?cancellationToken:CancellationToken -&gt; &#39;T<br />static member Sleep : millisecondsDueTime:int -&gt; Async&lt;unit&gt;<br />static member Start : computation:Async&lt;unit&gt; * ?cancellationToken:CancellationToken -&gt; unit<br />static member StartAsTask : computation:Async&lt;&#39;T&gt; * ?taskCreationOptions:TaskCreationOptions * ?cancellationToken:CancellationToken -&gt; Task&lt;&#39;T&gt;<br />static member StartChild : computation:Async&lt;&#39;T&gt; * ?millisecondsTimeout:int -&gt; Async&lt;Async&lt;&#39;T&gt;&gt;<br />static member StartChildAsTask : computation:Async&lt;&#39;T&gt; * ?taskCreationOptions:TaskCreationOptions -&gt; Async&lt;Task&lt;&#39;T&gt;&gt;<br />static member StartImmediate : computation:Async&lt;unit&gt; * ?cancellationToken:CancellationToken -&gt; unit<br />static member StartWithContinuations : computation:Async&lt;&#39;T&gt; * continuation:(&#39;T -&gt; unit) * exceptionContinuation:(exn -&gt; unit) * cancellationContinuation:(OperationCanceledException -&gt; unit) * ?cancellationToken:CancellationToken -&gt; unit<br />static member SwitchToContext : syncContext:SynchronizationContext -&gt; Async&lt;unit&gt;<br />static member SwitchToNewThread : unit -&gt; Async&lt;unit&gt;<br />static member SwitchToThreadPool : unit -&gt; Async&lt;unit&gt;<br />static member TryCancelled : computation:Async&lt;&#39;T&gt; * compensation:(OperationCanceledException -&gt; unit) -&gt; Async&lt;&#39;T&gt;<br />static member CancellationToken : Async&lt;CancellationToken&gt;<br />static member DefaultCancellationToken : CancellationToken<br /><br />Full name: Microsoft.FSharp.Control.Async<br /><br />--------------------<br />type Async&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Control.Async&lt;_&gt;</div>
+<div class="tip" id="fs37">static member Async.StartChild : computation:Async&lt;&#39;T&gt; * ?millisecondsTimeout:int -&gt; Async&lt;Async&lt;&#39;T&gt;&gt;</div>
+<div class="tip" id="fs38">Multiple items<br />module List<br /><br />from Microsoft.FSharp.Collections<br /><br />--------------------<br />type List&lt;&#39;T&gt; =<br />&#160;&#160;| ( [] )<br />&#160;&#160;| ( :: ) of Head: &#39;T * Tail: &#39;T list<br />&#160;&#160;interface IEnumerable<br />&#160;&#160;interface IEnumerable&lt;&#39;T&gt;<br />&#160;&#160;member GetSlice : startIndex:int option * endIndex:int option -&gt; &#39;T list<br />&#160;&#160;member Head : &#39;T<br />&#160;&#160;member IsEmpty : bool<br />&#160;&#160;member Item : index:int -&gt; &#39;T with get<br />&#160;&#160;member Length : int<br />&#160;&#160;member Tail : &#39;T list<br />&#160;&#160;static member Cons : head:&#39;T * tail:&#39;T list -&gt; &#39;T list<br />&#160;&#160;static member Empty : &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.List&lt;_&gt;</div>
+<div class="tip" id="fs39">val rev : list:&#39;T list -&gt; &#39;T list<br /><br />Full name: Microsoft.FSharp.Collections.List.rev</div>
+<div class="tip" id="fs40">val concat : arrays:seq&lt;&#39;T []&gt; -&gt; &#39;T []<br /><br />Full name: Microsoft.FSharp.Collections.Array.concat</div>
+
+        </div>
+        <div class="span3">
+          <img src="/FSharpx.Extras/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharpx.Extras</li>
+            <li><a href="/FSharpx.Extras/index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.org/packages/FSharpx.Extras">Get Library via NuGet</a></li>
+            <li><a href="https://github.com/fsprojects/FSharpx.Extras">Source Code on GitHub</a></li>
+            <li><a href="/FSharpx.Extras/license.html">License</a></li>
+            <li><a href="/FSharpx.Extras/release-notes.html">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="/FSharpx.Extras/index.html">Introduction</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="/FSharpx.Extras/reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/fsprojects/FSharpx.Extras"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
+  </body>
+  </html>

@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Lens - FSharpx.Extras</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="Steffen Forkmann and others"/>
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
+
+    <link type="text/css" rel="stylesheet" href="/FSharpx.Extras/content/style.css" />
+    <script type="text/javascript" src="/FSharpx.Extras/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="https://github.com/fsprojects/FSharpx.Extras">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="/FSharpx.Extras/index.html">FSharpx.Extras</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Lens</h1>
+<p>
+  <span>Namespace: FSharpx.Functional</span><br />
+</p>
+<div class="xmldoc">
+</div>
+
+<!-- Render nested types and modules, if there are any -->
+  <h2>Nested types and modules</h2>
+  <div>
+      <table class="table table-bordered module-list">
+    <thead>
+      <tr><td>Module</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-lensmodule-operators.html">Operators</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+        <tr>
+          <td class="module-name">
+            <a href="fsharpx-functional-lensmodule-stateoperators.html">StateOperators</a>
+          </td>
+          <td class="xmldoc"></td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+  <h3>Functions and values</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Function or value</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '433', 433)" onmouseover="showTip(event, '433', 433)">
+            arrayMap l
+          </code>
+          <div class="tip" id="433">
+            <strong>Signature:</strong> l:Lens&lt;&#39;?11444,&#39;?11445&gt; -&gt; Lens&lt;&#39;?11444 [],&#39;?11445 []&gt;<br />
+                          <strong>Type parameters:</strong> '?11444, '?11445          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L117-117" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Creates a lens that maps the given lens in an array</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '434', 434)" onmouseover="showTip(event, '434', 434)">
+            choice l1 l2
+          </code>
+          <div class="tip" id="434">
+            <strong>Signature:</strong> l1:Lens&lt;&#39;?11395,&#39;?11396&gt; -&gt; l2:Lens&lt;&#39;?11397,&#39;?11396&gt; -&gt; Lens&lt;Choice&lt;&#39;?11395,&#39;?11397&gt;,&#39;?11396&gt;<br />
+                          <strong>Type parameters:</strong> '?11395, '?11396, '?11397          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L25-25" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Composes two lenses through a sum in the source</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '435', 435)" onmouseover="showTip(event, '435', 435)">
+            codiag 
+          </code>
+          <div class="tip" id="435">
+            <strong>Signature:</strong> Lens&lt;Choice&lt;&#39;T,&#39;T&gt;,&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'T          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L86-86" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '436', 436)" onmouseover="showTip(event, '436', 436)">
+            compose l1 l2
+          </code>
+          <div class="tip" id="436">
+            <strong>Signature:</strong> l1:Lens&lt;&#39;?11391,&#39;?11392&gt; -&gt; l2:Lens&lt;&#39;?11393,&#39;?11391&gt; -&gt; Lens&lt;&#39;?11393,&#39;?11392&gt;<br />
+                          <strong>Type parameters:</strong> '?11391, '?11392, '?11393          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L20-20" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequentially composes two lenses</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '437', 437)" onmouseover="showTip(event, '437', 437)">
+            cond pred lensTrue lensFalse
+          </code>
+          <div class="tip" id="437">
+            <strong>Signature:</strong> pred:(&#39;?11404 -&gt; bool) -&gt; lensTrue:Lens&lt;&#39;?11404,&#39;?11405&gt; -&gt; lensFalse:Lens&lt;&#39;?11404,&#39;?11405&gt; -&gt; Lens&lt;&#39;?11404,&#39;?11405&gt;<br />
+                          <strong>Type parameters:</strong> '?11404, '?11405          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L39-39" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>is applied to source.
+If true,  is selected.
+If false,  is selected.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '438', 438)" onmouseover="showTip(event, '438', 438)">
+            forArray i
+          </code>
+          <div class="tip" id="438">
+            <strong>Signature:</strong> i:int -&gt; Lens&lt;&#39;?11437 [],&#39;?11437&gt;<br />
+                          <strong>Type parameters:</strong> '?11437          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L102-102" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Lens for a particular position in an array</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '439', 439)" onmouseover="showTip(event, '439', 439)">
+            forList i
+          </code>
+          <div class="tip" id="439">
+            <strong>Signature:</strong> i:int -&gt; Lens&lt;&#39;?11439 list,&#39;?11439&gt;<br />
+                          <strong>Type parameters:</strong> '?11439          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L107-107" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Lens for a particular position in a list</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '440', 440)" onmouseover="showTip(event, '440', 440)">
+            forMap key
+          </code>
+          <div class="tip" id="440">
+            <strong>Signature:</strong> key:&#39;?11434 -&gt; Lens&lt;Map&lt;&#39;?11434,&#39;?11435&gt;,&#39;?11435 option&gt;<br />
+                          <strong>Type parameters:</strong> '?11434, '?11435          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L94-94" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Lens for a particular key in a map</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '441', 441)" onmouseover="showTip(event, '441', 441)">
+            forSet value
+          </code>
+          <div class="tip" id="441">
+            <strong>Signature:</strong> value:&#39;?11432 -&gt; Lens&lt;Set&lt;&#39;?11432&gt;,bool&gt;<br />
+                          <strong>Type parameters:</strong> '?11432          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L89-89" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Lens for a particular value in a set</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '442', 442)" onmouseover="showTip(event, '442', 442)">
+            fst 
+          </code>
+          <div class="tip" id="442">
+            <strong>Signature:</strong> Lens&lt;(&#39;?11422 * &#39;?11423),&#39;?11422&gt;<br />
+                          <strong>Type parameters:</strong> '?11422, '?11423          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L72-72" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Gets/sets the fst element in a pair</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '443', 443)" onmouseover="showTip(event, '443', 443)">
+            get a l
+          </code>
+          <div class="tip" id="443">
+            <strong>Signature:</strong> a:&#39;?11382 -&gt; l:Lens&lt;&#39;?11382,&#39;?11383&gt; -&gt; &#39;?11383<br />
+                          <strong>Type parameters:</strong> '?11382, '?11383          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L15-15" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '444', 444)" onmouseover="showTip(event, '444', 444)">
+            getAndModifyState l f
+          </code>
+          <div class="tip" id="444">
+            <strong>Signature:</strong> l:Lens&lt;&#39;?11416,&#39;?11417&gt; -&gt; f:(&#39;?11417 -&gt; &#39;?11417) -&gt; State&lt;&#39;?11416,&#39;?11416&gt;<br />
+                          <strong>Type parameters:</strong> '?11416, '?11417          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L57-57" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Modifies the state in a state monad and returns the original value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '445', 445)" onmouseover="showTip(event, '445', 445)">
+            getState l a
+          </code>
+          <div class="tip" id="445">
+            <strong>Signature:</strong> l:Lens&lt;&#39;?11407,&#39;?11408&gt; -&gt; a:&#39;?11407 -&gt; &#39;?11408 * &#39;?11407<br />
+                          <strong>Type parameters:</strong> '?11407, '?11408          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L45-45" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Applies a lens in the 'get' direction within a state monad</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '446', 446)" onmouseover="showTip(event, '446', 446)">
+            id 
+          </code>
+          <div class="tip" id="446">
+            <strong>Signature:</strong> Lens&lt;&#39;?11428,&#39;?11428&gt;<br />
+                          <strong>Type parameters:</strong> '?11428          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L82-82" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Identity lens</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '447', 447)" onmouseover="showTip(event, '447', 447)">
+            ignore 
+          </code>
+          <div class="tip" id="447">
+            <strong>Signature:</strong> Lens&lt;&#39;?11457,unit&gt;<br />
+                          <strong>Type parameters:</strong> '?11457          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L139-139" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '448', 448)" onmouseover="showTip(event, '448', 448)">
+            listMap l
+          </code>
+          <div class="tip" id="448">
+            <strong>Signature:</strong> l:Lens&lt;&#39;?11441,&#39;?11442&gt; -&gt; Lens&lt;&#39;?11441 list,&#39;?11442 list&gt;<br />
+                          <strong>Type parameters:</strong> '?11441, '?11442          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L112-112" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Creates a lens that maps the given lens in a list</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '449', 449)" onmouseover="showTip(event, '449', 449)">
+            listToArray l
+          </code>
+          <div class="tip" id="449">
+            <strong>Signature:</strong> l:Lens&lt;&#39;?11454,&#39;?11455 list&gt; -&gt; Lens&lt;&#39;?11454,&#39;?11455 []&gt;<br />
+                          <strong>Type parameters:</strong> '?11454, '?11455          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L132-132" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Converts a lens that views a list into a lens that views an array</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '450', 450)" onmouseover="showTip(event, '450', 450)">
+            modifyAndGetState l f
+          </code>
+          <div class="tip" id="450">
+            <strong>Signature:</strong> l:Lens&lt;&#39;?11419,&#39;?11420&gt; -&gt; f:(&#39;?11420 -&gt; &#39;?11420) -&gt; State&lt;&#39;?11419,&#39;?11419&gt;<br />
+                          <strong>Type parameters:</strong> '?11419, '?11420          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L65-65" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Modifies the state in a state monad and returns the modified value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '451', 451)" onmouseover="showTip(event, '451', 451)">
+            pair l1 l2
+          </code>
+          <div class="tip" id="451">
+            <strong>Signature:</strong> l1:Lens&lt;&#39;?11399,&#39;?11400&gt; -&gt; l2:Lens&lt;&#39;?11401,&#39;?11402&gt; -&gt; Lens&lt;(&#39;?11399 * &#39;?11401),(&#39;?11400 * &#39;?11402)&gt;<br />
+                          <strong>Type parameters:</strong> '?11399, '?11400, '?11401, '?11402          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L30-30" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Pair two lenses</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '452', 452)" onmouseover="showTip(event, '452', 452)">
+            seqMap l
+          </code>
+          <div class="tip" id="452">
+            <strong>Signature:</strong> l:Lens&lt;&#39;?11447,&#39;?11448&gt; -&gt; Lens&lt;seq&lt;&#39;?11447&gt;,seq&lt;&#39;?11448&gt;&gt;<br />
+                          <strong>Type parameters:</strong> '?11447, '?11448          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L122-122" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Creates a lens that maps the given lens in a sequence</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '453', 453)" onmouseover="showTip(event, '453', 453)">
+            set v a l
+          </code>
+          <div class="tip" id="453">
+            <strong>Signature:</strong> v:&#39;?11385 -&gt; a:&#39;?11386 -&gt; l:Lens&lt;&#39;?11386,&#39;?11385&gt; -&gt; &#39;?11386<br />
+                          <strong>Type parameters:</strong> '?11385, '?11386          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L16-16" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '454', 454)" onmouseover="showTip(event, '454', 454)">
+            setState l v a
+          </code>
+          <div class="tip" id="454">
+            <strong>Signature:</strong> l:Lens&lt;&#39;?11410,&#39;?11411&gt; -&gt; v:&#39;?11411 -&gt; a:&#39;?11410 -&gt; unit * &#39;?11410<br />
+                          <strong>Type parameters:</strong> '?11410, '?11411          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L49-49" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Applies a lens in the 'set' direction within a state monad</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '455', 455)" onmouseover="showTip(event, '455', 455)">
+            snd 
+          </code>
+          <div class="tip" id="455">
+            <strong>Signature:</strong> Lens&lt;(&#39;?11425 * &#39;?11426),&#39;?11426&gt;<br />
+                          <strong>Type parameters:</strong> '?11425, '?11426          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L77-77" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Gets/sets the snd element in a pair</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '456', 456)" onmouseover="showTip(event, '456', 456)">
+            update f l
+          </code>
+          <div class="tip" id="456">
+            <strong>Signature:</strong> f:(&#39;?11388 -&gt; &#39;?11388) -&gt; l:Lens&lt;&#39;?11389,&#39;?11388&gt; -&gt; &#39;?11389 -&gt; &#39;?11389<br />
+                          <strong>Type parameters:</strong> '?11388, '?11389          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L17-17" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '457', 457)" onmouseover="showTip(event, '457', 457)">
+            updateState l f a
+          </code>
+          <div class="tip" id="457">
+            <strong>Signature:</strong> l:Lens&lt;&#39;?11413,&#39;?11414&gt; -&gt; f:(&#39;?11414 -&gt; &#39;?11414) -&gt; a:&#39;?11413 -&gt; unit * &#39;?11413<br />
+                          <strong>Type parameters:</strong> '?11413, '?11414          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L53-53" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Update through a lens within a state monad</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '458', 458)" onmouseover="showTip(event, '458', 458)">
+            xmap f g l
+          </code>
+          <div class="tip" id="458">
+            <strong>Signature:</strong> f:(&#39;?11450 -&gt; &#39;?11451) -&gt; g:(&#39;?11451 -&gt; &#39;?11450) -&gt; l:Lens&lt;&#39;?11452,&#39;?11450&gt; -&gt; Lens&lt;&#39;?11452,&#39;?11451&gt;<br />
+                          <strong>Type parameters:</strong> '?11450, '?11451, '?11452          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/Lens.fs#L127-127" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Applies an isomorphism to the value viewed through a lens</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <img src="/FSharpx.Extras/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharpx.Extras</li>
+            <li><a href="/FSharpx.Extras/index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.org/packages/FSharpx.Extras">Get Library via NuGet</a></li>
+            <li><a href="https://github.com/fsprojects/FSharpx.Extras">Source Code on GitHub</a></li>
+            <li><a href="/FSharpx.Extras/license.html">License</a></li>
+            <li><a href="/FSharpx.Extras/release-notes.html">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="/FSharpx.Extras/index.html">Introduction</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="/FSharpx.Extras/reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/fsprojects/FSharpx.Extras"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
+  </body>
+  </html>

@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Option - FSharpx.Extras</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="Steffen Forkmann and others"/>
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
+
+    <link type="text/css" rel="stylesheet" href="/FSharpx.Extras/content/style.css" />
+    <script type="text/javascript" src="/FSharpx.Extras/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="https://github.com/fsprojects/FSharpx.Extras">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="/FSharpx.Extras/index.html">FSharpx.Extras</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>Option</h1>
+<p>
+  <span>Namespace: FSharpx</span><br />
+</p>
+<div class="xmldoc">
+</div>
+
+<!-- Render nested types and modules, if there are any -->
+  <h2>Nested types and modules</h2>
+  <div>
+      <table class="table table-bordered type-list">
+    <thead>
+      <tr><td>Type</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td class="type-name">
+            <a href="fsharpx-option-maybebuilder.html">MaybeBuilder</a>
+          </td>
+          <td class="xmldoc"><p>The maybe monad.
+This monad is my own and uses an 'T option. Others generally make their own Maybe<'T> type from Option<'T>.
+The builder approach is from Matthew Podwysocki's excellent Creating Extended Builders series <a href="http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/18/much-ado-about-monads-creating-extended-builders.aspx.">http://codebetter.com/blogs/matthew.podwysocki/archive/2010/01/18/much-ado-about-monads-creating-extended-builders.aspx.</a></p>
+
+</td>
+        </tr>
+    </tbody>
+  </table>
+
+  </div>
+
+  <h3>Functions and values</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Function or value</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '134', 134)" onmouseover="showTip(event, '134', 134)">
+            ( *&gt; ) x y
+          </code>
+          <div class="tip" id="134">
+            <strong>Signature:</strong> x:&#39;?8729 option -&gt; y:&#39;?8730 option -&gt; &#39;?8730 option<br />
+                          <strong>Type parameters:</strong> '?8729, '?8730          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L163-163" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequence actions, discarding the value of the first argument.</p>
+
+
+              <p>CompiledName: <code>op_MultiplyGreater</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '135', 135)" onmouseover="showTip(event, '135', 135)">
+            ( &lt;!&gt; ) f m
+          </code>
+          <div class="tip" id="135">
+            <strong>Signature:</strong> f:(&#39;?8722 -&gt; &#39;?8723) -&gt; m:&#39;?8722 option -&gt; &#39;?8723 option<br />
+                          <strong>Type parameters:</strong> '?8722, '?8723          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L157-157" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Infix map</p>
+
+
+              <p>CompiledName: <code>op_LessBangGreater</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '136', 136)" onmouseover="showTip(event, '136', 136)">
+            ( &lt;* ) x y
+          </code>
+          <div class="tip" id="136">
+            <strong>Signature:</strong> x:&#39;?8732 option -&gt; y:&#39;?8733 option -&gt; &#39;?8732 option<br />
+                          <strong>Type parameters:</strong> '?8732, '?8733          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L166-166" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequence actions, discarding the value of the second argument.</p>
+
+
+              <p>CompiledName: <code>op_LessMultiply</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '137', 137)" onmouseover="showTip(event, '137', 137)">
+            ( &lt;*&gt; ) f m
+          </code>
+          <div class="tip" id="137">
+            <strong>Signature:</strong> f:(&#39;?8716 -&gt; &#39;?8717) option -&gt; m:&#39;?8716 option -&gt; &#39;?8717 option<br />
+                          <strong>Type parameters:</strong> '?8716, '?8717          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L151-151" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequential application</p>
+
+
+              <p>CompiledName: <code>op_LessMultiplyGreater</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '138', 138)" onmouseover="showTip(event, '138', 138)">
+            ( &lt;=&lt; ) x
+          </code>
+          <div class="tip" id="138">
+            <strong>Signature:</strong> x:(&#39;?8742 -&gt; &#39;?8743 option) -&gt; (&#39;?8744 -&gt; &#39;?8742 option) -&gt; &#39;?8744 -&gt; &#39;?8743 option<br />
+                          <strong>Type parameters:</strong> '?8742, '?8743, '?8744          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L175-175" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Right-to-left Kleisli composition</p>
+
+
+              <p>CompiledName: <code>op_LessEqualsLess</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '139', 139)" onmouseover="showTip(event, '139', 139)">
+            ( =&lt;&lt; ) f m
+          </code>
+          <div class="tip" id="139">
+            <strong>Signature:</strong> f:(&#39;?8713 -&gt; &#39;?8714 option) -&gt; m:&#39;?8713 option -&gt; &#39;?8714 option<br />
+                          <strong>Type parameters:</strong> '?8713, '?8714          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L148-148" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Flipped &gt;&gt;=</p>
+
+
+              <p>CompiledName: <code>op_EqualsLessLess</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '140', 140)" onmouseover="showTip(event, '140', 140)">
+            ( &gt;=&gt; ) f g x
+          </code>
+          <div class="tip" id="140">
+            <strong>Signature:</strong> f:(&#39;?8738 -&gt; &#39;?8739 option) -&gt; g:(&#39;?8739 -&gt; &#39;?8740 option) -&gt; x:&#39;?8738 -&gt; &#39;?8740 option<br />
+                          <strong>Type parameters:</strong> '?8738, '?8739, '?8740          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L172-172" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Left-to-right Kleisli composition</p>
+
+
+              <p>CompiledName: <code>op_GreaterEqualsGreater</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '141', 141)" onmouseover="showTip(event, '141', 141)">
+            ( &gt;&gt;. ) m f
+          </code>
+          <div class="tip" id="141">
+            <strong>Signature:</strong> m:&#39;?8735 option -&gt; f:&#39;?8736 option -&gt; &#39;?8736 option<br />
+                          <strong>Type parameters:</strong> '?8735, '?8736          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L169-169" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequentially compose two maybe actions, discarding any value produced by the first</p>
+
+
+              <p>CompiledName: <code>op_GreaterGreaterDot</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '142', 142)" onmouseover="showTip(event, '142', 142)">
+            ( &gt;&gt;= ) m f
+          </code>
+          <div class="tip" id="142">
+            <strong>Signature:</strong> m:&#39;?8710 option -&gt; f:(&#39;?8710 -&gt; &#39;?8711 option) -&gt; &#39;?8711 option<br />
+                          <strong>Type parameters:</strong> '?8710, '?8711          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L145-145" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequentially compose two actions, passing any value produced by the first as an argument to the second.</p>
+
+
+              <p>CompiledName: <code>op_GreaterGreaterEquals</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '143', 143)" onmouseover="showTip(event, '143', 143)">
+            ap m f
+          </code>
+          <div class="tip" id="143">
+            <strong>Signature:</strong> m:&#39;?8719 option -&gt; f:(&#39;?8719 -&gt; &#39;?8720) option -&gt; &#39;?8720 option<br />
+                          <strong>Type parameters:</strong> '?8719, '?8720          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L154-154" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Sequential application</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '144', 144)" onmouseover="showTip(event, '144', 144)">
+            cast o
+          </code>
+          <div class="tip" id="144">
+            <strong>Signature:</strong> o:obj -&gt; &#39;?8771 option<br />
+                          <strong>Type parameters:</strong> '?8771          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L249-249" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Attempts to cast an object. Returns None if unsuccessful.</p>
+
+
+              <p>CompiledName: <code>Cast</code></p>
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '145', 145)" onmouseover="showTip(event, '145', 145)">
+            concat x
+          </code>
+          <div class="tip" id="145">
+            <strong>Signature:</strong> x:&#39;?8790 option option -&gt; &#39;?8790 option<br />
+                          <strong>Type parameters:</strong> '?8790          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L286-286" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Concatenates an option of option.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '146', 146)" onmouseover="showTip(event, '146', 146)">
+            filter pred _arg1
+          </code>
+          <div class="tip" id="146">
+            <strong>Signature:</strong> pred:(&#39;?8769 -&gt; bool) -&gt; _arg1:&#39;?8769 option -&gt; &#39;?8769 option<br />
+                          <strong>Type parameters:</strong> '?8769          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L242-242" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Applies a predicate to the option. If the predicate returns true, returns Some x, otherwise None.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '147', 147)" onmouseover="showTip(event, '147', 147)">
+            foldM f s
+          </code>
+          <div class="tip" id="147">
+            <strong>Signature:</strong> f:(&#39;?8773 -&gt; &#39;?8774 -&gt; &#39;?8773 option) -&gt; s:&#39;?8773 -&gt; seq&lt;&#39;?8774&gt; -&gt; &#39;?8773 option<br />
+                          <strong>Type parameters:</strong> '?8773, '?8774          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L254-254" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '148', 148)" onmouseover="showTip(event, '148', 148)">
+            fromTryPattern tryFun input
+          </code>
+          <div class="tip" id="148">
+            <strong>Signature:</strong> tryFun:(&#39;input -&gt; bool * &#39;output) -&gt; input:&#39;input -&gt; &#39;output option<br />
+                          <strong>Type parameters:</strong> 'input, 'output          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L279-279" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>transforms a function in the Try...(input, out output) style
+into a function of type: input -&gt; output Option
+Example: fromTryPattern(System.Double.TryParse)
+See Examples.Option</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '149', 149)" onmouseover="showTip(event, '149', 149)">
+            getOrDefault _arg1
+          </code>
+          <div class="tip" id="149">
+            <strong>Signature:</strong> _arg1:&#39;?8765 option -&gt; &#39;?8765<br />
+                          <strong>Type parameters:</strong> '?8765          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L230-230" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Gets the value associated with the option or the default value for the type.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '150', 150)" onmouseover="showTip(event, '150', 150)">
+            getOrElse v _arg1
+          </code>
+          <div class="tip" id="150">
+            <strong>Signature:</strong> v:&#39;?8759 -&gt; _arg1:&#39;?8759 option -&gt; &#39;?8759<br />
+                          <strong>Type parameters:</strong> '?8759          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L212-212" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Gets the value associated with the option or the supplied default value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '151', 151)" onmouseover="showTip(event, '151', 151)">
+            getOrElseF v _arg1
+          </code>
+          <div class="tip" id="151">
+            <strong>Signature:</strong> v:(unit -&gt; &#39;?8763) -&gt; _arg1:&#39;?8763 option -&gt; &#39;?8763<br />
+                          <strong>Type parameters:</strong> '?8763          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L224-224" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Gets the value associated with the option or the supplied default value from a function.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '152', 152)" onmouseover="showTip(event, '152', 152)">
+            getOrElseLazy v _arg1
+          </code>
+          <div class="tip" id="152">
+            <strong>Signature:</strong> v:Lazy&lt;&#39;?8761&gt; -&gt; _arg1:&#39;?8761 option -&gt; &#39;?8761<br />
+                          <strong>Type parameters:</strong> '?8761          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L218-218" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Gets the value associated with the option or the supplied default value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '153', 153)" onmouseover="showTip(event, '153', 153)">
+            getOrElseWith v f _arg1
+          </code>
+          <div class="tip" id="153">
+            <strong>Signature:</strong> v:&#39;?8781 -&gt; f:(&#39;?8782 -&gt; &#39;?8781) -&gt; _arg1:&#39;?8782 option -&gt; &#39;?8781<br />
+                          <strong>Type parameters:</strong> '?8781, '?8782          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L263-263" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '154', 154)" onmouseover="showTip(event, '154', 154)">
+            lift2 f a b
+          </code>
+          <div class="tip" id="154">
+            <strong>Signature:</strong> f:(&#39;?8725 -&gt; &#39;?8726 -&gt; &#39;?8727) -&gt; a:&#39;?8725 option -&gt; b:&#39;?8726 option -&gt; &#39;?8727 option<br />
+                          <strong>Type parameters:</strong> '?8725, '?8726, '?8727          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L160-160" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Promote a function to a monad/applicative, scanning the monadic/applicative arguments from left to right.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '155', 155)" onmouseover="showTip(event, '155', 155)">
+            mapM f x
+          </code>
+          <div class="tip" id="155">
+            <strong>Signature:</strong> f:(&#39;?8778 -&gt; &#39;?8779 option) -&gt; x:&#39;?8778 list -&gt; &#39;?8779 list option<br />
+                          <strong>Type parameters:</strong> '?8778, '?8779          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L261-261" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '156', 156)" onmouseover="showTip(event, '156', 156)">
+            maybe 
+          </code>
+          <div class="tip" id="156">
+            <strong>Signature:</strong> MaybeBuilder<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L126-126" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '157', 157)" onmouseover="showTip(event, '157', 157)">
+            monoid m
+          </code>
+          <div class="tip" id="157">
+            <strong>Signature:</strong> m:ISemigroup&lt;&#39;?8706&gt; -&gt; Monoid&lt;&#39;?8706 option&gt;<br />
+                          <strong>Type parameters:</strong> '?8706          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L129-129" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Option wrapper monoid</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '158', 158)" onmouseover="showTip(event, '158', 158)">
+            ofBool b
+          </code>
+          <div class="tip" id="158">
+            <strong>Signature:</strong> b:bool -&gt; unit option<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L190-190" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>True -&gt; Some(), False -&gt; None</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '159', 159)" onmouseover="showTip(event, '159', 159)">
+            ofBoolAndValue (arg1, arg2)
+          </code>
+          <div class="tip" id="159">
+            <strong>Signature:</strong> (bool * &#39;?8754) -&gt; &#39;?8754 option<br />
+                          <strong>Type parameters:</strong> '?8754          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L200-200" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>If true,value then returns Some value. Otherwise returns None.
+Useful to process TryXX style functions.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '160', 160)" onmouseover="showTip(event, '160', 160)">
+            ofChoice _arg1
+          </code>
+          <div class="tip" id="160">
+            <strong>Signature:</strong> _arg1:Choice&lt;&#39;?8756,&#39;?8757&gt; -&gt; &#39;?8756 option<br />
+                          <strong>Type parameters:</strong> '?8756, '?8757          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L206-206" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Maps Choice 1Of2 to Some value, otherwise None.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '161', 161)" onmouseover="showTip(event, '161', 161)">
+            ofNullable n
+          </code>
+          <div class="tip" id="161">
+            <strong>Signature:</strong> n:Nullable&lt;&#39;?8746&gt; -&gt; &#39;?8746 option<br />
+                          <strong>Type parameters:</strong> '?8746          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L178-178" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Maps a Nullable to Option</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '162', 162)" onmouseover="showTip(event, '162', 162)">
+            option defaultValue map _arg1
+          </code>
+          <div class="tip" id="162">
+            <strong>Signature:</strong> defaultValue:&#39;U -&gt; map:(&#39;T -&gt; &#39;U) -&gt; _arg1:&#39;T option -&gt; &#39;U<br />
+                          <strong>Type parameters:</strong> 'U, 'T          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L271-271" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Haskell-style maybe operator</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '163', 163)" onmouseover="showTip(event, '163', 163)">
+            orElse v _arg1
+          </code>
+          <div class="tip" id="163">
+            <strong>Signature:</strong> v:&#39;?8767 option -&gt; _arg1:&#39;?8767 option -&gt; &#39;?8767 option<br />
+                          <strong>Type parameters:</strong> '?8767          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L236-236" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Gets the option if Some x, otherwise the supplied default value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '164', 164)" onmouseover="showTip(event, '164', 164)">
+            returnM x
+          </code>
+          <div class="tip" id="164">
+            <strong>Signature:</strong> x:&#39;?8708 -&gt; &#39;?8708 option<br />
+                          <strong>Type parameters:</strong> '?8708          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L142-142" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Inject a value into the option type</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '165', 165)" onmouseover="showTip(event, '165', 165)">
+            sequence s
+          </code>
+          <div class="tip" id="165">
+            <strong>Signature:</strong> s:&#39;?8776 option list -&gt; &#39;?8776 list option<br />
+                          <strong>Type parameters:</strong> '?8776          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L257-257" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '166', 166)" onmouseover="showTip(event, '166', 166)">
+            toNullable _arg1
+          </code>
+          <div class="tip" id="166">
+            <strong>Signature:</strong> _arg1:&#39;?8748 option -&gt; Nullable&lt;&#39;?8748&gt;<br />
+                          <strong>Type parameters:</strong> '?8748          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L184-184" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Maps an Option to Nullable</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '167', 167)" onmouseover="showTip(event, '167', 167)">
+            tryParseWith func
+          </code>
+          <div class="tip" id="167">
+            <strong>Signature:</strong> func:(&#39;?8751 -&gt; bool * &#39;?8752) -&gt; &#39;?8751 -&gt; &#39;?8752 option<br />
+                          <strong>Type parameters:</strong> '?8751, '?8752          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L194-194" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Converts a function returning bool,value to a function returning value option.
+Useful to process TryXX style functions.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <img src="/FSharpx.Extras/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharpx.Extras</li>
+            <li><a href="/FSharpx.Extras/index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.org/packages/FSharpx.Extras">Get Library via NuGet</a></li>
+            <li><a href="https://github.com/fsprojects/FSharpx.Extras">Source Code on GitHub</a></li>
+            <li><a href="/FSharpx.Extras/license.html">License</a></li>
+            <li><a href="/FSharpx.Extras/release-notes.html">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="/FSharpx.Extras/index.html">Introduction</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="/FSharpx.Extras/reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/fsprojects/FSharpx.Extras"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
+  </body>
+  </html>

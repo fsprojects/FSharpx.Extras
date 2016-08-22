@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>ChatServer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="FSharpx.Extras implements general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible."/>
+    <meta name="author" content="Steffen Forkmann and others"/>
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
+
+    <link type="text/css" rel="stylesheet" href="/FSharpx.Extras/content/style.css" />
+    <script type="text/javascript" src="/FSharpx.Extras/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="https://github.com/fsprojects/FSharpx.Extras">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="/FSharpx.Extras/index.html">FSharpx.Extras</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+<table class="pre"><tr><td class="lines"><pre class="fssnip"><span class="l">  1: </span>
+<span class="l">  2: </span>
+<span class="l">  3: </span>
+<span class="l">  4: </span>
+<span class="l">  5: </span>
+<span class="l">  6: </span>
+<span class="l">  7: </span>
+<span class="l">  8: </span>
+<span class="l">  9: </span>
+<span class="l"> 10: </span>
+<span class="l"> 11: </span>
+<span class="l"> 12: </span>
+<span class="l"> 13: </span>
+<span class="l"> 14: </span>
+<span class="l"> 15: </span>
+<span class="l"> 16: </span>
+<span class="l"> 17: </span>
+<span class="l"> 18: </span>
+<span class="l"> 19: </span>
+<span class="l"> 20: </span>
+<span class="l"> 21: </span>
+<span class="l"> 22: </span>
+<span class="l"> 23: </span>
+<span class="l"> 24: </span>
+<span class="l"> 25: </span>
+<span class="l"> 26: </span>
+<span class="l"> 27: </span>
+<span class="l"> 28: </span>
+<span class="l"> 29: </span>
+<span class="l"> 30: </span>
+<span class="l"> 31: </span>
+<span class="l"> 32: </span>
+<span class="l"> 33: </span>
+<span class="l"> 34: </span>
+<span class="l"> 35: </span>
+<span class="l"> 36: </span>
+<span class="l"> 37: </span>
+<span class="l"> 38: </span>
+<span class="l"> 39: </span>
+<span class="l"> 40: </span>
+<span class="l"> 41: </span>
+<span class="l"> 42: </span>
+<span class="l"> 43: </span>
+<span class="l"> 44: </span>
+<span class="l"> 45: </span>
+<span class="l"> 46: </span>
+<span class="l"> 47: </span>
+<span class="l"> 48: </span>
+<span class="l"> 49: </span>
+<span class="l"> 50: </span>
+<span class="l"> 51: </span>
+<span class="l"> 52: </span>
+<span class="l"> 53: </span>
+<span class="l"> 54: </span>
+<span class="l"> 55: </span>
+<span class="l"> 56: </span>
+<span class="l"> 57: </span>
+<span class="l"> 58: </span>
+<span class="l"> 59: </span>
+<span class="l"> 60: </span>
+<span class="l"> 61: </span>
+<span class="l"> 62: </span>
+<span class="l"> 63: </span>
+<span class="l"> 64: </span>
+<span class="l"> 65: </span>
+<span class="l"> 66: </span>
+<span class="l"> 67: </span>
+<span class="l"> 68: </span>
+<span class="l"> 69: </span>
+<span class="l"> 70: </span>
+<span class="l"> 71: </span>
+<span class="l"> 72: </span>
+<span class="l"> 73: </span>
+<span class="l"> 74: </span>
+<span class="l"> 75: </span>
+<span class="l"> 76: </span>
+<span class="l"> 77: </span>
+<span class="l"> 78: </span>
+<span class="l"> 79: </span>
+<span class="l"> 80: </span>
+<span class="l"> 81: </span>
+<span class="l"> 82: </span>
+<span class="l"> 83: </span>
+<span class="l"> 84: </span>
+<span class="l"> 85: </span>
+<span class="l"> 86: </span>
+<span class="l"> 87: </span>
+<span class="l"> 88: </span>
+<span class="l"> 89: </span>
+<span class="l"> 90: </span>
+<span class="l"> 91: </span>
+<span class="l"> 92: </span>
+<span class="l"> 93: </span>
+<span class="l"> 94: </span>
+<span class="l"> 95: </span>
+<span class="l"> 96: </span>
+<span class="l"> 97: </span>
+<span class="l"> 98: </span>
+<span class="l"> 99: </span>
+<span class="l">100: </span>
+<span class="l">101: </span>
+<span class="l">102: </span>
+<span class="l">103: </span>
+<span class="l">104: </span>
+<span class="l">105: </span>
+<span class="l">106: </span>
+<span class="l">107: </span>
+<span class="l">108: </span>
+<span class="l">109: </span>
+<span class="l">110: </span>
+<span class="l">111: </span>
+<span class="l">112: </span>
+<span class="l">113: </span>
+<span class="l">114: </span>
+<span class="l">115: </span>
+<span class="l">116: </span>
+<span class="l">117: </span>
+<span class="l">118: </span>
+<span class="l">119: </span>
+<span class="l">120: </span>
+<span class="l">121: </span>
+<span class="l">122: </span>
+<span class="l">123: </span>
+<span class="l">124: </span>
+<span class="l">125: </span>
+<span class="l">126: </span>
+<span class="l">127: </span>
+<span class="l">128: </span>
+<span class="l">129: </span>
+<span class="l">130: </span>
+<span class="l">131: </span>
+<span class="l">132: </span>
+<span class="l">133: </span>
+<span class="l">134: </span>
+<span class="l">135: </span>
+<span class="l">136: </span>
+<span class="l">137: </span>
+<span class="l">138: </span>
+<span class="l">139: </span>
+<span class="l">140: </span>
+<span class="l">141: </span>
+<span class="l">142: </span>
+<span class="l">143: </span>
+<span class="l">144: </span>
+<span class="l">145: </span>
+<span class="l">146: </span>
+<span class="l">147: </span>
+<span class="l">148: </span>
+<span class="l">149: </span>
+<span class="l">150: </span>
+<span class="l">151: </span>
+<span class="l">152: </span>
+<span class="l">153: </span>
+<span class="l">154: </span>
+<span class="l">155: </span>
+<span class="l">156: </span>
+<span class="l">157: </span>
+<span class="l">158: </span>
+<span class="l">159: </span>
+<span class="l">160: </span>
+<span class="l">161: </span>
+<span class="l">162: </span>
+<span class="l">163: </span>
+<span class="l">164: </span>
+<span class="l">165: </span>
+<span class="l">166: </span>
+<span class="l">167: </span>
+<span class="l">168: </span>
+<span class="l">169: </span>
+<span class="l">170: </span>
+<span class="l">171: </span>
+<span class="l">172: </span>
+<span class="l">173: </span>
+<span class="l">174: </span>
+<span class="l">175: </span>
+<span class="l">176: </span>
+<span class="l">177: </span>
+<span class="l">178: </span>
+<span class="l">179: </span>
+<span class="l">180: </span>
+<span class="l">181: </span>
+<span class="l">182: </span>
+<span class="l">183: </span>
+<span class="l">184: </span>
+<span class="l">185: </span>
+<span class="l">186: </span>
+<span class="l">187: </span>
+<span class="l">188: </span>
+<span class="l">189: </span>
+<span class="l">190: </span>
+<span class="l">191: </span>
+<span class="l">192: </span>
+<span class="l">193: </span>
+<span class="l">194: </span>
+<span class="l">195: </span>
+</pre></td>
+<td class="snippet"><pre class="fssnip highlighted"><code lang="fsharp"><span class="prep">#r</span> <span class="s">&quot;System.Xml.Linq.dll&quot;</span>
+<span class="c">//#load &quot;Server.fs&quot;</span>
+
+<span class="c">//open System.IO</span>
+<span class="c">//open System.Net</span>
+<span class="c">//open System.Text</span>
+<span class="c">//open System.Threading</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs1', 1)" onmouseover="showTip(event, 'fs1', 1)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs2', 2)" onmouseover="showTip(event, 'fs2', 2)" class="i">Xml</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs3', 3)" onmouseover="showTip(event, 'fs3', 3)" class="i">Linq</span>
+<span class="c">//open FSharpx.Control</span>
+
+<span class="k">type</span> <span onmouseout="hideTip(event, 'fs4', 4)" onmouseover="showTip(event, 'fs4', 4)" class="t">Agent</span><span class="o">&lt;</span><span class="o">&#39;</span><span class="i">T</span><span class="o">&gt;</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs5', 5)" onmouseover="showTip(event, 'fs5', 5)" class="t">MailboxProcessor</span><span class="o">&lt;</span><span class="o">&#39;</span><span class="i">T</span><span class="o">&gt;</span>
+
+<span class="c">// ----------------------------------------------------------------------------</span>
+
+<span class="k">module</span> <span class="t">First</span> <span class="o">=</span> 
+  <span class="k">let</span> <span onmouseout="hideTip(event, 'fs6', 6)" onmouseover="showTip(event, 'fs6', 6)" class="i">agent</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs4', 7)" onmouseover="showTip(event, 'fs4', 7)" class="t">Agent</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs7', 8)" onmouseover="showTip(event, 'fs7', 8)" class="f">Start</span>(<span class="k">fun</span> <span onmouseout="hideTip(event, 'fs8', 9)" onmouseover="showTip(event, 'fs8', 9)" class="i">agent</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs9', 10)" onmouseover="showTip(event, 'fs9', 10)" class="i">async</span> {
+    <span class="k">while</span> <span class="k">true</span> <span class="k">do</span>
+      <span class="k">let!</span> <span onmouseout="hideTip(event, 'fs10', 11)" onmouseover="showTip(event, 'fs10', 11)" class="i">msg</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs8', 12)" onmouseover="showTip(event, 'fs8', 12)" class="i">agent</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs11', 13)" onmouseover="showTip(event, 'fs11', 13)" class="f">Receive</span>()
+      <span onmouseout="hideTip(event, 'fs12', 14)" onmouseover="showTip(event, 'fs12', 14)" class="f">printfn</span> <span class="s">&quot;Hello </span><span class="pf">%s</span><span class="s">!&quot;</span> <span onmouseout="hideTip(event, 'fs10', 15)" onmouseover="showTip(event, 'fs10', 15)" class="i">msg</span> })
+
+  <span onmouseout="hideTip(event, 'fs6', 16)" onmouseover="showTip(event, 'fs6', 16)" class="i">agent</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs13', 17)" onmouseover="showTip(event, 'fs13', 17)" class="f">Post</span>(<span class="s">&quot;Tomas&quot;</span>)
+
+<span class="k">type</span> <span onmouseout="hideTip(event, 'fs14', 18)" onmouseover="showTip(event, 'fs14', 18)" class="t">ChatMessage</span> <span class="o">=</span> 
+  | <span onmouseout="hideTip(event, 'fs15', 19)" onmouseover="showTip(event, 'fs15', 19)" class="p">GetContent</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs16', 20)" onmouseover="showTip(event, 'fs16', 20)" class="t">AsyncReplyChannel</span><span class="o">&lt;</span><span onmouseout="hideTip(event, 'fs17', 21)" onmouseover="showTip(event, 'fs17', 21)" class="t">string</span><span class="o">&gt;</span>
+  | <span onmouseout="hideTip(event, 'fs18', 22)" onmouseover="showTip(event, 'fs18', 22)" class="p">SendMessage</span> <span class="k">of</span> <span onmouseout="hideTip(event, 'fs17', 23)" onmouseover="showTip(event, 'fs17', 23)" class="t">string</span>
+
+<span class="k">module</span> <span class="t">Second</span> <span class="o">=</span>
+  <span class="k">let</span> <span onmouseout="hideTip(event, 'fs19', 24)" onmouseover="showTip(event, 'fs19', 24)" class="i">agent</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs4', 25)" onmouseover="showTip(event, 'fs4', 25)" class="t">Agent</span><span class="o">&lt;</span>_<span class="o">&gt;</span><span class="o">.</span><span class="f">Start</span>(<span class="k">fun</span> <span onmouseout="hideTip(event, 'fs20', 26)" onmouseover="showTip(event, 'fs20', 26)" class="i">agent</span> <span class="k">-&gt;</span> 
+    <span class="k">let</span> <span class="k">rec</span> <span onmouseout="hideTip(event, 'fs21', 27)" onmouseover="showTip(event, 'fs21', 27)" class="f">loop</span> <span onmouseout="hideTip(event, 'fs22', 28)" onmouseover="showTip(event, 'fs22', 28)" class="i">messages</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs9', 29)" onmouseover="showTip(event, 'fs9', 29)" class="i">async</span> {
+
+      <span class="c">// Pick next message from the mailbox</span>
+      <span class="k">let!</span> <span onmouseout="hideTip(event, 'fs23', 30)" onmouseover="showTip(event, 'fs23', 30)" class="i">msg</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs20', 31)" onmouseover="showTip(event, 'fs20', 31)" class="i">agent</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs11', 32)" onmouseover="showTip(event, 'fs11', 32)" class="f">Receive</span>()
+      <span class="k">match</span> <span onmouseout="hideTip(event, 'fs23', 33)" onmouseover="showTip(event, 'fs23', 33)" class="i">msg</span> <span class="k">with</span> 
+      | <span onmouseout="hideTip(event, 'fs18', 34)" onmouseover="showTip(event, 'fs18', 34)" class="p">SendMessage</span> <span onmouseout="hideTip(event, 'fs10', 35)" onmouseover="showTip(event, 'fs10', 35)" class="i">msg</span> <span class="k">-&gt;</span> 
+          <span class="c">// Add message to the list &amp; continue</span>
+          <span class="k">let</span> <span onmouseout="hideTip(event, 'fs24', 36)" onmouseover="showTip(event, 'fs24', 36)" class="i">msg</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs25', 37)" onmouseover="showTip(event, 'fs25', 37)" class="t">XElement</span>(<span onmouseout="hideTip(event, 'fs26', 38)" onmouseover="showTip(event, 'fs26', 38)" class="t">XName</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs27', 39)" onmouseover="showTip(event, 'fs27', 39)" class="f">Get</span>(<span class="s">&quot;li&quot;</span>), <span onmouseout="hideTip(event, 'fs24', 40)" onmouseover="showTip(event, 'fs24', 40)" class="i">msg</span>)
+          <span class="k">return!</span> <span onmouseout="hideTip(event, 'fs21', 41)" onmouseover="showTip(event, 'fs21', 41)" class="f">loop</span> (<span onmouseout="hideTip(event, 'fs24', 42)" onmouseover="showTip(event, 'fs24', 42)" class="i">msg</span> <span class="o">::</span> <span onmouseout="hideTip(event, 'fs22', 43)" onmouseover="showTip(event, 'fs22', 43)" class="i">messages</span>)
+
+      | <span onmouseout="hideTip(event, 'fs15', 44)" onmouseover="showTip(event, 'fs15', 44)" class="p">GetContent</span> <span onmouseout="hideTip(event, 'fs28', 45)" onmouseover="showTip(event, 'fs28', 45)" class="i">reply</span> <span class="k">-&gt;</span> 
+          <span class="c">// Generate HTML with messages</span>
+          <span class="k">let</span> <span onmouseout="hideTip(event, 'fs29', 46)" onmouseover="showTip(event, 'fs29', 46)" class="i">html</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs25', 47)" onmouseover="showTip(event, 'fs25', 47)" class="t">XElement</span>(<span onmouseout="hideTip(event, 'fs26', 48)" onmouseover="showTip(event, 'fs26', 48)" class="t">XName</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs27', 49)" onmouseover="showTip(event, 'fs27', 49)" class="f">Get</span>(<span class="s">&quot;ul&quot;</span>), <span onmouseout="hideTip(event, 'fs22', 50)" onmouseover="showTip(event, 'fs22', 50)" class="i">messages</span>)
+          <span class="c">// Send it back as the reply</span>
+          <span onmouseout="hideTip(event, 'fs28', 51)" onmouseover="showTip(event, 'fs28', 51)" class="i">reply</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs30', 52)" onmouseover="showTip(event, 'fs30', 52)" class="f">Reply</span>(<span onmouseout="hideTip(event, 'fs29', 53)" onmouseover="showTip(event, 'fs29', 53)" class="i">html</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs31', 54)" onmouseover="showTip(event, 'fs31', 54)" class="f">ToString</span>())
+          <span class="k">return!</span> <span onmouseout="hideTip(event, 'fs21', 55)" onmouseover="showTip(event, 'fs21', 55)" class="f">loop</span> <span onmouseout="hideTip(event, 'fs22', 56)" onmouseover="showTip(event, 'fs22', 56)" class="i">messages</span> }
+    <span onmouseout="hideTip(event, 'fs21', 57)" onmouseover="showTip(event, 'fs21', 57)" class="f">loop</span> [] )
+
+  <span onmouseout="hideTip(event, 'fs19', 58)" onmouseover="showTip(event, 'fs19', 58)" class="i">agent</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs13', 59)" onmouseover="showTip(event, 'fs13', 59)" class="f">Post</span>(<span onmouseout="hideTip(event, 'fs18', 60)" onmouseover="showTip(event, 'fs18', 60)" class="p">SendMessage</span> <span class="s">&quot;Welcome to F# chat implemented using agents!&quot;</span>)
+  <span onmouseout="hideTip(event, 'fs19', 61)" onmouseover="showTip(event, 'fs19', 61)" class="i">agent</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs13', 62)" onmouseover="showTip(event, 'fs13', 62)" class="f">Post</span>(<span onmouseout="hideTip(event, 'fs18', 63)" onmouseover="showTip(event, 'fs18', 63)" class="p">SendMessage</span> <span class="s">&quot;This is my second message to this chat room...&quot;</span>)
+
+  <span onmouseout="hideTip(event, 'fs19', 64)" onmouseover="showTip(event, 'fs19', 64)" class="i">agent</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs32', 65)" onmouseover="showTip(event, 'fs32', 65)" class="f">PostAndReply</span>(<span onmouseout="hideTip(event, 'fs15', 66)" onmouseover="showTip(event, 'fs15', 66)" class="p">GetContent</span>)
+
+<span class="c">// --------------------------------------------------------------------------------------</span>
+
+<span class="k">type</span> <span onmouseout="hideTip(event, 'fs33', 67)" onmouseover="showTip(event, 'fs33', 67)" class="t">ChatRoom</span>() <span class="o">=</span> 
+  <span class="k">let</span> <span onmouseout="hideTip(event, 'fs20', 68)" onmouseover="showTip(event, 'fs20', 68)" class="i">agent</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs4', 69)" onmouseover="showTip(event, 'fs4', 69)" class="t">Agent</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs7', 70)" onmouseover="showTip(event, 'fs7', 70)" class="f">Start</span>(<span class="k">fun</span> <span onmouseout="hideTip(event, 'fs20', 71)" onmouseover="showTip(event, 'fs20', 71)" class="i">agent</span> <span class="k">-&gt;</span> 
+    <span class="k">let</span> <span class="k">rec</span> <span onmouseout="hideTip(event, 'fs21', 72)" onmouseover="showTip(event, 'fs21', 72)" class="f">loop</span> <span onmouseout="hideTip(event, 'fs22', 73)" onmouseover="showTip(event, 'fs22', 73)" class="i">messages</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs9', 74)" onmouseover="showTip(event, 'fs9', 74)" class="i">async</span> {
+      <span class="c">// Pick next message from the mailbox</span>
+      <span class="k">let!</span> <span onmouseout="hideTip(event, 'fs23', 75)" onmouseover="showTip(event, 'fs23', 75)" class="i">msg</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs20', 76)" onmouseover="showTip(event, 'fs20', 76)" class="i">agent</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs11', 77)" onmouseover="showTip(event, 'fs11', 77)" class="f">Receive</span>()
+      <span class="k">match</span> <span onmouseout="hideTip(event, 'fs23', 78)" onmouseover="showTip(event, 'fs23', 78)" class="i">msg</span> <span class="k">with</span> 
+      | <span onmouseout="hideTip(event, 'fs18', 79)" onmouseover="showTip(event, 'fs18', 79)" class="p">SendMessage</span> <span onmouseout="hideTip(event, 'fs10', 80)" onmouseover="showTip(event, 'fs10', 80)" class="i">msg</span> <span class="k">-&gt;</span> 
+          <span class="c">// Add message to the list &amp; continue</span>
+          <span class="k">let</span> <span onmouseout="hideTip(event, 'fs24', 81)" onmouseover="showTip(event, 'fs24', 81)" class="i">msg</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs25', 82)" onmouseover="showTip(event, 'fs25', 82)" class="t">XElement</span>(<span onmouseout="hideTip(event, 'fs26', 83)" onmouseover="showTip(event, 'fs26', 83)" class="t">XName</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs27', 84)" onmouseover="showTip(event, 'fs27', 84)" class="f">Get</span>(<span class="s">&quot;li&quot;</span>), <span onmouseout="hideTip(event, 'fs24', 85)" onmouseover="showTip(event, 'fs24', 85)" class="i">msg</span>)
+          <span class="k">return!</span> <span onmouseout="hideTip(event, 'fs21', 86)" onmouseover="showTip(event, 'fs21', 86)" class="f">loop</span> (<span onmouseout="hideTip(event, 'fs24', 87)" onmouseover="showTip(event, 'fs24', 87)" class="i">msg</span> <span class="o">::</span> <span onmouseout="hideTip(event, 'fs22', 88)" onmouseover="showTip(event, 'fs22', 88)" class="i">messages</span>)
+
+      | <span onmouseout="hideTip(event, 'fs15', 89)" onmouseover="showTip(event, 'fs15', 89)" class="p">GetContent</span> <span onmouseout="hideTip(event, 'fs28', 90)" onmouseover="showTip(event, 'fs28', 90)" class="i">reply</span> <span class="k">-&gt;</span> 
+          <span class="c">// Generate HTML with messages</span>
+          <span class="k">let</span> <span onmouseout="hideTip(event, 'fs29', 91)" onmouseover="showTip(event, 'fs29', 91)" class="i">html</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs25', 92)" onmouseover="showTip(event, 'fs25', 92)" class="t">XElement</span>(<span onmouseout="hideTip(event, 'fs26', 93)" onmouseover="showTip(event, 'fs26', 93)" class="t">XName</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs27', 94)" onmouseover="showTip(event, 'fs27', 94)" class="f">Get</span>(<span class="s">&quot;ul&quot;</span>), <span onmouseout="hideTip(event, 'fs22', 95)" onmouseover="showTip(event, 'fs22', 95)" class="i">messages</span>)
+          <span class="c">// Send it back as the reply</span>
+          <span onmouseout="hideTip(event, 'fs28', 96)" onmouseover="showTip(event, 'fs28', 96)" class="i">reply</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs30', 97)" onmouseover="showTip(event, 'fs30', 97)" class="f">Reply</span>(<span onmouseout="hideTip(event, 'fs29', 98)" onmouseover="showTip(event, 'fs29', 98)" class="i">html</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs31', 99)" onmouseover="showTip(event, 'fs31', 99)" class="f">ToString</span>())
+          <span class="k">return!</span> <span onmouseout="hideTip(event, 'fs21', 100)" onmouseover="showTip(event, 'fs21', 100)" class="f">loop</span> <span onmouseout="hideTip(event, 'fs22', 101)" onmouseover="showTip(event, 'fs22', 101)" class="i">messages</span> }
+    <span onmouseout="hideTip(event, 'fs21', 102)" onmouseover="showTip(event, 'fs21', 102)" class="f">loop</span> [] )
+  <span class="k">member</span> <span onmouseout="hideTip(event, 'fs34', 103)" onmouseover="showTip(event, 'fs34', 103)" class="i">x</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs35', 104)" onmouseover="showTip(event, 'fs35', 104)" class="f">SendMessage</span>(<span onmouseout="hideTip(event, 'fs10', 105)" onmouseover="showTip(event, 'fs10', 105)" class="i">msg</span>) <span class="o">=</span> <span onmouseout="hideTip(event, 'fs20', 106)" onmouseover="showTip(event, 'fs20', 106)" class="i">agent</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs13', 107)" onmouseover="showTip(event, 'fs13', 107)" class="f">Post</span>(<span onmouseout="hideTip(event, 'fs18', 108)" onmouseover="showTip(event, 'fs18', 108)" class="p">SendMessage</span> <span onmouseout="hideTip(event, 'fs10', 109)" onmouseover="showTip(event, 'fs10', 109)" class="i">msg</span>)
+  <span class="k">member</span> <span onmouseout="hideTip(event, 'fs34', 110)" onmouseover="showTip(event, 'fs34', 110)" class="i">x</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs36', 111)" onmouseover="showTip(event, 'fs36', 111)" class="f">AsyncGetContent</span>(<span class="o">?</span><span onmouseout="hideTip(event, 'fs37', 112)" onmouseover="showTip(event, 'fs37', 112)" class="i">timeout</span>) <span class="o">=</span> <span onmouseout="hideTip(event, 'fs20', 113)" onmouseover="showTip(event, 'fs20', 113)" class="i">agent</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs38', 114)" onmouseover="showTip(event, 'fs38', 114)" class="f">PostAndAsyncReply</span>(<span onmouseout="hideTip(event, 'fs15', 115)" onmouseover="showTip(event, 'fs15', 115)" class="p">GetContent</span>, <span class="o">?</span><span onmouseout="hideTip(event, 'fs37', 116)" onmouseover="showTip(event, 'fs37', 116)" class="i">timeout</span><span class="o">=</span><span onmouseout="hideTip(event, 'fs37', 117)" onmouseover="showTip(event, 'fs37', 117)" class="i">timeout</span>) 
+  <span class="k">member</span> <span onmouseout="hideTip(event, 'fs34', 118)" onmouseover="showTip(event, 'fs34', 118)" class="i">x</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs39', 119)" onmouseover="showTip(event, 'fs39', 119)" class="f">GetContent</span>() <span class="o">=</span> <span onmouseout="hideTip(event, 'fs20', 120)" onmouseover="showTip(event, 'fs20', 120)" class="i">agent</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs32', 121)" onmouseover="showTip(event, 'fs32', 121)" class="f">PostAndReply</span>(<span onmouseout="hideTip(event, 'fs15', 122)" onmouseover="showTip(event, 'fs15', 122)" class="p">GetContent</span>)
+
+  <span class="k">member</span> <span onmouseout="hideTip(event, 'fs34', 123)" onmouseover="showTip(event, 'fs34', 123)" class="i">x</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs40', 124)" onmouseover="showTip(event, 'fs40', 124)" class="f">GetContentAsync</span>() <span class="o">=</span> 
+    <span onmouseout="hideTip(event, 'fs41', 125)" onmouseover="showTip(event, 'fs41', 125)" class="t">Async</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs42', 126)" onmouseover="showTip(event, 'fs42', 126)" class="f">StartAsTask</span>(<span onmouseout="hideTip(event, 'fs20', 127)" onmouseover="showTip(event, 'fs20', 127)" class="i">agent</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs38', 128)" onmouseover="showTip(event, 'fs38', 128)" class="f">PostAndAsyncReply</span>(<span onmouseout="hideTip(event, 'fs15', 129)" onmouseover="showTip(event, 'fs15', 129)" class="p">GetContent</span>))
+
+  <span class="k">member</span> <span onmouseout="hideTip(event, 'fs34', 130)" onmouseover="showTip(event, 'fs34', 130)" class="i">x</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs43', 131)" onmouseover="showTip(event, 'fs43', 131)" class="f">GetContentAsync</span>(<span onmouseout="hideTip(event, 'fs44', 132)" onmouseover="showTip(event, 'fs44', 132)" class="i">cancellationToken</span>) <span class="o">=</span> 
+    <span onmouseout="hideTip(event, 'fs41', 133)" onmouseover="showTip(event, 'fs41', 133)" class="t">Async</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs42', 134)" onmouseover="showTip(event, 'fs42', 134)" class="f">StartAsTask</span>
+     ( <span onmouseout="hideTip(event, 'fs20', 135)" onmouseover="showTip(event, 'fs20', 135)" class="i">agent</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs38', 136)" onmouseover="showTip(event, 'fs38', 136)" class="f">PostAndAsyncReply</span>(<span onmouseout="hideTip(event, 'fs15', 137)" onmouseover="showTip(event, 'fs15', 137)" class="p">GetContent</span>), 
+       <span onmouseout="hideTip(event, 'fs44', 138)" onmouseover="showTip(event, 'fs44', 138)" class="i">cancellationToken</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs44', 139)" onmouseover="showTip(event, 'fs44', 139)" class="i">cancellationToken</span> )
+
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs45', 140)" onmouseover="showTip(event, 'fs45', 140)" class="i">room</span> <span class="o">=</span> <span class="k">new</span> <span onmouseout="hideTip(event, 'fs33', 141)" onmouseover="showTip(event, 'fs33', 141)" class="t">ChatRoom</span>()
+
+<span onmouseout="hideTip(event, 'fs45', 142)" onmouseover="showTip(event, 'fs45', 142)" class="i">room</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs46', 143)" onmouseover="showTip(event, 'fs46', 143)" class="f">SendMessage</span>(<span class="s">&quot;Welcome to F# chat implemented using agents!&quot;</span>)
+<span onmouseout="hideTip(event, 'fs45', 144)" onmouseover="showTip(event, 'fs45', 144)" class="i">room</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs46', 145)" onmouseover="showTip(event, 'fs46', 145)" class="f">SendMessage</span>(<span class="s">&quot;This is my second message to this chat room...&quot;</span>)
+
+<span onmouseout="hideTip(event, 'fs9', 146)" onmouseover="showTip(event, 'fs9', 146)" class="i">async</span> { 
+  <span class="k">while</span> <span class="k">true</span> <span class="k">do</span>
+    <span class="k">do!</span> <span onmouseout="hideTip(event, 'fs41', 147)" onmouseover="showTip(event, 'fs41', 147)" class="t">Async</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs47', 148)" onmouseover="showTip(event, 'fs47', 148)" class="f">Sleep</span>(<span class="n">10000</span>)
+    <span class="k">let!</span> <span onmouseout="hideTip(event, 'fs48', 149)" onmouseover="showTip(event, 'fs48', 149)" class="i">html</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs45', 150)" onmouseover="showTip(event, 'fs45', 150)" class="i">room</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs49', 151)" onmouseover="showTip(event, 'fs49', 151)" class="f">AsyncGetContent</span>()
+    <span onmouseout="hideTip(event, 'fs12', 152)" onmouseover="showTip(event, 'fs12', 152)" class="f">printfn</span> <span class="s">&quot;</span><span class="pf">%A</span><span class="s">&quot;</span> <span onmouseout="hideTip(event, 'fs48', 153)" onmouseover="showTip(event, 'fs48', 153)" class="i">html</span> }
+<span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs41', 154)" onmouseover="showTip(event, 'fs41', 154)" class="t">Async</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs50', 155)" onmouseover="showTip(event, 'fs50', 155)" class="f">Start</span>     
+
+<span class="c">// --------------------------------------------------------------------------------------</span>
+
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs1', 156)" onmouseover="showTip(event, 'fs1', 156)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs51', 157)" onmouseover="showTip(event, 'fs51', 157)" class="i">Net</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs1', 158)" onmouseover="showTip(event, 'fs1', 158)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs52', 159)" onmouseover="showTip(event, 'fs52', 159)" class="i">Threading</span>
+
+[&lt;<span onmouseout="hideTip(event, 'fs53', 160)" onmouseover="showTip(event, 'fs53', 160)" class="t">AutoOpen</span>&gt;]
+<span class="k">module</span> <span class="t">HttpExtensions</span> <span class="o">=</span> 
+
+  <span class="k">type</span> <span onmouseout="hideTip(event, 'fs1', 161)" onmouseover="showTip(event, 'fs1', 161)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs51', 162)" onmouseover="showTip(event, 'fs51', 162)" class="i">Net</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs54', 163)" onmouseover="showTip(event, 'fs54', 163)" class="t">HttpListener</span> <span class="k">with</span>
+    <span class="k">member</span> <span onmouseout="hideTip(event, 'fs55', 164)" onmouseover="showTip(event, 'fs55', 164)" class="i">x</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs56', 165)" onmouseover="showTip(event, 'fs56', 165)" class="f">AsyncGetContext</span>() <span class="o">=</span> 
+      <span onmouseout="hideTip(event, 'fs41', 166)" onmouseover="showTip(event, 'fs41', 166)" class="t">Async</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs57', 167)" onmouseover="showTip(event, 'fs57', 167)" class="f">FromBeginEnd</span>(<span onmouseout="hideTip(event, 'fs55', 168)" onmouseover="showTip(event, 'fs55', 168)" class="i">x</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs58', 169)" onmouseover="showTip(event, 'fs58', 169)" class="f">BeginGetContext</span>, <span onmouseout="hideTip(event, 'fs55', 170)" onmouseover="showTip(event, 'fs55', 170)" class="i">x</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs59', 171)" onmouseover="showTip(event, 'fs59', 171)" class="f">EndGetContext</span>)
+
+<span class="k">type</span> <span onmouseout="hideTip(event, 'fs60', 172)" onmouseover="showTip(event, 'fs60', 172)" class="t">HttpAgent</span> <span class="k">private</span> (<span onmouseout="hideTip(event, 'fs61', 173)" onmouseover="showTip(event, 'fs61', 173)" class="i">url</span>, <span onmouseout="hideTip(event, 'fs62', 174)" onmouseover="showTip(event, 'fs62', 174)" class="f">f</span>) <span class="k">as</span> <span onmouseout="hideTip(event, 'fs63', 175)" onmouseover="showTip(event, 'fs63', 175)" class="v">this</span> <span class="o">=</span>
+  <span class="k">let</span> <span onmouseout="hideTip(event, 'fs64', 176)" onmouseover="showTip(event, 'fs64', 176)" class="i">tokenSource</span> <span class="o">=</span> <span class="k">new</span> <span onmouseout="hideTip(event, 'fs65', 177)" onmouseover="showTip(event, 'fs65', 177)" class="t">CancellationTokenSource</span>()
+  <span class="k">let</span> <span onmouseout="hideTip(event, 'fs66', 178)" onmouseover="showTip(event, 'fs66', 178)" class="i">agent</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs4', 179)" onmouseover="showTip(event, 'fs4', 179)" class="t">Agent</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs67', 180)" onmouseover="showTip(event, 'fs67', 180)" class="f">Start</span>((<span class="k">fun</span> _ <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs62', 181)" onmouseover="showTip(event, 'fs62', 181)" class="f">f</span> <span onmouseout="hideTip(event, 'fs63', 182)" onmouseover="showTip(event, 'fs63', 182)" class="v">this</span>), <span onmouseout="hideTip(event, 'fs64', 183)" onmouseover="showTip(event, 'fs64', 183)" class="i">tokenSource</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs68', 184)" onmouseover="showTip(event, 'fs68', 184)" class="i">Token</span>)
+  <span class="k">let</span> <span onmouseout="hideTip(event, 'fs69', 185)" onmouseover="showTip(event, 'fs69', 185)" class="i">server</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs9', 186)" onmouseover="showTip(event, 'fs9', 186)" class="i">async</span> { 
+    <span class="k">use</span> <span onmouseout="hideTip(event, 'fs70', 187)" onmouseover="showTip(event, 'fs70', 187)" class="i">listener</span> <span class="o">=</span> <span class="k">new</span> <span onmouseout="hideTip(event, 'fs54', 188)" onmouseover="showTip(event, 'fs54', 188)" class="t">HttpListener</span>()
+    <span onmouseout="hideTip(event, 'fs70', 189)" onmouseover="showTip(event, 'fs70', 189)" class="i">listener</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs71', 190)" onmouseover="showTip(event, 'fs71', 190)" class="i">Prefixes</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs72', 191)" onmouseover="showTip(event, 'fs72', 191)" class="f">Add</span>(<span onmouseout="hideTip(event, 'fs61', 192)" onmouseover="showTip(event, 'fs61', 192)" class="i">url</span>)
+    <span onmouseout="hideTip(event, 'fs70', 193)" onmouseover="showTip(event, 'fs70', 193)" class="i">listener</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs73', 194)" onmouseover="showTip(event, 'fs73', 194)" class="f">Start</span>()
+    <span class="k">while</span> <span class="k">true</span> <span class="k">do</span> 
+      <span class="k">let!</span> <span onmouseout="hideTip(event, 'fs74', 195)" onmouseover="showTip(event, 'fs74', 195)" class="i">context</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs70', 196)" onmouseover="showTip(event, 'fs70', 196)" class="i">listener</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs75', 197)" onmouseover="showTip(event, 'fs75', 197)" class="f">AsyncGetContext</span>()
+      <span onmouseout="hideTip(event, 'fs66', 198)" onmouseover="showTip(event, 'fs66', 198)" class="i">agent</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs13', 199)" onmouseover="showTip(event, 'fs13', 199)" class="f">Post</span>(<span onmouseout="hideTip(event, 'fs74', 200)" onmouseover="showTip(event, 'fs74', 200)" class="i">context</span>) }
+  <span class="k">do</span> <span onmouseout="hideTip(event, 'fs41', 201)" onmouseover="showTip(event, 'fs41', 201)" class="t">Async</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs76', 202)" onmouseover="showTip(event, 'fs76', 202)" class="f">Start</span>(<span class="i">server</span>, <span class="i">cancellationToken</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs64', 203)" onmouseover="showTip(event, 'fs64', 203)" class="i">tokenSource</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs68', 204)" onmouseover="showTip(event, 'fs68', 204)" class="i">Token</span>)
+
+  <span class="k">member</span> <span onmouseout="hideTip(event, 'fs77', 205)" onmouseover="showTip(event, 'fs77', 205)" class="i">x</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs78', 206)" onmouseover="showTip(event, 'fs78', 206)" class="f">Receive</span>(<span class="o">?</span><span onmouseout="hideTip(event, 'fs37', 207)" onmouseover="showTip(event, 'fs37', 207)" class="i">timeout</span>) <span class="o">=</span> <span onmouseout="hideTip(event, 'fs66', 208)" onmouseover="showTip(event, 'fs66', 208)" class="i">agent</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs11', 209)" onmouseover="showTip(event, 'fs11', 209)" class="f">Receive</span>(<span class="o">?</span><span onmouseout="hideTip(event, 'fs37', 210)" onmouseover="showTip(event, 'fs37', 210)" class="i">timeout</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs37', 211)" onmouseover="showTip(event, 'fs37', 211)" class="i">timeout</span>)
+  <span class="k">member</span> <span onmouseout="hideTip(event, 'fs77', 212)" onmouseover="showTip(event, 'fs77', 212)" class="i">x</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs79', 213)" onmouseover="showTip(event, 'fs79', 213)" class="f">Stop</span>() <span class="o">=</span> <span onmouseout="hideTip(event, 'fs64', 214)" onmouseover="showTip(event, 'fs64', 214)" class="i">tokenSource</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs80', 215)" onmouseover="showTip(event, 'fs80', 215)" class="f">Cancel</span>()
+  <span class="k">static</span> <span class="k">member</span> <span onmouseout="hideTip(event, 'fs81', 216)" onmouseover="showTip(event, 'fs81', 216)" class="f">Start</span>(<span onmouseout="hideTip(event, 'fs61', 217)" onmouseover="showTip(event, 'fs61', 217)" class="i">url</span>, <span onmouseout="hideTip(event, 'fs62', 218)" onmouseover="showTip(event, 'fs62', 218)" class="f">f</span>) <span class="o">=</span> 
+    <span class="k">new</span> <span onmouseout="hideTip(event, 'fs60', 219)" onmouseover="showTip(event, 'fs60', 219)" class="t">HttpAgent</span>(<span onmouseout="hideTip(event, 'fs61', 220)" onmouseover="showTip(event, 'fs61', 220)" class="i">url</span>, <span onmouseout="hideTip(event, 'fs62', 221)" onmouseover="showTip(event, 'fs62', 221)" class="f">f</span>)
+
+
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs1', 222)" onmouseover="showTip(event, 'fs1', 222)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs82', 223)" onmouseover="showTip(event, 'fs82', 223)" class="i">IO</span>
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs1', 224)" onmouseover="showTip(event, 'fs1', 224)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs83', 225)" onmouseover="showTip(event, 'fs83', 225)" class="i">Text</span>
+
+[&lt;<span onmouseout="hideTip(event, 'fs53', 226)" onmouseover="showTip(event, 'fs53', 226)" class="t">AutoOpen</span>&gt;]
+<span class="k">module</span> <span class="t">HttpExtensions2</span> <span class="o">=</span> 
+
+  <span class="k">type</span> <span onmouseout="hideTip(event, 'fs1', 227)" onmouseover="showTip(event, 'fs1', 227)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs51', 228)" onmouseover="showTip(event, 'fs51', 228)" class="i">Net</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs84', 229)" onmouseover="showTip(event, 'fs84', 229)" class="t">HttpListenerRequest</span> <span class="k">with</span>
+    <span class="k">member</span> <span onmouseout="hideTip(event, 'fs85', 230)" onmouseover="showTip(event, 'fs85', 230)" class="i">request</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs86', 231)" onmouseover="showTip(event, 'fs86', 231)" class="i">InputString</span> <span class="o">=</span>
+      <span class="k">use</span> <span onmouseout="hideTip(event, 'fs87', 232)" onmouseover="showTip(event, 'fs87', 232)" class="i">sr</span> <span class="o">=</span> <span class="k">new</span> <span onmouseout="hideTip(event, 'fs88', 233)" onmouseover="showTip(event, 'fs88', 233)" class="t">StreamReader</span>(<span onmouseout="hideTip(event, 'fs85', 234)" onmouseover="showTip(event, 'fs85', 234)" class="i">request</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs89', 235)" onmouseover="showTip(event, 'fs89', 235)" class="i">InputStream</span>)
+      <span onmouseout="hideTip(event, 'fs87', 236)" onmouseover="showTip(event, 'fs87', 236)" class="i">sr</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs90', 237)" onmouseover="showTip(event, 'fs90', 237)" class="f">ReadToEnd</span>()
+
+  <span class="k">type</span> <span onmouseout="hideTip(event, 'fs1', 238)" onmouseover="showTip(event, 'fs1', 238)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs51', 239)" onmouseover="showTip(event, 'fs51', 239)" class="i">Net</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs91', 240)" onmouseover="showTip(event, 'fs91', 240)" class="t">HttpListenerResponse</span> <span class="k">with</span>
+    <span class="k">member</span> <span onmouseout="hideTip(event, 'fs92', 241)" onmouseover="showTip(event, 'fs92', 241)" class="i">response</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs93', 242)" onmouseover="showTip(event, 'fs93', 242)" class="f">Reply</span>(<span onmouseout="hideTip(event, 'fs94', 243)" onmouseover="showTip(event, 'fs94', 243)" class="i">s</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs17', 244)" onmouseover="showTip(event, 'fs17', 244)" class="t">string</span>) <span class="o">=</span> 
+      <span class="k">let</span> <span onmouseout="hideTip(event, 'fs95', 245)" onmouseover="showTip(event, 'fs95', 245)" class="i">buffer</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs96', 246)" onmouseover="showTip(event, 'fs96', 246)" class="t">Encoding</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs97', 247)" onmouseover="showTip(event, 'fs97', 247)" class="i">UTF8</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs98', 248)" onmouseover="showTip(event, 'fs98', 248)" class="f">GetBytes</span>(<span onmouseout="hideTip(event, 'fs94', 249)" onmouseover="showTip(event, 'fs94', 249)" class="i">s</span>)
+      <span onmouseout="hideTip(event, 'fs92', 250)" onmouseover="showTip(event, 'fs92', 250)" class="i">response</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs99', 251)" onmouseover="showTip(event, 'fs99', 251)" class="i">ContentLength64</span> <span class="o">&lt;-</span> <span onmouseout="hideTip(event, 'fs100', 252)" onmouseover="showTip(event, 'fs100', 252)" class="f">int64</span> <span onmouseout="hideTip(event, 'fs95', 253)" onmouseover="showTip(event, 'fs95', 253)" class="i">buffer</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs101', 254)" onmouseover="showTip(event, 'fs101', 254)" class="i">Length</span>
+      <span class="k">let</span> <span onmouseout="hideTip(event, 'fs102', 255)" onmouseover="showTip(event, 'fs102', 255)" class="i">output</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs92', 256)" onmouseover="showTip(event, 'fs92', 256)" class="i">response</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs103', 257)" onmouseover="showTip(event, 'fs103', 257)" class="i">OutputStream</span>
+      <span onmouseout="hideTip(event, 'fs102', 258)" onmouseover="showTip(event, 'fs102', 258)" class="i">output</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs104', 259)" onmouseover="showTip(event, 'fs104', 259)" class="f">Write</span>(<span onmouseout="hideTip(event, 'fs95', 260)" onmouseover="showTip(event, 'fs95', 260)" class="i">buffer</span>,<span class="n">0</span>,<span onmouseout="hideTip(event, 'fs95', 261)" onmouseover="showTip(event, 'fs95', 261)" class="i">buffer</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs101', 262)" onmouseover="showTip(event, 'fs101', 262)" class="i">Length</span>)
+      <span onmouseout="hideTip(event, 'fs102', 263)" onmouseover="showTip(event, 'fs102', 263)" class="i">output</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs105', 264)" onmouseover="showTip(event, 'fs105', 264)" class="f">Close</span>()
+    <span class="k">member</span> <span onmouseout="hideTip(event, 'fs92', 265)" onmouseover="showTip(event, 'fs92', 265)" class="i">response</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs106', 266)" onmouseover="showTip(event, 'fs106', 266)" class="f">Reply</span>(<span onmouseout="hideTip(event, 'fs107', 267)" onmouseover="showTip(event, 'fs107', 267)" class="i">typ</span>, <span onmouseout="hideTip(event, 'fs95', 268)" onmouseover="showTip(event, 'fs95', 268)" class="i">buffer</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs108', 269)" onmouseover="showTip(event, 'fs108', 269)" class="t">byte</span>[]) <span class="o">=</span> 
+      <span onmouseout="hideTip(event, 'fs92', 270)" onmouseover="showTip(event, 'fs92', 270)" class="i">response</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs99', 271)" onmouseover="showTip(event, 'fs99', 271)" class="i">ContentLength64</span> <span class="o">&lt;-</span> <span onmouseout="hideTip(event, 'fs100', 272)" onmouseover="showTip(event, 'fs100', 272)" class="f">int64</span> <span onmouseout="hideTip(event, 'fs95', 273)" onmouseover="showTip(event, 'fs95', 273)" class="i">buffer</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs101', 274)" onmouseover="showTip(event, 'fs101', 274)" class="i">Length</span>
+      <span class="k">let</span> <span onmouseout="hideTip(event, 'fs102', 275)" onmouseover="showTip(event, 'fs102', 275)" class="i">output</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs92', 276)" onmouseover="showTip(event, 'fs92', 276)" class="i">response</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs103', 277)" onmouseover="showTip(event, 'fs103', 277)" class="i">OutputStream</span>
+      <span onmouseout="hideTip(event, 'fs92', 278)" onmouseover="showTip(event, 'fs92', 278)" class="i">response</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs109', 279)" onmouseover="showTip(event, 'fs109', 279)" class="i">ContentType</span> <span class="o">&lt;-</span> <span onmouseout="hideTip(event, 'fs107', 280)" onmouseover="showTip(event, 'fs107', 280)" class="i">typ</span>
+      <span onmouseout="hideTip(event, 'fs102', 281)" onmouseover="showTip(event, 'fs102', 281)" class="i">output</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs104', 282)" onmouseover="showTip(event, 'fs104', 282)" class="f">Write</span>(<span onmouseout="hideTip(event, 'fs95', 283)" onmouseover="showTip(event, 'fs95', 283)" class="i">buffer</span>,<span class="n">0</span>,<span onmouseout="hideTip(event, 'fs95', 284)" onmouseover="showTip(event, 'fs95', 284)" class="i">buffer</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs101', 285)" onmouseover="showTip(event, 'fs101', 285)" class="i">Length</span>)
+      <span onmouseout="hideTip(event, 'fs102', 286)" onmouseover="showTip(event, 'fs102', 286)" class="i">output</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs105', 287)" onmouseover="showTip(event, 'fs105', 287)" class="f">Close</span>()
+
+<span class="c">// --------------------------------------------------------------------------------------</span>
+
+<span class="k">open</span> <span onmouseout="hideTip(event, 'fs1', 288)" onmouseover="showTip(event, 'fs1', 288)" class="i">System</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs52', 289)" onmouseover="showTip(event, 'fs52', 289)" class="i">Threading</span>
+
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs110', 290)" onmouseover="showTip(event, 'fs110', 290)" class="i">server</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs111', 291)" onmouseover="showTip(event, 'fs111', 291)" class="t">HttpAgent</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs112', 292)" onmouseover="showTip(event, 'fs112', 292)" class="f">Start</span>(<span class="s">&quot;http://localhost:8082/&quot;</span>, <span class="k">fun</span> <span onmouseout="hideTip(event, 'fs113', 293)" onmouseover="showTip(event, 'fs113', 293)" class="i">server</span> <span class="k">-&gt;</span> <span onmouseout="hideTip(event, 'fs9', 294)" onmouseover="showTip(event, 'fs9', 294)" class="i">async</span> {
+  <span class="k">while</span> <span class="k">true</span> <span class="k">do</span> 
+    <span class="k">let!</span> <span onmouseout="hideTip(event, 'fs114', 295)" onmouseover="showTip(event, 'fs114', 295)" class="i">ctx</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs113', 296)" onmouseover="showTip(event, 'fs113', 296)" class="i">server</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs115', 297)" onmouseover="showTip(event, 'fs115', 297)" class="f">Receive</span>()
+    <span onmouseout="hideTip(event, 'fs114', 298)" onmouseover="showTip(event, 'fs114', 298)" class="i">ctx</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs116', 299)" onmouseover="showTip(event, 'fs116', 299)" class="i">Response</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs117', 300)" onmouseover="showTip(event, 'fs117', 300)" class="f">Reply</span>(<span class="s">&quot;Hello!&quot;</span>) })
+  
+<span onmouseout="hideTip(event, 'fs110', 301)" onmouseover="showTip(event, 'fs110', 301)" class="i">server</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs118', 302)" onmouseover="showTip(event, 'fs118', 302)" class="f">Stop</span>()
+
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs119', 303)" onmouseover="showTip(event, 'fs119', 303)" class="i">root</span> <span class="o">=</span> <span class="s">@&quot;C:\Tomas\Writing\MSDN\code\2 Server Side\Demo.ChatServer\&quot;</span>
+
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs120', 304)" onmouseover="showTip(event, 'fs120', 304)" class="i">contentTypes</span> <span class="o">=</span> 
+  <span onmouseout="hideTip(event, 'fs121', 305)" onmouseover="showTip(event, 'fs121', 305)" class="f">dict</span> [ <span class="s">&quot;.gif&quot;</span>, <span class="s">&quot;binary/image&quot;</span>
+         <span class="s">&quot;.css&quot;</span>, <span class="s">&quot;text/css&quot;</span>
+         <span class="s">&quot;.html&quot;</span>, <span class="s">&quot;text/html&quot;</span> 
+         <span class="s">&quot;.xap&quot;</span>, <span class="s">&quot;application/x-silverlight-app&quot;</span> ]
+
+<span class="k">let</span> <span onmouseout="hideTip(event, 'fs122', 306)" onmouseover="showTip(event, 'fs122', 306)" class="i">server2</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs111', 307)" onmouseover="showTip(event, 'fs111', 307)" class="t">HttpAgent</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs112', 308)" onmouseover="showTip(event, 'fs112', 308)" class="f">Start</span>(<span class="s">&quot;http://localhost:8082/&quot;</span>, <span class="k">fun</span> <span onmouseout="hideTip(event, 'fs123', 309)" onmouseover="showTip(event, 'fs123', 309)" class="i">mbox</span> <span class="k">-&gt;</span> 
+  <span class="k">let</span> <span onmouseout="hideTip(event, 'fs124', 310)" onmouseover="showTip(event, 'fs124', 310)" class="f">handleRequest</span> (<span onmouseout="hideTip(event, 'fs114', 311)" onmouseover="showTip(event, 'fs114', 311)" class="i">ctx</span><span class="o">:</span><span onmouseout="hideTip(event, 'fs125', 312)" onmouseover="showTip(event, 'fs125', 312)" class="t">HttpListenerContext</span>) <span class="o">=</span> <span onmouseout="hideTip(event, 'fs9', 313)" onmouseover="showTip(event, 'fs9', 313)" class="i">async</span> { 
+    <span class="k">match</span> <span onmouseout="hideTip(event, 'fs114', 314)" onmouseover="showTip(event, 'fs114', 314)" class="i">ctx</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs126', 315)" onmouseover="showTip(event, 'fs126', 315)" class="i">Request</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs127', 316)" onmouseover="showTip(event, 'fs127', 316)" class="i">Url</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs128', 317)" onmouseover="showTip(event, 'fs128', 317)" class="i">LocalPath</span> <span class="k">with</span> 
+    | <span class="s">&quot;/post&quot;</span> <span class="k">-&gt;</span> 
+        <span class="c">// Send message to the chat room</span>
+        <span onmouseout="hideTip(event, 'fs45', 318)" onmouseover="showTip(event, 'fs45', 318)" class="i">room</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs46', 319)" onmouseover="showTip(event, 'fs46', 319)" class="f">SendMessage</span>(<span onmouseout="hideTip(event, 'fs114', 320)" onmouseover="showTip(event, 'fs114', 320)" class="i">ctx</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs126', 321)" onmouseover="showTip(event, 'fs126', 321)" class="i">Request</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs129', 322)" onmouseover="showTip(event, 'fs129', 322)" class="i">InputString</span>)
+        <span onmouseout="hideTip(event, 'fs114', 323)" onmouseover="showTip(event, 'fs114', 323)" class="i">ctx</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs116', 324)" onmouseover="showTip(event, 'fs116', 324)" class="i">Response</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs117', 325)" onmouseover="showTip(event, 'fs117', 325)" class="f">Reply</span>(<span class="s">&quot;OK&quot;</span>)
+    | <span class="s">&quot;/chat&quot;</span> <span class="k">-&gt;</span> 
+        <span class="c">// Get messages from the chat room (asynchronously!)</span>
+        <span class="k">let!</span> <span onmouseout="hideTip(event, 'fs130', 326)" onmouseover="showTip(event, 'fs130', 326)" class="i">text</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs45', 327)" onmouseover="showTip(event, 'fs45', 327)" class="i">room</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs49', 328)" onmouseover="showTip(event, 'fs49', 328)" class="f">AsyncGetContent</span>()
+        <span onmouseout="hideTip(event, 'fs114', 329)" onmouseover="showTip(event, 'fs114', 329)" class="i">ctx</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs116', 330)" onmouseover="showTip(event, 'fs116', 330)" class="i">Response</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs117', 331)" onmouseover="showTip(event, 'fs117', 331)" class="f">Reply</span>(<span onmouseout="hideTip(event, 'fs130', 332)" onmouseover="showTip(event, 'fs130', 332)" class="i">text</span>)
+    | <span onmouseout="hideTip(event, 'fs94', 333)" onmouseover="showTip(event, 'fs94', 333)" class="i">s</span> <span class="k">-&gt;</span>
+        <span class="c">// Handle an ordinary file request</span>
+        <span class="k">let</span> <span onmouseout="hideTip(event, 'fs131', 334)" onmouseover="showTip(event, 'fs131', 334)" class="i">file</span> <span class="o">=</span> 
+          <span onmouseout="hideTip(event, 'fs119', 335)" onmouseover="showTip(event, 'fs119', 335)" class="i">root</span> <span class="o">+</span> (<span class="k">if</span> <span onmouseout="hideTip(event, 'fs94', 336)" onmouseover="showTip(event, 'fs94', 336)" class="i">s</span> <span class="o">=</span> <span class="s">&quot;/&quot;</span> <span class="k">then</span> <span class="s">&quot;chat.html&quot;</span> <span class="k">else</span> <span onmouseout="hideTip(event, 'fs94', 337)" onmouseover="showTip(event, 'fs94', 337)" class="i">s</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs132', 338)" onmouseover="showTip(event, 'fs132', 338)" class="f">ToLower</span>())
+        <span class="k">if</span> <span onmouseout="hideTip(event, 'fs133', 339)" onmouseover="showTip(event, 'fs133', 339)" class="t">File</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs134', 340)" onmouseover="showTip(event, 'fs134', 340)" class="f">Exists</span>(<span onmouseout="hideTip(event, 'fs131', 341)" onmouseover="showTip(event, 'fs131', 341)" class="i">file</span>) <span class="k">then</span> 
+          <span class="k">let</span> <span onmouseout="hideTip(event, 'fs107', 342)" onmouseover="showTip(event, 'fs107', 342)" class="i">typ</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs120', 343)" onmouseover="showTip(event, 'fs120', 343)" class="i">contentTypes</span><span class="o">.</span>[<span onmouseout="hideTip(event, 'fs135', 344)" onmouseover="showTip(event, 'fs135', 344)" class="t">Path</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs136', 345)" onmouseover="showTip(event, 'fs136', 345)" class="f">GetExtension</span>(<span onmouseout="hideTip(event, 'fs131', 346)" onmouseover="showTip(event, 'fs131', 346)" class="i">file</span>)]
+          <span onmouseout="hideTip(event, 'fs114', 347)" onmouseover="showTip(event, 'fs114', 347)" class="i">ctx</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs116', 348)" onmouseover="showTip(event, 'fs116', 348)" class="i">Response</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs117', 349)" onmouseover="showTip(event, 'fs117', 349)" class="f">Reply</span>(<span onmouseout="hideTip(event, 'fs107', 350)" onmouseover="showTip(event, 'fs107', 350)" class="i">typ</span>, <span onmouseout="hideTip(event, 'fs133', 351)" onmouseover="showTip(event, 'fs133', 351)" class="t">File</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs137', 352)" onmouseover="showTip(event, 'fs137', 352)" class="f">ReadAllBytes</span>(<span onmouseout="hideTip(event, 'fs131', 353)" onmouseover="showTip(event, 'fs131', 353)" class="i">file</span>))
+        <span class="k">else</span> 
+          <span onmouseout="hideTip(event, 'fs114', 354)" onmouseover="showTip(event, 'fs114', 354)" class="i">ctx</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs116', 355)" onmouseover="showTip(event, 'fs116', 355)" class="i">Response</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs117', 356)" onmouseover="showTip(event, 'fs117', 356)" class="f">Reply</span>(<span onmouseout="hideTip(event, 'fs138', 357)" onmouseover="showTip(event, 'fs138', 357)" class="f">sprintf</span> <span class="s">&quot;File not found: </span><span class="pf">%s</span><span class="s">&quot;</span> <span onmouseout="hideTip(event, 'fs131', 358)" onmouseover="showTip(event, 'fs131', 358)" class="i">file</span>) }
+  <span onmouseout="hideTip(event, 'fs9', 359)" onmouseover="showTip(event, 'fs9', 359)" class="i">async</span> {
+    <span class="k">while</span> <span class="k">true</span> <span class="k">do</span> 
+      <span class="k">let!</span> <span onmouseout="hideTip(event, 'fs114', 360)" onmouseover="showTip(event, 'fs114', 360)" class="i">ctx</span> <span class="o">=</span> <span onmouseout="hideTip(event, 'fs123', 361)" onmouseover="showTip(event, 'fs123', 361)" class="i">mbox</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs115', 362)" onmouseover="showTip(event, 'fs115', 362)" class="f">Receive</span>()
+      <span onmouseout="hideTip(event, 'fs114', 363)" onmouseover="showTip(event, 'fs114', 363)" class="i">ctx</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs124', 364)" onmouseover="showTip(event, 'fs124', 364)" class="f">handleRequest</span> <span class="o">|&gt;</span> <span onmouseout="hideTip(event, 'fs41', 365)" onmouseover="showTip(event, 'fs41', 365)" class="t">Async</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs76', 366)" onmouseover="showTip(event, 'fs76', 366)" class="f">Start</span> })
+
+<span onmouseout="hideTip(event, 'fs122', 367)" onmouseover="showTip(event, 'fs122', 367)" class="i">server2</span><span class="o">.</span><span onmouseout="hideTip(event, 'fs118', 368)" onmouseover="showTip(event, 'fs118', 368)" class="f">Stop</span>()
+</code></pre></td>
+</tr>
+</table>
+
+<div class="tip" id="fs1">namespace System</div>
+<div class="tip" id="fs2">namespace System.Xml</div>
+<div class="tip" id="fs3">namespace System.Xml.Linq</div>
+<div class="tip" id="fs4">type Agent&lt;&#39;T&gt; = MailboxProcessor&lt;&#39;T&gt;<br /><br />Full name: ChatServer.Agent&lt;_&gt;</div>
+<div class="tip" id="fs5">Multiple items<br />type MailboxProcessor&lt;&#39;Msg&gt; =<br />&#160;&#160;interface IDisposable<br />&#160;&#160;new : body:(MailboxProcessor&lt;&#39;Msg&gt; -&gt; Async&lt;unit&gt;) * ?cancellationToken:CancellationToken -&gt; MailboxProcessor&lt;&#39;Msg&gt;<br />&#160;&#160;member Post : message:&#39;Msg -&gt; unit<br />&#160;&#160;member PostAndAsyncReply : buildMessage:(AsyncReplyChannel&lt;&#39;Reply&gt; -&gt; &#39;Msg) * ?timeout:int -&gt; Async&lt;&#39;Reply&gt;<br />&#160;&#160;member PostAndReply : buildMessage:(AsyncReplyChannel&lt;&#39;Reply&gt; -&gt; &#39;Msg) * ?timeout:int -&gt; &#39;Reply<br />&#160;&#160;member PostAndTryAsyncReply : buildMessage:(AsyncReplyChannel&lt;&#39;Reply&gt; -&gt; &#39;Msg) * ?timeout:int -&gt; Async&lt;&#39;Reply option&gt;<br />&#160;&#160;member Receive : ?timeout:int -&gt; Async&lt;&#39;Msg&gt;<br />&#160;&#160;member Scan : scanner:(&#39;Msg -&gt; Async&lt;&#39;T&gt; option) * ?timeout:int -&gt; Async&lt;&#39;T&gt;<br />&#160;&#160;member Start : unit -&gt; unit<br />&#160;&#160;member TryPostAndReply : buildMessage:(AsyncReplyChannel&lt;&#39;Reply&gt; -&gt; &#39;Msg) * ?timeout:int -&gt; &#39;Reply option<br />&#160;&#160;...<br /><br />Full name: Microsoft.FSharp.Control.MailboxProcessor&lt;_&gt;<br /><br />--------------------<br />new : body:(MailboxProcessor&lt;&#39;Msg&gt; -&gt; Async&lt;unit&gt;) * ?cancellationToken:System.Threading.CancellationToken -&gt; MailboxProcessor&lt;&#39;Msg&gt;</div>
+<div class="tip" id="fs6">val agent : MailboxProcessor&lt;string&gt;<br /><br />Full name: ChatServer.First.agent</div>
+<div class="tip" id="fs7">static member MailboxProcessor.Start : body:(MailboxProcessor&lt;&#39;Msg&gt; -&gt; Async&lt;unit&gt;) * ?cancellationToken:System.Threading.CancellationToken -&gt; MailboxProcessor&lt;&#39;Msg&gt;</div>
+<div class="tip" id="fs8">val agent : MailboxProcessor&lt;string&gt;</div>
+<div class="tip" id="fs9">val async : AsyncBuilder<br /><br />Full name: Microsoft.FSharp.Core.ExtraTopLevelOperators.async</div>
+<div class="tip" id="fs10">val msg : string</div>
+<div class="tip" id="fs11">member MailboxProcessor.Receive : ?timeout:int -&gt; Async&lt;&#39;Msg&gt;</div>
+<div class="tip" id="fs12">val printfn : format:Printf.TextWriterFormat&lt;&#39;T&gt; -&gt; &#39;T<br /><br />Full name: Microsoft.FSharp.Core.ExtraTopLevelOperators.printfn</div>
+<div class="tip" id="fs13">member MailboxProcessor.Post : message:&#39;Msg -&gt; unit</div>
+<div class="tip" id="fs14">type ChatMessage =<br />&#160;&#160;| GetContent of AsyncReplyChannel&lt;string&gt;<br />&#160;&#160;| SendMessage of string<br /><br />Full name: ChatServer.ChatMessage</div>
+<div class="tip" id="fs15">union case ChatMessage.GetContent: AsyncReplyChannel&lt;string&gt; -&gt; ChatMessage</div>
+<div class="tip" id="fs16">type AsyncReplyChannel&lt;&#39;Reply&gt;<br />member Reply : value:&#39;Reply -&gt; unit<br /><br />Full name: Microsoft.FSharp.Control.AsyncReplyChannel&lt;_&gt;</div>
+<div class="tip" id="fs17">Multiple items<br />val string : value:&#39;T -&gt; string<br /><br />Full name: Microsoft.FSharp.Core.Operators.string<br /><br />--------------------<br />type string = System.String<br /><br />Full name: Microsoft.FSharp.Core.string</div>
+<div class="tip" id="fs18">union case ChatMessage.SendMessage: string -&gt; ChatMessage</div>
+<div class="tip" id="fs19">val agent : MailboxProcessor&lt;ChatMessage&gt;<br /><br />Full name: ChatServer.Second.agent</div>
+<div class="tip" id="fs20">val agent : MailboxProcessor&lt;ChatMessage&gt;</div>
+<div class="tip" id="fs21">val loop : (XElement list -&gt; Async&lt;&#39;a&gt;)</div>
+<div class="tip" id="fs22">val messages : XElement list</div>
+<div class="tip" id="fs23">val msg : ChatMessage</div>
+<div class="tip" id="fs24">val msg : XElement</div>
+<div class="tip" id="fs25">Multiple items<br />type XElement =<br />&#160;&#160;inherit XContainer<br />&#160;&#160;new : name:XName -&gt; XElement + 4 overloads<br />&#160;&#160;member AncestorsAndSelf : unit -&gt; IEnumerable&lt;XElement&gt; + 1 overload<br />&#160;&#160;member Attribute : name:XName -&gt; XAttribute<br />&#160;&#160;member Attributes : unit -&gt; IEnumerable&lt;XAttribute&gt; + 1 overload<br />&#160;&#160;member DescendantNodesAndSelf : unit -&gt; IEnumerable&lt;XNode&gt;<br />&#160;&#160;member DescendantsAndSelf : unit -&gt; IEnumerable&lt;XElement&gt; + 1 overload<br />&#160;&#160;member FirstAttribute : XAttribute<br />&#160;&#160;member GetDefaultNamespace : unit -&gt; XNamespace<br />&#160;&#160;member GetNamespaceOfPrefix : prefix:string -&gt; XNamespace<br />&#160;&#160;member GetPrefixOfNamespace : ns:XNamespace -&gt; string<br />&#160;&#160;...<br /><br />Full name: System.Xml.Linq.XElement<br /><br />--------------------<br />XElement(name: XName) : unit<br />XElement(other: XElement) : unit<br />XElement(other: XStreamingElement) : unit<br />XElement(name: XName, content: obj) : unit<br />XElement(name: XName, [&lt;System.ParamArray&gt;] content: obj []) : unit</div>
+<div class="tip" id="fs26">type XName =<br />&#160;&#160;member Equals : obj:obj -&gt; bool<br />&#160;&#160;member GetHashCode : unit -&gt; int<br />&#160;&#160;member LocalName : string<br />&#160;&#160;member Namespace : XNamespace<br />&#160;&#160;member NamespaceName : string<br />&#160;&#160;member ToString : unit -&gt; string<br />&#160;&#160;static member Get : expandedName:string -&gt; XName + 1 overload<br /><br />Full name: System.Xml.Linq.XName</div>
+<div class="tip" id="fs27">XName.Get(expandedName: string) : XName<br />XName.Get(localName: string, namespaceName: string) : XName</div>
+<div class="tip" id="fs28">val reply : AsyncReplyChannel&lt;string&gt;</div>
+<div class="tip" id="fs29">val html : XElement</div>
+<div class="tip" id="fs30">member AsyncReplyChannel.Reply : value:&#39;Reply -&gt; unit</div>
+<div class="tip" id="fs31">XNode.ToString() : string<br />XNode.ToString(options: SaveOptions) : string</div>
+<div class="tip" id="fs32">member MailboxProcessor.PostAndReply : buildMessage:(AsyncReplyChannel&lt;&#39;Reply&gt; -&gt; &#39;Msg) * ?timeout:int -&gt; &#39;Reply</div>
+<div class="tip" id="fs33">Multiple items<br />type ChatRoom =<br />&#160;&#160;new : unit -&gt; ChatRoom<br />&#160;&#160;member AsyncGetContent : ?timeout:int -&gt; Async&lt;string&gt;<br />&#160;&#160;member GetContent : unit -&gt; string<br />&#160;&#160;member GetContentAsync : unit -&gt; Task&lt;string&gt;<br />&#160;&#160;member GetContentAsync : cancellationToken:CancellationToken -&gt; Task&lt;string&gt;<br />&#160;&#160;member SendMessage : msg:string -&gt; unit<br /><br />Full name: ChatServer.ChatRoom<br /><br />--------------------<br />new : unit -&gt; ChatRoom</div>
+<div class="tip" id="fs34">val x : ChatRoom</div>
+<div class="tip" id="fs35">member ChatRoom.SendMessage : msg:string -&gt; unit<br /><br />Full name: ChatServer.ChatRoom.SendMessage</div>
+<div class="tip" id="fs36">member ChatRoom.AsyncGetContent : ?timeout:int -&gt; Async&lt;string&gt;<br /><br />Full name: ChatServer.ChatRoom.AsyncGetContent</div>
+<div class="tip" id="fs37">val timeout : int option</div>
+<div class="tip" id="fs38">member MailboxProcessor.PostAndAsyncReply : buildMessage:(AsyncReplyChannel&lt;&#39;Reply&gt; -&gt; &#39;Msg) * ?timeout:int -&gt; Async&lt;&#39;Reply&gt;</div>
+<div class="tip" id="fs39">member ChatRoom.GetContent : unit -&gt; string<br /><br />Full name: ChatServer.ChatRoom.GetContent</div>
+<div class="tip" id="fs40">member ChatRoom.GetContentAsync : unit -&gt; System.Threading.Tasks.Task&lt;string&gt;<br /><br />Full name: ChatServer.ChatRoom.GetContentAsync</div>
+<div class="tip" id="fs41">Multiple items<br />type Async<br />static member AsBeginEnd : computation:(&#39;Arg -&gt; Async&lt;&#39;T&gt;) -&gt; (&#39;Arg * AsyncCallback * obj -&gt; IAsyncResult) * (IAsyncResult -&gt; &#39;T) * (IAsyncResult -&gt; unit)<br />static member AwaitEvent : event:IEvent&lt;&#39;Del,&#39;T&gt; * ?cancelAction:(unit -&gt; unit) -&gt; Async&lt;&#39;T&gt; (requires delegate and &#39;Del :&gt; Delegate)<br />static member AwaitIAsyncResult : iar:IAsyncResult * ?millisecondsTimeout:int -&gt; Async&lt;bool&gt;<br />static member AwaitTask : task:Task -&gt; Async&lt;unit&gt;<br />static member AwaitTask : task:Task&lt;&#39;T&gt; -&gt; Async&lt;&#39;T&gt;<br />static member AwaitWaitHandle : waitHandle:WaitHandle * ?millisecondsTimeout:int -&gt; Async&lt;bool&gt;<br />static member CancelDefaultToken : unit -&gt; unit<br />static member Catch : computation:Async&lt;&#39;T&gt; -&gt; Async&lt;Choice&lt;&#39;T,exn&gt;&gt;<br />static member FromBeginEnd : beginAction:(AsyncCallback * obj -&gt; IAsyncResult) * endAction:(IAsyncResult -&gt; &#39;T) * ?cancelAction:(unit -&gt; unit) -&gt; Async&lt;&#39;T&gt;<br />static member FromBeginEnd : arg:&#39;Arg1 * beginAction:(&#39;Arg1 * AsyncCallback * obj -&gt; IAsyncResult) * endAction:(IAsyncResult -&gt; &#39;T) * ?cancelAction:(unit -&gt; unit) -&gt; Async&lt;&#39;T&gt;<br />static member FromBeginEnd : arg1:&#39;Arg1 * arg2:&#39;Arg2 * beginAction:(&#39;Arg1 * &#39;Arg2 * AsyncCallback * obj -&gt; IAsyncResult) * endAction:(IAsyncResult -&gt; &#39;T) * ?cancelAction:(unit -&gt; unit) -&gt; Async&lt;&#39;T&gt;<br />static member FromBeginEnd : arg1:&#39;Arg1 * arg2:&#39;Arg2 * arg3:&#39;Arg3 * beginAction:(&#39;Arg1 * &#39;Arg2 * &#39;Arg3 * AsyncCallback * obj -&gt; IAsyncResult) * endAction:(IAsyncResult -&gt; &#39;T) * ?cancelAction:(unit -&gt; unit) -&gt; Async&lt;&#39;T&gt;<br />static member FromContinuations : callback:((&#39;T -&gt; unit) * (exn -&gt; unit) * (OperationCanceledException -&gt; unit) -&gt; unit) -&gt; Async&lt;&#39;T&gt;<br />static member Ignore : computation:Async&lt;&#39;T&gt; -&gt; Async&lt;unit&gt;<br />static member OnCancel : interruption:(unit -&gt; unit) -&gt; Async&lt;IDisposable&gt;<br />static member Parallel : computations:seq&lt;Async&lt;&#39;T&gt;&gt; -&gt; Async&lt;&#39;T []&gt;<br />static member RunSynchronously : computation:Async&lt;&#39;T&gt; * ?timeout:int * ?cancellationToken:CancellationToken -&gt; &#39;T<br />static member Sleep : millisecondsDueTime:int -&gt; Async&lt;unit&gt;<br />static member Start : computation:Async&lt;unit&gt; * ?cancellationToken:CancellationToken -&gt; unit<br />static member StartAsTask : computation:Async&lt;&#39;T&gt; * ?taskCreationOptions:TaskCreationOptions * ?cancellationToken:CancellationToken -&gt; Task&lt;&#39;T&gt;<br />static member StartChild : computation:Async&lt;&#39;T&gt; * ?millisecondsTimeout:int -&gt; Async&lt;Async&lt;&#39;T&gt;&gt;<br />static member StartChildAsTask : computation:Async&lt;&#39;T&gt; * ?taskCreationOptions:TaskCreationOptions -&gt; Async&lt;Task&lt;&#39;T&gt;&gt;<br />static member StartImmediate : computation:Async&lt;unit&gt; * ?cancellationToken:CancellationToken -&gt; unit<br />static member StartWithContinuations : computation:Async&lt;&#39;T&gt; * continuation:(&#39;T -&gt; unit) * exceptionContinuation:(exn -&gt; unit) * cancellationContinuation:(OperationCanceledException -&gt; unit) * ?cancellationToken:CancellationToken -&gt; unit<br />static member SwitchToContext : syncContext:SynchronizationContext -&gt; Async&lt;unit&gt;<br />static member SwitchToNewThread : unit -&gt; Async&lt;unit&gt;<br />static member SwitchToThreadPool : unit -&gt; Async&lt;unit&gt;<br />static member TryCancelled : computation:Async&lt;&#39;T&gt; * compensation:(OperationCanceledException -&gt; unit) -&gt; Async&lt;&#39;T&gt;<br />static member CancellationToken : Async&lt;CancellationToken&gt;<br />static member DefaultCancellationToken : CancellationToken<br /><br />Full name: Microsoft.FSharp.Control.Async<br /><br />--------------------<br />type Async&lt;&#39;T&gt;<br /><br />Full name: Microsoft.FSharp.Control.Async&lt;_&gt;</div>
+<div class="tip" id="fs42">static member Async.StartAsTask : computation:Async&lt;&#39;T&gt; * ?taskCreationOptions:System.Threading.Tasks.TaskCreationOptions * ?cancellationToken:System.Threading.CancellationToken -&gt; System.Threading.Tasks.Task&lt;&#39;T&gt;</div>
+<div class="tip" id="fs43">member ChatRoom.GetContentAsync : cancellationToken:System.Threading.CancellationToken -&gt; System.Threading.Tasks.Task&lt;string&gt;<br /><br />Full name: ChatServer.ChatRoom.GetContentAsync</div>
+<div class="tip" id="fs44">val cancellationToken : System.Threading.CancellationToken</div>
+<div class="tip" id="fs45">val room : ChatRoom<br /><br />Full name: ChatServer.room</div>
+<div class="tip" id="fs46">member ChatRoom.SendMessage : msg:string -&gt; unit</div>
+<div class="tip" id="fs47">static member Async.Sleep : millisecondsDueTime:int -&gt; Async&lt;unit&gt;</div>
+<div class="tip" id="fs48">val html : string</div>
+<div class="tip" id="fs49">member ChatRoom.AsyncGetContent : ?timeout:int -&gt; Async&lt;string&gt;</div>
+<div class="tip" id="fs50">static member Async.Start : computation:Async&lt;unit&gt; * ?cancellationToken:System.Threading.CancellationToken -&gt; unit</div>
+<div class="tip" id="fs51">namespace System.Net</div>
+<div class="tip" id="fs52">namespace System.Threading</div>
+<div class="tip" id="fs53">Multiple items<br />type AutoOpenAttribute =<br />&#160;&#160;inherit Attribute<br />&#160;&#160;new : unit -&gt; AutoOpenAttribute<br />&#160;&#160;new : path:string -&gt; AutoOpenAttribute<br />&#160;&#160;member Path : string<br /><br />Full name: Microsoft.FSharp.Core.AutoOpenAttribute<br /><br />--------------------<br />new : unit -&gt; AutoOpenAttribute<br />new : path:string -&gt; AutoOpenAttribute</div>
+<div class="tip" id="fs54">Multiple items<br />type HttpListener =<br />&#160;&#160;new : unit -&gt; HttpListener<br />&#160;&#160;member Abort : unit -&gt; unit<br />&#160;&#160;member AuthenticationSchemeSelectorDelegate : AuthenticationSchemeSelector with get, set<br />&#160;&#160;member AuthenticationSchemes : AuthenticationSchemes with get, set<br />&#160;&#160;member BeginGetContext : callback:AsyncCallback * state:obj -&gt; IAsyncResult<br />&#160;&#160;member Close : unit -&gt; unit<br />&#160;&#160;member DefaultServiceNames : ServiceNameCollection<br />&#160;&#160;member EndGetContext : asyncResult:IAsyncResult -&gt; HttpListenerContext<br />&#160;&#160;member ExtendedProtectionPolicy : ExtendedProtectionPolicy with get, set<br />&#160;&#160;member ExtendedProtectionSelectorDelegate : ExtendedProtectionSelector with get, set<br />&#160;&#160;...<br />&#160;&#160;nested type ExtendedProtectionSelector<br /><br />Full name: System.Net.HttpListener<br /><br />--------------------<br />HttpListener() : unit</div>
+<div class="tip" id="fs55">val x : HttpListener</div>
+<div class="tip" id="fs56">member HttpListener.AsyncGetContext : unit -&gt; Async&lt;HttpListenerContext&gt;<br /><br />Full name: ChatServer.HttpExtensions.AsyncGetContext</div>
+<div class="tip" id="fs57">static member Async.FromBeginEnd : beginAction:(System.AsyncCallback * obj -&gt; System.IAsyncResult) * endAction:(System.IAsyncResult -&gt; &#39;T) * ?cancelAction:(unit -&gt; unit) -&gt; Async&lt;&#39;T&gt;<br />static member Async.FromBeginEnd : arg:&#39;Arg1 * beginAction:(&#39;Arg1 * System.AsyncCallback * obj -&gt; System.IAsyncResult) * endAction:(System.IAsyncResult -&gt; &#39;T) * ?cancelAction:(unit -&gt; unit) -&gt; Async&lt;&#39;T&gt;<br />static member Async.FromBeginEnd : arg1:&#39;Arg1 * arg2:&#39;Arg2 * beginAction:(&#39;Arg1 * &#39;Arg2 * System.AsyncCallback * obj -&gt; System.IAsyncResult) * endAction:(System.IAsyncResult -&gt; &#39;T) * ?cancelAction:(unit -&gt; unit) -&gt; Async&lt;&#39;T&gt;<br />static member Async.FromBeginEnd : arg1:&#39;Arg1 * arg2:&#39;Arg2 * arg3:&#39;Arg3 * beginAction:(&#39;Arg1 * &#39;Arg2 * &#39;Arg3 * System.AsyncCallback * obj -&gt; System.IAsyncResult) * endAction:(System.IAsyncResult -&gt; &#39;T) * ?cancelAction:(unit -&gt; unit) -&gt; Async&lt;&#39;T&gt;</div>
+<div class="tip" id="fs58">HttpListener.BeginGetContext(callback: System.AsyncCallback, state: obj) : System.IAsyncResult</div>
+<div class="tip" id="fs59">HttpListener.EndGetContext(asyncResult: System.IAsyncResult) : HttpListenerContext</div>
+<div class="tip" id="fs60">Multiple items<br />type HttpAgent =<br />&#160;&#160;private new : url:string * f:(HttpAgent -&gt; Async&lt;unit&gt;) -&gt; HttpAgent<br />&#160;&#160;member Receive : ?timeout:int -&gt; Async&lt;HttpListenerContext&gt;<br />&#160;&#160;member Stop : unit -&gt; unit<br />&#160;&#160;static member Start : url:string * f:(HttpAgent -&gt; Async&lt;unit&gt;) -&gt; HttpAgent<br /><br />Full name: ChatServer.HttpAgent<br /><br />--------------------<br />private new : url:string * f:(HttpAgent -&gt; Async&lt;unit&gt;) -&gt; HttpAgent</div>
+<div class="tip" id="fs61">val url : string</div>
+<div class="tip" id="fs62">val f : (HttpAgent -&gt; Async&lt;unit&gt;)</div>
+<div class="tip" id="fs63">val this : HttpAgent</div>
+<div class="tip" id="fs64">val tokenSource : CancellationTokenSource</div>
+<div class="tip" id="fs65">Multiple items<br />type CancellationTokenSource =<br />&#160;&#160;new : unit -&gt; CancellationTokenSource<br />&#160;&#160;member Cancel : unit -&gt; unit + 1 overload<br />&#160;&#160;member Dispose : unit -&gt; unit<br />&#160;&#160;member IsCancellationRequested : bool<br />&#160;&#160;member Token : CancellationToken<br />&#160;&#160;static member CreateLinkedTokenSource : [&lt;ParamArray&gt;] tokens:CancellationToken[] -&gt; CancellationTokenSource + 1 overload<br /><br />Full name: System.Threading.CancellationTokenSource<br /><br />--------------------<br />CancellationTokenSource() : unit</div>
+<div class="tip" id="fs66">val agent : MailboxProcessor&lt;HttpListenerContext&gt;</div>
+<div class="tip" id="fs67">static member MailboxProcessor.Start : body:(MailboxProcessor&lt;&#39;Msg&gt; -&gt; Async&lt;unit&gt;) * ?cancellationToken:CancellationToken -&gt; MailboxProcessor&lt;&#39;Msg&gt;</div>
+<div class="tip" id="fs68">property CancellationTokenSource.Token: CancellationToken</div>
+<div class="tip" id="fs69">val server : Async&lt;unit&gt;</div>
+<div class="tip" id="fs70">val listener : HttpListener</div>
+<div class="tip" id="fs71">property HttpListener.Prefixes: HttpListenerPrefixCollection</div>
+<div class="tip" id="fs72">HttpListenerPrefixCollection.Add(uriPrefix: string) : unit</div>
+<div class="tip" id="fs73">HttpListener.Start() : unit</div>
+<div class="tip" id="fs74">val context : HttpListenerContext</div>
+<div class="tip" id="fs75">member HttpListener.AsyncGetContext : unit -&gt; Async&lt;HttpListenerContext&gt;</div>
+<div class="tip" id="fs76">static member Async.Start : computation:Async&lt;unit&gt; * ?cancellationToken:CancellationToken -&gt; unit</div>
+<div class="tip" id="fs77">val x : HttpAgent</div>
+<div class="tip" id="fs78">member HttpAgent.Receive : ?timeout:int -&gt; Async&lt;HttpListenerContext&gt;<br /><br />Full name: ChatServer.HttpAgent.Receive</div>
+<div class="tip" id="fs79">member HttpAgent.Stop : unit -&gt; unit<br /><br />Full name: ChatServer.HttpAgent.Stop</div>
+<div class="tip" id="fs80">CancellationTokenSource.Cancel() : unit<br />CancellationTokenSource.Cancel(throwOnFirstException: bool) : unit</div>
+<div class="tip" id="fs81">static member HttpAgent.Start : url:string * f:(HttpAgent -&gt; Async&lt;unit&gt;) -&gt; HttpAgent<br /><br />Full name: ChatServer.HttpAgent.Start</div>
+<div class="tip" id="fs82">namespace System.IO</div>
+<div class="tip" id="fs83">namespace System.Text</div>
+<div class="tip" id="fs84">type HttpListenerRequest =<br />&#160;&#160;member AcceptTypes : string[]<br />&#160;&#160;member BeginGetClientCertificate : requestCallback:AsyncCallback * state:obj -&gt; IAsyncResult<br />&#160;&#160;member ClientCertificateError : int<br />&#160;&#160;member ContentEncoding : Encoding<br />&#160;&#160;member ContentLength64 : int64<br />&#160;&#160;member ContentType : string<br />&#160;&#160;member Cookies : CookieCollection<br />&#160;&#160;member EndGetClientCertificate : asyncResult:IAsyncResult -&gt; X509Certificate2<br />&#160;&#160;member GetClientCertificate : unit -&gt; X509Certificate2<br />&#160;&#160;member HasEntityBody : bool<br />&#160;&#160;...<br /><br />Full name: System.Net.HttpListenerRequest</div>
+<div class="tip" id="fs85">val request : HttpListenerRequest</div>
+<div class="tip" id="fs86">member HttpListenerRequest.InputString : string<br /><br />Full name: ChatServer.HttpExtensions2.InputString</div>
+<div class="tip" id="fs87">val sr : StreamReader</div>
+<div class="tip" id="fs88">Multiple items<br />type StreamReader =<br />&#160;&#160;inherit TextReader<br />&#160;&#160;new : stream:Stream -&gt; StreamReader + 9 overloads<br />&#160;&#160;member BaseStream : Stream<br />&#160;&#160;member Close : unit -&gt; unit<br />&#160;&#160;member CurrentEncoding : Encoding<br />&#160;&#160;member DiscardBufferedData : unit -&gt; unit<br />&#160;&#160;member EndOfStream : bool<br />&#160;&#160;member Peek : unit -&gt; int<br />&#160;&#160;member Read : unit -&gt; int + 1 overload<br />&#160;&#160;member ReadLine : unit -&gt; string<br />&#160;&#160;member ReadToEnd : unit -&gt; string<br />&#160;&#160;...<br /><br />Full name: System.IO.StreamReader<br /><br />--------------------<br />StreamReader(stream: Stream) : unit<br />StreamReader(path: string) : unit<br />StreamReader(stream: Stream, detectEncodingFromByteOrderMarks: bool) : unit<br />StreamReader(stream: Stream, encoding: Encoding) : unit<br />StreamReader(path: string, detectEncodingFromByteOrderMarks: bool) : unit<br />StreamReader(path: string, encoding: Encoding) : unit<br />StreamReader(stream: Stream, encoding: Encoding, detectEncodingFromByteOrderMarks: bool) : unit<br />StreamReader(path: string, encoding: Encoding, detectEncodingFromByteOrderMarks: bool) : unit<br />StreamReader(stream: Stream, encoding: Encoding, detectEncodingFromByteOrderMarks: bool, bufferSize: int) : unit<br />StreamReader(path: string, encoding: Encoding, detectEncodingFromByteOrderMarks: bool, bufferSize: int) : unit</div>
+<div class="tip" id="fs89">property HttpListenerRequest.InputStream: Stream</div>
+<div class="tip" id="fs90">StreamReader.ReadToEnd() : string</div>
+<div class="tip" id="fs91">type HttpListenerResponse =<br />&#160;&#160;member Abort : unit -&gt; unit<br />&#160;&#160;member AddHeader : name:string * value:string -&gt; unit<br />&#160;&#160;member AppendCookie : cookie:Cookie -&gt; unit<br />&#160;&#160;member AppendHeader : name:string * value:string -&gt; unit<br />&#160;&#160;member Close : unit -&gt; unit + 1 overload<br />&#160;&#160;member ContentEncoding : Encoding with get, set<br />&#160;&#160;member ContentLength64 : int64 with get, set<br />&#160;&#160;member ContentType : string with get, set<br />&#160;&#160;member Cookies : CookieCollection with get, set<br />&#160;&#160;member CopyFrom : templateResponse:HttpListenerResponse -&gt; unit<br />&#160;&#160;...<br /><br />Full name: System.Net.HttpListenerResponse</div>
+<div class="tip" id="fs92">val response : HttpListenerResponse</div>
+<div class="tip" id="fs93">member HttpListenerResponse.Reply : s:string -&gt; unit<br /><br />Full name: ChatServer.HttpExtensions2.Reply</div>
+<div class="tip" id="fs94">val s : string</div>
+<div class="tip" id="fs95">val buffer : byte []</div>
+<div class="tip" id="fs96">type Encoding =<br />&#160;&#160;member BodyName : string<br />&#160;&#160;member Clone : unit -&gt; obj<br />&#160;&#160;member CodePage : int<br />&#160;&#160;member DecoderFallback : DecoderFallback with get, set<br />&#160;&#160;member EncoderFallback : EncoderFallback with get, set<br />&#160;&#160;member EncodingName : string<br />&#160;&#160;member Equals : value:obj -&gt; bool<br />&#160;&#160;member GetByteCount : chars:char[] -&gt; int + 3 overloads<br />&#160;&#160;member GetBytes : chars:char[] -&gt; byte[] + 5 overloads<br />&#160;&#160;member GetCharCount : bytes:byte[] -&gt; int + 2 overloads<br />&#160;&#160;...<br /><br />Full name: System.Text.Encoding</div>
+<div class="tip" id="fs97">property Encoding.UTF8: Encoding</div>
+<div class="tip" id="fs98">Encoding.GetBytes(s: string) : byte []<br />Encoding.GetBytes(chars: char []) : byte []<br />Encoding.GetBytes(chars: char [], index: int, count: int) : byte []<br />Encoding.GetBytes(chars: nativeptr&lt;char&gt;, charCount: int, bytes: nativeptr&lt;byte&gt;, byteCount: int) : int<br />Encoding.GetBytes(s: string, charIndex: int, charCount: int, bytes: byte [], byteIndex: int) : int<br />Encoding.GetBytes(chars: char [], charIndex: int, charCount: int, bytes: byte [], byteIndex: int) : int</div>
+<div class="tip" id="fs99">property HttpListenerResponse.ContentLength64: int64</div>
+<div class="tip" id="fs100">Multiple items<br />val int64 : value:&#39;T -&gt; int64 (requires member op_Explicit)<br /><br />Full name: Microsoft.FSharp.Core.Operators.int64<br /><br />--------------------<br />type int64 = System.Int64<br /><br />Full name: Microsoft.FSharp.Core.int64<br /><br />--------------------<br />type int64&lt;&#39;Measure&gt; = int64<br /><br />Full name: Microsoft.FSharp.Core.int64&lt;_&gt;</div>
+<div class="tip" id="fs101">property System.Array.Length: int</div>
+<div class="tip" id="fs102">val output : Stream</div>
+<div class="tip" id="fs103">property HttpListenerResponse.OutputStream: Stream</div>
+<div class="tip" id="fs104">Stream.Write(buffer: byte [], offset: int, count: int) : unit</div>
+<div class="tip" id="fs105">Stream.Close() : unit</div>
+<div class="tip" id="fs106">member HttpListenerResponse.Reply : typ:string * buffer:byte [] -&gt; unit<br /><br />Full name: ChatServer.HttpExtensions2.Reply</div>
+<div class="tip" id="fs107">val typ : string</div>
+<div class="tip" id="fs108">Multiple items<br />val byte : value:&#39;T -&gt; byte (requires member op_Explicit)<br /><br />Full name: Microsoft.FSharp.Core.Operators.byte<br /><br />--------------------<br />type byte = System.Byte<br /><br />Full name: Microsoft.FSharp.Core.byte</div>
+<div class="tip" id="fs109">property HttpListenerResponse.ContentType: string</div>
+<div class="tip" id="fs110">val server : HttpAgent<br /><br />Full name: ChatServer.server</div>
+<div class="tip" id="fs111">type HttpAgent =<br />&#160;&#160;private new : url:string * f:(HttpAgent -&gt; Async&lt;unit&gt;) -&gt; HttpAgent<br />&#160;&#160;member Receive : ?timeout:int -&gt; Async&lt;HttpListenerContext&gt;<br />&#160;&#160;member Stop : unit -&gt; unit<br />&#160;&#160;static member Start : url:string * f:(HttpAgent -&gt; Async&lt;unit&gt;) -&gt; HttpAgent<br /><br />Full name: ChatServer.HttpAgent</div>
+<div class="tip" id="fs112">static member HttpAgent.Start : url:string * f:(HttpAgent -&gt; Async&lt;unit&gt;) -&gt; HttpAgent</div>
+<div class="tip" id="fs113">val server : HttpAgent</div>
+<div class="tip" id="fs114">val ctx : HttpListenerContext</div>
+<div class="tip" id="fs115">member HttpAgent.Receive : ?timeout:int -&gt; Async&lt;HttpListenerContext&gt;</div>
+<div class="tip" id="fs116">property HttpListenerContext.Response: HttpListenerResponse</div>
+<div class="tip" id="fs117">member HttpListenerResponse.Reply : s:string -&gt; unit<br />member HttpListenerResponse.Reply : typ:string * buffer:byte [] -&gt; unit</div>
+<div class="tip" id="fs118">member HttpAgent.Stop : unit -&gt; unit</div>
+<div class="tip" id="fs119">val root : string<br /><br />Full name: ChatServer.root</div>
+<div class="tip" id="fs120">val contentTypes : System.Collections.Generic.IDictionary&lt;string,string&gt;<br /><br />Full name: ChatServer.contentTypes</div>
+<div class="tip" id="fs121">val dict : keyValuePairs:seq&lt;&#39;Key * &#39;Value&gt; -&gt; System.Collections.Generic.IDictionary&lt;&#39;Key,&#39;Value&gt; (requires equality)<br /><br />Full name: Microsoft.FSharp.Core.ExtraTopLevelOperators.dict</div>
+<div class="tip" id="fs122">val server2 : HttpAgent<br /><br />Full name: ChatServer.server2</div>
+<div class="tip" id="fs123">val mbox : HttpAgent</div>
+<div class="tip" id="fs124">val handleRequest : (HttpListenerContext -&gt; Async&lt;unit&gt;)</div>
+<div class="tip" id="fs125">type HttpListenerContext =<br />&#160;&#160;member Request : HttpListenerRequest<br />&#160;&#160;member Response : HttpListenerResponse<br />&#160;&#160;member User : IPrincipal<br /><br />Full name: System.Net.HttpListenerContext</div>
+<div class="tip" id="fs126">property HttpListenerContext.Request: HttpListenerRequest</div>
+<div class="tip" id="fs127">property HttpListenerRequest.Url: System.Uri</div>
+<div class="tip" id="fs128">property System.Uri.LocalPath: string</div>
+<div class="tip" id="fs129">property HttpListenerRequest.InputString: string</div>
+<div class="tip" id="fs130">val text : string</div>
+<div class="tip" id="fs131">val file : string</div>
+<div class="tip" id="fs132">System.String.ToLower() : string<br />System.String.ToLower(culture: System.Globalization.CultureInfo) : string</div>
+<div class="tip" id="fs133">type File =<br />&#160;&#160;static member AppendAllLines : path:string * contents:IEnumerable&lt;string&gt; -&gt; unit + 1 overload<br />&#160;&#160;static member AppendAllText : path:string * contents:string -&gt; unit + 1 overload<br />&#160;&#160;static member AppendText : path:string -&gt; StreamWriter<br />&#160;&#160;static member Copy : sourceFileName:string * destFileName:string -&gt; unit + 1 overload<br />&#160;&#160;static member Create : path:string -&gt; FileStream + 3 overloads<br />&#160;&#160;static member CreateText : path:string -&gt; StreamWriter<br />&#160;&#160;static member Decrypt : path:string -&gt; unit<br />&#160;&#160;static member Delete : path:string -&gt; unit<br />&#160;&#160;static member Encrypt : path:string -&gt; unit<br />&#160;&#160;static member Exists : path:string -&gt; bool<br />&#160;&#160;...<br /><br />Full name: System.IO.File</div>
+<div class="tip" id="fs134">File.Exists(path: string) : bool</div>
+<div class="tip" id="fs135">type Path =<br />&#160;&#160;static val DirectorySeparatorChar : char<br />&#160;&#160;static val AltDirectorySeparatorChar : char<br />&#160;&#160;static val VolumeSeparatorChar : char<br />&#160;&#160;static val InvalidPathChars : char[]<br />&#160;&#160;static val PathSeparator : char<br />&#160;&#160;static member ChangeExtension : path:string * extension:string -&gt; string<br />&#160;&#160;static member Combine : [&lt;ParamArray&gt;] paths:string[] -&gt; string + 3 overloads<br />&#160;&#160;static member GetDirectoryName : path:string -&gt; string<br />&#160;&#160;static member GetExtension : path:string -&gt; string<br />&#160;&#160;static member GetFileName : path:string -&gt; string<br />&#160;&#160;...<br /><br />Full name: System.IO.Path</div>
+<div class="tip" id="fs136">Path.GetExtension(path: string) : string</div>
+<div class="tip" id="fs137">File.ReadAllBytes(path: string) : byte []</div>
+<div class="tip" id="fs138">val sprintf : format:Printf.StringFormat&lt;&#39;T&gt; -&gt; &#39;T<br /><br />Full name: Microsoft.FSharp.Core.ExtraTopLevelOperators.sprintf</div>
+
+        </div>
+        <div class="span3">
+          <img src="/FSharpx.Extras/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharpx.Extras</li>
+            <li><a href="/FSharpx.Extras/index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.org/packages/FSharpx.Extras">Get Library via NuGet</a></li>
+            <li><a href="https://github.com/fsprojects/FSharpx.Extras">Source Code on GitHub</a></li>
+            <li><a href="/FSharpx.Extras/license.html">License</a></li>
+            <li><a href="/FSharpx.Extras/release-notes.html">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="/FSharpx.Extras/index.html">Introduction</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="/FSharpx.Extras/reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/fsprojects/FSharpx.Extras"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
+  </body>
+  </html>
