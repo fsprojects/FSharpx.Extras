@@ -1,4 +1,5 @@
-FsCheck
 FSharpx.Async
 FSharpx.Collections
+group Test
+FsCheck
 FsUnit

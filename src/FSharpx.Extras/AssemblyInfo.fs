@@ -1,41 +1,13 @@
-module FSharpx.Extras.AssemblyInfo
-#nowarn "49" // uppercase argument names
-#nowarn "67" // this type test or downcast will always hold
-#nowarn "66" // tis upast is unnecessary - the types are identical
-#nowarn "58" // possible incorrect indentation..
-#nowarn "57" // do not use create_DelegateEvent
-#nowarn "51" // address-of operator can occur in the code
-open System
+﻿namespace System
 open System.Reflection
-open System.Runtime.CompilerServices
-open System.Runtime.InteropServices
-exception ReturnException183c26a427ae489c8fd92ec21a0c9a59 of obj
-exception ReturnNoneException183c26a427ae489c8fd92ec21a0c9a59
 
-[<assembly: ComVisible (false)>]
+[<assembly: AssemblyTitleAttribute("FSharpx.Extras")>]
+[<assembly: AssemblyProductAttribute("FSharpx.Extras")>]
+[<assembly: AssemblyDescriptionAttribute("FSharpx.Extras implements general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.")>]
+[<assembly: AssemblyVersionAttribute("2.0.0")>]
+[<assembly: AssemblyFileVersionAttribute("2.0.0")>]
+do ()
 
-[<assembly: CLSCompliant (false)>]
-
-[<assembly: Guid ("1e95a279-c2a9-498b-bc72-6e7a0d6854ce")>]
-
-[<assembly: AssemblyTitle ("FSharpx.Extras")>]
-
-[<assembly: AssemblyDescription ("FSharpx.Extras implements general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.
-
-It currently implements:
-
-* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution
-* Validation applicative functor
-* General functions like flip
-* Additional functions around collections
-* Functions to make C# - F# interop easier.")>]
-
-[<assembly: AssemblyProduct ("FSharpx.Extras")>]
-
-[<assembly: AssemblyVersion ("2.0.0")>]
-
-[<assembly: AssemblyFileVersion ("2.0.0")>]
-
-[<assembly: AssemblyDelaySign (false)>]
-
-()
+module internal AssemblyVersionInformation =
+    let [<Literal>] Version = "2.0.0"
+    let [<Literal>] InformationalVersion = "2.0.0"
