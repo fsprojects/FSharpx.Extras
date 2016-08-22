@@ -65,110 +65,131 @@ module Prelude =
     // Bottom value
     let undefined<'T> : 'T = raise (NotImplementedException("result was implemented as undefined")) 
 
+    let inline toOption x = match x with
+                            | true, v -> Some v
+                            | _       -> None
+
+    let inline tryWith f x = f x |> toOption
+
     type Boolean with
+        static member parse =
+            tryWith bool.TryParse
+
+    type SByte with
+        static member parseWithOptions style provider x =
+            SByte.TryParse(x, style, provider) |> toOption
+
         static member parse x =
-            match bool.TryParse(x) with
-            | true,v -> Some v
-            | _ -> None
-            
-    type Int16 with
-        static member parseWithOptions style provider x =
-            match Int16.TryParse(x, style, provider) with
-            | true,v -> Some v
-            | _ -> None
-            
-        static member parse x = 
-            Int16.parseWithOptions NumberStyles.Integer CultureInfo.InvariantCulture x
-
-    type Int32 with
-        static member parseWithOptions style provider x =
-            match Int32.TryParse(x, style, provider) with
-            | true,v -> Some v
-            | _ -> None
-            
-        static member parse x = 
-            Int32.parseWithOptions NumberStyles.Integer CultureInfo.InvariantCulture x
-
-    type Decimal with
-        static member parseWithOptions style provider x =
-            match Decimal.TryParse(x, style, provider) with
-            | true,v -> Some v
-            | _ -> None
-            
-        static member parse x = 
-            Decimal.parseWithOptions NumberStyles.Currency CultureInfo.InvariantCulture x
+            SByte.parseWithOptions NumberStyles.Integer CultureInfo.InvariantCulture x
 
     type Byte with
         static member parseWithOptions style provider x =
-            match Byte.TryParse(x, style, provider) with
-            | true,v -> Some v
-            | _ -> None
-            
-        static member parse x = 
+            Byte.TryParse(x, style, provider) |> toOption
+
+        static member parse x =
             Byte.parseWithOptions NumberStyles.Integer CultureInfo.InvariantCulture x
+
+    type UInt16 with
+        static member parseWithOptions style provider x =
+            UInt16.TryParse(x, style, provider) |> toOption
+
+        static member parse x =
+            UInt16.parseWithOptions NumberStyles.Integer CultureInfo.InvariantCulture x
+
+    type Int16 with
+        static member parseWithOptions style provider x =
+            Int16.TryParse(x, style, provider) |> toOption
+
+        static member parse x =
+            Int16.parseWithOptions NumberStyles.Integer CultureInfo.InvariantCulture x
+
+    type UInt32 with
+        static member parseWithOptions style provider x =
+            UInt32.TryParse(x, style, provider) |> toOption
+
+        static member parse x =
+            UInt32.parseWithOptions NumberStyles.Integer CultureInfo.InvariantCulture x
+
+    type Int32 with
+        static member parseWithOptions style provider x =
+            Int32.TryParse(x, style, provider) |> toOption
+
+        static member parse x =
+            Int32.parseWithOptions NumberStyles.Integer CultureInfo.InvariantCulture x
+
+    type UInt64 with
+        static member parseWithOptions style provider x =
+            UInt64.TryParse(x, style, provider) |> toOption
+
+        static member parse x =
+            UInt64.parseWithOptions NumberStyles.Integer CultureInfo.InvariantCulture x
 
     type Int64 with
         static member parseWithOptions style provider x =
-            match Int64.TryParse(x, style, provider) with
-            | true,v -> Some v
-            | _ -> None
-            
-        static member parse x = 
+            Int64.TryParse(x, style, provider) |> toOption
+
+        static member parse x =
             Int64.parseWithOptions NumberStyles.Integer CultureInfo.InvariantCulture x
+
+    type Decimal with
+        static member parseWithOptions style provider x =
+            Decimal.TryParse(x, style, provider) |> toOption
+
+        static member parse x =
+            Decimal.parseWithOptions NumberStyles.Currency CultureInfo.InvariantCulture x
 
     type Single with
         static member parseWithOptions style provider x =
-            match Single.TryParse(x, style, provider) with
-            | true,v -> Some v
-            | _ -> None
-            
-        static member parse x = 
+            Single.TryParse(x, style, provider) |> toOption
+
+        static member parse x =
             Single.parseWithOptions NumberStyles.Float CultureInfo.InvariantCulture x
 
     type Double with
         static member parseWithOptions style provider x =
-            match Double.TryParse(x, style, provider) with
-            | true,v -> Some v
-            | _ -> None
-            
-        static member parse x = 
+            Double.TryParse(x, style, provider) |> toOption
+
+        static member parse x =
             Double.parseWithOptions NumberStyles.Float CultureInfo.InvariantCulture x
 
     type DateTime with
         static member parseWithOptions style provider x =
-            match DateTime.TryParse(x, provider, style) with
-            | true,v -> Some v
-            | _ -> None
-            
-        static member parse x = 
+            DateTime.TryParse(x, provider, style) |> toOption
+
+        static member parse x =
             DateTime.parseWithOptions DateTimeStyles.None CultureInfo.InvariantCulture x
 
         static member parseExactWithOptions style provider (formats: string[]) x =
-            match DateTime.TryParseExact(x, formats, provider, style) with
-            | true,v -> Some v
-            | _ -> None
+            DateTime.TryParseExact(x, formats, provider, style) |> toOption
 
         static member parseExact formats x =
             DateTime.parseExactWithOptions DateTimeStyles.None CultureInfo.InvariantCulture formats x
 
     type DateTimeOffset with
         static member parseWithOptions style provider x =
-            match DateTimeOffset.TryParse(x, provider, style) with
-            | true,v -> Some v
-            | _ -> None
-            
-        static member parse x = 
+            DateTimeOffset.TryParse(x, provider, style) |> toOption
+
+        static member parse x =
             DateTimeOffset.parseWithOptions DateTimeStyles.None CultureInfo.InvariantCulture x
 
         static member parseExactWithOptions style provider (formats: string[]) x =
-            match DateTimeOffset.TryParseExact(x, formats, provider, style) with
-            | true,v -> Some v
-            | _ -> None
+            DateTimeOffset.TryParseExact(x, formats, provider, style) |> toOption
 
         static member parseExact formats x =
             DateTimeOffset.parseExactWithOptions DateTimeStyles.None CultureInfo.InvariantCulture formats x
 
     // Active patterns
-    let (|Boolean|_|) = Boolean.parse
-    let (|Int32|_|) = Int32.parse
-    let (|Double|_|) = Double.parse
+    let (|Boolean       |_|) = Boolean.parse
+    let (|SByte         |_|) = SByte.parse
+    let (|Byte          |_|) = Byte.parse
+    let (|UInt16        |_|) = UInt16.parse
+    let (|Int16         |_|) = Int16.parse
+    let (|UInt32        |_|) = UInt32.parse
+    let (|Int32         |_|) = Int32.parse
+    let (|UInt64        |_|) = UInt64.parse
+    let (|Int64         |_|) = Int64.parse
+    let (|Decimal       |_|) = Decimal.parse
+    let (|Single        |_|) = Single.parse
+    let (|Double        |_|) = Double.parse
+    let (|DateTime      |_|) = DateTime.parse
+    let (|DateTimeOffset|_|) = DateTime.parse
