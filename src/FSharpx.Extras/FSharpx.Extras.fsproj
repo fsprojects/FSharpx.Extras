@@ -77,6 +77,7 @@
     <Content Include="app.config" />
     <Compile Include="Net.fs" />
     <Compile Include="Conneg.fs" />
+    <Compile Include="Enum.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
