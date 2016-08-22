@@ -29,7 +29,7 @@ NUGET
 GITHUB
   remote: fsharp/FAKE
     modules/Octokit/Octokit.fsx (ce85407e38a97dad4102c535ce72a99c0053a5da)
-      Octokit
+      Octokit (>= 0.20)
 GROUP Test
 NUGET
   remote: https://www.nuget.org/api/v2
@@ -53,4 +53,10 @@ NUGET
     NUnit.Extension.NUnitV2ResultWriter (3.4.1)
     NUnit.Extension.TeamCityEventListener (1.0.1)
     NUnit.Extension.VSProjectLoader (3.4.1)
-    NUnit.Runners (2.6.4)
+    NUnit.Runners (3.4.1)
+      NUnit.ConsoleRunner (>= 3.4.1)
+      NUnit.Extension.NUnitProjectLoader (>= 3.4.1)
+      NUnit.Extension.NUnitV2Driver (>= 3.4.1)
+      NUnit.Extension.NUnitV2ResultWriter (>= 3.4.1)
+      NUnit.Extension.TeamCityEventListener (>= 1.0.1)
+      NUnit.Extension.VSProjectLoader (>= 3.4.1)
