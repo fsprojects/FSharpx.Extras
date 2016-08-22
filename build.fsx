@@ -47,11 +47,7 @@ let buildLibParams fxVersion =
      "TargetFSharpCoreVersion", "4.3.0.0"
      "DefineConstants", "FX_NO_WINDOWSFORMS"
      ]
-
-// tools
-let nunitPath = packagesDir  @@ "NUnit.Runners/tools"
-
-
+     
 // targets
 Target "Clean" (fun _ ->       
     CleanDirs [buildDir]
@@ -82,7 +78,6 @@ Target "AssemblyInfo" (fun _ ->
 )
 
 
-
 Target "Build" (fun _ ->
     for fxVersion in fxVersions do
         // Only generate tests for net40
@@ -97,7 +92,6 @@ Target "Test" (fun _ ->
       !! (buildDirVer fxVersion @@ "*.Tests.dll")
       |> NUnit (fun p ->
         {p with
-            ToolPath = nunitPath
             DisableShadowCopy = true
             OutputFile = buildDirVer fxVersion @@ sprintf "TestResults.%s.xml" fxVersion }))
 

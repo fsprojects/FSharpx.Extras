@@ -1,8 +1,15 @@
-### 1.10.3 - Added undefined in Prelude - https://github.com/fsprojects/FSharpx.Extras/pull/332
+#### 2.0.0 - 22.08.2016
+* BREAKING: Deprecated .NET 4.0 version
+* BREAKING: Removed all functions that were marked as obsolete. This includes JSON API
 
-### 1.10.2 - List dependencies properly in nuget package
+### 1.10.3 
+* Added undefined in Prelude - https://github.com/fsprojects/FSharpx.Extras/pull/332
 
-### 1.10.1 - Fix dependency in nuget package
+### 1.10.2
+* List dependencies properly in nuget package
+
+### 1.10.1
+* Fix dependency in nuget package
 * Fix #332
 
 ### 1.10.0 - Renamed to FSharpx.Extras
