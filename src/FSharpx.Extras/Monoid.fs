@@ -130,6 +130,12 @@ namespace FSharpx.Collections
             
     module Seq =
 
+        let monoid<'T> =
+            { new Monoid<seq<'T>>() with
+                override this.Zero() = Seq.empty
+                override this.Combine(a,b) = Seq.append a b
+            }
+
         let foldMap (monoid: _ Monoid) f =
             Seq.fold (fun s e -> monoid.Combine(s, f e)) (monoid.Zero())
     
