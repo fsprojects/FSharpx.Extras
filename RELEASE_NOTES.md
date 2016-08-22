@@ -1,4 +1,5 @@
 #### 2.0.0 - 22.08.2016
+* Added Add Task related helper functions - https://github.com/fsprojects/FSharpx.Extras/pull/339
 * New Enum convenience methods - https://github.com/fsprojects/FSharpx.Extras/pull/327
 * BREAKING: Deprecated .NET 4.0 version
 * BREAKING: Removed all functions that were marked as obsolete. This includes JSON API

@@ -1115,7 +1115,6 @@ module Task =
                 return Choice2Of2 e
         }
 
-#if !NET40
     /// Creates a task that executes all the given tasks.
     let Parallel (tasks : seq<unit -> Task<'a>>) =
         tasks
@@ -1139,4 +1138,3 @@ module Task =
         tasks
         |> Seq.map throttleTask
         |> Parallel
-#endif
