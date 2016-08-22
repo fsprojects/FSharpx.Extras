@@ -175,7 +175,7 @@ let LensChoice() = checkLens "choice" (Car.make .|. Car.model)
 let LensProduct() = checkLens "product" (Car.make *** Car.model)
 
 type Product = {
-    Name: string
+    Name: NonNull<string>
     PriceWithTax: int
     PriceWithoutTax: int
 } with 
@@ -190,7 +190,7 @@ type Product = {
           Set = fun v (x: Product) -> { x with PriceWithoutTax = v } }
 
 let productPrice = 
-    Lens.cond (Product.name.Get >> Strings.contains "book") 
+    Lens.cond (Product.name.Get >> string >> Strings.contains "book") 
         Product.priceWithoutTax // true
         Product.priceWithTax // false
 

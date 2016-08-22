@@ -35,14 +35,13 @@ namespace FSharpx.CSharpTests {
             var urls = FSharpList.Create(
                   "http://www.google.com"
                 , "http://www.bing.com"
-                , "http://www.yahoo.com"
                 , "http://www.microsoft.com"
                 );
             var result = urls.Select(Get).Parallel()
                 .Select(s => string.Join("", s))
                 .Run();
             var rx = new Regex(@"<html");
-            Assert.AreEqual(4, rx.Matches(result).Count);
+            Assert.AreEqual(3, rx.Matches(result).Count);
         }
 
         [Test]
@@ -55,13 +54,6 @@ namespace FSharpx.CSharpTests {
 
             FSharpAsync<int> x = FSharpAsyncEx.Return(1);
             FSharpAsync<Func<int>> fa = FSharpAsyncEx.Return(L.F(() => 1));
-        }
-
-        [Test]
-        public void Protect() {
-            Get("http://www.google.comco").Protect().Run()
-                .Match(result => Assert.Fail("request should have failed"),
-                       e => { });
         }
 
         [Test]

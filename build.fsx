@@ -5,6 +5,7 @@ open Fake
 open Fake.Git
 open Fake.ReleaseNotesHelper
 open System.IO
+open Fake.Testing
 
 
 let net45 = "v4.5"
@@ -73,8 +74,6 @@ Target "AssemblyInfo" (fun _ ->
             AssemblyDescription = getPackageDesc "FSharpx.Text.StructuredFormat"
             Guid = "65e077ed-f51a-42d7-8004-e90d60af8b8f"
             OutputFileName = "./src/FSharpx.Text.StructuredFormat/AssemblyInfo.fs" })
-            
-
 )
 
 
@@ -90,10 +89,7 @@ Target "Test" (fun _ ->
     for fxVersion in [net45] do
       printfn "buildDirVer fxVersion = %s" (buildDirVer fxVersion)
       !! (buildDirVer fxVersion @@ "*.Tests.dll")
-      |> NUnit (fun p ->
-        {p with
-            DisableShadowCopy = true
-            OutputFile = buildDirVer fxVersion @@ sprintf "TestResults.%s.xml" fxVersion }))
+      |> NUnit3 id)
 
 
 Target "PaketPack" (fun _ ->

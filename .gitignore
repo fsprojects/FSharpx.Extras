@@ -44,3 +44,7 @@ release.cmd
 .fake/*
 docs/output/*
 
+*.ncrunchproject
+*.ncrunchsolution
+tmp.bin
+tmp.txt

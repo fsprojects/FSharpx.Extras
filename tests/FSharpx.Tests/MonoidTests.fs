@@ -42,16 +42,8 @@ let ``map monoid``() =
     checkMonoid "map" Map.monoid<int,int>
 
 [<Test>]
-let ``string monoid``() =
-    checkMonoid "string" Monoid.string
-
-[<Test>]
 let ``option monoid``() =
     checkMonoid "option" (Option.monoid (Monoid.product()))
-
-[<Test>]
-let ``dual monoid``() =
-    checkMonoid "dual" (Monoid.dual Monoid.string)
 
 [<Test>]
 let ``dual monoid example``() =
@@ -74,11 +66,11 @@ let ``all monoid``() =
 
 [<Test>]
 let ``tuple2 monoid``() =
-    checkMonoid "tuple2" (Monoid.tuple2 List.monoid Monoid.string)
+    checkMonoid "tuple2" (Monoid.tuple2 List.monoid Monoid.all)
 
 [<Test>]
 let ``tuple3 monoid``() =
-    checkMonoid "tuple3" (Monoid.tuple3 List.monoid Monoid.string Monoid.all)
+    checkMonoid "tuple3" (Monoid.tuple3 List.monoid Monoid.all Monoid.all)
 
 [<Test>]
 let ``min monoid``() =
