@@ -2,14 +2,10 @@ source https://nuget.org/api/v2
 
 nuget FAKE
 nuget FsCheck
-nuget FSharp.Compiler.Service
-nuget FSharp.Control.AsyncSeq
 nuget FSharp.Formatting
 nuget FSharpx.Async
 nuget FSharpx.Collections
 nuget FsUnit
-nuget NUnit
 nuget NUnit.Runners
-nuget Microsoft.AspNet.Razor
 nuget RazorEngine
 nuget FSharp.Core redirects:force
