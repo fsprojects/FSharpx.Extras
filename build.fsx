@@ -157,7 +157,7 @@ Target "CI" DoNothing
 
 "Build" 
   ==> "GenerateDocs"
-//  ==> "ReleaseDocs"
+  ==> "ReleaseDocs"
   ==> "Release"
 
 "Test"
