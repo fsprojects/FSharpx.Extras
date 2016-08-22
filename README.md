@@ -1,29 +1,41 @@
-[![Issue Stats](http://issuestats.com/github/fsprojects/fsharpx/badge/issue)](http://issuestats.com/github/fsprojects/fsharpx)
-[![Issue Stats](http://issuestats.com/github/fsprojects/fsharpx/badge/pr)](http://issuestats.com/github/fsprojects/fsharpx)
+[![Issue Stats](http://issuestats.com/github/fsprojects/ProjectScaffold/badge/issue)](http://issuestats.com/github/fsprojects/ProjectScaffold)
+[![Issue Stats](http://issuestats.com/github/fsprojects/ProjectScaffold/badge/pr)](http://issuestats.com/github/fsprojects/ProjectScaffold)
 
+# ProjectScaffold
 
-# FSharpx.Extras [![NuGet Status](http://img.shields.io/nuget/v/FSharpx.Extras.svg?style=flat)](https://www.nuget.org/packages/FSharpx.Extras)
+This project can be used to scaffold a prototypical .NET solution including file system layout and tooling. This includes a build process that: 
 
-**FSharpx.Extras** is a collection of libraries and tools for use with F#.
+* updates all AssemblyInfo files
+* compiles the application and runs all test projects
+* generates [SourceLinks](https://github.com/ctaggart/SourceLink)
+* generates API docs based on XML document tags
+* generates [documentation based on Markdown files](http://fsprojects.github.io/ProjectScaffold/writing-docs.html)
+* generates [NuGet](http://www.nuget.org) packages
+* and allows a simple [one step release process](http://fsprojects.github.io/ProjectScaffold/release-process.html).
 
-See [the home page](http://fsprojects.github.io/FSharpx.Extras/) for details. The home page can be [edited, forked or cloned](https://github.com/fsprojects/fsharpx/tree/gh-pages)
-Please contribute to this project. Don't ask for permission, just fork the repository and send pull requests.
+In order to start the scaffolding process run 
 
-Please also join the [F# Open Source Group](http://fsharp.github.com)
+    > build.cmd // on windows    
+    $ ./build.sh  // on unix
+    
+Read the [Getting started tutorial](http://fsprojects.github.io/ProjectScaffold/index.html#Getting-started) to learn more.
 
+Documentation: http://fsprojects.github.io/ProjectScaffold
 
-# Build Status
+## Requirements
+
+ProjectScaffold requires a local git installation. You can download git from [Git Downloads](https://git-scm.com/downloads).
+
+## Build Status
 
 Mono | .NET
 ---- | ----
-[![Mono CI Build Status](https://img.shields.io/travis/fsprojects/FSharpx.Extras/master.svg)](https://travis-ci.org/fsprojects/FSharpx.Extras) | [![.NET CI Build Status](https://img.shields.io/appveyor/ci/fsgit/FSharpx/master.svg)](https://ci.appveyor.com/project/fsgit/FSharpx)
+[![Mono CI Build Status](https://img.shields.io/travis/fsprojects/ProjectScaffold/master.svg)](https://travis-ci.org/fsprojects/ProjectScaffold) | [![.NET Build Status](https://img.shields.io/appveyor/ci/fsgit/ProjectScaffold/master.svg)](https://ci.appveyor.com/project/fsgit/projectscaffold)
 
-
-# Maintainer(s)
+## Maintainer(s)
 
 - [@forki](https://github.com/forki)
-- [@mausch](https://github.com/mausch)
-- [@panesofglass](https://github.com/panesofglass)
+- [@pblasucci](https://github.com/pblasucci)
+- [@sergey-tihon](https://github.com/sergey-tihon)
 
 The default maintainer account for projects under "fsprojects" is [@fsprojectsgit](https://github.com/fsprojectsgit) - F# Community Project Incubation Space (repo management)
-

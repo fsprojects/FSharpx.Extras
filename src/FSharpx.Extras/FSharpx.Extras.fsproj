@@ -30,10 +30,10 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <Tailcalls>true</Tailcalls>
-    <OutputPath>..\..\bin\</OutputPath>
+    <OutputPath>bin\Release</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>..\..\bin\FSharpx.Extras.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\FSharpx.Extras.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="$(TargetFrameworkVersion) == 'v3.5'">
     <DefineConstants>NET35</DefineConstants>
@@ -78,6 +78,7 @@
     <Compile Include="Net.fs" />
     <Compile Include="Conneg.fs" />
     <Compile Include="Enum.fs" />
+    <None Include="paket.template" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />

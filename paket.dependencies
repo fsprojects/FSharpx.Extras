@@ -1,11 +1,24 @@
 source https://nuget.org/api/v2
 
-nuget FAKE
-nuget FsCheck
-nuget FSharp.Formatting
+nuget FSharp.Core redirects: force
 nuget FSharpx.Async
 nuget FSharpx.Collections
-nuget FsUnit
-nuget NUnit.Runners
-nuget RazorEngine
-nuget FSharp.Core redirects:force
+
+
+group Build
+  source https://nuget.org/api/v2
+  
+  nuget SourceLink.Fake
+  nuget FAKE
+  nuget FSharp.Formatting
+
+  github fsharp/FAKE modules/Octokit/Octokit.fsx
+
+group Test
+  source https://nuget.org/api/v2
+  
+  nuget NUnit
+  nuget NUnit.Runners
+  nuget NUnit.Console
+  nuget FsCheck
+  nuget FsUnit
