@@ -5,7 +5,7 @@ open System
 open System.Collections
 open System.Collections.Generic
 open FSharpx.Collections
-open FSharp.Control
+open Microsoft.FSharp.Control
 
 (*
 # Iteratee

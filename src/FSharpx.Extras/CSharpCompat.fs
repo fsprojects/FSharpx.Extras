@@ -9,7 +9,7 @@ open FSharpx.Collections
 open FSharpx.Functional
 open FSharpx.Control
 open FSharpx
-
+open Microsoft.FSharp.Control.WebExtensions
 
 [<assembly:Extension>]
 do()

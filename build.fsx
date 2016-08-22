@@ -7,8 +7,7 @@ open Fake.ReleaseNotesHelper
 open System.IO
 
 
-// .NET Frameworks
-let net40 = "v4.0"
+let net45 = "v4.5"
 
 // directories
 let buildDir = "./bin"
@@ -36,7 +35,7 @@ let gitName = "FSharpx.Extras"
 System.Environment.CurrentDirectory <- __SOURCE_DIRECTORY__
 let release = parseReleaseNotes (File.ReadAllLines "RELEASE_NOTES.md")
 
-let fxVersions = [net40]
+let fxVersions = [net45]
 
 let normalizeFrameworkVersion fxVersion =
     let v = ("[^\\d]" >=> "") fxVersion
@@ -93,7 +92,7 @@ Target "Build" (fun _ ->
 
 Target "Test" (fun _ ->
     ActivateFinalTarget "CloseTestRunner"
-    for fxVersion in [net40] do
+    for fxVersion in [net45] do
       printfn "buildDirVer fxVersion = %s" (buildDirVer fxVersion)
       !! (buildDirVer fxVersion @@ "*.Tests.dll")
       |> NUnit (fun p ->

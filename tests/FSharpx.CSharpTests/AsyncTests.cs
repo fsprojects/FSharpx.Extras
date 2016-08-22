@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using Microsoft.FSharp.Control;
 using FSharpx;
-using FSharpx.Control;
 using Microsoft.FSharp.Core;
 using NUnit.Framework;
 

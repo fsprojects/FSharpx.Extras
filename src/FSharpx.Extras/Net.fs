@@ -12,7 +12,7 @@ open System.Threading
 
 open FSharpx.IO
 open FSharpx.Async
-open FSharp.Control
+open Microsoft.FSharp.Control
 
 // ----------------------------------------------------------------------------
 // Extensions that simplify working with HttpListener and related types
@@ -43,8 +43,10 @@ module HttpExtensions =
     /// Asynchronously reads the 'InputStream' of the request and converts it to a string
     member request.AsyncInputString = async {
       use tmp = new MemoryStream()
-      for data in request.InputStream.AsyncReadSeq(16 * 1024) do
-        tmp.Write(data, 0, data.Length) 
+      do!
+          request.InputStream.AsyncReadSeq(16 * 1024)
+          |> FSharp.Control.AsyncSeq.iter (fun data -> tmp.Write(data, 0, data.Length)) 
+
       tmp.Seek(0L, SeekOrigin.Begin) |> ignore
       use sr = new StreamReader(tmp)
       return sr.ReadToEnd() }

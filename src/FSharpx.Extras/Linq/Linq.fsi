@@ -165,9 +165,3 @@ namespace FSharpx.Linq
             type FuncHelper<'T1,'T2,'T3,'T4,'T5,'T6,'T7,'T8,'T9,'T10, 'T11, 'T12, 'T13, 'T14, 'T15, 'T16, 'T17, 'T18, 'T19, 'T20> = delegate of 'T1 * 'T2 * 'T3 * 'T4 * 'T5 * 'T6 * 'T7 * 'T8 * 'T9 * 'T10 * 'T11 * 'T12 * 'T13 * 'T14 * 'T15 * 'T16 * 'T17 * 'T18 * 'T19 -> 'T20 
             [<System.Obsolete("This type is for use by the quotation to LINQ expression tree converter and is not for direct use from user code")>]
             type FuncHelper<'T1,'T2,'T3,'T4,'T5,'T6,'T7,'T8,'T9,'T10, 'T11, 'T12, 'T13, 'T14, 'T15, 'T16, 'T17, 'T18, 'T19, 'T20, 'T21> = delegate of 'T1 * 'T2 * 'T3 * 'T4 * 'T5 * 'T6 * 'T7 * 'T8 * 'T9 * 'T10 * 'T11 * 'T12 * 'T13 * 'T14 * 'T15 * 'T16 * 'T17 * 'T18 * 'T19 * 'T20 -> 'T21 
-
-    [<AutoOpen>]
-    module QuotationHelpers =
-        /// Converts a Lambda quotation into a Linq Lamba Expression with 1 parameter
-        [<Obsolete("This component is no longer maintained. Please use FSharp.Quotations.Evaluator from https://github.com/fsprojects/FSharp.Quotations.Evaluator")>]
-        val toLinqExpression: (Quotations.Expr<'a -> 'b>) -> Expression<Func<'a,'b>>

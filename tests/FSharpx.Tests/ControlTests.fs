@@ -73,7 +73,7 @@ type public ControlTests() =
 #endif
 
 
-    [<TestFixtureSetUp>]
+    [<OneTimeSetUpAttribute>]
     member this.TestFixtureSetUp() = 
         System.AppDomain.CurrentDomain.UnhandledException.AddHandler(
                fun _ (args:System.UnhandledExceptionEventArgs) ->
