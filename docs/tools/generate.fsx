@@ -22,16 +22,9 @@ let info =
 // For typical project, no changes are needed below
 // --------------------------------------------------------------------------------------
 
+#load "../../packages/FSharp.Formatting/FSharp.Formatting.fsx"
 #I "../../packages/FAKE/tools/"
-#I "../../packages/FSharp.Formatting/lib/net40"
-#I "../../packages/RazorEngine/lib/net40"
-#I "../../packages/FSharp.Compiler.Service/lib/net40"
-#r "../../packages/Microsoft.AspNet.Razor/lib/net40/System.Web.Razor.dll"
-#r "../../packages/FAKE/tools/FakeLib.dll"
-#r "RazorEngine.dll"
-#r "FSharp.Literate.dll"
-#r "FSharp.CodeFormat.dll"
-#r "FSharp.MetadataFormat.dll"
+#r "FakeLib.dll"
 open Fake
 open System.IO
 open Fake.FileHelper
@@ -47,7 +40,7 @@ let root = "file://" + (__SOURCE_DIRECTORY__ @@ "../output")
 #endif
 
 // Paths with template/source/output locations
-let bin        = __SOURCE_DIRECTORY__ @@ "../../bin/v4.0"
+let bin        = __SOURCE_DIRECTORY__ @@ "../../bin/v4.5"
 let content    = __SOURCE_DIRECTORY__ @@ "../content"
 let output     = __SOURCE_DIRECTORY__ @@ "../output"
 let files      = __SOURCE_DIRECTORY__ @@ "../files"
@@ -77,7 +70,9 @@ let buildReference () =
         sourceRepo = githubLink @@ "tree/master",
         sourceFolder = __SOURCE_DIRECTORY__ @@ ".." @@ "..",
         publicOnly = true, 
-        otherFlags=["-r:" + bin @@ "FSharpx.Collections.dll"] )
+        otherFlags=["-r:" + bin @@ "FSharpx.Collections.dll"]
+      , xmlFile = __SOURCE_DIRECTORY__ @@ "../../bin/FSharpx.Extras.xml"
+      )
 
 // Build documentation from `fsx` and `md` files in `docs/content`
 let buildDocumentation () =

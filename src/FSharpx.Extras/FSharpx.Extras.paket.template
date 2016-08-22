@@ -29,6 +29,6 @@ dependencies
   FSharpx.Async ~> LOCKEDVERSION
   FSharpx.Collections ~> LOCKEDVERSION
 files
-  ../../bin/v4.0/FSharpx.Extras.dll ==> lib/40
-  ../../bin/FSharpx.Extras.xml ==> lib/40
+  ../../bin/v4.5/FSharpx.Extras.dll ==> lib/net45
+  ../../bin/FSharpx.Extras.xml ==> lib/net45
   ../../LICENSE.md ==> .

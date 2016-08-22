@@ -11,6 +11,8 @@ using FSharpx;
 using Microsoft.FSharp.Core;
 using NUnit.Framework;
 
+#pragma warning disable 219
+
 namespace FSharpx.CSharpTests {
     [TestFixture]
     public class AsyncTests {

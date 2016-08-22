@@ -14,10 +14,12 @@ namespace FSharpx.CSharpTests {
                 Tuple.Create(1, "one"), 
                 Tuple.Create(2, "two"),
             });
+            #pragma warning disable 219
             FSharpMap<int, string> m3 = new FSharpMap<int, string>(Enumerable.Empty<Tuple<int, string>>()) {
                 { 1, "one" },
                 { 2, "two" },
-            };            
+            };
+            #pragma warning restore 219
             Assert.AreEqual(m1, m2);
         }
 

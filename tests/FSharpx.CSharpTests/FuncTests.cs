@@ -19,7 +19,10 @@ namespace FSharpx.CSharpTests {
             int a = 0;
             Action action = () => a = a + 1;
             Action[] actions = new[] {action,action};
+            #pragma warning disable 219
             var functions = actions.Select(FSharpFunc.FromAction);
+            #pragma warning restore 219
+
         }
 
         [Test]

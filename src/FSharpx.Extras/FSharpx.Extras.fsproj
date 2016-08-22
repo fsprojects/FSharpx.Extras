@@ -55,6 +55,8 @@
   </PropertyGroup>
   <Import Project="$(FSharpTargetsPath)" Condition="Exists('$(FSharpTargetsPath)')" />
   <ItemGroup>
+    <Content Include="paket.references" />
+    <Content Include="app.config" />
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Prelude.fs" />
     <Compile Include="Pluralizer.fs" />
@@ -73,8 +75,6 @@
     <Compile Include="Stm.fs" />
     <Compile Include="Iteratee.fs" />
     <Compile Include="CSharpCompat.fs" />
-    <Content Include="paket.references" />
-    <Content Include="app.config" />
     <Compile Include="Net.fs" />
     <Compile Include="Conneg.fs" />
     <Compile Include="Enum.fs" />

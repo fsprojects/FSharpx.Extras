@@ -997,6 +997,15 @@ module Task =
 
     /// Sequence actions, discarding the value of the second argument.
     let inline ( <*) a b = lift2 (fun z _ -> z) a b
+
+    let foldM f s =
+        Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
+
+    let inline sequence (s:Task<'a> list) =
+        let inline cons a b = lift2 List.cons a b
+        List.foldBack cons s (returnM [])
+
+    let inline mapM f x = sequence (List.map f x)
     
     type TaskBuilder(?continuationOptions, ?scheduler, ?cancellationToken) =
         let contOptions = defaultArg continuationOptions TaskContinuationOptions.None
@@ -1043,6 +1052,8 @@ module Task =
 
         member this.Run (f: unit -> Task<'T>) = f()
 
+    let task = TaskBuilder()
+
     type TaskBuilderWithToken(?continuationOptions, ?scheduler) =
         let contOptions = defaultArg continuationOptions TaskContinuationOptions.None
         let scheduler = defaultArg scheduler TaskScheduler.Default
@@ -1085,3 +1096,47 @@ module Task =
         
         member this.Delay f = this.Bind(this.Return (), f)
 
+    /// Converts a Task into Task<unit>
+    let ToTaskUnit (t:Task) =
+        let continuation _ = ()
+        t.ContinueWith continuation
+
+    /// Creates a task that runs the given task and ignores its result.
+    let inline Ignore t = bind (fun _ -> returnM ()) t
+
+    /// Creates a task that executes a specified task.
+    /// If this task completes successfully, then this function returns Choice1Of2 with the returned value.
+    /// If this task raises an exception before it completes then return Choice2Of2 with the raised exception.
+    let Catch (t:Task<'a>) =
+        task {
+            try let! r = t
+                return Choice1Of2 r
+            with e ->
+                return Choice2Of2 e
+        }
+
+#if !NET40
+    /// Creates a task that executes all the given tasks.
+    let Parallel (tasks : seq<unit -> Task<'a>>) =
+        tasks
+        |> Seq.map (fun t -> t())
+        |> Array.ofSeq
+        |> Task.WhenAll
+
+    /// Creates a task that executes all the given tasks.
+    /// The paralelism is throttled, so that at most `throttle` tasks run at one time.
+    let ParallelWithTrottle throttle (tasks : seq<unit -> Task<'a>>) : (Task<'a[]>) =
+        let semaphore = new SemaphoreSlim(throttle)
+        let throttleTask (t:unit->Task<'a>) () : Task<'a> =
+            task {
+                do! semaphore.WaitAsync() |> ToTaskUnit
+                let! result = Catch <| t()
+                semaphore.Release() |> ignore
+                return match result with
+                       | Choice1Of2 r -> r
+                       | Choice2Of2 e -> raise e
+            }
+        tasks
+        |> Seq.map throttleTask
+        |> Parallel
+#endif

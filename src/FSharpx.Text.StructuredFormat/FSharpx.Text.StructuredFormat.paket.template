@@ -25,6 +25,6 @@ dependencies
   FSharpx.Collections ~> LOCKEDVERSION
   FSharpx.Extras = CURRENTVERSION
 files
-  ../../bin/v4.0/FSharpx.Text.StructuredFormat.dll ==> lib/40
-  bin/Release/FSharpx.Text.StructuredFormat.xml ==> lib/40
+  ../../bin/v4.5/FSharpx.Text.StructuredFormat.dll ==> lib/net45
+  bin/Release/FSharpx.Text.StructuredFormat.xml ==> lib/net45
   ../../LICENSE.md ==> .

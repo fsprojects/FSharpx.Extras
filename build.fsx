@@ -50,8 +50,12 @@ let buildLibParams fxVersion =
      ]
      
 // targets
-Target "Clean" (fun _ ->       
-    CleanDirs [buildDir]
+Target "Clean" (fun _ ->
+    for fxVersion in fxVersions do
+        !! "*.sln"
+        |> MSBuild (buildDirVer fxVersion) "Clean"(["Configuration","Release"] @ buildLibParams fxVersion)
+        |> ignore
+    CleanDirs [buildDir; packagesDir; "docs/output"]
 )
 
 
@@ -81,7 +85,7 @@ Target "Build" (fun _ ->
     for fxVersion in fxVersions do
         // Only generate tests for net40
         !! "*.sln"
-        |> MSBuild (buildDirVer fxVersion) "Rebuild" (["Configuration","Release"] @ buildLibParams fxVersion)
+        |> MSBuild (buildDirVer fxVersion) "Build" (["Configuration","Release"] @ buildLibParams fxVersion)
         |> ignore)
 
 Target "Test" (fun _ ->
@@ -112,7 +116,7 @@ Target "GenerateDocs" (fun _ ->
 // Release Scripts
 
 Target "ReleaseDocs" (fun _ ->
-    let tempDocsDir = "temp/gh-pages"
+    let tempDocsDir = "bin/gh-pages"
     if not (Directory.Exists tempDocsDir) then 
         Repository.cloneSingleBranch "" (gitHome + "/" + gitName + ".git") "gh-pages" tempDocsDir
 
@@ -133,8 +137,7 @@ Target "Release" DoNothing
 Target "CI" DoNothing
 
 // Build order
-"Clean"
-  ==> "AssemblyInfo"
+"AssemblyInfo"
   ==> "Build" 
   ==> "Test" 
 
