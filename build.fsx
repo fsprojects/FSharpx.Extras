@@ -18,7 +18,7 @@ let packagesDir = "./packages"
 let projectDesc = "FSharpx.Extras implements general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible."
 
 let rec getPackageDesc = function
-| "FSharpx.Text.StructuredFormat" -> projectDesc + "\r\n\r\nThis library provides data structures and functoins for pretty printers."
+| "FSharpx.Text.StructuredFormat" -> projectDesc + "\r\n\r\nThis library provides data structures and functins for pretty printers."
 | _ -> projectDesc + "\r\n\r\nIt currently implements:\r\n\r\n" + 
                        "* Several standard monads: State, Reader, Writer, Either, Continuation, Distribution\r\n" +
                        "* Validation applicative functor\r\n" + 
@@ -105,6 +105,10 @@ Target "PaketPack" (fun _ ->
       })
 )
 
+Target "PaketPush" (fun _ ->
+    Paket.Push id
+)
+
 // --------------------------------------------------------------------------------------
 // Generate the documentation
 
@@ -150,6 +154,8 @@ Target "CI" DoNothing
 "Build" 
   ==> "GenerateDocs"
   ==> "ReleaseDocs"
+  ==> "PaketPack"
+  ==> "PaketPush"
   ==> "Release"
 
 "Test"

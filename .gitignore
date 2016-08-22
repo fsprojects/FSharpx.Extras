@@ -48,3 +48,4 @@ docs/output/*
 *.ncrunchsolution
 tmp.bin
 tmp.txt
+docs/tools/FSharp.Formatting.svclog
