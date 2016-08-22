@@ -1,13 +1,40 @@
-### 1.0 - Unreleased
-* More awesome stuff coming
-* Added SourceLink for Source Indexing PDB
+#### 2.0.0 - 22.08.2016
+* Added Add Task related helper functions - https://github.com/fsprojects/FSharpx.Extras/pull/339
+* New Enum convenience methods - https://github.com/fsprojects/FSharpx.Extras/pull/327
+* BREAKING: Deprecated .NET 4.0 version
+* BREAKING: Removed all functions that were marked as obsolete. This includes JSON API
 
-#### 0.5.1-beta - November 6 2013
-* Improved quality of solution-wide README.md files
- 
-#### 0.5.0-beta - October 29 2013
-* Improved quality of solution-wide README.md files
+### 1.10.3 
+* Added undefined in Prelude - https://github.com/fsprojects/FSharpx.Extras/pull/332
 
-#### 0.0.1-beta - October 24 2013
-* Changed name from fsharp-project-scaffold to FSharp.ProjectScaffold
-* Initial release
+### 1.10.2
+* List dependencies properly in nuget package
+
+### 1.10.1
+* Fix dependency in nuget package
+* Fix #332
+
+### 1.10.0 - Renamed to FSharpx.Extras
+* Renamed to FSharpx.Core to FSharpx.Extras
+
+### 1.9.4 - Remove Obsolete method
+* Remove the WebClient extension method that has long ago been moved to FSharp.Core
+
+### 1.9.3 - Cleanup namespaces
+* FSharpx.* types and operators are now in FSharpx
+* FSharpx.Regex are now in FSharpx.Text.Regex
+* FSharpx.Strings is now in FSharpx.Text.Strings
+* Microsoft.FSharp.Control has been renamed to FSharpx.Control
+
+### 1.9.2 - Remove components now available elsewhere
+* FSharpx.JSON support now marked as deprecated in favour of FSharp.Data
+* FSharpx.Linq.QuotationEvaluator now marked as deprecated in favour of FSharp.Quotations.Evaluator 
+
+### 1.9.1 - Remove type providers from FSharpx
+* All type providers now removed from FSharpx
+
+### 1.9.0 - Remove FSharpx.Collections
+* FSharpx.Core now depends on FSharpx.Collections
+* Generated docs now available
+
+

@@ -14,7 +14,6 @@ open System.IO
 #else
 #load "packages/build/SourceLink.Fake/tools/Fake.fsx"
 open SourceLink
-open Fake.Testing
 
 #endif
 
@@ -146,7 +145,7 @@ Target "Build" (fun _ ->
 
 Target "RunTests" (fun _ ->
     !! testAssemblies
-    |> NUnit3 (fun p ->
+    |> Fake.Testing.NUnit3.NUnit3 (fun p ->
         { p with
             TimeOut = TimeSpan.FromMinutes 20. })
 )
