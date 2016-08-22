@@ -1,23 +1,36 @@
 NUGET
-  remote: https://nuget.org/api/v2
-  specs:
-    FAKE (4.11.0)
-    FsCheck (0.9.1) - framework: >= net40
+  remote: https://www.nuget.org/api/v2
+    FAKE (4.11)
+    FsCheck (2.6)
+      FSharp.Core (>= 3.1.2.5)
     FSharp.Compiler.Service (0.0.59)
-    FSharp.Control.AsyncSeq (1.15.0) - framework: >= net40
-    FSharp.Core (4.0.0.1)
+    FSharp.Control.AsyncSeq (2.0.9)
+    FSharp.Core (4.0.0.1) - redirects: force
     FSharp.Formatting (2.4.25)
       FSharp.Compiler.Service (>= 0.0.59)
-      Microsoft.AspNet.Razor (2.0.30506.0)
-      RazorEngine (3.3.0)
-    FSharpx.Async (1.12.0) - framework: >= net40
+      Microsoft.AspNet.Razor (2.0.30506)
+      RazorEngine (3.3)
+    FSharpx.Async (1.12)
       FSharp.Control.AsyncSeq
     FSharpx.Collections (1.10.1)
       FSharp.Core (>= 3.1.2.1)
-    FsUnit (1.2.1) - framework: >= net40
-      NUnit (>= 2.6.2)
+    FsUnit (2.3.1)
+      FSharp.Core (>= 3.1.2.5)
+      NUnit (3.4.1)
     Microsoft.AspNet.Razor (2.0.30506)
-    NUnit (2.6.2) - framework: >= net40
-    NUnit.Runners (2.6.2) - framework: >= net40
-    RazorEngine (3.3.0)
-      Microsoft.AspNet.Razor (>= 2.0.30506.0)
+    NUnit (3.4.1)
+    NUnit.ConsoleRunner (3.4.1)
+    NUnit.Extension.NUnitProjectLoader (3.4.1)
+    NUnit.Extension.NUnitV2Driver (3.4.1)
+    NUnit.Extension.NUnitV2ResultWriter (3.4.1)
+    NUnit.Extension.TeamCityEventListener (1.0.1)
+    NUnit.Extension.VSProjectLoader (3.4.1)
+    NUnit.Runners (3.4.1)
+      NUnit.ConsoleRunner (>= 3.4.1)
+      NUnit.Extension.NUnitProjectLoader (>= 3.4.1)
+      NUnit.Extension.NUnitV2Driver (>= 3.4.1)
+      NUnit.Extension.NUnitV2ResultWriter (>= 3.4.1)
+      NUnit.Extension.TeamCityEventListener (>= 1.0.1)
+      NUnit.Extension.VSProjectLoader (>= 3.4.1)
+    RazorEngine (3.3)
+      Microsoft.AspNet.Razor (>= 2.0.30506)

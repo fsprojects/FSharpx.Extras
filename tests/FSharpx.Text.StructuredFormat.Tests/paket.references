@@ -1,4 +1,7 @@
+FsCheck
 FSharp.Control.AsyncSeq
 FSharpx.Async
 FSharpx.Collections
+FsUnit
+NUnit
 FSharp.Core

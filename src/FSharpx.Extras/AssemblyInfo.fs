@@ -32,9 +32,9 @@ It currently implements:
 
 [<assembly: AssemblyProduct ("FSharpx.Extras")>]
 
-[<assembly: AssemblyVersion ("1.10.2")>]
+[<assembly: AssemblyVersion ("1.10.3")>]
 
-[<assembly: AssemblyFileVersion ("1.10.2")>]
+[<assembly: AssemblyFileVersion ("1.10.3")>]
 
 [<assembly: AssemblyDelaySign (false)>]
 
