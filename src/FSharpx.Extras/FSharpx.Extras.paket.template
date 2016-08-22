@@ -1,0 +1,34 @@
+type file
+id
+  FSharpx.Extras
+description
+  FSharpx.Extras implements general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.
+  It currently implements:
+    * Several standard monads: State, Reader, Writer, Either, Continuation, Distribution
+    * Validation applicative functor
+    * General functions like flip
+    * Additional functions around collections
+    * Functions to make C# - F# interop easier.
+authors
+  Steffen Forkmann, Daniel Mohl, Tomas Petricek, Ryan Riley, Mauricio Scheffer, Phil Trelford
+owners
+  sforkmann, fsprojects
+language
+  en-US
+summary
+  FSharpx.Extras implements general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.
+licenseUrl
+  http://github.com/fsprojects/fsharpx/raw/master/LICENSE.md
+projectUrl
+  http://github.com/fsprojects/fsharpx
+iconUrl
+  https://nugetgallery.blob.core.windows.net/icons/FSharpx.1.2.1.110910.png
+tags
+  fsharp csharp interop monad iteratee validation bytestring testing
+dependencies
+  FSharpx.Async ~> LOCKEDVERSION
+  FSharpx.Collections ~> LOCKEDVERSION
+files
+  ../../bin/v4.0/FSharpx.Extras.dll ==> lib/40
+  ../../bin/FSharpx.Extras.xml ==> lib/40
+  ../../LICENSE.md ==> .

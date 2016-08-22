@@ -3,9 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>fbe1e618-4f32-4305-95c0-b0ffbad24ef7</ProjectGuid>
+    <ProjectGuid>{FBE1E618-4F32-4305-95C0-B0FFBAD24EF7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx.Text.StructuredFormat.Tests</RootNamespace>
     <AssemblyName>FSharpx.Text.StructuredFormat.Tests</AssemblyName>
@@ -51,13 +49,11 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="nunit.framework">
-      <Private>True</Private>
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" Condition="'$(TargetFrameworkVersion)' != 'v3.5'"  />
+    <Reference Include="System.Numerics" Condition="'$(TargetFrameworkVersion)' != 'v3.5'" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="StructuredFormatTests.fs" />

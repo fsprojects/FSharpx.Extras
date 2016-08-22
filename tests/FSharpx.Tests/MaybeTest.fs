@@ -80,3 +80,27 @@ let ``monadplus laws``() =
         fun a b -> mplus (ret a) b = ret a
 //    fsCheck "left distribution" <|
 //        fun a b f -> (mplus a b >>= f) = (mplus (a >>= f) (b >>= f))
+
+[<Test>]
+let ``for loops enumerate entire sequence and subsequent expressions also run``() =
+    let count = ref 0
+    let result = maybe {
+        for i in [1;2;3] do
+            incr count
+        return true
+    }
+
+    !count |> should equal 3
+    result |> should equal (Some true)
+
+[<Test>]
+let ``while loops execute until guard is false and subsequent expressions also run``() =
+    let count = ref 0
+    let result = maybe {
+        while !count < 3 do
+            incr count
+        return true
+    }
+
+    !count |> should equal 3
+    result |> should equal (Some true)

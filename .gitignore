@@ -39,3 +39,8 @@ __setup__.fsx
 lib/FAKE/tools/
 packages/
 release.cmd
+.paket/paket.exe
+*.userprefs
+.fake/*
+docs/output/*
+
