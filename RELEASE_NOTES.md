@@ -1,3 +1,6 @@
+#### 2.1.0 - 23.08.2016
+* New Parsers in prelude - https://github.com/fsprojects/FSharpx.Extras/pull/342
+
 #### 2.0.0 - 22.08.2016
 * Added Add Task related helper functions - https://github.com/fsprojects/FSharpx.Extras/pull/339
 * Moved infrastructure to ProjectScaffold
