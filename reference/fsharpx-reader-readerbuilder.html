@@ -54,10 +54,10 @@ This monad comes from Matthew Podwysocki's <a href="http://codebetter.com/blogs/
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '687', 687)" onmouseover="showTip(event, '687', 687)">
+          <code onmouseout="hideTip(event, '710', 710)" onmouseover="showTip(event, '710', 710)">
             new()
           </code>
-          <div class="tip" id="687">
+          <div class="tip" id="710">
             <strong>Signature:</strong> unit -&gt; ReaderBuilder<br />
                       </div>
         </td>
@@ -81,10 +81,10 @@ This monad comes from Matthew Podwysocki's <a href="http://codebetter.com/blogs/
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '688', 688)" onmouseover="showTip(event, '688', 688)">
+          <code onmouseout="hideTip(event, '711', 711)" onmouseover="showTip(event, '711', 711)">
             Bind(m, k)
           </code>
-          <div class="tip" id="688">
+          <div class="tip" id="711">
             <strong>Signature:</strong> (m:Reader&lt;&#39;R,&#39;T&gt; * k:(&#39;T -&gt; Reader&lt;&#39;R,&#39;U&gt;)) -&gt; Reader&lt;&#39;R,&#39;U&gt;<br />
                           <strong>Type parameters:</strong> 'R, 'T, 'U          </div>
         </td>
@@ -99,10 +99,10 @@ This monad comes from Matthew Podwysocki's <a href="http://codebetter.com/blogs/
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '689', 689)" onmouseover="showTip(event, '689', 689)">
+          <code onmouseout="hideTip(event, '712', 712)" onmouseover="showTip(event, '712', 712)">
             Combine(r1, r2)
           </code>
-          <div class="tip" id="689">
+          <div class="tip" id="712">
             <strong>Signature:</strong> (r1:Reader&lt;&#39;?8553,unit&gt; * r2:Reader&lt;&#39;?8553,&#39;?8554&gt;) -&gt; Reader&lt;&#39;?8553,&#39;?8554&gt;<br />
                           <strong>Type parameters:</strong> '?8553, '?8554          </div>
         </td>
@@ -117,10 +117,10 @@ This monad comes from Matthew Podwysocki's <a href="http://codebetter.com/blogs/
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '690', 690)" onmouseover="showTip(event, '690', 690)">
+          <code onmouseout="hideTip(event, '713', 713)" onmouseover="showTip(event, '713', 713)">
             Delay(f)
           </code>
-          <div class="tip" id="690">
+          <div class="tip" id="713">
             <strong>Signature:</strong> (f:(unit -&gt; Reader&lt;&#39;?8566,&#39;?8567&gt;)) -&gt; Reader&lt;&#39;?8566,&#39;?8567&gt;<br />
                           <strong>Type parameters:</strong> '?8566, '?8567          </div>
         </td>
@@ -135,10 +135,10 @@ This monad comes from Matthew Podwysocki's <a href="http://codebetter.com/blogs/
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '691', 691)" onmouseover="showTip(event, '691', 691)">
+          <code onmouseout="hideTip(event, '714', 714)" onmouseover="showTip(event, '714', 714)">
             For(sequence, body)
           </code>
-          <div class="tip" id="691">
+          <div class="tip" id="714">
             <strong>Signature:</strong> (sequence:seq&lt;&#39;?8571&gt; * body:(&#39;?8571 -&gt; Reader&lt;&#39;?8572,unit&gt;)) -&gt; Reader&lt;&#39;?8572,unit&gt;<br />
                           <strong>Type parameters:</strong> '?8571, '?8572          </div>
         </td>
@@ -153,10 +153,10 @@ This monad comes from Matthew Podwysocki's <a href="http://codebetter.com/blogs/
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '692', 692)" onmouseover="showTip(event, '692', 692)">
+          <code onmouseout="hideTip(event, '715', 715)" onmouseover="showTip(event, '715', 715)">
             Return(a)
           </code>
-          <div class="tip" id="692">
+          <div class="tip" id="715">
             <strong>Signature:</strong> a:&#39;T -&gt; Reader&lt;&#39;R,&#39;T&gt;<br />
                           <strong>Type parameters:</strong> 'T, 'R          </div>
         </td>
@@ -171,10 +171,10 @@ This monad comes from Matthew Podwysocki's <a href="http://codebetter.com/blogs/
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '693', 693)" onmouseover="showTip(event, '693', 693)">
+          <code onmouseout="hideTip(event, '716', 716)" onmouseover="showTip(event, '716', 716)">
             ReturnFrom(a)
           </code>
-          <div class="tip" id="693">
+          <div class="tip" id="716">
             <strong>Signature:</strong> a:Reader&lt;&#39;R,&#39;T&gt; -&gt; Reader&lt;&#39;R,&#39;T&gt;<br />
                           <strong>Type parameters:</strong> 'R, 'T          </div>
         </td>
@@ -189,10 +189,10 @@ This monad comes from Matthew Podwysocki's <a href="http://codebetter.com/blogs/
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '694', 694)" onmouseover="showTip(event, '694', 694)">
+          <code onmouseout="hideTip(event, '717', 717)" onmouseover="showTip(event, '717', 717)">
             TryFinally(m, compensation)
           </code>
-          <div class="tip" id="694">
+          <div class="tip" id="717">
             <strong>Signature:</strong> (m:Reader&lt;&#39;R,&#39;T&gt; * compensation:(unit -&gt; unit)) -&gt; Reader&lt;&#39;R,&#39;T&gt;<br />
                           <strong>Type parameters:</strong> 'R, 'T          </div>
         </td>
@@ -207,10 +207,10 @@ This monad comes from Matthew Podwysocki's <a href="http://codebetter.com/blogs/
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '695', 695)" onmouseover="showTip(event, '695', 695)">
+          <code onmouseout="hideTip(event, '718', 718)" onmouseover="showTip(event, '718', 718)">
             TryWith(m, h)
           </code>
-          <div class="tip" id="695">
+          <div class="tip" id="718">
             <strong>Signature:</strong> (m:Reader&lt;&#39;R,&#39;T&gt; * h:(exn -&gt; Reader&lt;&#39;R,&#39;T&gt;)) -&gt; Reader&lt;&#39;R,&#39;T&gt;<br />
                           <strong>Type parameters:</strong> 'R, 'T          </div>
         </td>
@@ -225,10 +225,10 @@ This monad comes from Matthew Podwysocki's <a href="http://codebetter.com/blogs/
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '696', 696)" onmouseover="showTip(event, '696', 696)">
+          <code onmouseout="hideTip(event, '719', 719)" onmouseover="showTip(event, '719', 719)">
             Using(res, body)
           </code>
-          <div class="tip" id="696">
+          <div class="tip" id="719">
             <strong>Signature:</strong> (res:&#39;?8562 * body:(&#39;?8562 -&gt; Reader&lt;&#39;?8563,&#39;?8564&gt;)) -&gt; Reader&lt;&#39;?8563,&#39;?8564&gt;<br />
                           <strong>Type parameters:</strong> '?8562, '?8563, '?8564          </div>
         </td>
@@ -243,10 +243,10 @@ This monad comes from Matthew Podwysocki's <a href="http://codebetter.com/blogs/
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '697', 697)" onmouseover="showTip(event, '697', 697)">
+          <code onmouseout="hideTip(event, '720', 720)" onmouseover="showTip(event, '720', 720)">
             While(guard, m)
           </code>
-          <div class="tip" id="697">
+          <div class="tip" id="720">
             <strong>Signature:</strong> (guard:(unit -&gt; bool) * m:Reader&lt;&#39;?8569,unit&gt;) -&gt; Reader&lt;&#39;?8569,unit&gt;<br />
                           <strong>Type parameters:</strong> '?8569          </div>
         </td>
@@ -261,10 +261,10 @@ This monad comes from Matthew Podwysocki's <a href="http://codebetter.com/blogs/
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '698', 698)" onmouseover="showTip(event, '698', 698)">
+          <code onmouseout="hideTip(event, '721', 721)" onmouseover="showTip(event, '721', 721)">
             Zero()
           </code>
-          <div class="tip" id="698">
+          <div class="tip" id="721">
             <strong>Signature:</strong> unit -&gt; Reader&lt;&#39;?8551,unit&gt;<br />
                           <strong>Type parameters:</strong> '?8551          </div>
         </td>
