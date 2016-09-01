@@ -60,6 +60,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Prelude.fs" />
     <Compile Include="Pluralizer.fs" />
+    <Compile Include="String.fs" />
     <Compile Include="Strings.fs" />
     <Compile Include="IO.fs" />
     <Compile Include="Monoid.fs" />
