@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>String - FSharpx.Extras</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="Steffen Forkmann and others"/>
+
+    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
+
+    <link type="text/css" rel="stylesheet" href="/FSharpx.Extras/content/style.css" />
+    <script type="text/javascript" src="/FSharpx.Extras/content/tips.js"></script>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li><a href="http://fsharp.org">fsharp.org</a></li>
+          <li><a href="https://github.com/fsprojects/FSharpx.Extras">github page</a></li>
+        </ul>
+        <h3 class="muted"><a href="/FSharpx.Extras/index.html">FSharpx.Extras</a></h3>
+      </div>
+      <hr />
+      <div class="row">
+        <div class="span9" id="main">
+          
+
+
+
+<h1>String</h1>
+<p>
+  <span>Namespace: FSharpx</span><br />
+</p>
+<div class="xmldoc">
+<p>Functional wrappers around String instance methods</p>
+
+</div>
+
+<!-- Render nested types and modules, if there are any -->
+
+  <h3>Functions and values</h3>
+  <table class="table table-bordered member-list">
+    <thead>
+      <tr><td>Function or value</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '241', 241)" onmouseover="showTip(event, '241', 241)">
+            compare comparisonType strA strB
+          </code>
+          <div class="tip" id="241">
+            <strong>Signature:</strong> comparisonType:StringComparison -&gt; strA:string -&gt; strB:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L12-12" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Compares two specified String objects and returns an integer that indicates their relative position in the sort order.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '242', 242)" onmouseover="showTip(event, '242', 242)">
+            compareIgnoreCase strA strB
+          </code>
+          <div class="tip" id="242">
+            <strong>Signature:</strong> strA:string -&gt; strB:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L15-15" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Compares two specified String objects and returns an integer that indicates their relative position in the sort order. Compare strings using ordinal (binary) sort rules and ignoring the case of the strings being compared.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '243', 243)" onmouseover="showTip(event, '243', 243)">
+            contains value s
+          </code>
+          <div class="tip" id="243">
+            <strong>Signature:</strong> value:string -&gt; s:string -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L9-9" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Returns a value indicating whether a specified substring occurs within this string.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '244', 244)" onmouseover="showTip(event, '244', 244)">
+            endsWith value s
+          </code>
+          <div class="tip" id="244">
+            <strong>Signature:</strong> value:string -&gt; s:string -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L18-18" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Determines whether the end of this string instance matches the specified string.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '245', 245)" onmouseover="showTip(event, '245', 245)">
+            endsWith&#39; value ignoreCase culture s
+          </code>
+          <div class="tip" id="245">
+            <strong>Signature:</strong> value:string -&gt; ignoreCase:bool -&gt; culture:CultureInfo -&gt; s:string -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L21-21" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Determines whether the end of this string instance matches the specified string when compared using the specified culture.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '246', 246)" onmouseover="showTip(event, '246', 246)">
+            endsWith&#39;&#39; value comparisonType s
+          </code>
+          <div class="tip" id="246">
+            <strong>Signature:</strong> value:string -&gt; comparisonType:StringComparison -&gt; s:string -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L24-24" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Determines whether the end of this string instance matches the specified string when compared using the specified comparison option.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '247', 247)" onmouseover="showTip(event, '247', 247)">
+            equals comparisonType a b
+          </code>
+          <div class="tip" id="247">
+            <strong>Signature:</strong> comparisonType:StringComparison -&gt; a:string -&gt; b:string -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L27-27" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Determines whether two specified String objects have the same value.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '248', 248)" onmouseover="showTip(event, '248', 248)">
+            equalsIgnoreCase a b
+          </code>
+          <div class="tip" id="248">
+            <strong>Signature:</strong> a:string -&gt; b:string -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L30-30" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Determines whether two specified String objects have the same value. Compare strings using ordinal (binary) sort rules and ignoring the case of the strings being compared.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '249', 249)" onmouseover="showTip(event, '249', 249)">
+            indexOfAny anyOf s
+          </code>
+          <div class="tip" id="249">
+            <strong>Signature:</strong> anyOf:char [] -&gt; s:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L60-60" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Reports the zero-based index of the first occurrence in this instance of any character in a specified array of Unicode characters.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '250', 250)" onmouseover="showTip(event, '250', 250)">
+            indexOfAny&#39; anyOf startIndex s
+          </code>
+          <div class="tip" id="250">
+            <strong>Signature:</strong> anyOf:char [] -&gt; startIndex:int -&gt; s:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L63-63" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Reports the zero-based index of the first occurrence in this instance of any character in a specified array of Unicode characters. The search starts at a specified character position.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '251', 251)" onmouseover="showTip(event, '251', 251)">
+            indexOfAny&#39;&#39; anyOf startIndex count s
+          </code>
+          <div class="tip" id="251">
+            <strong>Signature:</strong> anyOf:char [] -&gt; startIndex:int -&gt; count:int -&gt; s:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L66-66" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Reports the zero-based index of the first occurrence in this instance of any character in a specified array of Unicode characters. The search starts at a specified character position and examines a specified number of character positions.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '252', 252)" onmouseover="showTip(event, '252', 252)">
+            indexOfChar value s
+          </code>
+          <div class="tip" id="252">
+            <strong>Signature:</strong> value:char -&gt; s:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L33-33" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Reports the zero-based index of the first occurrence of the specified Unicode character in this string.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '253', 253)" onmouseover="showTip(event, '253', 253)">
+            indexOfChar&#39; value startIndex s
+          </code>
+          <div class="tip" id="253">
+            <strong>Signature:</strong> value:char -&gt; startIndex:int -&gt; s:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L36-36" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Reports the zero-based index of the first occurrence of the specified Unicode character in this string. The search starts at a specified character position.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '254', 254)" onmouseover="showTip(event, '254', 254)">
+            indexOfChar&#39;&#39; value startIndex count s
+          </code>
+          <div class="tip" id="254">
+            <strong>Signature:</strong> value:char -&gt; startIndex:int -&gt; count:int -&gt; s:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L39-39" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Reports the zero-based index of the first occurrence of the specified character in this instance. The search starts at a specified character position and examines a specified number of character positions.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '255', 255)" onmouseover="showTip(event, '255', 255)">
+            indexOfString value s
+          </code>
+          <div class="tip" id="255">
+            <strong>Signature:</strong> value:string -&gt; s:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L42-42" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Reports the zero-based index of the first occurrence of the specified string in this instance.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '256', 256)" onmouseover="showTip(event, '256', 256)">
+            indexOfString&#39; value startIndex s
+          </code>
+          <div class="tip" id="256">
+            <strong>Signature:</strong> value:string -&gt; startIndex:int -&gt; s:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L45-45" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Reports the zero-based index of the first occurrence of the specified string in this instance. The search starts at a specified character position.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '257', 257)" onmouseover="showTip(event, '257', 257)">
+            indexOfString&#39;&#39; value startIndex count s
+          </code>
+          <div class="tip" id="257">
+            <strong>Signature:</strong> value:string -&gt; startIndex:int -&gt; count:int -&gt; s:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L48-48" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Reports the zero-based index of the first occurrence of the specified string in this instance. The search starts at a specified character position and examines a specified number of character positions.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '258', 258)" onmouseover="showTip(event, '258', 258)">
+            indexOfStringWithComparison (...)
+          </code>
+          <div class="tip" id="258">
+            <strong>Signature:</strong> value:string -&gt; comparisonType:StringComparison -&gt; s:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L51-51" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Reports the zero-based index of the first occurrence of the specified string in the current String object. A parameter specifies the type of search to use for the specified string.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '259', 259)" onmouseover="showTip(event, '259', 259)">
+            indexOfStringWithComparison&#39; (...)
+          </code>
+          <div class="tip" id="259">
+            <strong>Signature:</strong> value:string -&gt; startIndex:int -&gt; comparisonType:StringComparison -&gt; s:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L54-54" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Reports the zero-based index of the first occurrence of the specified string in the current String object. Parameters specify the starting search position in the current string and the type of search to use for the specified string.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '260', 260)" onmouseover="showTip(event, '260', 260)">
+            indexOfStringWithComparison&#39;&#39; (...)
+          </code>
+          <div class="tip" id="260">
+            <strong>Signature:</strong> value:string -&gt; startIndex:int -&gt; count:int -&gt; comparisonType:StringComparison -&gt; s:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L57-57" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Reports the zero-based index of the first occurrence of the specified string in the current String object. Parameters specify the starting search position in the current string, the number of characters in the current string to search, and the type of search to use for the specified string.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '261', 261)" onmouseover="showTip(event, '261', 261)">
+            insert startIndex value s
+          </code>
+          <div class="tip" id="261">
+            <strong>Signature:</strong> startIndex:int -&gt; value:string -&gt; s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L69-69" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Returns a new string in which a specified string is inserted at a specified index position in this instance.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '262', 262)" onmouseover="showTip(event, '262', 262)">
+            isNormalized s
+          </code>
+          <div class="tip" id="262">
+            <strong>Signature:</strong> s:string -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L72-72" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Indicates whether this string is in Unicode normalization form C.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '263', 263)" onmouseover="showTip(event, '263', 263)">
+            isNormalized&#39; normalizationForm s
+          </code>
+          <div class="tip" id="263">
+            <strong>Signature:</strong> normalizationForm:NormalizationForm -&gt; s:string -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L75-75" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Indicates whether this string is in the specified Unicode normalization form.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '264', 264)" onmouseover="showTip(event, '264', 264)">
+            lastIndexOfChar value s
+          </code>
+          <div class="tip" id="264">
+            <strong>Signature:</strong> value:char -&gt; s:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L78-78" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Reports the zero-based index position of the last occurrence of a specified Unicode character within this instance.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '265', 265)" onmouseover="showTip(event, '265', 265)">
+            lastIndexOfChar&#39; value startIndex s
+          </code>
+          <div class="tip" id="265">
+            <strong>Signature:</strong> value:char -&gt; startIndex:int -&gt; s:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L81-81" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Reports the zero-based index position of the last occurrence of a specified Unicode character within this instance. The search starts at a specified character position and proceeds backward toward the beginning of the string.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '266', 266)" onmouseover="showTip(event, '266', 266)">
+            lastIndexOfChar&#39;&#39; (...)
+          </code>
+          <div class="tip" id="266">
+            <strong>Signature:</strong> value:char -&gt; startIndex:int -&gt; count:int -&gt; s:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L84-84" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Reports the zero-based index position of the last occurrence of the specified Unicode character in a substring within this instance. The search starts at a specified character position and proceeds backward toward the beginning of the string for a specified number of character positions.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '267', 267)" onmouseover="showTip(event, '267', 267)">
+            lastIndexOfString value s
+          </code>
+          <div class="tip" id="267">
+            <strong>Signature:</strong> value:string -&gt; s:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L87-87" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Reports the zero-based index position of the last occurrence of a specified string within this instance.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '268', 268)" onmouseover="showTip(event, '268', 268)">
+            lastIndexOfString&#39; value startIndex s
+          </code>
+          <div class="tip" id="268">
+            <strong>Signature:</strong> value:string -&gt; startIndex:int -&gt; s:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L90-90" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Reports the zero-based index position of the last occurrence of a specified string within this instance. The search starts at a specified character position and proceeds backward toward the beginning of the string.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '269', 269)" onmouseover="showTip(event, '269', 269)">
+            lastIndexOfString&#39;&#39; (...)
+          </code>
+          <div class="tip" id="269">
+            <strong>Signature:</strong> value:string -&gt; startIndex:int -&gt; count:int -&gt; s:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L93-93" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Reports the zero-based index position of the last occurrence of a specified string within this instance. The search starts at a specified character position and proceeds backward toward the beginning of the string for a specified number of character positions.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '270', 270)" onmouseover="showTip(event, '270', 270)">
+            lastIndexOfStringWithComparison (...)
+          </code>
+          <div class="tip" id="270">
+            <strong>Signature:</strong> value:string -&gt; comparisonType:StringComparison -&gt; s:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L96-96" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Reports the zero-based index of the last occurrence of a specified string within the current String object. A parameter specifies the type of search to use for the specified string.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '271', 271)" onmouseover="showTip(event, '271', 271)">
+            lastIndexOfStringWithComparison&#39; (...)
+          </code>
+          <div class="tip" id="271">
+            <strong>Signature:</strong> value:string -&gt; startIndex:int -&gt; comparisonType:StringComparison -&gt; s:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L99-99" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Reports the zero-based index of the last occurrence of a specified string within the current String object. The search starts at a specified character position and proceeds backward toward the beginning of the string. A parameter specifies the type of comparison to perform when searching for the specified string.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '272', 272)" onmouseover="showTip(event, '272', 272)">
+            lastIndexOfStringWithComparison&#39;&#39; (...)
+          </code>
+          <div class="tip" id="272">
+            <strong>Signature:</strong> value:string -&gt; startIndex:int -&gt; count:int -&gt; comparisonType:StringComparison -&gt; s:string -&gt; int<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L102-102" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Reports the zero-based index position of the last occurrence of a specified string within this instance. The search starts at a specified character position and proceeds backward toward the beginning of the string for the specified number of character positions. A parameter specifies the type of comparison to perform when searching for the specified string.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '273', 273)" onmouseover="showTip(event, '273', 273)">
+            normalize s
+          </code>
+          <div class="tip" id="273">
+            <strong>Signature:</strong> s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L105-105" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Returns a new string whose textual value is the same as this string, but whose binary representation is in Unicode normalization form C.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '274', 274)" onmouseover="showTip(event, '274', 274)">
+            normalize&#39; normalizationForm s
+          </code>
+          <div class="tip" id="274">
+            <strong>Signature:</strong> normalizationForm:NormalizationForm -&gt; s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L108-108" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Returns a new string whose textual value is the same as this string, but whose binary representation is in the specified Unicode normalization form.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '275', 275)" onmouseover="showTip(event, '275', 275)">
+            padLeft totalWidth s
+          </code>
+          <div class="tip" id="275">
+            <strong>Signature:</strong> totalWidth:int -&gt; s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L111-111" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Returns a new string that right-aligns the characters in this instance by padding them with spaces on the left, for a specified total length.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '276', 276)" onmouseover="showTip(event, '276', 276)">
+            padLeft&#39; totalWidth paddingChar s
+          </code>
+          <div class="tip" id="276">
+            <strong>Signature:</strong> totalWidth:int -&gt; paddingChar:char -&gt; s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L114-114" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Returns a new string that right-aligns the characters in this instance by padding them on the left with a specified Unicode character, for a specified total length.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '277', 277)" onmouseover="showTip(event, '277', 277)">
+            padRight totalWidth s
+          </code>
+          <div class="tip" id="277">
+            <strong>Signature:</strong> totalWidth:int -&gt; s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L117-117" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Returns a new string that left-aligns the characters in this string by padding them with spaces on the right, for a specified total length.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '278', 278)" onmouseover="showTip(event, '278', 278)">
+            padRight&#39; totalWidth paddingChar s
+          </code>
+          <div class="tip" id="278">
+            <strong>Signature:</strong> totalWidth:int -&gt; paddingChar:char -&gt; s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L120-120" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Returns a new string that left-aligns the characters in this string by padding them on the right with a specified Unicode character, for a specified total length.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '279', 279)" onmouseover="showTip(event, '279', 279)">
+            remove startIndex s
+          </code>
+          <div class="tip" id="279">
+            <strong>Signature:</strong> startIndex:int -&gt; s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L123-123" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Returns a new string in which all the characters in the current instance, beginning at a specified position and continuing through the last position, have been deleted.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '280', 280)" onmouseover="showTip(event, '280', 280)">
+            remove&#39; startIndex count s
+          </code>
+          <div class="tip" id="280">
+            <strong>Signature:</strong> startIndex:int -&gt; count:int -&gt; s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L126-126" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Returns a new string in which a specified number of characters in the current instance beginning at a specified position have been deleted.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '281', 281)" onmouseover="showTip(event, '281', 281)">
+            replace oldChar newChar s
+          </code>
+          <div class="tip" id="281">
+            <strong>Signature:</strong> oldChar:char -&gt; newChar:char -&gt; s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L129-129" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Returns a new string in which all occurrences of a specified Unicode character in this instance are replaced with another specified Unicode character.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '282', 282)" onmouseover="showTip(event, '282', 282)">
+            replace&#39; oldValue newValue s
+          </code>
+          <div class="tip" id="282">
+            <strong>Signature:</strong> oldValue:string -&gt; newValue:string -&gt; s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L132-132" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Returns a new string in which all occurrences of a specified string in the current instance are replaced with another specified string.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '283', 283)" onmouseover="showTip(event, '283', 283)">
+            splitChar separator s
+          </code>
+          <div class="tip" id="283">
+            <strong>Signature:</strong> separator:char [] -&gt; s:string -&gt; string []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L135-135" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Splits a string into substrings that are based on the characters in an array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '284', 284)" onmouseover="showTip(event, '284', 284)">
+            splitChar&#39; separator count s
+          </code>
+          <div class="tip" id="284">
+            <strong>Signature:</strong> separator:char [] -&gt; count:int -&gt; s:string -&gt; string []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L138-138" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Splits a string into a maximum number of substrings based on the characters in an array. You also specify the maximum number of substrings to return.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '285', 285)" onmouseover="showTip(event, '285', 285)">
+            splitCharWithOptions separator options s
+          </code>
+          <div class="tip" id="285">
+            <strong>Signature:</strong> separator:char [] -&gt; options:StringSplitOptions -&gt; s:string -&gt; string []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L141-141" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Splits a string into substrings based on the characters in an array. You can specify whether the substrings include empty array elements.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '286', 286)" onmouseover="showTip(event, '286', 286)">
+            splitCharWithOptions&#39; (...)
+          </code>
+          <div class="tip" id="286">
+            <strong>Signature:</strong> separator:char [] -&gt; count:int -&gt; options:StringSplitOptions -&gt; s:string -&gt; string []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L144-144" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Splits a string into a maximum number of substrings based on the characters in an array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '287', 287)" onmouseover="showTip(event, '287', 287)">
+            splitString separator options s
+          </code>
+          <div class="tip" id="287">
+            <strong>Signature:</strong> separator:string [] -&gt; options:StringSplitOptions -&gt; s:string -&gt; string []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L147-147" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Splits a string into substrings based on the strings in an array. You can specify whether the substrings include empty array elements.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '288', 288)" onmouseover="showTip(event, '288', 288)">
+            splitString&#39; separator count options s
+          </code>
+          <div class="tip" id="288">
+            <strong>Signature:</strong> separator:string [] -&gt; count:int -&gt; options:StringSplitOptions -&gt; s:string -&gt; string []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L150-150" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Splits a string into a maximum number of substrings based on the strings in an array. You can specify whether the substrings include empty array elements.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '289', 289)" onmouseover="showTip(event, '289', 289)">
+            startsWith value s
+          </code>
+          <div class="tip" id="289">
+            <strong>Signature:</strong> value:string -&gt; s:string -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L153-153" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Determines whether the beginning of this string instance matches the specified string.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '290', 290)" onmouseover="showTip(event, '290', 290)">
+            startsWith&#39; value comparisonType s
+          </code>
+          <div class="tip" id="290">
+            <strong>Signature:</strong> value:string -&gt; comparisonType:StringComparison -&gt; s:string -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L156-156" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Determines whether the beginning of this string instance matches the specified string when compared using the specified comparison option.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '291', 291)" onmouseover="showTip(event, '291', 291)">
+            startsWith&#39;&#39; value ignoreCase culture s
+          </code>
+          <div class="tip" id="291">
+            <strong>Signature:</strong> value:string -&gt; ignoreCase:bool -&gt; culture:CultureInfo -&gt; s:string -&gt; bool<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L159-159" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Determines whether the beginning of this string instance matches the specified string when compared using the specified culture.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '292', 292)" onmouseover="showTip(event, '292', 292)">
+            substring startIndex s
+          </code>
+          <div class="tip" id="292">
+            <strong>Signature:</strong> startIndex:int -&gt; s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L162-162" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Retrieves a substring from this instance. The substring starts at a specified character position and continues to the end of the string.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '293', 293)" onmouseover="showTip(event, '293', 293)">
+            substring&#39; startIndex length s
+          </code>
+          <div class="tip" id="293">
+            <strong>Signature:</strong> startIndex:int -&gt; length:int -&gt; s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L165-165" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Retrieves a substring from this instance. The substring starts at a specified character position and has a specified length.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '294', 294)" onmouseover="showTip(event, '294', 294)">
+            toCharArray s
+          </code>
+          <div class="tip" id="294">
+            <strong>Signature:</strong> s:string -&gt; char []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L168-168" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Copies the characters in this instance to a Unicode character array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '295', 295)" onmouseover="showTip(event, '295', 295)">
+            toCharArray&#39; startIndex length s
+          </code>
+          <div class="tip" id="295">
+            <strong>Signature:</strong> startIndex:int -&gt; length:int -&gt; s:string -&gt; char []<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L171-171" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Copies the characters in a specified substring in this instance to a Unicode character array.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '296', 296)" onmouseover="showTip(event, '296', 296)">
+            toLower s
+          </code>
+          <div class="tip" id="296">
+            <strong>Signature:</strong> s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L174-174" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Returns a copy of this string converted to lowercase.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '297', 297)" onmouseover="showTip(event, '297', 297)">
+            toLower&#39; culture s
+          </code>
+          <div class="tip" id="297">
+            <strong>Signature:</strong> culture:CultureInfo -&gt; s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L177-177" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Returns a copy of this string converted to lowercase, using the casing rules of the specified culture.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '298', 298)" onmouseover="showTip(event, '298', 298)">
+            toLowerInvariant s
+          </code>
+          <div class="tip" id="298">
+            <strong>Signature:</strong> s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L180-180" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Returns a copy of this String object converted to lowercase using the casing rules of the invariant culture.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '299', 299)" onmouseover="showTip(event, '299', 299)">
+            toUpper s
+          </code>
+          <div class="tip" id="299">
+            <strong>Signature:</strong> s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L183-183" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Returns a copy of this string converted to uppercase.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '300', 300)" onmouseover="showTip(event, '300', 300)">
+            toUpper&#39; culture s
+          </code>
+          <div class="tip" id="300">
+            <strong>Signature:</strong> culture:CultureInfo -&gt; s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L186-186" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Returns a copy of this string converted to uppercase, using the casing rules of the specified culture.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '301', 301)" onmouseover="showTip(event, '301', 301)">
+            toUpperInvariant s
+          </code>
+          <div class="tip" id="301">
+            <strong>Signature:</strong> s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L189-189" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Returns a copy of this String object converted to uppercase using the casing rules of the invariant culture.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '302', 302)" onmouseover="showTip(event, '302', 302)">
+            trim s
+          </code>
+          <div class="tip" id="302">
+            <strong>Signature:</strong> s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L192-192" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Removes all leading and trailing white-space characters from the current String object.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '303', 303)" onmouseover="showTip(event, '303', 303)">
+            trim&#39; trimChars s
+          </code>
+          <div class="tip" id="303">
+            <strong>Signature:</strong> trimChars:char [] -&gt; s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L195-195" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Removes all leading and trailing occurrences of a set of characters specified in an array from the current String object.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '304', 304)" onmouseover="showTip(event, '304', 304)">
+            trimEnd trimChars s
+          </code>
+          <div class="tip" id="304">
+            <strong>Signature:</strong> trimChars:char [] -&gt; s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L198-198" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Removes all trailing occurrences of a set of characters specified in an array from the current String object.</p>
+
+
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '305', 305)" onmouseover="showTip(event, '305', 305)">
+            trimStart trimChars s
+          </code>
+          <div class="tip" id="305">
+            <strong>Signature:</strong> trimChars:char [] -&gt; s:string -&gt; string<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/String.fs#L201-201" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          <p>Removes all leading occurrences of a set of characters specified in an array from the current String object.</p>
+
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+        </div>
+        <div class="span3">
+          <img src="/FSharpx.Extras/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
+          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
+            <li class="nav-header">FSharpx.Extras</li>
+            <li><a href="/FSharpx.Extras/index.html">Home page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://nuget.org/packages/FSharpx.Extras">Get Library via NuGet</a></li>
+            <li><a href="https://github.com/fsprojects/FSharpx.Extras">Source Code on GitHub</a></li>
+            <li><a href="/FSharpx.Extras/license.html">License</a></li>
+            <li><a href="/FSharpx.Extras/release-notes.html">Release Notes</a></li>
+            
+            <li class="nav-header">Getting started</li>
+            <li><a href="/FSharpx.Extras/index.html">Introduction</a></li>
+
+            <li class="nav-header">Documentation</li>
+            <li><a href="/FSharpx.Extras/reference/index.html">API Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <a href="https://github.com/fsprojects/FSharpx.Extras"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
+  </body>
+  </html>
