@@ -1,3 +1,6 @@
+#### 2.1.1 - 02.09.2016
+* New String helpers - https://github.com/fsprojects/FSharpx.Extras/pull/343
+
 #### 2.1.0 - 23.08.2016
 * New Parsers in prelude - https://github.com/fsprojects/FSharpx.Extras/pull/342
 
