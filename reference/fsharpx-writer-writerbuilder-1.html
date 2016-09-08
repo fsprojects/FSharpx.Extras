@@ -54,15 +54,15 @@ This monad comes from Matthew Podwysocki's <a href="http://codebetter.com/blogs/
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '870', 870)" onmouseover="showTip(event, '870', 870)">
+          <code onmouseout="hideTip(event, '872', 872)" onmouseover="showTip(event, '872', 872)">
             new(monoid)
           </code>
-          <div class="tip" id="870">
+          <div class="tip" id="872">
             <strong>Signature:</strong> monoid:Monoid&lt;&#39;W&gt; -&gt; WriterBuilder&lt;&#39;W&gt;<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L631-631" class="github-link">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L643-643" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -81,15 +81,15 @@ This monad comes from Matthew Podwysocki's <a href="http://codebetter.com/blogs/
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '871', 871)" onmouseover="showTip(event, '871', 871)">
+          <code onmouseout="hideTip(event, '873', 873)" onmouseover="showTip(event, '873', 873)">
             Bind(writer, k)
           </code>
-          <div class="tip" id="871">
+          <div class="tip" id="873">
             <strong>Signature:</strong> (writer:Writer&lt;&#39;W,&#39;?7559&gt; * k:(&#39;?7559 -&gt; Writer&lt;&#39;W,&#39;?7560&gt;)) -&gt; unit -&gt; &#39;?7560 * &#39;W<br />
                           <strong>Type parameters:</strong> '?7560          </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L634-634" class="github-link">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L646-646" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -99,11 +99,65 @@ This monad comes from Matthew Podwysocki's <a href="http://codebetter.com/blogs/
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '872', 872)" onmouseover="showTip(event, '872', 872)">
+          <code onmouseout="hideTip(event, '874', 874)" onmouseover="showTip(event, '874', 874)">
             Combine(comp1, comp2)
           </code>
-          <div class="tip" id="872">
+          <div class="tip" id="874">
             <strong>Signature:</strong> (comp1:Writer&lt;&#39;W,unit&gt; * comp2:Writer&lt;&#39;W,&#39;?7576&gt;) -&gt; unit -&gt; &#39;?7576 * &#39;W<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L656-656" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '875', 875)" onmouseover="showTip(event, '875', 875)">
+            Delay(f)
+          </code>
+          <div class="tip" id="875">
+            <strong>Signature:</strong> (f:(unit -&gt; Writer&lt;&#39;W,&#39;?7579&gt;)) -&gt; unit -&gt; &#39;?7579 * &#39;W<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L657-657" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '876', 876)" onmouseover="showTip(event, '876', 876)">
+            For(sequence, body)
+          </code>
+          <div class="tip" id="876">
+            <strong>Signature:</strong> (sequence:seq&lt;&#39;T&gt; * body:(&#39;T -&gt; Writer&lt;&#39;W,unit&gt;)) -&gt; Writer&lt;&#39;W,unit&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L662-662" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '877', 877)" onmouseover="showTip(event, '877', 877)">
+            Return(a)
+          </code>
+          <div class="tip" id="877">
+            <strong>Signature:</strong> a:&#39;T -&gt; Writer&lt;&#39;W,&#39;T&gt;<br />
                       </div>
         </td>
         <td class="xmldoc">
@@ -117,11 +171,11 @@ This monad comes from Matthew Podwysocki's <a href="http://codebetter.com/blogs/
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '873', 873)" onmouseover="showTip(event, '873', 873)">
-            Delay(f)
+          <code onmouseout="hideTip(event, '878', 878)" onmouseover="showTip(event, '878', 878)">
+            ReturnFrom(w)
           </code>
-          <div class="tip" id="873">
-            <strong>Signature:</strong> (f:(unit -&gt; Writer&lt;&#39;W,&#39;?7579&gt;)) -&gt; unit -&gt; &#39;?7579 * &#39;W<br />
+          <div class="tip" id="878">
+            <strong>Signature:</strong> w:Writer&lt;&#39;W,&#39;T&gt; -&gt; Writer&lt;&#39;W,&#39;T&gt;<br />
                       </div>
         </td>
         <td class="xmldoc">
@@ -135,105 +189,15 @@ This monad comes from Matthew Podwysocki's <a href="http://codebetter.com/blogs/
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '874', 874)" onmouseover="showTip(event, '874', 874)">
-            For(sequence, body)
-          </code>
-          <div class="tip" id="874">
-            <strong>Signature:</strong> (sequence:seq&lt;&#39;T&gt; * body:(&#39;T -&gt; Writer&lt;&#39;W,unit&gt;)) -&gt; Writer&lt;&#39;W,unit&gt;<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L650-650" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '875', 875)" onmouseover="showTip(event, '875', 875)">
-            Return(a)
-          </code>
-          <div class="tip" id="875">
-            <strong>Signature:</strong> a:&#39;T -&gt; Writer&lt;&#39;W,&#39;T&gt;<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L632-632" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '876', 876)" onmouseover="showTip(event, '876', 876)">
-            ReturnFrom(w)
-          </code>
-          <div class="tip" id="876">
-            <strong>Signature:</strong> w:Writer&lt;&#39;W,&#39;T&gt; -&gt; Writer&lt;&#39;W,&#39;T&gt;<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L633-633" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '877', 877)" onmouseover="showTip(event, '877', 877)">
+          <code onmouseout="hideTip(event, '879', 879)" onmouseover="showTip(event, '879', 879)">
             TryFinally(writer, compensation)
           </code>
-          <div class="tip" id="877">
+          <div class="tip" id="879">
             <strong>Signature:</strong> (writer:(unit -&gt; &#39;?7568) * compensation:(unit -&gt; unit)) -&gt; unit -&gt; &#39;?7568<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L639-639" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '878', 878)" onmouseover="showTip(event, '878', 878)">
-            TryWith(writer, handler)
-          </code>
-          <div class="tip" id="878">
-            <strong>Signature:</strong> (writer:Writer&lt;&#39;W,&#39;T&gt; * handler:(exn -&gt; Writer&lt;&#39;W,&#39;T&gt;)) -&gt; Writer&lt;&#39;W,&#39;T&gt;<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L636-636" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '879', 879)" onmouseover="showTip(event, '879', 879)">
-            Using(resource, body)
-          </code>
-          <div class="tip" id="879">
-            <strong>Signature:</strong> (resource:&#39;d * body:(&#39;d -&gt; Writer&lt;&#39;W,&#39;T&gt;)) -&gt; Writer&lt;&#39;W,&#39;T&gt;<br />
-                          <strong>Type parameters:</strong> 'W, 'T          </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L642-642" class="github-link">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L651-651" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -244,14 +208,14 @@ This monad comes from Matthew Podwysocki's <a href="http://codebetter.com/blogs/
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '880', 880)" onmouseover="showTip(event, '880', 880)">
-            While(guard, m)
+            TryWith(writer, handler)
           </code>
           <div class="tip" id="880">
-            <strong>Signature:</strong> (guard:(unit -&gt; bool) * m:Writer&lt;&#39;W,unit&gt;) -&gt; unit -&gt; unit * &#39;W<br />
+            <strong>Signature:</strong> (writer:Writer&lt;&#39;W,&#39;T&gt; * handler:(exn -&gt; Writer&lt;&#39;W,&#39;T&gt;)) -&gt; Writer&lt;&#39;W,&#39;T&gt;<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L646-646" class="github-link">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L648-648" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -262,14 +226,50 @@ This monad comes from Matthew Podwysocki's <a href="http://codebetter.com/blogs/
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '881', 881)" onmouseover="showTip(event, '881', 881)">
-            Zero()
+            Using(resource, body)
           </code>
           <div class="tip" id="881">
+            <strong>Signature:</strong> (resource:&#39;d * body:(&#39;d -&gt; Writer&lt;&#39;W,&#39;T&gt;)) -&gt; Writer&lt;&#39;W,&#39;T&gt;<br />
+                          <strong>Type parameters:</strong> 'W, 'T          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L654-654" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '882', 882)" onmouseover="showTip(event, '882', 882)">
+            While(guard, m)
+          </code>
+          <div class="tip" id="882">
+            <strong>Signature:</strong> (guard:(unit -&gt; bool) * m:Writer&lt;&#39;W,unit&gt;) -&gt; unit -&gt; unit * &#39;W<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L658-658" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '883', 883)" onmouseover="showTip(event, '883', 883)">
+            Zero()
+          </code>
+          <div class="tip" id="883">
             <strong>Signature:</strong> unit -&gt; Writer&lt;&#39;W,unit&gt;<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L635-635" class="github-link">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L647-647" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
