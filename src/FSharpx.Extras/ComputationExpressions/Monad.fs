@@ -226,6 +226,18 @@ module Option =
         | Some x -> x
         | None -> v()
 
+    /// Gets the value associated with the option or fails with the supplied message.
+    let inline getOrFail m =
+        function
+        | Some x -> x
+        | None -> failwith m
+
+    /// Gets the value associated with the option or raises the supplied exception.
+    let inline getOrRaise e =
+        function
+        | Some x -> x
+        | None -> raise e
+
     /// Gets the value associated with the option or the default value for the type.
     let getOrDefault =
         function
