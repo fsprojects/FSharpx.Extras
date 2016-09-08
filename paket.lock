@@ -4,13 +4,13 @@ NUGET
     FSharp.Core (4.0.0.1) - redirects: force
     FSharpx.Async (1.12)
       FSharp.Control.AsyncSeq
-    FSharpx.Collections (1.15.1)
+    FSharpx.Collections (1.15.2)
       FSharp.Core
 
 GROUP Build
 NUGET
   remote: https://www.nuget.org/api/v2
-    FAKE (4.38)
+    FAKE (4.39.1)
     FSharp.Compiler.Service (2.0.0.6)
     FSharp.Formatting (2.14.4)
       FSharp.Compiler.Service (2.0.0.6)
@@ -23,12 +23,12 @@ NUGET
     Microsoft.Net.Http (2.2.29) - framework: net10, net11, net20, net30, net35, net40, net40-full
       Microsoft.Bcl (>= 1.1.10)
       Microsoft.Bcl.Build (>= 1.0.14)
-    Octokit (0.21.1)
+    Octokit (0.22)
       Microsoft.Net.Http  - framework: net10, net11, net20, net30, net35, net40, net40-full
     SourceLink.Fake (1.1)
 GITHUB
   remote: fsharp/FAKE
-    modules/Octokit/Octokit.fsx (ce85407e38a97dad4102c535ce72a99c0053a5da)
+    modules/Octokit/Octokit.fsx (73589a85a5e30a2c78d61efccdd3446a99483142)
       Octokit (>= 0.20)
 GROUP Test
 NUGET
