@@ -1,3 +1,6 @@
+#### 2.1.3 - 09.09.2016
+* New getOrFailf function for Option - https://github.com/fsprojects/FSharpx.Extras/pull/345
+
 #### 2.1.2 - 08.09.2016
 * New getOrFail and getOrRaise functions for Option - https://github.com/fsprojects/FSharpx.Extras/pull/344
 
