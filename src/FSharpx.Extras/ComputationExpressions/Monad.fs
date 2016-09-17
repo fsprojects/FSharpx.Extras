@@ -1122,6 +1122,14 @@ module Task =
     /// Creates a task that runs the given task and ignores its result.
     let inline Ignore t = bind (fun _ -> returnM ()) t
 
+    /// Active pattern that matches on flattened inner exceptions in an AggregateException
+    let (|AggregateExn|_|) (e:exn) =
+        match e with
+        | :? AggregateException as ae -> ae.Flatten().InnerExceptions
+                                         |> List.ofSeq
+                                         |> Some
+        | _                           -> None
+
     /// Creates a task that executes a specified task.
     /// If this task completes successfully, then this function returns Choice1Of2 with the returned value.
     /// If this task raises an exception before it completes then return Choice2Of2 with the raised exception.
@@ -1130,29 +1138,52 @@ module Task =
             try let! r = t
                 return Choice1Of2 r
             with e ->
-                return Choice2Of2 e
+                let e' = match e with
+                         | AggregateExn [inner] -> inner
+                         | x                    -> x
+                return Choice2Of2 e'
         }
 
     /// Creates a task that executes all the given tasks.
-    let Parallel (tasks : seq<unit -> Task<'a>>) =
+    let Parallel (tasks : seq<unit -> Task<'a>>) : (Task<'a[]>) =
         tasks
         |> Seq.map (fun t -> t())
         |> Array.ofSeq
         |> Task.WhenAll
 
     /// Creates a task that executes all the given tasks.
-    /// The paralelism is throttled, so that at most `throttle` tasks run at one time.
-    let ParallelWithTrottle throttle (tasks : seq<unit -> Task<'a>>) : (Task<'a[]>) =
-        let semaphore = new SemaphoreSlim(throttle)
-        let throttleTask (t:unit->Task<'a>) () : Task<'a> =
+    /// This function doesn't throw exceptions, but instead returns an array of Choices.
+    let ParallelCatch (tasks : seq<unit -> Task<'a>>) : (Task<Choice<'a, exn>[]>) =
+        let catch t () =
+            Catch <| t()
+        tasks
+        |> Seq.map catch
+        |> Parallel
+
+    /// common code for ParallelCatchWithTrottle and ParallelWithTrottle
+    let private ParallelWithTrottleCustom transformResult throttle (tasks : seq<unit -> Task<'a>>) : (Task<'b[]>) =
+        use semaphore = new SemaphoreSlim(throttle)
+        let throttleTask (t:unit->Task<'a>) () : Task<'b> =
             task {
                 do! semaphore.WaitAsync() |> ToTaskUnit
                 let! result = Catch <| t()
                 semaphore.Release() |> ignore
-                return match result with
-                       | Choice1Of2 r -> r
-                       | Choice2Of2 e -> raise e
+                return transformResult result
             }
         tasks
         |> Seq.map throttleTask
         |> Parallel
+
+    /// Creates a task that executes all the given tasks.
+    /// This function doesn't throw exceptions, but instead returns an array of Choices.
+    /// The paralelism is throttled, so that at most `throttle` tasks run at one time.
+    let ParallelCatchWithTrottle throttle (tasks : seq<unit -> Task<'a>>) : (Task<Choice<'a, exn>[]>) =
+        ParallelWithTrottleCustom id throttle tasks
+
+    /// Creates a task that executes all the given tasks.
+    /// The paralelism is throttled, so that at most `throttle` tasks run at one time.
+    let ParallelWithTrottle throttle (tasks : seq<unit -> Task<'a>>) : (Task<'a[]>) =
+        let extractOrThrow = function
+            | Choice1Of2 r -> r
+            | Choice2Of2 e -> raise e
+        ParallelWithTrottleCustom extractOrThrow throttle tasks
