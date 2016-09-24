@@ -747,6 +747,13 @@ module Choice =
         | Choice1Of2 a -> a
         | Choice2Of2 e -> invalidArg "choice" (sprintf "The choice value was Choice2Of2 '%A'" e)
     
+    /// If Choice is 1Of2, return its value.
+    /// Otherwise throw the exception in 2Of2.
+    let getOrRaise<'a, 'exn when 'exn :> exn> (c:Choice<'a, 'exn>) =
+        match c with
+        | Choice1Of2 r -> r
+        | Choice2Of2 e -> raise e
+    
     /// Wraps a function, encapsulates any exception thrown within to a Choice
     let inline protect f x = 
         try
@@ -1125,15 +1132,16 @@ module Task =
     /// Active pattern that matches on flattened inner exceptions in an AggregateException
     let (|AggregateExn|_|) (e:exn) =
         match e with
-        | :? AggregateException as ae -> ae.Flatten().InnerExceptions
-                                         |> List.ofSeq
-                                         |> Some
-        | _                           -> None
+        | :? AggregateException as ae ->
+            ae.Flatten().InnerExceptions
+            |> List.ofSeq
+            |> Some
+        | _ -> None
 
     /// Creates a task that executes a specified task.
     /// If this task completes successfully, then this function returns Choice1Of2 with the returned value.
     /// If this task raises an exception before it completes then return Choice2Of2 with the raised exception.
-    let Catch (t:Task<'a>) =
+    let Catch (t:Task<'a>) : Task<Choice<'a, exn>> =
         task {
             try let! r = t
                 return Choice1Of2 r
@@ -1183,7 +1191,4 @@ module Task =
     /// Creates a task that executes all the given tasks.
     /// The paralelism is throttled, so that at most `throttle` tasks run at one time.
     let ParallelWithTrottle throttle (tasks : seq<unit -> Task<'a>>) : (Task<'a[]>) =
-        let extractOrThrow = function
-            | Choice1Of2 r -> r
-            | Choice2Of2 e -> raise e
-        ParallelWithTrottleCustom extractOrThrow throttle tasks
+        ParallelWithTrottleCustom Choice.getOrRaise throttle tasks
