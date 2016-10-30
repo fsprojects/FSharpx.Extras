@@ -25,6 +25,9 @@ module Prelude =
     /// Transforms an uncurried function to a triple-curried function.
     let inline  curry3 f a b c = f (a, b, c)
 
+    /// Transforms an uncurried function to a triple-curried function.
+    let inline uncurry3 f (a,b,c) = f a b c
+
     /// Swap the elements of a pair.
     let inline swap (a,b) = (b,a)
 
@@ -62,8 +65,14 @@ module Prelude =
     /// first character used in the symbol.
     let (^) = (<|)
 
-    // Bottom value
-    let undefined<'T> : 'T = raise (NotImplementedException("result was implemented as undefined")) 
+    /// Bottom value
+    let undefined<'T> : 'T = raise (NotImplementedException("result was implemented as undefined"))
+
+    /// Given a value, apply a function to it, ignore the result, then return the original value.
+    let inline tee fn x = fn x |> ignore; x
+
+    /// Custom operator for `tee`: Given a value, apply a function to it, ignore the result, then return the original value.
+    let inline (|>!) x fn = tee fn x
 
     let inline toOption x = match x with
                             | true, v -> Some v
@@ -75,19 +84,19 @@ module Prelude =
         static member parse =
             tryWith bool.TryParse
 
-    type SByte with
-        static member parseWithOptions style provider x =
-            SByte.TryParse(x, style, provider) |> toOption
-
-        static member parse x =
-            SByte.parseWithOptions NumberStyles.Integer CultureInfo.InvariantCulture x
-
     type Byte with
         static member parseWithOptions style provider x =
             Byte.TryParse(x, style, provider) |> toOption
 
         static member parse x =
             Byte.parseWithOptions NumberStyles.Integer CultureInfo.InvariantCulture x
+
+    type SByte with
+        static member parseWithOptions style provider x =
+            SByte.TryParse(x, style, provider) |> toOption
+
+        static member parse x =
+            SByte.parseWithOptions NumberStyles.Integer CultureInfo.InvariantCulture x
 
     type UInt16 with
         static member parseWithOptions style provider x =
@@ -180,8 +189,8 @@ module Prelude =
 
     // Active patterns
     let (|Boolean       |_|) = Boolean.parse
-    let (|SByte         |_|) = SByte.parse
     let (|Byte          |_|) = Byte.parse
+    let (|SByte         |_|) = SByte.parse
     let (|UInt16        |_|) = UInt16.parse
     let (|Int16         |_|) = Int16.parse
     let (|UInt32        |_|) = UInt32.parse
@@ -192,4 +201,4 @@ module Prelude =
     let (|Single        |_|) = Single.parse
     let (|Double        |_|) = Double.parse
     let (|DateTime      |_|) = DateTime.parse
-    let (|DateTimeOffset|_|) = DateTime.parse
+    let (|DateTimeOffset|_|) = DateTimeOffset.parse
