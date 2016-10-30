@@ -191,6 +191,7 @@ docs/content/release-notes.md
 .fake
 docs/tools/FSharp.Formatting.svclog
 TestResult.xml
+AssemblyInfo.fs
 
 tmp.*
 
