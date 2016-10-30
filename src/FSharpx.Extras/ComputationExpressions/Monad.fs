@@ -1024,7 +1024,8 @@ module Task =
         List.foldBack cons s (returnM [])
 
     let inline mapM f x = sequence (List.map f x)
-    
+
+
     type TaskBuilder(?continuationOptions, ?scheduler, ?cancellationToken) =
         let contOptions = defaultArg continuationOptions TaskContinuationOptions.None
         let scheduler = defaultArg scheduler TaskScheduler.Default
@@ -1032,87 +1033,136 @@ module Task =
 
         member this.Return x = returnM x
 
-        member this.Zero() = returnM ()
-
-        member this.ReturnFrom (a: Task<'T>) = a
-
         member this.Bind(m, f) = bindWithOptions cancellationToken contOptions scheduler f m
 
-        member this.Combine(comp1, comp2) =
-            this.Bind(comp1, comp2)
+        member this.Zero() : Task<unit> = this.Return ()
 
-        member this.While(guard, m) =
-            if not(guard()) then this.Zero() else
-                this.Bind(m(), fun () -> this.While(guard, m))
+        member this.ReturnFrom (a: Task<'a>) = a
 
-        member this.TryWith(body:unit -> Task<_>, catchFn:exn -> Task<_>) =  
-            try
-               body()
-                .ContinueWith(fun (t:Task<_>) ->
-                   match t.IsFaulted with
-                   | false -> returnM(t.Result)
-                   | true  -> catchFn(t.Exception.GetBaseException()))
-                .Unwrap()
+        member this.Run (body : unit -> Task<'a>) = body()
+
+        member this.Delay (body : unit -> Task<'a>) : unit -> Task<'a> = fun () -> this.Bind(this.Return(), body)
+
+        member this.Combine(t1:Task<unit>, t2 : unit -> Task<'b>) : Task<'b> = this.Bind(t1, t2)
+
+        member this.While(guard, body : unit -> Task<unit>) : Task<unit> =
+            if not(guard())
+            then this.Zero()
+            else this.Bind(body(), fun () -> this.While(guard, body))
+
+        member this.TryWith(body : unit -> Task<'a>, catchFn:exn -> Task<'a>) : Task<'a> =
+            let continuation (t:Task<'a>) : Task<'a> =
+                if t.IsFaulted
+                then catchFn(t.Exception.GetBaseException())
+                else this.Return(t.Result)
+
+            try body().ContinueWith(continuation).Unwrap()
             with e -> catchFn(e)
 
-        member this.TryFinally(m, compensation) =
-            try this.ReturnFrom m
-            finally compensation()
+        member this.TryFinally(body : unit -> Task<'a>, compensation) : Task<'a> =
+            let wrapOk (x:'a) : Task<'a> =
+                compensation()
+                this.Return x
 
-        member this.Using(res: #IDisposable, body: #IDisposable -> Task<_>) =
-            this.TryFinally(body res, fun () -> match res with null -> () | disp -> disp.Dispose())
+            let wrapCrash (e:exn) : Task<'a> =
+                compensation()
+                raise e
 
-        member this.For(sequence: seq<_>, body) =
-            this.Using(sequence.GetEnumerator(),
-                                 fun enum -> this.While(enum.MoveNext, fun () -> body enum.Current))
+            this.Bind(this.TryWith(body, wrapCrash), wrapOk)
 
-        member this.Delay (f: unit -> Task<'T>) = f
+        member this.Using(res:#IDisposable, body : #IDisposable -> Task<'a>) : Task<'a> =
+            let compensation() =
+                match res with
+                | null -> ()
+                | disp -> disp.Dispose()
 
-        member this.Run (f: unit -> Task<'T>) = f()
+            this.TryFinally((fun () -> body res), compensation)
+
+        member this.For(sequence:seq<'a>, body : 'a -> Task<unit>) : Task<unit> =
+            this.Using( sequence.GetEnumerator()
+                      , fun enum -> this.While( enum.MoveNext
+                                              , fun () -> body enum.Current
+                                              )
+                      )
+
 
     let task = TaskBuilder()
 
+    type TokenToTask<'a> = CancellationToken -> Task<'a>
     type TaskBuilderWithToken(?continuationOptions, ?scheduler) =
         let contOptions = defaultArg continuationOptions TaskContinuationOptions.None
         let scheduler = defaultArg scheduler TaskScheduler.Default
 
         let lift (t: Task<_>) = fun (_: CancellationToken) -> t
-        let bind (t: CancellationToken -> Task<'T>) (f: 'T -> (CancellationToken -> Task<'U>)) =
+
+        let bind (t:TokenToTask<'a>) (f : 'a -> TokenToTask<'b>) =
             fun (token: CancellationToken) ->
-                (t token).ContinueWith((fun (x: Task<_>) -> f x.Result token), token, contOptions, scheduler).Unwrap()
+                (t token).ContinueWith( fun (x: Task<_>) -> f x.Result token
+                                      , token
+                                      , contOptions
+                                      , scheduler
+                                      )
+                         .Unwrap()
         
         member this.Return x = lift (returnM x)
 
+        member this.Bind(t, f) = bind t f
+
+        member this.Bind(t, f) = bind (lift t) f
+
         member this.ReturnFrom t = lift t
 
-        member this.ReturnFrom (t: CancellationToken -> Task<'T>) = t
+        member this.ReturnFrom (t:TokenToTask<'a>) = t
 
-        member this.Zero() = this.Return ()
+        member this.Zero() : TokenToTask<unit> = this.Return ()
 
-        member this.Bind(t, f) = bind t f            
+        member this.Run (body : unit -> TokenToTask<'a>) = body()
 
-        member this.Bind(t, f) = bind (lift t) f                
+        member this.Delay (body : unit -> TokenToTask<'a>) : unit -> TokenToTask<'a> = fun () -> this.Bind(this.Return(), body)
 
-        member this.Combine(t1, t2) = bind t1 (konst t2)        
+        member this.Combine(t1 : TokenToTask<unit>, t2 : unit -> TokenToTask<'b>) : TokenToTask<'b> = this.Bind(t1, t2)
 
-        member this.While(guard, m) =
-                if not(guard()) then 
-                    this.Zero()
-                else
-                    bind m (fun () -> this.While(guard, m))                    
+        member this.While(guard, body : unit -> TokenToTask<unit>) : TokenToTask<unit> =
+            if not(guard())
+            then this.Zero()
+            else this.Bind(body(), fun () -> this.While(guard, body))
 
-        member this.TryFinally(t : CancellationToken -> Task<'T>, compensation) =
-            try t
-            finally compensation()
+        member this.TryWith(body : unit -> TokenToTask<'a>, catchFn : exn -> TokenToTask<'a>) : TokenToTask<'a> = fun token ->
+            let continuation (t:Task<'a>) : Task<'a> =
+                if t.IsFaulted
+                then catchFn(t.Exception.GetBaseException())
+                else this.Return(t.Result)
+                <| token
 
-        member this.Using(res: #IDisposable, body: #IDisposable -> (CancellationToken -> Task<'T>)) =
-            this.TryFinally(body res, fun () -> match res with null -> () | disp -> disp.Dispose())
+            try (body() token).ContinueWith(continuation).Unwrap()
+            with e -> catchFn(e) token
 
-        member this.For(sequence: seq<'T>, body) =            
-                this.Using(sequence.GetEnumerator(),
-                                 fun enum -> this.While(enum.MoveNext, fun token -> body enum.Current token))
-        
-        member this.Delay f = this.Bind(this.Return (), f)
+        member this.TryFinally(body : unit -> TokenToTask<'a>, compensation) : TokenToTask<'a> =
+            let wrapOk (x:'a) : TokenToTask<'a> =
+                compensation()
+                this.Return x
+
+            let wrapCrash (e:exn) : TokenToTask<'a> =
+                compensation()
+                raise e
+
+            this.Bind(this.TryWith(body, wrapCrash), wrapOk)
+
+        member this.Using(res:#IDisposable, body : #IDisposable -> TokenToTask<'a>) : TokenToTask<'a> =
+            let compensation() =
+                match res with
+                | null -> ()
+                | disp -> disp.Dispose()
+
+            this.TryFinally((fun () -> body res), compensation)
+
+        member this.For(sequence:seq<'a>, body : 'a -> TokenToTask<unit>) : TokenToTask<unit> =
+            this.Using( sequence.GetEnumerator()
+                      , fun enum -> this.While( enum.MoveNext
+                                              , fun () -> body enum.Current
+                                              )
+                      )
+
 
     /// Converts a Task into Task<unit>
     let ToTaskUnit (t:Task) =

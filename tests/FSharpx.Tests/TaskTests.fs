@@ -91,7 +91,7 @@ let ``exception in task``() =
             failwith "error"
         }
     match Task.run t with
-    | Task.Error e -> Assert.AreEqual("error", e.Message)
+    | Task.Error e -> Assert.AreEqual("error", e.InnerException.Message)
     | _ -> Assert.Fail "task should have errored"
 
 [<Test>]
@@ -197,5 +197,7 @@ type TaskGen =
 let ``run delay law``() =
     Arb.register<TaskGen>() |> ignore
     let task = Task.TaskBuilder(continuationOptions = TaskContinuationOptions.ExecuteSynchronously)
-    fsCheck "run delay law" (fun a -> (task.Run << task.Delay << konst) a = a)
+    let delay = konst >> task.Delay >> task.Run
+    let run (transform : _ -> Task<_>) t = (transform t).Result
 
+    fsCheck "run delay law" (fun t -> run id t = run delay t)
