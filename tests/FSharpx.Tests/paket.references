@@ -1,5 +1,6 @@
 FSharpx.Async
 FSharpx.Collections
+FSharp.Core
 group Test
 FsCheck
 FsUnit

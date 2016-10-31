@@ -14,7 +14,6 @@ open System.IO
 #else
 #load "packages/build/SourceLink.Fake/tools/Fake.fsx"
 open SourceLink
-
 #endif
 
 // --------------------------------------------------------------------------------------
@@ -120,11 +119,8 @@ Target "CopyBinaries" (fun _ ->
 // Clean build results
 
 Target "Clean" (fun _ ->
-    CleanDirs ["bin"; "temp"]
-)
-
-Target "CleanDocs" (fun _ ->
-    CleanDirs ["docs/output"]
+    !! solutionFile |> MSBuildRelease "" "Clean" |> ignore
+    CleanDirs ["bin"; "temp"; "docs/output"]
 )
 
 // --------------------------------------------------------------------------------------
@@ -133,9 +129,9 @@ Target "CleanDocs" (fun _ ->
 Target "Build" (fun _ ->
     !! solutionFile
 #if MONO
-    |> MSBuildReleaseExt "" [ ("DefineConstants","MONO") ] "Rebuild"
+    |> MSBuildReleaseExt "" [ ("DefineConstants","MONO") ] "Build"
 #else
-    |> MSBuildRelease "" "Rebuild"
+    |> MSBuildRelease "" "Build"
 #endif
     |> ignore
 )
@@ -371,34 +367,30 @@ Target "BuildPackage" DoNothing
 
 Target "All" DoNothing
 
-"Clean"
-  ==> "AssemblyInfo"
+"AssemblyInfo"
   ==> "Build"
   ==> "CopyBinaries"
   ==> "RunTests"
   ==> "GenerateReferenceDocs"
   ==> "GenerateDocs"
-  ==> "All"
-  =?> ("ReleaseDocs",isLocalBuild)
-
-"All"
 #if MONO
 #else
   =?> ("SourceLink", Pdbstr.tryFind().IsSome )
 #endif
   ==> "NuGet"
   ==> "BuildPackage"
+  ==> "All"
+  =?> ("ReleaseDocs",isLocalBuild)
 
-"CleanDocs"
-  ==> "GenerateHelp"
+"GenerateHelp"
   ==> "GenerateReferenceDocs"
   ==> "GenerateDocs"
 
-"CleanDocs"
-  ==> "GenerateHelpDebug"
-
 "GenerateHelpDebug"
   ==> "KeepRunning"
+
+"Clean"
+  ==> "Release"
 
 "BuildPackage"
   ==> "PublishNuget"
@@ -406,5 +398,5 @@ Target "All" DoNothing
 
 "ReleaseDocs"
   ==> "Release"
-  
+
 RunTargetOrDefault "All"
