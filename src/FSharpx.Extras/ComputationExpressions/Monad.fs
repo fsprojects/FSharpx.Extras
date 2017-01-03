@@ -1218,27 +1218,29 @@ module Task =
         |> Seq.map catch
         |> Parallel
 
-    /// common code for ParallelCatchWithTrottle and ParallelWithTrottle
-    let private ParallelWithTrottleCustom transformResult throttle (tasks : seq<unit -> Task<'a>>) : (Task<'b[]>) =
-        use semaphore = new SemaphoreSlim(throttle)
-        let throttleTask (t:unit->Task<'a>) () : Task<'b> =
-            task {
-                do! semaphore.WaitAsync() |> ToTaskUnit
-                let! result = Catch <| t()
-                semaphore.Release() |> ignore
-                return transformResult result
-            }
-        tasks
-        |> Seq.map throttleTask
-        |> Parallel
+    /// common code for ParallelCatchWithThrottle and ParallelWithThrottle
+    let private ParallelWithThrottleCustom transformResult throttle (tasks : seq<unit -> Task<'a>>) : (Task<'b[]>) =
+        task {
+            use semaphore = new SemaphoreSlim(throttle)
+            let throttleTask (t:unit->Task<'a>) () : Task<'b> =
+                task {
+                    do! semaphore.WaitAsync() |> ToTaskUnit
+                    let! result = Catch <| t()
+                    semaphore.Release() |> ignore
+                    return transformResult result
+                }
+            return! tasks
+                    |> Seq.map throttleTask
+                    |> Parallel
+        }
 
     /// Creates a task that executes all the given tasks.
     /// This function doesn't throw exceptions, but instead returns an array of Choices.
     /// The paralelism is throttled, so that at most `throttle` tasks run at one time.
-    let ParallelCatchWithTrottle throttle (tasks : seq<unit -> Task<'a>>) : (Task<Choice<'a, exn>[]>) =
-        ParallelWithTrottleCustom id throttle tasks
+    let ParallelCatchWithThrottle throttle (tasks : seq<unit -> Task<'a>>) : (Task<Choice<'a, exn>[]>) =
+        ParallelWithThrottleCustom id throttle tasks
 
     /// Creates a task that executes all the given tasks.
     /// The paralelism is throttled, so that at most `throttle` tasks run at one time.
-    let ParallelWithTrottle throttle (tasks : seq<unit -> Task<'a>>) : (Task<'a[]>) =
-        ParallelWithTrottleCustom Choice.getOrRaise throttle tasks
+    let ParallelWithThrottle throttle (tasks : seq<unit -> Task<'a>>) : (Task<'a[]>) =
+        ParallelWithThrottleCustom Choice.getOrRaise throttle tasks

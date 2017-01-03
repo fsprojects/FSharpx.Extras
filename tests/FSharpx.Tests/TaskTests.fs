@@ -186,6 +186,14 @@ let ``try with should do unwrapping of exception to original type if it was rais
    }
    Assert.AreEqual(10, result.Result)
 
+[<Test>]
+let ``Parallel with throttle``() =
+  let nums = [|123|]
+  let work n () = Task.task.Return(n)
+  let tasks = nums |> Array.map work
+  let result = Task.ParallelWithThrottle 1 tasks
+  Assert.AreEqual(nums, result.Result)
+
 open FsCheck
 open FsCheck.NUnit
 
