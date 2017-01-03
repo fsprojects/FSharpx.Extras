@@ -3,6 +3,7 @@
 open System
 open System.Globalization
 open System.Diagnostics
+open System.Runtime.ExceptionServices
 
 [<AutoOpen>]
 module Prelude =
@@ -73,6 +74,14 @@ module Prelude =
 
     /// Custom operator for `tee`: Given a value, apply a function to it, ignore the result, then return the original value.
     let inline (|>!) x fn = tee fn x
+
+    /// Rethrows an exception. This can be used even outside of try-with block. The exception object (stacktrace, etc) is not changed.
+    let reraise' (e:exn) : 'T = ExceptionDispatchInfo.Capture(e).Throw() ; undefined
+    // http://thorarin.net/blog/post/2013/02/21/Preserving-Stack-Trace.aspx
+    // https://stackoverflow.com/questions/7168801/how-to-use-reraise-in-async-workflows-in-f
+
+    /// Rethrows an exception, but bebore that applies a function on it. This can be used even outside of try-with block. The exception object (stacktrace, etc) is not changed.
+    let reraiseWith (f : exn -> unit) (e:exn) : 'T = f e ; reraise' e
 
     let inline toOption x = match x with
                             | true, v -> Some v

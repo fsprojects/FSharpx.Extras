@@ -244,6 +244,12 @@ module Option =
         | Some x -> x
         | None -> raise e
 
+    /// Gets the value associated with the option or reraises the supplied exception.
+    let inline getOrReraise e =
+        function
+        | Some x -> x
+        | None -> reraise' e
+
     /// Gets the value associated with the option or the default value for the type.
     let getOrDefault =
         function
@@ -748,11 +754,18 @@ module Choice =
         | Choice2Of2 e -> invalidArg "choice" (sprintf "The choice value was Choice2Of2 '%A'" e)
     
     /// If Choice is 1Of2, return its value.
-    /// Otherwise throw the exception in 2Of2.
+    /// Otherwise raise the exception in 2Of2.
     let getOrRaise<'a, 'exn when 'exn :> exn> (c:Choice<'a, 'exn>) =
         match c with
         | Choice1Of2 r -> r
         | Choice2Of2 e -> raise e
+    
+    /// If Choice is 1Of2, return its value.
+    /// Otherwise reraise the exception in 2Of2.
+    let getOrReraise<'a, 'exn when 'exn :> exn> (c:Choice<'a, 'exn>) =
+        match c with
+        | Choice1Of2 r -> r
+        | Choice2Of2 e -> reraise' e
     
     /// Wraps a function, encapsulates any exception thrown within to a Choice
     let inline protect f x = 
@@ -1073,7 +1086,7 @@ module Task =
 
             let wrapCrash (e:exn) : Task<'a> =
                 compensation()
-                raise e
+                reraise' e
 
             this.Bind(this.TryWith(body, wrapCrash), wrapOk)
 
@@ -1151,7 +1164,7 @@ module Task =
 
             let wrapCrash (e:exn) : TokenToTask<'a> =
                 compensation()
-                raise e
+                reraise' e
 
             this.Bind(this.TryWith(body, wrapCrash), wrapOk)
 
@@ -1243,4 +1256,4 @@ module Task =
     /// Creates a task that executes all the given tasks.
     /// The paralelism is throttled, so that at most `throttle` tasks run at one time.
     let ParallelWithThrottle throttle (tasks : seq<unit -> Task<'a>>) : (Task<'a[]>) =
-        ParallelWithThrottleCustom Choice.getOrRaise throttle tasks
+        ParallelWithThrottleCustom Choice.getOrReraise throttle tasks
