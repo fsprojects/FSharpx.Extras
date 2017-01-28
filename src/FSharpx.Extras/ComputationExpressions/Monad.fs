@@ -1183,10 +1183,16 @@ module Task =
                                               )
                       )
 
+    /// Creates a single Task<unit> that will complete when all of the Task<unit> objects in an enumerable collection have completed.
+    let inline WhenAllUnits (units:seq<Task<unit>>) : Task<unit> =
+        task {
+            let! (_:unit[]) = Task.WhenAll units
+            return ()
+        }
 
     /// Converts a Task into Task<unit>
-    let ToTaskUnit (t:Task) =
-        let continuation _ = ()
+    let inline ToTaskUnit (t:Task) =
+        let inline continuation _ = ()
         t.ContinueWith continuation
 
     /// Creates a task that runs the given task and ignores its result.
@@ -1219,7 +1225,6 @@ module Task =
     let Parallel (tasks : seq<unit -> Task<'a>>) : (Task<'a[]>) =
         tasks
         |> Seq.map (fun t -> t())
-        |> Array.ofSeq
         |> Task.WhenAll
 
     /// Creates a task that executes all the given tasks.
