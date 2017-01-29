@@ -5,13 +5,13 @@ open System.Reflection
 [<assembly: AssemblyTitleAttribute("FSharpx.Text.StructuredFormat")>]
 [<assembly: AssemblyProductAttribute("FSharpx.Extras")>]
 [<assembly: AssemblyDescriptionAttribute("FSharpx.Extras implements general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.")>]
-[<assembly: AssemblyVersionAttribute("2.2.0")>]
-[<assembly: AssemblyFileVersionAttribute("2.2.0")>]
+[<assembly: AssemblyVersionAttribute("2.2.1")>]
+[<assembly: AssemblyFileVersionAttribute("2.2.1")>]
 do ()
 
 module internal AssemblyVersionInformation =
     let [<Literal>] AssemblyTitle = "FSharpx.Text.StructuredFormat"
     let [<Literal>] AssemblyProduct = "FSharpx.Extras"
     let [<Literal>] AssemblyDescription = "FSharpx.Extras implements general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible."
-    let [<Literal>] AssemblyVersion = "2.2.0"
-    let [<Literal>] AssemblyFileVersion = "2.2.0"
+    let [<Literal>] AssemblyVersion = "2.2.1"
+    let [<Literal>] AssemblyFileVersion = "2.2.1"
