@@ -51,15 +51,15 @@
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '854', 854)" onmouseover="showTip(event, '854', 854)">
+          <code onmouseout="hideTip(event, '859', 859)" onmouseover="showTip(event, '859', 859)">
             new(continuationOptions, scheduler)
           </code>
-          <div class="tip" id="854">
+          <div class="tip" id="859">
             <strong>Signature:</strong> (continuationOptions:TaskContinuationOptions option * scheduler:TaskScheduler option) -&gt; TaskBuilderWithToken<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1099-1099" class="github-link">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1112-1112" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -78,105 +78,15 @@
       <tr>
         <td class="member-name">
 
-          <code onmouseout="hideTip(event, '855', 855)" onmouseover="showTip(event, '855', 855)">
+          <code onmouseout="hideTip(event, '860', 860)" onmouseover="showTip(event, '860', 860)">
             Bind(t, f)
           </code>
-          <div class="tip" id="855">
+          <div class="tip" id="860">
             <strong>Signature:</strong> (t:Task&lt;&#39;?8026&gt; * f:(&#39;?8026 -&gt; TokenToTask&lt;&#39;?8027&gt;)) -&gt; CancellationToken -&gt; Task&lt;&#39;?8027&gt;<br />
                           <strong>Type parameters:</strong> '?8026, '?8027          </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1118-1118" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '856', 856)" onmouseover="showTip(event, '856', 856)">
-            Bind(t, f)
-          </code>
-          <div class="tip" id="856">
-            <strong>Signature:</strong> (t:TokenToTask&lt;&#39;?8023&gt; * f:(&#39;?8023 -&gt; TokenToTask&lt;&#39;?8024&gt;)) -&gt; CancellationToken -&gt; Task&lt;&#39;?8024&gt;<br />
-                          <strong>Type parameters:</strong> '?8023, '?8024          </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1116-1116" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '857', 857)" onmouseover="showTip(event, '857', 857)">
-            Combine(t1, t2)
-          </code>
-          <div class="tip" id="857">
-            <strong>Signature:</strong> (t1:TokenToTask&lt;unit&gt; * t2:(unit -&gt; TokenToTask&lt;&#39;b&gt;)) -&gt; TokenToTask&lt;&#39;b&gt;<br />
-                          <strong>Type parameters:</strong> 'b          </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1130-1130" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '858', 858)" onmouseover="showTip(event, '858', 858)">
-            Delay(body)
-          </code>
-          <div class="tip" id="858">
-            <strong>Signature:</strong> (body:(unit -&gt; TokenToTask&lt;&#39;a&gt;)) -&gt; unit -&gt; TokenToTask&lt;&#39;a&gt;<br />
-                          <strong>Type parameters:</strong> 'a          </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1128-1128" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '859', 859)" onmouseover="showTip(event, '859', 859)">
-            For(sequence, body)
-          </code>
-          <div class="tip" id="859">
-            <strong>Signature:</strong> (sequence:seq&lt;&#39;a&gt; * body:(&#39;a -&gt; TokenToTask&lt;unit&gt;)) -&gt; TokenToTask&lt;unit&gt;<br />
-                          <strong>Type parameters:</strong> 'a          </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1166-1166" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '860', 860)" onmouseover="showTip(event, '860', 860)">
-            Return(x)
-          </code>
-          <div class="tip" id="860">
-            <strong>Signature:</strong> x:&#39;?8021 -&gt; CancellationToken -&gt; Task&lt;&#39;?8021&gt;<br />
-                          <strong>Type parameters:</strong> '?8021          </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1114-1114" class="github-link">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1131-1131" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -187,14 +97,14 @@
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '861', 861)" onmouseover="showTip(event, '861', 861)">
-            ReturnFrom(t)
+            Bind(t, f)
           </code>
           <div class="tip" id="861">
-            <strong>Signature:</strong> t:TokenToTask&lt;&#39;a&gt; -&gt; TokenToTask&lt;&#39;a&gt;<br />
-                          <strong>Type parameters:</strong> 'a          </div>
+            <strong>Signature:</strong> (t:TokenToTask&lt;&#39;?8023&gt; * f:(&#39;?8023 -&gt; TokenToTask&lt;&#39;?8024&gt;)) -&gt; CancellationToken -&gt; Task&lt;&#39;?8024&gt;<br />
+                          <strong>Type parameters:</strong> '?8023, '?8024          </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1122-1122" class="github-link">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1129-1129" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -205,14 +115,14 @@
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '862', 862)" onmouseover="showTip(event, '862', 862)">
-            ReturnFrom(t)
+            Combine(t1, t2)
           </code>
           <div class="tip" id="862">
-            <strong>Signature:</strong> t:Task&lt;&#39;?8029&gt; -&gt; CancellationToken -&gt; Task&lt;&#39;?8029&gt;<br />
-                          <strong>Type parameters:</strong> '?8029          </div>
+            <strong>Signature:</strong> (t1:TokenToTask&lt;unit&gt; * t2:(unit -&gt; TokenToTask&lt;&#39;b&gt;)) -&gt; TokenToTask&lt;&#39;b&gt;<br />
+                          <strong>Type parameters:</strong> 'b          </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1120-1120" class="github-link">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1143-1143" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -223,14 +133,14 @@
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '863', 863)" onmouseover="showTip(event, '863', 863)">
-            Run(body)
+            Delay(body)
           </code>
           <div class="tip" id="863">
-            <strong>Signature:</strong> (body:(unit -&gt; TokenToTask&lt;&#39;a&gt;)) -&gt; TokenToTask&lt;&#39;a&gt;<br />
+            <strong>Signature:</strong> (body:(unit -&gt; TokenToTask&lt;&#39;a&gt;)) -&gt; unit -&gt; TokenToTask&lt;&#39;a&gt;<br />
                           <strong>Type parameters:</strong> 'a          </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1126-1126" class="github-link">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1141-1141" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -241,14 +151,14 @@
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '864', 864)" onmouseover="showTip(event, '864', 864)">
-            TryFinally(body, compensation)
+            For(sequence, body)
           </code>
           <div class="tip" id="864">
-            <strong>Signature:</strong> (body:(unit -&gt; TokenToTask&lt;&#39;a&gt;) * compensation:(unit -&gt; unit)) -&gt; TokenToTask&lt;&#39;a&gt;<br />
+            <strong>Signature:</strong> (sequence:seq&lt;&#39;a&gt; * body:(&#39;a -&gt; TokenToTask&lt;unit&gt;)) -&gt; TokenToTask&lt;unit&gt;<br />
                           <strong>Type parameters:</strong> 'a          </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1147-1147" class="github-link">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1179-1179" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -259,14 +169,14 @@
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '865', 865)" onmouseover="showTip(event, '865', 865)">
-            TryWith(body, catchFn)
+            Return(x)
           </code>
           <div class="tip" id="865">
-            <strong>Signature:</strong> (body:(unit -&gt; TokenToTask&lt;&#39;a&gt;) * catchFn:(exn -&gt; TokenToTask&lt;&#39;a&gt;)) -&gt; TokenToTask&lt;&#39;a&gt;<br />
-                          <strong>Type parameters:</strong> 'a          </div>
+            <strong>Signature:</strong> x:&#39;?8021 -&gt; CancellationToken -&gt; Task&lt;&#39;?8021&gt;<br />
+                          <strong>Type parameters:</strong> '?8021          </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1137-1137" class="github-link">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1127-1127" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -277,14 +187,14 @@
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '866', 866)" onmouseover="showTip(event, '866', 866)">
-            Using(res, body)
+            ReturnFrom(t)
           </code>
           <div class="tip" id="866">
-            <strong>Signature:</strong> (res:&#39;?8045 * body:(&#39;?8045 -&gt; TokenToTask&lt;&#39;a&gt;)) -&gt; TokenToTask&lt;&#39;a&gt;<br />
-                          <strong>Type parameters:</strong> '?8045, 'a          </div>
+            <strong>Signature:</strong> t:TokenToTask&lt;&#39;a&gt; -&gt; TokenToTask&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1158-1158" class="github-link">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1135-1135" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -295,14 +205,14 @@
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '867', 867)" onmouseover="showTip(event, '867', 867)">
-            While(guard, body)
+            ReturnFrom(t)
           </code>
           <div class="tip" id="867">
-            <strong>Signature:</strong> (guard:(unit -&gt; bool) * body:(unit -&gt; TokenToTask&lt;unit&gt;)) -&gt; TokenToTask&lt;unit&gt;<br />
-                      </div>
+            <strong>Signature:</strong> t:Task&lt;&#39;?8029&gt; -&gt; CancellationToken -&gt; Task&lt;&#39;?8029&gt;<br />
+                          <strong>Type parameters:</strong> '?8029          </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1132-1132" class="github-link">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1133-1133" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
@@ -313,14 +223,104 @@
         <td class="member-name">
 
           <code onmouseout="hideTip(event, '868', 868)" onmouseover="showTip(event, '868', 868)">
-            Zero()
+            Run(body)
           </code>
           <div class="tip" id="868">
+            <strong>Signature:</strong> (body:(unit -&gt; TokenToTask&lt;&#39;a&gt;)) -&gt; TokenToTask&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1139-1139" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '869', 869)" onmouseover="showTip(event, '869', 869)">
+            TryFinally(body, compensation)
+          </code>
+          <div class="tip" id="869">
+            <strong>Signature:</strong> (body:(unit -&gt; TokenToTask&lt;&#39;a&gt;) * compensation:(unit -&gt; unit)) -&gt; TokenToTask&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1160-1160" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '870', 870)" onmouseover="showTip(event, '870', 870)">
+            TryWith(body, catchFn)
+          </code>
+          <div class="tip" id="870">
+            <strong>Signature:</strong> (body:(unit -&gt; TokenToTask&lt;&#39;a&gt;) * catchFn:(exn -&gt; TokenToTask&lt;&#39;a&gt;)) -&gt; TokenToTask&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1150-1150" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '871', 871)" onmouseover="showTip(event, '871', 871)">
+            Using(res, body)
+          </code>
+          <div class="tip" id="871">
+            <strong>Signature:</strong> (res:&#39;?8045 * body:(&#39;?8045 -&gt; TokenToTask&lt;&#39;a&gt;)) -&gt; TokenToTask&lt;&#39;a&gt;<br />
+                          <strong>Type parameters:</strong> '?8045, 'a          </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1171-1171" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '872', 872)" onmouseover="showTip(event, '872', 872)">
+            While(guard, body)
+          </code>
+          <div class="tip" id="872">
+            <strong>Signature:</strong> (guard:(unit -&gt; bool) * body:(unit -&gt; TokenToTask&lt;unit&gt;)) -&gt; TokenToTask&lt;unit&gt;<br />
+                      </div>
+        </td>
+        <td class="xmldoc">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1145-1145" class="github-link">
+              <img src="../content/img/github.png" class="normal" />
+              <img src="../content/img/github-blue.png" class="hover" />
+            </a>
+          
+        </td>
+      </tr>
+      <tr>
+        <td class="member-name">
+
+          <code onmouseout="hideTip(event, '873', 873)" onmouseover="showTip(event, '873', 873)">
+            Zero()
+          </code>
+          <div class="tip" id="873">
             <strong>Signature:</strong> unit -&gt; TokenToTask&lt;unit&gt;<br />
                       </div>
         </td>
         <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1124-1124" class="github-link">
+            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/ComputationExpressions/Monad.fs#L1137-1137" class="github-link">
               <img src="../content/img/github.png" class="normal" />
               <img src="../content/img/github-blue.png" class="hover" />
             </a>
