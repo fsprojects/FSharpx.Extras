@@ -1,3 +1,6 @@
+#### 2.2.1 - 29.01.2017
+* BGUFIX: Fixed `ParallelWithThrottle` - https://github.com/fsprojects/FSharpx.Extras/pull/350
+
 #### 2.2.0 - 31.10.2016
 * New getOrFailf function for Option - https://github.com/fsprojects/FSharpx.Extras/pull/345
 * New getOrFail and getOrRaise functions for Option - https://github.com/fsprojects/FSharpx.Extras/pull/344
