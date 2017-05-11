@@ -211,6 +211,22 @@ namespace FSharpx.Functional.CSharpTests {
         }
 
         [Test]
+        public void OrElseLazy()
+        {
+            var a = 5.Some();
+            var b = a.OrElseLazy(new Lazy<FSharpOption<int>>(() => 9.Some()));
+            Assert.AreEqual(5, b.Value);
+        }
+
+        [Test]
+        public void OrElseLazy_None()
+        {
+            var a = FSharpOption<int>.None;
+            var b = a.OrElseLazy(new Lazy<FSharpOption<int>>(() => 9.Some()));
+            Assert.AreEqual(9, b.Value);
+        }
+
+        [Test]
         public void GetOrElse() {
             var a = FSharpOption<int>.None;
             var b = a.GetOrElse(9);

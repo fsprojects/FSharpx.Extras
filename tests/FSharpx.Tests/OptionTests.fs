@@ -67,4 +67,12 @@ let ``concat none``() =
     let r = None |> Option.concat
     Assert.AreEqual(None, r)
 
+[<Test>]
+let ``orElseLazy Some``() =
+    let r = Some 1 |> Option.orElseLazy (lazy Some 2)
+    Assert.AreEqual(Some 1, r)
     
+[<Test>]
+let ``orElseLazy None``() =
+    let r = None |> Option.orElseLazy (lazy Some 2)
+    Assert.AreEqual(Some 2, r)
