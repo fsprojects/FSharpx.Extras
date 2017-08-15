@@ -310,6 +310,17 @@ module Option =
     let inline concat x = 
         x >>= id
 
+    let inline isNone (o:Option<'a>) : bool =
+        match o with
+        | None -> true
+        | _ -> false
+
+    let inline isSome (o:Option<'a>) : bool =
+        match o with
+        | Some _ -> true
+        | _ -> false
+
+
 module Nullable =
     let (|Null|Value|) (x: _ Nullable) =
         if x.HasValue then Value x.Value else Null
@@ -869,6 +880,142 @@ module Choice =
         List.foldBack cons s (returnM [])
 
     let inline mapM f x = sequence (List.map f x)
+
+    let inline isChoice1Of2 (c:Choice<'a, 'b>) : bool =
+        match c with
+        | Choice1Of2 _ -> true
+        | _ -> false
+
+    let inline isChoice2Of2 (c:Choice<'a, 'b>) : bool =
+        match c with
+        | Choice2Of2 _ -> true
+        | _ -> false
+
+    let inline isChoice1Of3 (c:Choice<'a, 'b, 'c>) : bool =
+        match c with
+        | Choice1Of3 _ -> true
+        | _ -> false
+
+    let inline isChoice2Of3 (c:Choice<'a, 'b, 'c>) : bool =
+        match c with
+        | Choice2Of3 _ -> true
+        | _ -> false
+
+    let inline isChoice3Of3 (c:Choice<'a, 'b, 'c>) : bool =
+        match c with
+        | Choice3Of3 _ -> true
+        | _ -> false
+
+    let inline isChoice1Of4 (c:Choice<'a, 'b, 'c, 'd>) : bool =
+        match c with
+        | Choice1Of4 _ -> true
+        | _ -> false
+
+    let inline isChoice2Of4 (c:Choice<'a, 'b, 'c, 'd>) : bool =
+        match c with
+        | Choice2Of4 _ -> true
+        | _ -> false
+
+    let inline isChoice3Of4 (c:Choice<'a, 'b, 'c, 'd>) : bool =
+        match c with
+        | Choice3Of4 _ -> true
+        | _ -> false
+
+    let inline isChoice4Of4 (c:Choice<'a, 'b, 'c, 'd>) : bool =
+        match c with
+        | Choice4Of4 _ -> true
+        | _ -> false
+
+    let inline isChoice1Of5 (c:Choice<'a, 'b, 'c, 'd, 'e>) : bool =
+        match c with
+        | Choice1Of5 _ -> true
+        | _ -> false
+
+    let inline isChoice2Of5 (c:Choice<'a, 'b, 'c, 'd, 'e>) : bool =
+        match c with
+        | Choice2Of5 _ -> true
+        | _ -> false
+
+    let inline isChoice3Of5 (c:Choice<'a, 'b, 'c, 'd, 'e>) : bool =
+        match c with
+        | Choice3Of5 _ -> true
+        | _ -> false
+
+    let inline isChoice4Of5 (c:Choice<'a, 'b, 'c, 'd, 'e>) : bool =
+        match c with
+        | Choice4Of5 _ -> true
+        | _ -> false
+
+    let inline isChoice5Of5 (c:Choice<'a, 'b, 'c, 'd, 'e>) : bool =
+        match c with
+        | Choice5Of5 _ -> true
+        | _ -> false
+
+    let inline isChoice1Of6 (c:Choice<'a, 'b, 'c, 'd, 'e, 'f>) : bool =
+        match c with
+        | Choice1Of6 _ -> true
+        | _ -> false
+
+    let inline isChoice2Of6 (c:Choice<'a, 'b, 'c, 'd, 'e, 'f>) : bool =
+        match c with
+        | Choice2Of6 _ -> true
+        | _ -> false
+
+    let inline isChoice3Of6 (c:Choice<'a, 'b, 'c, 'd, 'e, 'f>) : bool =
+        match c with
+        | Choice3Of6 _ -> true
+        | _ -> false
+
+    let inline isChoice4Of6 (c:Choice<'a, 'b, 'c, 'd, 'e, 'f>) : bool =
+        match c with
+        | Choice4Of6 _ -> true
+        | _ -> false
+
+    let inline isChoice5Of6 (c:Choice<'a, 'b, 'c, 'd, 'e, 'f>) : bool =
+        match c with
+        | Choice5Of6 _ -> true
+        | _ -> false
+
+    let inline isChoice6Of6 (c:Choice<'a, 'b, 'c, 'd, 'e, 'f>) : bool =
+        match c with
+        | Choice6Of6 _ -> true
+        | _ -> false
+
+    let inline isChoice1Of7 (c:Choice<'a, 'b, 'c, 'd, 'e, 'f, 'g>) : bool =
+        match c with
+        | Choice1Of7 _ -> true
+        | _ -> false
+
+    let inline isChoice2Of7 (c:Choice<'a, 'b, 'c, 'd, 'e, 'f, 'g>) : bool =
+        match c with
+        | Choice2Of7 _ -> true
+        | _ -> false
+
+    let inline isChoice3Of7 (c:Choice<'a, 'b, 'c, 'd, 'e, 'f, 'g>) : bool =
+        match c with
+        | Choice3Of7 _ -> true
+        | _ -> false
+
+    let inline isChoice4Of7 (c:Choice<'a, 'b, 'c, 'd, 'e, 'f, 'g>) : bool =
+        match c with
+        | Choice4Of7 _ -> true
+        | _ -> false
+
+    let inline isChoice5Of7 (c:Choice<'a, 'b, 'c, 'd, 'e, 'f, 'g>) : bool =
+        match c with
+        | Choice5Of7 _ -> true
+        | _ -> false
+
+    let inline isChoice6Of7 (c:Choice<'a, 'b, 'c, 'd, 'e, 'f, 'g>) : bool =
+        match c with
+        | Choice6Of7 _ -> true
+        | _ -> false
+
+    let inline isChoice7Of7 (c:Choice<'a, 'b, 'c, 'd, 'e, 'f, 'g>) : bool =
+        match c with
+        | Choice7Of7 _ -> true
+        | _ -> false
+
 
 module Validation =
     open Choice
