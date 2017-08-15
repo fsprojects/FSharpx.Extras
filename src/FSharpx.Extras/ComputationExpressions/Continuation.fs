@@ -3,7 +3,6 @@
 open System
 open System.Collections.Generic
 open FSharpx.Collections
-open FSharpx.Functional
 
 /// The continuation monad.
 /// The algorithm is from Wes Dyer http://blogs.msdn.com/b/wesdyer/archive/2008/01/11/the-marvels-of-monads.aspx.

@@ -6,7 +6,6 @@ open System
 open System.Collections
 open System.Collections.Generic
 open FSharpx.Collections
-open FSharpx.Functional
 
 
 /// Generic monadic operators    
@@ -1107,17 +1106,17 @@ module Task =
         /// Task completed successfully
         | Successful of 'T
 
-    let run (t: unit -> Task<_>) = 
+    let run (t: unit -> Task<'a>) = 
         try
             let task = t()
-            task.Result |> Result.Successful
+            task.Result |> Result<'a>.Successful
         with 
-        | :? OperationCanceledException -> Result.Canceled
+        | :? OperationCanceledException -> Result<_>.Canceled
         | :? AggregateException as e ->
             match e.InnerException with
-            | :? TaskCanceledException -> Result.Canceled
-            | _ -> Result.Error e
-        | e -> Result.Error e
+            | :? TaskCanceledException -> Result<_>.Canceled
+            | _ -> Result<_>.Error e
+        | e -> Result<_>.Error e
 
     let toAsync (t: Task<'T>): Async<'T> =
         let abegin (cb: AsyncCallback, state: obj) : IAsyncResult = 

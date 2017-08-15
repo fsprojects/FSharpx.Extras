@@ -1,6 +1,6 @@
 ﻿module FSharpx.Tests.MaybeTest
 
-open FSharpx.Functional
+open FSharpx
 open FSharpx.Option
 open NUnit.Framework
 open FsCheck
