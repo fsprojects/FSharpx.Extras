@@ -96,7 +96,7 @@ module Option =
 
         member this.Bind(m, f) = Option.bind f m
 
-        member this.Zero() = None
+        member this.Zero() = Some ()
 
         member this.Combine(m, f) = Option.bind f m
 
