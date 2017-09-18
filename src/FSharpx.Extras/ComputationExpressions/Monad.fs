@@ -231,12 +231,6 @@ module Option =
         | Some x -> x
         | None -> failwith m
 
-    /// Gets the value associated with the option or print to a string buffer and raise an exception with the given result. Helper printers must return strings.
-    let inline getOrFailF fmt =
-        function
-        | Some x -> x
-        | None -> failwithf fmt
-
     /// Gets the value associated with the option or raises the supplied exception.
     let inline getOrRaise e =
         function
