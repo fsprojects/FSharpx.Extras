@@ -5,7 +5,7 @@ open System.Globalization
 
 module Strings =
     /// Checks whether the given text starts with the given prefix
-    let inline startsWith prefix (text:string) = text.StartsWith prefix
+    let inline startsWith (prefix : string) (text:string) = text.StartsWith prefix
 
     /// Replaces the given "replacement" for every occurence of the pattern in the given text 
     let inline replace (pattern:string) replacement (text:string) = text.Replace(pattern,replacement)
@@ -18,7 +18,7 @@ module Strings =
 
     /// Converts a sequence of strings to a single string separated with the delimiters
     [<System.Obsolete("Function 'separatedBy' obsolete. Use 'String.concat' from 'Microsoft.FSharp.Core' instead.")>]
-    let inline separatedBy delimiter (items: string seq) = String.Join(delimiter, Array.ofSeq items)
+    let inline separatedBy (delimiter : string) (items: string seq) = String.Join(delimiter, Array.ofSeq items)
 
     let inline toCharArray (str:string) = str.ToCharArray()
 

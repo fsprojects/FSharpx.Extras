@@ -530,6 +530,6 @@ type FSharpAsyncEx =
         s.AsyncReadToEnd()
 
 type FSharpLazy = 
-    static member Create (v: _ Func) = Lazy.Create v.Invoke
-    static member CreateFromValue v = Lazy.CreateFromValue v
+    static member Create (v: 'a Func) = Lazy<'a>.Create v.Invoke
+    static member CreateFromValue (v : 'a) = Lazy<'a>.CreateFromValue v
 
