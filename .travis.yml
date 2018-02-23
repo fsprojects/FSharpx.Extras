@@ -1,5 +1,6 @@
 language: csharp
-
+mono: latest
+dotnet: 2.1.4
 sudo: false  # use the new container-based Travis infrastructure 
 
 before_install:
