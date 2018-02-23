@@ -48,7 +48,7 @@ let tags = "fsharpx fsharp"
 let solutionFile  = "FSharpx.Extras.sln"
 
 // Pattern specifying assemblies to be tested using NUnit
-let testAssemblies = "tests/**/bin/Release/*Tests*.dll"
+let testAssemblies = "tests/**/bin/Release/**/*Tests*.dll"
 
 // Git configuration (used for publishing documentation in gh-pages branch)
 // The profile where the project is posted
@@ -119,7 +119,7 @@ Target "CopyBinaries" (fun _ ->
 // Clean build results
 
 Target "Clean" (fun _ ->
-    !! solutionFile |> MSBuildRelease "" "Clean" |> ignore
+    // !! solutionFile |> MSBuildRelease "" "Clean" |> ignore
     CleanDirs ["bin"; "temp"; "docs/output"]
 )
 
@@ -127,13 +127,7 @@ Target "Clean" (fun _ ->
 // Build library & test project
 
 Target "Build" (fun _ ->
-    !! solutionFile
-#if MONO
-    |> MSBuildReleaseExt "" [ ("DefineConstants","MONO") ] "Build"
-#else
-    |> MSBuildRelease "" "Build"
-#endif
-    |> ignore
+    DotNetCli.Build id
 )
 
 // --------------------------------------------------------------------------------------
@@ -171,6 +165,7 @@ Target "NuGet" (fun _ ->
     Paket.Pack(fun p ->
         { p with
             OutputPath = "bin"
+            //TemplateFile = "src/FSharpx.Extras/paket.template"
             Version = release.NugetVersion
             ReleaseNotes = toLines release.Notes})
 )
@@ -370,12 +365,12 @@ Target "All" DoNothing
 "AssemblyInfo"
   ==> "Build"
   ==> "CopyBinaries"
-  ==> "RunTests"
-  ==> "GenerateReferenceDocs"
-  ==> "GenerateDocs"
+   ==> "RunTests"
+   ==> "GenerateReferenceDocs"
+   ==> "GenerateDocs"
 #if MONO
 #else
-  =?> ("SourceLink", Pdbstr.tryFind().IsSome )
+//    =?> ("SourceLink", Pdbstr.tryFind().IsSome )
 #endif
   ==> "NuGet"
   ==> "BuildPackage"

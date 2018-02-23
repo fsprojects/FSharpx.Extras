@@ -5,10 +5,11 @@
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx</RootNamespace>
     <AssemblyName>FSharpx.Extras</AssemblyName>
-    <TargetFrameworks>net46;netcoreapp2.0</TargetFrameworks>
+    <TargetFramework>net45</TargetFramework>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <Tailcalls>true</Tailcalls>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="paket.references" />
