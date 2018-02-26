@@ -127,7 +127,8 @@ Target "Clean" (fun _ ->
 // Build library & test project
 
 Target "Build" (fun _ ->
-    DotNetCli.Build id
+    !! solutionFile |> MSBuildRelease "bin" "Restore" |> ignore
+    !! solutionFile |> MSBuildRelease "bin" "Build" |> ignore
 )
 
 // --------------------------------------------------------------------------------------
