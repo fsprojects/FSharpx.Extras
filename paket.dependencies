@@ -7,8 +7,7 @@ nuget FSharpx.Collections
 
 group Build
   source https://nuget.org/api/v2
-  
-  nuget SourceLink.Fake
+
   nuget FAKE
   nuget FSharp.Formatting
 
