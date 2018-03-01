@@ -122,8 +122,8 @@ Target "Clean" (fun _ ->
 // Build library & test project
 
 Target "Build" (fun _ ->
-    !! solutionFile |> MSBuildRelease "bin" "Restore" |> ignore
-    !! solutionFile |> MSBuildRelease "bin" "Build" |> ignore
+    !! solutionFile |> MSBuildRelease "" "Restore" |> ignore
+    !! solutionFile |> MSBuildRelease "" "Build" |> ignore
 )
 
 // --------------------------------------------------------------------------------------
