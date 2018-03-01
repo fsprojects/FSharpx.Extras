@@ -48,7 +48,7 @@ let tags = "fsharpx fsharp"
 let solutionFile  = "FSharpx.Extras.sln"
 
 // Pattern specifying assemblies to be tested using NUnit
-let testAssemblies = "tests/**/bin/Release/**/*Tests*.dll"
+let testAssemblies = "tests/**/bin/Release/net45/**/*Tests*.dll"
 
 // Git configuration (used for publishing documentation in gh-pages branch)
 // The profile where the project is posted
