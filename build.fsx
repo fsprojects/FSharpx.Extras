@@ -43,7 +43,7 @@ let tags = "fsharpx fsharp"
 let solutionFile  = "FSharpx.Extras.sln"
 
 // Pattern specifying assemblies to be tested using NUnit
-let testAssemblies = "tests/**/bin/Release/netcoreapp2.0/**/*Tests*.dll"
+let testProjects = "tests/**/*.??proj"
 
 // Git configuration (used for publishing documentation in gh-pages branch)
 // The profile where the project is posted
@@ -129,7 +129,9 @@ Target "Build" (fun _ ->
 // Run the unit tests using test runner
 
 Target "RunTests" (fun _ ->
-    DotNetCli.Test id
+    !! testProjects
+    |> Seq.iter (fun proj ->
+        DotNetCli.Test (fun c -> { c with Project = proj }))
 )
 
 // --------------------------------------------------------------------------------------
