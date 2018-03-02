@@ -4,3 +4,6 @@ FSharp.Core
 group Test
 FsCheck
 FsUnit
+NUnit
+Microsoft.NET.Test.Sdk
+NUnit3TestAdapter
