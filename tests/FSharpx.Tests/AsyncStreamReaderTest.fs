@@ -21,7 +21,6 @@ type AsyncStreamReaderTest() =
 #if FX_NO_ASCII_ENCODING
 #else
     let ASCIIEncoding : Encoding = downcast (new ASCIIEncoding()).Clone()
-    let win1251Encoding : Encoding = downcast (Encoding.GetEncoding("windows-1251")).Clone() // Russian
 #endif    
     let encodings : (Encoding*bool) list = 
         [   utf8Encoding, true; 
@@ -32,7 +31,6 @@ type AsyncStreamReaderTest() =
 #if FX_NO_ASCII_ENCODING
 #else
             ASCIIEncoding,false; 
-            win1251Encoding,false
 #endif
         ]
 #if FX_NO_ENCODER_FALLBACK    
