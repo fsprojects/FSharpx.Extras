@@ -43,7 +43,7 @@ let tags = "fsharpx fsharp"
 let solutionFile  = "FSharpx.Extras.sln"
 
 // Pattern specifying assemblies to be tested using NUnit
-let testAssemblies = "tests/**/bin/Release/net45/**/*Tests*.dll"
+let testAssemblies = "tests/**/bin/Release/netcoreapp2.0/**/*Tests*.dll"
 
 // Git configuration (used for publishing documentation in gh-pages branch)
 // The profile where the project is posted
@@ -114,7 +114,6 @@ Target "CopyBinaries" (fun _ ->
 // Clean build results
 
 Target "Clean" (fun _ ->
-    // !! solutionFile |> MSBuildRelease "" "Clean" |> ignore
     CleanDirs ["bin"; "temp"; "docs/output"]
 )
 
@@ -130,26 +129,20 @@ Target "Build" (fun _ ->
 // Run the unit tests using test runner
 
 Target "RunTests" (fun _ ->
-    !! testAssemblies
-    |> Fake.Testing.NUnit3.NUnit3 (fun p ->
-        { p with
-            TimeOut = TimeSpan.FromMinutes 20. })
+    DotNetCli.Test id
 )
 
 // --------------------------------------------------------------------------------------
 // Build a NuGet package
 
 Target "NuGet" (fun _ ->
-    Paket.Pack(fun p ->
+    DotNetCli.Pack(fun p ->
         { p with
-            OutputPath = "bin"
-            //TemplateFile = "src/FSharpx.Extras/paket.template"
-            Version = release.NugetVersion
-            ReleaseNotes = toLines release.Notes})
+            OutputPath = "bin" })
 )
 
 Target "PublishNuget" (fun _ ->
-    Paket.Push(fun p ->
+    DotNetCli.Publish (fun p ->
         { p with
             WorkingDir = "bin" })
 )
@@ -342,9 +335,9 @@ Target "All" DoNothing
 "AssemblyInfo"
   ==> "Build"
   ==> "CopyBinaries"
-   ==> "RunTests"
-   ==> "GenerateReferenceDocs"
-   ==> "GenerateDocs"
+  ==> "RunTests"
+  ==> "GenerateReferenceDocs"
+  ==> "GenerateDocs"
   ==> "NuGet"
   ==> "BuildPackage"
   ==> "All"
