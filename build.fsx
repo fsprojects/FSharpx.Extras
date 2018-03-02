@@ -114,6 +114,7 @@ Target "CopyBinaries" (fun _ ->
 // Clean build results
 
 Target "Clean" (fun _ ->
+    DotNetCli.RunCommand id "clean"
     CleanDirs ["bin"; "temp"; "docs/output"]
 )
 
