@@ -8,19 +8,19 @@ open NUnit.Framework
 open FsUnit
 
 [<Test>]
-[<SetCulture("es-AR")>]
+[<Culture("es-AR")>]
 let ``Single parse is culture invariant``() =
     Assert.AreEqual(None, Single.parse "3,5")
     Assert.AreEqual(Some 3.5f, Single.parse "3.5")
 
 [<Test>]
-[<SetCulture("es-AR")>]
+[<Culture("es-AR")>]
 let ``Double parse is culture invariant``() =
     Assert.AreEqual(None, Double.parse "3,5")
     Assert.AreEqual(Some 3.5, Double.parse "3.5")
 
 [<Test>]
-[<SetCulture("es-AR")>]
+[<Culture("es-AR")>]
 let ``DateTime parse is culture invariant``() =
     let pt = DateTime.parse "5/6/2011"
     let et = DateTime(2011,5,6)
@@ -53,7 +53,7 @@ let ``Int32 active pattern matches``() =
     | _ -> ()
 
 [<Test>]
-[<SetCulture("de-DE")>]
+[<Culture("de-DE")>]
 let ``Double active pattern is culture invariant``() =
     match "3.5" with
     | Double x -> Assert.AreEqual(3.5, x)

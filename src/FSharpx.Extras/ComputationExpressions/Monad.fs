@@ -963,14 +963,14 @@ module Task =
     let run (t: unit -> Task<_>) = 
         try
             let task = t()
-            task.Result |> Result.Successful
+            task.Result |> Result<_>.Successful
         with 
-        | :? OperationCanceledException -> Result.Canceled
+        | :? OperationCanceledException -> Result<_>.Canceled
         | :? AggregateException as e ->
             match e.InnerException with
-            | :? TaskCanceledException -> Result.Canceled
-            | _ -> Result.Error e
-        | e -> Result.Error e
+            | :? TaskCanceledException -> Result<_>.Canceled
+            | _ -> Result<_>.Error e
+        | e -> Result<_>.Error e
 
     let toAsync (t: Task<'T>): Async<'T> =
         let abegin (cb: AsyncCallback, state: obj) : IAsyncResult = 

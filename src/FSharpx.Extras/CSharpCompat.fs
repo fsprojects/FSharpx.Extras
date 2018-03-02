@@ -507,7 +507,7 @@ type FSharpAsyncEx =
 
     [<Extension>]
     static member FSharpAsyncDownloadString (web: WebClient, address: Uri) =
-        web.AsyncDownloadString address
+        web.DownloadStringTaskAsync address |> Async.AwaitTask
 
     [<Extension>]
     static member FSharpAsyncGetResponse (w: WebRequest) =
