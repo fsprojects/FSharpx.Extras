@@ -5,8 +5,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx</RootNamespace>
     <AssemblyName>FSharpx.Extras</AssemblyName>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <DebugType>pdbonly</DebugType>
+    <TargetFramework>netstandard2.0</TargetFramework>    
     <Optimize>true</Optimize>
     <Tailcalls>true</Tailcalls>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>

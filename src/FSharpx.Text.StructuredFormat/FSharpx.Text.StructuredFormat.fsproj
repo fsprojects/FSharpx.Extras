@@ -4,8 +4,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx.Text.StructuredFormat</RootNamespace>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Name>FSharpx.Text.StructuredFormat</Name>
-    <DebugType>pdbonly</DebugType>
+    <Name>FSharpx.Text.StructuredFormat</Name>    
     <Optimize>true</Optimize>
     <Tailcalls>true</Tailcalls>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
