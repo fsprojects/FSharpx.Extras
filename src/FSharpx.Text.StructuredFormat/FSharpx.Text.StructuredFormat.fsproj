@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx.Text.StructuredFormat</RootNamespace>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <Name>FSharpx.Text.StructuredFormat</Name>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
