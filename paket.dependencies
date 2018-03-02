@@ -3,6 +3,7 @@ source https://nuget.org/api/v2
 nuget FSharp.Core redirects: force
 nuget FSharpx.Async
 nuget FSharpx.Collections
+nuget System.Reflection.Emit.Lightweight
 
 
 group Build

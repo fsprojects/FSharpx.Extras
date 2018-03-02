@@ -4,7 +4,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx.CSharpTests</RootNamespace>
     <AssemblyName>FSharpx.CSharpTests</AssemblyName>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
   </PropertyGroup>
