@@ -122,7 +122,7 @@ Target "Clean" (fun _ ->
 // Build library & test project
 
 Target "Build" (fun _ ->
-    DotNetCli.Build id
+    DotNetCli.Build (fun c -> { c with AdditionalArgs = [ "/p:SourceLinkCreate:true" ] })
 )
 
 // --------------------------------------------------------------------------------------
