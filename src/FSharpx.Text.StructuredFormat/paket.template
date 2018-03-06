@@ -21,6 +21,4 @@ summary
     FSharpx.Extras implements general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.
 description
     FSharpx.Extras implements general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.
-files
-    src/FSharpx.Text.StructuredFormat/bin/Release/net45/* ==> lib/net45
 
