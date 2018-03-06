@@ -7,7 +7,7 @@
     <Name>FSharpx.Text.StructuredFormat</Name>    
     <Optimize>true</Optimize>
     <Tailcalls>true</Tailcalls>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />

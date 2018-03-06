@@ -8,7 +8,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>    
     <Optimize>true</Optimize>
     <Tailcalls>true</Tailcalls>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="paket.references" />
