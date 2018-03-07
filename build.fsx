@@ -140,8 +140,8 @@ Target "RunTests" (fun _ ->
 Target "NuGet" (fun _ ->
     DotNetCli.Pack(fun p ->
         { p with
-            OutputPath = "bin"
-            AdditionalArgs = [ "--no-build" ] })
+            OutputPath = __SOURCE_DIRECTORY__ + "\\bin"
+            AdditionalArgs = [ "--no-build"; "/p:PackageVersion=" + release.AssemblyVersion ] })
 )
 
 Target "PublishNuget" (fun _ ->
