@@ -11,6 +11,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AssemblyInfo.fs" />
     <None Include="paket.references" />
     <None Include="paket.template" />
     <Compile Include="StructuredFormat.fsi" />
