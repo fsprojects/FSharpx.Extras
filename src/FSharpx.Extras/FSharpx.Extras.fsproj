@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Name>FSharpx.Extras</Name>
+    <Title>FSharpx.Extras</Title>
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx</RootNamespace>
     <AssemblyName>FSharpx.Extras</AssemblyName>

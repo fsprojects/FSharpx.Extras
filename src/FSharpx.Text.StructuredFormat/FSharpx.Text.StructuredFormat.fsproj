@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <Title>FSharpx.Text.StrcuturedFormat</Title>
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx.Text.StructuredFormat</RootNamespace>
     <TargetFramework>netstandard2.0</TargetFramework>
