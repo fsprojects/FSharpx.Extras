@@ -3,3 +3,5 @@ FSharpx.Collections
 FSharp.Core
 group Test
 NUnit
+Microsoft.NET.Test.Sdk
+NUnit3TestAdapter

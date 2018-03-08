@@ -507,7 +507,7 @@ type FSharpAsyncEx =
 
     [<Extension>]
     static member FSharpAsyncDownloadString (web: WebClient, address: Uri) =
-        web.AsyncDownloadString address
+        web.DownloadStringTaskAsync address |> Async.AwaitTask
 
     [<Extension>]
     static member FSharpAsyncGetResponse (w: WebRequest) =
@@ -530,6 +530,6 @@ type FSharpAsyncEx =
         s.AsyncReadToEnd()
 
 type FSharpLazy = 
-    static member Create (v: _ Func) = Lazy.Create v.Invoke
-    static member CreateFromValue v = Lazy.CreateFromValue v
+    static member Create (v: 'a Func) = Lazy<'a>.Create v.Invoke
+    static member CreateFromValue (v : 'a) = Lazy<'a>.CreateFromValue v
 

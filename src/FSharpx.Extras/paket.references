@@ -1,2 +1,5 @@
 FSharpx.Async
 FSharpx.Collections
+System.Reflection.Emit.Lightweight
+SourceLink.Create.CommandLine
+SourceLink.Embed.PaketFiles

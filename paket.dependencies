@@ -1,14 +1,15 @@
 source https://nuget.org/api/v2
 
-nuget FSharp.Core redirects: force
+nuget FSharp.Core
 nuget FSharpx.Async
 nuget FSharpx.Collections
-
+nuget System.Reflection.Emit.Lightweight
+nuget SourceLink.Create.CommandLine
+nuget SourceLink.Embed.PaketFiles
 
 group Build
   source https://nuget.org/api/v2
-  
-  nuget SourceLink.Fake
+
   nuget FAKE
   nuget FSharp.Formatting
 
@@ -20,5 +21,7 @@ group Test
   nuget NUnit
   nuget NUnit.Runners
   nuget NUnit.Console
+  nuget Microsoft.NET.Test.Sdk
+  nuget NUnit3TestAdapter
   nuget FsCheck
   nuget FsUnit

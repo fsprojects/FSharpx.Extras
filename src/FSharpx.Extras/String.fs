@@ -15,7 +15,7 @@ module String =
     let inline compareIgnoreCase strA strB = compare StringComparison.OrdinalIgnoreCase strA strB
 
     /// Determines whether the end of this string instance matches the specified string.
-    let inline endsWith value (s:string) = s.EndsWith(value)
+    let inline endsWith (value : string) (s:string) = s.EndsWith(value)
 
     /// Determines whether the end of this string instance matches the specified string when compared using the specified culture.
     let inline endsWith' value ignoreCase culture (s:string) = s.EndsWith(value, ignoreCase, culture)
@@ -150,7 +150,7 @@ module String =
     let inline splitString' (separator:string[]) count (options:StringSplitOptions) (s:string) = s.Split(separator, count, options)
 
     /// Determines whether the beginning of this string instance matches the specified string.
-    let inline startsWith value (s:string) = s.StartsWith(value)
+    let inline startsWith (value : string) (s:string) = s.StartsWith(value)
 
     /// Determines whether the beginning of this string instance matches the specified string when compared using the specified comparison option.
     let inline startsWith' value comparisonType (s:string) = s.StartsWith(value, comparisonType)
@@ -192,10 +192,10 @@ module String =
     let inline trim (s:string) = s.Trim()
 
     /// Removes all leading and trailing occurrences of a set of characters specified in an array from the current String object.
-    let inline trim' trimChars (s:string) = s.Trim(trimChars)
+    let inline trim' (trimChars : char array) (s:string) = s.Trim(trimChars)
 
     /// Removes all trailing occurrences of a set of characters specified in an array from the current String object.
-    let inline trimEnd trimChars (s:string) = s.TrimEnd(trimChars)
+    let inline trimEnd (trimChars : char array) (s:string) = s.TrimEnd(trimChars)
 
     /// Removes all leading occurrences of a set of characters specified in an array from the current String object.
-    let inline trimStart trimChars (s:string) = s.TrimStart(trimChars)
+    let inline trimStart (trimChars : char array) (s:string) = s.TrimStart(trimChars)
