@@ -191,6 +191,12 @@ type FSharpOption =
         | _ -> other
 
     [<Extension>]
+    static member OrElseLazy (o, other: _ Lazy) =
+        match o with
+        | Some x -> Some x
+        | _ -> other.Force()
+
+    [<Extension>]
     static member GetOrElse (o, other) =
         match o with
         | Some x -> x

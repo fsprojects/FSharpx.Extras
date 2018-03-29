@@ -262,6 +262,11 @@ module Option =
         | Some x -> Some x
         | None -> v
 
+    let inline orElseLazy (v : _ Lazy) =
+        function
+        | Some x -> Some x
+        | None -> v.Force()
+
     /// Applies a predicate to the option. If the predicate returns true, returns Some x, otherwise None.
     let inline filter pred =
         function
