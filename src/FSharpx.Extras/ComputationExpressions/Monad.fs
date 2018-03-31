@@ -1100,10 +1100,10 @@ module Task =
         /// Task completed successfully
         | Successful of 'T
 
-    let run (t: unit -> Task<'a>) = 
+    let run (t: unit -> Task<'a>) : Result<'a> = 
         try
             let task = t()
-            task.Result |> Result<'a>.Successful
+            task.Result |> Result<_>.Successful
         with 
         | :? OperationCanceledException -> Result<_>.Canceled
         | :? AggregateException as e ->
