@@ -1,4 +1,4 @@
-﻿namespace FSharpx.Functional
+﻿namespace FSharpx
 
 open System
 open System.Globalization
@@ -71,6 +71,9 @@ module Prelude =
 
     /// Given a value, apply a function to it, ignore the result, then return the original value.
     let inline tee fn x = fn x |> ignore; x
+
+    /// Performs an implicit conversion using op_Implicit
+    let inline (!>) (x:^a) : ^b = ((^a or ^b) : (static member op_Implicit : ^a -> ^b) x)
 
     /// Custom operator for `tee`: Given a value, apply a function to it, ignore the result, then return the original value.
     let inline (|>!) x fn = tee fn x
