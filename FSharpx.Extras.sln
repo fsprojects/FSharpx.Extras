@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{63297B98-5CED-492C-A5B7-A5B4F73CF142}"
 	ProjectSection(SolutionItems) = preProject
@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{63297B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A6A6AF7D-D6E3-442D-9B1E-58CC91879BE1}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.Extras", "src\FSharpx.Extras\FSharpx.Extras.fsproj", "{1E95A279-C2A9-498B-BC72-6E7A0D6854CE}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "FSharpx.Extras", "src\FSharpx.Extras\FSharpx.Extras.fsproj", "{1E95A279-C2A9-498B-BC72-6E7A0D6854CE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "project", "project", "{BF60BC93-E09B-4E5F-9D85-95A519479D54}"
 	ProjectSection(SolutionItems) = preProject
@@ -27,7 +27,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{83F16175
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{8E6D5255-776D-4B61-85F9-73C37AA1FB9A}"
 	ProjectSection(SolutionItems) = preProject
-		docs\content\index.fsx = docs\content\index.fsx
 		docs\content\AsyncFileExtensions.fsx = docs\content\AsyncFileExtensions.fsx
 		docs\content\AsyncSeqObservable.fsx = docs\content\AsyncSeqObservable.fsx
 		docs\content\AutoCancel.fsx = docs\content\AutoCancel.fsx
@@ -38,6 +37,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{8E6D
 		docs\content\CircularBuffer.fsx = docs\content\CircularBuffer.fsx
 		docs\content\Crawler.fsx = docs\content\Crawler.fsx
 		docs\content\DiningPhilosophers.fsx = docs\content\DiningPhilosophers.fsx
+		docs\content\index.fsx = docs\content\index.fsx
 		docs\content\MouseFollow.fsx = docs\content\MouseFollow.fsx
 		docs\content\Santa.fsx = docs\content\Santa.fsx
 		docs\content\StmSample.fsx = docs\content\StmSample.fsx
@@ -49,11 +49,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{8E6D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{ED8079DD-2B06-4030-9F0F-DC548F98E1C4}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.Tests", "tests\FSharpx.Tests\FSharpx.Tests.fsproj", "{26D9D3EE-E882-43E6-A79E-5D1D89E92C4F}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "FSharpx.Tests", "tests\FSharpx.Tests\FSharpx.Tests.fsproj", "{26D9D3EE-E882-43E6-A79E-5D1D89E92C4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSharpx.CSharpTests", "tests\FSharpx.CSharpTests\FSharpx.CSharpTests.csproj", "{4354A199-6ACF-4DB5-A8FA-BAD638D1D0E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FSharpx.CSharpTests", "tests\FSharpx.CSharpTests\FSharpx.CSharpTests.csproj", "{4354A199-6ACF-4DB5-A8FA-BAD638D1D0E3}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FSharpx.Text.StructuredFormat", "src\FSharpx.Text.StructuredFormat\FSharpx.Text.StructuredFormat.fsproj", "{65E077ED-F51A-42D7-8004-E90D60AF8B8F}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "FSharpx.Text.StructuredFormat", "src\FSharpx.Text.StructuredFormat\FSharpx.Text.StructuredFormat.fsproj", "{65E077ED-F51A-42D7-8004-E90D60AF8B8F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,8 +74,8 @@ Global
 		{26D9D3EE-E882-43E6-A79E-5D1D89E92C4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26D9D3EE-E882-43E6-A79E-5D1D89E92C4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26D9D3EE-E882-43E6-A79E-5D1D89E92C4F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4354A199-6ACF-4DB5-A8FA-BAD638D1D0E3}.DataStructures|Any CPU.ActiveCfg = DataStructures|Any CPU
-		{4354A199-6ACF-4DB5-A8FA-BAD638D1D0E3}.DataStructures|Any CPU.Build.0 = DataStructures|Any CPU
+		{4354A199-6ACF-4DB5-A8FA-BAD638D1D0E3}.DataStructures|Any CPU.ActiveCfg = Debug|Any CPU
+		{4354A199-6ACF-4DB5-A8FA-BAD638D1D0E3}.DataStructures|Any CPU.Build.0 = Debug|Any CPU
 		{4354A199-6ACF-4DB5-A8FA-BAD638D1D0E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4354A199-6ACF-4DB5-A8FA-BAD638D1D0E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4354A199-6ACF-4DB5-A8FA-BAD638D1D0E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -95,5 +95,8 @@ Global
 		{8E6D5255-776D-4B61-85F9-73C37AA1FB9A} = {A6A6AF7D-D6E3-442D-9B1E-58CC91879BE1}
 		{26D9D3EE-E882-43E6-A79E-5D1D89E92C4F} = {ED8079DD-2B06-4030-9F0F-DC548F98E1C4}
 		{4354A199-6ACF-4DB5-A8FA-BAD638D1D0E3} = {ED8079DD-2B06-4030-9F0F-DC548F98E1C4}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EF2D20EB-38A2-431C-8FBC-7E89D4266AE3}
 	EndGlobalSection
 EndGlobal
