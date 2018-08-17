@@ -42,7 +42,11 @@ module Validation =
             let inline cons a b = this.lift2 List.cons a b
             List.foldBack cons s (returnM [])
 
+        member this.sequence_ s = this.sequence s |> Choice.map ignore
+
         member this.mapM f x = this.sequence (List.map f x)
+
+        member this.mapM_ f x = this.sequence_ (List.map f x)
 
 
     type NonEmptyListSemigroup<'T>() = 
@@ -75,4 +79,8 @@ module Validation =
         let inline cons a b = lift2 List.cons a b
         List.foldBack cons s (returnM [])
 
+    let inline sequence_ s = sequence s |> Choice.map ignore
+
     let inline mapM f x = sequence (List.map f x)
+
+    let inline mapM_ f x = sequence_ (List.map f x)

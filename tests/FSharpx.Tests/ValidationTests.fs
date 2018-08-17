@@ -123,3 +123,43 @@ let ``validation with unit monoid``() =
     match validateString "hello" with
     | Success c -> failwithf "Valid string: %s" c
     | Failure () -> ()
+
+[<Test>]
+let ``using sequence_``() =
+    let vsError = [ Choice1Of2 "ok"; Choice2Of2 (NonEmptyList.singleton "err") ]
+    let vsOk = [ Choice1Of2 "ok1"; Choice1Of2 "ok2" ]
+
+    let vError = Validation.sequence_ vsError
+    match vError with
+    | Choice2Of2 errors ->
+        CollectionAssert.AreEqual(errors, [ "err" ])
+    | _ ->
+        failwith "Validation must not succeed if there are errors"
+
+    let vOk = Validation.sequence_ vsOk
+    match vOk with
+    | Choice1Of2 () -> ()
+    | Choice1Of2 _ -> failwith "sequence_ did not discard the success value"
+    | Choice2Of2 _ -> failwith "Validation failed on success values"
+
+[<Test>]
+let ``using mapM_`` =
+    let okAndErr = [ "ok"; "err" ]
+    let oks = [ "ok1"; "ok2" ]
+
+    let validate = validator ((<>) "err") "error!"
+
+    let vError = Validation.mapM_ validate okAndErr
+    let vOk = Validation.mapM_ validate oks
+
+    match vError with
+    | Choice2Of2 errors ->
+        CollectionAssert.AreEqual(errors, [ "error!" ])
+    | _ ->
+        failwith "Validation must not succeed if there are errors"
+
+    match vOk with
+    | Choice1Of2 () -> ()
+    | Choice1Of2 _ -> failwith "mapM_ did not discard the success value"
+    | Choice2Of2 _ -> failwith "Validation failed on success values"
+
