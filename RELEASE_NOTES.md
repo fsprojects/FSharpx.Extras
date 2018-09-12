@@ -1,3 +1,9 @@
+#### 2.2.2 - 12.09.2018
+* New netstandard2.0 support - https://github.com/fsprojects/FSharpx.Extras/pull/360
+* New split monads into separate files - https://github.com/fsprojects/FSharpx.Extras/pull/364
+* New Add IsNone, IsSome and IsChoiceXOfY variants https://github.com/fsprojects/FSharpx.Extras/pull/354
+* New add Option.orElseLazy - https://github.com/fsprojects/FSharpx.Extras/pull/352
+
 #### 2.2.1 - 29.01.2017
 * BGUFIX: Fixed `ParallelWithThrottle` - https://github.com/fsprojects/FSharpx.Extras/pull/350
 
