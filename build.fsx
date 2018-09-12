@@ -145,7 +145,12 @@ Target "NuGet" (fun _ ->
 )
 
 Target "PublishNuget" (fun _ ->
+    (*
     DotNetCli.Publish (fun p ->
+        { p with
+            WorkingDir = "bin" })
+    *)
+    Paket.Push(fun p -> 
         { p with
             WorkingDir = "bin" })
 )
