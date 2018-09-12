@@ -1,22 +1,22 @@
-#### 2.2.2 - 12.09.2018
+### 2.2.2 - 12.09.2018
 * New netstandard2.0 support - https://github.com/fsprojects/FSharpx.Extras/pull/360
 * New split monads into separate files - https://github.com/fsprojects/FSharpx.Extras/pull/364
 * New Add IsNone, IsSome and IsChoiceXOfY variants https://github.com/fsprojects/FSharpx.Extras/pull/354
 * New add Option.orElseLazy - https://github.com/fsprojects/FSharpx.Extras/pull/352
 
-#### 2.2.1 - 29.01.2017
+### 2.2.1 - 29.01.2017
 * BGUFIX: Fixed `ParallelWithThrottle` - https://github.com/fsprojects/FSharpx.Extras/pull/350
 
-#### 2.2.0 - 31.10.2016
+### 2.2.0 - 31.10.2016
 * New getOrFailf function for Option - https://github.com/fsprojects/FSharpx.Extras/pull/345
 * New getOrFail and getOrRaise functions for Option - https://github.com/fsprojects/FSharpx.Extras/pull/344
 * New String helpers - https://github.com/fsprojects/FSharpx.Extras/pull/343
 * BUGFIX: Fixed Try/Finally in TaskBuilder - https://github.com/fsprojects/FSharpx.Extras/pull/349
 
-#### 2.1.0 - 23.08.2016
+### 2.1.0 - 23.08.2016
 * New Parsers in prelude - https://github.com/fsprojects/FSharpx.Extras/pull/342
 
-#### 2.0.0 - 22.08.2016
+### 2.0.0 - 22.08.2016
 * Added Add Task related helper functions - https://github.com/fsprojects/FSharpx.Extras/pull/339
 * Moved infrastructure to ProjectScaffold
 * New Enum convenience methods - https://github.com/fsprojects/FSharpx.Extras/pull/327
