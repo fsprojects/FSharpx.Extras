@@ -220,6 +220,12 @@ type FSharpOption =
         | Some v -> Choice1Of2 v
         | _ -> Choice2Of2 other
 
+    [<Extension>]
+    static member ToFSharpResult (o, other) =
+        match o with
+        | Some v -> Ok v
+        | _ -> Result.Error other
+
     /// Converts the option to a list of length 0 or 1
     [<Extension>]
     static member ToFSharpList o = Option.toList o
@@ -407,6 +413,58 @@ type FSharpChoice =
     static member New1Of3<'T1,'T2,'T3> (a: 'T1) : Choice<'T1,'T2,'T3> = Choice1Of3 a
     static member New2Of3<'T1,'T2,'T3> (a: 'T2) : Choice<'T1,'T2,'T3> = Choice2Of3 a
     static member New3Of3<'T1,'T2,'T3> (a: 'T3) : Choice<'T1,'T2,'T3> = Choice3Of3 a
+
+[<Extension>]
+type FSharpResult =
+
+    /// If Result is Ok, return its value.
+    /// Otherwise throw ArgumentException.
+    [<Extension>]
+    static member Value (c: Result<_,_>) = Result.get c
+
+    /// Attempts to cast an object.
+    /// Stores the cast value in Ok if successful, otherwise stores the exception in Error
+    static member Cast (o: obj) = Result.cast o
+
+    [<Extension>]
+    static member ToFSharpOption c = Option.ofResult c
+
+    [<Extension>]
+    static member Match (c, f1: Func<_,_>, f2: Func<_,_>) =
+        match c with
+        | Ok x -> f1.Invoke x
+        | Result.Error y -> f2.Invoke y
+
+    [<Extension>]
+    static member Match (c, f1: Action<_>, f2: Action<_>) =
+        match c with
+        | Ok x -> f1.Invoke x
+        | Result.Error  y -> f2.Invoke y
+
+    [<Extension>]
+    static member SelectMany (o, f: Func<_,_>) =
+        Result.bind f.Invoke o
+
+    [<Extension>]
+    static member SelectMany (o, f: Func<_,_>, mapper: Func<_,_,_>) =
+        let mapper = Result.lift2 (curry mapper.Invoke)
+        let v = Result.bind f.Invoke o
+        mapper o v
+
+    [<Extension>]
+    static member Select (o, f: Func<_,_>) = Result.map f.Invoke o
+
+    [<Extension>]
+    static member SelectError (o, f: Func<_,_>) = Result.mapError f.Invoke o
+
+    [<Extension>]
+    static member Sequence c = Result.sequence c
+
+    // constructors
+
+    static member NewOk<'T1,'T2> (a: 'T1) : Result<'T1,'T2> = Ok a
+    static member NewError<'T1,'T2> (b: 'T2) : Result<'T1,'T2> = Result.Error b
+
 
 [<Extension>]
 type FSharpList =

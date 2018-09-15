@@ -38,6 +38,7 @@
     <Compile Include="ComputationExpressions\Enumerator.fs" />
     <Compile Include="ComputationExpressions\Async.fs" />
     <Compile Include="ComputationExpressions\Task.fs" />
+    <Compile Include="ComputationExpressions\Result.fs" />
     <Compile Include="Lens.fs" />
     <Compile Include="Regex.fs" />
     <Compile Include="TimeMeasurement.fs" />
