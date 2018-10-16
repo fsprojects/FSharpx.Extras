@@ -74,3 +74,10 @@ module Result =
     let inline sequence s =
         let inline cons a b = lift2 List.cons a b
         List.foldBack cons s (returnM [])
+
+    type ResultBuilder() =
+        member this.Return a = returnM a
+        member this.Bind (m, f) = Result.bind f m
+        member this.ReturnFrom m = m
+
+    let result = ResultBuilder()
