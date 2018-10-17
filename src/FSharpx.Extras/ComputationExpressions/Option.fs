@@ -126,6 +126,13 @@ module Option =
         | Choice1Of2 a -> Some a
         | _ -> None
 
+    /// Maps Result Ok to Some value, otherwise None.
+    let ofResult =
+        function
+        | Ok a -> Some a
+        | _ -> None
+
+
     /// Gets the value associated with the option or the supplied default value.
     let inline getOrElse v =
         function
