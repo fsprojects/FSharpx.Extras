@@ -1,4 +1,4 @@
-### 2.3.0 - 12.09.2018
+### 2.3.0 - 4.8.2019
 * New netstandard2.0 support - https://github.com/fsprojects/FSharpx.Extras/pull/360
 * New split monads into separate files - https://github.com/fsprojects/FSharpx.Extras/pull/364
 * New Add IsNone, IsSome and IsChoiceXOfY variants https://github.com/fsprojects/FSharpx.Extras/pull/354
