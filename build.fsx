@@ -5,9 +5,7 @@
 #r @"packages/build/FAKE/tools/FakeLib.dll"
 open Fake
 open Fake.Git
-open Fake.AssemblyInfoFile
 open Fake.ReleaseNotesHelper
-open Fake.UserInputHelper
 open System
 open System.IO
 
@@ -41,6 +39,7 @@ let tags = "fsharpx fsharp"
 
 // File system information
 let solutionFile  = "FSharpx.Extras.sln"
+let srcProjects = "src/**/*.??proj"
 
 // Pattern specifying assemblies to be tested using NUnit
 let testProjects = "tests/**/*.??proj"
@@ -63,43 +62,6 @@ let gitRaw = environVarOrDefault "gitRaw" "https://raw.githubusercontent.com/fsp
 // Read additional information from the release notes document
 let release = LoadReleaseNotes "RELEASE_NOTES.md"
 
-// Helper active pattern for project types
-let (|Fsproj|Csproj|Vbproj|Shproj|) (projFileName:string) =
-    match projFileName with
-    | f when f.EndsWith("fsproj") -> Fsproj
-    | f when f.EndsWith("csproj") -> Csproj
-    | f when f.EndsWith("vbproj") -> Vbproj
-    | f when f.EndsWith("shproj") -> Shproj
-    | _                           -> failwith (sprintf "Project file %s not supported. Unknown project type." projFileName)
-
-// Generate assembly info files with the right version & up-to-date information
-Target "AssemblyInfo" (fun _ ->
-    let getAssemblyInfoAttributes projectName =
-        [ Attribute.Title (projectName)
-          Attribute.Product project
-          Attribute.Description summary
-          Attribute.Version release.AssemblyVersion
-          Attribute.FileVersion release.AssemblyVersion ]
-
-    let getProjectDetails projectPath =
-        let projectName = System.IO.Path.GetFileNameWithoutExtension(projectPath)
-        ( projectPath,
-          projectName,
-          System.IO.Path.GetDirectoryName(projectPath),
-          (getAssemblyInfoAttributes projectName)
-        )
-
-    !! "src/**/*.??proj"
-    |> Seq.map getProjectDetails
-    |> Seq.iter (fun (projFileName, projectName, folderName, attributes) ->
-        match projFileName with
-        | Fsproj -> CreateFSharpAssemblyInfo (folderName </> "AssemblyInfo.fs") attributes
-        | Csproj -> CreateCSharpAssemblyInfo ((folderName </> "Properties") </> "AssemblyInfo.cs") attributes
-        | Vbproj -> CreateVisualBasicAssemblyInfo ((folderName </> "My Project") </> "AssemblyInfo.vb") attributes
-        | Shproj -> ()
-        )
-)
-
 // Copies binaries from default VS location to expected bin folder
 // But keeps a subdirectory structure for each project in the
 // src folder to support multiple project outputs
@@ -110,6 +72,7 @@ Target "CopyBinaries" (fun _ ->
     |>  Seq.iter (fun (fromDir, toDir) -> CopyDir toDir fromDir (fun _ -> true))
 )
 
+// Helper active pattern for project types
 // --------------------------------------------------------------------------------------
 // Clean build results
 
@@ -122,7 +85,9 @@ Target "Clean" (fun _ ->
 // Build library & test project
 
 Target "Build" (fun _ ->
-    DotNetCli.Build (fun c -> { c with AdditionalArgs = [ "/p:SourceLinkCreate=true" ] })
+    !! srcProjects
+    |> Seq.iter (fun proj ->
+        DotNetCli.Build (fun c -> { c with Project=proj }))
 )
 
 // --------------------------------------------------------------------------------------
@@ -131,28 +96,26 @@ Target "Build" (fun _ ->
 Target "RunTests" (fun _ ->
     !! testProjects
     |> Seq.iter (fun proj ->
-        DotNetCli.Test (fun c -> { c with Project = proj }))
+        DotNetCli.Test (fun c -> { c with Project=proj }))
 )
 
 // --------------------------------------------------------------------------------------
 // Build a NuGet package
 
 Target "NuGet" (fun _ ->
-    DotNetCli.Pack(fun p ->
-        { p with
-            OutputPath = __SOURCE_DIRECTORY__ + "\\bin"
-            AdditionalArgs = [ "--no-build"; "/p:PackageVersion=" + release.AssemblyVersion ] })
+    !! srcProjects
+    |> Seq.iter (fun proj ->
+        DotNetCli.Pack(fun p ->
+            { p with
+                Project=proj
+                OutputPath=Path.Combine(__SOURCE_DIRECTORY__, "bin")
+                AdditionalArgs = [ "--no-build" ] }))
 )
 
 Target "PublishNuget" (fun _ ->
-    (*
-    DotNetCli.Publish (fun p ->
-        { p with
-            WorkingDir = "bin" })
-    *)
     Paket.Push(fun p -> 
         { p with
-            WorkingDir = "bin" })
+            WorkingDir=Path.Combine(__SOURCE_DIRECTORY__, "bin") })
 )
 
 
@@ -340,8 +303,7 @@ Target "BuildPackage" DoNothing
 
 Target "All" DoNothing
 
-"AssemblyInfo"
-  ==> "Build"
+"Build"
   ==> "CopyBinaries"
   ==> "RunTests"
   ==> "GenerateReferenceDocs"

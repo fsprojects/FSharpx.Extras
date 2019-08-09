@@ -7,6 +7,8 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DataStructures|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>

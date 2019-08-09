@@ -1,9 +1,6 @@
 module FSharpx.Tests.BinaryIterateeTest
 
-open System
-open FSharpx.Functional
 open FSharpx.Collections
-open FSharpx.Collections.ByteString
 open FSharpx.Functional.Iteratee
 open FSharpx.Functional.Iteratee.Binary
 open NUnit.Framework
@@ -13,23 +10,23 @@ type BS = ByteString
 
 [<Test>]
 let ``test length should calculate the length of the list without modification``() =
-  let actual = enumerate (create [|1uy;2uy;3uy|]) length |> run 
+  let actual = enumerate (ByteString.create [|1uy;2uy;3uy|]) length |> run 
   actual |> should equal 3
 
 [<Test>]
 let ``test length should calculate the length of the list without modification all at once``() =
-  let actual = enumeratePure1Chunk (create [|1uy;2uy;3uy|]) length |> run 
+  let actual = enumeratePure1Chunk (ByteString.create [|1uy;2uy;3uy|]) length |> run 
   actual |> should equal 3
 
 [<Test>]
 let ``test length should calculate the length of the list without modification when chunked``() =
-  let actual = enumeratePureNChunk 2 (create [|1uy;2uy;3uy|]) length |> run 
+  let actual = enumeratePureNChunk 2 (ByteString.create [|1uy;2uy;3uy|]) length |> run 
   actual |> should equal 3
 
 let testPeekAndHead = [|
   [| box ByteString.empty; box None |]
-  [| box (singleton 'c'B); box (Some 'c'B) |]
-  [| box (create "char"B); box (Some 'c'B) |]
+  [| box (ByteString.singleton 'c'B); box (Some 'c'B) |]
+  [| box (ByteString.create "char"B); box (Some 'c'B) |]
 |]
 
 [<Test>]
@@ -74,7 +71,7 @@ let ``test drop should drop the first n items``([<Values(0,1,2,3,4,5,6,7,8,9)>] 
   let drop2Head = iteratee {
     do! drop x
     return! head }
-  let actual = enumerate (create [| 0uy..9uy |]) drop2Head |> run
+  let actual = enumerate (ByteString.create [| 0uy..9uy |]) drop2Head |> run
   actual |> should equal (Some(byte x))
 
 [<Test>]
@@ -83,7 +80,7 @@ let ``test drop should drop the first n items at once``([<Values(0,1,2,3,4,5,6,7
   let drop2Head = iteratee {
     do! drop x
     return! head }
-  let actual = enumeratePure1Chunk (create [| 0uy..9uy |]) drop2Head |> run
+  let actual = enumeratePure1Chunk (ByteString.create [| 0uy..9uy |]) drop2Head |> run
   actual |> should equal (Some(byte x))
 
 [<Test>]
@@ -92,7 +89,7 @@ let ``test drop should drop the first n items when enumerating in chunks``([<Val
   let drop2Head = iteratee {
     do! drop x
     return! head }
-  let actual = enumeratePureNChunk 5 (create [| 0uy..9uy |]) drop2Head |> run
+  let actual = enumeratePureNChunk 5 (ByteString.create [| 0uy..9uy |]) drop2Head |> run
   actual |> should equal (Some(byte x))
 
 [<Test>]
@@ -100,7 +97,7 @@ let ``test dropWhile should drop anything before the first space``() =
   let dropWhile2Head = iteratee {
     do! dropWhile ((<>) ' 'B)
     return! head }
-  let actual = enumerate (create "Hello world"B) dropWhile2Head |> run
+  let actual = enumerate (ByteString.create "Hello world"B) dropWhile2Head |> run
   actual |> should equal (Some ' 'B)
 
 [<Test>]
@@ -108,7 +105,7 @@ let ``test dropWhile should drop anything before the first space at once``() =
   let dropWhile2Head = iteratee {
     do! dropWhile ((<>) ' 'B)
     return! head }
-  let actual = enumeratePure1Chunk (create "Hello world"B) dropWhile2Head |> run
+  let actual = enumeratePure1Chunk (ByteString.create "Hello world"B) dropWhile2Head |> run
   actual |> should equal (Some ' 'B)
 
 [<Test>]
@@ -116,7 +113,7 @@ let ``test dropWhile should drop anything before the first space when chunked``(
   let dropWhile2Head = iteratee {
     do! dropWhile ((<>) ' 'B)
     return! head }
-  let actual = enumeratePureNChunk 2 (create "Hello world"B) dropWhile2Head |> run
+  let actual = enumeratePureNChunk 2 (ByteString.create "Hello world"B) dropWhile2Head |> run
   actual |> should equal (Some ' 'B)
 
 [<Test>]
@@ -124,7 +121,7 @@ let ``test dropUntil should drop anything before the first space``() =
   let dropUntil2Head = iteratee {
     do! dropUntil ((=) ' 'B)
     return! head }
-  let actual = enumerate (create "Hello world"B) dropUntil2Head |> run
+  let actual = enumerate (ByteString.create "Hello world"B) dropUntil2Head |> run
   actual |> should equal (Some ' 'B)
 
 [<Test>]
@@ -132,7 +129,7 @@ let ``test dropUntil should drop anything before the first space at once``() =
   let dropUntil2Head = iteratee {
     do! dropUntil ((=) ' 'B)
     return! head }
-  let actual = enumeratePure1Chunk (create "Hello world"B) dropUntil2Head |> run
+  let actual = enumeratePure1Chunk (ByteString.create "Hello world"B) dropUntil2Head |> run
   actual |> should equal (Some ' 'B)
 
 [<Test>]
@@ -140,13 +137,13 @@ let ``test dropUntil should drop anything before the first space when chunked``(
   let dropUntil2Head = iteratee {
     do! dropUntil ((=) ' 'B)
     return! head }
-  let actual = enumeratePureNChunk 2 (create "Hello world"B) dropUntil2Head |> run
+  let actual = enumeratePureNChunk 2 (ByteString.create "Hello world"B) dropUntil2Head |> run
   actual |> should equal (Some ' 'B)
   
 [<Test>]
 [<Sequential>]
 let ``test take should take the first n items``([<Values(0,1,2,3,4,5,6,7,8,9,10)>] x) =
-  let input = create [|0uy..9uy|]
+  let input = ByteString.create [|0uy..9uy|]
   let expected = ByteString.take x input
   let actual = enumerate input (take x) |> run
   actual |> should equal expected
@@ -154,7 +151,7 @@ let ``test take should take the first n items``([<Values(0,1,2,3,4,5,6,7,8,9,10)
 [<Test>]
 [<Sequential>]
 let ``test take should take the first n items at once``([<Values(0,1,2,3,4,5,6,7,8,9,10)>] x) =
-  let input = create [|0uy..9uy|]
+  let input = ByteString.create [|0uy..9uy|]
   let expected = ByteString.take x input
   let actual = enumeratePure1Chunk input (take x) |> run
   actual |> should equal expected
@@ -162,7 +159,7 @@ let ``test take should take the first n items at once``([<Values(0,1,2,3,4,5,6,7
 [<Test>]
 [<Sequential>]
 let ``test take should take the first n items when chunked``([<Values(0,1,2,3,4,5,6,7,8,9,10)>] x) =
-  let input = create [|0uy..9uy|]
+  let input = ByteString.create [|0uy..9uy|]
   let expected = ByteString.take x input
   let actual = enumeratePureNChunk 2 input (take x) |> run
   actual |> should equal expected
@@ -171,38 +168,38 @@ let ``test take should take the first n items when chunked``([<Values(0,1,2,3,4,
 let ``test takeWhile should take anything before the first space``() =
   let input = "Hello world"B
   let expected = BS(input, 0, 5)
-  let actual = enumerate (create input) (takeWhile ((<>) ' 'B)) |> run
+  let actual = enumerate (ByteString.create input) (takeWhile ((<>) ' 'B)) |> run
   actual |> should equal expected
 
 [<Test>]
 let ``test takeWhile should take anything before the first space at once``() =
   let input = "Hello world"B
   let expected = BS(input, 0, 5)
-  let actual = enumeratePure1Chunk (create input) (takeWhile ((<>) ' 'B)) |> run
+  let actual = enumeratePure1Chunk (ByteString.create input) (takeWhile ((<>) ' 'B)) |> run
   actual |> should equal expected
 
 [<Test>]
 let ``test takeWhile should take anything before the first space when enumerating in chunks``() =
   let input = "Hello world"B
-  let actual = enumeratePureNChunk 2 (create input) (takeWhile ((<>) ' 'B)) |> run
+  let actual = enumeratePureNChunk 2 (ByteString.create input) (takeWhile ((<>) ' 'B)) |> run
   actual |> should equal (BS(input, 0, 5))
 
 [<Test>]
 let ``test takeUntil should correctly split the input``() =
   let input = "abcde"B
-  let actual = enumerate (create input) (takeUntil ((=) 'c'B)) |> run
+  let actual = enumerate (ByteString.create input) (takeUntil ((=) 'c'B)) |> run
   actual |> should equal (BS(input, 0, 2))
 
 [<Test>]
 let ``test takeUntil should correctly split the input at once``() =
   let input = "abcde"B
-  let actual = enumeratePure1Chunk (create input) (takeUntil ((=) 'c'B)) |> run
+  let actual = enumeratePure1Chunk (ByteString.create input) (takeUntil ((=) 'c'B)) |> run
   actual |> should equal (BS(input, 0, 2))
 
 [<Test>]
 let ``test takeUntil should correctly split the input when enumerating in chunks``() =
   let input = "abcde"B
-  let actual = enumeratePureNChunk 2 (create input) (takeUntil ((=) 'c'B)) |> run
+  let actual = enumeratePureNChunk 2 (ByteString.create input) (takeUntil ((=) 'c'B)) |> run
   actual |> should equal (BS(input, 0, 2))
 
 [<Test>]
@@ -223,21 +220,21 @@ let ``test heads should count the number of characters in a set of headers when 
 [<Test>]
 let ``test heads should count the correct number of newline characters in a set of headers when enumerated one byte at a time``() =
   let isNewline c = c = '\r'B || c = '\n'B
-  let readUntilNewline = takeUntil isNewline >>= fun bs -> heads (create "\r\n"B)
+  let readUntilNewline = takeUntil isNewline >>= fun bs -> heads (ByteString.create "\r\n"B)
   let actual = enumerate (ByteString.ofString "abc\r\n") readUntilNewline |> run
   actual |> should equal 2
 
 [<Test>]
 let ``test heads should count the correct number of newline characters in a set of headers``() =
   let isNewline c = c = '\r'B || c = '\n'B
-  let readUntilNewline = takeUntil isNewline >>= fun bs -> heads (create "\r\n"B)
+  let readUntilNewline = takeUntil isNewline >>= fun bs -> heads (ByteString.create "\r\n"B)
   let actual = enumeratePure1Chunk (ByteString.ofString "abc\r\n") readUntilNewline |> run
   actual |> should equal 2
 
 [<Test>]
 let ``test heads should count the correct number of newline characters in a set of headers when chunked``() =
   let isNewline c = c = '\r'B || c = '\n'B
-  let readUntilNewline = takeUntil isNewline >>= fun bs -> heads (create "\r\n"B)
+  let readUntilNewline = takeUntil isNewline >>= fun bs -> heads (ByteString.create "\r\n"B)
   let actual = enumeratePureNChunk 2 (ByteString.ofString "abc\r\n") readUntilNewline |> run
   actual |> should equal 2
 
@@ -325,25 +322,25 @@ let ``test readLines should return the lines from the input when chunked``(input
 [<Test>]
 [<Sequential>]
 let ``test consume should consume all items``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
-  let actual = enumerate (create [| 0uy..x |]) consume |> run
+  let actual = enumerate (ByteString.create [| 0uy..x |]) consume |> run
   actual |> should equal [| 0uy..x |]
 
 [<Test>]
 [<Sequential>]
 let ``test consume should consume all items at once``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
-  let actual = enumeratePure1Chunk (create [| 0uy..x |]) consume |> run
+  let actual = enumeratePure1Chunk (ByteString.create [| 0uy..x |]) consume |> run
   actual |> should equal [| 0uy..x |]
 
 [<Test>]
 [<Sequential>]
 let ``test consume should consume all items when enumerating in chunks``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
-  let actual = enumeratePureNChunk 5 (create [| 0uy..x |]) consume |> run
+  let actual = enumeratePureNChunk 5 (ByteString.create [| 0uy..x |]) consume |> run
   actual |> should equal [| 0uy..x |]
 
 [<Test>]
 [<Sequential>]
 let ``test isolate and consume should take the first n items from the stream``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
-  let input = create [| 0uy..9uy |]
+  let input = ByteString.create [| 0uy..9uy |]
   let expected = ByteString.take x input
   let actual = enumerate input (joinI (isolate x consume)) |> run
   actual |> should equal expected
@@ -351,7 +348,7 @@ let ``test isolate and consume should take the first n items from the stream``([
 [<Test>]
 [<Sequential>]
 let ``test isolate and consume should take the first n items from the stream at once``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
-  let input = create [| 0uy..9uy |]
+  let input = ByteString.create [| 0uy..9uy |]
   let expected = ByteString.take x input
   let actual = enumeratePure1Chunk input (joinI (isolate x consume)) |> run
   actual |> should equal expected
@@ -359,7 +356,7 @@ let ``test isolate and consume should take the first n items from the stream at 
 [<Test>]
 [<Sequential>]
 let ``test isolate and consume should take the first n items when chunked``([<Values(0,1,2,3,4,5,6,7,8,9)>] x) =
-  let input = create [| 0uy..9uy |]
+  let input = ByteString.create [| 0uy..9uy |]
   let expected = ByteString.take x input
   let actual = enumeratePureNChunk 5 input (joinI (isolate x consume)) |> run
   actual |> should equal expected
@@ -368,38 +365,38 @@ let ``test isolate and consume should take the first n items when chunked``([<Va
 let ``test isolateWhile and consume should take anything before the first space``() =
   let input = "Hello world"B
   let expected = BS(input, 0, 5)
-  let actual = enumerate (create input) (joinI (isolateWhile ((<>) ' 'B) consume)) |> run
+  let actual = enumerate (ByteString.create input) (joinI (isolateWhile ((<>) ' 'B) consume)) |> run
   actual |> should equal expected
 
 [<Test>]
 let ``test isolateWhile and consume should take anything before the first space at once``() =
   let input = "Hello world"B
   let expected = BS(input, 0, 5)
-  let actual = enumeratePure1Chunk (create input) (joinI (isolateWhile ((<>) ' 'B) consume)) |> run
+  let actual = enumeratePure1Chunk (ByteString.create input) (joinI (isolateWhile ((<>) ' 'B) consume)) |> run
   actual |> should equal expected
 
 [<Test>]
 let ``test isolateWhile and consume should take anything before the first space when enumerating in chunks``() =
   let input = "Hello world"B
-  let actual = enumeratePureNChunk 2 (create input) (joinI (isolateWhile ((<>) ' 'B) consume)) |> run
+  let actual = enumeratePureNChunk 2 (ByteString.create input) (joinI (isolateWhile ((<>) ' 'B) consume)) |> run
   actual |> should equal (BS(input, 0, 5))
 
 [<Test>]
 let ``test isolateUntil and consume should correctly split the input``() =
   let input = "abcde"B
-  let actual = enumerate (create input) (joinI (isolateUntil ((=) 'c'B) consume)) |> run
+  let actual = enumerate (ByteString.create input) (joinI (isolateUntil ((=) 'c'B) consume)) |> run
   actual |> should equal (BS(input, 0, 2))
 
 [<Test>]
 let ``test isolateUntil and consume should correctly split the input at once``() =
   let input = "abcde"B
-  let actual = enumeratePure1Chunk (create input) (joinI (isolateUntil ((=) 'c'B) consume)) |> run
+  let actual = enumeratePure1Chunk (ByteString.create input) (joinI (isolateUntil ((=) 'c'B) consume)) |> run
   actual |> should equal (BS(input, 0, 2))
 
 [<Test>]
 let ``test isolateUntil and consume should correctly split the input when enumerating in chunks``() =
   let input = "abcde"B
-  let actual = enumeratePureNChunk 2 (create input) (joinI (isolateUntil ((=) 'c'B) consume)) |> run
+  let actual = enumeratePureNChunk 2 (ByteString.create input) (joinI (isolateUntil ((=) 'c'B) consume)) |> run
   actual |> should equal (BS(input, 0, 2))
 
 [<Test>]

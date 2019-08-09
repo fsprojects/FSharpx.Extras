@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Title>FSharpx.Text.StrcuturedFormat</Title>
     <OutputType>Library</OutputType>
@@ -11,7 +10,6 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.fs" />
     <None Include="paket.references" />
     <None Include="paket.template" />
     <Compile Include="StructuredFormat.fsi" />
