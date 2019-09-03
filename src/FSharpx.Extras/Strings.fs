@@ -5,26 +5,31 @@ open System.Globalization
 
 module Strings =
     /// Checks whether the given text starts with the given prefix
+    [<CompiledName("StartsWith")>]
     let inline startsWith (prefix : string) (text:string) = text.StartsWith prefix
 
     /// Replaces the given "replacement" for every occurence of the pattern in the given text 
+    [<CompiledName("Replace")>]
     let inline replace (pattern:string) replacement (text:string) = text.Replace(pattern,replacement)
 
     /// Returns a value indicating whether the specified substring occurs within this string
+    [<CompiledName("Contains")>]
     let inline contains substr (t: string) = t.Contains substr
     
     /// Splits the given string at the given delimiter
+    [<CompiledName("Split")>]
     let inline split (delimiter:char) (text:string) = text.Split [|delimiter|]
 
     /// Converts a sequence of strings to a single string separated with the delimiters
     [<System.Obsolete("Function 'separatedBy' obsolete. Use 'String.concat' from 'Microsoft.FSharp.Core' instead.")>]
     let inline separatedBy (delimiter : string) (items: string seq) = String.Join(delimiter, Array.ofSeq items)
-
+    [<CompiledName("ToCharArray")>]
     let inline toCharArray (str:string) = str.ToCharArray()
-
+    [<CompiledName("IsNewline")>]
     let isNewline c = c = '\r' || c = '\n'
             
     /// Returns a sequence of strings split by the predicate    
+    [<CompiledName("SplitBy")>]
     let splitBy (isDelimiter:char -> bool) (str:string) = 
         seq{
             let result = new System.Text.StringBuilder()
@@ -40,21 +45,27 @@ module Strings =
         }
 
     /// Splits a string based on newlines 
+    [<CompiledName("ToLines")>]
     let toLines (input:string) : string seq = splitBy isNewline input
         
     /// Creates newline seperated string from the string list
+    [<CompiledName("JoinLines")>]
     let joinLines (input:string list) : string = (String.concat System.Environment.NewLine input).Trim()
 
     /// Splits a string based on whitespace (spaces, tabs, and newlines)
+    [<CompiledName("ToWords")>]
     let toWords (input:string) : string seq = splitBy Char.IsWhiteSpace input
 
     /// Folds the string list by seperating entries with a single space
+    [<CompiledName("JoinWords")>]
     let joinWords (input: string list) : string = (String.concat " " input).Trim()
 
     /// Returns if the string is null or empty
+    [<CompiledName("IsNullOrEmpty")>]
     let inline isNullOrEmpty text = String.IsNullOrEmpty text
 
     /// Returns the pluralized version of a noun
+    [<CompiledName("Pluralize")>]
     let pluralize (noun: string) =        
         if noun.Contains " of " || noun.Contains " Of " then 
             noun
@@ -62,6 +73,7 @@ module Strings =
             Pluralizer.toPlural noun
 
     /// Returns the singularized version of a noun
+    [<CompiledName("Singularize")>]
     let singularize (noun: string) =
         Pluralizer.toSingular noun
 
@@ -82,6 +94,7 @@ module Strings =
     let (|Lower|_|) = satisfies Char.IsLower
 
     /// Turns a string into a nice PascalCase identifier
+    [<CompiledName("NiceName")>]
     let niceName (s:string) = 
         if s = s.ToUpper() then s else
         // Starting to parse a new segment 
@@ -115,22 +128,27 @@ module Strings =
         |> String.concat ""
 
     /// Checks whether the string is a boolean value
+    [<CompiledName("IsBool")>]
     let isBool (s:string) =
         let l = s.ToLower()
         l = "true" || l = "false" || l = "yes" || l = "no"
 
     /// Checks whether the string is an int32
+    [<CompiledName("IsInt")>]
     let isInt (s:string) = Int32.TryParse s |> fst
 
     /// Checks whether the string is an int64
+    [<CompiledName("IsInt64")>]
     let isInt64 (s:string) = Int64.TryParse s |> fst
 
     /// Checks whether the string is a float
+    [<CompiledName("IsFloat")>]
     let isFloat (s:string) =
           Double.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture) 
             |> fst
 
     /// Checks whether all values of the sequence can be inferred to a special type
+    [<CompiledName("InferType")>]
     let inferType values =     
         if Seq.forall isBool values then typeof<bool>
         elif Seq.forall isInt values then typeof<int>
