@@ -158,9 +158,6 @@ type FSharpOption =
 
     [<Extension>]
     static member Some a = Option.Some a
-    
-    [<Extension>]
-    static member None () = Option.None
 
     [<Extension>]
     static member Match (o, ifSome: Func<_,_>, ifNone: Func<_>) =
