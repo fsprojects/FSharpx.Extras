@@ -38,6 +38,7 @@
     <Compile Include="OptionTests.fs" />
     <Compile Include="ChoiceTests.fs" />
     <Compile Include="ResultTests.fs" />
+    <Compile Include="ResultOfOptionTests.fs" />
     <Compile Include="PreludeTests.fs" />
     <Compile Include="LensTests.fs" />
     <Compile Include="LensExample.fs" />
