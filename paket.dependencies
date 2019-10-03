@@ -9,10 +9,7 @@ nuget System.Reflection.Emit.Lightweight
 group Build
   source https://nuget.org/api/v2
 
-  nuget FAKE
   nuget FSharp.Formatting
-
-  github fsharp/FAKE modules/Octokit/Octokit.fsx
 
 group Test
   source https://nuget.org/api/v2
@@ -28,3 +25,21 @@ group Test
   nuget NUnit3TestAdapter
   nuget FsCheck
   nuget FsUnit
+
+group FakeBuild
+  source release/dotnetcore
+  source https://nuget.org/api/v2
+  storage: none
+
+  nuget Fake.Api.GitHub
+  nuget Fake.BuildServer.AppVeyor
+  nuget Fake.Core.ReleaseNotes
+  nuget Fake.Core.Target
+  nuget Fake.Core.UserInput
+  nuget Fake.DotNet.Cli
+  nuget Fake.DotNet.Paket
+  nuget Fake.IO.FileSystem
+  nuget Fake.Tools.Git
+  nuget FSharp.Core 4.5.2
+
+  github fsharp/FAKE modules/Octokit/Octokit.fsx
