@@ -1,6 +1,7 @@
-### 2.3.1 - TBD
+### 2.3.1 - 21.10.2019
 * Update dependency versions for FSharpx.Async and FSharpx.Collections - https://github.com/fsprojects/FSharpx.Extras/issue/370
 * Update source linking to use new, dotnet approach - https://github.com/fsprojects/FSharpx.Extras/issue/372
+* Added ofOptionF to Result module - https://github.com/fsprojects/FSharpx.Extras/pull/377
  
 ### 2.3.0 - 4.8.2019
 * New netstandard2.0 support - https://github.com/fsprojects/FSharpx.Extras/pull/360

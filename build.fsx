@@ -13,6 +13,8 @@ open Fake.IO
 open Fake.IO.Globbing.Operators
 open Fake.Tools
 open System
+open System.IO
+open System.Xml.Linq
 
 // --------------------------------------------------------------------------------------
 // START TODO: Provide project-specific details below
@@ -120,6 +122,29 @@ Target.create "PublishNuget" (fun _ ->
 // --------------------------------------------------------------------------------------
 // Release Scripts
 
+// Directory.Build.props helpers
+
+let getVersion (versionFile:string) =
+    let doc = XElement.Load versionFile
+    let version =
+        doc.Elements().Elements()
+        |> Seq.filter (fun e -> e.Name.LocalName = "VersionPrefix")
+        |> Seq.head
+    version.Value
+
+let setVersion (versionFile:string) newVersion =
+    let doc = XElement.Load versionFile
+    let version =
+        doc.Elements().Elements()
+        |> Seq.filter (fun e -> e.Name.LocalName = "VersionPrefix")
+        |> Seq.head
+    version.Value <- newVersion
+    doc.Save versionFile
+
+let nextTag (version:string) =
+    let lastDot = version.LastIndexOf(".")
+    version.Substring(lastDot + 1)
+
 Target.create "Release" (fun _ ->
     let user =
         match Environment.environVarOrDefault "github-user" "" with
@@ -141,6 +166,9 @@ Target.create "Release" (fun _ ->
 
     Git.Branches.tag "" release.NugetVersion
     Git.Branches.pushTag "" remote release.NugetVersion
+
+    let versionFile = Path.Combine("src", "Directory.Build.props")
+    setVersion versionFile (nextTag release.NugetVersion)
 
     // release on github
     GitHub.createClient user pw
