@@ -3,6 +3,7 @@
 open System
 
 /// Functional wrappers around String instance methods
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>] //need this so doesn't hide String class in C# assemblies (should consider for other extension modules as well)
 module String =
 
     /// Returns a value indicating whether a specified substring occurs within this string.
