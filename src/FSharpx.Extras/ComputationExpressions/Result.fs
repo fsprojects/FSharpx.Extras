@@ -71,6 +71,12 @@ module Result =
         | Some a -> Ok a
         | None -> Error o
 
+    /// If Some value, returns Ok value. Otherwise, returns the supplied default value from a function.
+    let ofOptionF f =
+        function
+        | Some a -> Ok a
+        | None -> Error (f())
+
     let inline sequence s =
         let inline cons a b = lift2 List.cons a b
         List.foldBack cons s (returnM [])
