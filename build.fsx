@@ -143,7 +143,12 @@ let setVersion (versionFile:string) newVersion =
 
 let nextTag (version:string) =
     let lastDot = version.LastIndexOf(".")
-    version.Substring(lastDot + 1)
+    let patchNum = version.Substring(lastDot + 1)
+    match System.Int32.TryParse(patchNum) with
+    | false, _ ->
+        invalidArg version (sprintf "version %s is invalid" version)
+    | true, num ->
+        sprintf "%s.%d"  (version.Substring(0,lastDot)) (num + 1)
 
 Target.create "Release" (fun _ ->
     let user =
@@ -167,7 +172,7 @@ Target.create "Release" (fun _ ->
     Git.Branches.tag "" release.NugetVersion
     Git.Branches.pushTag "" remote release.NugetVersion
 
-    let versionFile = Path.Combine("src", "Directory.Build.props")
+    let versionFile = Path.Combine(__SOURCE_DIRECTORY__, "src", "Directory.Build.props")
     setVersion versionFile (nextTag release.NugetVersion)
 
     // release on github

@@ -1,3 +1,6 @@
+### 2.3.2 - 21.10.2019
+* Improve C# compatibility - https://github.com/fsprojects/FSharpx.Extras/pull/376
+
 ### 2.3.1 - 21.10.2019
 * Update dependency versions for FSharpx.Async and FSharpx.Collections - https://github.com/fsprojects/FSharpx.Extras/issue/370
 * Update source linking to use new, dotnet approach - https://github.com/fsprojects/FSharpx.Extras/issue/372
