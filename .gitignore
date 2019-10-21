@@ -61,8 +61,11 @@ ipch/
 *.vsp
 *.vspx
 
-# Other Visual Studio data
+# Other IDE data
 .vs/
+.vscode/
+.ionide/
+.idea/
 
 # Guidance Automation Toolkit
 *.gpState
