@@ -4,7 +4,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx.Tests</RootNamespace>
     <AssemblyName>FSharpx.Tests</AssemblyName>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <Name>FSharpx.Tests</Name>
     <Optimize>true</Optimize>
     <Tailcalls>true</Tailcalls>

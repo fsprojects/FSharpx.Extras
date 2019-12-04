@@ -12,7 +12,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="paket.references" />
-    <None Include="paket.template" />
     <Content Include="app.config" />
     <Compile Include="Prelude.fs" />
     <Compile Include="Pluralizer.fs" />
