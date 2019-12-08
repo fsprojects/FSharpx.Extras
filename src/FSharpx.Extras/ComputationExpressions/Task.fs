@@ -100,7 +100,7 @@ module Task =
 
     let inline mapM f x = sequence (List.map f x)
 
-
+    [<Obsolete("Prefer NuGet package TaskBuilder.fs version FSharp.Control.Tasks.V2.TaskBuilder")>]
     type TaskBuilder(?continuationOptions, ?scheduler, ?cancellationToken) =
         let contOptions = defaultArg continuationOptions TaskContinuationOptions.None
         let scheduler = defaultArg scheduler TaskScheduler.Default
@@ -160,7 +160,7 @@ module Task =
                                               )
                       )
 
-
+    [<Obsolete("Prefer NuGet package TaskBuilder.fs version FSharp.Control.Tasks.V2.task")>]
     let task = TaskBuilder()
 
     type TokenToTask<'a> = CancellationToken -> Task<'a>
