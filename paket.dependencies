@@ -1,34 +1,35 @@
-source https://nuget.org/api/v2
+source https://api.nuget.org/v3/index.json
+framework: netstandard20
 storage: none
 
 nuget FSharp.Core >= 4.6.2 lowest_matching:true
 nuget FSharpx.Async
-nuget FSharpx.Collections
+nuget FSharpx.Collections 2.0
 nuget System.Reflection.Emit.Lightweight
 
 group Build
-  source https://nuget.org/api/v2
+  source https://api.nuget.org/v3/index.json
+  framework: net461
 
   nuget FSharp.Formatting
 
 group Test
-  source https://nuget.org/api/v2
+  source https://api.nuget.org/v3/index.json
+  framework: netcoreapp21
   storage: none
   
-  nuget FSharp.Core
+  nuget FSharp.Core >= 4.6.2 lowest_matching:true
   nuget FSharpx.Async
-  nuget FSharpx.Collections
+  nuget FSharpx.Collections 2.0
   nuget NUnit
-  nuget NUnit.Runners
-  nuget NUnit.Console
-  nuget Microsoft.NET.Test.Sdk
   nuget NUnit3TestAdapter
   nuget FsCheck
   nuget FsUnit
+  nuget Microsoft.NET.Test.Sdk
 
 group FakeBuild
   source release/dotnetcore
-  source https://nuget.org/api/v2
+  source https://api.nuget.org/v3/index.json
   storage: none
 
   nuget Fake.Api.GitHub
@@ -40,6 +41,6 @@ group FakeBuild
   nuget Fake.DotNet.Paket
   nuget Fake.IO.FileSystem
   nuget Fake.Tools.Git
-  nuget FSharp.Core 4.5.2
+  nuget FSharp.Core
 
   github fsharp/FAKE modules/Octokit/Octokit.fsx

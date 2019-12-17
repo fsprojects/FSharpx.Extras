@@ -4,7 +4,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx.CSharpTests</RootNamespace>
     <AssemblyName>FSharpx.CSharpTests</AssemblyName>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

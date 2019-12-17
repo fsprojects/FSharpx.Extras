@@ -23,7 +23,7 @@ let ``kleisli composition``() =
 
 [<Test>]
 let ``from bool and value``() =
-    let parse x = 
+    let parse (x:string) = 
         Int32.TryParse(x, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture) 
         |> Option.ofBoolAndValue
     Assert.AreEqual(Some 34, parse "34")
