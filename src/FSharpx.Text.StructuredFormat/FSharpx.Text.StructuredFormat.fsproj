@@ -3,11 +3,14 @@
     <Title>FSharpx.Text.StrcuturedFormat</Title>
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx.Text.StructuredFormat</RootNamespace>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <Name>FSharpx.Text.StructuredFormat</Name>    
+    <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
+    <Name>FSharpx.Text.StructuredFormat</Name>
     <Optimize>true</Optimize>
     <Tailcalls>true</Tailcalls>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />

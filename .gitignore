@@ -181,14 +181,16 @@ temp/
 # Test results produced by build
 TestResults.xml
 
+#Paket dependency manager
+.paket/
+paket-files/
+
 # Nuget outputs
 nuget/*.nupkg
 release.cmd
 release.sh
 localpackages/
-paket-files
 *.orig
-.paket/paket.exe
 docs/content/license.md
 docs/content/release-notes.md
 .fake

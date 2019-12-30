@@ -1,8 +1,9 @@
 @echo off
 
-dotnet restore build.proj
+dotnet tool restore
+dotnet restore
 if not "%*"=="" (
-    dotnet fake run build.fsx --target %*
+    dotnet fake run build.fsx --parallel 3 --target %*
 ) else (
-    dotnet fake run build.fsx
+    dotnet fake run build.fsx --parallel 3
 )
