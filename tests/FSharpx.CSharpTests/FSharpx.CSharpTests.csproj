@@ -4,11 +4,14 @@
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx.CSharpTests</RootNamespace>
     <AssemblyName>FSharpx.CSharpTests</AssemblyName>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFrameworks>net46;netcoreapp2.1</TargetFrameworks>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
+    <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DataStructures|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>

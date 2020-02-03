@@ -4,12 +4,15 @@
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx.Tests</RootNamespace>
     <AssemblyName>FSharpx.Tests</AssemblyName>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFrameworks>net46;netcoreapp2.1</TargetFrameworks>
     <Name>FSharpx.Tests</Name>
     <Optimize>true</Optimize>
     <Tailcalls>true</Tailcalls>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
+    <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />

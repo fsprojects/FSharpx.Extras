@@ -1,10 +1,11 @@
 language: csharp
-mono: latest
-dotnet: 2.1.300
-sudo: false  # use the new container-based Travis infrastructure 
+mono: none
+dotnet: 3.1.100
+sudo: required
 
 before_install:
+  - sudo apt-get install -qq dotnet-sdk-2.1
   - chmod +x fake.sh
  
-script: 
-  - ./fake.sh All
+script:
+  - ./fake.sh LinuxCI
