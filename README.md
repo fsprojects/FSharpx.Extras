@@ -20,6 +20,7 @@ Mono | .NET
 - [@forki](https://github.com/forki)
 - [@mausch](https://github.com/mausch)
 - [@panesofglass](https://github.com/panesofglass)
+- [@gdziadkiewicz](https://github.com/gdziadkiewicz)
 
 The default maintainer account for projects under "fsprojects" is [@fsprojectsgit](https://github.com/fsprojectsgit) - F# Community Project Incubation Space (repo management)
 
