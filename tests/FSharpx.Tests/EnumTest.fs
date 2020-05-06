@@ -24,3 +24,27 @@ let ``parse throws an exception when it fails to parse`` ()=
         let x = Enum.parse("English") : LanguageOptions
         ()
     Assert.Throws<System.Exception>( TestDelegate( parseEnglish ) )  
+
+[<Test>] 
+let ``isDefined returns true when valid simple enum value is checked`` ()=
+    Assert.IsTrue(Enum.isDefined LanguageOptions.CSharp && Enum.isDefined LanguageOptions.FSharp && Enum.isDefined LanguageOptions.VB)
+
+[<Test>] 
+let ``isDefined returns false when not valid simple enum value is checked`` ()=
+    let invalidEnum : LanguageOptions = enum 3
+    Assert.IsFalse(Enum.isDefined invalidEnum)
+
+[<System.Flags>]
+type FlaggedLanguageOptions =
+    | FSharp = 0
+    | CSharp = 1
+    | VB = 2
+
+[<Test>] 
+let ``isDefined returns true when valid flagged enum value is checked`` ()=
+    Assert.IsTrue(Enum.isDefined (FlaggedLanguageOptions.CSharp ||| FlaggedLanguageOptions.FSharp ||| FlaggedLanguageOptions.VB))
+
+[<Test>] 
+let ``isDefined returns false when not valid flagged enum value is checked`` ()=
+    let invalidEnum : FlaggedLanguageOptions = enum 300
+    Assert.IsFalse(Enum.isDefined invalidEnum)
