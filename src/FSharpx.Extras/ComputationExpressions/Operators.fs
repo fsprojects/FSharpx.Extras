@@ -5,7 +5,7 @@ module Operators =
 
     /// Inject a value into the monadic type
     let inline returnM builder x = (^M: (member Return: 'b -> 'c) (builder, x))
-    let inline bindM builder m f = (^M: (member Bind: 'd -> ('e -> 'c) -> 'c) (builder, m, f))
+    let inline bindM builder m f = (^M: (member Bind: 'd * ('e -> 'c) -> 'c) (builder, m, f))
     let inline liftM builder f m =
         let inline ret x = returnM builder (f x)
         bindM builder m ret
