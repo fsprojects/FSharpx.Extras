@@ -1,3 +1,9 @@
+### 2.4.0 - 14.05.2020
+* Add `Enum.isDefined` function - https://github.com/fsprojects/FSharpx.Extras/pull/382
+* Deprecate `taskbuilder` in favor of `taskbuilder.fs` - https://github.com/fsprojects/FSharpx.Extras/pull/381
+* Add net452 support - https://github.com/fsprojects/FSharpx.Extras/pull/379
+* Add `Validation.sequenceIgnore` and `Validation.mapMIgnore` functions - https://github.com/fsprojects/FSharpx.Extras/pull/365
+
 ### 2.3.2 - 21.10.2019
 * Improve C# compatibility - https://github.com/fsprojects/FSharpx.Extras/pull/376
 

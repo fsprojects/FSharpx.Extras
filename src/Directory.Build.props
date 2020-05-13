@@ -8,7 +8,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/fsprojects/FSharpx.Extras/master/docs/files/img/logo.png</PackageIconUrl>
     <PackageLicenseUrl>https://github.com/fsprojects/FSharpx.Extras/blob/master/LICENSE.txt</PackageLicenseUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Copyright>Copyright 2019</Copyright>
+    <Copyright>Copyright 2020</Copyright>
     <PackageTags>fsharpx fsharp</PackageTags>
     <Summary>FSharpx.Extras implements general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.</Summary>
     <Description>FSharpx.Extras implements general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.</Description>
