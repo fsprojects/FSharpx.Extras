@@ -8,4 +8,4 @@ before_install:
   - chmod +x fake.sh
  
 script:
-  - ./fake.sh LinuxCI
+  - ./fake.sh

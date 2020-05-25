@@ -189,12 +189,10 @@ Target.create "BuildPackage" ignore
 // Run all targets by default. Invoke 'build <Target>' to override
 
 Target.create "All" ignore
-Target.create "LinuxCI" ignore
 
 "Build"
   ==> "CopyBinaries"
   ==> "RunTests"
-  ==> "LinuxCI"
   ==> "NuGet"
   ==> "BuildPackage"
   ==> "All"

@@ -12,7 +12,7 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFrameworks>netcoreapp2.1</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />

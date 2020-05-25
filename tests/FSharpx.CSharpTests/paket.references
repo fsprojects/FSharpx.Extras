@@ -1,7 +1,4 @@
 group Test
-FSharpx.Async
-FSharpx.Collections
-FSharp.Core
 NUnit
 Microsoft.NET.Test.Sdk
 NUnit3TestAdapter
