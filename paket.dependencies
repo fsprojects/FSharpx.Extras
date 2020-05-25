@@ -1,4 +1,4 @@
-version 5.226.0
+version 5.245.2
 
 source https://api.nuget.org/v3/index.json
 framework: net452, netstandard20
@@ -17,7 +17,7 @@ group Build
 
 group Test
   source https://api.nuget.org/v3/index.json
-  framework: net46, netcoreapp21
+  framework: net46, netcoreapp31
   storage: none
 
   nuget FSharp.Core >= 4.6.2 lowest_matching:true
