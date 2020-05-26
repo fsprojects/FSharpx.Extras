@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <RootNamespace>FSharpx.CSharpTests</RootNamespace>
-    <AssemblyName>FSharpx.CSharpTests</AssemblyName>
-    <TargetFrameworks>net46;netcoreapp3.1</TargetFrameworks>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <AssemblyName>FSharpx.CSharpTests.$(TargetFramework)</AssemblyName>
+    <TargetFrameworks>net46;netcoreapp31</TargetFrameworks>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
-    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>netcoreapp31</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DataStructures|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
