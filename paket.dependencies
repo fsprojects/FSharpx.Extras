@@ -28,6 +28,7 @@ group Test
   nuget FsCheck
   nuget FsUnit
   nuget Microsoft.NET.Test.Sdk
+  nuget Appveyor.TestLogger
 
 group FakeBuild
   source release/dotnetcore

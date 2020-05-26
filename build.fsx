@@ -101,7 +101,12 @@ Target.create "Build" (fun _ ->
 
 Target.create "RunTests" (fun _ ->
     !! testProjects
-    |> Seq.iter (DotNet.test (fun c -> { c with Configuration=DotNet.BuildConfiguration.Release }))
+    |> Seq.iter (DotNet.test (fun c -> { 
+        c with
+            Configuration=DotNet.BuildConfiguration.Release
+            Logger = if BuildServer.buildServer = AppVeyor then Some "Appveyor" else None
+        }))
+
 )
 
 // --------------------------------------------------------------------------------------

@@ -700,6 +700,7 @@ STORAGE: NONE
 RESTRICTION: || (== net46) (== netcoreapp3.1)
 NUGET
   remote: https://api.nuget.org/v3/index.json
+    Appveyor.TestLogger (2.0)
     FsCheck (2.14.2)
       FSharp.Core (>= 4.2.3)
     FSharp.Control.AsyncSeq (2.0.23)
