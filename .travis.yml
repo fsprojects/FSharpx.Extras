@@ -1,8 +1,11 @@
 language: csharp
 mono: none
 dotnet: 3.1.300
-os: linux
+os:
+  - linux
+  - osx
 dist: xenial
-
+env:
+  - DOTNET_NOLOGO=true
 script:
   - ./fake.sh
