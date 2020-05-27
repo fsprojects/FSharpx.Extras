@@ -1,5 +1,6 @@
 group Test
-NUnit
-Microsoft.NET.Test.Sdk
-NUnit3TestAdapter
-Appveyor.TestLogger
+    FSharp.Core
+    NUnit
+    Microsoft.NET.Test.Sdk
+    NUnit3TestAdapter
+    Appveyor.TestLogger

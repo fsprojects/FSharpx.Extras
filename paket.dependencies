@@ -1,4 +1,4 @@
-version 5.245.2
+version 5.245.1
 
 source https://api.nuget.org/v3/index.json
 framework: net452, netstandard20
@@ -19,10 +19,7 @@ group Test
   source https://api.nuget.org/v3/index.json
   framework: net46, netcoreapp31
   storage: none
-
-  nuget FSharp.Core >= 4.6.2 lowest_matching:true
-  nuget FSharpx.Async
-  nuget FSharpx.Collections
+  nuget FSharp.Core
   nuget NUnit
   nuget NUnit3TestAdapter
   nuget FsCheck

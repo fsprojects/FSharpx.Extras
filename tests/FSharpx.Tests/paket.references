@@ -1,10 +1,7 @@
 group Test
-FSharpx.Async
-FSharpx.Collections
-FSharp.Core
-FsCheck
-FsUnit
-NUnit
-Microsoft.NET.Test.Sdk
-NUnit3TestAdapter
-Appveyor.TestLogger
+    FsCheck
+    FsUnit
+    NUnit
+    Microsoft.NET.Test.Sdk
+    NUnit3TestAdapter
+    Appveyor.TestLogger

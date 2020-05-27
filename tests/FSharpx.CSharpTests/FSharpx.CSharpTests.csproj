@@ -21,7 +21,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />
-    <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\FSharpx.Extras\FSharpx.Extras.fsproj">
