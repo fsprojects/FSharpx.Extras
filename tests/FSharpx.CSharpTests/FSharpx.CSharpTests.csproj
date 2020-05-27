@@ -4,6 +4,7 @@
     <AssemblyName>FSharpx.CSharpTests.$(TargetFramework)</AssemblyName>
     <TargetFrameworks>net46;netcoreapp31</TargetFrameworks>
     <IsPackable>false</IsPackable>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
     <TargetFrameworks>netcoreapp31</TargetFrameworks>

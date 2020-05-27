@@ -15,6 +15,12 @@ open Fake.Tools
 open System
 open System.IO
 open System.Xml.Linq
+open Fake.BuildServer
+
+BuildServer.install [
+    AppVeyor.Installer
+    Travis.Installer
+]
 
 // --------------------------------------------------------------------------------------
 // START TODO: Provide project-specific details below
@@ -68,6 +74,19 @@ let gitRaw = Environment.environVarOrDefault "gitRaw" "https://raw.githubusercon
 
 // Read additional information from the release notes document
 let release = ReleaseNotes.load "RELEASE_NOTES.md"
+let maybeBuildNumber =
+        Environment.environVarOrNone "APPVEYOR_BUILD_NUMBER"
+        |> Option.orElse (Environment.environVarOrNone "TRAVIS_BUILD_NUMBER")
+
+Target.create "SetCIVersion" (fun _ ->
+    let version =
+        let postfix =
+            maybeBuildNumber
+            |> Option.map ((+) ".")
+            |> Option.defaultValue ""
+        release.AssemblyVersion + postfix
+    Trace.setBuildNumber version
+)
 
 // Copies binaries from default VS location to expected bin folder
 // But keeps a subdirectory structure for each project in the
@@ -79,7 +98,6 @@ Target.create "CopyBinaries" (fun _ ->
     |>  Seq.iter (fun (fromDir, toDir) -> Shell.copyDir toDir fromDir (fun _ -> true))
 )
 
-// Helper active pattern for project types
 // --------------------------------------------------------------------------------------
 // Clean build results
 
@@ -92,30 +110,29 @@ Target.create "Clean" (fun _ ->
 // Build library & test project
 
 Target.create "Build" (fun _ ->
-    !! srcProjects
-    |> Seq.iter (DotNet.build (fun c -> { c with Configuration=DotNet.BuildConfiguration.Release }))
+    solutionFile
+    |> DotNet.build (fun c -> { c with Configuration=DotNet.BuildConfiguration.Release }) 
 )
 
 // --------------------------------------------------------------------------------------
 // Run the unit tests using test runner
 
 Target.create "RunTests" (fun _ ->
-    !! testProjects
-    |> Seq.iter (DotNet.test (fun c -> { 
+    solutionFile
+    |> DotNet.test (fun c -> { 
         c with
             Configuration=DotNet.BuildConfiguration.Release
             Logger = if BuildServer.buildServer = AppVeyor then Some "Appveyor" else None
-        }))
-
+        })
 )
 
 // --------------------------------------------------------------------------------------
 // Build a NuGet package
 
 Target.create "NuGet" (fun _ ->
-    !! srcProjects
-    |> Seq.iter (DotNet.pack(fun p ->
-        { p with OutputPath=Some(IO.Path.Combine(__SOURCE_DIRECTORY__, "bin")) }))
+    solutionFile
+    |> DotNet.pack (fun p ->
+        { p with OutputPath=Some(IO.Path.Combine(__SOURCE_DIRECTORY__, "bin")) })
 )
 
 Target.create "PublishNuget" (fun _ ->
@@ -195,7 +212,8 @@ Target.create "BuildPackage" ignore
 
 Target.create "All" ignore
 
-"Build"
+"SetCIVersion"
+  ==> "Build"
   ==> "CopyBinaries"
   ==> "RunTests"
   ==> "NuGet"
