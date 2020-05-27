@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <RootNamespace>FSharpx.Tests</RootNamespace>
-    <AssemblyName>FSharpx.Tests</AssemblyName>
-    <TargetFrameworks>net46;netcoreapp2.1</TargetFrameworks>
-    <Name>FSharpx.Tests</Name>
-    <Optimize>true</Optimize>
-    <Tailcalls>true</Tailcalls>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <AssemblyName>FSharpx.Tests.$(TargetFramework)</AssemblyName>
+    <TargetFrameworks>net46;netcoreapp31</TargetFrameworks>
     <IsPackable>false</IsPackable>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
-    <TargetFrameworks>netcoreapp2.1</TargetFrameworks>
+    <TargetFrameworks>netcoreapp31</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />

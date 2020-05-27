@@ -1,4 +1,4 @@
-version 5.226.0
+version 5.245.1
 
 source https://api.nuget.org/v3/index.json
 framework: net452, netstandard20
@@ -17,17 +17,15 @@ group Build
 
 group Test
   source https://api.nuget.org/v3/index.json
-  framework: net46, netcoreapp21
+  framework: net46, netcoreapp31
   storage: none
-
-  nuget FSharp.Core >= 4.6.2 lowest_matching:true
-  nuget FSharpx.Async
-  nuget FSharpx.Collections
+  nuget FSharp.Core
   nuget NUnit
   nuget NUnit3TestAdapter
   nuget FsCheck
   nuget FsUnit
   nuget Microsoft.NET.Test.Sdk
+  nuget Appveyor.TestLogger
 
 group FakeBuild
   source release/dotnetcore
@@ -36,6 +34,7 @@ group FakeBuild
 
   nuget Fake.Api.GitHub
   nuget Fake.BuildServer.AppVeyor
+  nuget Fake.BuildServer.Travis
   nuget Fake.Core.ReleaseNotes
   nuget Fake.Core.Target
   nuget Fake.Core.UserInput

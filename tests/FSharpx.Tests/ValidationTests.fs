@@ -139,7 +139,6 @@ let ``using sequenceIgnore``() =
     let vOk = Validation.sequenceIgnore vsOk
     match vOk with
     | Choice1Of2 () -> ()
-    | Choice1Of2 _ -> failwith "sequenceIgnore did not discard the success value"
     | Choice2Of2 _ -> failwith "Validation failed on success values"
 
 [<Test>]
@@ -160,6 +159,5 @@ let ``using mapMIgnore`` =
 
     match vOk with
     | Choice1Of2 () -> ()
-    | Choice1Of2 _ -> failwith "mapMIgnore did not discard the success value"
     | Choice2Of2 _ -> failwith "Validation failed on success values"
 

@@ -1,4 +1,5 @@
 ﻿module FSharpx.Tests.TaskTests
+#nowarn "44"
 
 open System
 open System.IO

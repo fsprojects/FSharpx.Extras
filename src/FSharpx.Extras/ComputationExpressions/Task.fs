@@ -1,4 +1,5 @@
 ﻿namespace FSharpx
+#nowarn "44"
 
 module Task =
     open System

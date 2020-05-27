@@ -14,8 +14,7 @@
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="paket.references" />
-    <Content Include="app.config" />
+    <None Include="paket.references" />
     <Compile Include="Prelude.fs" />
     <Compile Include="Pluralizer.fs" />
     <Compile Include="String.fs" />
