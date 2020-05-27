@@ -23,6 +23,7 @@ group Test
   nuget NUnit
   nuget NUnit3TestAdapter
   nuget FsCheck
+  nuget FsCheck.NUnit
   nuget FsUnit
   nuget Microsoft.NET.Test.Sdk
   nuget Appveyor.TestLogger

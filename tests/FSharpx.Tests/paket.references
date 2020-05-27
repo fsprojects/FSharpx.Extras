@@ -1,6 +1,7 @@
 group Test
     FsCheck
     FsUnit
+    FsCheck.NUnit
     NUnit
     Microsoft.NET.Test.Sdk
     NUnit3TestAdapter
