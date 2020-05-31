@@ -243,3 +243,6 @@ module Option =
         match o with
         | Some _ -> true
         | _ -> false
+
+    /// Checks condition on x - if true returns Some x else None
+    let someIf (condition:'a->bool) (x:'a) : 'a option = if condition x then Some x else None
