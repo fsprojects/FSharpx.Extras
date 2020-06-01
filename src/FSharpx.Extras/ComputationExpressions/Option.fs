@@ -132,6 +132,12 @@ module Option =
         | Ok a -> Some a
         | _ -> None
 
+    /// Maps Unchecked object when null to None, otherwise Some value.
+    /// It's useful when getting data from external sources, pe.
+    let ofUnchecked (x: 'a) =
+        match Unchecked.defaultof<'a> = x with
+        | true -> None
+        | false -> Some x
 
     /// Gets the value associated with the option or the supplied default value.
     let inline getOrElse v =
