@@ -134,8 +134,8 @@ module Option =
 
     /// Maps Unchecked object when null to None, otherwise Some value.
     /// It's useful when getting data from external sources, pe.
-    let ofUnchecked (x: 'a) =
-        match Unchecked.defaultof<'a> = x with
+    let inline ofUnchecked (x: 'a when 'a : not struct) =
+        match box x = null with
         | true -> None
         | false -> Some x
 
