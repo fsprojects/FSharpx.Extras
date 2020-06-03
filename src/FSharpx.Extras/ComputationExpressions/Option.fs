@@ -135,9 +135,9 @@ module Option =
     /// Maps Unchecked object when null to None, otherwise Some value.
     /// It's useful when getting data from external sources, pe.
     let inline ofUnchecked (x: 'a when 'a : not struct) =
-        match box x = null with
-        | true -> None
-        | false -> Some x
+        match box x with
+        | null -> None
+        | _ -> Some x
 
     /// Gets the value associated with the option or the supplied default value.
     let inline getOrElse v =
