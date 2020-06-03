@@ -94,3 +94,22 @@ let someIfBoolTestCases = [
 [<TestCaseSource(nameof someIfBoolTestCases)>]
 let ``someIf with id`` (input:bool, expectedOutput:bool option) =
     Option.someIf id input |> shouldEqual expectedOutput
+
+type UncheckedRecordTest =
+    { Dummy: int }
+
+[<Test>]
+let ``from unchecked value``() =
+    let test = { Dummy = 4 }
+    Assert.AreEqual(Some test, Option.ofUnchecked test)
+    Assert.AreEqual(None, Option.ofUnchecked (Unchecked.defaultof<UncheckedRecordTest>))
+
+[<NoEquality;NoComparison>] 
+type UncheckedRecordTest2 =
+    { Dummy2: int }
+
+[<Test>]
+let ``from unchecked value without equality nor comparison``() =
+    let test = { Dummy2 = 4 }
+    Assert.AreEqual(Some test, Option.ofUnchecked test)
+    Assert.AreEqual(None, Option.ofUnchecked (Unchecked.defaultof<UncheckedRecordTest2>))
