@@ -1,3 +1,7 @@
+### 2.5.0 - 04.06.2020
+* Add `Option.someIf` function - https://github.com/fsprojects/FSharpx.Extras/pull/391
+* Add `Option.ofUnchecked` function - https://github.com/fsprojects/FSharpx.Extras/pull/392
+
 ### 2.4.0 - 14.05.2020
 * Add `Enum.isDefined` function - https://github.com/fsprojects/FSharpx.Extras/pull/382
 * Deprecate `taskbuilder` in favor of `taskbuilder.fs` - https://github.com/fsprojects/FSharpx.Extras/pull/381
