@@ -3,7 +3,7 @@
 // ported from original in Scalaz: https://gist.github.com/970717
 
 open NUnit.Framework
-open FsUnit
+open FsUnitTyped
 
 open FSharpx
 open FSharpx.Functional

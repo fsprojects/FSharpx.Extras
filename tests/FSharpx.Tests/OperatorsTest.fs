@@ -3,7 +3,6 @@
 open FSharpx.Operators
 open FSharpx.Functional
 open NUnit.Framework
-open FsUnit
 
 let inline sequence (monad1:^M1) (monad2:^M2) (ms:'m1 list) : 'm2 =
   let mcons (p:'m1) (q:'m2) =
@@ -20,12 +19,13 @@ type OptionBuilder() =
   member this.Bind(m, f) = Option.bind f m
 let maybe = OptionBuilder()
 
-let testCases = [|
-  [| box [2;4;6]; box (Some [1; 2; 3]) |]
-//  [| box [1;2;3]; box None |]
-|]
+let testCases = [
+  TestCaseData([2;4;6], ExpectedResult = Some [1; 2; 3])
+  TestCaseData([1;2;3], ExpectedResult = None)
+]
+
 [<Test>]
 [<TestCaseSource("testCases")>]
-let ``test generic operators correctly map a list to maybe results``(input, expected) =
+let ``test generic operators correctly map a list to maybe results`` input =
   let f = mapM maybe maybe <| fun x -> if x % 2 = 0 then Some (x/2) else None
-  f input |> should equal expected
+  f input

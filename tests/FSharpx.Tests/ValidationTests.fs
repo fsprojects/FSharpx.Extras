@@ -1,7 +1,7 @@
 ﻿module FSharpx.Tests.ValidationTests
 
 open System
-open FsUnit
+open FsUnitTyped
 open Microsoft.FSharp.Core
 open FSharpx.Collections
 open FSharpx.CSharpTests
@@ -73,10 +73,10 @@ let ValidateCustomer() =
     | Success c -> failwithf "Valid customer: %A" c
     | Failure errors -> 
         printfn "Invalid customer. Errors:\n%A" errors
-        errors.Length |> should equal 3
-        errors |> should contain "Cost for product 'Bar' can't be negative"
-        errors |> should contain "Product name can't be null"
-        errors |> should contain "Surname can't be foo"
+        errors.Length |> shouldEqual 3
+        errors |> shouldContain "Cost for product 'Bar' can't be negative"
+        errors |> shouldContain "Product name can't be null"
+        errors |> shouldContain "Surname can't be foo"
 
 [<Test>]
 let ``using ap``() =
@@ -89,8 +89,8 @@ let ``using ap``() =
   | Success c -> failwithf "Valid customer: %A" c
   | Failure errors -> 
       printfn "Invalid customer. Errors:\n%A" errors
-      errors.Length |> should equal 1
-      errors |> should contain "Surname can't be null"
+      errors.Length |> shouldEqual 1
+      errors |> shouldContain "Surname can't be null"
 
 [<Test>]
 let ``validation with sum monoid``() =

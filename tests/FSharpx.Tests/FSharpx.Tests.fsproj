@@ -1,9 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyName>FSharpx.Tests.$(TargetFramework)</AssemblyName>
     <TargetFrameworks>net46;netcoreapp31</TargetFrameworks>
-    <IsPackable>false</IsPackable>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
@@ -11,12 +9,23 @@
     <TargetFrameworks>netcoreapp31</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\FSharpx.Extras\FSharpx.Extras.fsproj">
+      <Name>FSharpx.Extras</Name>
+      <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\FSharpx.CSharpTests\FSharpx.CSharpTests.csproj">
+      <Name>FSharpx.CSharpTests</Name>
+      <Project>{4354a199-6acf-4db5-a8fa-bad638d1d0e3}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="paket.references" />
     <None Include="app.config" />
     <None Include="table.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Compile Include="FsUnit.fs" />
     <Compile Include="FsCheckRunner.fs" />
     <Compile Include="FsCheckProperties.fs" />
     <Compile Include="StringsTest.fs" />
@@ -51,16 +60,6 @@
     <Compile Include="AsyncStreamReaderTest.fs" />
     <Compile Include="ConnegTests.fs" />
     <Compile Include="EnumTest.fs" />
-    <ProjectReference Include="..\..\src\FSharpx.Extras\FSharpx.Extras.fsproj">
-      <Name>FSharpx.Extras</Name>
-      <Project>{1e95a279-c2a9-498b-bc72-6e7a0d6854ce}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\FSharpx.CSharpTests\FSharpx.CSharpTests.csproj">
-      <Name>FSharpx.CSharpTests</Name>
-      <Project>{4354A199-6ACF-4DB5-A8FA-BAD638D1D0E3}</Project>
-      <Private>True</Private>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

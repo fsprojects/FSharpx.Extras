@@ -5,7 +5,7 @@ open FSharpx.Option
 open NUnit.Framework
 open FsCheck
 open FsCheck.NUnit
-open FsUnit
+open FsUnitTyped
 
 let divide x y =
   match y with
@@ -24,18 +24,18 @@ let calculating r1 r2 r3 =
 
 [<Test>]
 let ``When calculating, it should calculate 0.009581881533``() =
-  calculating 0.01 0.75 0.33 |> should equal (1.0/(1.0/0.01+1.0/0.75+1.0/0.33))
+  calculating 0.01 0.75 0.33 |> shouldEqual (1.0/(1.0/0.01+1.0/0.75+1.0/0.33))
 
 [<Test>]
 let ``When calculating, it should calculate 0.0``() =
-  calculating 0.00 0.55 0.75 |> should equal 0.0 
+  calculating 0.00 0.55 0.75 |> shouldEqual 0.0 
 
 [<Test>]
 let ``Desugared else branch should be None``() =
     maybe { 
         if false then 
           return 4 } 
-      |> should equal None
+      |> shouldEqual None
 
 [<Test>]
 let ``is delayed``() =
@@ -43,7 +43,7 @@ let ``is delayed``() =
         if true then return! None
         return 2 / 0
     }
-    r |> should equal None
+    r |> shouldEqual None
 
 
 [<Test>]
@@ -83,24 +83,24 @@ let ``monadplus laws``() =
 
 [<Test>]
 let ``for loops enumerate entire sequence and subsequent expressions also run``() =
-    let count = ref 0
+    let mutable count = 0
     let result = maybe {
-        for i in [1;2;3] do
-            incr count
+        for _ in [1;2;3] do
+            count <- count + 1 
         return true
     }
 
-    !count |> should equal 3
-    result |> should equal (Some true)
+    count |> shouldEqual 3
+    result |> shouldEqual (Some true)
 
 [<Test>]
 let ``while loops execute until guard is false and subsequent expressions also run``() =
-    let count = ref 0
+    let mutable count = 0
     let result = maybe {
-        while !count < 3 do
-            incr count
+        while count < 3 do
+            count <- count + 1 
         return true
     }
 
-    !count |> should equal 3
-    result |> should equal (Some true)
+    count |> shouldEqual 3
+    result |> shouldEqual (Some true)

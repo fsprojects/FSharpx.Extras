@@ -5,7 +5,7 @@ open System.Globalization
 open System.Threading
 open FSharpx
 open NUnit.Framework
-open FsUnit
+open FsUnitTyped
 
 [<Test>]
 [<Culture("es-AR")>]
@@ -69,11 +69,11 @@ let ``Double active pattern is culture invariant``() =
 
 [<Test>]
 let ``konst 9 0``() =
-    konst 9 0 |> should equal 9
+    konst 9 0 |> shouldEqual 9
 
 [<Test>]
 let ``fix factabs``() =
     let factabs fact = function
         | 0 -> 1
         | x -> x * fact (x - 1)
-    (fix factabs) 5 |> should equal 120
+    (fix factabs) 5 |> shouldEqual 120

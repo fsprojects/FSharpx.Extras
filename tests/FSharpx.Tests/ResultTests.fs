@@ -4,8 +4,9 @@ open System
 open NUnit.Framework
 open FSharpx
 open FSharpx.Result
-let areEqual (expected, actual) = 
-    if expected<>actual then Assert.Fail( sprintf "Expected %A to equal %A" actual expected) 
+open FsUnitTyped
+
+let areEqual (expected, actual) = actual |> shouldEqual expected
 
 [<Test>]
 let ``kleisli composition``() =
