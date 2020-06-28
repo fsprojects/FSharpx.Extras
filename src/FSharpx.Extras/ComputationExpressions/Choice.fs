@@ -1,4 +1,4 @@
-﻿namespace FSharpx
+namespace FSharpx
 
 module Choice =
     open FSharpx.Collections
@@ -12,23 +12,23 @@ module Choice =
         function
         | Choice1Of2 a -> a
         | Choice2Of2 e -> invalidArg "choice" (sprintf "The choice value was Choice2Of2 '%A'" e)
-    
+
     /// If Choice is 1Of2, return its value.
     /// Otherwise raise the exception in 2Of2.
     let getOrRaise<'a, 'exn when 'exn :> exn> (c:Choice<'a, 'exn>) =
         match c with
         | Choice1Of2 r -> r
         | Choice2Of2 e -> raise e
-    
+
     /// If Choice is 1Of2, return its value.
     /// Otherwise reraise the exception in 2Of2.
     let getOrReraise<'a, 'exn when 'exn :> exn> (c:Choice<'a, 'exn>) =
         match c with
         | Choice1Of2 r -> r
         | Choice2Of2 e -> reraise' e
-    
+
     /// Wraps a function, encapsulates any exception thrown within to a Choice
-    let inline protect f x = 
+    let inline protect f x =
         try
             Choice1Of2 (f x)
         with e -> Choice2Of2 e
@@ -36,7 +36,7 @@ module Choice =
     /// Attempts to cast an object.
     /// Stores the cast value in 1Of2 if successful, otherwise stores the exception in 2Of2
     let inline cast (o: obj) = protect unbox o
-        
+
     /// Sequential application
     let ap x f =
         match f,x with
@@ -66,11 +66,11 @@ module Choice =
     let inline ( <*) a b = lift2 (fun z _ -> z) a b
 
     /// Monadic bind
-    let bind f = 
+    let bind f =
         function
         | Choice1Of2 x -> f x
         | Choice2Of2 x -> Choice2Of2 x
-    
+
     /// Sequentially compose two actions, passing any value produced by the first as an argument to the second.
     let inline (>>=) m f = bind f m
 
@@ -89,7 +89,7 @@ module Choice =
     /// Maps both parts of a Choice.
     /// Applies the first function if Choice is 1Of2.
     /// Otherwise applies the second function
-    let inline bimap f1 f2 = 
+    let inline bimap f1 f2 =
         function
         | Choice1Of2 x -> Choice1Of2 (f1 x)
         | Choice2Of2 x -> Choice2Of2 (f2 x)
@@ -97,7 +97,7 @@ module Choice =
     /// Maps both parts of a Choice.
     /// Applies the first function if Choice is 1Of2.
     /// Otherwise applies the second function
-    let inline choice f1 f2 = 
+    let inline choice f1 f2 =
         function
         | Choice1Of2 x -> f1 x
         | Choice2Of2 x -> f2 x
@@ -106,9 +106,33 @@ module Choice =
     let inline mapSecond f = bimap id f
 
     type EitherBuilder() =
-        member this.Return a = returnM a
+        member this.Return a = Choice1Of2 a
         member this.Bind (m, f) = bind f m
         member this.ReturnFrom m = m
+        member _.Zero() = Choice1Of2 ()
+        member _.Delay f = f
+        member _.Run f = f()
+
+        member this.TryWith(m, h) =
+            try this.ReturnFrom(m)
+            with e -> h e
+
+        member this.TryFinally(m, compensation) =
+            try this.ReturnFrom(m)
+            finally compensation()
+
+        member this.Using(res:#System.IDisposable, body) =
+            this.TryFinally(body res, fun () -> if not (isNull (box res)) then res.Dispose())
+
+        member this.While(guard, f) =
+            if not (guard()) then
+                this.Zero()
+            else
+                f() |> ignore
+                this.While(guard, f)
+
+        member this.For(sequence:seq<_>, body) =
+            this.Using(sequence.GetEnumerator(), fun enum -> this.While(enum.MoveNext, this.Delay(fun () -> body enum.Current)))
 
     let choose = EitherBuilder()
 
@@ -116,12 +140,12 @@ module Choice =
     let toOption = Option.ofChoice
 
     /// If Some value, returns Choice1Of2 value. Otherwise, returns the supplied default value.
-    let ofOption o = 
+    let ofOption o =
         function
         | Some a -> Choice1Of2 a
         | None -> Choice2Of2 o
 
-    let foldM f s = 
+    let foldM f s =
         Seq.fold (fun acc t -> acc >>= flip f t) (returnM s)
 
     let inline sequence s =

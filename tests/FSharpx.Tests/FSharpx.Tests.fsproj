@@ -19,6 +19,7 @@
     <Compile Include="FsUnit.fs" />
     <Compile Include="FsCheckRunner.fs" />
     <Compile Include="FsCheckProperties.fs" />
+    <Compile Include="TestHelpers.fs" />
     <Compile Include="StringsTest.fs" />
     <Compile Include="MonoidTests.fs" />
     <Compile Include="OperatorsTest.fs" />
