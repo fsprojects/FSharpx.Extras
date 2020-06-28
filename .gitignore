@@ -199,3 +199,6 @@ TestResult.xml
 
 tmp.*
 
+output/
+tmp/
+.fsdocs/

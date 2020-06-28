@@ -1,9 +1,10 @@
-﻿module FSharpx.Tests.ChoiceTests
+module FSharpx.Tests.ChoiceTests
 
 open System
 open NUnit.Framework
 open FSharpx
 open FSharpx.Functional
+open TestHelpers
 open FsUnitTyped
 
 [<Test>]
@@ -28,7 +29,7 @@ let ``invalid cast``() =
     let r : Choice<int,exn> = Choice.cast a
     match r with
     | Choice1Of2 _ -> Assert.Fail("Cast should not have succeeded")
-    | Choice2Of2 e -> 
+    | Choice2Of2 e ->
         printfn "%A" e
         Assert.IsInstanceOf<InvalidCastException>(e)
 
@@ -38,12 +39,12 @@ let ChoiceFolding() =
     let startingPosition = 0. ,0.
 
     let moveByLengthAndAngle l a (x,y) = x,y // too lazy to do the math
-    let moveByXandY dx dy (x,y) = 
+    let moveByXandY dx dy (x,y) =
         //failwith "oops"
         x+dx, y+dy
     let moveByXandAngle dx a (x,y) = x+dx, y
 
-    let actions = 
+    let actions =
         [
             moveByLengthAndAngle 0. 0., "failed first moveByLengthAndAngle"
             moveByXandY 1. 2., "failed moveByXandY"
@@ -52,22 +53,22 @@ let ChoiceFolding() =
             moveByLengthAndAngle 4. 5., "failed second moveByLengthAndAngle"
         ]
 
-    let finalPosition = 
-        let inline folder a (f,message) = 
+    let finalPosition =
+        let inline folder a (f,message) =
             Choice.protect f a |> Choice.mapSecond (konst message)
         actions |> Choice.foldM folder startingPosition
 
     match finalPosition with
-    | Validation.Success (x,y) -> 
+    | Validation.Success (x,y) ->
         printfn "final position: %f,%f" x y
-    | Validation.Failure error -> 
+    | Validation.Failure error ->
         printfn "error: %s" error
         Assert.Fail("should not have failed: {0}", error)
 
 open FSharpx.Choice
 
 [<Test>]
-let ``computations are aborted on the first Choice2Of2``() = 
+let ``computations are aborted on the first Choice2Of2``() =
     let success = Choice1Of2 1
     let failure : Choice<int,string> = Choice2Of2 "failed computation"
     choose {
@@ -101,13 +102,39 @@ let ``monad laws``() =
     let ret (x: int) = choose.Return x
     let n = sprintf "Choice : monad %s"
     let inline (>>=) m f = choose.Bind(m,f)
-    fsCheck "left identity" <| 
+    fsCheck "left identity" <|
         fun f a -> ret a >>= f = f a
-    fsCheck "right identity" <| 
+    fsCheck "right identity" <|
         fun x -> x >>= ret = x
-    fsCheck "associativity" <| 
+    fsCheck "associativity" <|
         fun f g v ->
             let a = (v >>= f) >>= g
             let b = v >>= (fun x -> f x >>= g)
             a = b
 
+[<Test>]
+let ``use should dispose underlying IDisposable on Choice1Of2``() =
+    let disposeChecker = new DisposeChecker()
+    let r = choose {
+        use! x = Choice1Of2 disposeChecker
+        return x.Disposed
+    }
+    Assert.Multiple
+      (fun () ->
+          disposeChecker.Disposed |> shouldEqual true
+          r |> shouldEqual (Choice1Of2 false)
+      )
+
+[<Test>]
+let ``use should dispose underlying IDisposable on Choice2Of2``() =
+    let disposeChecker = new DisposeChecker()
+    let r = choose {
+        use! x = Choice1Of2 disposeChecker
+        let! y = Choice2Of2 "error"
+        return x.Disposed
+    }
+    Assert.Multiple
+      (fun () ->
+        disposeChecker.Disposed |> shouldEqual true
+        r |> shouldEqual (Choice2Of2 "error")
+      )

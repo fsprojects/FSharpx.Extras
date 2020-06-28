@@ -1,9 +1,4 @@
-﻿// ----------------------------------------------------------------------------
-// F# async extensions (HttpListener.fs)
-// (c) Tomas Petricek, 2011-2012, Available under Apache 2.0 license.
-// ----------------------------------------------------------------------------
-
-namespace FSharpx.Net
+﻿namespace FSharpx.Net
 
 open System.IO
 open System.Net

@@ -20,11 +20,9 @@ module Strings =
     [<CompiledName("Split")>]
     let inline split (delimiter:char) (text:string) = text.Split [|delimiter|]
 
-    /// Converts a sequence of strings to a single string separated with the delimiters
-    [<System.Obsolete("Function 'separatedBy' obsolete. Use 'String.concat' from 'Microsoft.FSharp.Core' instead.")>]
-    let inline separatedBy (delimiter : string) (items: string seq) = String.Join(delimiter, Array.ofSeq items)
     [<CompiledName("ToCharArray")>]
     let inline toCharArray (str:string) = str.ToCharArray()
+
     [<CompiledName("IsNewline")>]
     let isNewline c = c = '\r' || c = '\n'
             

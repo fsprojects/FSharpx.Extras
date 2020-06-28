@@ -1,7 +1,7 @@
 (*** hide ***)
 // This block of code is omitted in the generated HTML documentation. Use 
 // it to define helpers that you do not want to show in the documentation.
-#I "../../bin/v4.0"
+#I "../bin"
 
 (** 
 # FSharpx.Extras
@@ -49,20 +49,9 @@ FSharpx.Collections.List.monoid
 
 ## Examples
 
-* [AsyncFileExtensions](AsyncFileExtensions.html)
-* [AsyncSeqObservable](AsyncSeqObservable.html)
-* [AutoCancel](AutoCancel.html)
-* [BatchProcessing](BatchProcessing.html)
-* [BlockingQueue](BlockingQueue.html)
-* [Caching](Caching.html)
-* [ChatServer](ChatServer.html)
-* [CircularBuffer](CircularBuffer.html)
-* [Crawler](Crawler.html)
 * [DiningPhilosophers](DiningPhilosophers.html)
-* [MouseFollow](MouseFollow.html)
 * [Santa](Santa.html)
 * [StmSample](StmSample.html)
-* [StockStream](StockStream.html)
 * [UndoSample](UndoSample.html)
 * [WebProxy](WebProxy.html)
 

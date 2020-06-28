@@ -42,7 +42,7 @@ module Continuation =
             this.Bind(this.Catch tryBlock, (function Choice1Of2 v -> finallyBlock(); this.Return v 
                                                    | Choice2Of2 exn -> finallyBlock(); throw exn))
         member this.Using(res:#IDisposable, body) =
-            this.TryFinally(body res, (fun () -> match res with null -> () | disp -> disp.Dispose()))
+            this.TryFinally(body res, fun () -> if not (isNull (box res)) then res.Dispose())
         member this.Combine(comp1, comp2) = this.Bind(comp1, (fun () -> comp2))
         member this.Delay(f) = this.Bind(this.Return (), f)
         member this.While(pred, body) =

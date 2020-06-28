@@ -7,6 +7,7 @@ open FsCheck.NUnit
 open FSharpx.Functional
 open FSharpx
 open FSharpx.Option
+open TestHelpers
 
 [<Test>]
 let ``kleisli composition``() =
@@ -113,3 +114,32 @@ let ``from unchecked value without equality nor comparison``() =
     let test = { Dummy2 = 4 }
     Assert.AreEqual(Some test, Option.ofUnchecked test)
     Assert.AreEqual(None, Option.ofUnchecked (Unchecked.defaultof<UncheckedRecordTest2>))
+
+[<Test>]
+let ``use should dispose underlying IDisposable on Some``() =
+  let disposeChecker = new DisposeChecker()
+  let r =
+     maybe {
+       use! x = Some disposeChecker
+       return x.Disposed
+     }
+  Assert.Multiple
+    (fun () ->
+      disposeChecker.Disposed |> shouldEqual true
+      r |> shouldEqual (Some false)
+    )
+
+[<Test>]
+let ``use should dispose underlying IDisposable on Error``() =
+  let disposeChecker = new DisposeChecker()
+  let r =
+     maybe {
+       use! x = Some disposeChecker
+       let! y = None
+       return x.Disposed
+     }
+  Assert.Multiple
+    (fun () ->
+      disposeChecker.Disposed |> shouldEqual true
+      r |> shouldEqual None
+    )

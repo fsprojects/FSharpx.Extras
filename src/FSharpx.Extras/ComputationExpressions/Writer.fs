@@ -29,8 +29,8 @@ module Writer =
         member this.TryFinally(writer, compensation) =
             fun () -> try writer()
                       finally compensation()
-        member this.Using<'d,'W,'T when 'd :> IDisposable and 'd : null>(resource : 'd, body : 'd -> Writer<'W,'T>) : Writer<'W,'T> =
-            this.TryFinally(body resource, fun () -> match resource with null -> () | disp -> disp.Dispose())
+        member this.Using(resource: #IDisposable, body) =
+            this.TryFinally(body resource, fun () -> if not (isNull (box resource)) then resource.Dispose())
         member this.Combine(comp1, comp2) = this.Bind(comp1, fun () -> comp2)
         member this.Delay(f) = this.Bind(this.Return (), f)
         member this.While(guard, m) =

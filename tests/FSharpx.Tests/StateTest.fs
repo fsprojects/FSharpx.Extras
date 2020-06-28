@@ -4,6 +4,7 @@ open FSharpx
 open FSharpx.State
 open NUnit.Framework
 open FsUnitTyped
+open TestHelpers
 
 // Simple example
 let tick = state {
@@ -39,3 +40,17 @@ let workflow = state {
 [<Test>]
 let ``When running the workflow, it should return 4``() =
   eval workflow [] |> shouldEqual 4
+
+[<Test>]
+let ``use should dispose underlying IDisposable``() =
+  let disposeChecker = new DisposeChecker()
+  let r =
+     state {
+       use! x = state { return disposeChecker }
+       return x.Disposed
+     }
+  Assert.Multiple
+    (fun () ->
+      eval r () |> shouldEqual false
+      disposeChecker.Disposed |> shouldEqual true
+    )
