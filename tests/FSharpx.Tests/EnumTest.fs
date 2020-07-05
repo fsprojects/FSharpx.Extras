@@ -2,6 +2,7 @@
 open NUnit.Framework
 open FsUnitTyped
 open FSharpx
+open FsUnitTyped
 
 type LanguageOptions=
     | FSharp = 0
@@ -9,16 +10,16 @@ type LanguageOptions=
     | VB = 2
     
 [<Test>] 
-let ``tryParse can parse value and return Some value`` ()=
-    Assert.AreEqual(Some LanguageOptions.CSharp, (Enum.tryParse("CSharp") : LanguageOptions option))
+let ``tryParse can parse value and return Some value``() =
+    "CSharp" |> Enum.tryParse |> shouldEqual (Some LanguageOptions.CSharp) 
 
 [<Test>] 
-let ``tryParse returns None if it fails to parse`` ()=
-    Assert.AreEqual(None, (Enum.tryParse("English") : LanguageOptions option))
+let ``tryParse returns None if it fails to parse``() =
+    "English" |> Enum.tryParse |> shouldEqual None
 
 [<Test>] 
-let ``parse returns parsed value`` ()=
-    Assert.AreEqual(LanguageOptions.CSharp ,(Enum.parse("CSharp") : LanguageOptions))
+let ``parse returns parsed value``() =
+    "CSharp" |> Enum.parse |> shouldEqual LanguageOptions.CSharp 
 
 [<Test>] 
 let ``parse throws an exception when it fails to parse`` ()=
@@ -27,19 +28,20 @@ let ``parse throws an exception when it fails to parse`` ()=
         ()
     parseEnglish |> shouldFail
 
-[<Test>] 
-let ``getValues works as expected for F# enum`` ()=
-    let result = Enum.getValues<LanguageOptions>()
-    result |> Seq.toList |> shouldEqual [LanguageOptions.FSharp; LanguageOptions.CSharp; LanguageOptions.VB]
+let isDefinedTestCases =
+    [
+        LanguageOptions.CSharp
+        LanguageOptions.FSharp
+        LanguageOptions.VB
+    ]
+[<TestCaseSource("isDefinedTestCases")>]
+let ``isDefined returns true when valid simple enum value is checked`` input =
+    input |> Enum.isDefined |> shouldEqual true
 
 [<Test>] 
-let ``isDefined returns true when valid simple enum value is checked`` ()=
-    Assert.IsTrue(Enum.isDefined LanguageOptions.CSharp && Enum.isDefined LanguageOptions.FSharp && Enum.isDefined LanguageOptions.VB)
-
-[<Test>] 
-let ``isDefined returns false when not valid simple enum value is checked`` ()=
-    let invalidEnum : LanguageOptions = enum 3
-    Assert.IsFalse(Enum.isDefined invalidEnum)
+let ``isDefined returns false when not valid simple enum value is checked``() =
+    let invalidEnum : LanguageOptions = enum 3  
+    invalidEnum |> Enum.isDefined |> shouldEqual false
 
 [<System.Flags>]
 type FlaggedLanguageOptions =
@@ -48,13 +50,14 @@ type FlaggedLanguageOptions =
     | VB = 2
 
 [<Test>] 
-let ``isDefined returns true when valid flagged enum value is checked`` ()=
-    Assert.IsTrue(Enum.isDefined (FlaggedLanguageOptions.CSharp ||| FlaggedLanguageOptions.FSharp ||| FlaggedLanguageOptions.VB))
+let ``isDefined returns true when valid flagged enum value is checked``() =
+    let validFlagEnum = FlaggedLanguageOptions.CSharp ||| FlaggedLanguageOptions.FSharp ||| FlaggedLanguageOptions.VB
+    validFlagEnum |> Enum.isDefined |> shouldEqual true
 
 [<Test>] 
 let ``isDefined returns false when not valid flagged enum value is checked`` ()=
     let invalidEnum : FlaggedLanguageOptions = enum 300
-    Assert.IsFalse(Enum.isDefined invalidEnum)
+    invalidEnum |> Enum.isDefined |> shouldEqual false
 
 [<Test>]
 let ``toString should handle FSharp enums`` () =
@@ -66,7 +69,6 @@ open System.Globalization
 let ``toString should  handle dotnet enums`` () =
     let result = Enum.toString NumberStyles.Float
     result |> shouldEqual "Float"
-
 
 [<Test>] 
 let ``getValues works as expected for dotnet enum`` ()=
