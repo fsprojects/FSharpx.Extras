@@ -147,12 +147,7 @@ module Task =
             this.Bind(this.TryWith(body, wrapCrash), wrapOk)
 
         member this.Using(res:#IDisposable, body : #IDisposable -> Task<'a>) : Task<'a> =
-            let compensation() =
-                match res with
-                | null -> ()
-                | disp -> disp.Dispose()
-
-            this.TryFinally((fun () -> body res), compensation)
+            this.TryFinally((fun () -> body res), fun () -> if not (isNull (box res)) then res.Dispose())
 
         member this.For(sequence:seq<'a>, body : 'a -> Task<unit>) : Task<unit> =
             this.Using( sequence.GetEnumerator()
