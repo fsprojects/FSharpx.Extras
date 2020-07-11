@@ -7,6 +7,7 @@ open FSharpx.Functional
 open FSharpx.Reader
 open NUnit.Framework
 open FsUnit
+open TestHelpers
 
 // Basic monadic builder tests.
 [<Test>]
@@ -116,3 +117,17 @@ let ``for should increment count``() =
       incr count }
   r ()
   !count |> should equal 2
+
+[<Test>]
+let ``use should dispose underlying IDisposable``() =
+  let disposeChecker = new DisposeChecker()
+  let r =
+     (reader {
+       use! x = reader {return disposeChecker}
+       return x.Disposed
+     })()
+  Assert.Multiple
+    (fun () ->
+      disposeChecker.Disposed |> shouldEqual true
+      r |> shouldEqual false
+    )

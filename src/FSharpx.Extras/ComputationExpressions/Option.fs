@@ -31,7 +31,7 @@ module Option =
             finally compensation()
 
         member this.Using(res:#IDisposable, body) =
-            this.TryFinally(body res, fun () -> match res with null -> () | disp -> disp.Dispose())
+            this.TryFinally(body res, fun () -> if not (isNull (box res)) then res.Dispose())
 
         member this.While(guard, f) =
             if not (guard()) then Some () else

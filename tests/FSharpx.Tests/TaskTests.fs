@@ -5,6 +5,8 @@ open System
 open System.IO
 open System.Net
 open NUnit.Framework
+open FsUnitTyped
+open TestHelpers
 open FSharpx
 open FSharpx.Functional
 open System.Threading
@@ -210,3 +212,17 @@ let ``run delay law``() =
     let run (transform : _ -> Task<_>) t = (transform t).Result
 
     fsCheck "run delay law" (fun t -> run id t = run delay t)
+
+[<Test>]
+let ``use should dispose underlying IDisposable``() =
+    let disposeChecker = new DisposeChecker()
+    let r =
+        Task.task {
+            use! x = Task.task {return disposeChecker}
+            return x.Disposed
+        }
+    Assert.Multiple
+        (fun () ->
+            (r.Result) |> shouldEqual false
+            disposeChecker.Disposed |> shouldEqual true
+        )

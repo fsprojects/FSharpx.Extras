@@ -6,6 +6,7 @@ open FSharpx.Functional
 open FSharpx.Continuation
 open NUnit.Framework
 open FsUnit
+open TestHelpers
 
 let c n = cont { return n }
 let addSomeNumbers = cont {
@@ -62,3 +63,17 @@ let ``When running a coroutine it should yield elements in turn``() =
   })
   coroutine.Run()
   actual.ToString() |> should equal "A1B2C"
+
+[<Test>]
+let ``use should dispose underlying IDisposable``() =
+  let disposeChecker = new DisposeChecker()
+  let r =
+     cont {
+       use! x = c disposeChecker
+       return x.Disposed
+     }
+  Assert.Multiple
+    (fun () ->
+      runCont r id raise |> shouldEqual false
+      disposeChecker.Disposed |> shouldEqual true
+    )

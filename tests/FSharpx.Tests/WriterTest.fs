@@ -4,6 +4,7 @@ open FSharpx
 open FSharpx.Writer
 open NUnit.Framework
 open FsUnit
+open TestHelpers
 
 let logMsg (message:string) = tell [message]
 let processFile file = printfn "%s" file
@@ -27,4 +28,17 @@ let ``When processing files, it should log messages``() =
                                          "Processing C:\Test1.txt"
                                          "Processing C:\Test2.txt"
                                          "End processing files"])
-    
+
+[<Test>]
+let ``use should dispose underlying IDisposable``() =
+  let disposeChecker = new DisposeChecker()
+  let (r,_) =
+     (writer {
+       use! x = writer {return disposeChecker}
+       return x.Disposed
+     })()
+  Assert.Multiple
+    (fun () ->
+      disposeChecker.Disposed |> shouldEqual true
+      r |> shouldEqual false
+    )

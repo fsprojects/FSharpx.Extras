@@ -23,7 +23,7 @@ module Reader =
             fun env -> try m env
                        finally compensation()
         member this.Using(res:#IDisposable, body) =
-            this.TryFinally(body res, (fun () -> match res with null -> () | disp -> disp.Dispose()))
+            this.TryFinally(body res, fun () -> if not (isNull (box res)) then res.Dispose())
         member this.Delay(f) = this.Bind(this.Return (), f)
         member this.While(guard, m) =
             if not(guard()) then this.Zero() else
