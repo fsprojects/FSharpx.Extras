@@ -266,3 +266,39 @@ let ``use should dispose underlying IDisposable on Error``() =
       disposeChecker.Disposed |> shouldEqual true
       r |> shouldEqual (Error "error")
     )
+
+[<Test>]
+let ``either on Ok should run first function``() =
+     let x = "dog"
+     let r : Result<string, string> = Ok x
+     Result.either id id r |> shouldEqual x
+
+[<Test>]
+let ``either on Error should run second function``() =
+     let x = "dog"
+     let r : Result<string, string> = Error x
+     Result.either id id r |> shouldEqual x
+
+[<Test>]
+let ``defaultValue should return content on Ok``() =
+    Result.defaultValue "cat" (Ok "dog") |> shouldEqual "dog"
+
+[<Test>]
+let ``defaultValue should return default value on Error``() =
+    Result.defaultValue "dog" (Error 42) |> shouldEqual "dog"
+
+[<Test>]
+let ``defaultWith should return default value on Error``() =
+    Result.defaultWith (konst "dog") (Error 42) |> shouldEqual "dog"
+
+[<Test>]
+let ``defaultWith should return content on OK and don't execute the function``() =
+    let mutable ``f was run`` = false
+    let f () =
+        ``f was run`` <- true
+        "cat"
+    Assert.Multiple
+         (fun () ->
+            Result.defaultWith f (Ok "dog") |> shouldEqual "dog"
+            ``f was run`` |> shouldEqual false
+         )
