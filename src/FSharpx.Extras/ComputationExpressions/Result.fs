@@ -81,6 +81,24 @@ module Result =
         let inline cons a b = lift2 List.cons a b
         List.foldBack cons s (returnM [])
 
+    /// Gets the value of result if the result is Ok, otherwise evaluates f and returns the result.
+    let defaultWith (f:unit->'a) (result:Result<'a,_>) : 'a =
+        match result with
+        | Ok    x -> x
+        | Error _ -> f()
+
+    /// Gets the value of result if the result is Ok, otherwise returns the specified default value v.
+    let defaultValue (v:'a) (result:Result<'a,_>) : 'a =
+        match result with
+        | Ok    x -> x
+        | Error _ -> v
+
+    /// Case analysis for the Result type. If the value is Ok x, apply the first function to x; if it is Error e, apply the second function to e.
+    let inline either (f:'a->'c) (h:'b->'c) (result: Result<'a,'b>) : 'c =
+        match result with
+        | Ok    x -> f x
+        | Error e -> h e
+
     type ResultBuilder() =
         member _.Return x = Ok x
         member _.Bind (m, f) = Result.bind f m
