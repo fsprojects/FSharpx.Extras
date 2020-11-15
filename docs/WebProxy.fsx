@@ -5,9 +5,12 @@
 
 // This example demonstrates how to implement simple HTTP proxy
 
-#r @"../../bin/v4.0/FSharpx.Extras.dll"
-#r @"..\..\bin\v4.0\FSharpx.Http.dll"
-open FSharpx.Control
+#r @"../bin/FSharpx.Extras.dll"
+#r @"../bin/FSharpx.Async.dll"
+#r @"../bin/FSharp.Control.AsyncSeq.dll"
+//#r @"..\..\bin\v4.0\FSharpx.Http.dll"
+
+open FSharp.Control
 open FSharpx.IO
 open FSharpx.Net
 
@@ -90,7 +93,7 @@ type CacheMessage =
   | Add of string * byte[]
 
 // Creates an agent that handles 'CacheMessage' and implements the cache
-let cache = Agent.Start(fun agent -> async {
+let cache = MailboxProcessor.Start(fun agent -> async {
   let pages = new System.Collections.Generic.Dictionary<_, _>()
   while true do
     let! msg = agent.Receive()

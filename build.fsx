@@ -10,6 +10,7 @@ open Fake.Core
 open Fake.Core.TargetOperators
 open Fake.DotNet
 open Fake.IO
+open Fake.IO.FileSystemOperators
 open Fake.Tools
 open System
 open System.IO
@@ -88,7 +89,7 @@ Target.create "SetCIVersion" (fun _ ->
 
 Target.create "Clean" (fun _ ->
     DotNet.exec id "clean" "" |> ignore
-    Shell.cleanDirs ["bin"; "temp"; "docs/output"]
+    Shell.cleanDirs ["bin"; "temp"; "output"; "src/**/bin";"test/**/bin";"src/**/obj";"test/**/obj"]
 )
 
 // --------------------------------------------------------------------------------------
@@ -96,7 +97,24 @@ Target.create "Clean" (fun _ ->
 
 Target.create "Build" (fun _ ->
     solutionFile
-    |> DotNet.build (fun c -> { c with Configuration=DotNet.BuildConfiguration.Release }) 
+    |> DotNet.build (fun c -> {
+            c with
+                Configuration=DotNet.BuildConfiguration.Release
+                MSBuildParams= {c.MSBuildParams with Properties = c.MSBuildParams.Properties @ [("CopyLocalLockFileAssemblies","true")]}
+        }) 
+)
+
+Target.create "Publish" (fun _ ->
+    [
+        "src/FSharpx.Extras/FSharpx.Extras.fsproj"
+        "src/FSharpx.Text.StructuredFormat/FSharpx.Text.StructuredFormat.fsproj"
+    ]
+    |> Seq.iter (DotNet.publish (fun p ->
+        { p with
+            OutputPath=Some(__SOURCE_DIRECTORY__ @@ "bin")
+            Framework=Some"netstandard2.0"
+
+        }))
 )
 
 // --------------------------------------------------------------------------------------
@@ -117,12 +135,12 @@ Target.create "RunTests" (fun _ ->
 Target.create "NuGet" (fun _ ->
     solutionFile
     |> DotNet.pack (fun p ->
-        { p with OutputPath=Some(IO.Path.Combine(__SOURCE_DIRECTORY__, "bin")) })
+        { p with OutputPath=Some(__SOURCE_DIRECTORY__ @@ "bin") })
 )
 
 Target.create "PublishNuget" (fun _ ->
     Paket.push(fun p -> 
-        { p with WorkingDir=IO.Path.Combine(__SOURCE_DIRECTORY__, "bin") })
+        { p with WorkingDir=__SOURCE_DIRECTORY__ @@ "bin" })
 )
 
 
@@ -190,6 +208,26 @@ Target.create "Release" (fun _ ->
     |> Async.RunSynchronously
 )
 
+Target.create "GenerateDocs" (fun _ ->
+    Shell.cleanDir ".fsdocs"
+    DotNet.exec id "fsdocs" "build --clean --property Configuration=Release TargetFramework=netstandard2.0" |> ignore
+)
+
+Target.create "WatchDocs" (fun _ ->
+    DotNet.exec id "fsdocs" "watch --clean --property Configuration=Release TargetFramework=netstandard2.0" |> ignore
+)
+
+Target.create "ReleaseDocs" (fun _ ->
+    let tempDocsDir = "temp/gh-pages"
+    Shell.cleanDir tempDocsDir
+    Git.Repository.cloneSingleBranch "" (gitHome + "/" + gitName + ".git") "gh-pages" tempDocsDir
+    
+    Shell.copyRecursive "docs/output" tempDocsDir true |> Trace.tracefn "%A"
+    Git.Staging.stageAll tempDocsDir
+    Git.Commit.exec tempDocsDir (sprintf "Update generated documentation for version %s" release.NugetVersion)
+    Git.Branches.push tempDocsDir
+)
+
 Target.create "BuildPackage" ignore
 
 // --------------------------------------------------------------------------------------
@@ -207,8 +245,35 @@ Target.create "All" ignore
 "Clean"
   ==> "Release"
 
+"Clean"
+  ?=> "Build"
+
+"Clean"
+  ?=> "Publish"
+
+"Clean"
+  ?=> "GenerateDocs"
+
 "BuildPackage"
   ==> "PublishNuget"
   ==> "Release"
+
+"GenerateDocs"
+  ==> "ReleaseDocs"
+  ==> "Release"
+
+// fsdocs requires build for api references and publish for examples compilation
+"Publish"
+  ==> "WatchDocs"
+
+"Build"
+  ==> "WatchDocs"
+
+"Build"
+  ==> "GenerateDocs"
+
+"Publish"
+  ==> "GenerateDocs"
+  ==> "All"
 
 Target.runOrDefault "All"

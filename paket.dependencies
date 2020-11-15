@@ -9,12 +9,6 @@ nuget FSharpx.Async
 nuget FSharpx.Collections
 nuget System.Reflection.Emit.Lightweight
 
-group Build
-  source https://api.nuget.org/v3/index.json
-  framework: net461
-
-  nuget FSharp.Formatting
-
 group Test
   source https://api.nuget.org/v3/index.json
   framework: net46, netcoreapp31
@@ -43,6 +37,6 @@ group FakeBuild
   nuget Fake.DotNet.Paket
   nuget Fake.IO.FileSystem
   nuget Fake.Tools.Git
-  nuget FSharp.Core
+  nuget FSharp.Core 4.7.2
 
   github fsharp/FAKE modules/Octokit/Octokit.fsx

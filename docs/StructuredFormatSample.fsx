@@ -5,8 +5,8 @@
 
 // This example demonstrates how to use printer combinator library.
 
-#r @"../../bin/v4.0/FSharpx.Extras.dll"
-#r @"..\..\bin\v4.0\FSharpx.Text.StructuredFormat.dll"
+#r @"../bin/FSharpx.Extras.dll"
+#r @"../bin/FSharpx.Text.StructuredFormat.dll"
 
 open Microsoft.FSharp.Text.StructuredFormat
 open Microsoft.FSharp.Text.StructuredFormat.LayoutOps
