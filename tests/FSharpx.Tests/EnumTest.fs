@@ -1,5 +1,6 @@
-﻿module FSharpx.Http.Tests.EnumTests
+﻿module FSharpx.Tests.EnumTests
 open NUnit.Framework
+open FsUnitTyped
 open FSharpx
 
 type LanguageOptions=
@@ -19,11 +20,17 @@ let ``tryParse returns None if it fails to parse`` ()=
 let ``parse returns parsed value`` ()=
     Assert.AreEqual(LanguageOptions.CSharp ,(Enum.parse("CSharp") : LanguageOptions))
 
+[<Test>] 
 let ``parse throws an exception when it fails to parse`` ()=
     let parseEnglish ()=
         let x = Enum.parse("English") : LanguageOptions
         ()
-    Assert.Throws<System.Exception>( TestDelegate( parseEnglish ) )  
+    parseEnglish |> shouldFail
+
+[<Test>] 
+let ``getValues works as expected for F# enum`` ()=
+    let result = Enum.getValues<LanguageOptions>()
+    result |> Seq.toList |> shouldEqual [LanguageOptions.FSharp; LanguageOptions.CSharp; LanguageOptions.VB]
 
 [<Test>] 
 let ``isDefined returns true when valid simple enum value is checked`` ()=
@@ -48,3 +55,25 @@ let ``isDefined returns true when valid flagged enum value is checked`` ()=
 let ``isDefined returns false when not valid flagged enum value is checked`` ()=
     let invalidEnum : FlaggedLanguageOptions = enum 300
     Assert.IsFalse(Enum.isDefined invalidEnum)
+
+[<Test>]
+let ``toString should handle FSharp enums`` () =
+    let result = Enum.toString LanguageOptions.FSharp
+    result |> shouldEqual "FSharp"
+
+open System.Globalization
+[<Test>]
+let ``toString should  handle dotnet enums`` () =
+    let result = Enum.toString NumberStyles.Float
+    result |> shouldEqual "Float"
+
+
+[<Test>] 
+let ``getValues works as expected for dotnet enum`` ()=
+    let result = Enum.getValues<System.Globalization.NumberStyles>()
+    let expectedResult =
+        [NumberStyles.None; NumberStyles.AllowLeadingWhite; NumberStyles.AllowTrailingWhite; NumberStyles.AllowLeadingSign; NumberStyles.Integer;
+         NumberStyles.AllowTrailingSign; NumberStyles.AllowParentheses; NumberStyles.AllowDecimalPoint; NumberStyles.AllowThousands; NumberStyles.Number;
+         NumberStyles.AllowExponent; NumberStyles.Float; NumberStyles.AllowCurrencySymbol; NumberStyles.Currency; NumberStyles.Any; NumberStyles.AllowHexSpecifier;
+         NumberStyles.HexNumber]
+    result |> Seq.toList |> shouldEqual expectedResult
