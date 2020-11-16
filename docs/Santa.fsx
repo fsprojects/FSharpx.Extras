@@ -11,7 +11,7 @@
  * 
  *)
 
-#r @"../../bin/v4.0/FSharpx.Extras.dll"
+#r @"../bin/FSharpx.Extras.dll"
 
 open System
 open System.Threading

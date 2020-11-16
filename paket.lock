@@ -15,12 +15,6 @@ NUGET
     System.Reflection.Emit.Lightweight (4.7)
       System.Reflection.Emit.ILGeneration (>= 4.7) - restriction: || (&& (== net452) (< net45)) (&& (== net452) (>= netcoreapp5.0)) (&& (== net452) (< portable-net45+wp8)) (&& (== net452) (>= uap10.1)) (&& (== net452) (>= wpa81)) (== netstandard2.0)
 
-GROUP Build
-RESTRICTION: == net461
-NUGET
-  remote: https://api.nuget.org/v3/index.json
-    FSharp.Formatting (4.0.1)
-
 GROUP FakeBuild
 STORAGE: NONE
 NUGET
