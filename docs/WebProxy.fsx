@@ -8,7 +8,6 @@
 #r @"../bin/FSharpx.Extras.dll"
 #r @"../bin/FSharpx.Async.dll"
 #r @"../bin/FSharp.Control.AsyncSeq.dll"
-//#r @"..\..\bin\v4.0\FSharpx.Http.dll"
 
 open FSharp.Control
 open FSharpx.IO

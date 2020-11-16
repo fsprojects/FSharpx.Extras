@@ -8,6 +8,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/fsprojects/FSharpx.Extras/master/docs/img/logo.png</PackageIconUrl>
     <PackageIcon>logo.png</PackageIcon>
     <License>Unlicense</License>
+    <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Copyright>Copyright 2020</Copyright>
     <PackageTags>fsharpx fsharp</PackageTags>
