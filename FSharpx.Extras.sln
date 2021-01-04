@@ -9,6 +9,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{63297B
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A6A6AF7D-D6E3-442D-9B1E-58CC91879BE1}"
+	ProjectSection(SolutionItems) = preProject
+		docs\DiningPhilosophers.fsx = docs\DiningPhilosophers.fsx
+		docs\index.fsx = docs\index.fsx
+		docs\Santa.fsx = docs\Santa.fsx
+		docs\StmSample.fsx = docs\StmSample.fsx
+		docs\StructuredFormatSample.fsx = docs\StructuredFormatSample.fsx
+		docs\UndoSample.fsx = docs\UndoSample.fsx
+		docs\WebProxy.fsx = docs\WebProxy.fsx
+	EndProjectSection
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "FSharpx.Extras", "src\FSharpx.Extras\FSharpx.Extras.fsproj", "{1E95A279-C2A9-498B-BC72-6E7A0D6854CE}"
 EndProject
@@ -19,32 +28,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "project", "project", "{BF60
 		RELEASE_NOTES.md = RELEASE_NOTES.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{83F16175-43B1-4C90-A1EE-8E351C33435D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "img", "img", "{CFA0F191-10A6-4877-8208-649E203EFBED}"
 	ProjectSection(SolutionItems) = preProject
-		docs\tools\generate.fsx = docs\tools\generate.fsx
-		docs\tools\templates\template.cshtml = docs\tools\templates\template.cshtml
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{8E6D5255-776D-4B61-85F9-73C37AA1FB9A}"
-	ProjectSection(SolutionItems) = preProject
-		docs\content\AsyncFileExtensions.fsx = docs\content\AsyncFileExtensions.fsx
-		docs\content\AsyncSeqObservable.fsx = docs\content\AsyncSeqObservable.fsx
-		docs\content\AutoCancel.fsx = docs\content\AutoCancel.fsx
-		docs\content\BatchProcessing.fsx = docs\content\BatchProcessing.fsx
-		docs\content\BlockingQueue.fsx = docs\content\BlockingQueue.fsx
-		docs\content\Caching.fsx = docs\content\Caching.fsx
-		docs\content\ChatServer.fsx = docs\content\ChatServer.fsx
-		docs\content\CircularBuffer.fsx = docs\content\CircularBuffer.fsx
-		docs\content\Crawler.fsx = docs\content\Crawler.fsx
-		docs\content\DiningPhilosophers.fsx = docs\content\DiningPhilosophers.fsx
-		docs\content\index.fsx = docs\content\index.fsx
-		docs\content\MouseFollow.fsx = docs\content\MouseFollow.fsx
-		docs\content\Santa.fsx = docs\content\Santa.fsx
-		docs\content\StmSample.fsx = docs\content\StmSample.fsx
-		docs\content\StockStream.fsx = docs\content\StockStream.fsx
-		docs\content\StructuredFormatSample.fsx = docs\content\StructuredFormatSample.fsx
-		docs\content\UndoSample.fsx = docs\content\UndoSample.fsx
-		docs\content\WebProxy.fsx = docs\content\WebProxy.fsx
+		docs\img\logo-template.pdn = docs\img\logo-template.pdn
+		docs\img\logo.png = docs\img\logo.png
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{ED8079DD-2B06-4030-9F0F-DC548F98E1C4}"
@@ -91,10 +78,9 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{83F16175-43B1-4C90-A1EE-8E351C33435D} = {A6A6AF7D-D6E3-442D-9B1E-58CC91879BE1}
-		{8E6D5255-776D-4B61-85F9-73C37AA1FB9A} = {A6A6AF7D-D6E3-442D-9B1E-58CC91879BE1}
 		{26D9D3EE-E882-43E6-A79E-5D1D89E92C4F} = {ED8079DD-2B06-4030-9F0F-DC548F98E1C4}
 		{4354A199-6ACF-4DB5-A8FA-BAD638D1D0E3} = {ED8079DD-2B06-4030-9F0F-DC548F98E1C4}
+		{CFA0F191-10A6-4877-8208-649E203EFBED} = {A6A6AF7D-D6E3-442D-9B1E-58CC91879BE1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1DF3DC31-D784-4342-A05C-538A31C3EF0B}
