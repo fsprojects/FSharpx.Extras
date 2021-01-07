@@ -1,11 +1,4 @@
-﻿// ----------------------------------------------------------------------------
-// F# async extensions (AutoCancel.fsx)
-// (c) Tomas Petricek, 2011, Available under Apache 2.0 license.
-// ----------------------------------------------------------------------------
-
-// This example demonstrates how to implement simple HTTP proxy
-
-#r @"../bin/FSharpx.Extras.dll"
+﻿#r @"../bin/FSharpx.Extras.dll"
 #r @"../bin/FSharpx.Async.dll"
 #r @"../bin/FSharp.Control.AsyncSeq.dll"
 
