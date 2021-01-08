@@ -52,7 +52,6 @@ FSharpx.Collections.List.monoid
 * [DiningPhilosophers](DiningPhilosophers.html)
 * [Santa](Santa.html)
 * [StmSample](StmSample.html)
-* [StructuredFormatSample](StructuredFormatSample.html)
 * [UndoSample](UndoSample.html)
 * [WebProxy](WebProxy.html)
 
