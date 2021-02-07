@@ -15,7 +15,7 @@ let ``tryParse can parse value and return Some value``() =
 
 [<Test>] 
 let ``tryParse returns None if it fails to parse``() =
-    "English" |> Enum.tryParse |> shouldEqual None
+    "English" |> Enum.tryParse<LanguageOptions> |> shouldEqual None
 
 [<Test>] 
 let ``parse returns parsed value``() =
@@ -35,7 +35,7 @@ let isDefinedTestCases =
         LanguageOptions.VB
     ]
 [<TestCaseSource("isDefinedTestCases")>]
-let ``isDefined returns true when valid simple enum value is checked`` input =
+let ``isDefined returns true when valid simple enum value is checked`` (input:LanguageOptions) =
     input |> Enum.isDefined |> shouldEqual true
 
 [<Test>] 

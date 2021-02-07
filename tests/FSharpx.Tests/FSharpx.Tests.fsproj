@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyName>FSharpx.Tests.$(TargetFramework)</AssemblyName>
     <TargetFrameworks>net46;netcoreapp31</TargetFrameworks>
@@ -48,7 +48,6 @@
     <Compile Include="OptionTests.fs" />
     <Compile Include="ChoiceTests.fs" />
     <Compile Include="ResultTests.fs" />
-    <Compile Include="ResultOfOptionTests.fs" />
     <Compile Include="PreludeTests.fs" />
     <Compile Include="LensTests.fs" />
     <Compile Include="LensExample.fs" />

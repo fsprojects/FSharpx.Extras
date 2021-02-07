@@ -116,7 +116,7 @@ let ``for should increment count``() =
     for i = 0 to 1 do
       count <- count + 1 }
   r ()
-  !count |> shouldEqual 2
+  count |> shouldEqual 2
 
 [<Test>]
 let ``use should dispose underlying IDisposable``() =
