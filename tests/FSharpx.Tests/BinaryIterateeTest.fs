@@ -250,16 +250,17 @@ let ``test skipNewline should consume \r\n for a single newline``() =
   let actual = enumerate (BS"\r\na"B) (skipNewline *> ``take 'a'``) |> run
   actual |> shouldEqual (BS"a"B)
 
-let readLineTests = [|
-  [| box (BS""B); box ByteString.empty |]
-  [| box (BS"\r"B); box ByteString.empty |]
-  [| box (BS"\n"B); box ByteString.empty |]
-  [| box (BS"\r\n"B); box ByteString.empty |]
-  [| box (BS"line1"B); box (BS"line1"B) |]
-  [| box (BS"line1\n"B); box (BS"line1"B) |]
-  [| box (BS"line1\r"B); box (BS"line1"B) |]
-  [| box (BS"line1\r\n"B); box (BS"line1"B) |]
-|]
+let readLineTests =
+  [
+    BS ""B,          ByteString.empty
+    BS "\r"B,        ByteString.empty
+    BS "\n"B,        ByteString.empty
+    BS "\r\n"B,      ByteString.empty
+    BS "line1"B,     BS "line1"B
+    BS "line1\n"B,   BS "line1"B
+    BS "line1\r"B,   BS "line1"B
+    BS "line1\r\n"B, BS "line1"B
+  ] |> Seq.map TestCaseData
 
 [<Test>]
 [<TestCaseSource("readLineTests")>]
@@ -273,24 +274,25 @@ let ``test readLine should split strings on a newline character at once``(input,
   let actual = enumeratePure1Chunk input readLine |> run
   actual |> shouldEqual expectedRes
 
-let readLinesTests = [|
-  [| box ""; box ([]:BS list) |]
-  [| box "\r"; box [BS""B] |]
-  [| box "\n"; box [BS""B] |]
-  [| box "\r\n"; box [BS""B] |]
-  [| box "line1"; box [BS"line1"B] |]
-  [| box "line1\n"; box [BS"line1"B] |]
-  [| box "line1\r"; box [BS"line1"B] |]
-  [| box "line1\r\n"; box [BS"line1"B] |]
-  [| box "line1\r\nline2"; box [BS"line1"B;BS"line2"B] |]
-  [| box "line1\r\nline2\r\n"; box [BS"line1"B;BS"line2"B] |]
-  [| box "line1\r\nline2\r\n\r\n"; box [BS"line1"B;BS"line2"B;BS""B] |]
-  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5"; box [BS"line1"B;BS"line2"B;BS"line3"B;BS"line4"B;BS"line5"B] |]
-  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5\r\n"; box [BS"line1"B;BS"line2"B;BS"line3"B;BS"line4"B;BS"line5"B] |]
-  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5\r\n\r\n"; box [BS"line1"B;BS"line2"B;BS"line3"B;BS"line4"B;BS"line5"B;BS""B] |]
-  [| box "PUT /file HTTP/1.1\r\nHost: example.com\rUser-Agent: X\nContent-Type: text/plain\r\n\r\n1C\r\nbody line 2\r\n\r\n7"
-     box [BS"PUT /file HTTP/1.1"B;BS"Host: example.com"B;BS"User-Agent: X"B;BS"Content-Type: text/plain"B;BS""B;BS"1C"B;BS"body line 2"B;BS""B;BS"7"B] |]
-|]
+let readLinesTests =
+  [
+    "",                                                  []
+    "\r",                                                [BS""B]
+    "\n",                                                [BS""B]
+    "\r\n",                                              [BS""B]
+    "line1",                                             [BS"line1"B]
+    "line1\n",                                           [BS"line1"B]
+    "line1\r",                                           [BS"line1"B]
+    "line1\r\n",                                         [BS"line1"B]
+    "line1\r\nline2",                                    [BS"line1"B;BS"line2"B]
+    "line1\r\nline2\r\n",                                [BS"line1"B;BS"line2"B]
+    "line1\r\nline2\r\n\r\n",                            [BS"line1"B;BS"line2"B;BS""B]
+    "line1\r\nline2\r\nline3\r\nline4\r\nline5",         [BS"line1"B;BS"line2"B;BS"line3"B;BS"line4"B;BS"line5"B]
+    "line1\r\nline2\r\nline3\r\nline4\r\nline5\r\n",     [BS"line1"B;BS"line2"B;BS"line3"B;BS"line4"B;BS"line5"B]
+    "line1\r\nline2\r\nline3\r\nline4\r\nline5\r\n\r\n", [BS"line1"B;BS"line2"B;BS"line3"B;BS"line4"B;BS"line5"B;BS""B]
+    "PUT /file HTTP/1.1\r\nHost: example.com\rUser-Agent: X\nContent-Type: text/plain\r\n\r\n1C\r\nbody line 2\r\n\r\n7",
+      [BS"PUT /file HTTP/1.1"B;BS"Host: example.com"B;BS"User-Agent: X"B;BS"Content-Type: text/plain"B;BS""B;BS"1C"B;BS"body line 2"B;BS""B;BS"7"B]
+  ] |> Seq.map TestCaseData
 
 [<Test>]
 [<TestCaseSource("readLinesTests")>]

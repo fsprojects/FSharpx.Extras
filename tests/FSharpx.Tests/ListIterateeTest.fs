@@ -22,11 +22,12 @@ let ``test length should calculate the length of the list without modification w
   let actual = enumeratePureNChunk 2 [1;2;3] length |> run 
   actual |> shouldEqual 3
 
-let testPeekAndHead = [|
-  [| box ([]:char list); box None |]
-  [| box ['c']; box (Some 'c') |]
-  [| box ['c';'h';'a';'r']; box (Some 'c') |]
-|]
+let testPeekAndHead =
+  [
+    [],                None
+    ['c'],             Some 'c'
+    ['c';'h';'a';'r'], Some 'c'
+  ] |> Seq.map TestCaseData
 
 [<Test>]
 [<TestCaseSource("testPeekAndHead")>]
@@ -247,16 +248,17 @@ let ``test skipNewline should consume \r\n for a single newline``() =
   let actual = enumerate (List.ofSeq "\r\na") (skipNewline *> ``take 'a'``) |> run
   actual |> shouldEqual ['a']
 
-let readLineTests = [|
-  [| box ""; box ([]:char list) |]
-  [| box "\r"; box ([]:char list) |]
-  [| box "\n"; box ([]:char list) |]
-  [| box "\r\n"; box ([]:char list) |]
-  [| box "line1"; box ['l';'i';'n';'e';'1'] |]
-  [| box "line1\n"; box ['l';'i';'n';'e';'1'] |]
-  [| box "line1\r"; box ['l';'i';'n';'e';'1'] |]
-  [| box "line1\r\n"; box ['l';'i';'n';'e';'1'] |]
-|]
+let readLineTests =
+  [
+    "",          []
+    "\r",        []
+    "\n",        []
+    "\r\n",      []
+    "line1",     ['l';'i';'n';'e';'1']
+    "line1\n",   ['l';'i';'n';'e';'1']
+    "line1\r",   ['l';'i';'n';'e';'1']
+    "line1\r\n", ['l';'i';'n';'e';'1']
+  ] |> Seq.map TestCaseData
 
 [<Test>]
 [<TestCaseSource("readLineTests")>]
@@ -270,24 +272,25 @@ let ``test readLine should split strings on a newline character at once``(input,
   let actual = enumeratePure1Chunk (List.ofSeq input) readLine |> run
   actual |> shouldEqual expectedRes
 
-let readLinesTests = [|
-  [| box ""; box ([]:String list) |]
-  [| box "\r"; box [""] |]
-  [| box "\n"; box [""] |]
-  [| box "\r\n"; box [""] |]
-  [| box "line1"; box ["line1"] |]
-  [| box "line1\n"; box ["line1"] |]
-  [| box "line1\r"; box ["line1"] |]
-  [| box "line1\r\n"; box ["line1"] |]
-  [| box "line1\r\nline2"; box ["line1";"line2"] |]
-  [| box "line1\r\nline2\r\n"; box ["line1";"line2"] |]
-  [| box "line1\r\nline2\r\n\r\n"; box ["line1";"line2";""] |]
-  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5"; box ["line1";"line2";"line3";"line4";"line5"] |]
-  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5\r\n"; box ["line1";"line2";"line3";"line4";"line5"] |]
-  [| box "line1\r\nline2\r\nline3\r\nline4\r\nline5\r\n\r\n"; box ["line1";"line2";"line3";"line4";"line5";""] |]
-  [| box "PUT /file HTTP/1.1\r\nHost: example.com\nUser-Agent: X\nContent-Type: text/plain\r\n\r\n1C\r\nbody line 2\r\n\r\n7"
-     box ["PUT /file HTTP/1.1";"Host: example.com";"User-Agent: X";"Content-Type: text/plain";"";"1C";"body line 2";"";"7"] |]
-|]
+let readLinesTests =
+  [
+    "",      []
+    "\r",    [""]
+    "\n",    [""]
+    "\r\n",  [""]
+    "line1", ["line1"]
+    "line1\n", ["line1"]
+    "line1\r", ["line1"]
+    "line1\r\n", ["line1"]
+    "line1\r\nline2", ["line1";"line2"]
+    "line1\r\nline2\r\n", ["line1";"line2"]
+    "line1\r\nline2\r\n\r\n", ["line1";"line2";""]
+    "line1\r\nline2\r\nline3\r\nline4\r\nline5", ["line1";"line2";"line3";"line4";"line5"]
+    "line1\r\nline2\r\nline3\r\nline4\r\nline5\r\n", ["line1";"line2";"line3";"line4";"line5"]
+    "line1\r\nline2\r\nline3\r\nline4\r\nline5\r\n\r\n", ["line1";"line2";"line3";"line4";"line5";""]
+    "PUT /file HTTP/1.1\r\nHost: example.com\nUser-Agent: X\nContent-Type: text/plain\r\n\r\n1C\r\nbody line 2\r\n\r\n7",
+       ["PUT /file HTTP/1.1";"Host: example.com";"User-Agent: X";"Content-Type: text/plain";"";"1C";"body line 2";"";"7"]
+  ] |> Seq.map TestCaseData
 
 [<Test>]
 [<TestCaseSource("readLinesTests")>]
