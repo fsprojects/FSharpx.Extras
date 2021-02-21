@@ -3,7 +3,7 @@
 open FSharpx
 open FSharpx.Writer
 open NUnit.Framework
-open FsUnit
+open FsUnitTyped
 open TestHelpers
 
 let logMsg (message:string) = tell [message]
@@ -24,7 +24,7 @@ let processFiles files = writer {
 let ``When processing files, it should log messages``() =
   let processing files = processFiles files ()
   let files = [ "C:\Test1.txt"; "C:\Test2.txt" ]
-  processing files |> should equal ((), ["Begin processing files"
+  processing files |> shouldEqual ((), [ "Begin processing files"
                                          "Processing C:\Test1.txt"
                                          "Processing C:\Test2.txt"
                                          "End processing files"])

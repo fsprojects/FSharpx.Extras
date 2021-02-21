@@ -6,7 +6,7 @@ open FSharpx
 open FSharpx.Functional
 open FSharpx.Reader
 open NUnit.Framework
-open FsUnit
+open FsUnitTyped
 open TestHelpers
 
 // Basic monadic builder tests.
@@ -15,21 +15,21 @@ let ``Return should enable return``() =
   let expected = 1
   let r = reader {
     return expected }
-  r 0 |> should equal expected
+  r 0 |> shouldEqual expected
 
 [<Test>]
 let ``ReturnFrom should enable return!``() =
   let expected = 1
   let r = reader {
     return! ask }
-  r expected |> should equal expected
+  r expected |> shouldEqual expected
 
 [<Test>]
 let ``ReturnFrom should enable return! from asks``() =
   let expected = 1
   let r = reader {
     return! asks (fun i -> i + 1) }
-  r 0 |> should equal expected
+  r 0 |> shouldEqual expected
 
 [<Test>]
 let ``Bind should enable let!``() =
@@ -37,16 +37,16 @@ let ``Bind should enable let!``() =
   let r = reader {
     let! env = ask
     return env }
-  r expected |> should equal expected
+  r expected |> shouldEqual expected
 
 [<Test>]
 let ``Zero should allow no else branch``() =
-  let called = ref false
+  let mutable called = false
   let r = reader {
     if false then
-      called := true }
+      called <- true }
   r 1
-  !called |> should be False
+  called |> shouldEqual false
 
 [<Test>]
 let ``Combine should combine if statement``() =
@@ -55,68 +55,68 @@ let ``Combine should combine if statement``() =
     let! x = ask
     if true then ()
     return x }
-  r expected |> should equal expected
+  r expected |> shouldEqual expected
 
 [<Test>]
 let ``TryWith should catch exception``() =
-  let called = ref false
+  let mutable called = false
   let r = reader {
     try failwith "FAIL"
-    with e -> called := true }
+    with e -> called <- true }
   r ()
-  !called |> should be True
+  called |> shouldEqual true
 
 [<Test>]
 let ``TryFinally with exception should execute finally``() =
-  let called = ref false
+  let mutable called = false
   let r = reader {
     try failwith "FAIL"
-    finally called := true }
+    finally called <- true }
   try r ()
   with e -> ()
-  !called |> should be True
+  called |> shouldEqual true
 
 [<Test>]
 let ``Using should call Dispose``() =
-  let disposed = ref false
+  let mutable disposed = false
   let disposable =
     { new IDisposable with
-        member __.Dispose() = disposed := true }
+        member __.Dispose() = disposed <- true }
   let r = reader {
     use d = disposable
     () }
   r ()
-  !disposed |> should be True
+  disposed |> shouldEqual true
 
 [<Test>]
 let ``use! should call Dispose``() =
-  let disposed = ref false
+  let mutable disposed = false
   let disposable = reader {
     return { new IDisposable with
-               member __.Dispose() = disposed := true } }
+               member __.Dispose() = disposed <- true } }
   let r = reader {
     use! d = disposable
     () }
   r ()
-  !disposed |> should be True
+  disposed |> shouldEqual true
 
 [<Test>]
 let ``while should increment count``() =
-  let count = ref 0
+  let mutable count = 0
   let r = reader {
-    while !count < 3 do
-      incr count }
+    while count < 3 do
+      count <- count + 1 }
   r ()
-  !count |> should equal 3
+  count |> shouldEqual 3
 
 [<Test>]
 let ``for should increment count``() =
-  let count = ref 0
+  let mutable count = 0
   let r = reader {
     for i = 0 to 1 do
-      incr count }
+      count <- count + 1 }
   r ()
-  !count |> should equal 2
+  count |> shouldEqual 2
 
 [<Test>]
 let ``use should dispose underlying IDisposable``() =

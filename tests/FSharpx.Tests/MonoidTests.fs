@@ -3,6 +3,7 @@
 open NUnit.Framework
 open FsCheck
 open FsCheck.NUnit
+open FsUnitTyped
 open FSharpx
 open FSharpx.Functional
 open FSharpx.Collections
@@ -53,8 +54,8 @@ let ``dual monoid example``() =
         yield "world"
     }
     let r2 = m.Combine("hello", "world")
-    Assert.AreEqual("worldhello", r1)
-    Assert.AreEqual("worldhello", r2)
+    r1 |> shouldEqual "worldhello"
+    r2 |> shouldEqual "worldhello"
 
 [<Test>]
 let ``any monoid``() =
@@ -102,7 +103,7 @@ let ``endo monoid``() =
         Monoid.endo {
             for f in [(*) 2; (+) 4; (+) 2] -> f
         }
-    Assert.AreEqual(12, composedFunction 0)
+    composedFunction 0 |> shouldEqual 12
 
 [<Test>]
 let ``endo as dlist``() =
@@ -111,5 +112,4 @@ let ``endo as dlist``() =
     let singleton x a = List.monoid.Combine([x], a)
     let toList l = l []
     let z = singleton 4 @ singleton 5
-    Assert.AreEqual([4;5], toList z)
-
+    z |> toList |> shouldEqual [4;5]

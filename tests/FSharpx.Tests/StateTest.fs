@@ -3,7 +3,7 @@
 open FSharpx
 open FSharpx.State
 open NUnit.Framework
-open FsUnit
+open FsUnitTyped
 open TestHelpers
 
 // Simple example
@@ -15,7 +15,7 @@ let tick = state {
 [<Test>]
 let ``When starting a ticker at 0, it should have a state of 0``() =
   let actual = tick 0
-  fst actual |> should equal 0
+  fst actual |> shouldEqual 0
 
 [<Test>]
 let ``When starting a ticker at 0 and ticking twice, it should have a state of 2``() =
@@ -24,7 +24,7 @@ let ``When starting a ticker at 0 and ticking twice, it should have a state of 2
     let! _ = tick
     return () }
   let actual = exec test 0
-  actual |> should equal 2
+  actual |> shouldEqual 2
 
 // Stack example
 let enqueue a = fun s -> ((), s @ a::[])
@@ -39,7 +39,7 @@ let workflow = state {
 
 [<Test>]
 let ``When running the workflow, it should return 4``() =
-  eval workflow [] |> should equal 4
+  eval workflow [] |> shouldEqual 4
 
 [<Test>]
 let ``use should dispose underlying IDisposable``() =

@@ -4,18 +4,18 @@ open System
 open NUnit.Framework
 open FSharpx
 open FSharpx.Functional
-open FsUnit
 open TestHelpers
+open FsUnitTyped
 
 [<Test>]
 let getChoice1Of2() =
     let a = Choice.returnM 23
-    Choice.get a |> should equal 23
+    Choice.get a |> shouldEqual 23
 
 [<Test>]
 let getChoice2Of2() =
     let a = Choice2Of2 23
-    (fun () -> Choice.get a |> ignore) |> should throw typeof<ArgumentException>
+    (fun () -> Choice.get a |> ignore) |> Assert.Throws<ArgumentException> |> ignore
 
 [<Test>]
 let ``valid cast``() =
@@ -76,8 +76,8 @@ let ``computations are aborted on the first Choice2Of2``() =
         let! y = failure
         failwith "should never be called"
         return x + y }
-    |> should equal failure
-
+    |> shouldEqual failure
+    
 [<Test>]
 let ``multiple successful values propagate through``() =
     let a = Choice1Of2 1
@@ -86,13 +86,13 @@ let ``multiple successful values propagate through``() =
         let! x = a
         let! y = b
         return x + y }
-    |> should equal (Choice1Of2 3)
-
+    |> shouldEqual (Choice1Of2 3)
+    
 [<Test>]
 let ``return! allows binding the result``() =
     let f = Choice1Of2
     choose { return! f 6 }
-    |> should equal (Choice1Of2 6)
+    |> shouldEqual (Choice1Of2 6)    
 
 open FsCheck
 open FsCheck.NUnit

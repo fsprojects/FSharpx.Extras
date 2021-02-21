@@ -7,9 +7,6 @@ open FSharpx.Result
 open FsUnitTyped
 open TestHelpers
 
-let areEqual (expected, actual) =
-    if expected<>actual then Assert.Fail( sprintf "Expected %A to equal %A" actual expected)
-
 [<Test>]
 let ``kleisli composition``() =
     let f x =
@@ -22,15 +19,15 @@ let ``kleisli composition``() =
             else Error ()
 
     let h = f >=> g
-    areEqual(Ok 10, h 8)
-    areEqual(Error (), h 1)
+    h 8 |> shouldEqual (Ok 10)
+    h 1 |> shouldEqual (Error ())
 
 
 [<Test>]
 let ``valid cast``() =
     let a = box 11
     let r = Result.cast a
-    Assert.AreEqual(11, Result.get r)
+    r |> shouldEqual (Ok 11)
 
 [<Test>]
 let ``invalid cast``() =
@@ -43,229 +40,223 @@ let ``invalid cast``() =
 [<Test>]
 let ``sequence with Ok``() =
     let r = Result.sequence [Ok 1; Ok 2; Ok 3]
-    areEqual(Ok [1;2;3], r)
+    r |> shouldEqual (Ok [1;2;3])
 
 [<Test>]
 let ``sequence with Error``() =
     let r = Result.sequence [Ok 1; Ok 2; Error ()]
-    areEqual(Error(), r)
+    r |> shouldEqual (Error())
 
-type EmailValidation =
-  | EmptyEmail
-  | NoAt
+module EmailValidationTest =
+    type EmailValidation =
+        | EmptyEmail
+        | NoAt
 
-let failIfEmpty email =
-  if String.IsNullOrEmpty(email) then Error EmptyEmail
-  else Ok email
+    let failIfEmpty email =
+        if String.IsNullOrEmpty(email)
+        then Error EmptyEmail
+        else Ok email
 
-let failIfNotAt (email : string) =
-  if (email.Contains("@")) then Ok email
-  else Error NoAt
+    let failIfNoAt (email : string) =
+        if (email.Contains("@"))
+        then Ok email
+        else Error NoAt
 
-let validateEmail = failIfEmpty >> Result.bind failIfNotAt
+    let validateEmail = failIfEmpty >> Result.bind failIfNoAt
 
-let testValidateEmail email (expected : Result<string, EmailValidation>) =
-  let actual = validateEmail email
-  areEqual(expected, actual)
+    let testValidateEmail email (expected : Result<string, EmailValidation>) =
+        let actual = validateEmail email
+        actual |> shouldEqual expected
+    
+    let testCases =
+        [
+            "", Error EmptyEmail
+            "something_else", Error NoAt
+            "some@email.com", Ok "some@email.com"
+        ] |> List.map TestCaseData
 
-[<Test>]
-let ``Can chain together successive validations``() =
-  testValidateEmail "" (Error EmptyEmail)
-  testValidateEmail "something_else" (Error NoAt)
-  testValidateEmail "some@email.com" (Ok "some@email.com")
+    [<TestCaseSource("testCases")>]
+    let ``Can chain together successive validations`` email expected = testValidateEmail email expected
 
 // ### Tests ported from Chessie
+module TestsFromChessie =
+    type Sobriety =
+        | Sober
+        | Tipsy
+        | Drunk
+        | Paralytic
+        | Unconscious
 
-let shouldBeOkWithValue (expected:'a) (maybeOk:Result<'a,'e>) =
-   match maybeOk with
-   | Error e-> Assert.Fail( sprintf "Expected Ok, but got Error %A" e)
-   | Ok v-> Assert.AreEqual(expected, v)
+    type Gender =
+        | Male
+        | Female
 
-let shouldBeErrorWithValue (expected:'e) (maybeError:Result<'a,'e>) =
-   match maybeError with
-   | Error e-> Assert.AreEqual(expected, e)
-   | Ok v-> Assert.Fail( sprintf "Expected Error, but got Ok %A" v)
+    type Person =
+        { Gender : Gender
+          Age : int
+          Clothes : string Set
+          Sobriety : Sobriety }
 
-type Sobriety =
-  | Sober
-  | Tipsy
-  | Drunk
-  | Paralytic
-  | Unconscious
+    // Let's define the checks that *all* nightclubs make!
+    module Club =
+        let checkAge (p : Person) =
+            if p.Age < 18 then Error "Too young!"
+            elif p.Age > 40 then Error "Too old!"
+            else Ok()
 
-type Gender =
-  | Male
-  | Female
+        let checkClothes (p : Person) =
+            if p.Gender = Male && not (p.Clothes.Contains "Tie") then Error "Smarten up!"
+            elif p.Gender = Female && p.Clothes.Contains "Trainers" then Error "Wear high heels"
+            else Ok()
 
-type Person =
-  { Gender : Gender
-    Age : int
-    Clothes : string Set
-    Sobriety : Sobriety }
+        let checkSobriety (p : Person) =
+            match p.Sobriety with
+            | Drunk | Paralytic | Unconscious -> Error "Sober up!"
+            | _ -> Ok()
 
-// Let's define the checks that *all* nightclubs make!
-module Club =
-  let checkAge (p : Person) =
-    if p.Age < 18 then Error "Too young!"
-    elif p.Age > 40 then Error "Too old!"
-    else Ok()
+    open Club
 
-  let checkClothes (p : Person) =
-    if p.Gender = Male && not (p.Clothes.Contains "Tie") then Error "Smarten up!"
-    elif p.Gender = Female && p.Clothes.Contains "Trainers" then Error "Wear high heels"
-    else Ok()
+    let costToEnter p =
+        result {
+            do! checkAge p
+            do! checkClothes p
+            do! checkSobriety p
+            return match p.Gender with
+                   | Female -> 0m
+                   | Male -> 5m
+        }
 
-  let checkSobriety (p : Person) =
-    match p.Sobriety with
-    | Drunk | Paralytic | Unconscious -> Error "Sober up!"
-    | _ -> Ok()
+    let Ken =
+        { Person.Gender = Male
+          Age = 28
+          Clothes = set [ "Tie"; "Shirt" ]
+          Sobriety = Tipsy }
 
-open Club
+    let Dave =
+        { Person.Gender = Male
+          Age = 41
+          Clothes = set [ "Tie"; "Jeans" ]
+          Sobriety = Sober }
 
-let costToEnter p =
-  result {
-    do! checkAge p
-    do! checkClothes p
-    do! checkSobriety p
-    return match p.Gender with
-           | Female -> 0m
-           | Male -> 5m
-  }
+    let Ruby =
+        { Person.Gender = Female
+          Age = 25
+          Clothes = set [ "High heels" ]
+          Sobriety = Tipsy }
 
-
-let Ken =
-  { Person.Gender = Male
-    Age = 28
-    Clothes = set [ "Tie"; "Shirt" ]
-    Sobriety = Tipsy }
-
-let Dave =
-  { Person.Gender = Male
-    Age = 41
-    Clothes = set [ "Tie"; "Jeans" ]
-    Sobriety = Sober }
-
-let Ruby =
-  { Person.Gender = Female
-    Age = 25
-    Clothes = set [ "High heels" ]
-    Sobriety = Tipsy }
-
-[<Test>]
-let part1() =
-  costToEnter Dave |> shouldBeErrorWithValue "Too old!"
-  costToEnter Ken |> shouldBeOkWithValue 5m
-  costToEnter Ruby |> shouldBeOkWithValue 0m
-  costToEnter { Ruby with Age = 17 } |> shouldBeErrorWithValue "Too young!"
-  costToEnter { Ken with Sobriety = Unconscious } |> shouldBeErrorWithValue "Sober up!"
+    let [<Test>] ``age check should work #1``() = Dave |> costToEnter |> shouldEqual (Error "Too old!")
+    let [<Test>] ``age check should work #2``() = { Ruby with Age = 17 } |> costToEnter  |> shouldEqual (Error "Too young!")   
+    let [<Test>] ``soberity check should work``() = { Ken with Sobriety = Unconscious } |> costToEnter  |> shouldEqual (Error "Sober up!")
+ 
+    let [<Test>] ``price calc should work #1``() = Ken |> costToEnter  |> shouldEqual (Ok 5m)
+    let [<Test>] ``price calc should work #2``() =  Ruby |> costToEnter  |> shouldEqual (Ok 0m)
 
 [<Test>]
 let ``Using CE syntax should be equivilent to bind``() =
-  let sut =
-    result {
-      let! bob = Ok "bob"
-      let greeting = sprintf "Hello %s" bob
-      return greeting
-    }
-  sut |> shouldBeOkWithValue (sprintf "Hello %s" "bob")
+    let sut =
+        result {
+            let! bob = Ok "bob"
+            let greeting = sprintf "Hello %s" bob
+            return greeting
+        }
+    sut |> shouldEqual (Ok "Hello bob")
 
 [<Test>]
 let ``Try .. with works in CE syntax``() =
-  let sut =
-    result {
-      return! try
-                failwith "bang"
-                Error("not bang")
-              with e -> Ok(e.Message)
-    }
-  sut |> shouldBeOkWithValue "bang"
+    let sut =
+        result {
+            return! 
+                try
+                    failwith "bang"
+                    Error("not bang")
+                with e -> Ok(e.Message)
+        }
+    sut |> shouldEqual (Ok "bang")
 
 let errorIfFalse v =
-  if v then Ok()
-  else Error()
+    if v then Ok()
+    else Error()
 
 let func param sideEffect =
-  result {
-    do! errorIfFalse param
-    sideEffect()
-    return param
-  }
+    result {
+        do! errorIfFalse param
+        sideEffect()
+        return param
+    }
 
 [<Test>]
 let ``SideEffects 1: Should return correct value of happy path``() =
-  let mutable count = 0
-  let sideEffect() = count <- count + 1
-  let res = func true sideEffect
-  areEqual(Ok true, res)
-  areEqual(1, count)
+    let mutable count = 0
+    let sideEffect() = count <- count + 1
+    let res = func true sideEffect
+    res |> shouldEqual (Ok true)
+    count |> shouldEqual 1
 
 [<Test>]
 let ``SideEffects 1: Should return correct value of failing path``() =
-  let mutable count = 0
-  let sideEffect() = count <- count + 1
-  let res = func false sideEffect
-  areEqual(Error(), res)
-  areEqual(0, count)
+    let mutable count = 0
+    let sideEffect() = count <- count + 1
+    let res = func false sideEffect
+    res |> shouldEqual (Error())
+    count |> shouldEqual 0
 
 let funcDo param sideEffect =
-  result {
-    do! errorIfFalse param
-    do! sideEffect()
-    return param
-  }
+    result {
+        do! errorIfFalse param
+        do! sideEffect()
+        return param
+    }
 
 [<Test>]
 let ``SideEffects 2 do: Should return correct value of happy path``() =
-  let mutable count = 0
+    let mutable count = 0
 
-  let sideEffect() =
-    count <- count + 1
-    Ok()
+    let sideEffect() =
+        count <- count + 1
+        Ok()
 
-  let res = funcDo true sideEffect
-  areEqual(Ok true, res)
-  areEqual(1, count)
+    let res = funcDo true sideEffect
+    res |> shouldEqual (Ok true)
+    count |> shouldEqual 1
 
 [<Test>]
 let ``SideEffects 2 do: Should return correct value of failing path``() =
-  let mutable count = 0
-
-  let sideEffect() =
-    count <- count + 1
-    Ok()
-
-  let res = funcDo false sideEffect
-  areEqual(Error(), res)
-  areEqual(0, count)
+    let mutable count = 0
+    
+    let sideEffect() =
+        count <- count + 1
+        Ok()
+    
+    let res = funcDo false sideEffect
+    res |> shouldEqual (Error())
+    count |> shouldEqual 0
 
 [<Test>]
 let ``use should dispose underlying IDisposable on Ok``() =
-  let disposeChecker = new DisposeChecker()
-  let r =
-     result{
-       use! x = Ok disposeChecker
-       return x.Disposed
-     }
-  Assert.Multiple
-    (fun () ->
-      disposeChecker.Disposed |> shouldEqual true
-      r |> shouldEqual (Ok false)
-    )
+    let disposeChecker = new DisposeChecker()
+    let r = result {
+        use! x = Ok disposeChecker
+        return x.Disposed
+    }
+    Assert.Multiple
+        (fun () ->
+            disposeChecker.Disposed |> shouldEqual true
+            r |> shouldEqual (Ok false)
+        )
 
 [<Test>]
 let ``use should dispose underlying IDisposable on Error``() =
-  let disposeChecker = new DisposeChecker()
-  let r =
-     result{
-       use! x = Ok disposeChecker
-       let! y = Error "error"
-       return x.Disposed
-     }
-  Assert.Multiple
-    (fun () ->
-      disposeChecker.Disposed |> shouldEqual true
-      r |> shouldEqual (Error "error")
-    )
+    let disposeChecker = new DisposeChecker()
+    let r = result {
+        use! x = Ok disposeChecker
+        let! y = Error "error"
+        return x.Disposed
+    }
+    Assert.Multiple
+        (fun () ->
+            disposeChecker.Disposed |> shouldEqual true
+            r |> shouldEqual (Error "error")
+        )
 
 [<Test>]
 let ``either on Ok should run first function``() =
@@ -302,3 +293,41 @@ let ``defaultWith should return content on OK and don't execute the function``()
             Result.defaultWith f (Ok "dog") |> shouldEqual "dog"
             ``f was run`` |> shouldEqual false
          )
+
+module ResultOfOptionTests =
+
+    [<Test>]
+    let ``can create Ok from ofOption``() =
+        Some "Success"
+        |> Result.ofOption ""
+        |> shouldEqual (Ok "Success")
+
+    [<Test>]
+    let ``can create Error from ofOption``() =
+      None
+      |> Result.ofOption "Failure"
+      |> shouldEqual (Error "Failure")
+
+    [<Test>]
+    let ``can create Ok from ofOptionF``() =
+        let mutable executed = false
+        let result = 
+          Some "Success"
+          |> Result.ofOptionF (fun () -> executed <- true; "")
+        Assert.Multiple
+            (fun () ->
+                result |> shouldEqual (Ok "Success")
+                executed |> shouldEqual false
+            )
+
+    [<Test>]
+    let ``can create Error from ofOptionF``() =
+        let mutable executed = false
+        let result =
+            None
+            |> Result.ofOptionF (fun () -> executed <- true; "Failure")
+        Assert.Multiple
+            (fun () ->
+                result |> shouldEqual (Error "Failure")
+                executed |> shouldEqual true
+            )
