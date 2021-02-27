@@ -1,3 +1,12 @@
+### 3.0.0 - 27.02.2021
+* Add using and loops for `EitherBuilder` and `ResultBuilder` - https://github.com/fsprojects/FSharpx.Extras/pull/394
+* Allow not null implementation of `IDisposable` in CEs - https://github.com/fsprojects/FSharpx.Extras/pull/395
+* Add `either`, `defaultValue` and `defaultWith` to `Result` - https://github.com/fsprojects/FSharpx.Extras/pull/396
+* Remove `TaskBuilder`. - https://github.com/fsprojects/FSharpx.Extras/pull/397
+* Add `Enum.toString` and constrain types in `Enum` module. - https://github.com/fsprojects/FSharpx.Extras/pull/401
+* Remove obsolete functions and modules. - https://github.com/fsprojects/FSharpx.Extras/pull/403
+* Fix files deviating from repo's license. - https://github.com/fsprojects/FSharpx.Extras/pull/407
+
 ### 2.5.0 - 04.06.2020
 * Add `Option.someIf` function - https://github.com/fsprojects/FSharpx.Extras/pull/391
 * Add `Option.ofUnchecked` function - https://github.com/fsprojects/FSharpx.Extras/pull/392
