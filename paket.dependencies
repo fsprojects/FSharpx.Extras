@@ -1,4 +1,4 @@
-version 5.249.0
+version 5.257.0
 
 source https://api.nuget.org/v3/index.json
 framework: net452, netstandard20
@@ -13,12 +13,12 @@ group Test
   source https://api.nuget.org/v3/index.json
   framework: net46, netcoreapp31
   storage: none
-  nuget FSharp.Core
+  nuget FSharp.Core ~> 4.7.2
   nuget NUnit
   nuget NUnit3TestAdapter
   nuget FsCheck
   nuget FsCheck.NUnit
-  nuget FsUnit
+  nuget FsUnit ~> 3.8
   nuget Microsoft.NET.Test.Sdk
   nuget Appveyor.TestLogger
 
@@ -37,6 +37,6 @@ group FakeBuild
   nuget Fake.DotNet.Paket
   nuget Fake.IO.FileSystem
   nuget Fake.Tools.Git
-  nuget FSharp.Core 4.7.2
+  nuget FSharp.Core
 
   github fsharp/FAKE modules/Octokit/Octokit.fsx
