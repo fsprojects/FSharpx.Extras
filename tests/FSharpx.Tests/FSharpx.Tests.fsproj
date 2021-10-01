@@ -54,6 +54,8 @@
     <Compile Include="LensExample.fs" />
     <Compile Include="TimeMeasurementTests.fs" />
     <Compile Include="RegexTests.fs" />
+    <Compile Include="TaskTests.fs" />
+    <Compile Include="TaskBuilderTests.fs" />
     <Compile Include="Utilities.fs" />
     <Compile Include="ControlTests.fs" />
     <Compile Include="AsyncStreamReaderTest.fs" />
