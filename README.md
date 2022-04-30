@@ -10,9 +10,8 @@ Please also join the [F# Open Source Group](http://fsharp.github.com)
 
 # Build Status
 
-.NET Core (Linux & Mac)  | .NET & .NET Core (Windows)
------------------------- | --------------------------
-[![Travis CI Build Status](https://img.shields.io/travis/fsprojects/FSharpx.Extras/master.svg)](https://travis-ci.org/fsprojects/FSharpx.Extras) | [![AppVeyor CI Build Status](https://img.shields.io/appveyor/ci/fsgit/FSharpx/master.svg)](https://ci.appveyor.com/project/fsgit/FSharpx)
+[![Github Actions](https://github.com/fsprojects/FSharpx.Extras/actions/workflows/main.yml/badge.svg)](https://github.com/fsprojects/FSharpx.Extras/actions/workflows/main.yml)
+
 
 
 # Maintainer(s)

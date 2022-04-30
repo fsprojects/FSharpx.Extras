@@ -1,8 +1,0 @@
-image: Visual Studio 2019
-
-build_script:
-  - cmd: fake.cmd
-test: off
-artifacts:
-  - path: bin
-    name: bin
