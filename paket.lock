@@ -3,7 +3,6 @@ RESTRICTION: == netstandard2.0
 NUGET
   remote: https://api.nuget.org/v3/index.json
     FSharp.Control.AsyncSeq (2.0.23)
-      FSharp.Core (>= 3.1.2) - restriction: || (&& (== net452) (== netstandard2.0)) (&& (== netstandard2.0) (>= net45))
       FSharp.Core (>= 4.3.2)
     FSharp.Core (4.6.2)
     FSharpx.Async (1.14.1)
@@ -11,9 +10,6 @@ NUGET
       FSharp.Core (>= 4.6.2)
     FSharpx.Collections (2.1.2)
       FSharp.Core (>= 4.3.4)
-    System.Reflection.Emit.ILGeneration (4.7)
-    System.Reflection.Emit.Lightweight (4.7)
-      System.Reflection.Emit.ILGeneration (>= 4.7)
 
 GROUP FakeBuild
 STORAGE: NONE
