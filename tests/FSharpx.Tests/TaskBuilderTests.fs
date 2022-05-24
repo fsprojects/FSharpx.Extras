@@ -7,14 +7,10 @@ open NUnit.Framework
 open FSharpx
 open FSharpx.Task
 open FSharpx.Async
-open FSharpx.Control
 open FSharpx.Functional
 open System.Threading
 
 open System.Threading.Tasks
-open FSharpx.Control.FileExtensions
-open FSharpx.Control.StreamReaderExtensions
-open FSharpx.Control.WebClientExtensions
 
 let checkSuccess (expected: 'a) (t: CancellationToken -> Task<'a>) =
     match Task.run (fun () -> (t CancellationToken.None)) with

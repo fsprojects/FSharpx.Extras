@@ -44,7 +44,6 @@
     <Compile Include="Stm.fs" />
     <Compile Include="Iteratee.fs" />
     <Compile Include="CSharpCompat.fs" />
-    <Compile Include="Net.fs" />
     <Compile Include="Conneg.fs" />
     <Compile Include="Enum.fs" />
   </ItemGroup>

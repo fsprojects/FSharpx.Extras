@@ -12,17 +12,6 @@ open FSharpx.Functional
 open System.Threading
 
 open System.Threading.Tasks
-open FSharpx.Control.FileExtensions
-open FSharpx.Control.StreamReaderExtensions
-open FSharpx.Control.WebClientExtensions
-
-type StreamReader with
-    member x.ReadToEndAsync() = 
-        x.AsyncReadToEnd() |> Async.StartAsTask
-
-type File with
-    static member OpenTextAsync path =
-        File.AsyncOpenText path |> Async.StartAsTask
 
 let filename = @"table.csv"
 
@@ -34,7 +23,7 @@ let loadprices() =
    let processTask() =
        task {
            started <- true
-           use! reader = File.OpenTextAsync filename
+           use reader = File.OpenText filename
            let! csv = reader.ReadToEndAsync()
            if started then
                dummy <- true
