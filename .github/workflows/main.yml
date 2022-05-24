@@ -26,7 +26,9 @@ jobs:
     - name: Setup .NET for main project build
       uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: |
+          3.1.x
+          6.0.x
     - name: Run fake build script
       run: ./fake.sh
       shell: bash
