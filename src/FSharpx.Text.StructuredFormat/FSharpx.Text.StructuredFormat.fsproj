@@ -8,6 +8,7 @@
     <Optimize>true</Optimize>
     <Tailcalls>true</Tailcalls>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>FS3218</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />
