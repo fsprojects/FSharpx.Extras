@@ -4,23 +4,15 @@
     <OutputType>Library</OutputType>
     <RootNamespace>FSharpx</RootNamespace>
     <AssemblyName>FSharpx.Extras</AssemblyName>
-    <TargetFrameworks>netstandard2.0;net452</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <Optimize>true</Optimize>
     <Tailcalls>true</Tailcalls>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
-  </PropertyGroup>
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>FSharpx.Tests.net46</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>FSharpx.Tests.netcoreapp31</_Parameter1>
+      <_Parameter1>FSharpx.Tests</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
   <ItemGroup>

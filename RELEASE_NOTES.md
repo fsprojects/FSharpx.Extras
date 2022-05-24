@@ -1,3 +1,6 @@
+### 3.2.0 - TBC
+* Remove net452 support and update test targets
+
 ### 3.1.0 - 10.03.2022
 * Restore Task functions by reintroducing Task computation expression as internal component. - https://github.com/fsprojects/FSharpx.Extras/pull/409
 

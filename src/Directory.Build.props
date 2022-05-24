@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup>
-    <VersionPrefix>3.1.0</VersionPrefix>
+    <VersionPrefix>3.2.0</VersionPrefix>
     <Owners>Steffen Forkmann and others</Owners>
     <Authors>Steffen Forkmann and others</Authors>
     <PackageProjectUrl>https://github.com/fsprojects/FSharpx.Extras</PackageProjectUrl>
@@ -10,7 +10,7 @@
     <License>Unlicense</License>
     <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Copyright>Copyright 2020</Copyright>
+    <Copyright>Copyright 2022</Copyright>
     <PackageTags>fsharpx fsharp</PackageTags>
     <Summary>FSharpx.Extras implements general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.</Summary>
     <Description>FSharpx.Extras implements general functional constructs on top of the F# core library. Its main target is F# but it aims to be compatible with all .NET languages wherever possible.</Description>

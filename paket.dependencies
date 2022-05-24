@@ -1,7 +1,7 @@
-version 5.257.0
+version 6.2.1
 
 source https://api.nuget.org/v3/index.json
-framework: net452, netstandard20
+framework: netstandard20
 storage: none
 
 nuget FSharp.Core >= 4.6.2 lowest_matching:true
@@ -11,7 +11,7 @@ nuget System.Reflection.Emit.Lightweight
 
 group Test
   source https://api.nuget.org/v3/index.json
-  framework: net46, netcoreapp31
+  framework: net48, net6
   storage: none
   nuget FSharp.Core ~> 4.7.2
   nuget NUnit
@@ -20,16 +20,14 @@ group Test
   nuget FsCheck.NUnit
   nuget FsUnit ~> 3.8
   nuget Microsoft.NET.Test.Sdk
-  nuget Appveyor.TestLogger
+  nuget GitHubActionsTestLogger
 
 group FakeBuild
-  source release/dotnetcore
   source https://api.nuget.org/v3/index.json
   storage: none
 
   nuget Fake.Api.GitHub
-  nuget Fake.BuildServer.AppVeyor
-  nuget Fake.BuildServer.Travis
+  nuget Fake.BuildServer.GitHubActions
   nuget Fake.Core.ReleaseNotes
   nuget Fake.Core.Target
   nuget Fake.Core.UserInput

@@ -3,4 +3,4 @@ group Test
     NUnit
     Microsoft.NET.Test.Sdk
     NUnit3TestAdapter
-    Appveyor.TestLogger
+    GitHubActionsTestLogger

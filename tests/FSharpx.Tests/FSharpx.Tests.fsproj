@@ -1,13 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <AssemblyName>FSharpx.Tests.$(TargetFramework)</AssemblyName>
-    <TargetFrameworks>net46;netcoreapp31</TargetFrameworks>
+    <AssemblyName>FSharpx.Tests</AssemblyName>
+    <TargetFrameworks>net48;net6</TargetFrameworks>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <IsPackable>false</IsPackable>
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
-    <TargetFrameworks>netcoreapp31</TargetFrameworks>
+    <TargetFrameworks>net6</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\FSharpx.Extras\FSharpx.Extras.fsproj">
@@ -27,6 +28,7 @@
     <None Include="table.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Compile Include="TestSetup.fs" />
     <Compile Include="FsCheckRunner.fs" />
     <Compile Include="FsCheckProperties.fs" />
     <Compile Include="TestHelpers.fs" />

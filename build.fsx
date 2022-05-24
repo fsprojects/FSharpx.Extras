@@ -18,8 +18,7 @@ open System.Xml.Linq
 open Fake.BuildServer
 
 BuildServer.install [
-    AppVeyor.Installer
-    Travis.Installer
+    GitHubActions.Installer
 ]
 
 // --------------------------------------------------------------------------------------
@@ -70,9 +69,7 @@ let gitRaw = Environment.environVarOrDefault "gitRaw" "https://raw.githubusercon
 
 // Read additional information from the release notes document
 let release = ReleaseNotes.load "RELEASE_NOTES.md"
-let maybeBuildNumber =
-        Environment.environVarOrNone "APPVEYOR_BUILD_NUMBER"
-        |> Option.orElse (Environment.environVarOrNone "TRAVIS_BUILD_NUMBER")
+let maybeBuildNumber = Environment.environVarOrNone "GITHUB_RUN_ID"
 
 Target.create "SetCIVersion" (fun _ ->
     let version =
@@ -125,7 +122,7 @@ Target.create "RunTests" (fun _ ->
     |> DotNet.test (fun c -> { 
         c with
             Configuration=DotNet.BuildConfiguration.Release
-            Logger = if BuildServer.buildServer = AppVeyor then Some "Appveyor" else None
+            Logger = if BuildServer.buildServer = GitHubActions then Some "GitHubActions" else None
         })
 )
 
