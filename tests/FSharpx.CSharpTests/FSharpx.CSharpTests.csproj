@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <AssemblyName>FSharpx.CSharpTests.$(TargetFramework)</AssemblyName>
-    <TargetFrameworks>net46;netcoreapp31</TargetFrameworks>
+    <AssemblyName>FSharpx.CSharpTests</AssemblyName>
+    <TargetFrameworks>net48;net6</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
-    <TargetFrameworks>netcoreapp31</TargetFrameworks>
+    <TargetFrameworks>net6</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DataStructures|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>

@@ -16,9 +16,11 @@ using NUnit.Framework;
 namespace FSharpx.CSharpTests {
     [TestFixture]
     public class AsyncTests {
-        static FSharpAsync<string> Get(string u) {
-            var web = new WebClient();
-            return web.FSharpAsyncDownloadString(new Uri(u));
+        private readonly Random random = new Random();
+
+        private FSharpAsync<string> Get(string u) {
+            var delay = FSharpAsync.Sleep(random.Next(1000, 2000));
+            return delay.Select(x => u);
         }
 
         [Test]
@@ -28,7 +30,7 @@ namespace FSharpx.CSharpTests {
                 from bing in Get("http://www.bing.com")
                 select google + bing;
             string result = asyncGet.Run();
-            var rx = new Regex(@"<html");
+            var rx = new Regex(@"http");
             Assert.AreEqual(2, rx.Matches(result).Count);
         }
 
@@ -42,7 +44,7 @@ namespace FSharpx.CSharpTests {
             var result = urls.Select(Get).Parallel()
                 .Select(s => string.Join("", s))
                 .Run();
-            var rx = new Regex(@"<html");
+            var rx = new Regex(@"http");
             Assert.AreEqual(3, rx.Matches(result).Count);
         }
 
@@ -77,31 +79,6 @@ namespace FSharpx.CSharpTests {
                 urls.Select(fetch).Parallel()
                     .Select(c => string.Join("", c.Select(s => s.Match(x => x, _ => "")))) // swallow exceptions!
                     .Run();
-        }
-
-        // http://stackoverflow.com/questions/6893998/c-how-to-implement-as-async-and-in-f
-
-        [Test]
-        [Ignore("just an example")]
-        public void Example2() {
-            var price = LoadPrices("MSFT").Run().First();
-            Assert.AreEqual(new DateTime(2008,10,30), price.Item1);
-            Assert.AreEqual(20.82m, price.Item2);
-        }
-
-        FSharpAsync<IEnumerable<Tuple<DateTime, decimal>>> LoadPrices(string ticker) {
-            var url = "http://ichart.finance.yahoo.com/table.csv?s=" + ticker + "&d=9&e=30&f=2008&g=d&a=2&b=13&c=1986&ignore=.csv";
-            var req = WebRequest.Create(url);
-            return
-                from resp in req.FSharpAsyncGetResponse()
-                let stream = resp.GetResponseStream()
-                let reader = new StreamReader(stream)
-                from csv in reader.FSharpAsyncReadToEnd()
-                select csv.Split('\n')
-                    .Skip(1)
-                    .Select(line => line.Split(','))
-                    .Where(values => values.Length == 7)
-                    .Select(values => Tuple.Create(DateTime.Parse(values[0]), decimal.Parse(values[6], CultureInfo.InvariantCulture)));
         }
     }
 }
