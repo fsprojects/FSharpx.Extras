@@ -7,11 +7,17 @@ module State =
 
     type State<'T, 'State> = 'State -> 'T * 'State
     
+    /// Returns state value from the monad.
     let getState = fun s -> (s,s)
+    /// Replaces state inside the monad.
     let putState s = fun _ -> ((),s)
+    /// Evaluates a state computation with the given initial state and returns the final value, discarding the final state.
     let eval m s = m s |> fst
+    /// Evaluates a state computation with the given initial state and returns the final state, discarding the final value.
     let exec m s = m s |> snd
+    /// Instance of state monad without value
     let empty = fun s -> ((), s)
+    /// Sequentially compose two actions, passing any value produced by the first as an argument to the second.
     let bind k m = fun s -> let (a, s') = m s in (k a) s'
     
     /// The state monad.
@@ -68,12 +74,12 @@ module State =
     let inline (>=>) f g = fun x -> f x >>= g
     /// Right-to-left Kleisli composition
     let inline (<=<) x = flip (>=>) x
-
-    let foldM f s = 
+    /// Fold encapsulated in the State monad
+    let foldM f s =
         Seq.fold (fun acc t -> acc >>= (flip f) t) (returnM s)
-
+    /// Evaluates each monadic action in the list from left to right, and collects the results.
     let inline sequence s =
         let inline cons a b = lift2 List.cons a b
         List.foldBack cons s (returnM [])
-
+    /// Maps each element of a list to a monadic action, evaluates these actions from left to right, and collects the results.
     let inline mapM f x = sequence (List.map f x)

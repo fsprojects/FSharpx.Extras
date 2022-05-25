@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A6A6AF7D-D
 		docs\index.fsx = docs\index.fsx
 		docs\Santa.fsx = docs\Santa.fsx
 		docs\StmSample.fsx = docs\StmSample.fsx
+		docs\StateSample.fsx = docs\StateSample.fsx
 		docs\StructuredFormatSample.fsx = docs\StructuredFormatSample.fsx
 		docs\UndoSample.fsx = docs\UndoSample.fsx
 		docs\WebProxy.fsx = docs\WebProxy.fsx
