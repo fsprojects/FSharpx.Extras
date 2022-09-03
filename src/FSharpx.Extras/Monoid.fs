@@ -166,6 +166,6 @@ namespace FSharpx.Collections
     module ByteString = 
         let monoid =
             { new Monoid<_>() with
-                override x.Zero() = ByteString.empty
+                override x.Zero() = ByteString([||],0,0)
                 override x.Combine(a,b) = ByteString.append a b }
 
