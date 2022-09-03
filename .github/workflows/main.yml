@@ -32,3 +32,10 @@ jobs:
     - name: Run fake build script
       run: ./fake.sh
       shell: bash
+    - name: Save nuget package as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: nuget-package
+        path: |
+          bin/*.nupkg
+          bin/*.snupkg
