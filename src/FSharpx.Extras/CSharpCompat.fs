@@ -7,7 +7,6 @@ open System.Collections.Generic
 open System.Runtime.CompilerServices
 open FSharpx.Collections
 open FSharpx.Functional
-open FSharpx.Control
 open FSharpx
 open Microsoft.FSharp.Control.WebExtensions
 
@@ -588,10 +587,6 @@ type FSharpAsyncEx =
 
     [<Extension>]
     static member Parallel a = Async.Parallel a
-
-    [<Extension>]
-    static member FSharpAsyncReadToEnd (s: StreamReader) =
-        s.AsyncReadToEnd()
 
 type FSharpLazy = 
     static member Create (v: 'a Func) = Lazy<'a>.Create v.Invoke

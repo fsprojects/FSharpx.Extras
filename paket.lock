@@ -2,12 +2,7 @@ STORAGE: NONE
 RESTRICTION: == netstandard2.0
 NUGET
   remote: https://api.nuget.org/v3/index.json
-    FSharp.Control.AsyncSeq (2.0.23)
-      FSharp.Core (>= 4.3.2)
     FSharp.Core (4.6.2)
-    FSharpx.Async (1.14.1)
-      FSharp.Control.AsyncSeq (>= 2.0.21)
-      FSharp.Core (>= 4.6.2)
     FSharpx.Collections (2.1.2)
       FSharp.Core (>= 4.3.4)
 

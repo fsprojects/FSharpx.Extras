@@ -5,7 +5,6 @@ framework: netstandard20
 storage: none
 
 nuget FSharp.Core >= 4.6.2 lowest_matching:true
-nuget FSharpx.Async
 nuget FSharpx.Collections
 
 group Test
