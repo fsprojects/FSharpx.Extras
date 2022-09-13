@@ -11,7 +11,7 @@ open FSharpx.Tests.Properties
 open FSharpx.Monoid
 
 type ByteStringGen =
-    static member ByteStringArb =
+    static member ByteStringArb() =
         let g = gen {
             let! a = Arb.generate<_[]>
             let! offset = Gen.choose(0, max 0 (a.Length - 1))
@@ -20,7 +20,9 @@ type ByteStringGen =
         }
         Arb.fromGen g
 
-let bytestringArbRegister = lazy (FsCheck.Arb.register<ByteStringGen>() |> ignore)
+[<OneTimeSetUp>]
+let setup() =
+    Arb.register<ByteStringGen>() |> ignore
 
 [<Test>]
 let ``int product monoid``() =
@@ -82,9 +84,7 @@ let ``max monoid``() =
     checkMonoid "max" Monoid.maxInt
 
 [<Test>]
-[<Ignore("Ignore temporarily this test")>]
 let ``bytestring monoid``() =
-    bytestringArbRegister.Force()
     checkMonoid "bytestring" ByteString.monoid
 
 [<Test>]

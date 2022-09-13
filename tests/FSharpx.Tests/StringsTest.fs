@@ -95,12 +95,11 @@ baz
 
     a |> toLines |> shouldEqual expected
 
-[<Test; Ignore("Failing on appveyor due to line endings")>]
+[<Test>]
 let ``Should merge by newlines`` () = 
     let a = ["foo biz";"bar";"baz"]
-    let expected = @"foo biz
-bar
-baz"   
+    let osSpecificNewLine = System.Environment.NewLine
+    let expected = sprintf "foo biz%sbar%sbaz" osSpecificNewLine osSpecificNewLine
 
     a |> joinLines |> shouldEqual expected
 
