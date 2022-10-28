@@ -24,7 +24,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
     - name: Setup .NET for main project build
-      uses: actions/setup-dotnet@v2
+      uses: actions/setup-dotnet@v3
       with:
         dotnet-version: |
           3.1.x
