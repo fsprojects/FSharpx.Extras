@@ -4,19 +4,19 @@ source https://api.nuget.org/v3/index.json
 framework: netstandard20
 storage: none
 
-nuget FSharp.Core >= 4.6.2 lowest_matching:true
+nuget FSharp.Core ~> 6.0.6
 nuget FSharpx.Collections
 
 group Test
   source https://api.nuget.org/v3/index.json
   framework: net48, net6
   storage: none
-  nuget FSharp.Core ~> 4.7.2
+  nuget FSharp.Core ~> 6.0.6
   nuget NUnit
   nuget NUnit3TestAdapter
   nuget FsCheck
   nuget FsCheck.NUnit
-  nuget FsUnit ~> 3.8
+  nuget FsUnit ~> 5.1
   nuget Microsoft.NET.Test.Sdk
   nuget GitHubActionsTestLogger
 
@@ -34,5 +34,3 @@ group FakeBuild
   nuget Fake.IO.FileSystem
   nuget Fake.Tools.Git
   nuget FSharp.Core
-
-  github fsharp/FAKE modules/Octokit/Octokit.fsx
