@@ -30,7 +30,7 @@ jobs:
           3.1.x
           6.0.x
     - name: Run fake build script
-      run: ./fake.sh
+      run: ./build.sh
       shell: bash
     - name: Save nuget package as artifact
       uses: actions/upload-artifact@v3
