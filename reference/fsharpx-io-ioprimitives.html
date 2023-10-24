@@ -1,613 +1,2426 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8"/>
-    <title>IOPrimitives - FSharpx.Extras</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="description" content=""/>
-    <meta name="author" content="Steffen Forkmann and others"/>
 
-    <script src="https://code.jquery.com/jquery-1.8.0.js"></script>
-    <script src="https://code.jquery.com/ui/1.8.23/jquery-ui.js"></script>
-    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/js/bootstrap.min.js"></script>
-    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.1/css/bootstrap-combined.min.css" rel="stylesheet"/>
+<head>
+    <meta charset="utf-8">
+    <title>IOPrimitives (FSharpx.Extras)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Steffen Forkmann and others">
 
-    <link type="text/css" rel="stylesheet" href="/FSharpx.Extras/content/style.css" />
-    <script type="text/javascript" src="/FSharpx.Extras/content/tips.js"></script>
+    <link rel="stylesheet" id="theme_link" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/4.6.0/materia/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://fsprojects.github.io/FSharpx.Extras/img/favicon.ico">
+    <link type="text/css" rel="stylesheet" href="https://fsprojects.github.io/FSharpx.Extras/content/navbar-fixed-left.css" />
+    <link type="text/css" rel="stylesheet" href="https://fsprojects.github.io/FSharpx.Extras/content/fsdocs-default.css" />
+    <link type="text/css" rel="stylesheet" href="https://fsprojects.github.io/FSharpx.Extras/content/fsdocs-custom.css" />
+    <script type="text/javascript" src="https://fsprojects.github.io/FSharpx.Extras/content/fsdocs-tips.js"></script>
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-  </head>
-  <body>
+    <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+    <!-- END SEARCH BOX: this adds support for the search box -->
+    
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md navbar-light bg-secondary fixed-left" id="fsdocs-nav">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse navbar-nav-scroll" id="navbarsExampleDefault">
+            <a href="https://fsprojects.github.io/FSharpx.Extras/"><img id="fsdocs-logo" src="https://fsprojects.github.io/FSharpx.Extras/img/logo.png" /></a>
+            <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+            <div id="header">
+                <div class="searchbox" id="fsdocs-searchbox">
+                    <label for="search-by">
+                        <i class="fas fa-search"></i>
+                    </label>
+                    <input data-search-input="" id="search-by" type="search" placeholder="Search..." />
+                    <span data-search-clear="">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+            </div>
+
+            <!-- END SEARCH BOX: this adds support for the search box -->
+            <ul class="navbar-nav">
+                <li class="nav-header">Links</li>
+                <li class="nav-item" id="fsdocs-license-link"><a class="nav-link" href="https://github.com/fsprojects/FSharpx.Extras/blob/master/LICENSE.md">License</a></li>
+                <li class="nav-item" id="fsdocs-release-notes-link"><a class="nav-link" href="https://github.com/fsprojects/FSharpx.Extras/blob/master/RELEASE_NOTES.md">Release Notes</a></li>
+                <li class="nav-item" id="fsdocs-repository-link"><a class="nav-link" href="https://github.com/fsprojects/FSharpx.Extras/">Source Repository</a></li>
+                <li class="nav-header">
+  Documentation
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fsprojects.github.io/FSharpx.Extras/DiningPhilosophers.html">
+    DiningPhilosophers
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fsprojects.github.io/FSharpx.Extras/MonoidCESample.html">
+    MonoidCESample
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fsprojects.github.io/FSharpx.Extras/Santa.html">
+    Santa
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fsprojects.github.io/FSharpx.Extras/StateSample.html">
+    StateSample
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fsprojects.github.io/FSharpx.Extras/StmSample.html">
+    StmSample
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fsprojects.github.io/FSharpx.Extras/UndoSample.html">
+    UndoSample
+  </a>
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fsprojects.github.io/FSharpx.Extras/WebProxy.html">
+    WebProxy
+  </a>
+</li>
+                <li class="nav-header">
+  API Reference
+</li>             
+<li class="nav-item">
+  <a class="nav-link" href="https://fsprojects.github.io/FSharpx.Extras/reference/index.html">
+    All Namespaces
+  </a>
+</li>
+            </ul>
+        </div>
+    </nav>
     <div class="container">
-      <div class="masthead">
-        <ul class="nav nav-pills pull-right">
-          <li><a href="http://fsharp.org">fsharp.org</a></li>
-          <li><a href="https://github.com/fsprojects/FSharpx.Extras">github page</a></li>
-        </ul>
-        <h3 class="muted"><a href="/FSharpx.Extras/index.html">FSharpx.Extras</a></h3>
-      </div>
-      <hr />
-      <div class="row">
-        <div class="span9" id="main">
-          
-
-
-
-<h1>IOPrimitives</h1>
-<p>
-  <span>Namespace: FSharpx.IO</span><br />
-</p>
-<div class="xmldoc">
-</div>
-
-<!-- Render nested types and modules, if there are any -->
-
-  <h3>Functions and values</h3>
-  <table class="table table-bordered member-list">
-    <thead>
-      <tr><td>Function or value</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '651', 651)" onmouseover="showTip(event, '651', 651)">
-            allFilesExist files
-          </code>
-          <div class="tip" id="651">
-            <strong>Signature:</strong> files:seq&lt;string&gt; -&gt; bool<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L44-44" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Checks if all given files exists</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '652', 652)" onmouseover="showTip(event, '652', 652)">
-            append s builder
-          </code>
-          <div class="tip" id="652">
-            <strong>Signature:</strong> s:string -&gt; builder:StringBuilder -&gt; StringBuilder<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L81-81" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Appends a text</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '653', 653)" onmouseover="showTip(event, '653', 653)">
-            appendFileNamesIfNotNull (...)
-          </code>
-          <div class="tip" id="653">
-            <strong>Signature:</strong> fileNames:seq&lt;string&gt; -&gt; builder:StringBuilder -&gt; StringBuilder<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L99-99" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Appends all notnull fileNames</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '654', 654)" onmouseover="showTip(event, '654', 654)">
-            appendIfFalse p
-          </code>
-          <div class="tip" id="654">
-            <strong>Signature:</strong> p:bool -&gt; string -&gt; StringBuilder -&gt; StringBuilder<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L87-87" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Appends a text if the predicate is false</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '655', 655)" onmouseover="showTip(event, '655', 655)">
-            appendIfNotNull value s
-          </code>
-          <div class="tip" id="655">
-            <strong>Signature:</strong> value:&#39;?11256 -&gt; s:string -&gt; StringBuilder -&gt; StringBuilder<br />
-                          <strong>Type parameters:</strong> '?11256          </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L90-90" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Appends a text if the value is not null</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '656', 656)" onmouseover="showTip(event, '656', 656)">
-            appendIfTrue p s builder
-          </code>
-          <div class="tip" id="656">
-            <strong>Signature:</strong> p:bool -&gt; s:string -&gt; builder:StringBuilder -&gt; StringBuilder<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L84-84" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Appends a text if the predicate is true</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '657', 657)" onmouseover="showTip(event, '657', 657)">
-            appendStringIfValueIsNotNull value
-          </code>
-          <div class="tip" id="657">
-            <strong>Signature:</strong> value:&#39;?11258 -&gt; string -&gt; StringBuilder -&gt; StringBuilder<br />
-                          <strong>Type parameters:</strong> '?11258          </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L93-93" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Appends a text if the value is not null</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '658', 658)" onmouseover="showTip(event, '658', 658)">
-            appendStringIfValueIsNotNullOrEmpty (...)
-          </code>
-          <div class="tip" id="658">
-            <strong>Signature:</strong> value:string -&gt; string -&gt; StringBuilder -&gt; StringBuilder<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L96-96" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Appends a text if the value is not null or empty</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '659', 659)" onmouseover="showTip(event, '659', 659)">
-            checkFileExists fileName
-          </code>
-          <div class="tip" id="659">
-            <strong>Signature:</strong> fileName:string -&gt; unit<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L40-40" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Checks if the file exists on disk.</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '660', 660)" onmouseover="showTip(event, '660', 660)">
-            combinePaths path1 path2
-          </code>
-          <div class="tip" id="660">
-            <strong>Signature:</strong> path1:string -&gt; path2:string -&gt; string<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L107-107" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Combines two path strings</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '661', 661)" onmouseover="showTip(event, '661', 661)">
-            convertTextToWindowsLineBreaks text
-          </code>
-          <div class="tip" id="661">
-            <strong>Signature:</strong> text:string -&gt; string<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L74-74" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Converts the given text from linux or mac linebreaks to windows line breaks</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '662', 662)" onmouseover="showTip(event, '662', 662)">
-            currentDirectory 
-          </code>
-          <div class="tip" id="662">
-            <strong>Signature:</strong> string<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L37-37" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Gets the current directory</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '663', 663)" onmouseover="showTip(event, '663', 663)">
-            directoryInfo path
-          </code>
-          <div class="tip" id="663">
-            <strong>Signature:</strong> path:string -&gt; DirectoryInfo<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L16-16" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Creates a DirectoryInfo for the given path</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '664', 664)" onmouseover="showTip(event, '664', 664)">
-            directorySeparator 
-          </code>
-          <div class="tip" id="664">
-            <strong>Signature:</strong> string<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L104-104" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>The directory separator string. On most systems / or \</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '665', 665)" onmouseover="showTip(event, '665', 665)">
-            fileInfo path
-          </code>
-          <div class="tip" id="665">
-            <strong>Signature:</strong> path:string -&gt; FileInfo<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L19-19" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Creates a FileInfo for the given path</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '666', 666)" onmouseover="showTip(event, '666', 666)">
-            filesInDir dir
-          </code>
-          <div class="tip" id="666">
-            <strong>Signature:</strong> dir:DirectoryInfo -&gt; FileInfo []<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L34-34" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Gets all files in the directory</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '667', 667)" onmouseover="showTip(event, '667', 667)">
-            fileSystemInfo path
-          </code>
-          <div class="tip" id="667">
-            <strong>Signature:</strong> path:string -&gt; FileSystemInfo<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L22-22" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Creates a FileInfo or a DirectoryInfo for the given path</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '668', 668)" onmouseover="showTip(event, '668', 668)">
-            getFullName fileName
-          </code>
-          <div class="tip" id="668">
-            <strong>Signature:</strong> fileName:string -&gt; string<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L28-28" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Converts a file to it's full file system name</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '669', 669)" onmouseover="showTip(event, '669', 669)">
-            LinuxLineBreaks 
-          </code>
-          <div class="tip" id="669">
-            <strong>Signature:</strong> string<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L11-11" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '670', 670)" onmouseover="showTip(event, '670', 670)">
-            MacLineBreaks 
-          </code>
-          <div class="tip" id="670">
-            <strong>Signature:</strong> string<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L13-13" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '671', 671)" onmouseover="showTip(event, '671', 671)">
-            readFile file
-          </code>
-          <div class="tip" id="671">
-            <strong>Signature:</strong> file:string -&gt; seq&lt;string&gt;<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L50-50" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Reads a file line by line</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '672', 672)" onmouseover="showTip(event, '672', 672)">
-            readFileAsString file
-          </code>
-          <div class="tip" id="672">
-            <strong>Signature:</strong> file:string -&gt; string<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L47-47" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Reads a file as one text</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '673', 673)" onmouseover="showTip(event, '673', 673)">
-            replaceFile fileName lines
-          </code>
-          <div class="tip" id="673">
-            <strong>Signature:</strong> fileName:string -&gt; lines:seq&lt;string&gt; -&gt; unit<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L66-66" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Replaces the file with the given string</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '674', 674)" onmouseover="showTip(event, '674', 674)">
-            subDirectories dir
-          </code>
-          <div class="tip" id="674">
-            <strong>Signature:</strong> dir:DirectoryInfo -&gt; DirectoryInfo []<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L31-31" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Gets all subdirectories</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '675', 675)" onmouseover="showTip(event, '675', 675)">
-            WindowsLineBreaks 
-          </code>
-          <div class="tip" id="675">
-            <strong>Signature:</strong> string<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L12-12" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '676', 676)" onmouseover="showTip(event, '676', 676)">
-            writeStringToFile append file text
-          </code>
-          <div class="tip" id="676">
-            <strong>Signature:</strong> append:bool -&gt; file:string -&gt; text:string -&gt; unit<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L63-63" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Writes a single string to a file</p>
-
-
-        </td>
-      </tr>
-      <tr>
-        <td class="member-name">
-
-          <code onmouseout="hideTip(event, '677', 677)" onmouseover="showTip(event, '677', 677)">
-            writeToFile append fileName lines
-          </code>
-          <div class="tip" id="677">
-            <strong>Signature:</strong> append:bool -&gt; fileName:string -&gt; lines:seq&lt;string&gt; -&gt; unit<br />
-                      </div>
-        </td>
-        <td class="xmldoc">
-            <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L56-56" class="github-link">
-              <img src="../content/img/github.png" class="normal" />
-              <img src="../content/img/github-blue.png" class="hover" />
-            </a>
-          <p>Writes a file line by line</p>
-
-
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
+        <div class="masthead">
+            <h3 class="muted"><a href="https://fsprojects.github.io/FSharpx.Extras/">FSharpx.Extras</a></h3>
         </div>
-        <div class="span3">
-          <img src="/FSharpx.Extras/img/logo.png" alt="F# Project" style="width:150px;margin:10px" />  
-          <ul class="nav nav-list" id="menu" style="margin-top: 20px;">
-            <li class="nav-header">FSharpx.Extras</li>
-            <li><a href="/FSharpx.Extras/index.html">Home page</a></li>
-            <li class="divider"></li>
-            <li><a href="http://nuget.org/packages/FSharpx.Extras">Get Library via NuGet</a></li>
-            <li><a href="https://github.com/fsprojects/FSharpx.Extras">Source Code on GitHub</a></li>
-            <li><a href="/FSharpx.Extras/license.html">License</a></li>
-            <li><a href="/FSharpx.Extras/release-notes.html">Release Notes</a></li>
-            
-            <li class="nav-header">Getting started</li>
-            <li><a href="/FSharpx.Extras/index.html">Introduction</a></li>
-
-            <li class="nav-header">Documentation</li>
-            <li><a href="/FSharpx.Extras/reference/index.html">API Reference</a></li>
-          </ul>
-        </div>
-      </div>
+        <hr />
+        <div class="container" id="fsdocs-content">
+            <div>
+  <h2>
+    IOPrimitives Module
+  </h2>
+  <dl class="fsdocs-metadata">
+    <dt>
+      Namespace: 
+      <a href="https://fsprojects.github.io/FSharpx.Extras/reference/fsharpx-io.html">
+        FSharpx.IO
+      </a>
+    </dt>
+    <dt>
+      Assembly: FSharpx.Extras.dll
+    </dt>
+  </dl>
+  <div class="fsdocs-xmldoc">
+    <div>
+      <p class="fsdocs-summary">
+        
+      </p>
     </div>
-    <a href="https://github.com/fsprojects/FSharpx.Extras"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"/></a>
-  </body>
-  </html>
+  </div>
+  <div>
+    <h3>
+      Functions and values
+    </h3>
+    <table class="table outer-list fsdocs-member-list">
+      <thead>
+        <tr>
+          <td class="fsdocs-member-list-header">
+            Function or value
+          </td>
+          <td class="fsdocs-member-list-header">
+            Description
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '744', 744)" onmouseover="showTip(event, '744', 744)">
+                <p>
+                  <a id="LinuxLineBreaks">
+                    <a href="#LinuxLineBreaks">
+                      <code><span>LinuxLineBreaks&#32;<span></span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="744">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>LinuxLineBreaks&#32;<span></span></span></code>
+                  <br/>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code>string</code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <dl class="fsdocs-returns">
+              <dt>
+                <span class="fsdocs-return-name">
+                  Returns: 
+                </span>
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-return-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '745', 745)" onmouseover="showTip(event, '745', 745)">
+                <p>
+                  <a id="MacLineBreaks">
+                    <a href="#MacLineBreaks">
+                      <code><span>MacLineBreaks&#32;<span></span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="745">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>MacLineBreaks&#32;<span></span></span></code>
+                  <br/>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code>string</code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <dl class="fsdocs-returns">
+              <dt>
+                <span class="fsdocs-return-name">
+                  Returns: 
+                </span>
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-return-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '746', 746)" onmouseover="showTip(event, '746', 746)">
+                <p>
+                  <a id="WindowsLineBreaks">
+                    <a href="#WindowsLineBreaks">
+                      <code><span>WindowsLineBreaks&#32;<span></span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="746">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>WindowsLineBreaks&#32;<span></span></span></code>
+                  <br/>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code>string</code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <dl class="fsdocs-returns">
+              <dt>
+                <span class="fsdocs-return-name">
+                  Returns: 
+                </span>
+                <code>string</code>
+              </dt>
+              <dd class="fsdocs-return-docs"></dd>
+            </dl>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '747', 747)" onmouseover="showTip(event, '747', 747)">
+                <p>
+                  <a id="allFilesExist">
+                    <a href="#allFilesExist">
+                      <code><span>allFilesExist&#32;<span>files</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="747">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>allFilesExist&#32;<span>files</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        files
+                      </b>
+                      :
+                      <code><span>string&#32;seq</span></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code>bool</code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:FSharpx.IO.IOPrimitives.allFilesExist`')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:FSharpx.IO.IOPrimitives.allFilesExist\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L44-44" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Checks if all given files exists
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    files
+                  </span>
+                  :
+                  <code><span>string&#32;seq</span></code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code>bool</code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '748', 748)" onmouseover="showTip(event, '748', 748)">
+                <p>
+                  <a id="append">
+                    <a href="#append">
+                      <code><span>append&#32;<span>s&#32;builder</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="748">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>append&#32;<span>s&#32;builder</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        s
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        builder
+                      </b>
+                      :
+                      <code><a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a></code>
+                  </span>
+                  <br/>
+                  Modifiers: 
+                  inline
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:FSharpx.IO.IOPrimitives.append`')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:FSharpx.IO.IOPrimitives.append\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L81-81" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Appends a text
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    s
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    builder
+                  </span>
+                  :
+                  <code><a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a></code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code><a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a></code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '749', 749)" onmouseover="showTip(event, '749', 749)">
+                <p>
+                  <a id="appendFileNamesIfNotNull">
+                    <a href="#appendFileNamesIfNotNull">
+                      <code><span>appendFileNamesIfNotNull&#32;<span>fileNames&#32;builder</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="749">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>appendFileNamesIfNotNull&#32;<span>fileNames&#32;builder</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        fileNames
+                      </b>
+                      :
+                      <code><span>string&#32;seq</span></code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        builder
+                      </b>
+                      :
+                      <code><a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a></code>
+                  </span>
+                  <br/>
+                  Modifiers: 
+                  inline
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:FSharpx.IO.IOPrimitives.appendFileNamesIfNotNull`')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:FSharpx.IO.IOPrimitives.appendFileNamesIfNotNull\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L99-99" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Appends all notnull fileNames
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    fileNames
+                  </span>
+                  :
+                  <code><span>string&#32;seq</span></code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    builder
+                  </span>
+                  :
+                  <code><a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a></code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code><a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a></code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '750', 750)" onmouseover="showTip(event, '750', 750)">
+                <p>
+                  <a id="appendIfFalse">
+                    <a href="#appendIfFalse">
+                      <code><span>appendIfFalse&#32;<span>p</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="750">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>appendIfFalse&#32;<span>p</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        p
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><span>string&#32;->&#32;<a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a>&#32;->&#32;<a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a></span></code>
+                  </span>
+                  <br/>
+                  Modifiers: 
+                  inline
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:FSharpx.IO.IOPrimitives.appendIfFalse`')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:FSharpx.IO.IOPrimitives.appendIfFalse\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L87-87" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Appends a text if the predicate is false
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    p
+                  </span>
+                  :
+                  <code>bool</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code><span>string&#32;->&#32;<a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a>&#32;->&#32;<a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a></span></code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '751', 751)" onmouseover="showTip(event, '751', 751)">
+                <p>
+                  <a id="appendIfNotNull">
+                    <a href="#appendIfNotNull">
+                      <code><span>appendIfNotNull&#32;<span>value&#32;s</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="751">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>appendIfNotNull&#32;<span>value&#32;s</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        value
+                      </b>
+                      :
+                      <code>'a</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        s
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><span><a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a>&#32;->&#32;<a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a></span></code>
+                  </span>
+                  <br/>
+                  Modifiers: 
+                  inline
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('```cref:M:FSharpx.IO.IOPrimitives.appendIfNotNull``1```')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:FSharpx.IO.IOPrimitives.appendIfNotNull``1\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L90-90" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Appends a text if the value is not null
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    value
+                  </span>
+                  :
+                  <code>'a</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    s
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code><span><a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a>&#32;->&#32;<a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a></span></code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '752', 752)" onmouseover="showTip(event, '752', 752)">
+                <p>
+                  <a id="appendIfTrue">
+                    <a href="#appendIfTrue">
+                      <code><span>appendIfTrue&#32;<span>p&#32;s&#32;builder</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="752">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>appendIfTrue&#32;<span>p&#32;s&#32;builder</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        p
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        s
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        builder
+                      </b>
+                      :
+                      <code><a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a></code>
+                  </span>
+                  <br/>
+                  Modifiers: 
+                  inline
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:FSharpx.IO.IOPrimitives.appendIfTrue`')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:FSharpx.IO.IOPrimitives.appendIfTrue\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L84-84" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Appends a text if the predicate is true
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    p
+                  </span>
+                  :
+                  <code>bool</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    s
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    builder
+                  </span>
+                  :
+                  <code><a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a></code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code><a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a></code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '753', 753)" onmouseover="showTip(event, '753', 753)">
+                <p>
+                  <a id="appendStringIfValueIsNotNull">
+                    <a href="#appendStringIfValueIsNotNull">
+                      <code><span>appendStringIfValueIsNotNull&#32;<span>value</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="753">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>appendStringIfValueIsNotNull&#32;<span>value</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        value
+                      </b>
+                      :
+                      <code>'a</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><span>string&#32;->&#32;<a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a>&#32;->&#32;<a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a></span></code>
+                  </span>
+                  <br/>
+                  Modifiers: 
+                  inline
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('```cref:M:FSharpx.IO.IOPrimitives.appendStringIfValueIsNotNull``1```')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:FSharpx.IO.IOPrimitives.appendStringIfValueIsNotNull``1\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L93-93" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Appends a text if the value is not null
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    value
+                  </span>
+                  :
+                  <code>'a</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code><span>string&#32;->&#32;<a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a>&#32;->&#32;<a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a></span></code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '754', 754)" onmouseover="showTip(event, '754', 754)">
+                <p>
+                  <a id="appendStringIfValueIsNotNullOrEmpty">
+                    <a href="#appendStringIfValueIsNotNullOrEmpty">
+                      <code><span>appendStringIfValueIsNotNullOrEmpty&#32;<span>value</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="754">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>appendStringIfValueIsNotNullOrEmpty&#32;<span>value</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        value
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><span>string&#32;->&#32;<a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a>&#32;->&#32;<a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a></span></code>
+                  </span>
+                  <br/>
+                  Modifiers: 
+                  inline
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:FSharpx.IO.IOPrimitives.appendStringIfValueIsNotNullOrEmpty`')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:FSharpx.IO.IOPrimitives.appendStringIfValueIsNotNullOrEmpty\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L96-96" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Appends a text if the value is not null or empty
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    value
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code><span>string&#32;->&#32;<a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a>&#32;->&#32;<a href="https://learn.microsoft.com/dotnet/api/system.text.stringbuilder">StringBuilder</a></span></code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '755', 755)" onmouseover="showTip(event, '755', 755)">
+                <p>
+                  <a id="checkFileExists">
+                    <a href="#checkFileExists">
+                      <code><span>checkFileExists&#32;<span>fileName</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="755">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>checkFileExists&#32;<span>fileName</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        fileName
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:FSharpx.IO.IOPrimitives.checkFileExists`')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:FSharpx.IO.IOPrimitives.checkFileExists\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L40-40" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Checks if the file exists on disk.
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    fileName
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '756', 756)" onmouseover="showTip(event, '756', 756)">
+                <p>
+                  <a id="combinePaths">
+                    <a href="#combinePaths">
+                      <code><span>combinePaths&#32;<span>path1&#32;path2</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="756">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>combinePaths&#32;<span>path1&#32;path2</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        path1
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        path2
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code>string</code>
+                  </span>
+                  <br/>
+                  Modifiers: 
+                  inline
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:FSharpx.IO.IOPrimitives.combinePaths`')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:FSharpx.IO.IOPrimitives.combinePaths\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L107-107" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Combines two path strings
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    path1
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    path2
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '757', 757)" onmouseover="showTip(event, '757', 757)">
+                <p>
+                  <a id="convertTextToWindowsLineBreaks">
+                    <a href="#convertTextToWindowsLineBreaks">
+                      <code><span>convertTextToWindowsLineBreaks&#32;<span>text</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="757">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>convertTextToWindowsLineBreaks&#32;<span>text</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        text
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code>string</code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:FSharpx.IO.IOPrimitives.convertTextToWindowsLineBreaks`')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:FSharpx.IO.IOPrimitives.convertTextToWindowsLineBreaks\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L74-74" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Converts the given text from linux or mac linebreaks to windows line breaks
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    text
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '758', 758)" onmouseover="showTip(event, '758', 758)">
+                <p>
+                  <a id="currentDirectory">
+                    <a href="#currentDirectory">
+                      <code><span>currentDirectory&#32;<span></span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="758">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>currentDirectory&#32;<span></span></span></code>
+                  <br/>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code>string</code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:P:FSharpx.IO.IOPrimitives.currentDirectory`')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'P:FSharpx.IO.IOPrimitives.currentDirectory\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L37-37" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Gets the current directory
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '759', 759)" onmouseover="showTip(event, '759', 759)">
+                <p>
+                  <a id="directoryInfo">
+                    <a href="#directoryInfo">
+                      <code><span>directoryInfo&#32;<span>path</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="759">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>directoryInfo&#32;<span>path</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        path
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><a href="https://learn.microsoft.com/dotnet/api/system.io.directoryinfo">DirectoryInfo</a></code>
+                  </span>
+                  <br/>
+                  Modifiers: 
+                  inline
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:FSharpx.IO.IOPrimitives.directoryInfo`')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:FSharpx.IO.IOPrimitives.directoryInfo\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L16-16" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Creates a DirectoryInfo for the given path
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    path
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code><a href="https://learn.microsoft.com/dotnet/api/system.io.directoryinfo">DirectoryInfo</a></code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '760', 760)" onmouseover="showTip(event, '760', 760)">
+                <p>
+                  <a id="directorySeparator">
+                    <a href="#directorySeparator">
+                      <code><span>directorySeparator&#32;<span></span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="760">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>directorySeparator&#32;<span></span></span></code>
+                  <br/>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code>string</code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:P:FSharpx.IO.IOPrimitives.directorySeparator`')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'P:FSharpx.IO.IOPrimitives.directorySeparator\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L104-104" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ The directory separator string. On most systems / or \
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '761', 761)" onmouseover="showTip(event, '761', 761)">
+                <p>
+                  <a id="fileInfo">
+                    <a href="#fileInfo">
+                      <code><span>fileInfo&#32;<span>path</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="761">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>fileInfo&#32;<span>path</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        path
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><a href="https://learn.microsoft.com/dotnet/api/system.io.fileinfo">FileInfo</a></code>
+                  </span>
+                  <br/>
+                  Modifiers: 
+                  inline
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:FSharpx.IO.IOPrimitives.fileInfo`')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:FSharpx.IO.IOPrimitives.fileInfo\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L19-19" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Creates a FileInfo for the given path
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    path
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code><a href="https://learn.microsoft.com/dotnet/api/system.io.fileinfo">FileInfo</a></code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '762', 762)" onmouseover="showTip(event, '762', 762)">
+                <p>
+                  <a id="fileSystemInfo">
+                    <a href="#fileSystemInfo">
+                      <code><span>fileSystemInfo&#32;<span>path</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="762">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>fileSystemInfo&#32;<span>path</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        path
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><a href="https://learn.microsoft.com/dotnet/api/system.io.filesysteminfo">FileSystemInfo</a></code>
+                  </span>
+                  <br/>
+                  Modifiers: 
+                  inline
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:FSharpx.IO.IOPrimitives.fileSystemInfo`')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:FSharpx.IO.IOPrimitives.fileSystemInfo\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L22-22" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Creates a FileInfo or a DirectoryInfo for the given path
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    path
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code><a href="https://learn.microsoft.com/dotnet/api/system.io.filesysteminfo">FileSystemInfo</a></code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '763', 763)" onmouseover="showTip(event, '763', 763)">
+                <p>
+                  <a id="filesInDir">
+                    <a href="#filesInDir">
+                      <code><span>filesInDir&#32;<span>dir</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="763">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>filesInDir&#32;<span>dir</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        dir
+                      </b>
+                      :
+                      <code><a href="https://learn.microsoft.com/dotnet/api/system.io.directoryinfo">DirectoryInfo</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><span><a href="https://learn.microsoft.com/dotnet/api/system.io.fileinfo">FileInfo</a>[]</span></code>
+                  </span>
+                  <br/>
+                  Modifiers: 
+                  inline
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:FSharpx.IO.IOPrimitives.filesInDir`')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:FSharpx.IO.IOPrimitives.filesInDir\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L34-34" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Gets all files in the directory
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    dir
+                  </span>
+                  :
+                  <code><a href="https://learn.microsoft.com/dotnet/api/system.io.directoryinfo">DirectoryInfo</a></code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code><span><a href="https://learn.microsoft.com/dotnet/api/system.io.fileinfo">FileInfo</a>[]</span></code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '764', 764)" onmouseover="showTip(event, '764', 764)">
+                <p>
+                  <a id="getFullName">
+                    <a href="#getFullName">
+                      <code><span>getFullName&#32;<span>fileName</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="764">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>getFullName&#32;<span>fileName</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        fileName
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code>string</code>
+                  </span>
+                  <br/>
+                  Modifiers: 
+                  inline
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:FSharpx.IO.IOPrimitives.getFullName`')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:FSharpx.IO.IOPrimitives.getFullName\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L28-28" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Converts a file to it's full file system name
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    fileName
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '765', 765)" onmouseover="showTip(event, '765', 765)">
+                <p>
+                  <a id="readFile">
+                    <a href="#readFile">
+                      <code><span>readFile&#32;<span>file</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="765">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>readFile&#32;<span>file</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        file
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><span>string&#32;seq</span></code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:FSharpx.IO.IOPrimitives.readFile`')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:FSharpx.IO.IOPrimitives.readFile\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L50-50" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Reads a file line by line
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    file
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code><span>string&#32;seq</span></code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '766', 766)" onmouseover="showTip(event, '766', 766)">
+                <p>
+                  <a id="readFileAsString">
+                    <a href="#readFileAsString">
+                      <code><span>readFileAsString&#32;<span>file</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="766">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>readFileAsString&#32;<span>file</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        file
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code>string</code>
+                  </span>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:FSharpx.IO.IOPrimitives.readFileAsString`')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:FSharpx.IO.IOPrimitives.readFileAsString\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L47-47" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Reads a file as one text
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    file
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '767', 767)" onmouseover="showTip(event, '767', 767)">
+                <p>
+                  <a id="replaceFile">
+                    <a href="#replaceFile">
+                      <code><span>replaceFile&#32;<span>fileName&#32;lines</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="767">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>replaceFile&#32;<span>fileName&#32;lines</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        fileName
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        lines
+                      </b>
+                      :
+                      <code><span>string&#32;seq</span></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:FSharpx.IO.IOPrimitives.replaceFile`')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:FSharpx.IO.IOPrimitives.replaceFile\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L66-66" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Replaces the file with the given string
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    fileName
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    lines
+                  </span>
+                  :
+                  <code><span>string&#32;seq</span></code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '768', 768)" onmouseover="showTip(event, '768', 768)">
+                <p>
+                  <a id="subDirectories">
+                    <a href="#subDirectories">
+                      <code><span>subDirectories&#32;<span>dir</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="768">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>subDirectories&#32;<span>dir</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        dir
+                      </b>
+                      :
+                      <code><a href="https://learn.microsoft.com/dotnet/api/system.io.directoryinfo">DirectoryInfo</a></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                  <span>
+                    Returns: 
+                    <code><span><a href="https://learn.microsoft.com/dotnet/api/system.io.directoryinfo">DirectoryInfo</a>[]</span></code>
+                  </span>
+                  <br/>
+                  Modifiers: 
+                  inline
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:FSharpx.IO.IOPrimitives.subDirectories`')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:FSharpx.IO.IOPrimitives.subDirectories\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L31-31" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Gets all subdirectories
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    dir
+                  </span>
+                  :
+                  <code><a href="https://learn.microsoft.com/dotnet/api/system.io.directoryinfo">DirectoryInfo</a></code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+              <dl class="fsdocs-returns">
+                <dt>
+                  <span class="fsdocs-return-name">
+                    Returns: 
+                  </span>
+                  <code><span><a href="https://learn.microsoft.com/dotnet/api/system.io.directoryinfo">DirectoryInfo</a>[]</span></code>
+                </dt>
+                <dd class="fsdocs-return-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '769', 769)" onmouseover="showTip(event, '769', 769)">
+                <p>
+                  <a id="writeStringToFile">
+                    <a href="#writeStringToFile">
+                      <code><span>writeStringToFile&#32;<span>append&#32;file&#32;text</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="769">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>writeStringToFile&#32;<span>append&#32;file&#32;text</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        append
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        file
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        text
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:FSharpx.IO.IOPrimitives.writeStringToFile`')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:FSharpx.IO.IOPrimitives.writeStringToFile\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L63-63" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Writes a single string to a file
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    append
+                  </span>
+                  :
+                  <code>bool</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    file
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    text
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+        <tr>
+          <td class="fsdocs-member-usage">
+            <div>
+              <code onmouseout="hideTip(event, '770', 770)" onmouseover="showTip(event, '770', 770)">
+                <p>
+                  <a id="writeToFile">
+                    <a href="#writeToFile">
+                      <code><span>writeToFile&#32;<span>append&#32;fileName&#32;lines</span></span></code>
+                    </a>
+                  </a>
+                </p>
+              </code>
+              <div class="fsdocs-tip" id="770">
+                <div class="member-tooltip">
+                  Full Usage: 
+                  <code><span>writeToFile&#32;<span>append&#32;fileName&#32;lines</span></span></code>
+                  <br/>
+                  <br/>
+                  Parameters: 
+                  <ul>
+                    <span>
+                      <b>
+                        append
+                      </b>
+                      :
+                      <code>bool</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        fileName
+                      </b>
+                      :
+                      <code>string</code>
+                    </span>
+                    <br/>
+                    <span>
+                      <b>
+                        lines
+                      </b>
+                      :
+                      <code><span>string&#32;seq</span></code>
+                    </span>
+                    <br/>
+                  </ul>
+                  <br/>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td class="fsdocs-member-xmldoc">
+            <details>
+              <summary>
+                <div class="fsdocs-summary">
+                  <div class="fsdocs-source-link" title="Copy signature (Markdown)" onclick="Clipboard_CopyTo('`cref:M:FSharpx.IO.IOPrimitives.writeToFile`')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-md-hover.png" class="hover"/>
+                  </div>
+                  <div class="fsdocs-source-link" title="Copy signature (XML)" onclick="Clipboard_CopyTo('<see cref=\'M:FSharpx.IO.IOPrimitives.writeToFile\'/>')">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/copy-xml-hover.png" class="hover"/>
+                  </div>
+                  <a href="https://github.com/fsprojects/FSharpx.Extras/tree/master/src/FSharpx.Extras/IO.fs#L56-56" class="fsdocs-source-link" title="Source on GitHub">
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github.png" class="normal"/>
+                    <img src="https://fsprojects.github.io/FSharpx.Extras/content/img/github-hover.png" class="hover"/>
+                  </a>
+                  <p class="fsdocs-summary">
+                    
+ Writes a file line by line
+
+                  </p>
+                </div>
+              </summary>
+              <dl class="fsdocs-params">
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    append
+                  </span>
+                  :
+                  <code>bool</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    fileName
+                  </span>
+                  :
+                  <code>string</code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+                <dt class="fsdocs-param">
+                  <span class="fsdocs-param-name">
+                    lines
+                  </span>
+                  :
+                  <code><span>string&#32;seq</span></code>
+                </dt>
+                <dd class="fsdocs-param-docs"></dd>
+              </dl>
+            </details>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
+            
+        </div>
+
+        <!-- BEGIN SEARCH BOX: this adds support for the search box -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.css" />
+        <script type="text/javascript">var fsdocs_search_baseurl = 'https://fsprojects.github.io/FSharpx.Extras/';</script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.8/lunr.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.min.js"></script>
+        <script type="text/javascript" src="https://fsprojects.github.io/FSharpx.Extras/content/fsdocs-search.js"></script>
+        <!-- END SEARCH BOX: this adds support for the search box -->
+    </div>
+</body>
+
+</html>
