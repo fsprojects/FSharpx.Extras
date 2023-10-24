@@ -207,11 +207,11 @@ Target.create "Release" (fun _ ->
 
 Target.create "GenerateDocs" (fun _ ->
     Shell.cleanDir ".fsdocs"
-    DotNet.exec id "fsdocs" "build --clean --property Configuration=Release TargetFramework=netstandard2.0" |> ignore
+    DotNet.exec id "fsdocs" "build --clean --properties Configuration=Release TargetFramework=netstandard2.0" |> ignore
 )
 
 Target.create "WatchDocs" (fun _ ->
-    DotNet.exec id "fsdocs" "watch --clean --property Configuration=Release TargetFramework=netstandard2.0" |> ignore
+    DotNet.exec id "fsdocs" "watch --clean --properties Configuration=Release TargetFramework=netstandard2.0" |> ignore
 )
 
 Target.create "ReleaseDocs" (fun _ ->

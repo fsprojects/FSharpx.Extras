@@ -4,7 +4,7 @@
     <VersionPrefix>3.2.0</VersionPrefix>
     <Owners>Steffen Forkmann and others</Owners>
     <Authors>Steffen Forkmann and others</Authors>
-    <PackageProjectUrl>https://github.com/fsprojects/FSharpx.Extras</PackageProjectUrl>
+    <PackageProjectUrl>https://fsprojects.github.io/FSharpx.Extras</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/fsprojects/FSharpx.Extras/master/docs/img/logo.png</PackageIconUrl>
     <PackageIcon>logo.png</PackageIcon>
     <License>Unlicense</License>
