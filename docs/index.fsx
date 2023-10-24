@@ -22,6 +22,8 @@ FSharpx.Extras implements:
 
 * A few features for working with HTTP applications.
 
+* Functional wrappers around instance methods ([String](reference/fsharpx-stringmodule.html))
+
 FSharpx.Extras is a set of additions on top of FSharpx.Collections and FSharpx.Async
 
 
