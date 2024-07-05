@@ -76,47 +76,66 @@ module Strings =
         Pluralizer.toSingular noun
 
     // Active patterns & operators for parsing strings
-    let (@?) (s:string) i = if i >= s.Length then ValueNone else ValueSome s.[i]
+    let (@?) (s:string) i = if i >= s.Length then None else Some s.[i]
 
-    let inline satisfies predicate (charOption:voption<char>) = 
+    let inline satisfies predicate (charOption:option<char>) = 
         match charOption with 
-        | ValueSome c when predicate c -> charOption 
-        | _ -> ValueNone
+        | Some c when predicate c -> charOption 
+        | _ -> None
 
-    [<return: Struct>]
     let (|EOF|_|) = function 
-        | ValueSome _ -> ValueNone
-        | _ -> ValueSome ()
-    [<return: Struct>]
+        | Some _ -> None
+        | _ -> Some ()
+
     let (|LetterDigit|_|) = satisfies Char.IsLetterOrDigit
-    [<return: Struct>]
     let (|Upper|_|) = satisfies Char.IsUpper
-    [<return: Struct>]
     let (|Lower|_|) = satisfies Char.IsLower
 
+    /// Faster patterns with ValueOption instead of Option
+    [<RequireQualifiedAccess>]
+    module ValuePatterns =
+        // Active patterns & operators for parsing strings
+        let inline take (s:string) i = if i >= s.Length then ValueNone else ValueSome s.[i]
+
+        let inline internal satisfies predicate (charOption:voption<char>) = 
+            match charOption with 
+            | ValueSome c when predicate c -> charOption 
+            | _ -> ValueNone
+
+        [<return: Struct>]
+        let (|EOF|_|) = function 
+            | ValueSome _ -> ValueNone
+            | _ -> ValueSome ()
+        [<return: Struct>]
+        let (|LetterDigit|_|) = satisfies Char.IsLetterOrDigit
+        [<return: Struct>]
+        let (|Upper|_|) = satisfies Char.IsUpper
+        [<return: Struct>]
+        let (|Lower|_|) = satisfies Char.IsLower
+    
     /// Turns a string into a nice PascalCase identifier
     [<CompiledName("NiceName")>]
     let niceName (s:string) = 
         if s = s.ToUpper() then s else
         // Starting to parse a new segment 
         let rec restart i = 
-          match s @? i with 
-          | EOF -> Seq.empty
-          | LetterDigit _ & Upper _ -> upperStart i (i + 1)
-          | LetterDigit _ -> consume i false (i + 1)
+          match ValuePatterns.take s i with 
+          | ValuePatterns.EOF -> Seq.empty
+          | ValuePatterns.LetterDigit _ & ValuePatterns.Upper _ -> upperStart i (i + 1)
+          | ValuePatterns.LetterDigit _ -> consume i false (i + 1)
           | _ -> restart (i + 1)
 
         // Parsed first upper case letter, continue either all lower or all upper
         and upperStart from i = 
-          match s @? i with 
-          | Upper _ -> consume from true (i + 1) 
-          | Lower _ -> consume from false (i + 1) 
+          match ValuePatterns.take s i with 
+          | ValuePatterns.Upper _ -> consume from true (i + 1) 
+          | ValuePatterns.Lower _ -> consume from false (i + 1) 
           | _ -> restart (i + 1)
         // Consume are letters of the same kind (either all lower or all upper)
         and consume from takeUpper i = 
-          match s @? i with
-          | Lower _ when not takeUpper -> consume from takeUpper (i + 1)
-          | Upper _ when takeUpper -> consume from takeUpper (i + 1)
+          match ValuePatterns.take s i with
+          | ValuePatterns.Lower _ when not takeUpper -> consume from takeUpper (i + 1)
+          | ValuePatterns.Upper _ when takeUpper -> consume from takeUpper (i + 1)
           | _ -> 
             let r1 = struct(from, i) 
             let r2 = restart i
