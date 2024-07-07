@@ -137,11 +137,9 @@ module Strings =
           | ValuePatterns.Lower _ when not takeUpper -> consume from takeUpper (i + 1)
           | ValuePatterns.Upper _ when takeUpper -> consume from takeUpper (i + 1)
           | _ -> 
-            let r1 = struct(from, i) 
-            let r2 = restart i
             seq {
-              yield r1
-              yield! r2 }
+              yield struct(from, i)
+              yield! restart i }
     
         // Split string into segments and turn them to PascalCase
         seq { for i1, i2 in restart 0 do 
