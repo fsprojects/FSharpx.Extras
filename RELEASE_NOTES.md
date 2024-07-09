@@ -1,5 +1,6 @@
-### 3.2.0 - TBC
+### 3.2.0 - 09.07.2024
 * Remove net452 support and update test targets
+* Faster and less-memory-consuming niceName - https://github.com/fsprojects/FSharpx.Extras/pull/434
 
 ### 3.1.0 - 10.03.2022
 * Restore Task functions by reintroducing Task computation expression as internal component. - https://github.com/fsprojects/FSharpx.Extras/pull/409
