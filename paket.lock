@@ -305,7 +305,7 @@ NUGET
     FsCheck.NUnit (2.16.5)
       FsCheck (2.16.5)
       NUnit (>= 3.13.1 < 4.0)
-    FSharp.Core (6.0.6)
+    FSharp.Core (8.0.301)
     FsUnit (5.1)
       FSharp.Core (>= 5.0.2)
       NUnit (>= 3.13.3 < 3.14)
