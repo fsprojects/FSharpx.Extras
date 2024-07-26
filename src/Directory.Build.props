@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup>
-    <VersionPrefix>3.2.0</VersionPrefix>
+    <VersionPrefix>3.2.1</VersionPrefix>
     <Owners>Steffen Forkmann and others</Owners>
     <Authors>Steffen Forkmann and others</Authors>
     <PackageProjectUrl>https://fsprojects.github.io/FSharpx.Extras</PackageProjectUrl>

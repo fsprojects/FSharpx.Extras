@@ -4,14 +4,14 @@ source https://api.nuget.org/v3/index.json
 framework: netstandard20
 storage: none
 
-nuget FSharp.Core ~> 6.0.6
+nuget FSharp.Core >= 6.0.6 lowest_matching:true
 nuget FSharpx.Collections
 
 group Test
   source https://api.nuget.org/v3/index.json
   framework: net48, net6
   storage: none
-  nuget FSharp.Core ~> 6.0.6
+  nuget FSharp.Core ~> 8.0
   nuget NUnit
   nuget NUnit3TestAdapter
   nuget FsCheck
