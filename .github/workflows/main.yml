@@ -22,18 +22,19 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Setup .NET for main project build
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: |
           3.1.x
           6.0.x
+          8.0.x
     - name: Run fake build script
       run: ./build.sh
       shell: bash
     - name: Save nuget package as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: nuget-package
         path: |

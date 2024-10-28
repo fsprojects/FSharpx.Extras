@@ -9,7 +9,7 @@ nuget FSharpx.Collections
 
 group Test
   source https://api.nuget.org/v3/index.json
-  framework: net48, net6
+  framework: net48, net6, net8
   storage: none
   nuget FSharp.Core ~> 8.0
   nuget NUnit

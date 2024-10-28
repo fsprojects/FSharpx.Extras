@@ -142,7 +142,7 @@ let ``using sequenceIgnore``() =
     | Choice2Of2 _ -> failwith "Validation failed on success values"
 
 [<Test>]
-let ``using mapMIgnore`` =
+let ``using mapMIgnore``() =
     let okAndErr = [ "ok"; "err" ]
     let oks = [ "ok1"; "ok2" ]
 
