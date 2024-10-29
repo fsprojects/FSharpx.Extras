@@ -22,6 +22,7 @@ group Test
 
 group FakeBuild
   source https://api.nuget.org/v3/index.json
+  framework: net8
   storage: none
 
   nuget Fake.Api.GitHub
