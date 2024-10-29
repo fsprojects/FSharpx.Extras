@@ -187,7 +187,6 @@ let ``Parallel with throttle``() =
   Assert.AreEqual(nums, result.Result)
 
 open FsCheck
-open FsCheck.NUnit
 
 type TaskGen =
     static member TaskArb =

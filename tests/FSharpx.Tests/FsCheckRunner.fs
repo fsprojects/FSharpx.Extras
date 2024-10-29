@@ -1,4 +1,4 @@
-﻿module FsCheck.NUnit
+﻿module FsCheck
 
 open FSharpx
 open FsCheck
@@ -18,7 +18,7 @@ let private nUnitRunner =
 let private nUnitConfig = { Config.Default with Runner = nUnitRunner }
 
 let fsCheck name testable =
-    FsCheck.Check.One (name, nUnitConfig, testable)
+    FsCheck.Check.One(name, nUnitConfig, testable)
 
 module Gen = 
     let ap x = flip Gen.apply x

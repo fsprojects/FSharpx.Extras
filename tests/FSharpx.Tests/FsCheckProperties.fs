@@ -3,7 +3,6 @@
 open FSharpx
 open FSharpx.Collections
 open FsCheck
-open FsCheck.NUnit
 
 let checkEquality<'a when 'a : equality> name =
     let n = sprintf "%s : equality %s" name

@@ -95,7 +95,6 @@ let ``return! allows binding the result``() =
     |> shouldEqual (Choice1Of2 6)    
 
 open FsCheck
-open FsCheck.NUnit
 
 [<Test>]
 let ``monad laws``() =

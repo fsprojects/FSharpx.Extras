@@ -15,7 +15,6 @@ group Test
   nuget NUnit
   nuget NUnit3TestAdapter
   nuget FsCheck
-  nuget FsCheck.NUnit
   nuget FsUnit ~> 5.1
   nuget Microsoft.NET.Test.Sdk
   nuget GitHubActionsTestLogger

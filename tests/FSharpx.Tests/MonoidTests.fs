@@ -2,7 +2,6 @@
 
 open NUnit.Framework
 open FsCheck
-open FsCheck.NUnit
 open FsUnitTyped
 open FSharpx
 open FSharpx.Functional

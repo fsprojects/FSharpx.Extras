@@ -3,7 +3,6 @@
 open System
 open NUnit.Framework
 open FsCheck
-open FsCheck.NUnit
 open FSharpx
 open FSharpx.Functional
 open FSharpx.Functional.Lens.Operators

@@ -4,7 +4,6 @@ open FSharpx
 open FSharpx.Option
 open NUnit.Framework
 open FsCheck
-open FsCheck.NUnit
 open FsUnitTyped
 
 let divide x y =

@@ -3,7 +3,7 @@
 open System
 open NUnit.Framework
 open FsUnitTyped
-open FsCheck.NUnit
+open FsCheck
 open FSharpx.Functional
 open FSharpx
 open FSharpx.Option
@@ -80,13 +80,13 @@ let ``orElseLazy None``() =
     let r = None |> Option.orElseLazy (lazy Some 2)
     Assert.AreEqual(Some 2, r)
 
-[<Property>]
-let ``someIf with always true predicate`` (x:int) =
-    Option.someIf (konst true) x = Some x
+[<Test>]
+let ``someIf with always true predicate`` () =
+    fsCheck "always true" <| fun (x:int) -> Option.someIf (konst true) x = Some x
 
-[<Property>]
-let ``someIf with always false predicate`` (x:int) =
-    Option.someIf (konst false) x = None
+[<Test>]
+let ``someIf with always false predicate`` () =
+    fsCheck "always false" <| fun (x:int) -> Option.someIf (konst false) x = None
 
 let someIfBoolTestCases = [
         TestCaseData(true, Some true)
