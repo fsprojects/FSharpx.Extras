@@ -74,8 +74,13 @@ let ``toString should  handle dotnet enums`` () =
 let ``getValues works as expected for dotnet enum`` ()=
     let result = Enum.getValues<System.Globalization.NumberStyles>()
     let expectedResult =
-        [NumberStyles.None; NumberStyles.AllowLeadingWhite; NumberStyles.AllowTrailingWhite; NumberStyles.AllowLeadingSign; NumberStyles.Integer;
-         NumberStyles.AllowTrailingSign; NumberStyles.AllowParentheses; NumberStyles.AllowDecimalPoint; NumberStyles.AllowThousands; NumberStyles.Number;
-         NumberStyles.AllowExponent; NumberStyles.Float; NumberStyles.AllowCurrencySymbol; NumberStyles.Currency; NumberStyles.Any; NumberStyles.AllowHexSpecifier;
-         NumberStyles.HexNumber]
-    result |> Seq.toList |> shouldEqual expectedResult
+        [
+            NumberStyles.None; NumberStyles.AllowLeadingWhite; NumberStyles.AllowTrailingWhite; NumberStyles.AllowLeadingSign; NumberStyles.Integer;
+            NumberStyles.AllowTrailingSign; NumberStyles.AllowParentheses; NumberStyles.AllowDecimalPoint; NumberStyles.AllowThousands; NumberStyles.Number;
+            NumberStyles.AllowExponent; NumberStyles.Float; NumberStyles.AllowCurrencySymbol; NumberStyles.Currency; NumberStyles.Any; NumberStyles.AllowHexSpecifier;
+            NumberStyles.HexNumber;
+            #if NET8_0
+            NumberStyles.BinaryNumber; NumberStyles.AllowBinarySpecifier
+            #endif
+         ]
+    result |> Seq.toList |> fun result -> CollectionAssert.AreEquivalent(expectedResult, result)

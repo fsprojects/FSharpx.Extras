@@ -1,0 +1,14 @@
+group FakeBuild
+    FSharp.Core
+    Fake.IO.FileSystem
+    Fake.Core.Target
+    Fake.Core.UserInput
+    Fake.Core.ReleaseNotes
+    FAKE.Core.Environment
+    Fake.DotNet.Cli
+    FAKE.Core.Process
+    Fake.Tools.Git
+    Fake.DotNet.Paket
+    Fake.Api.GitHub
+    Fake.BuildServer.GitHubActions
+    Octokit
