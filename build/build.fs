@@ -53,6 +53,8 @@ let gitName = "FSharpx.Extras"
 // The url for the raw files hosted
 let gitRaw = Environment.environVarOrDefault "gitRaw" "https://raw.githubusercontent.com/fsprojects"
 
+let outputDir = __SOURCE_DIRECTORY__ @@ "../bin"
+
 // --------------------------------------------------------------------------------------
 // END TODO: The rest of the file includes standard build steps
 // --------------------------------------------------------------------------------------
@@ -102,7 +104,7 @@ let initTargets () =
         ]
         |> Seq.iter (DotNet.publish (fun p ->
             { p with
-                OutputPath=Some(__SOURCE_DIRECTORY__ @@ "bin")
+                OutputPath=Some outputDir
                 Framework=Some"netstandard2.0"
 
             }))
@@ -126,12 +128,12 @@ let initTargets () =
     Target.create "NuGet" (fun _ ->
         solutionFile
         |> DotNet.pack (fun p ->
-            { p with OutputPath=Some(__SOURCE_DIRECTORY__ @@ "bin") })
+            { p with OutputPath=Some outputDir })
     )
 
     Target.create "PublishNuget" (fun _ ->
         Paket.push(fun p -> 
-            { p with WorkingDir=__SOURCE_DIRECTORY__ @@ "bin" })
+            { p with WorkingDir= outputDir })
     )
 
 
