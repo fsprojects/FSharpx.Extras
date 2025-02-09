@@ -9,6 +9,7 @@ open FSharpx
 open FSharpx.Functional
 open FSharpx.Collections
 open FSharpx.Choice
+#nowarn "FS0044"
 open FSharpx.Validation
 
 // First let's define a domain.

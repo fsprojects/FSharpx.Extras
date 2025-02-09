@@ -8,6 +8,7 @@ open FSharpx.CSharpTests
 open FSharpx
 open FSharpx.Functional
 open FSharpx.Choice
+#nowarn "FS0044"
 open FSharpx.Validation
 open FSharpx.Nullable
 open NUnit.Framework
