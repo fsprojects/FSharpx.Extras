@@ -10,6 +10,8 @@ open FSharpx.Functional
 open FSharpx
 open Microsoft.FSharp.Control.WebExtensions
 
+#nowarn "FS0044"
+
 [<assembly:Extension>]
 do()
 

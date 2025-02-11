@@ -1,16 +1,14 @@
-﻿module FSharpx.Tests.ValidationExample
+﻿module FSharpx.Tests.ValidationResultExample
 
 // ported from original in Scalaz: https://gist.github.com/970717
+// copy of ValidationExample adjusted for Validation.Result
 
+open FSharpx.Result
 open NUnit.Framework
 open FsUnitTyped
 
-open FSharpx
-open FSharpx.Functional
 open FSharpx.Collections
-open FSharpx.Choice
-#nowarn "FS0044"
-open FSharpx.Validation
+open FSharpx.Validation.Result
 
 // First let's define a domain.
 
@@ -25,38 +23,35 @@ type Person = {
     Sobriety: Sobriety
 }
 
-let Success = Choice1Of2
-let Failure = Choice2Of2
-
 // Let's define the checks that *all* nightclubs make!
 module Club =
     let checkAge (p: Person) =
         if p.Age < 18 then 
-            Failure "Too young!"
+            Error "Too young!"
         elif p.Age > 40 then
-            Failure "Too old!"
+            Error "Too old!"
         else
-            Success p
+            Ok p
 
     let checkClothes (p: Person) =
         if p.Gender = Male && not (p.Clothes.Contains "Tie") then
-            Failure "Smarten up!"
+            Error "Smarten up!"
         elif p.Gender = Female && p.Clothes.Contains "Trainers" then
-            Failure "Wear high heels"
+            Error "Wear high heels"
         else
-            Success p
+            Ok p
 
     let checkSobriety (p: Person) =
         match p.Sobriety with
-        | Drunk | Paralytic | Unconscious -> Failure "Sober up!"
-        | _ -> Success p
+        | Drunk | Paralytic | Unconscious -> Error "Sober up!"
+        | _ -> Ok p
 
 // Now let's compose some validation checks
 
 module ClubbedToDeath =
     open Club
     // PERFORM THE CHECKS USING Monadic "computation expression" SUGAR
-    let either = EitherBuilder()
+    let either = ResultBuilder()
     let costToEnter p =
         either {
             let! a = checkAge p
@@ -76,7 +71,7 @@ module ClubbedToDeath =
             | Female -> 0m
             | Male -> 5m
         let checkAll = checkAge >=> checkClothes >=> checkSobriety // kleisli composition
-        checkAll >> Choice.map costByGender
+        checkAll >> Result.map costByGender
 
 // Now let's see these in action
 
@@ -88,11 +83,11 @@ let Ruby = { Person.Gender = Female; Age = 25; Clothes = set ["High heels"]; Sob
 
 [<Test>]
 let part1() =
-    ClubbedToDeath.costToEnter Dave |> shouldEqual (Failure "Too old!")
-    ClubbedToDeath.costToEnter Ken |> shouldEqual (Success 5m)
-    ClubbedToDeath.costToEnter Ruby |> shouldEqual (Success 0m)
-    ClubbedToDeath.costToEnter { Ruby with Age = 17 } |> shouldEqual (Failure "Too young!")
-    ClubbedToDeath.costToEnter { Ken with Sobriety = Unconscious } |> shouldEqual (Failure "Sober up!")
+    ClubbedToDeath.costToEnter Dave |> shouldEqual (Error "Too old!")
+    ClubbedToDeath.costToEnter Ken |> shouldEqual (Ok 5m)
+    ClubbedToDeath.costToEnter Ruby |> shouldEqual (Ok 0m)
+    ClubbedToDeath.costToEnter { Ruby with Age = 17 } |> shouldEqual (Error "Too young!")
+    ClubbedToDeath.costToEnter { Ken with Sobriety = Unconscious } |> shouldEqual (Error "Sober up!")
 
 (**
  * The thing to note here is how the Validations can be composed together in a computation expression.
@@ -115,7 +110,7 @@ let part1() =
 
 module ClubTropicana =
     open Club
-    let failToList x = Choice.mapSecond NonEmptyList.singleton x
+    let failToList x = Result.mapError NonEmptyList.singleton x
     let costByGender (p: Person) =
         match p.Gender with
         | Female -> 0m
@@ -131,9 +126,9 @@ module ClubTropicana =
 [<Test>]
 let part2() =
     ClubTropicana.costToEnter { Dave with Sobriety = Paralytic } 
-    |> shouldEqual (Failure (NonEmptyList.create "Too old!" ["Sober up!"]))
+    |> shouldEqual (Error (NonEmptyList.create "Too old!" ["Sober up!"]))
 
-    ClubTropicana.costToEnter Ruby |> shouldEqual (Success 0m)
+    ClubTropicana.costToEnter Ruby |> shouldEqual (Ok 0m)
 
 (**
  *
@@ -155,18 +150,18 @@ module GayBar =
     open Club
     let checkGender (p: Person) =
         match p.Gender with
-        | Male -> Success p
-        | _ -> Failure "Men only"
+        | Male -> Ok p
+        | _ -> Error "Men only"
 
     let costToEnter p =
         [checkAge; checkClothes; checkSobriety; checkGender]
-        |> Validation.mapM (fun check -> check p |> Choice.mapSecond NonEmptyList.singleton)
-        |> Choice.map (function x::_ -> decimal x.Age + 1.5m | [] -> failwith "costToEnter")
+        |> mapM (fun check -> check p |> Result.mapError NonEmptyList.singleton)
+        |> Result.map (function x::_ -> decimal x.Age + 1.5m | [] -> failwith "costToEnter")
 
 [<Test>]
 let part3() =
     GayBar.costToEnter { Person.Gender = Male; Age = 59; Clothes = set ["Jeans"]; Sobriety = Paralytic } 
-    |> shouldEqual (Failure (NonEmptyList.create "Too old!" ["Smarten up!"; "Sober up!"]))
+    |> shouldEqual (Error (NonEmptyList.create "Too old!" ["Smarten up!"; "Sober up!"]))
 
-    GayBar.costToEnter { Person.Gender = Male; Age = 25; Clothes = set ["Tie"]; Sobriety = Sober } |> shouldEqual (Success 26.5m)
+    GayBar.costToEnter { Person.Gender = Male; Age = 25; Clothes = set ["Tie"]; Sobriety = Sober } |> shouldEqual (Ok 26.5m)
 

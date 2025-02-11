@@ -1,22 +1,21 @@
-﻿module FSharpx.Tests.ValidationTests
+﻿module FSharpx.Tests.ValidationResultTests
 
-open System
+// copy of ValidationTests adjusted for Validation.Result
+
+
 open FsUnitTyped
 open Microsoft.FSharp.Core
 open FSharpx.Collections
 open FSharpx.CSharpTests
 open FSharpx
-open FSharpx.Functional
-open FSharpx.Choice
-#nowarn "FS0044"
-open FSharpx.Validation
+open FSharpx.Validation.Result
 open FSharpx.Nullable
 open NUnit.Framework
 
 let validator pred error value =
     if pred value
-        then Choice1Of2 value
-        else Choice2Of2 (NonEmptyList.singleton error)
+        then Ok value
+        else Result.Error (NonEmptyList.singleton error)
 
 let (==) = LanguagePrimitives.PhysicalEquality
 let inline (!=) a b = not (a == b)
@@ -30,7 +29,7 @@ let validateAddressLines =
         "Line1 is empty but Line2 is not"
 
 let validateAddress (a: Address) = 
-    returnM a
+    Ok a
     <* nonNull "Post code can't be null" a.Postcode
     <* validateAddressLines a
 
@@ -42,7 +41,7 @@ let lengthNotEquals l = validator (fun (x: string) -> x.Length <> l) "Invalid le
 let validateOrder (o: Order) =
     let nameNotNull = nonNull "Product name can't be null" o.ProductName
     let positiveCost n = greaterThan (0m).n (sprintf "Cost for product '%s' can't be negative" n) o.Cost
-    nameNotNull >>= positiveCost |> Choice.map (konst o)
+    Result.bind positiveCost nameNotNull |> Result.map (konst o)
 
 (*    validation {
         let! name = nonNull "Product name can't be null" o.ProductName
@@ -65,14 +64,14 @@ let ValidateCustomer() =
                                     Order(ProductName = null , Cost = (-1m).n)
                      ]))
     let result = 
-        returnM customer
+        Ok customer
         <* nonNull "Surname can't be null" customer.Surname
         <* notEqual "foo" "Surname can't be foo" customer.Surname
         <* validateAddress customer.Address
         <* validateOrders customer.Orders
     match result with
-    | Success c -> failwithf "Valid customer: %A" c
-    | Failure errors -> 
+    | Ok c -> failwithf "Valid customer: %A" c
+    | Error errors -> 
         printfn "Invalid customer. Errors:\n%A" errors
         errors.Length |> shouldEqual 3
         errors |> shouldContain "Cost for product 'Bar' can't be negative"
@@ -83,64 +82,64 @@ let ValidateCustomer() =
 let ``using ap``() =
   let customer = Customer()
   let result = 
-    returnM (konst2 customer)
-    |> Validation.ap (nonNull "Surname can't be null" customer.Surname)
-    |> Validation.ap (notEqual "foo" "Surname can't be foo" customer.Surname)
+    Ok (konst2 customer)
+    |> ap (nonNull "Surname can't be null" customer.Surname)
+    |> ap (notEqual "foo" "Surname can't be foo" customer.Surname)
   match result with
-  | Success c -> failwithf "Valid customer: %A" c
-  | Failure errors -> 
+  | Ok c -> failwithf "Valid customer: %A" c
+  | Error errors -> 
       printfn "Invalid customer. Errors:\n%A" errors
       errors.Length |> shouldEqual 1
       errors |> shouldContain "Surname can't be null"
 
 [<Test>]
 let ``validation with sum monoid``() =
-    let v = Validation.CustomValidation (Monoid.sum())
+    let v = CustomValidation (Monoid.sum())
     // count the number of broken rules
-    let intValidator x = Choice.mapSecond (konst 1) x
+    let intValidator x = Result.mapError (konst 1) x
     let notEqual a = notEqual a "" >> intValidator
     let lengthNotEquals l = lengthNotEquals l >> intValidator
     let validateString x = 
-        Choice.returnM x
+        Ok x
         |> v.apl (notEqual "hello" x)
         |> v.apl (lengthNotEquals 5 x)
     match validateString "hello" with
-    | Success c -> failwithf "Valid string: %s" c
-    | Failure e -> Assert.AreEqual(2, e)
+    | Ok c -> failwithf "Valid string: %s" c
+    | Result.Error e -> Assert.AreEqual(2, e)
 
 [<Test>]
 let ``validation with unit monoid``() =
     // using the unit monoid to avoid the overhead of concatenating error lists.
-    let v = Validation.CustomValidation Monoid.unit
+    let v = CustomValidation Monoid.unit
 
     // convert validator errors to unit
-    let unitValidator x = Choice.mapSecond ignore x
+    let unitValidator x = Result.mapError ignore x
     let notEqual a = notEqual a "" >> unitValidator
     let lengthNotEquals l = lengthNotEquals l >> unitValidator
     let validateString x = 
-        Choice.returnM x
+        Ok x
         |> v.apl (notEqual "hello" x)
         |> v.apl (lengthNotEquals 5 x)
     match validateString "hello" with
-    | Success c -> failwithf "Valid string: %s" c
-    | Failure () -> ()
+    | Ok c -> failwithf "Valid string: %s" c
+    | Result.Error () -> ()
 
 [<Test>]
 let ``using sequenceIgnore``() =
-    let vsError = [ Choice1Of2 "ok"; Choice2Of2 (NonEmptyList.singleton "err") ]
-    let vsOk = [ Choice1Of2 "ok1"; Choice1Of2 "ok2" ]
+    let vsError = [ Ok "ok"; Error (NonEmptyList.singleton "err") ]
+    let vsOk = [ Ok "ok1"; Ok "ok2" ]
 
-    let vError = Validation.sequenceIgnore vsError
+    let vError = sequenceIgnore vsError
     match vError with
-    | Choice2Of2 errors ->
+    | Error errors ->
         CollectionAssert.AreEqual(errors, [ "err" ])
     | _ ->
         failwith "Validation must not succeed if there are errors"
 
-    let vOk = Validation.sequenceIgnore vsOk
+    let vOk = sequenceIgnore vsOk
     match vOk with
-    | Choice1Of2 () -> ()
-    | Choice2Of2 _ -> failwith "Validation failed on success values"
+    | Ok () -> ()
+    | Error _ -> failwith "Validation failed on success values"
 
 [<Test>]
 let ``using mapMIgnore``() =
@@ -149,16 +148,16 @@ let ``using mapMIgnore``() =
 
     let validate = validator ((<>) "err") "error!"
 
-    let vError = Validation.mapMIgnore validate okAndErr
-    let vOk = Validation.mapMIgnore validate oks
+    let vError = mapMIgnore validate okAndErr
+    let vOk = mapMIgnore validate oks
 
     match vError with
-    | Choice2Of2 errors ->
+    | Error errors ->
         CollectionAssert.AreEqual(errors, [ "error!" ])
     | _ ->
         failwith "Validation must not succeed if there are errors"
 
     match vOk with
-    | Choice1Of2 () -> ()
-    | Choice2Of2 _ -> failwith "Validation failed on success values"
+    | Ok () -> ()
+    | Error _ -> failwith "Validation failed on success values"
 
