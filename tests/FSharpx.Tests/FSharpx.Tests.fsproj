@@ -2,13 +2,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyName>FSharpx.Tests</AssemblyName>
-    <TargetFrameworks>net48;net6;net8</TargetFrameworks>
+    <TargetFrameworks>net48;net8;net9</TargetFrameworks>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <IsPackable>false</IsPackable>
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
-    <TargetFrameworks>net6;net8</TargetFrameworks>
+    <TargetFrameworks>net8;net9</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\FSharpx.Extras\FSharpx.Extras.fsproj">
