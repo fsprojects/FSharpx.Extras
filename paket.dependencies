@@ -1,4 +1,4 @@
-version 6.2.1
+version 9.0.2
 
 source https://api.nuget.org/v3/index.json
 framework: netstandard20
@@ -9,13 +9,13 @@ nuget FSharpx.Collections
 
 group Test
   source https://api.nuget.org/v3/index.json
-  framework: net48, net6, net8
+  framework: net48, net8, net9
   storage: none
   nuget FSharp.Core ~> 8.0
   nuget NUnit
   nuget NUnit3TestAdapter
-  nuget FsCheck
-  nuget FsCheck.NUnit
+  nuget FsCheck ~> 2.16
+  nuget FsCheck.NUnit ~> 2.16
   nuget FsUnit ~> 5.1
   nuget Microsoft.NET.Test.Sdk
   nuget GitHubActionsTestLogger

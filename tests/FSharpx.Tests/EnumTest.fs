@@ -79,7 +79,7 @@ let ``getValues works as expected for dotnet enum`` ()=
             NumberStyles.AllowTrailingSign; NumberStyles.AllowParentheses; NumberStyles.AllowDecimalPoint; NumberStyles.AllowThousands; NumberStyles.Number;
             NumberStyles.AllowExponent; NumberStyles.Float; NumberStyles.AllowCurrencySymbol; NumberStyles.Currency; NumberStyles.Any; NumberStyles.AllowHexSpecifier;
             NumberStyles.HexNumber;
-            #if NET8_0
+            #if NET8_0_OR_GREATER
             NumberStyles.BinaryNumber; NumberStyles.AllowBinarySpecifier
             #endif
          ]
