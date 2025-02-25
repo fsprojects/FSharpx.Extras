@@ -1,3 +1,10 @@
+### 3.3.0 - 22.02.2025
+* Switch `Validation` to `Result` and mark `Choice` based `Validation` as obsolete - https://github.com/fsprojects/FSharpx.Extras/pull/440
+* Test on net9 and update infra - https://github.com/fsprojects/FSharpx.Extras/pull/441
+
+### 3.2.1 - 27.07.2024
+* Fix FSharpx.Extras v3.2.0 breaks compilation - https://github.com/fsprojects/FSharpx.Extras/issues/436
+
 ### 3.2.0 - 09.07.2024
 * Remove net452 support and update test targets
 * Faster and less-memory-consuming niceName - https://github.com/fsprojects/FSharpx.Extras/pull/434
